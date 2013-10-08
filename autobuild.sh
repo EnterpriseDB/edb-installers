@@ -13,13 +13,16 @@ usage()
         echo "Usage: $BASENAME [Options]\n"
         echo "    Options:"
         echo "      [-skipbuild boolean]" boolean value may be either "1" or "0"
+	echo "      [-skippvtpkg boolean]" boolean value may be either "1" or "0"
         echo "      [-platforms list]  list of platforms. It may include the list of supported platforms separated by comma or all" 
         echo "      [-packages list]   list of packages. It may include the list of supported platforms separated by comma or all"
         echo "    Examples:"
         echo "     $BASENAME -skipbuild 0 -platforms "linux, linux_64, windows, windows_x64, osx" -packages "server, apachephp, phppgadmin, pgjdbc, psqlodbc, slony, postgis, npgsql, pgagent, pgmemcache, pgbouncer, migrationtoolkit, replicationserver, plpgsqlo, sqlprotect, update_monitor""
         echo "     $BASENAME -skipbuild 1 -platforms "all" -packages "all""
+        echo "     $BASENAME -skipbuild 1 -skippvtpkg 1 -platforms "all" -packages "all""
         echo ""
         echo "    Note: setting skipbuild to 1 will skip the product build and just create the installer. 'all' option for -packages and -platforms will set all platforms and packages."
+        echo "    Note: setting skippvtpkg to 1 will skip the private package (PEM) build and installers"
         echo ""
         exit 1;
 }
@@ -30,7 +33,7 @@ while [ "$#" -gt "0" ]; do
                 -skipbuild) SKIPBUILD=$2; shift 2;;
                 -platforms) PLATFORMS=$2; shift 2;;
                 -packages) PACKAGES=$2; shift 2;;
-		-skippvtpackages) SKIPPVTPACKAGES=$2; shift 2;;
+		-skippvtpkg) SKIPPVTPACKAGES=$2; shift 2;;
                 -help|-h) usage;;
                 *) echo -e "error: no such option $1. -h for help"; exit 1;;
         esac
@@ -61,7 +64,7 @@ fi
 # required by build.sh
 if $SKIPPVTPACKAGES ;
 then
-        SKIPPVTPACKAGES="-skippvtpackages"
+        SKIPPVTPACKAGES="-skippvtpkg"
 else
         SKIPPVTPACKAGES=""
 fi
@@ -127,17 +130,26 @@ footer_fail="###################################################################
 _mail_status()
 {
         build_filename=$1
-        pem_filename=$2
+        pvtbuild_filename=$2
         version=$3
         build_log_file=$log_location/$build_filename
-        pem_log_file=$log_location/$pem_filename
+        pvtbuild_log_file=$log_location/$pvtbuild_filename
 
         build_log_content=`tail -20 $build_log_file`
-        pem_log_content=`tail -20 $pem_log_file`
+        pvtbuild_log_content=`tail -20 $pvtbuild_log_file`
 
         build_error_flag=`echo $build_log_content | grep "FATAL ERROR"`
-        pem_error_flag=`echo $pem_log_content | grep "FATAL ERROR"`
-        if [ "x$build_error_flag" = "x" ] && [ "x$pem_error_flag" = "x" ]
+        pvtbuild_error_flag=`echo $pvtbuild_log_content | grep "FATAL ERROR"`
+
+        if [ ${#build_error_flag} -gt 0 ]
+        then
+                log_content=$build_log_content
+        elif [ ${#pvtbuild_error_flag} -gt 0 ]
+        then
+                log_content=$pvtbuild_log_content
+        fi
+
+        if [ "x$build_error_flag" = "x" ] && [ "x$pvtbuild_error_flag" = "x" ]
         then
                 mail_content="Autobuild completed Successfully."
                 build_status="SUCCESS"
@@ -146,25 +158,17 @@ _mail_status()
                 mail_content="
 $header_fail
 
-if [ ${#build_error_flag} -gt 0 ]
-then
-$log_content=$build_log_content
-elif [ ${#pem_error_flag} -gt 0 ]
-then
-$log_content=$pem_log_content
-fi
-
+$log_content
 
 $footer_fail"
                 build_status="FAILED"
                 if [ ${#build_error_flag} -gt 0 ]
                 then
-                mail_receipents="pginstaller@enterprisedb.com"
-                elif [ ${#pem_error_flag} -gt 0 ]
+                        mail_receipents="-c cm@enterprisedb.com pginstaller@enterprisedb.com"
+                elif [ ${#pvtbuild_error_flag} -gt 0 ]
                 then
-                mail_receipents="pem@enterprisedb.com -c cm@enterprisedb.com "
+                        mail_receipents="-c cm@enterprisedb.com pem@enterprisedb.com"
                 fi
-
         fi
 
         mail -s "pgInstaller Build $version - $build_status" $mail_receipents <<EOT
@@ -202,9 +206,9 @@ git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
 echo "Running the build (REL-9_2) " >> autobuild.log
-./build.sh $SKIPBUILD > output/build-92.log 2>&1
+./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-92.log
 
-_mail_status "build-92.log" "build-pem.log" "9.2"
+_mail_status "build-92.log" "build-pvt.log" "9.2"
 
 remote_location="/var/www/html/builds/Installers"
 
