@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_PostGIS_linux_x64() {
+    
+    echo "BEGIN PREP PostGIS Linux-x64"    
 
     # Enter the source directory and cleanup if required
     cd $WD/PostGIS/source
@@ -45,7 +47,8 @@ _prep_PostGIS_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f doc/postgresql/postgis/postgis.html doc/postgresql/postgis/README.postgis" || _die "Failed to remove documentation"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PGHOME_LINUX_X64; rm -f share/man/man1/pgsql2shp.1 share/man/man1/shp2pgsql.1" || _die "Failed to remove man pages"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; rm -f build-postgis-linux-x64.sh" || _die "Failed to remove build-postgis-linux-x64.sh script"
-
+    
+    echo "END PREP PostGIS Linux-x64"
 }
 
 
@@ -54,6 +57,8 @@ _prep_PostGIS_linux_x64() {
 ################################################################################
 
 _build_PostGIS_linux_x64() {
+  
+    echo "BEGIN BUILD PostGIS Linux-x64"  
 
     # build postgis
 
@@ -188,6 +193,8 @@ EOT
 
     cd $WD/PostGIS
 
+ echo "END BUILD PostGIS Linux-x64" 
+
 }
 
 
@@ -196,6 +203,8 @@ EOT
 ################################################################################
 
 _postprocess_PostGIS_linux_x64() {
+
+    echo "BEGIN POST PostGIS Linux-x64"
 
     cd $WD/PostGIS
     mkdir -p staging/linux-x64/installer/PostGIS || _die "Failed to create a directory for the install scripts"
@@ -237,5 +246,7 @@ _postprocess_PostGIS_linux_x64() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
     cd $WD
+    
+    echo "END POST PostGIS Linux-x64"
 }
 

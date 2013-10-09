@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_pgAgent_linux_x64() {
+    
+    echo "BEGIN PREP pgAgent Linux-x64"
 
     echo "###########################################"
     echo "# pgAgent : LINUX-X64 : Build preparation #"
@@ -35,8 +37,8 @@ _prep_pgAgent_linux_x64() {
 
     echo "Creating staging directory ($WD/pgAgent/staging/linux-x64)"
     mkdir -p $WD/pgAgent/staging/linux-x64 || _die "Couldn't create the staging directory"
-
-
+  
+    echo "END PREP pgAgent Linux-x64"
 }
 
 ################################################################################
@@ -44,6 +46,8 @@ _prep_pgAgent_linux_x64() {
 ################################################################################
 
 _build_pgAgent_linux_x64() {
+
+    echo "BEGIN BUILD pgAgent Linux-x64"
 
     echo "###########################################"
     echo "# pgAgent : LINUX-X64 : Build             #"
@@ -92,7 +96,8 @@ _build_pgAgent_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "chmod a+rx $PG_STAGING/lib" || _die "Failed to set permissions on lib directory"
     ssh $PG_SSH_LINUX_X64 "chmod a+rx $PG_STAGING/bin/*" || _die "Failed to set permissions on binaries in bin directory"
     ssh $PG_SSH_LINUX_X64 "chmod a+rx $PG_STAGING/lib/*" || _die "Failed to set permissions on libraries in lib directory"
-
+    
+    echo "END BUILD pgAgent Linux-x64"
 }
 
 
@@ -101,6 +106,8 @@ _build_pgAgent_linux_x64() {
 ################################################################################
 
 _postprocess_pgAgent_linux_x64() {
+    
+    echo "BEGIN POST pgAgent Linux-x64"
 
     echo "###########################################"
     echo "# pgAgent : LINUX-X64 : Post Process      #"
@@ -119,6 +126,7 @@ _postprocess_pgAgent_linux_x64() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
     cd $WD
-
+  
+    echo "END POST pgAgent Linux-x64"
 }
 

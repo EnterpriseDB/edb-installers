@@ -5,6 +5,8 @@
 ################################################################################
 
 _prep_Npgsql_windows() {
+    
+    echo "BEGIN PREP Npgsql Windows"
 
     # Enter the source directory and cleanup if required
     cd $WD/Npgsql/source
@@ -40,7 +42,8 @@ _prep_Npgsql_windows() {
     echo "Creating staging directory ($WD/Npgsql/staging/windows)"
     mkdir -p $WD/Npgsql/staging/windows || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/Npgsql/staging/windows || _die "Couldn't set the permissions on the staging directory"
-
+    
+    echo "END PREP Npgsql Windows"
 }
 
 ################################################################################
@@ -48,8 +51,12 @@ _prep_Npgsql_windows() {
 ################################################################################
 
 _build_Npgsql_windows() {
-
+    
+    echo "BEGIN BUILD Npgsql Windows"  
+   
     cd $WD
+
+    echo "END BUILD Npgsql Windows"
 }
 
 
@@ -58,7 +65,9 @@ _build_Npgsql_windows() {
 ################################################################################
 
 _postprocess_Npgsql_windows() {
- 
+    
+    echo "BEGIN POST Npgsql Windows"    
+
     cp -R $WD/Npgsql/source/Npgsql.windows/* $WD/Npgsql/staging/windows || _die "Failed to copy the Npgsql Source into the staging directory"
     chmod -R ugo+rx $WD/Npgsql/staging/windows/docs
 
@@ -75,5 +84,7 @@ _postprocess_Npgsql_windows() {
 	win32_sign "npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-windows.exe"
 
     cd $WD
+    
+    echo "END POST Npgsql Windows"  
 }
 

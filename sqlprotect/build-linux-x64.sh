@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_sqlprotect_linux_x64() {
+    
+    echo "BEGIN PREP sqlprotect Linux-x64"
 
     cd $WD/server/source
 	
@@ -30,7 +32,8 @@ _prep_sqlprotect_linux_x64() {
     echo "Creating staging directory ($WD/sqlprotect/staging/linux-x64)"
     mkdir -p $WD/sqlprotect/staging/linux-x64/sqlprotect || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/sqlprotect/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
-	
+    
+    echo "END PREP sqlprotect Linux-x64"
 }
 
 ################################################################################
@@ -38,6 +41,8 @@ _prep_sqlprotect_linux_x64() {
 ################################################################################
 
 _build_sqlprotect_linux_x64() {
+
+    echo "BEGIN BUILD sqlprotect Linux-x64"
 
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/SQLPROTECT/; make distclean ; make" || _die "Failed to build sqlprotect"
 	
@@ -49,7 +54,8 @@ _build_sqlprotect_linux_x64() {
 	ssh $PG_SSH_LINUX_X64 "cp $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_LINUX_X64/sqlprotect/staging/linux-x64/share/" || _die "Failed to copy sqlprotect.sql to staging directory"
 	ssh $PG_SSH_LINUX_X64 "cp $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_LINUX_X64/sqlprotect/staging/linux-x64/doc/" || _die "Failed to copy README-sqlprotect.txt to staging directory"
     chmod -R ugo+r $WD/sqlprotect/staging/linux-x64
-
+    
+    echo "END BUILD sqlprotect Linux-x64"
 }
 
 
@@ -59,10 +65,14 @@ _build_sqlprotect_linux_x64() {
 
 _postprocess_sqlprotect_linux_x64() {
 
+    echo "BEGIN POST sqlprotect Linux-x64"   
+
     cd $WD/sqlprotect
     
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
     cd $WD
+
+    echo "END POST sqlprotect Linux-x64"
 }

@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_pgbouncer_linux_x64() {
+     
+    echo "BEGIN PREP pgbouncer Linux-x64"    
 
     # Enter the source directory and cleanup if required
     cd $WD/pgbouncer/source
@@ -41,7 +43,8 @@ _prep_pgbouncer_linux_x64() {
     chmod 755 $WD/pgbouncer/staging/linux-x64/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
     echo "Copying README.pgbouncer to staging doc directory"
     cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/linux-x64/pgbouncer/doc/README-pgbouncer.txt || _die "Couldn't copy README.pgbouncer to staging doc directory"
-
+    
+    echo "END PREP pgbouncer Linux-x64"
 }
 
 ################################################################################
@@ -50,6 +53,7 @@ _prep_pgbouncer_linux_x64() {
 
 _build_pgbouncer_linux_x64() {
 
+    echo "BEGIN BUILD pgbouncer Linux-x64"
 
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; ./configure --prefix=$PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer --with-libevent=/usr/local" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; make" || _die "Failed to build pgbouncer"
@@ -82,7 +86,8 @@ _build_pgbouncer_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "chmod 755 $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/*" || _die "Failed to change permission of libraries"
 
     cd $WD
-
+    
+    echo "END BUILD pgbouncer Linux-x64"
 }
 
 
@@ -92,6 +97,7 @@ _build_pgbouncer_linux_x64() {
 
 _postprocess_pgbouncer_linux_x64() {
  
+    echo "BEGIN POST pgbouncer Linux-x64"    
 
     cd $WD/pgbouncer
 
@@ -116,5 +122,7 @@ _postprocess_pgbouncer_linux_x64() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
     cd $WD
+
+    echo "END POST pgbouncer Linux-x64"
 }
 

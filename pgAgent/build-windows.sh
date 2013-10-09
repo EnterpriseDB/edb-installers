@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_pgAgent_windows() {
+    
+    echo "BEGIN PREP pgAgent Windows"
 
     echo "#####################################"
     echo "# pgAgent : WIN : Build preparation #"
@@ -67,7 +69,8 @@ _prep_pgAgent_windows() {
     echo "Copying pgAgent sources to Windows VM"
     scp pgAgent.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the pgAgent archieve to windows VM (pgAgent.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip pgAgent.zip" || _die "Couldn't extract pgAgent archieve on windows VM (pgAgent.zip)"
-
+    
+    echo "END PREP pgAgent Windows"
 }
 
 ################################################################################
@@ -75,6 +78,8 @@ _prep_pgAgent_windows() {
 ################################################################################
 
 _build_pgAgent_windows() {
+    
+    echo "BEGIN BUILD pgAgent Windows"
 
     echo "###############################"
     echo "# pgAgent : WIN : Build       #"
@@ -143,7 +148,8 @@ EOT
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS//bin/libeay32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libeay32.dll)"
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libiconv.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libiconv.dll)"
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libintl.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libintl-8.dll)"
-
+    
+    echo "END BUILD pgAgent Winows"
 }
 
 
@@ -152,6 +158,8 @@ EOT
 ################################################################################
 
 _postprocess_pgAgent_windows() {
+
+    echo "BEGIN POST pgAgent Windows"
 
     echo "#####################################"
     echo "# pgAgent : WIN : Post Process      #"
@@ -175,6 +183,7 @@ _postprocess_pgAgent_windows() {
 	win32_sign "pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-windows.exe"
 	
     cd $WD
-
+    
+    echo "END POST pgAgent Windows"
 }
 

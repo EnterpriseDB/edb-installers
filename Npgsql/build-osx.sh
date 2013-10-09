@@ -6,7 +6,9 @@
 ################################################################################
 
 _prep_Npgsql_osx() {
-
+    
+    echo "BEGIN PREP Npgsql OSX"
+ 
     echo "*******************************"
     echo "*  Pre Process: Npgsql (OSX)  *"
     echo "*******************************"
@@ -37,7 +39,7 @@ _prep_Npgsql_osx() {
     mkdir -p $WD/Npgsql/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/Npgsql/staging/osx || _die "Couldn't set the permissions on the staging directory"
     
-
+    echo "END PREP Npgsql OSX"
 }
 
 ################################################################################
@@ -45,8 +47,12 @@ _prep_Npgsql_osx() {
 ################################################################################
 
 _build_Npgsql_osx() {
+   
+    echo "BEGIN BUILD Npgsql OSX"   
 
     cd $WD
+
+    echo "END BUILD Npgsql OSX"
 }
 
 
@@ -55,6 +61,8 @@ _build_Npgsql_osx() {
 ################################################################################
 
 _postprocess_Npgsql_osx() {
+    
+    echo "BEGIN POST Npgsql OSX"    
 
     echo "********************************"
     echo "*  Post Process: Npgsql (OSX)  *"
@@ -112,5 +120,7 @@ _postprocess_Npgsql_osx() {
     rm -rf npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/ || _die "Failed to remove the unpacked installer bundle"
     
     cd $WD
+    
+    echo "END POST Npgsql OSX"
 }
 

@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_MigrationToolKit_linux() {
+    
+    echo "BEGIN PREP MigrationToolKit Linux"    
       
     # Enter the source directory and cleanup if required
     cd $WD/MigrationToolKit/source
@@ -36,7 +38,8 @@ _prep_MigrationToolKit_linux() {
     echo "Creating staging directory ($WD/MigrationToolKit/staging/linux)"
     mkdir -p $WD/MigrationToolKit/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/MigrationToolKit/staging/linux || _die "Couldn't set the permissions on the staging directory"
-
+    
+    echo "END PREP MigrationToolKit Linux"
 }
 
 
@@ -45,6 +48,8 @@ _prep_MigrationToolKit_linux() {
 ################################################################################
 
 _build_MigrationToolKit_linux() {
+    
+    echo "BEGIN BUILD MigrationToolKit Linux"    
 
     # build migrationtoolkit    
     PG_STAGING=$PG_PATH_LINUX/MigrationToolKit/staging/linux    
@@ -56,7 +61,8 @@ _build_MigrationToolKit_linux() {
     # Copying the MigrationToolKit binary to staging directory
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationToolKit/source/migrationtoolkit.linux; mkdir $PG_STAGING/MigrationToolKit" || _die "Couldn't create the migrationtoolkit staging directory (MigrationToolKit/staging/linux/MigrationToolKit)"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationToolKit/source/migrationtoolkit.linux; cp -R install/* $PG_STAGING/MigrationToolKit" || _die "Couldn't copy the binaries to the migrationtoolkit staging directory (MigrationToolKit/staging/linux/MigrationToolKit)"
-
+    
+    echo "END BUILD MigrationToolKit Linux"
 }
 
 
@@ -66,11 +72,15 @@ _build_MigrationToolKit_linux() {
 
 _postprocess_MigrationToolKit_linux() {
 
+    echo "BEGIN POST MigrationToolKit Linux"
+
     cd $WD/MigrationToolKit
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
     
     cd $WD
+    
+    echo "END POST MigrationToolKit Linux"
 }
 

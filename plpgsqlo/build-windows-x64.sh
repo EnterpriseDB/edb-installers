@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_plpgsqlo_windows_x64() {
+    
+    echo "BEGIN PREP plpgsqlo Windows-x64"    
 
     cd $WD/server/source
 
@@ -90,7 +92,8 @@ _prep_plpgsqlo_windows_x64() {
     scp $PGPLATFORMDIR/src/tools/msvc/Mkvcbuild.pm $PGBUILDSSH:$PGREMOTEBUILDPATH/$PGSERVERPATH/src/tools/msvc || _die "Couldn't copy the Mkvcbuild.pm to windows-x64 VM (Mkvcbuild.pm)"
     scp $PGPLATFORMDIR/src/tools/msvc/Project.pm $PGBUILDSSH:$PGREMOTEBUILDPATH/$PGSERVERPATH/src/tools/msvc || _die "Couldn't copy the Project.pm to windows-x64 VM (Project.pm)"
     scp $PGPLATFORMDIR/src/tools/msvc/pgbison.bat $PGBUILDSSH:$PGREMOTEBUILDPATH/$PGSERVERPATH/src/tools/msvc || _die "Couldn't copy the pgbison.bat to windows-x64 VM (pgbison.bat)"
-
+    
+    echo "END PREP plpgsqlo Windows-x64"
 }
 
 ################################################################################
@@ -98,6 +101,8 @@ _prep_plpgsqlo_windows_x64() {
 ################################################################################
 
 _build_plpgsqlo_windows_x64() {
+
+    echo "BEGIN BUILD plpgsqlo Windows-x64"
 
     cat <<EOT > "$WD/server/source/build64-plpgsqlo.bat"
 
@@ -140,7 +145,8 @@ EOT
    
    cd $PGPLATFORMDIR   
    patch -p1 -f -c -R < $WD/plpgsqlo/resources/plpgsqlo.patch
-
+   
+   echo "END BUILD plpgsqlo Windows-x64"
 }
 
 
@@ -149,6 +155,8 @@ EOT
 ################################################################################
 
 _postprocess_plpgsqlo_windows_x64() {
+
+    echo "BEGIN POST plpgsqlo Windows-x64"
 
     echo "#####################################"
     echo "# plpgsqlo : WIN-X64 : post process #"
@@ -174,6 +182,7 @@ _postprocess_plpgsqlo_windows_x64() {
     win32_sign "plsecure-$PG_VERSION_PLPGSQLO-$PG_BUILDNUM_PLPGSQLO-windows-x64.exe"
 
     cd $WD
-
+    
+    echo "END POST plpgsqlo Windows-x64"
 }
 

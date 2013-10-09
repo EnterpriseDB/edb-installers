@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_sqlprotect_windows_x64() {
+    
+    echo "BEGIN PREP sqlprotect Windows-x64"
 
     cd $WD/server/source
 
@@ -53,7 +55,8 @@ _prep_sqlprotect_windows_x64() {
     scp sqlprotect.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Couldn't copy the sqlprotect archive to windows VM (sqlprotect.zip)"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c  unzip sqlprotect.zip" || _die "Couldn't extract postgresql archieve on windows VM (sqlprotect.zip)"
     chmod -R ugo+r $WD/sqlprotect/staging/windows-x64
-
+    
+    echo "END PREP sqlprotect Windows-x64"
 }
 
 ################################################################################
@@ -61,6 +64,8 @@ _prep_sqlprotect_windows_x64() {
 ################################################################################
 
 _build_sqlprotect_windows_x64() {
+    
+    echo "BEGIN BUILD sqlprotect Windows-x64"
 
     cat <<EOT > "$WD/server/source/build64-sqlprotect.bat"
 
@@ -99,7 +104,8 @@ EOT
       echo "Removing existing sqlprotect directory"
       rm -rf postgres.windows-x64/contrib/SQLPROTECT || _die "Couldn't remove the existing sqlprotect directory"
    fi
-
+   
+   echo "END BUILD sqlprotect Windows-x64"
 }
 
 
@@ -109,6 +115,8 @@ EOT
 ################################################################################
 
 _postprocess_sqlprotect_windows_x64() {
+    
+    echo "BEGIN POST sqlprotect Windows-x64"   
 
     cd $WD/sqlprotect
 
@@ -130,5 +138,6 @@ _postprocess_sqlprotect_windows_x64() {
 
     cd $WD
 
+    echo "END POST sqlprotect Windows-x64"
 }
 

@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_Slony_osx() {
+    
+    echo "BEGIN PREP Slony OSX"
 
     echo "*******************************************************"
     echo " Pre Process : Slony(OSX)"
@@ -42,7 +44,8 @@ _prep_Slony_osx() {
     cd $PG_PGHOME_OSX
     rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.so"  || _die "Failed to remove slony binary files"
     rm -f share/postgresql/slony*.sql"  || _die "remove slony share files"
-
+    
+    echo "END PREP Slony OSX"
 }
 
 ################################################################################
@@ -50,6 +53,8 @@ _prep_Slony_osx() {
 ################################################################################
 
 _build_Slony_osx() {
+
+    echo "BEGIN BUILD Slony OSX"
 
     echo "*******************************************************"
     echo " Build : Slony(OSX)"
@@ -152,6 +157,8 @@ EOT
     install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$WD/Slony/staging/osx/bin/slon"
     install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$WD/Slony/staging/osx/bin/slonik"
     install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$WD/Slony/staging/osx/bin/slony_logshipper"
+    
+    echo "END BUILD Slony OSX"
 }
 
 ################################################################################
@@ -159,6 +166,8 @@ EOT
 ################################################################################
 
 _postprocess_Slony_osx() {
+    
+    echo "BEGIN POST Slony OSX"
 
     echo "*******************************************************"
     echo " Post Process : Slony(OSX)"
@@ -215,6 +224,7 @@ _postprocess_Slony_osx() {
     rm -rf slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
-
+    
+    echo "END POST Slony OSX"
 }
 

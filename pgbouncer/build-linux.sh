@@ -6,7 +6,9 @@
 ################################################################################
 
 _prep_pgbouncer_linux() {
-
+    
+    echo "BEGIN PREP pgbouncer Linux"
+ 
     # Enter the source directory and cleanup if required
     cd $WD/pgbouncer/source
 
@@ -42,7 +44,7 @@ _prep_pgbouncer_linux() {
     echo "Copying README.pgbouncer to staging doc directory"
     cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/linux/pgbouncer/doc/README-pgbouncer.txt || _die "Couldn't copy README.pgbouncer to staging doc directory"
    
-
+    echo "END PREP pgbouncer Linux"
 }
 
 ################################################################################
@@ -50,6 +52,8 @@ _prep_pgbouncer_linux() {
 ################################################################################
 
 _build_pgbouncer_linux() {
+    
+    echo "BEGIN BUILD pgbouncer Linux"
 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; ./configure --prefix=$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer --with-libevent=/usr/local" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; make" || _die "Failed to build pgbouncer"
@@ -83,6 +87,8 @@ _build_pgbouncer_linux() {
 
     cd $WD
 
+    echo "END BUILD pgbouncer Linux"
+
 }
 
 
@@ -92,6 +98,7 @@ _build_pgbouncer_linux() {
 
 _postprocess_pgbouncer_linux() {
  
+    echo "BEGIN POST pgbouncer Linux"    
 
     cd $WD/pgbouncer
 
@@ -118,5 +125,7 @@ _postprocess_pgbouncer_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 
     cd $WD
+    
+    echo "END POST pgbouncer Linux"
 }
 

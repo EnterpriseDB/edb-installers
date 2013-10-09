@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_sqlprotect_osx() {
+    
+    echo "BEGIN PREP sqlprotect OSX"
 
     cd $WD/server/source
 	
@@ -30,7 +32,8 @@ _prep_sqlprotect_osx() {
     echo "Creating staging directory ($WD/sqlprotect/staging/osx)"
     mkdir -p $WD/sqlprotect/staging/osx/sqlprotect || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/sqlprotect/staging/osx || _die "Couldn't set the permissions on the staging directory"
-
+   
+    echo "END PREP sqlprotect OSX"
 }
 
 ################################################################################
@@ -38,6 +41,8 @@ _prep_sqlprotect_osx() {
 ################################################################################
 
 _build_sqlprotect_osx() {
+
+    echo "BEGIN BUILD sqlprotect OSX"
 
     cd $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/; make distclean ; make || _die "Failed to build sqlprotect"
 	
@@ -49,7 +54,8 @@ _build_sqlprotect_osx() {
 	cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_OSX/sqlprotect/staging/osx/share/ || _die "Failed to copy sqlprotect.sql to staging directory"
 	cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_OSX/sqlprotect/staging/osx/doc/ || _die "Failed to copy README-sqlprotect.txt to staging directory"
     chmod -R ugo+r $WD/sqlprotect/staging/osx
-
+    
+    echo "END BUILD sqlprotect OSX"
 }
 
 
@@ -58,7 +64,8 @@ _build_sqlprotect_osx() {
 ################################################################################
 
 _postprocess_sqlprotect_osx() {
-
+    
+    echo "BEGIN POST sqlprotect OSX"
 
     cd $WD/sqlprotect
 
@@ -69,7 +76,8 @@ _postprocess_sqlprotect_osx() {
     cd $WD/output
     zip -r sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.zip sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/ || _die "Failed to zip the installer bundle"
     rm -rf sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-osx.app/ || _die "Failed to remove the unpacked installer bundle"
-    cd $WD
+     cd $WD
 
+    echo "END POST sqlprotect OSX"
 }
 

@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_pgJDBC_linux_x64() {
+    
+    echo "BEGIN PREP pgJDBC Linux-x64"
 
     # Enter the source directory and cleanup if required
     cd $WD/pgJDBC/source
@@ -33,7 +35,7 @@ _prep_pgJDBC_linux_x64() {
     mkdir -p $WD/pgJDBC/staging/linux-x64 || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pgJDBC/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
     
-
+    echo "END PREP pgJDBC Linux-x64"
 }
 
 ################################################################################
@@ -41,8 +43,12 @@ _prep_pgJDBC_linux_x64() {
 ################################################################################
 
 _build_pgJDBC_linux_x64() {
+    
+    echo "BEGIN BUILD pgJDBC Linux-x64"
 
     cd $WD
+   
+    echo "END BUILD pgJDBC Linux-x64"
 }
 
 
@@ -51,7 +57,9 @@ _build_pgJDBC_linux_x64() {
 ################################################################################
 
 _postprocess_pgJDBC_linux_x64() {
- 
+    
+    echo "BEGIN POST pgJDBC Linux-x64"
+
     cp -R $WD/pgJDBC/source/pgJDBC.linux-x64/* $WD/pgJDBC/staging/linux-x64 || _die "Failed to copy the pgJDBC Source into the staging directory"
 
     cd $WD/pgJDBC
@@ -87,5 +95,7 @@ _postprocess_pgJDBC_linux_x64() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
     cd $WD
+
+    echo "END POST pgJDBC Linux-x64"
 }
 

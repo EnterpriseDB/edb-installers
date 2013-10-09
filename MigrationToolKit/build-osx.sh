@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_MigrationToolKit_osx() {
+    
+    echo "BEGIN PREP MigrationToolKit OSX"    
       
     # Enter the source directory and cleanup if required
     cd $WD/MigrationToolKit/source
@@ -37,6 +39,7 @@ _prep_MigrationToolKit_osx() {
     mkdir -p $WD/MigrationToolKit/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/MigrationToolKit/staging/osx || _die "Couldn't set the permissions on the staging directory"
         
+    echo "END PREP MigrtonToolKit  OSX"
 }
 
 
@@ -45,6 +48,9 @@ _prep_MigrationToolKit_osx() {
 ################################################################################
 
 _build_MigrationToolKit_osx() {
+    
+    
+    echo "BEGIN BUILD MigtationToolKit OSX"    
 
     # build migrationtoolkit    
     PG_STAGING=$PG_PATH_OSX/MigrationToolKit/staging/osx
@@ -59,7 +65,8 @@ _build_MigrationToolKit_osx() {
     # Copying the MigrationToolKit binary to staging directory
     mkdir $PG_STAGING/MigrationToolKit || _die "Couldn't create the migrationtoolkit staging directory (MigrationToolKit/staging/osx/MigrationToolKit)"
     cp -R install/* $PG_STAGING/MigrationToolKit || _die "Couldn't copy the binaries to the migrationtoolkit staging directory (MigrationToolKit/staging/osx/MigrationToolKit)"
-
+    
+    echo "END BUILD MigrationToolKit OSX"
 }
 
 
@@ -68,6 +75,8 @@ _build_MigrationToolKit_osx() {
 ################################################################################
 
 _postprocess_MigrationToolKit_osx() {
+
+    echo "BEGIN POST MigrationToolKit OSX"
 
     cd $WD/MigrationToolKit
     
@@ -79,7 +88,8 @@ _postprocess_MigrationToolKit_osx() {
     zip -r migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT-$PG_BUILDNUM_MIGRATIONTOOLKIT-osx.zip migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT-$PG_BUILDNUM_MIGRATIONTOOLKIT-osx.app/ || _die "Failed to zip the installer bundle"
     rm -rf migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT-$PG_BUILDNUM_MIGRATIONTOOLKIT-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
-    
     cd $WD
+
+    echo "END POST MigrationToolKit OSX"
 }
 

@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_pgJDBC_linux() {
+    
+    echo "BEGIN PREP pgJDBC Linux"
 
     # Enter the source directory and cleanup if required
     cd $WD/pgJDBC/source
@@ -33,7 +35,7 @@ _prep_pgJDBC_linux() {
     mkdir -p $WD/pgJDBC/staging/linux || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pgJDBC/staging/linux || _die "Couldn't set the permissions on the staging directory"
     
-
+    echo "END PREP pgJDBC Linux"
 }
 
 ################################################################################
@@ -42,7 +44,11 @@ _prep_pgJDBC_linux() {
 
 _build_pgJDBC_linux() {
 
+    echo "BEGIN BUILD pgJDBC Linux"
+
     cd $WD
+
+    echo "END BUILD pgJDBC Linux"
 }
 
 
@@ -51,7 +57,9 @@ _build_pgJDBC_linux() {
 ################################################################################
 
 _postprocess_pgJDBC_linux() {
- 
+    
+    echo "BEGIN POST pgJDBC Linux" 
+
     cp -R $WD/pgJDBC/source/pgJDBC.linux/* $WD/pgJDBC/staging/linux || _die "Failed to copy the pgJDBC Source into the staging directory"
 
     cd $WD/pgJDBC
@@ -87,5 +95,7 @@ _postprocess_pgJDBC_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 
     cd $WD
+
+    echo "END POST pgJDBC Linux"
 }
 

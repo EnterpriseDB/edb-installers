@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_Slony_linux() {
+    
+    echo "BEGIN PREP Slony Linux"
 
     # Enter the source directory and cleanup if required
     cd $WD/Slony/source
@@ -37,6 +39,8 @@ _prep_Slony_linux() {
     echo "Removing existing slony files from the PostgreSQL directory"
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX; rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.so"  || _die "Failed to remove slony binary files"
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX; rm -f share/postgresql/slony*.sql"  || _die "remove slony share files"
+    
+    echo "END PREP Slony Linux"
 }
 
 
@@ -45,6 +49,8 @@ _prep_Slony_linux() {
 ################################################################################
 
 _build_Slony_linux() {
+    
+    echo "BEGIN BUILD Slony Linux"
 
     # build slony
     PG_STAGING=$PG_PATH_LINUX/Slony/staging/linux
@@ -61,6 +67,8 @@ _build_Slony_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX/lib/postgresql; chrpath --replace \"\\\${ORIGIN}/../lib\" slony1_funcs.so"
 
     cd $WD
+   
+    echo "END BUILD Slony Linux"
 }
 
 
@@ -69,6 +77,8 @@ _build_Slony_linux() {
 ################################################################################
 
 _postprocess_Slony_linux() {
+
+    echo "BEGIN POST Slony Linux"
 
     PG_STAGING=$PG_PATH_LINUX/Slony/staging/linux
 
@@ -128,5 +138,7 @@ _postprocess_Slony_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 
     cd $WD
+    
+    echo "END POST Slony Linux"
 }
 

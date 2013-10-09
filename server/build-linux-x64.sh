@@ -5,6 +5,8 @@
 ################################################################################
 
 _prep_server_linux_x64() {
+    
+    echo "BEGIN PREP Server Linux-x64"
 
     # Enter the source directory and cleanup if required
     cd $WD/server/source
@@ -50,7 +52,8 @@ _prep_server_linux_x64() {
     if [ -f $WD/server/scripts/linux/getlocales/getlocales.linux-x64 ]; then
       rm -f $WD/server/scripts/linux/getlocales/getlocales.linux-x64
     fi
-
+    
+    echo "END PREP Server Linux-x64"
 }
 
 
@@ -147,6 +150,8 @@ EOT
 ################################################################################
 
 _build_server_linux_x64() {
+    
+    echo "BEGIN BUILD Server Linux-x64"
 
     # First build PostgreSQL
 
@@ -369,6 +374,8 @@ EOT
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/scripts/linux/getlocales; gcc -o getlocales.linux-x64 -O0 getlocales.c" || _die "Failed to build getlocale utility"
 
     cd $WD
+
+    echo "END BUILD Server Linux-x64"
 }
 
 
@@ -377,6 +384,8 @@ EOT
 ################################################################################
 
 _postprocess_server_linux_x64() {
+
+    echo "BEGIN POST Server Linux-x64"
 
     cd $WD/server
 
@@ -503,5 +512,7 @@ y a menu pick image"
 	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.run || _die "Failed to rename the installer"
 
     cd $WD
+    
+    echo "END POST Server Linux-x64"
 }
 

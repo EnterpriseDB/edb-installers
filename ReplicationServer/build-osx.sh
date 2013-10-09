@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_ReplicationServer_osx() {
+    
+    echo "BEGIN PREP ReplicationServer OSX"
 
     # Enter the source directory and cleanup if required
     cd $WD/ReplicationServer/source
@@ -50,7 +52,7 @@ _prep_ReplicationServer_osx() {
     mkdir -p $WD/ReplicationServer/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/ReplicationServer/staging/osx || _die "Couldn't set the permissions on the staging directory"
     
-
+    echo "END PREP ReplicationServer OSX"
 }
 
 ################################################################################
@@ -58,6 +60,8 @@ _prep_ReplicationServer_osx() {
 ################################################################################
 
 _build_ReplicationServer_osx() {
+    
+    echo "BEGIN BUILD ReplicationServer OSX"
 
     cd $WD/ReplicationServer/source/ReplicationServer.osx 
     ant -f custom_build.xml dist || _die "Failed to build the Replication xDB Replicator"
@@ -95,7 +99,8 @@ _build_ReplicationServer_osx() {
     gcc -DWITH_OPENSSL -I. -o validateUserClient.o $PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto || _die "Failed to build the validateUserClient utility"
     cp validateUserClient.o $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/validateUserClient.o || _die "Failed to copy validateUserClient utility to staging directory"
     chmod ugo+x $PG_PATH_OSX/ReplicationServer/staging/osx/instscripts/validateUserClient.o
-
+    
+    echo "END BUILD ReplicationServer OSX"
 }
 
 
@@ -104,6 +109,8 @@ _build_ReplicationServer_osx() {
 ################################################################################
 
 _postprocess_ReplicationServer_osx() {
+    
+    echo "BEGIN POST ReplicationServer OSX"
 
     cd $WD/ReplicationServer
 
@@ -164,5 +171,7 @@ _postprocess_ReplicationServer_osx() {
     rm -rf xdbreplicationserver-$PG_VERSION_REPLICATIONSERVER-$PG_BUILDNUM_REPLICATIONSERVER-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
+
+    echo "END POST ReplicationServer OSX"    
 }
 

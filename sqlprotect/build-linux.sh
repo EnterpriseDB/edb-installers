@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_sqlprotect_linux() {
+    
+    echo "BEGIN PREP sqlprotect Linux"
 
     cd $WD/server/source
 	
@@ -30,7 +32,8 @@ _prep_sqlprotect_linux() {
     echo "Creating staging directory ($WD/sqlprotect/staging/linux)"
     mkdir -p $WD/sqlprotect/staging/linux/sqlprotect || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/sqlprotect/staging/linux || _die "Couldn't set the permissions on the staging directory"
-	
+    
+    echo "END PREP sqlprotect Linux"	
 }
 
 ################################################################################
@@ -38,6 +41,8 @@ _prep_sqlprotect_linux() {
 ################################################################################
 
 _build_sqlprotect_linux() {
+
+    echo "BEGIN BUILD sqlprotect Linux"
 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/SQLPROTECT/; make distclean ; make" || _die "Failed to build sqlprotect"
 	
@@ -49,7 +54,8 @@ _build_sqlprotect_linux() {
 	ssh $PG_SSH_LINUX "cp $PG_PATH_LINUX/server/source/postgres.linux/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_LINUX/sqlprotect/staging/linux/share/" || _die "Failed to copy sqlprotect.sql to staging directory"
 	ssh $PG_SSH_LINUX "cp $PG_PATH_LINUX/server/source/postgres.linux/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_LINUX/sqlprotect/staging/linux/doc/" || _die "Failed to copy README-sqlprotect.txt to staging directory"
     chmod -R ugo+r $WD/sqlprotect/staging/linux
-
+    
+    echo "END BUILD sqlprotect Linux"
 }
 
 
@@ -59,11 +65,15 @@ _build_sqlprotect_linux() {
 
 _postprocess_sqlprotect_linux() {
 
+    echo "BEGIN POST sqlprotect Linux"
+
     cd $WD/sqlprotect
     
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 
     cd $WD
+    
+    echo "END POST sqlprotect Linux"
 }
 

@@ -134,12 +134,17 @@ _mail_status()
         version=$3
         build_log_file=$log_location/$build_filename
         pvtbuild_log_file=$log_location/$pvtbuild_filename
+        
+ 	build_log_content=`tail -20 $build_log_file`
 
-        build_log_content=`tail -20 $build_log_file`
-        pvtbuild_log_content=`tail -20 $pvtbuild_log_file`
+	if [ -f $pvtbuild_log_file ]
+        then
+           pvtbuild_log_content=`tail -20 $pvtbuild_log_file`
+           pvtbuild_error_flag=`echo $pvtbuild_log_content | grep "FATAL ERROR"`
+
+        fi
 
         build_error_flag=`echo $build_log_content | grep "FATAL ERROR"`
-        pvtbuild_error_flag=`echo $pvtbuild_log_content | grep "FATAL ERROR"`
 
         if [ ${#build_error_flag} -gt 0 ]
         then

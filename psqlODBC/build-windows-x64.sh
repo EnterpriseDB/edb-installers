@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_psqlODBC_windows_x64() {
+    
+    echo "BEGIN PREP psqlODBC Windows-x64"
 
     # Enter the source directory and cleanup if required
     cd $WD/psqlODBC/source
@@ -56,6 +58,7 @@ _prep_psqlODBC_windows_x64() {
     scp psqlODBC.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Couldn't copy the psqlODBC archieve to windows-x64 VM (psqlODBC.zip)"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip psqlODBC.zip" || _die "Couldn't extract psqlODBC archieve on windows-x64 VM (psqlODBC.zip)"
     
+    echo "END PREP psqlODBC Windows-x64"    
 }
 
 ################################################################################
@@ -63,6 +66,8 @@ _prep_psqlODBC_windows_x64() {
 ################################################################################
 
 _build_psqlODBC_windows_x64() {
+
+    echo "BEGIN BUILD psqlODBC Windows-x64"
 
     cd $WD/psqlODBC
 
@@ -111,7 +116,8 @@ EOT
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/ssleay32.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libeay32.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libintl-8.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (libintl.dll)"
-
+    
+    echo "END BUILD psqlODBC Windows-x64"
 }
 
 
@@ -120,6 +126,8 @@ EOT
 ################################################################################
 
 _postprocess_psqlODBC_windows_x64() {
+
+    echo "BEGIN POST psqlODBC Windows-x64"
 
     cd $WD/psqlODBC
 
@@ -142,5 +150,6 @@ _postprocess_psqlODBC_windows_x64() {
 	
     cd $WD
 
+    echo "END POST psqlODBC Windows-x64"
 }
 

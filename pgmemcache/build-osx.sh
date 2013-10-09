@@ -5,6 +5,8 @@
 ################################################################################
 
 _prep_pgmemcache_osx() {
+    
+    echo "BEGIN PREP pgmemcache OSX"
 
     echo "########################################"
     echo "# pgmemcache : OSX : Build preparation #"
@@ -31,7 +33,8 @@ _prep_pgmemcache_osx() {
 
     echo "Creating staging directory ($PGMEM_STAGING)"
     mkdir -p $PGMEM_STAGING || _die "Couldn't create the staging directory"
-
+    
+    echo "END PREP pgmemcache OSX"
 }
 
 ################################################################################
@@ -39,6 +42,8 @@ _prep_pgmemcache_osx() {
 ################################################################################
 
 _build_pgmemcache_osx() {
+ 
+    echo "BEGIN BUILD pgmemcache OSX"
 
     echo "############################"
     echo "# pgmemcache : OSX : Build #"
@@ -68,7 +73,8 @@ _build_pgmemcache_osx() {
 
     cd $PGMEM_STAGING/lib
     _rewrite_so_refs  $PGMEM_STAGING lib @loader_path/..
-
+    
+    echo "END BUILD pgmemcache OSX"
 }
 
 
@@ -77,6 +83,8 @@ _build_pgmemcache_osx() {
 ################################################################################
 
 _postprocess_pgmemcache_osx() {
+
+    echo "BEGIN POST pgmemcache OSX"
 
     echo "###################################"
     echo "# pgmemcache : OSX : Post Process #"
@@ -130,6 +138,7 @@ _postprocess_pgmemcache_osx() {
     rm -rf pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
-
+    
+    echo "END POST pgmemcache OSX"
 }
 

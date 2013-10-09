@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_pgbouncer_osx() {
+    
+    echo "BEGIN PREP pgbouncer OSX"
 
     echo "**********************************"
     echo "*  Pre Process: pgBouncer (OSX)  *"
@@ -43,7 +45,7 @@ _prep_pgbouncer_osx() {
     echo "Copying README.pgbouncer to staging doc directory"
     cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/osx/pgbouncer/doc/README-pgbouncer.txt || _die "Couldn't copy README.pgbouncer to staging doc directory"
     
-
+    echo "END PREP pgboncer OSX"
 }
 
 ################################################################################
@@ -51,6 +53,8 @@ _prep_pgbouncer_osx() {
 ################################################################################
 
 _build_pgbouncer_osx() {
+
+    echo "BEGIN BUILD pgbouncer OSX"    
 
     echo "****************************"
     echo "*  Build: pgBouncer (OSX)  *"
@@ -120,7 +124,8 @@ _build_pgbouncer_osx() {
         install_name_tool -change "$DLL" "$NEW_DLL" "$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.dylib"
         install_name_tool -change "$DLL" "$NEW_DLL" "$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.1.0.0.dylib"
     done
-  
+    
+    echo "END BUILD pgbouncer OSX"
 }
 
 
@@ -129,6 +134,8 @@ _build_pgbouncer_osx() {
 ################################################################################
 
 _postprocess_pgbouncer_osx() {
+
+    echo "BEGIN POST pgbouncer OSX"
 
     echo "***********************************"
     echo "*  Post Process: pgBouncer (OSX)  *"
@@ -186,5 +193,7 @@ _postprocess_pgbouncer_osx() {
 
 
     cd $WD
+
+    echo "END POST pgbouncer OSX"
 }
 

@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_server_windows() {
+    
+    echo "BEGIN PREP Server Windows"
 
     # Enter the source directory and cleanup if required
     cd $WD/server/source
@@ -90,7 +92,8 @@ _prep_server_windows() {
 
     echo "Creating staging directory ($WD/server/staging/windows)"
     mkdir -p $WD/server/staging/windows || _die "Couldn't create the staging directory"
-
+    
+    echo "END PREP Server Windows"
 }
 
 ################################################################################
@@ -98,6 +101,8 @@ _prep_server_windows() {
 ################################################################################
 
 _build_server_windows() {
+    
+    echo "BEGIN BUILD Server Windows"
     
     # Create a build script for VC++
     cd $WD/server/scripts/windows
@@ -396,6 +401,8 @@ EOT
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi.control $WD/server/staging/windows/share/extension
      
     cd $WD
+
+    echo "BEGIN BUILD Server Windows"
 }
 
 
@@ -404,6 +411,8 @@ EOT
 ################################################################################
 
 _postprocess_server_windows() {
+
+    echo "BEGIN POST Server Windows"
 
     cd $WD/server
 
@@ -473,5 +482,7 @@ _postprocess_server_windows() {
     win32_sign "postgresql-$PG_PACKAGE_VERSION-windows.exe"
     
     cd $WD
+    
+    echo "END POST Server Windows"
 }
 

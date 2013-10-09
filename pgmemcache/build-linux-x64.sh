@@ -5,6 +5,8 @@
 ################################################################################
 
 _prep_pgmemcache_linux_x64() {
+    
+    echo "BEGIN PREP pgmemcache Linux-x64"
 
     echo "############################################"
     echo "# pgmemcache : LINUX-X64 : Build preparation #"
@@ -31,7 +33,8 @@ _prep_pgmemcache_linux_x64() {
 
     echo "Creating staging directory ($PGMEM_STAGING)"
     mkdir -p $PGMEM_STAGING || _die "Couldn't create the staging directory"
-
+    
+    echo "END PREP pgmemcache Linux-x64"
 }
 
 ################################################################################
@@ -39,6 +42,8 @@ _prep_pgmemcache_linux_x64() {
 ################################################################################
 
 _build_pgmemcache_linux_x64() {
+
+    echo "BEGIN BUILD pgmemcache Linux-x64"
 
     echo "##################################"
     echo "# pgmemcache : LINUX-X64 : Build #"
@@ -73,7 +78,8 @@ _build_pgmemcache_linux_x64() {
 
     chmod a+rx $PGMEM_STAGING/lib/* || _die "Failed to set permissions"
     chmod a+r $PGMEM_STAGING/share/* || _die "Failed to set permissions"
-
+    
+    echo "END BUILD pgmemcache Linux-x64"
 }
 
 
@@ -82,6 +88,8 @@ _build_pgmemcache_linux_x64() {
 ################################################################################
 
 _postprocess_pgmemcache_linux_x64() {
+
+    echo "BEGIN POST pgmemcache Linux-x64"
 
     echo "#########################################"
     echo "# pgmemcache : LINUX-X64 : Post Process #"
@@ -104,6 +112,7 @@ _postprocess_pgmemcache_linux_x64() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml ${PGMEM_PLATFORM} || _die "Failed to build the installer (${PGMEM_PLATFORM})"
 
     cd $WD
-
+    
+    echo "END POST pgmemcache Linux-x64"
 }
 

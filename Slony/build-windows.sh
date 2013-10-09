@@ -6,7 +6,9 @@
 ################################################################################
 
 _prep_Slony_windows() {
-      
+    
+    echo "BEGIN PREP Slony Windows"
+  
     # Enter the source directory and cleanup if required
     cd $WD/Slony/source
 
@@ -51,7 +53,7 @@ _prep_Slony_windows() {
     scp Slony.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the Slony archieve to windows VM (Slony.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip Slony.zip" || _die "Couldn't extract Slony archieve on windows VM (Slony.zip)"
 
-        
+    echo "END PREP Slony Windows"    
 }
 
 
@@ -60,6 +62,8 @@ _prep_Slony_windows() {
 ################################################################################
 
 _build_Slony_windows() {
+    
+    echo "BEGIN BUILD Slony Windows"    
 
     # build Slony    
     PG_STAGING=`echo $PG_PATH_WINDOWS | sed -e 's/://g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/:g'`
@@ -108,6 +112,8 @@ EOT
    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/slony-staging.zip $WD/Slony/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/slony-staging.zip)"
    unzip $WD/Slony/staging/windows/slony-staging.zip -d $WD/Slony/staging/windows || _die "Failed to unpack the built source tree ($WD/staging/windows/slony-staging.zip)"
    rm $WD/Slony/staging/windows/slony-staging.zip
+
+   echo "END BUILD Slony Windows"
 }
     
 
@@ -117,6 +123,8 @@ EOT
 ################################################################################
 
 _postprocess_Slony_windows() {
+    
+    echo "BEGIN POST Slony Windows"    
 
     cd $WD/Slony
 
@@ -136,5 +144,7 @@ _postprocess_Slony_windows() {
 	win32_sign "slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-windows.exe"
 	    
     cd $WD
+
+    echo "END POST Slony Windows"
 }
 

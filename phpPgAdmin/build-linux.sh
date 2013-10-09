@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_phpPgAdmin_linux() {
+    
+    echo "BEGIN PREP phpPgAdmin Linux"
 
     # Enter the source directory and cleanup if required
     cd $WD/phpPgAdmin/source
@@ -31,8 +33,8 @@ _prep_phpPgAdmin_linux() {
 
     echo "Creating staging directory ($WD/phpPgAdmin/staging/linux)"
     mkdir -p $WD/phpPgAdmin/staging/linux/phpPgAdmin || _die "Couldn't create the staging directory"
-
-
+ 
+    echo "END PREP phpPgAdmin Linux"
 }
 
 ################################################################################
@@ -40,8 +42,12 @@ _prep_phpPgAdmin_linux() {
 ################################################################################
 
 _build_phpPgAdmin_linux() {
+       
+    echo "BEGIN BUILD phpPgAdmin Linux"
 
     cd $WD
+
+    echo "END BUILD phpPgAdmin Linux"
 }
 
 
@@ -51,6 +57,7 @@ _build_phpPgAdmin_linux() {
 
 _postprocess_phpPgAdmin_linux() {
 
+    echo "BEGIN POST phpPgAdmin Linux"    
 
     cp -R $WD/phpPgAdmin/source/phpPgAdmin.linux/* $WD/phpPgAdmin/staging/linux/phpPgAdmin || _die "Failed to copy the phpPgAdmin Source into the staging directory"
 
@@ -102,6 +109,7 @@ _postprocess_phpPgAdmin_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 
     cd $WD
-
+    
+    echo "END POST phpPgAdmin Linux"
 }
 

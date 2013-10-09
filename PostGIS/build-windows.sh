@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_PostGIS_windows() {
+ 
+    echo "BEGIN PREP PostGIS Windows"    
       
     # Enter the source directory and cleanup if required
     cd $WD/PostGIS/source
@@ -122,7 +124,8 @@ _prep_PostGIS_windows() {
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/bin; cmd /c del /S /Q pgsql2shp.exe shp2pgsql.exe" || _die "Failed to clear postgis bin files"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/lib; cmd /c del /S /Q postgis-$POSTGIS_MAJOR_VERSION.dll" || _die "Failed to clear postgis lib files"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION/share/contrib; cmd /c del /S /Q spatial_ref_sys.sql postgis.sql postgis_upgrade*.sql uninstall_postgis.sql" || _die "Failed to clear postgis lib files"
-         
+
+    echo "END PREP PostGIS Windows"         
 }
 
 
@@ -131,6 +134,8 @@ _prep_PostGIS_windows() {
 ################################################################################
 
 _build_PostGIS_windows() {
+
+    echo "BEGIN BUILD PostGIS Windows"
 
     # build postgis    
     PG_STAGING=`echo $PG_PATH_WINDOWS | sed -e 's/://g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/:g'`
@@ -231,7 +236,8 @@ EOT
     mkdir -p man/man1
     cp $WD/PostGIS/staging/osx/PostGIS/man/man1/pgsql2shp.1 man/man1/ || _die "Failed to copy the man pages"
     cp $WD/PostGIS/staging/osx/PostGIS/man/man1/shp2pgsql.1 man/man1/ || _die "Failed to copy the man pages"
- 
+    
+    echo "END BUILD PostGIS Windows" 
 }
     
 
@@ -241,6 +247,8 @@ EOT
 ################################################################################
 
 _postprocess_PostGIS_windows() {
+
+    echo "BEGIN POST PostGIS Windows"
 
     #Copy postgis.html from osx build
     cp $WD/PostGIS/staging/osx/PostGIS/doc/postgis/postgis.html $WD/PostGIS/staging/windows/PostGIS/doc/postgis/ || _die "Failed to copy the postgis.html file"
@@ -261,5 +269,7 @@ _postprocess_PostGIS_windows() {
 	win32_sign "postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-windows.exe"
 	
     cd $WD
+   
+    echo "END POST PostGIS Windows"
 }
 

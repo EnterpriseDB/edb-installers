@@ -7,6 +7,8 @@
 
 _prep_ApachePhp_linux_x64() {
 
+    echo "BEGIN PREP ApachePhp Linux-x64"    
+
     # Enter the source directory and cleanup if required
     cd $WD/ApachePhp/source
 
@@ -47,7 +49,8 @@ _prep_ApachePhp_linux_x64() {
     echo "Creating staging directory ($WD/ApachePhp/staging/linux-x64)"
     mkdir -p $WD/ApachePhp/staging/linux-x64 || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/ApachePhp/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
-
+    
+    echo "END PREP ApachePhp Linux-x64"
 }
 
 
@@ -56,6 +59,8 @@ _prep_ApachePhp_linux_x64() {
 ################################################################################
 
 _build_ApachePhp_linux_x64() {
+
+    echo "BEGIN BUILD ApachePhp Linux-x64"
 
     # build apache
 
@@ -174,7 +179,8 @@ EOT
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/apache; FILES=\`file \\\`find . -maxdepth 3 -mindepth 3\\\` | grep ELF | cut -d: -f1\`; for F in \$FILES; do RPATH=\`chrpath \$F | grep RPATH | grep -v ORIGIN\`; if [[ x\${RPATH} != x ]]; then chrpath --replace \\\${ORIGIN}/../../lib \$F; chmod 755 \$F; fi done"
 
     cd $WD
-
+    
+    echo "END BUILD ApachePhp Linux-x64"
 }
 
 
@@ -184,6 +190,8 @@ EOT
 ################################################################################
 
 _postprocess_ApachePhp_linux_x64() {
+    
+    echo "BEGIN POST ApachePhp Linux-x64"
 
     PG_STAGING=$PG_PATH_LINUX_X64/ApachePhp/staging/linux-x64
 
@@ -261,5 +269,7 @@ _postprocess_ApachePhp_linux_x64() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
     cd $WD
+    
+    echo "END POST ApachePhp Linux-x64"
 }
 

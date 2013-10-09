@@ -5,6 +5,8 @@
 ################################################################################
 
 _prep_updatemonitor_osx() {
+    
+    echo "BEGIN PREP UpdateMonitor OSX"    
 
     echo "**************************************"
     echo "* Preparing - UpdateMonitor (osx) *"
@@ -42,7 +44,8 @@ _prep_updatemonitor_osx() {
     echo "Creating staging directory ($WD/UpdateMonitor/staging/osx)"
     mkdir -p $WD/UpdateMonitor/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/UpdateMonitor/staging/osx || _die "Couldn't set the permissions on the staging directory"
-
+    
+    echo "END PREP UpdateMonitor OSX"
 }
 
 ################################################################################
@@ -50,6 +53,8 @@ _prep_updatemonitor_osx() {
 ################################################################################
 
 _build_updatemonitor_osx() {
+
+    echo "BEGIN BUILD UpdatMonitor OSX"
 
     echo "*************************************"
     echo "* Building - UpdateMonitor (osx) *"
@@ -121,6 +126,8 @@ EOT
      _rewrite_so_refs $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts lib @loader_path/..
 
     cd $WD
+   
+    echo "END BUILD UpdateMonitor OSX"
 
 }
 
@@ -130,6 +137,8 @@ EOT
 ################################################################################
 
 _postprocess_updatemonitor_osx() {
+    
+    echo "BEGIN POST UpdateMonitor OSX" 
 
     echo "********************************************"
     echo "* Post-processing - UpdateMonitor (osx) *"
@@ -180,5 +189,7 @@ _postprocess_updatemonitor_osx() {
     zip -r updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.zip updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app/ || _die "Failed to zip the installer bundle"
     rm -rf updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app/ || _die "Failed to remove the unpacked installer bundle"
     
+   echo "END POST UpdateMonitor OSX"
+   
 }
 

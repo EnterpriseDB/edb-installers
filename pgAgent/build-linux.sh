@@ -6,6 +6,8 @@
 ################################################################################
 
 _prep_pgAgent_linux() {
+    
+    echo "BEGIN PREP pgAgent Linux"
 
     echo "#######################################"
     echo "# pgAgent : LINUX : Build preparation #"
@@ -34,7 +36,7 @@ _prep_pgAgent_linux() {
     echo "Creating staging directory ($WD/pgAgent/staging/linux)"
     mkdir -p $WD/pgAgent/staging/linux || _die "Couldn't create the staging directory"
 
-
+    echo "END PREP pgAgent Linux"
 }
 
 ################################################################################
@@ -42,6 +44,8 @@ _prep_pgAgent_linux() {
 ################################################################################
 
 _build_pgAgent_linux() {
+
+    echo "BEGIN BUILD pgAgent Linux"
 
     echo "#######################################"
     echo "# pgAgent : LINUX : Build             #"
@@ -82,7 +86,8 @@ _build_pgAgent_linux() {
 
     ssh $PG_SSH_LINUX "chmod a+rx $PG_STAGING/bin/*" || _die "Failed to set permissions"
     ssh $PG_SSH_LINUX "chmod a+rx $PG_STAGING/lib/*" || _die "Failed to set permissions"
-
+    
+    echo "END BUILD pgAgent Linux"
 }
 
 
@@ -91,6 +96,8 @@ _build_pgAgent_linux() {
 ################################################################################
 
 _postprocess_pgAgent_linux() {
+
+    echo "BEGIN POST pgAgent Linux"
 
     echo "#######################################"
     echo "# pgAgent : LINUX : Post Process      #"
@@ -109,6 +116,7 @@ _postprocess_pgAgent_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 
     cd $WD
-
+    
+    echo "END POST pgAgent Linux"
 }
 
