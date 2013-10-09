@@ -4583,6 +4583,12 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/osx/share</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>../resources/3rd_party_licenses.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
 	
