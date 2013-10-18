@@ -219,17 +219,23 @@ remote_location="/var/www/html/builds/Installers"
 # Different location for the manual and cron triggered builds.
 if [ "$BUILD_USER" == "" ]
 then
-        remote_location="$remote_location/$DATE/9.3"
+        remote_location="$remote_location/Latest/9.3/PG"
 else
         remote_location="$remote_location/Custom/$BUILD_USER/9.3/$BUILD_NUMBER"
 fi
 
-# Create a remote directory and upload the output.
+if [ "$BUILD_USER" == "" ]
+then
+        # Get the date of the last successful build (LSB), create the directory of that date and copy the installers from the Latest and copy them to this directory.
+        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-93.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../../\$LSB_DATE/9.3/PG; cp $remote_location/* $remote_location/../../../\$LSB_DATE/9.3/PG"
+fi
+
+# Create a remote directory if not present
 echo "Creating $remote_location on the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
 
 echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-scp output/* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
+rsync -avh output/* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
 
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
