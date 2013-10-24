@@ -257,6 +257,9 @@ _postprocess_stackbuilderplus_solaris_sparc() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-sparc || _die "Failed to build the installer for solaris-sparc"
+
+    #Copy staging directory
+    copy_binaries StackBuilderPlus solaris-sparc
    
     cd $WD
 }

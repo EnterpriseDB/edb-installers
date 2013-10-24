@@ -192,6 +192,9 @@ _postprocess_stackbuilderplus_linux_x64() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer for linux-x64"
 
+    #Copy staging directory
+    copy_binaries StackBuilderPlus linux-x64
+
     cd $WD
 }
 

@@ -152,6 +152,9 @@ _postprocess_pgbouncer_linux() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 
+    #Copy staging directory
+    copy_binaries pgbouncer linux
+
     cd $WD
 }
 

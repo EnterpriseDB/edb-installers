@@ -150,6 +150,9 @@ _postprocess_pgbouncer_linux_x64() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
+    #Copy staging directory
+    copy_binaries pgbouncer linux-x64
+
     cd $WD
 }
 

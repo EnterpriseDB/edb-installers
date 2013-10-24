@@ -196,3 +196,18 @@ win32_sign()
     fi
 }
 
+copy_binaries()
+{
+    COMPONENT=$1
+    PLATFORM=$2
+
+    cd $WD/$COMPONENT/staging
+    tar -czf $PLATFORM.tar.gz $PLATFORM
+
+    mkdir -p $WD/output/StagingBinaries/$COMPONENT
+    rm -f $WD/output/StagingBinaries/$COMPONENT/$PLATFORM.tar.gz
+    cp $PLATFORM.tar.gz $WD/output/StagingBinaries/$COMPONENT
+    rm -f $WD/$COMPONENT/staging/$PLATFORM.tar.gz
+
+    cd $WD
+}

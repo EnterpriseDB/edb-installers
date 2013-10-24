@@ -197,6 +197,9 @@ _postprocess_pgbouncer_solaris_sparc() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml solaris-sparc || _die "Failed to build the installer"
 
+    #Copy staging directory
+    copy_binaries pgbouncer solaris-sparc
+
     cd $WD
 }
 

@@ -153,8 +153,11 @@ _postprocess_pgbouncer_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
-	# Sign the installer
-	win32_sign "pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-windows.exe"
+    # Sign the installer
+    win32_sign "pgbouncer-$PG_MAJOR_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-windows.exe"
+
+    #Copy staging directory
+    copy_binaries pgbouncer windows
 	
     cd $WD
 }
