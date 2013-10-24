@@ -105,6 +105,20 @@ _build_stackbuilderplus_linux_x64() {
    ssh $PG_SSH_LINUX_X64 "chmod a+r $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/lib/*" || _die "Failed to set the permissions on the lib directory"
    ssh $PG_SSH_LINUX_X64 "chmod a+r $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64/UpdateManager/lib/*" || _die "Failed to set the permissions on the lib directory"
 
+   # Generate debug symbols
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux-x64/StackBuilderPlus ];
+    then
+        echo "Removing existing $WD/output/symbols/linux-x64/StackBuilderPlus directory"
+        rm -rf $WD/output/symbols/linux-x64/StackBuilderPlus || _die "Couldn't remove the existing $WD/output/symbols/linux-x64/StackBuilderPlus directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
+    mv $WD/StackBuilderPlus/staging/linux-x64/symbols $WD/output/symbols/linux-x64/StackBuilderPlus || _die "Failed to move $WD/StackBuilderPlus/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/StackBuilderPlus directory"
+
    cd $WD
 }
 
@@ -163,20 +177,6 @@ _postprocess_stackbuilderplus_linux_x64() {
     cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/ || _die "Failed to copy a menu pick directory"
     cp resources/xdg/edb-stackbuilderplus.desktop staging/linux-x64/scripts/xdg/ || _die "Failed to copy a menu pick desktop"
     cp resources/xdg/edb-sbp-update-monitor.desktop staging/linux-x64/UpdateManager/scripts/xdg/ || _die "Failed to copy the startup pick desktop"
-
-    # Generate debug symbols
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_PATH_LINUX_X64/StackBuilderPlus/staging/linux-x64" || _die "Failed to execute create_debug_symbols.sh"
-
-    # Remove existing symbols directory in output directory
-    if [ -e $WD/output/symbols/linux-x64/StackBuilderPlus ];
-    then
-        echo "Removing existing $WD/output/symbols/linux-x64/StackBuilderPlus directory"
-        rm -rf $WD/output/symbols/linux-x64/StackBuilderPlus || _die "Couldn't remove the existing $WD/output/symbols/linux-x64/StackBuilderPlus directory."
-    fi
-
-    # Move symbols directory in output
-    mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
-    mv $WD/StackBuilderPlus/staging/linux-x64/symbols $WD/output/symbols/linux-x64/StackBuilderPlus || _die "Failed to move $WD/StackBuilderPlus/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/StackBuilderPlus directory"
 
     # Set 644 for all files and folders
     find staging/linux-x64/ -type f | xargs -I{} chmod 644 {}
