@@ -127,6 +127,9 @@ EOT
     cp -R $WD/server/staging/solaris-sparc/lib/libz.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
     cp -R $WD/server/staging/solaris-sparc/lib/libmemcached*.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
     cp -R $WD/server/staging/solaris-sparc/lib/libgssapi_krb*.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the dependency library"
+    cp -R $WD/server/staging/solaris-sparc/lib/libldap*.so* $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the libldap library"
+    cp -R $WD/server/staging/solaris-sparc/lib/liblber*.so*  $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the liblber library"
+    cp -R $WD/server/staging/solaris-sparc/lib/libsasl2*.so*  $WD/pgbouncer/staging/solaris-sparc/instscripts/ || _die "Failed to copy the libsasl2 library"
 
     # Remove existing symbols directory in output directory
     if [ -e $WD/output/symbols/solaris-sparc/pgbouncer ];
