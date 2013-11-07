@@ -191,7 +191,7 @@ EOT
     cp -pR /usr/local/lib/libssl* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libssl"
     cp -pR /usr/local/lib/libcrypto* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libcrypto"
     cp -pR /usr/local/lib/libjpeg* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libjpeg"
-    cp -pR /usr/local/lib/libpng15* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libpng15"
+    cp -pR /usr/local/lib/libpng16* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libpng15"
     cp -pR /usr/local/lib/libiconv* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libiconv"
     cp -pR /usr/local/lib/libexpat* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libexpat"
 

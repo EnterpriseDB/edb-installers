@@ -77,6 +77,17 @@ _prep_ApachePhp() {
 
     echo "Unpacking php source..."
     extract_file ../../tarballs/php-$PG_VERSION_PHP || exit 1
+
+    # The following patch is required to build php against libxml2 version >=2.9.x. If you don't apply this patch following error is seen
+    # ext/dom/node.c:1898: error: dereferencing pointer to incomplete type
+
+    xml2version=`/usr/local/bin/xml2-config --version | cut -d"." -f1-2`
+    if [ "$xml2version" = "2.9" ]
+    then
+      cd php-$PG_VERSION_PHP
+      patch -p0 < ../../../tarballs/libxml29_compat.patch
+    fi
+
     
     # Per-platform prep
     cd $WD
