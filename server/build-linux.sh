@@ -242,8 +242,7 @@ PLL=""
 if [ -f /lib/libreadline.so.6 ];
 then
     PLL=/lib/libreadline.so.6
-fi
-if [ -f /lib/libreadline.so.5 ];
+elif [ -f /lib/libreadline.so.5 ];
 then
     PLL=\$PLL:/lib/libreadline.so.5
 fi
