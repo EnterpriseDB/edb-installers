@@ -247,8 +247,8 @@ EOT
     echo "Copying scripts source tree to Windows build VM"
     zip -r scripts.zip vc-build.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build.bat, createuser, getlocales, validateuser)"
 
-    scp scripts.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the scripts source tree to the windows build host (scripts.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip scripts.zip" || _die "Failed to unpack the scripts source tree on the windows build host (scripts.zip)"    
+    scp -v scripts.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the scripts source tree to the windows build host (scripts.zip)"
+    ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip scripts.zip" || _die "Failed to unpack the scripts source tree on the windows build host (scripts.zip)"    
     
     # Build the code and install into a temporary directory
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\createuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj UPGRADE " || _die "Failed to build createuser on the windows build host"
@@ -269,8 +269,8 @@ EOT
     echo "Copying source tree to Windows build VM"
     rm postgres.windows/contrib/pldebugger/Makefile # Remove the unix makefile so that the build scripts don't try to parse it - we have our own.
     zip -r postgres.zip postgres.windows || _die "Failed to pack the source tree (postgres.windows)"
-    scp postgres.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (postgres.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip postgres.zip" || _die "Failed to unpack the source tree on the windows build host (postgres.zip)"
+    scp -v postgres.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (postgres.zip)"
+    ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip postgres.zip" || _die "Failed to unpack the source tree on the windows build host (postgres.zip)"
   
     PG_CYGWIN_PERL_WINDOWS=`echo $PG_PERL_WINDOWS | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'` 
     PG_CYGWIN_PYTHON_WINDOWS=`echo $PG_PYTHON_WINDOWS | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'` 
@@ -297,8 +297,8 @@ EOT
     #_replace "iconv_a.lib" " " pgAdmin3.vcproj || _die "Failed to replace the include directory"
     #cd ../..
     zip -r pgadmin.zip pgadmin.windows || _die "Failed to pack the source tree (pgadmin.windows)"
-    scp pgadmin.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (pgadmin.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip pgadmin.zip" || _die "Failed to unpack the source tree on the windows build host (pgadmin.zip)"
+    scp -v pgadmin.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (pgadmin.zip)"
+    ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip pgadmin.zip" || _die "Failed to unpack the source tree on the windows build host (pgadmin.zip)"
   
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgadmin3.sln UPGRADE" || _die "Failed to build pgAdmin on the build host"
 
@@ -347,8 +347,8 @@ EOT
     cd $WD/server/source
     echo "Copying StackBuilder source tree to Windows build VM"
     zip -r stackbuilder.zip stackbuilder.windows || _die "Failed to pack the source tree (stackbuilder.windows)"
-    scp stackbuilder.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (stackbuilder.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip stackbuilder.zip" || _die "Failed to unpack the source tree on the windows build host (stackbuilder.zip)"
+    scp -v stackbuilder.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (stackbuilder.zip)"
+    ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip stackbuilder.zip" || _die "Failed to unpack the source tree on the windows build host (stackbuilder.zip)"
   
     # Build the code
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c cmake -D MS_VS_10=1 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS\\\\output\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure pgAdmin on the build host"
@@ -382,8 +382,8 @@ EOT
 
     # Zip up the installed code, copy it back here, and unpack.
     echo "Copying built tree to Unix host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\output; cmd /c zip -r ..\\\\output.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output)"
-    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output.zip $WD/server/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output.zip)"
+    ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\output; cmd /c zip -r ..\\\\output.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output)"
+    scp -v $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output.zip $WD/server/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output.zip)"
     unzip $WD/server/staging/windows/output.zip -d $WD/server/staging/windows/ || _die "Failed to unpack the built source tree ($WD/staging/windows/output.zip)"
     rm $WD/server/staging/windows/output.zip
 
