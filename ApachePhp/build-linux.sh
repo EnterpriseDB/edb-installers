@@ -120,6 +120,7 @@ _build_ApachePhp_linux() {
     # Copy in the dependency libraries (apache/php)
     ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/lib/libpq.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libpq)"
     ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/lib/liblber*.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (liblber*)"
+    ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/lib/libsasl*.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libsasl*)"
     ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/lib/libldap*.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libldap*)"
     ssh $PG_SSH_LINUX "cp -pR /usr/lib/libpng12.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libpng12)"
     ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libjpeg.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (jpeg)"

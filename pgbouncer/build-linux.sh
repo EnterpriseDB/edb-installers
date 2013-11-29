@@ -75,6 +75,7 @@ _build_pgbouncer_linux() {
     cp -pR $WD/server/staging/linux/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
     cp -pR $WD/server/staging/linux/lib/libssl.so* . || _die "Failed to copy libssl.so"
     cp -pR $WD/server/staging/linux/lib/libedit.so* . || _die "Failed to copy libedit.so"
+    cp -pR $WD/server/staging/linux/lib/libsasl*.so* . || _die "Failed to copy libsasl2.so.3"
     cp -pR $WD/server/staging/linux/lib/libldap*.so* . || _die "Failed to copy libldap.so"
     cp -pR $WD/server/staging/linux/lib/liblber*.so* . || _die "Failed to copy liblber.so"
     cp -pR $WD/server/staging/linux/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
