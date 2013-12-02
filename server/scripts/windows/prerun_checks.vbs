@@ -1,4 +1,4 @@
-' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
+' Copyright (c) 2012-2013, EnterpriseDB Corporation.  All rights reserved
 ' VBscript test script - check that the scripting host appears functional
 
 Set WshShell = WScript.CreateObject("WScript.Shell")
