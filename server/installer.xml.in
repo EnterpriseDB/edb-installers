@@ -3877,6 +3877,28 @@ REM The script sets environment variables helpful for PostgreSQL
           <showMessageOnError>0</showMessageOnError>
         </deleteFile>
 
+        <!-- Some 3rd party libraries were updated after 9.3.1/9.2.5 release. Adding them to the uninstaller so that the next update removes them.-->
+        <actionGroup>
+          <actionList>
+            <addFilesToUninstaller files="${installdir}/pgAdmin3/lib/libfontconfig.so.1.5.0"/>
+            <addFilesToUninstaller files="${installdir}/pgAdmin3/lib/libfreetype.so.6.8.1"/>
+            <addFilesToUninstaller files="${installdir}/pgAdmin3/lib/libtiff.so.5.0.6"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="linux"/>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <addFilesToUninstaller files="${installdir}/lib/libedit.0.0.37.dylib"/>
+            <addFilesToUninstaller files="${installdir}/lib/libz.1.2.7.dylib"/>
+            <addFilesToUninstaller files="${installdir}/lib/libpng15*"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="osx"/>
+          </ruleList>
+        </actionGroup>
+
     </postInstallationActionList>
     <installationAbortedActionList>
     <deleteFile path="${system_temp_directory}/postgresql_installer_${random_number}" abortOnError="0" showMessageOnError="0">
