@@ -4840,7 +4840,7 @@ REM The script sets environment variables helpful for PostgreSQL
            <description>${msg(acl.check.description)}</description>
            <explanation/>
            <value/>
-           <default>1</default>
+           <default>0</default>
            <ask>yes</ask>
            <cliOptionName>enable_acledit</cliOptionName>
            <cliOptionShow>1</cliOptionShow>
