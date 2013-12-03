@@ -69,7 +69,7 @@ _rewrite_so_refs() {
 
                                     for DLL in $ID1; do
                                             echo "    - rewriting ID: $DLL"
-                                            NEW_DLL=`echo $DLL | sed -e "s^/opt/local/lib/^^g"`
+                                            NEW_DLL=`echo $DLL | sed -e "s^/opt/local/20.*lib/^^g"`
                                             echo "                to: $NEW_DLL"
 
                                             install_name_tool -id "$NEW_DLL" "$FILE_PATH/$FILE"
@@ -102,7 +102,7 @@ _rewrite_so_refs() {
                             for DLL in $DLIST1; do
                                     echo "    - rewriting ref: $DLL"
 
-                                    NEW_DLL=`echo $DLL | sed -e "s^/opt/local/^^g"`
+                                    NEW_DLL=`echo $DLL | sed -e "s^/opt/local/20.*lib/^lib/^g"`
                                     echo "                 to: $LOADER_PATH/$NEW_DLL"
 
                                     install_name_tool -change "$DLL" "$LOADER_PATH/$NEW_DLL" "$FILE_PATH/$FILE" 
