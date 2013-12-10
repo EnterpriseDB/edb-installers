@@ -404,7 +404,7 @@ _postprocess_server_solaris_x64() {
 
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/solaris-x64/doc/" || _die "Failed to install the welcome document"
-    cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/solaris-x64/doc/" || _die "Failed to install the welcome logo"
+    cp "$WD/server/resources/enterprisedb.png" "$WD/server/staging/solaris-x64/doc/" || _die "Failed to install the welcome logo"
     #Creating a archive of the binaries
     mkdir -p $WD/server/staging/solaris-x64/pgsql || _die "Failed to create the directory for binaries "
     cd $WD/server/staging/solaris-x64
