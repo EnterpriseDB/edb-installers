@@ -444,7 +444,7 @@ _postprocess_server_windows_x64() {
 
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/windows-x64/doc/" || _die "Failed to install the welcome document"
-    cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/windows-x64/doc/" || _die "Failed to install the welcome logo"
+    cp "$WD/server/resources/enterprisedb.png" "$WD/server/staging/windows-x64/doc/" || _die "Failed to install the welcome logo"
 
 
     cp "$WD/scripts/runAsAdmin.vbs" "$WD/server/staging/windows-x64" || _die "Failed to copy the runAsRoot script"
