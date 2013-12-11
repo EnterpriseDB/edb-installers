@@ -394,7 +394,7 @@ _postprocess_server_solaris_sparc() {
 
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/solaris-sparc/doc/" || _die "Failed to install the welcome document"
-    cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/solaris-sparc/doc/" || _die "Failed to install the welcome logo"
+    cp "$WD/server/resources/enterprisedb.png" "$WD/server/staging/solaris-sparc/doc/" || _die "Failed to install the welcome logo"
 
     #Creating a archive of the binaries
 #    mkdir -p $WD/server/staging/solaris-sparc/pgsql || _die "Failed to create the directory for binaries "
