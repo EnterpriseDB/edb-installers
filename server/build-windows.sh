@@ -436,7 +436,7 @@ _postprocess_server_windows() {
 
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/windows/doc/" || _die "Failed to install the welcome document"
-    cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/windows/doc/" || _die "Failed to install the welcome logo"
+    cp "$WD/server/resources/enterprisedb.png" "$WD/server/staging/windows/doc/" || _die "Failed to install the welcome logo"
     cp "$WD/scripts/runAsAdmin.vbs" "$WD/server/staging/windows" || _die "Failed to copy the runAsRoot script"
 
     #Creating a archive of the binaries

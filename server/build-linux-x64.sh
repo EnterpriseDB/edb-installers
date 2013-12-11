@@ -322,7 +322,7 @@ _postprocess_server_linux_x64() {
 
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/linux-x64/doc/" || _die "Failed to install the welcome document"
-    cp "$WD/server/resources/enterprisedb.gif" "$WD/server/staging/linux-x64/doc/" || _die "Failed to install the welcome logo"
+    cp "$WD/server/resources/enterprisedb.png" "$WD/server/staging/linux-x64/doc/" || _die "Failed to install the welcome logo"
     cp "$WD/scripts/runAsRoot.sh" "$WD/server/staging/linux-x64" || _die "Failed to copy the runAsRoot script"
 
     #Creating a archive of the binaries
