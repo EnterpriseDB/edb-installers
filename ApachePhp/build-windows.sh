@@ -136,11 +136,11 @@ REM Building apache
 cd $PG_PATH_WINDOWS
 SET STAGING_DIR=%CD%
 cd $PG_PATH_WINDOWS\apache.windows
-perl srclib\apr\build\cvtdsp.pl -2005
+perl srclib\apr\build\lineends.pl
 perl srclib\apr\build\fixwin32mak.pl
 
 REM Compiling Apache with Standard configuration
-nmake -f Makefile.win PORT=8080 NO_EXTERNAL_DEPS=1 _apacher || exit 1
+nmake -f Makefile.win PORT=8080 NO_EXTERNAL_DEPS=1 _buildr || exit 1
 nmake -f Makefile.win PORT=8080 INSTDIR="%STAGING_DIR%\apache.staging" NO_EXTERNAL_DEPS=1 installr || exit 1
 
 EOT

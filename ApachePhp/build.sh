@@ -59,6 +59,8 @@ _prep_ApachePhp() {
         extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-win32-src || exit 1
         extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB || exit 1
         extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL || exit 1
+        extract_file ../../tarballs/pcre-830-win32-binaries || exit 1
+	mv pcre-830-win32-binaries httpd-$PG_VERSION_APACHE/srclib/pcre || exit 1
         mv httpd-$PG_VERSION_APACHE apache.windows || _die "Couldn't move httpd-$PG_VERSION_APACHE as apache.windows"
 
     fi
@@ -66,6 +68,7 @@ _prep_ApachePhp() {
     if [[ $PG_ARCH_LINUX = 1 || $PG_ARCH_LINUX_X64 = 1 || $PG_ARCH_OSX = 1 ]];
     then
         extract_file ../../tarballs/httpd-$PG_VERSION_APACHE || exit 1
+        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-deps || exit 1
     fi
 
     # php
@@ -78,16 +81,6 @@ _prep_ApachePhp() {
     echo "Unpacking php source..."
     extract_file ../../tarballs/php-$PG_VERSION_PHP || exit 1
     
-    # The following patch is required to build php against libxml2 version >=2.9.x. If you don't apply this patch following error is seen
-    # ext/dom/node.c:1898: error: dereferencing pointer to incomplete type
-
-    xml2version=`/usr/local/bin/xml2-config --version | cut -d"." -f1-2`
-    if [ "$xml2version" = "2.9" ]
-    then
-      cd php-$PG_VERSION_PHP
-      patch -p0 < ../../../tarballs/libxml29_compat.patch
-    fi
-
     # Per-platform prep
     cd $WD
     
