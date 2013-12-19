@@ -146,6 +146,7 @@ EOT
     _replace "Listen 80" "Listen @@PORT@@" "$WD/ApachePhp/staging/osx/apache/conf/httpd.conf"
     _replace "htdocs" "www" "$WD/ApachePhp/staging/osx/apache/conf/httpd.conf"
     _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "$WD/ApachePhp/staging/osx/apache/conf/httpd.conf"
+    _replace "#LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "$WD/ApachePhp/staging/osx/apache/conf/httpd.conf"
 
     #Apply patch to apachectl before continuing
     echo "Applying apachectl patch to comment ulimit check"
@@ -237,6 +238,7 @@ EOT
     cp -pR /usr/local/lib/libexpat*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
     cp -pR /usr/local/lib/libssl*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
     cp -pR /usr/local/lib/libiconv*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -pR /usr/local/lib/libpcre.*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
 
     chmod u+w $PG_STAGING/apache/lib/*
 
@@ -253,7 +255,7 @@ EOT
         install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" $file
         install_name_tool -change "libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libpng15.15.dylib" "@loader_path/../../php/lib/libpng15.15.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libpng16.16.dylib" "@loader_path/../../php/lib/libpng16.16.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libjpeg.8.dylib" "@loader_path/../../php/lib/libjpeg.8.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
@@ -267,6 +269,7 @@ EOT
         install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libpcre.1.dylib" "@loader_path/../../apache/lib/libpcre.1.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" $file
     done
     files=`ls $WD/ApachePhp/staging/osx/php/bin/*`
@@ -274,7 +277,7 @@ EOT
     do
         install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libpng15.15.dylib" "@loader_path/../../php/lib/libpng15.15.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libpng16.16.dylib" "@loader_path/../../php/lib/libpng16.16.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libjpeg.8.dylib" "@loader_path/../../php/lib/libjpeg.8.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
         install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file

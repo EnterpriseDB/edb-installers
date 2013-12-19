@@ -80,6 +80,7 @@ _build_ApachePhp_linux() {
     _replace "Listen 80" "Listen @@PORT@@" "httpd.conf"
     _replace "htdocs" "www" "httpd.conf"
     _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "httpd.conf"
+    _replace "#LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "httpd.conf"
 	# Comment out the unique_id_module, do not load it
 	sed -e "s,^LoadModule unique_id_module modules/mod_unique_id.so,#LoadModule unique_id_module modules/mod_unique_id.so,g" httpd.conf > "/tmp/httpd.conf.tmp"
 	mv /tmp/httpd.conf.tmp httpd.conf
@@ -102,6 +103,7 @@ _build_ApachePhp_linux() {
     ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libk5crypto.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libk5crypto)"
     ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libxml2.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libxml2)"
     ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libiconv.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libiconv)"
+    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libpcre.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libpcre)"
 
     echo "Configuring the php source tree"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux/; export LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:/usr/local/lib; sh ./configure --prefix=$PG_STAGING/php --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --with-pgsql=$PG_PGHOME_LINUX --with-openssl=/usr/local --with-pdo-pgsql=$PG_PGHOME_LINUX --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-png-dir=/usr --with-jpeg-dir=/usr/local --with-freetype-dir=/usr/local --with-iconv=/usr/local --enable-gd-native-ttf --enable-mbstring=all --with-zlib=/usr/local" || _die "Failed to configure php"
