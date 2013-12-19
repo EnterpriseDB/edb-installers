@@ -1729,7 +1729,7 @@ include conf\addons\*.conf
           <platforms>windows</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>resources/edblogo.gif</origin>
+              <origin>resources/edblogo.png</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -1761,7 +1761,7 @@ include conf\addons\*.conf
           <platforms>linux</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>resources/edblogo.gif</origin>
+              <origin>resources/edblogo.png</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -1793,7 +1793,7 @@ include conf\addons\*.conf
           <platforms>linux-x64</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>resources/edblogo.gif</origin>
+              <origin>resources/edblogo.png</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
@@ -1825,7 +1825,7 @@ include conf\addons\*.conf
           <platforms>osx</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>resources/edblogo.gif</origin>
+              <origin>resources/edblogo.png</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
