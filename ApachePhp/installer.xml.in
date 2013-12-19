@@ -1030,7 +1030,7 @@ include conf/addons/*.conf
     <addTextToFile>
        <file>${installdir}/apache/conf/httpd.conf</file>
        <text>
-LoadModule phpPHP_MAJOR_VERSION_module "${installdir}\php\phpPHP_MAJOR_VERSIONapache2_2.dll"
+LoadModule phpPHP_MAJOR_VERSION_module "${installdir}\php\phpPHP_MAJOR_VERSIONapache2_4.dll"
 AddHandler phpPHP_MAJOR_VERSION-script php
 DirectoryIndex index.html index.php
 AddType text/html         php
