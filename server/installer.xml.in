@@ -157,6 +157,15 @@ EOF
                </compareText>
             </ruleList>
       </setInstallerVariable>
+      <setInstallerVariable name="project.parameter(enable_aclcheck).ask" value="0">
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+      </setInstallerVariable>
     </preBuildActionList>
     <preShowHelpActionList>
        <!-- Set the default installation directory -->
