@@ -276,7 +276,7 @@ EOT
     _replace "Listen 8080" "Listen @@PORT@@" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
     _replace "htdocs" "www" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
     _replace "#ServerName www.example.com:8080" "ServerName localhost:@@PORT@@" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
-
+    _replace "#LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
 
     mkdir $WD/ApachePhp/staging/windows/php || _die "Failed to create directory for php"
     echo "Copying php built tree to Unix host"

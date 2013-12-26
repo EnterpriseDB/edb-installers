@@ -81,6 +81,7 @@ _build_ApachePhp_linux_x64() {
     _replace "htdocs" "www" "httpd.conf"
     _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "httpd.conf"
     _replace "#LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "httpd.conf"
+    _replace "#LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "httpd.conf"
 	# Comment out the unique_id_module, do not load it
 	sed -e "s,^LoadModule unique_id_module modules/mod_unique_id.so,#LoadModule unique_id_module modules/mod_unique_id.so,g" httpd.conf > "/tmp/httpd.conf.tmp"
 	mv /tmp/httpd.conf.tmp httpd.conf

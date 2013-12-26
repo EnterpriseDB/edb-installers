@@ -147,6 +147,7 @@ EOT
     _replace "htdocs" "www" "$WD/ApachePhp/staging/osx/apache/conf/httpd.conf"
     _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "$WD/ApachePhp/staging/osx/apache/conf/httpd.conf"
     _replace "#LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "$WD/ApachePhp/staging/osx/apache/conf/httpd.conf"
+    _replace "#LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "$WD/ApachePhp/staging/osx/apache/conf/httpd.conf"
 
     #Apply patch to apachectl before continuing
     echo "Applying apachectl patch to comment ulimit check"
