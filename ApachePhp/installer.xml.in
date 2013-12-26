@@ -1725,6 +1725,11 @@ include conf\addons\*.conf
   	    <fileExists path="${installdir}/apache/lib" />
   	</ruleList>
       </deleteFile>
+      <deleteFile path="${installdir}/apache/README-win32.txt" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/README-win32.txt" />
+  	</ruleList>
+      </deleteFile>
       <deleteFile path="${installdir}/php" >
   	<ruleList>
   	    <fileExists path="${installdir}/php" />
