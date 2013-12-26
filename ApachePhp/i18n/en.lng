@@ -42,6 +42,8 @@ apachephp.installdir.empty=The installation directory cannot be empty
 
 apachephp.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
+apachephp.installdir.error.unix=The installation directory cannot not be '/' or '/usr'.
+
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 
 Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard

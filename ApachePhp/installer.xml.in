@@ -853,6 +853,21 @@ EOF
              </ruleList>
          </throwError>
          <throwError>
+              <text>${msg(apachephp.installdir.error.unix)}</text>
+	      <ruleList>
+		<regExMatch>
+		    <text>${installdir}</text>
+		    <logic>matches</logic>
+		    <pattern>^/+(usr)?$</pattern>
+		</regExMatch>
+		<compareText>
+		    <text>${platform_name}</text>
+		    <logic>does_not_equal</logic>
+		    <value>windows</value>
+		</compareText>
+	      </ruleList>
+         </throwError>
+         <throwError>
               <text>${msg(apachephp.installdir.error)}</text>
 	      <ruleList>
 		<regExMatch>
@@ -2015,6 +2030,28 @@ include conf\addons\*.conf
             </compareText>
           </ruleList>
         </actionGroup>
+        <actionGroup>
+          <actionList>
+	    <setInstallerVariable name="installdir" value="${default_installdir}" />
+            <showWarning>
+              <text>${msg(apachephp.installdir.error.unix)}</text>
+            </showWarning>
+            <setInstallerVariable name="next_page" value="installdir"/>
+          </actionList>
+          <ruleList>
+            <regExMatch>
+              <text>${installdir}</text>
+              <logic>matches</logic>
+              <pattern>^/+(usr)?$</pattern>
+            </regExMatch>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
+
         <!-- Validating whether installdir is valid (Windows) -->
         <actionGroup>
           <actionList>
