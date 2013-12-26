@@ -1679,6 +1679,42 @@ include conf\addons\*.conf
 
   </preUninstallationActionList>
     <postUninstallationActionList>
+      <!-- Upgradation of Apache 2.4 on 2.2. new Uninstaller will not remove the old files installed with 2.2. Remove them explicitly.-->
+      <deleteFile path="${installdir}/apache/manual" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/manual" />
+  	</ruleList>
+      </deleteFile>
+      <deleteFile path="${installdir}/apache/icons" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/icons" />
+  	</ruleList>
+      </deleteFile>
+      <deleteFile path="${installdir}/apache/www" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/www" />
+  	</ruleList>
+      </deleteFile>
+      <deleteFile path="${installdir}/apache/include" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/include" />
+  	</ruleList>
+      </deleteFile>
+      <deleteFile path="${installdir}/apache/modules" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/modules" />
+  	</ruleList>
+      </deleteFile>
+      <deleteFile path="${installdir}/apache/lib" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/lib" />
+  	</ruleList>
+      </deleteFile>
+      <deleteFile path="${installdir}/php" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/php" />
+  	</ruleList>
+      </deleteFile>
       <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
         <ruleList>
            <compareText logic="contains" text="${platform_name}" value="linux"/>
