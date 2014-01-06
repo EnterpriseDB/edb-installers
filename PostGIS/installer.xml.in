@@ -771,61 +771,6 @@ EOF
                     </ruleList>
                 </actionGroup>
 
-                <substitute>
-                    <files>
-                           ${sharedir}/contrib/postgis/postgis.sql
-                           ${sharedir}/contrib/postgis/legacy.sql
-                           ${sharedir}/contrib/postgis/legacy_minimal.sql
-                           ${sharedir}/contrib/postgis/postgis_upgrade_20_minor.sql
-                           ${sharedir}/contrib/postgis/rtpostgis.sql
-                           ${sharedir}/contrib/postgis/rtpostgis_upgrade_20_minor.sql
-                    </files>
-                    <substitutionList>
-                        <substitution>
-                            <pattern>\$libdir</pattern>
-                            <value>${libdir}</value>
-                        </substitution>
-                    </substitutionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </substitute>
-
-                <actionGroup>
-                    <actionList>
-                        <setInstallerVariableFromRegEx>
-                            <name>installdir_str</name>
-                            <text>${installdir}</text>
-                            <pattern>\\</pattern>
-                            <substitution>/</substitution>
-                        </setInstallerVariableFromRegEx>
-
-                        <substitute>
-                           <files>
-                                  ${installdir}\share\contrib\postgis\postgis.sql
-                                  ${installdir}\share\contrib\postgis\legacy.sql
-                                  ${installdir}\share\contrib\postgis\legacy_minimal.sql
-                                  ${installdir}\share\contrib\postgis\postgis_upgrade_20_minor.sql
-                                  ${installdir}\share\contrib\postgis\rtpostgis.sql
-                                  ${installdir}\share\contrib\postgis\rtpostgis_upgrade_20_minor.sql
-                           </files>
-                           <substitutionList>
-                              <substitution>
-                                 <pattern>\$libdir</pattern>
-                                 <value>${installdir_str}/bin</value>
-                              </substitution>
-                          </substitutionList>
-                        </substitute>
-                    </actionList>
-                    <ruleList>
-                        <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </actionGroup>
-
                 <!-- Create Template Spatial Database -->
                 <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
                 <setEnvironmentVariable name="PGUSER" value="${pguser}"/>
@@ -1052,12 +997,13 @@ EOF
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${parentlibdir}</destination>
+                    <destination>${parentlibdir}/lib/postgresql</destination>
                     <name>programfileslibosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/osx/PostGIS/lib</origin>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/osx/PostGIS/lib/*</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1070,6 +1016,29 @@ EOF
                         <distributionDirectory>
                             <origin>staging/osx/PostGIS/share/contrib</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}/extension</destination>
+                    <name>programfilesshareosxextn1</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/osx/PostGIS/share/extension/postgis*.control</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}/extension</destination>
+                    <name>programfilesshareosxextn2</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/osx/PostGIS/share/extension/postgis--PG_VERSION_POSTGIS.sql</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1133,12 +1102,13 @@ EOF
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${parentlibdir}</destination>
+                    <destination>${parentlibdir}/lib/postgresql</destination>
                     <name>programfilesliblinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux/PostGIS/lib</origin>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/linux/PostGIS/lib/*</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1151,6 +1121,29 @@ EOF
                         <distributionDirectory>
                             <origin>staging/linux/PostGIS/share/contrib</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}/extension</destination>
+                    <name>programfilessharelinuxextn1</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/linux/PostGIS/share/extension/postgis*.control</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}/extension</destination>
+                    <name>programfilessharelinuxextn2</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux/PostGIS/share/extension/postgis--PG_VERSION_POSTGIS.sql</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1214,12 +1207,13 @@ EOF
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${parentlibdir}</destination>
+                    <destination>${parentlibdir}/lib/postgresql</destination>
                     <name>programfilesliblinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/PostGIS/lib</origin>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/linux-x64/PostGIS/lib/*</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1232,6 +1226,29 @@ EOF
                         <distributionDirectory>
                             <origin>staging/linux-x64/PostGIS/share/contrib</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}/extension</destination>
+                    <name>programfilessharelinux64extn1</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/linux-x64/PostGIS/share/extension/postgis*.control</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}/extension</destination>
+                    <name>programfilessharelinux64extn2</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/linux-x64/PostGIS/share/extension/postgis--PG_VERSION_POSTGIS.sql</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1295,11 +1312,12 @@ EOF
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${parentlibdir}</destination>
+                    <destination>${parentlibdir}/lib/postgresql</destination>
                     <name>programfilesliblinux-ppc64</name>
                     <platforms>linux-ppc</platforms>
                     <distributionFileList>
                         <distributionDirectory>
+                            <allowWildcards>1</allowWildcards>
                             <origin>staging/linux-ppc64/PostGIS/lib</origin>
                         </distributionDirectory>
                     </distributionFileList>

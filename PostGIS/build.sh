@@ -60,6 +60,10 @@ _prep_PostGIS() {
     echo "Unpacking postgis source..."
     extract_file  ../../tarballs/postgis-$PG_VERSION_POSTGIS || exit 1
 
+    echo "Applying patches..." 
+    cd postgis-$PG_VERSION_POSTGIS
+    patch -p1 < ~/tarballs/postgis-211-liblwgeom.patch
+
     cd $WD/PostGIS/source  
 
     echo "Extracting the postgresql jar file..."
