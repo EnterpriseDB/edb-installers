@@ -189,6 +189,21 @@ EOF
                 </compareText>
             </ruleList>
         </actionGroup>
+        <!-- #32210. libxml2 was updated from 2.8.x to 2.9.x after PG GA was released. PostGIS built with the new libxml2 does not work against it. -->
+        <actionGroup>
+            <actionList>
+                <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGMajorVersion}" key="Version" variable="PG_INSTALLED_VERSION" />
+                <throwError text="${msg(pg93GA.error)}">
+                  <ruleList>
+                    <compareText logic="equals" text="${PG_INSTALLED_VERSION}" value="9.3.0.1"/>
+                  </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <fileExists path="/etc/postgres-reg.ini" />
+            </ruleList>
+        </actionGroup>
     </initializationActionList>
     <!-- Preinstallation actions -->
     <preInstallationActionList>
