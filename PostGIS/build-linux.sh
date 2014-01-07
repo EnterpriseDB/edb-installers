@@ -117,6 +117,7 @@ cp -pR /usr/local/lib/libproj.so* . || _die "Failed to copy the proj libraries"
 cp -pR /usr/local/lib/libgeos*.so* . || _die "Failed to copy the geos libraries"
 cp -pR /usr/local/lib/libgdal.so* . || _die "Failed to copy the gdal libraries"
 cp -pR /usr/local/lib/libcurl.so* . || _die "Failed to copy the curl libraries"
+cp -pR /usr/local/lib/libpcre.so* . || _die "Failed to copy the pcre libraries"
 cp -pR /usr/local/lib/libtiff.so* . || _die "Failed to copy the libtiff libraries"
 cp -pR /usr/local/lib/libjpeg.so* . || _die "Failed to copy the libjpeg libraries"
 cp -pR /usr/local/lib/libexpat.so* . || _die "Failed to copy the libexpat libraries"
@@ -130,7 +131,7 @@ cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
 for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done
 
 cd $POSTGIS_STAGING_REMOTE/PostGIS/lib
-for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \"\\\${ORIGIN}:\\\${ORIGIN}/..\" \$f; done
+for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \\\${ORIGIN}/../../lib:\\\${ORIGIN} \$f; done
 chmod a+rx *
 
 echo "Creating wrapper script for pgsql2shp and shp2pgsql"
