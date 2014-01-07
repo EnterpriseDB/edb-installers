@@ -285,7 +285,6 @@ _postprocess_PostGIS_osx() {
     chmod ugo+x $PG_STAGING/installer/PostGIS/createshortcuts.sh
 
     mkdir -p $PG_STAGING/scripts || _die "Failed to create a directory for the launch scripts"
-    cp -pR $PG_PATH_OSX/PostGIS/scripts/osx/pg-launchJdbcDocs.applescript.in $PG_STAGING/scripts/pg-launchJdbcDocs.applescript || _die "Failed to copy the launch script (scripts/osx/pg-launchJdbcDocs.applescript.in)"
     cp -pR $PG_PATH_OSX/PostGIS/scripts/osx/pg-launchPostGISDocs.applescript.in $PG_STAGING/scripts/pg-launchPostGISDocs.applescript || _die "Failed to copy the launch script (scripts/osx/pg-launchPostGISDocs.applescript.in)"
 
     # Copy in the menu pick images 
