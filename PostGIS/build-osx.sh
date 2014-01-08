@@ -257,10 +257,10 @@ _build_PostGIS_osx() {
     install_name_tool -change "@loader_path/../../lib/libgeos-$PG_TARBALL_GEOS.dylib" "@loader_path/libgeos-$PG_TARBALL_GEOS.dylib" $WD/PostGIS/staging/osx/PostGIS/lib/libgeos_c.1.dylib
     install_name_tool -change "@loader_path/../../lib/libpcre.1.dylib" "@loader_path/libpcre.1.dylib" $WD/PostGIS/staging/osx/PostGIS/lib/libgdal.1.dylib
     install_name_tool -change "@loader_path/../../lib/libcurl.4.dylib" "@loader_path/libcurl.4.dylib" $WD/PostGIS/staging/osx/PostGIS/lib/libgdal.1.dylib
-    install_name_tool -change "@loader_path/../../lib/libgeos_c.1.dylib" "@loader_path/libgeos_c.1.dylib" $WD/PostGIS/staging/osx/PostGIS/lib/postgis-2.1.so
-    install_name_tool -change "@loader_path/../../lib/libgeos_c.1.dylib" "@loader_path/libgeos_c.1.dylib" $WD/PostGIS/staging/osx/PostGIS/lib/rtpostgis-2.1.so
-    install_name_tool -change "@loader_path/../../lib/libproj.0.dylib" "@loader_path/libproj.0.dylib" $WD/PostGIS/staging/osx/PostGIS/lib/postgis-2.1.so
-    install_name_tool -change "@loader_path/../../lib/libgdal.1.dylib" "@loader_path/libgdal.1.dylib" $WD/PostGIS/staging/osx/PostGIS/lib/rtpostgis-2.1.so
+    install_name_tool -change "@loader_path/../../lib/libgeos_c.1.dylib" "@loader_path/libgeos_c.1.dylib" $WD/PostGIS/staging/osx/PostGIS/lib/postgis-2.0.so
+    install_name_tool -change "@loader_path/../../lib/libgeos_c.1.dylib" "@loader_path/libgeos_c.1.dylib" $WD/PostGIS/staging/osx/PostGIS/lib/rtpostgis-2.0.so
+    install_name_tool -change "@loader_path/../../lib/libproj.0.dylib" "@loader_path/libproj.0.dylib" $WD/PostGIS/staging/osx/PostGIS/lib/postgis-2.0.so
+    install_name_tool -change "@loader_path/../../lib/libgdal.1.dylib" "@loader_path/libgdal.1.dylib" $WD/PostGIS/staging/osx/PostGIS/lib/rtpostgis-2.0.so
 
     install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" $WD/PostGIS/staging/osx/PostGIS/bin/pgsql2shp
 
