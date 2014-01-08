@@ -174,6 +174,7 @@ EOF
         <setInstallerVariable name="pguser" value=""/>
         <setInstallerVariable name="defaultuser" value=""/>
         <setInstallerVariable name="defaultpassword" value=""/>
+        <setInstallerVariable name="installdir" value=""/>
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="defaultuser" value="postgres"/>
@@ -1092,17 +1093,6 @@ EOF
                     <distributionFileList>
                         <distributionFile>
                             <origin>staging/osx/PostGIS/share/extension/postgis--PG_VERSION_POSTGIS.sql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${sharedir}/extension</destination>
-                    <name>programfilesshareosxextn3</name>
-                    <platforms>osx</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/share/extension/postgis_topology--PG_VERSION_POSTGIS.sql</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
