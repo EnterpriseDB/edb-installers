@@ -1,15 +1,15 @@
 /*-------------------------------------------------------------------------
- *
- * ServiceWrapper --- register/unregister a java application as windows service
- * 
- *-------------------------------------------------------------------------
- */
+*
+* ServiceWrapper --- register/unregister a java application as windows service
+* 
+*-------------------------------------------------------------------------
+*/
 
 #ifdef WIN32
 /*
- * Need this to get defines for restricted tokens and jobs. And it
- * has to be set before any header from the Win32 API is loaded.
- */
+* Need this to get defines for restricted tokens and jobs. And it
+* has to be set before any header from the Win32 API is loaded.
+*/
 #define _WIN32_WINNT 0x0501
 #endif
 
@@ -22,14 +22,16 @@
 #include <io.h>
 #include <stdio.h>
 #include <errno.h>
+#include <TlHelp32.h>
 
 #undef WIN32
 
 #define BADCH   '?'
 #define BADARG  ':'
-#define EMSG    ""
-#define DEFAULT_WAIT	60
-#define MAXPATH       1024
+#define EMSG	""
+#define DEFAULT_WAIT                                      60
+#define MAXPATH                                         1024
+#define MAX_CHILD_PROCESS_COUNT                          128
 
 typedef long pid_t;
 
@@ -52,9 +54,9 @@ typedef enum
 static struct option
 {
 	const char *name;
-	int         has_arg;
-	int        *flag;
-	int         val;
+	int		 has_arg;
+	int		*flag;
+	int		 val;
 };
 
 
@@ -76,7 +78,7 @@ char *optarg;
 int optreset;
 
 static void
-write_stderr(const char *fmt,...);
+	write_stderr(const char *fmt,...);
 
 static char *xstrdup(const char *s);
 static void do_advice(void);
@@ -103,9 +105,9 @@ static pid_t execPID = -1;
 #define required_argument 1
 
 int
-getopt_long(int argc, char *const argv[],
-			const char *optstring,
-			const struct option * longopts, int *longindex)
+	getopt_long(int argc, char *const argv[],
+	const char *optstring,
+	const struct option * longopts, int *longindex)
 {
 	static char *place = EMSG;	/* option letter processing */
 	char	   *oli;			/* option letter list index */
@@ -166,8 +168,8 @@ getopt_long(int argc, char *const argv[],
 								return BADARG;
 							if (opterr)
 								fprintf(stderr,
-								   "%s: option requires an argument -- %s\n",
-										argv[0], place);
+								"%s: option requires an argument -- %s\n",
+								argv[0], place);
 							place = EMSG;
 							optind++;
 							return BADCH;
@@ -201,7 +203,7 @@ getopt_long(int argc, char *const argv[],
 
 			if (opterr && optstring[0] != ':')
 				fprintf(stderr,
-						"%s: illegal option -- %s\n", argv[0], place);
+				"%s: illegal option -- %s\n", argv[0], place);
 			place = EMSG;
 			optind++;
 			return BADCH;
@@ -218,7 +220,7 @@ getopt_long(int argc, char *const argv[],
 			++optind;
 		if (opterr && *optstring != ':')
 			fprintf(stderr,
-					"%s: illegal option -- %c\n", argv[0], optopt);
+			"%s: illegal option -- %c\n", argv[0], optopt);
 		return BADCH;
 	}
 
@@ -239,8 +241,8 @@ getopt_long(int argc, char *const argv[],
 				return BADARG;
 			if (opterr)
 				fprintf(stderr,
-						"%s: option requires an argument -- %c\n",
-						argv[0], optopt);
+				"%s: option requires an argument -- %c\n",
+				argv[0], optopt);
 			return BADCH;
 		}
 		else
@@ -253,7 +255,7 @@ getopt_long(int argc, char *const argv[],
 }
 
 static void
-write_eventlog(int level, const char *line)
+	write_eventlog(int level, const char *line)
 {
 	static HANDLE evtHandle = INVALID_HANDLE_VALUE;
 
@@ -268,23 +270,23 @@ write_eventlog(int level, const char *line)
 	}
 
 	ReportEvent(evtHandle,
-				level,
-				0,
-				0,				/* All events are Id 0 */
-				NULL,
-				1,
-				0,
-				&line,
-				NULL);
+		level,
+		0,
+		0,				/* All events are Id 0 */
+		NULL,
+		1,
+		0,
+		&line,
+		NULL);
 }
 
 
 /*
- * Write errors to stderr (or by equal means when stderr is
- * not available).
- */
+* Write errors to stderr (or by equal means when stderr is
+* not available).
+*/
 static void
-write_stderr(const char *fmt,...)
+	write_stderr(const char *fmt,...)
 {
 	va_list		ap;
 
@@ -292,9 +294,9 @@ write_stderr(const char *fmt,...)
 
 
 	/*
-	 * On Win32, we print to stderr if running on a console, or write to
-	 * eventlog if running as a service
-	 */
+	* On Win32, we print to stderr if running on a console, or write to
+	* eventlog if running as a service
+	*/
 	if (!_isatty(_fileno(stderr)))	/* Running as a service */
 	{
 		char		errbuf[2048];		/* Arbitrary size? */
@@ -313,12 +315,12 @@ write_stderr(const char *fmt,...)
 
 
 /*
- * routines to check memory allocations and fail noisily.
- */
+* routines to check memory allocations and fail noisily.
+*/
 
 
 static char *
-xstrdup(const char *s)
+	xstrdup(const char *s)
 {
 	char	   *result;
 
@@ -332,11 +334,11 @@ xstrdup(const char *s)
 }
 
 /*
- * Given an already-localized string, print it to stdout unless the
- * user has specified that no messages should be printed.
- */
+* Given an already-localized string, print it to stdout unless the
+* user has specified that no messages should be printed.
+*/
 static void
-print_msg(const char *msg)
+	print_msg(const char *msg)
 {
 	fputs(msg, stdout);
 	fflush(stdout);
@@ -344,7 +346,7 @@ print_msg(const char *msg)
 
 
 static bool
-IsInstalled(SC_HANDLE hSCM)
+	IsInstalled(SC_HANDLE hSCM)
 {
 	SC_HANDLE	hService = OpenService(hSCM, register_servicename, SERVICE_QUERY_CONFIG);
 	bool		bResult = (hService != NULL);
@@ -355,7 +357,7 @@ IsInstalled(SC_HANDLE hSCM)
 }
 
 static char *
-CommandLine(bool registration)
+	CommandLine(bool registration)
 {
 	static char cmdLine[MAXPATH];
 
@@ -389,7 +391,7 @@ CommandLine(bool registration)
 		strcpy(cmdLine, "\"");
 		strcat(cmdLine, exec_path);
 		strcat(cmdLine, "\" ");
-	
+
 		if (exec_opts)
 		{
 			strcat(cmdLine, exec_opts);
@@ -400,7 +402,7 @@ CommandLine(bool registration)
 }
 
 static void
-doRegister(void)
+	doRegister(void)
 {
 	SC_HANDLE	hService;
 	SC_HANDLE	hSCM = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
@@ -417,10 +419,10 @@ doRegister(void)
 		exit(1);
 	}
 	if ((hService = CreateService(hSCM, register_servicename, service_desc,
-							   SERVICE_ALL_ACCESS, SERVICE_WIN32_OWN_PROCESS,
-								  SERVICE_AUTO_START, SERVICE_ERROR_NORMAL,
-								  CommandLine(true),
-	   NULL, NULL, "\0", register_username, register_password)) == NULL)
+		SERVICE_ALL_ACCESS, SERVICE_WIN32_OWN_PROCESS,
+		SERVICE_AUTO_START, SERVICE_ERROR_NORMAL,
+		CommandLine(true),
+		NULL, NULL, "\0", register_username, register_password)) == NULL)
 	{
 		CloseServiceHandle(hSCM);
 		write_stderr("%s: could not register service \"%s\": error code %d\n", progname, register_servicename, (int) GetLastError());
@@ -431,7 +433,7 @@ doRegister(void)
 }
 
 static void
-doUnregister(void)
+	doUnregister(void)
 {
 	SC_HANDLE	hService;
 	SC_HANDLE	hSCM = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
@@ -466,36 +468,129 @@ doUnregister(void)
 }
 
 static void
-WS_SetServiceStatus(DWORD currentState)
+	WS_SetServiceStatus(DWORD currentState)
 {
 	status.dwCurrentState = currentState;
 	SetServiceStatus(hStatus, (LPSERVICE_STATUS) &status);
 }
 
+/* Terminate process and child processes 3 levels deep... */
+bool TerminateProcessTree(DWORD dwProcessId, HANDLE hProcess, UINT uExitCode)
+{
+	PROCESSENTRY32 pe;
+	HANDLE hSnapshot = NULL;
+	DWORD adwChildProcessL2[MAX_CHILD_PROCESS_COUNT] = {-1};
+	DWORD adwChildProcessL3[MAX_CHILD_PROCESS_COUNT] = {-1};
+	INT32 iChildProcessL2Count = -1;
+	INT32 iChildProcessL3Count = -1;
+	INT32 I;
+
+	memset(&pe, 0, sizeof(PROCESSENTRY32));
+	pe.dwSize = sizeof(PROCESSENTRY32);
+
+	hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+	// Terminate main process and L1 child processes...
+	if( Process32First(hSnapshot, &pe) )
+	{
+		do
+		{
+			// Terminate child processes
+			if( pe.th32ParentProcessID == dwProcessId )
+			{
+				HANDLE hChildProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pe.th32ProcessID);
+				if( hChildProcess )
+				{
+					iChildProcessL2Count += (iChildProcessL2Count < MAX_CHILD_PROCESS_COUNT);		// This would ensure that array is not overflown...
+					adwChildProcessL2[iChildProcessL2Count] = pe.th32ProcessID;
+
+					TerminateProcess(hChildProcess, 1);
+					CloseHandle(hChildProcess);
+				}
+			}
+		}
+		while( Process32Next(hSnapshot, &pe) );
+
+		// Kill main process...
+		TerminateProcess(hProcess, 1);
+		CloseHandle(hProcess);
+	}
+
+	// Terminate L2 child processes...
+	if( Process32First(hSnapshot, &pe) )
+	{
+		do
+		{
+			// Terminate any left over child processes of child processes...
+			for(I = 0; I <= iChildProcessL2Count; I++)
+			{
+				if( pe.th32ParentProcessID == adwChildProcessL2[I] )
+				{
+					HANDLE hChildProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pe.th32ProcessID);
+					if( hChildProcess )
+					{
+						iChildProcessL3Count += (iChildProcessL3Count < MAX_CHILD_PROCESS_COUNT);		// This would ensure that array is not overflown...
+						adwChildProcessL3[iChildProcessL3Count] = pe.th32ProcessID;
+
+						TerminateProcess(hChildProcess, 1);
+						CloseHandle(hChildProcess);
+					}
+				}
+			}
+		}
+		while( Process32Next(hSnapshot, &pe) );
+	}
+
+	// Terminate L3 child processes...
+	if( Process32First(hSnapshot, &pe) )
+	{
+		do
+		{
+			// Terminate any left over child processes of child processes...
+			for(I = 0; I <= iChildProcessL3Count; I++)
+			{
+				if( pe.th32ParentProcessID == adwChildProcessL3[I] )
+				{
+					HANDLE hChildProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pe.th32ProcessID);
+					if( hChildProcess )
+					{
+						TerminateProcess(hChildProcess, 1);
+						CloseHandle(hChildProcess);
+					}
+				}
+			}
+		}
+		while( Process32Next(hSnapshot, &pe) );
+	}
+
+	CloseHandle(hSnapshot);
+	return true;
+}
+
 static void WINAPI
-ServiceHandler(DWORD request)
+	ServiceHandler(DWORD request)
 {
 	switch (request)
 	{
 		case SERVICE_CONTROL_STOP:
 		case SERVICE_CONTROL_SHUTDOWN:
-
+	
 			/*
-			 * We only need a short wait hint here as it just needs to wait
-			 * for the next checkpoint. They occur every 5 seconds during
-			 * shutdown
-			 */
+			* We only need a short wait hint here as it just needs to wait
+			* for the next checkpoint. They occur every 5 seconds during
+			* shutdown
+			*/
 			status.dwWaitHint = 10000;
 			WS_SetServiceStatus(SERVICE_STOP_PENDING);
-			TerminateProcess(execProcess, 0);
+			TerminateProcessTree(execPID, execProcess, 0);
 			WS_SetServiceStatus(SERVICE_STOPPED);
 			return;
-
+	
 		case SERVICE_CONTROL_PAUSE:
 			/* Win32 config reloading */
 			status.dwWaitHint = 5000;
 			return;
-
+	
 		case SERVICE_CONTROL_CONTINUE:
 		case SERVICE_CONTROL_INTERROGATE:
 		default:
@@ -511,7 +606,7 @@ bool startService()
 
 	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
-  
+
 	memset(&pi, 0, sizeof(pi));
 
 	/* Start the service */
@@ -520,7 +615,7 @@ bool startService()
 		WS_SetServiceStatus(SERVICE_STOPPED);
 		return false;
 	}
-	
+
 	execPID = pi.dwProcessId;
 	execProcess = pi.hProcess;
 	return true;
@@ -528,10 +623,10 @@ bool startService()
 
 
 static void WINAPI
-ServiceMain(DWORD argc, LPTSTR *argv)
+	ServiceMain(DWORD argc, LPTSTR *argv)
 {
 	/* Initialize variables */
-	DWORD           ret;
+	DWORD		   ret;
 	status.dwWin32ExitCode = S_OK;
 	status.dwCheckPoint = 0;
 	status.dwWaitHint = 60000;
@@ -547,22 +642,22 @@ ServiceMain(DWORD argc, LPTSTR *argv)
 	if ((shutdownEvent = CreateEvent(NULL, true, false, NULL)) == NULL)
 	{
 		WS_SetServiceStatus(SERVICE_STOPPED);
-        return;
+		return;
 	} 
 
-        if (startService())
+	if (startService())
 	{
 		WS_SetServiceStatus(SERVICE_RUNNING); 
 	}
 
 	ret = WaitForSingleObject(execProcess, INFINITE);
-	
+
 	WS_SetServiceStatus(SERVICE_STOPPED);
-         
+
 }
 
 static void
-doRunAsService(void)
+	doRunAsService(void)
 {
 	SERVICE_TABLE_ENTRY st[] = {{register_servicename, ServiceMain},
 	{NULL, NULL}};
@@ -575,41 +670,41 @@ doRunAsService(void)
 }
 
 static void
-do_advice(void)
+	do_advice(void)
 {
 	write_stderr("Try \"%s --help\" for more information.\n", progname);
 }
 
 
 static void
-do_help(void)
+	do_help(void)
 {
 	printf("%s is a utility to register and unregister java applications as windows service, \n", progname);
 	printf("Usage:\n");
 	printf("  %s register   [-n SERVICENAME] [-u USERNAME] [-p PASSWORD] \n"
-		 "                    [-c Executable ] [-o \"OPTIONS\"]\n", progname);
+		"					[-c Executable ] [-o \"OPTIONS\"]\n", progname);
 	printf("  %s unregister [-n SERVICENAME]\n", progname);
 
 	printf("\nCommon options:\n");
-	printf("  --help                 show this help, then exit\n");
-	printf("  --version              output version information, then exit\n");
-	
+	printf("  --help				 show this help, then exit\n");
+	printf("  --version			  output version information, then exit\n");
+
 	printf("\nOptions for start or restart:\n");
-	printf("  -c, java executable    Path to the java exe\n");
-	printf("  -o OPTIONS             command line options to pass to java\n");
-	
+	printf("  -c, java executable	Path to the java exe\n");
+	printf("  -o OPTIONS			 command line options to pass to java\n");
+
 	printf("\nOptions for register and unregister:\n");
 	printf("  -n SERVICENAME  service name with which to register the java application\n");
 	printf("  -d SERVICEDESC  service description\n");
-	printf("  -p PASSWORD     password of account to register \n");
-	printf("  -u USERNAME     user name of account to register\n");
-        printf("  -w WORKING DIRECTORY  Working directory for the process\n");
+	printf("  -p PASSWORD	 password of account to register \n");
+	printf("  -u USERNAME	 user name of account to register\n");
+	printf("  -w WORKING DIRECTORY  Working directory for the process\n");
 
 }
 
 
 int
-main(int argc, char **argv)
+	main(int argc, char **argv)
 {
 	static struct option long_options[] = {
 		{"help", no_argument, NULL, '?'},
@@ -624,9 +719,9 @@ main(int argc, char **argv)
 
 	progname = argv[0];
 	/*
-	 * save argv[0] so do_start() can look for the postmaster if necessary. we
-	 * don't look for postmaster here because in many cases we won't need it.
-	 */
+	* save argv[0] so do_start() can look for the postmaster if necessary. we
+	* don't look for postmaster here because in many cases we won't need it.
+	*/
 	argv0 = argv[0];
 
 	umask(077);
@@ -643,11 +738,11 @@ main(int argc, char **argv)
 	}
 
 	/*
-	 * 'Action' can be before or after args so loop over both. Some
-	 * getopt_long() implementations will reorder argv[] to place all flags
-	 * first (GNU?), but we don't rely on it. Our /port version doesn't do
-	 * that.
-	 */
+	* 'Action' can be before or after args so loop over both. Some
+	* getopt_long() implementations will reorder argv[] to place all flags
+	* first (GNU?), but we don't rely on it. Our /port version doesn't do
+	* that.
+	*/
 	optind = 1;
 
 	/* process command-line options */
@@ -660,17 +755,17 @@ main(int argc, char **argv)
 				case 'n':
 					register_servicename = xstrdup(optarg);
 					break;
-			    case 'd':
+				case 'd':
 					service_desc = xstrdup(optarg);
 					break;
 				case 'u':
-					
+	
 					if (strchr(optarg, '\\'))
 						register_username = xstrdup(optarg);
 					else
 						/* Prepend .\ for local accounts */
 					{
-						
+	
 						register_username = malloc(strlen(optarg) + 3);
 						if (!register_username)
 						{
@@ -679,10 +774,10 @@ main(int argc, char **argv)
 						}
 						strcpy(register_username, ".\\");
 						strcat(register_username, optarg);
-						
+	
 					}
 					break;
-                case 'p':
+				case 'p':
 					register_password = xstrdup(optarg);
 					break;
 				case 'c':
