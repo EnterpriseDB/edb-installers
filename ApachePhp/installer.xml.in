@@ -1174,6 +1174,55 @@ include conf\addons\*.conf
     <deleteFile>
         <path>${installdir}/apache/www/index.html</path>
     </deleteFile>
+    
+    <!--RM32246. If ApachePHP is updated from 2.2 to 2.4, then edit the pem config files if present with new syntax-->
+    <actionGroup>
+        <!--Edit pem.conf to add new syntax-->
+        <actionList>
+            <substitute>
+                <type>exact</type>
+                <files>${installdir}/apache/conf/addons/pem.conf</files>
+                <substitutionList>
+                    <substitution>
+                        <pattern>Options -Indexes -FollowSymLinks MultiViews ExecCGI</pattern>
+                        <value>Options -Indexes -FollowSymLinks +MultiViews +ExecCGI</value>
+                    </substitution>
+                </substitutionList>
+                <substitutionList>
+                    <substitution>
+                        <pattern>Order Allow,Deny</pattern>
+                        <value></value>
+                    </substitution>
+                </substitutionList>
+                <substitutionList>
+                    <substitution>
+                        <pattern>Allow from all</pattern>
+                        <value>Require all granted</value>
+                    </substitution>
+                </substitutionList>
+            </substitute>
+        </actionList>
+        <ruleList>
+            <fileExists path="${installdir}/apache/conf/addons/pem.conf" />
+        </ruleList>
+        <!--Edit httpd-ssl-pem.conf to comment SSLMutex which is no longer supported.-->
+        <actionList>
+            <substitute>
+                <type>regexp</type>
+                <files>${installdir}/apache/conf/addons/httpd-ssl-pem.conf</files>
+                <substitutionList>
+                    <substitution>
+                        <pattern>SSLMutex*</pattern>
+                        <value>#SSLMutex*</value>
+                    </substitution>
+                </substitutionList>
+            </substitute>
+        </actionList>
+        <ruleList>
+            <fileExists path="${installdir}/apache/conf/addons/httpd-ssl-pem.conf" />
+        </ruleList>
+    </actionGroup> 
+    
     <!-- Install ApachePhp as a service -->
     <runProgram>
       <customErrorMessage>${msg(error.service.apachephp)}</customErrorMessage>
@@ -1454,6 +1503,22 @@ include conf\addons\*.conf
       </deleteFile>
 
     </postInstallationActionList>
+
+    <!-- If User is upgrading Apache from 2.2 to 2.4, give them an option to view the documentation link -->
+    <finalPageActionList>
+        <launchBrowser>
+            <url>http://httpd.apache.org/docs/2.4/upgrading.html</url>
+            <progressText>${msg(launch.apache24.doc)}</progressText>
+            <abortOnError>0</abortOnError>
+            <show>1</show>
+            <ruleList>
+                <regExMatch logic="matches" text="${apachephpVersionInstalled}" pattern="^2.2"/>
+                <regExMatch logic="matches" text="${productVersion}" pattern="^2.4"/>
+                <compareText logic="equals" text="${installer_ui}" value="gui" />
+            </ruleList>
+        </launchBrowser>
+    </finalPageActionList>
+
     <installationAbortedActionList>
       <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
         <ruleList>
