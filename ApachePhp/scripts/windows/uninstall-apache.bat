@@ -1,5 +1,5 @@
 @echo off
-REM Copyright (c) 2012-2013, EnterpriseDB Corporation.  All rights reserved
+REM Copyright (c) 2012-2014, EnterpriseDB Corporation.  All rights reserved
 echo NOTE: You must start this script as a Administrator
 echo       or from the Administrator console.
 echo       If you have not started this as a administrator,
