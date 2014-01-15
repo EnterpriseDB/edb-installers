@@ -58,6 +58,10 @@ _prep_Slony() {
     echo "Unpacking SLONY source..."
     extract_file  $WD/tarballs/slony1-$PG_VERSION_SLONY || exit 1
 
+    echo "Applying patches..."
+    cd slony1-$PG_VERSION_SLONY
+    patch -p1 < ../../../tarballs/slony_221_Use-server-includes-for-pgport-when-building-slonik.patch
+
     # Per-platform prep
     cd $WD
     
