@@ -231,11 +231,11 @@ then
 fi
 
 # Create a remote directory if not present
-echo "Creating $remote_location on the builds server and delete the old PEM installers before going to copy latest PEM installers because PEM installers name contains date along with version" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com "mkdir -p $remote_location; rm -rf $remote_location/*`date -v -1d +"%Y%m%d"`*" >> autobuild.log 2>&1
+echo "Creating $remote_location on the builds server" >> autobuild.log
+ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
 
 echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-rsync -avh output/* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
+rsync -avh --del output/ buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
 
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
