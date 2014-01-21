@@ -31,6 +31,11 @@ _prep_pgbouncer_solaris_x64() {
     # Grab a copy of the source tree
     cp -R pgbouncer-$PG_VERSION_PGBOUNCER/* pgbouncer.solaris-x64 || _die "Failed to copy the source code (source/pgbouncer-$PG_VERSION_PGBOUNCER)"
     chmod -R ugo+w pgbouncer.solaris-x64 || _die "Couldn't set the permissions on the source directory"
+
+    # Applying patch for solaris build failure
+    cd pgbouncer.solaris-x64
+    patch -p1 < ../../../tarballs/pgbouncer-1.5.4-solaris.patch
+    cd $WD/pgbouncer/source
     zip -r pgbouncer.solaris-x64.zip pgbouncer.solaris-x64 || _die "Failed to zip the pgbouncer source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -127,17 +132,14 @@ _postprocess_pgbouncer_solaris_x64() {
 
     rm -rf staging/solaris-x64/pgbouncer/share/doc || _die "Failed to remove the extra doc directory"
 
-    _replace "bardb = host=127.0.0.1 dbname=bazdb" ";bardb = host=127.0.0.1 dbname=bazdb" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
-    _replace "forcedb = host=127.0.0.1 port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO connect_query='SELECT 1'" ";forcedb = host=127.0.0.1 port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO connect_query='SELECT 1'" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
-    _replace "nondefaultdb = pool_size=50 reserve_pool=10" ";nondefaultdb = pool_size=50 reserve_pool=10" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
-    _replace "foodb =" "@@CON@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
-    _replace "logfile = pgbouncer.log" "logfile = @@LOGFILE@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder" 
-    _replace "pidfile = pgbouncer.pid" "pidfile = @@PIDFILE@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
+    _replace ";foodb =" "@@CON@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
+    _replace "logfile = /var/log/pgbouncer/pgbouncer.log" "logfile = @@LOGFILE@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder" 
+    _replace "pidfile = /var/log/pgbouncer/pgbouncer.pid" "pidfile = @@PIDFILE@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "listen_addr = 127.0.0.1" "listen_addr = *" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "listen_port = 6432" "listen_port = @@LISTENPORT@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder" 
-    _replace "auth_file = etc/userlist.txt" "auth_file = @@AUTHFILE@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
-    _replace "admin_users = user2, someadmin, otheradmin" "admin_users = @@ADMINUSERS@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
-    _replace "stats_users = stats, root" "stats_users = @@STATSUSERS@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
+    _replace "auth_file = /etc/pgbouncer/userlist.txt" "auth_file = @@AUTHFILE@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
+    _replace ";admin_users = user2, someadmin, otheradmin" "admin_users = @@ADMINUSERS@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
+    _replace ";stats_users = stats, root" "stats_users = @@STATSUSERS@@" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to comment the extra db details"
     _replace "auth_type = trust" "auth_type = md5" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to change the auth type"
     _replace ";ignore_startup_parameters = extra_float_digits" "ignore_startup_parameters = application_name" staging/solaris-x64/pgbouncer/share/pgbouncer.ini || _die "Failed to uncomment the ignore startup parameters config line"
     # Build the installer
