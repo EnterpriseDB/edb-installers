@@ -176,7 +176,7 @@ Else
 End If
 
 
-Sub AclCheck(strThisDir, userName)
+Sub AclCheck(strThisDir, userName, index)
     WScript.Echo "Called AclCheck(" & strThisDir & ")"
     If strThisDir = strProgramFiles Then
         WScript.Echo "Skipping the ACL check on " & strThisDir
@@ -187,10 +187,20 @@ Sub AclCheck(strThisDir, userName)
     Else
         If IsVistaOrNewer() = True Then
             WScript.Echo "Executing icacls to ensure the " & userName & " account can read the path " & strThisDir
-            iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & userName & """:(NP)(RX)")
+            If index <> 0 Then
+               iRet = DoCmd("icacls """ & strThisDir & """ /grant """ & userName & """:(NP)(RX)")
+            Else
+               ' Drive letter must not be surronded by double-quotes and ends with slash (\)
+               ' "icacls" fails on the drives with (NP) flag
+               iRet = DoCmd("icacls " & strThisDir & "\ /grant """ & objNetwork.Username & """:(NP)(RX)")
+            End If
         Else
             WScript.Echo "Executing cacls to ensure the " & userName & " account can read the path " & strThisDir
-            iRet = DoCmd("echo y|cacls """ & strThisDir & """ /E /G """ & userName & """:R")
+            If index <> 0 Then
+                iRet = DoCmd("echo y|cacls """ & strThisDir & """ /E /G """ & userName & """:R")
+            Else
+                iRet = DoCmd("echo y|cacls " & strThisDir & "\ /E /G """ & objNetwork.Username & """:R")
+            End If
         End If
     End If
     if iRet <> 0 Then
@@ -201,6 +211,8 @@ End Sub
 ' dirname of strDataDir'
 strParentOfDataDir = objFSO.GetParentFolderName(strDataDir)
 
+
+
 If boolCheckAcl Then
     ' Loop up the directory path, and ensure we have read permissions
     ' on the entire path leading to the data directory
@@ -210,13 +222,34 @@ If boolCheckAcl Then
     
     For d = 0 To nDirs
         strThisDir = strThisDir & arrDirs(d)
-        Call AclCheck (strThisDir,objNetwork.Username)
+        Call AclCheck (strThisDir,objNetwork.Username,d)
     
         strThisDir = strThisDir & "\"
     Next
+    WScript.Echo "Parent of Data ("& strParentOfDataDir &")"
+    WScript.Echo "Install Dir ("& strInstallDir &")"
+    
+         
 End If
 
-Call AclCheck(strDataDir,objNetwork.Username)
+
+Call AclCheck(strDataDir,objNetwork.Username,1)
+
+If boolCheckAcl Then
+    If IsVistaOrNewer() = True Then
+        WScript.Echo "Granting the " & objNetwork.Username & " permissions on " & strInstallDir
+        
+        iRet = DoCmd("icacls """ & strInstallDir & """ /T /grant:r """ & objNetwork.Username & """:(OI)(CI)(RX)")
+    Else
+        
+        iRet = DoCmd("echo y|cacls """ & strInstallDir & """ /E /T /G """ & objNetwork.Username & """:F")
+    End If
+    if iRet <> 0 Then
+        WScript.Echo "Failed to ensure the Install directory is accessible (" & strInstallDir & ")"
+    End If
+End If
+
+
 
 If IsVistaOrNewer() = True Then
     WScript.Echo "Ensuring we can write to the data directory (using icacls) to  " & objNetwork.Username & ":"
@@ -289,13 +322,27 @@ If boolCheckAcl Then
     
     For d = 0 To nDirs
         strThisDir = strThisDir & arrDirs(d)
-        Call AclCheck(strThisDir,strOSUsername)
+        Call AclCheck(strThisDir,strOSUsername,d)
     
         strThisDir = strThisDir & "\"
     Next
 End If
 
-Call AclCheck(strDataDir,strOSUsername)
+Call AclCheck(strDataDir,strOSUsername,1)
+
+If boolCheckAcl Then
+    If IsVistaOrNewer() = True Then
+        WScript.Echo "Granting " & strOSUsername & " permissions on " & strInstallDir
+        
+        iRet = DoCmd("icacls """ & strInstallDir & """ /T /grant:r """ & strOSUsername & """:(OI)(CI)(RX)")
+    Else
+        
+        iRet = DoCmd("echo y|cacls """ & strInstallDir & """ /E /T /G """ & strOSUsername & """:F")
+    End If
+    if iRet <> 0 Then
+        WScript.Echo "Failed to ensure the Install directory is accessible (" & strInstallDir & ")"
+    End If
+End If
 
 ' Create the <DATA_DIR>\pg_log directory (if not exists)
 ' Create it before updating the permissions, so that it will also get affected
