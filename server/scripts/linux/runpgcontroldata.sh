@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2012-2013, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2014, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL pg_controldata runner script for Linux
 

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2012-2013, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2014, EnterpriseDB Corporation.  All rights reserved
 
 # test script for linux - check if system temp is writable and scripts can be executed from this path.
 
