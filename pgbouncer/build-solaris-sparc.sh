@@ -87,7 +87,7 @@ EOT
     scp setenv.sh $PG_SSH_SOLARIS_SPARC: || _die "Failed to scp the setenv.sh file"
 
 
-    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/pgbouncer/source/pgbouncer.solaris-sparc/; LDFLAGS="-Wl,-R,$PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/lib" ./configure --prefix=$PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer --with-libevent=/opt/local/Current" || _die "Failed to configure pgbouncer"
+    ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; unset CC; cd $PG_PATH_SOLARIS_SPARC/pgbouncer/source/pgbouncer.solaris-sparc/; LDFLAGS="-Wl,-R,$PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/lib" ./configure --prefix=$PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer --with-libevent=/opt/local/Current" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/pgbouncer/source/pgbouncer.solaris-sparc/; gmake" || _die "Failed to build pgbouncer"
     ssh $PG_SSH_SOLARIS_SPARC "source setenv.sh; cd $PG_PATH_SOLARIS_SPARC/pgbouncer/source/pgbouncer.solaris-sparc/; gmake  install" || _die "Failed to install pgbouncer"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/pgbouncer/share/" || _die "Failed to copy pgbouncer ini to share folder"
