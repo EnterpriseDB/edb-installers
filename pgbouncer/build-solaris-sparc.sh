@@ -144,7 +144,7 @@ _postprocess_pgbouncer_solaris_sparc() {
 
     _replace ";foodb =" "@@CON@@" staging/solaris-sparc/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "logfile = /var/log/pgbouncer/pgbouncer.log" "logfile = @@LOGFILE@@" staging/solaris-sparc/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder" 
-    _replace "pidfile = /var/log/pgbouncer/pgbouncer.pid" "pidfile = @@PIDFILE@@" staging/solaris-sparc/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
+    _replace "pidfile = /var/run/pgbouncer/pgbouncer.pid" "pidfile = @@PIDFILE@@" staging/solaris-sparc/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "listen_addr = 127.0.0.1" "listen_addr = *" staging/solaris-sparc/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
     _replace "listen_port = 6432" "listen_port = @@LISTENPORT@@" staging/solaris-sparc/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder" 
     _replace "auth_file = /etc/pgbouncer/userlist.txt" "auth_file = @@AUTHFILE@@" staging/solaris-sparc/pgbouncer/share/pgbouncer.ini || _die "Failed to put the place holder"
