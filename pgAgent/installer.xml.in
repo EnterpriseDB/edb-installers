@@ -1884,7 +1884,7 @@ EOF
             </compareValues>
             <compareValues>
               <value1>${pgport}</value1>
-              <logic>greater_or_equal</logic>
+              <logic>greater</logic>
               <value2>65535</value2>
             </compareValues>
           </ruleList>
