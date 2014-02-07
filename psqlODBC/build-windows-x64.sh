@@ -27,7 +27,7 @@ _prep_psqlODBC_windows_x64() {
     # Grab a copy of the source tree
     cp -R psqlodbc-$PG_VERSION_PSQLODBC/* psqlODBC.windows-x64 || _die "Failed to copy the source code (source/psqlODBC-$PG_VERSION_PSQLODBC)"
     cd psqlODBC.windows-x64
-    patch -p1 < $WD/tarballs/psqlodbc-win64.patch
+    #patch -p1 < $WD/tarballs/psqlodbc-win64.patch
     cd ..
 
     echo "Archieving psqlODBC sources"
