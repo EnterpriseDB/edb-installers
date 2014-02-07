@@ -93,6 +93,7 @@ EOT
     PSQLODBC_MAJOR_VERSION=`echo $PG_VERSION_PSQLODBC | cut -f1,2 -d "." | sed -e 's:\.::g'`
 
     mkdir -p $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin  || _die "Failed to create directory for psqlODBC"
+    mkdir -p $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/etc  || _die "Failed to create etc directory for psqlODBC"
     echo "Copying psqlODBC built tree to Unix host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\psqlODBC.windows-x64\\\\X64ANSI; zip -r ..\\\\..\\\\psqlODBC-windows-x64.zip *.dll" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC.windows-x64)"
     scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip)"
@@ -111,6 +112,9 @@ EOT
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/ssleay32.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libeay32.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libintl-8.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (libintl.dll)"
+    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/lib/engines/capi.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (capi.dll)"
+
+    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/ssl/openssl.cnf $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/etc || _die "Failed to copy the openssl.cnf"
 
 }
 

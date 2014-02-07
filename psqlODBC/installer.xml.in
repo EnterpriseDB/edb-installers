@@ -885,7 +885,31 @@ EOF
                         </compareText>
                     </ruleList>
                 </actionGroup>
-        
+       
+                <!--WIN: Set OPENSSL_CONF environment variable if it does not exist already -->
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable>
+                            <name>default_opensslconf_value</name>
+                            <persist>1</persist>
+                            <value>${env(OPENSSL_CONF)}</value>
+                        </setInstallerVariable>
+                        <addEnvironmentVariable>
+                            <abortOnError>0</abortOnError>
+                            <name>OPENSSL_CONF</name>
+                            <scope>system</scope>
+                            <showMessageOnError>0</showMessageOnError>
+                            <value>${installdir}\PSQLODBC_MAJOR_VERSION\etc\openssl.cnf</value>
+                            <ruleList>
+                                <compareText logic="equals" text="${default_opensslconf_value}" value=""/>
+                            </ruleList>
+                        </addEnvironmentVariable>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </actionGroup>
+                
                 <!--WIN: Register ODBC Drivers -->
                 <actionGroup>
                     <actionList>
@@ -1254,7 +1278,28 @@ EOF
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\psqlODBC</key>
 			<name>Branding</name>
         </registryDelete>
-  
+
+        <!--WIN: delete the OPENSSL_CONF variable if it's value is the installdir -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable>
+                    <name>opensslconf_value</name>
+                    <persist>1</persist>
+                    <value>${env(OPENSSL_CONF)}</value>
+                </setInstallerVariable>
+                <deleteEnvironmentVariable>
+                    <name>OPENSSL_CONF</name>
+                    <scope>system</scope>
+                        <ruleList>
+                            <compareText logic="equals" text="${opensslconf_value}" value="${installdir}\PSQLODBC_MAJOR_VERSION\etc\openssl.cnf"/>
+                        </ruleList>
+                </deleteEnvironmentVariable> 
+            </actionList>
+                <ruleList>
+                    <compareText logic="equals" text="${platform_name}" value="windows"/>
+                </ruleList>
+        </actionGroup>
+             
     </preUninstallationActionList>
     <componentList>
         <component>
