@@ -57,9 +57,10 @@ _prep_Npgsql() {
 	fi
     
 	echo "Unpacking Npgsql source..."
-        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}".0-bin-ms.net2.0 || exit 1
-        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}".0-bin-ms.net3.5sp1 || exit 1
-        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}".0-bin-ms.net4.0 || exit 1
+        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}"-bin-ms.net2.0 || exit 1
+        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}"-bin-ms.net3.5sp1 || exit 1
+        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}"-bin-ms.net4.0 || exit 1
+        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}"-bin-ms.net4.5 || exit 1
     fi
     
     # non-Windows

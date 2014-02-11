@@ -26,9 +26,10 @@ _prep_Npgsql_windows() {
 
     cd $WD/Npgsql/source
     # Grab a copy of the source tree
-    cp -R Npgsql"$PG_VERSION_NPGSQL".0-bin-ms.net2.0/* Npgsql.windows/ms.net2.0/ || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-ms.net)"
-    cp -R Npgsql"$PG_VERSION_NPGSQL".0-bin-ms.net3.5sp1/* Npgsql.windows/ms.net3.5sp1/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-ms.net3.5sp1)"
-    cp -R Npgsql"$PG_VERSION_NPGSQL".0-bin-ms.net4.0/* Npgsql.windows/ms.net4.0/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-ms.net4.0)"
+    cp -R Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net2.0/* Npgsql.windows/ms.net2.0/ || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-ms.net)"
+    cp -R Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net3.5sp1/* Npgsql.windows/ms.net3.5sp1/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-ms.net3.5sp1)"
+    cp -R Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net4.0/* Npgsql.windows/ms.net4.0/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-ms.net4.0)"
+    cp -R Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net4.5/* Npgsql.windows/ms.net4.0/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-ms.net4.5)"
     cp -R Npgsql$PG_VERSION_NPGSQL/Mono2.0/docs/* Npgsql.windows/docs/ || _die "Failed to copy the docs for Npgsql"
     chmod -R ugo+w Npgsql.windows || _die "Couldn't set the permissions on the source directory"
 
