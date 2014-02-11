@@ -30,14 +30,8 @@ _set_config PG_ARCH_HPUX 0
 #           so you must ensure that all the required dependencies are enabled.
 
 _set_config PG_PACKAGE_SERVER 1
-_set_config PG_PACKAGE_APACHEPHP 0
-_set_config PG_PACKAGE_PHPPGADMIN 0
-_set_config PG_PACKAGE_PGJDBC 0
-_set_config PG_PACKAGE_PSQLODBC 0
 _set_config PG_PACKAGE_POSTGIS 0
 _set_config PG_PACKAGE_SLONY 0
-_set_config PG_PACKAGE_NPGSQL 0
-_set_config PG_PACKAGE_PGAGENT 0
 _set_config PG_PACKAGE_PGMEMCACHE 0
 _set_config PG_PACKAGE_PGBOUNCER 0
 _set_config PG_PACKAGE_MIGRATIONTOOLKIT 0
