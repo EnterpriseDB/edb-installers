@@ -106,6 +106,7 @@ Function DoCmd(strCmd)
     Dim objBatchFile
     Set objBatchFile = objTempFolder.CreateTextFile(strBatchFile, True)
     objBatchFile.WriteLine "@ECHO OFF"
+    objBatchFile.WriteLine "CHCP " & objShell.RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Nls\CodePage\ACP")
     objBatchFile.WriteLine strCmd & " > """ & strOutputFile & """ 2>&1"
     objBatchFile.WriteLine "EXIT /B %ERRORLEVEL%"
     objBatchFile.Close
