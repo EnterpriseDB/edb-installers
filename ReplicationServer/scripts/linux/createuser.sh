@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2014, EnterpriseDB Corporation.  All rights reserved
 
 # xDB Replication service user creation script for Linux
 
