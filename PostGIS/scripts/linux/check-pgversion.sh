@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2014, EnterpriseDB Corporation.  All rights reserved
 
 export LD_LIBRARY_PATH=$1/lib:$LD_LIBRARY_PATH
 ver=`$1/bin/pg_config --version | cut -f2 -d " " | cut -f1,2 -d "."`
