@@ -42,7 +42,7 @@ chown $OSUSERNAME:daemon $INSTALLDIR/installer/server/pgpass.$$ || _die "Failed 
 
 # Install adminpack in the postgres database
 echo "Installing the adminpack module in the postgres database..."
-su - $OSUSERNAME -c "PGPASSFILE=$INSTALLDIR/installer/server/pgpass.$$ $INSTALLDIR/bin/psql -U $SUPERUSERNAME -p $PORT -c \"CREATE EXTENSION adminpack;\" postgres" || _warn "Failed to install the 'adminpack' module in the 'postgres' database"
+su -s /bin/sh - $OSUSERNAME -c "PGPASSFILE=$INSTALLDIR/installer/server/pgpass.$$ $INSTALLDIR/bin/psql -U $SUPERUSERNAME -p $PORT -c \"CREATE EXTENSION adminpack;\" postgres" || _warn "Failed to install the 'adminpack' module in the 'postgres' database"
 
 # Cleanup
 if [ -f $INSTALLDIR/installer/server/pgpass.$$ ];
