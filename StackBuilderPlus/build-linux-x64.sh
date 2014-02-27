@@ -29,6 +29,11 @@ _prep_stackbuilderplus_linux_x64() {
     cp -R STACKBUILDER-PLUS/* StackBuilderPlus.linux-x64 || _die "Failed to copy the source code (source/STACKBUILDER-PLUS)"
     chmod -R ugo+w StackBuilderPlus.linux-x64 || _die "Couldn't set the permissions on the source directory (STACKBUILDER-PLUS)"
 
+     # Change /opt/local to /opt/local/Current in CMakeLists.txt
+    cd $WD/StackBuilderPlus/source/StackBuilderPlus.linux-x64
+    sed -e 's|/opt/local|/opt/local/Current|g' CMakeLists.txt > CMakeLists.txt.1 && mv CMakeLists.txt.1 CMakeLists.txt || _die "Failed to correct paths in CMakeLists.txt"
+    cd $WD/StackBuilderPlus/source
+
     cp -R SS-UPDATEMANAGER/* updatemanager.linux-x64 || _die "Failed to copy the source code (source/SS-UPDATEMANAGER)"
     chmod -R ugo+w updatemanager.linux-x64 || _die "Couldn't set the permissions on the source directory (SS-UPDATEMANAGER)"
 

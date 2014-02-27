@@ -57,7 +57,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            We can also specify additional directorys to include in the path.
 
 # Linux-x32
-PG_SSH_LINUX=buildfarm@bfas93-linux.pn.in.enterprisedb.com
+PG_SSH_LINUX=buildfarm@172.24.32.117
 PG_PATH_LINUX=/mnt/hgfs/pginstaller.auto                          # postgres must come in directory name otherwise contrib modules will go in lib/postgresql dir.
 PG_PGHOME_LINUX=$PG_PATH_LINUX/server/staging/linux
 PG_EXEC_PATH_LINUX=/opt/jdk1.6.0_33/bin
@@ -74,7 +74,7 @@ PG_OCI_LINUX=/opt/oracle_10.2
 PG_CHRPATH_PATH_LINUX=/usr
 
 # Linux-x64
-PG_SSH_LINUX_X64=buildfarm@bfas93-linux-x64.pn.in.enterprisedb.com
+PG_SSH_LINUX_X64=buildfarm@172.24.32.121
 PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller.auto                        # postgres must come in directory name otherwise contrib modules will go in lib/postgresql dir.
 PG_PGHOME_LINUX_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64
 PG_EXEC_PATH_LINUX_X64=/opt/jdk1.6.0_33/bin
