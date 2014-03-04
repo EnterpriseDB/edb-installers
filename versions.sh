@@ -32,7 +32,7 @@ PG_TAG_MIGRATIONTOOLKIT='AS84R1-SP1_84518'
 #                     Minor version is revision.build. 
 
 PG_MAJOR_VERSION=8.4
-PG_MINOR_VERSION=20.1
+PG_MINOR_VERSION=20.2
 
 # Other package versions
 PG_VERSION_POSTGIS=1.4.2
