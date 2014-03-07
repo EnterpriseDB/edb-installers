@@ -81,7 +81,7 @@ echo "Running the build" >> autobuild.log
 
 _mail_status "build-84.log" "8.4"
 
-remote_location="/var/www/html/builds/Installers"
+remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
 
 echo "Purging old builds from the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"$remote_location/20*\" 5" >> autobuild.log 2>&1
