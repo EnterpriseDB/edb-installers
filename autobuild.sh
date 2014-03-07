@@ -215,7 +215,7 @@ echo "Running the build (REL-9_2) " >> autobuild.log
 
 _mail_status "build-92.log" "build-pvt.log" "9.2"
 
-remote_location="/var/www/html/builds/Installers"
+remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
 
 # Different location for the manual and cron triggered builds.
 if [ "$BUILD_USER" == "" ]
