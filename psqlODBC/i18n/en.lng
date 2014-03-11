@@ -25,3 +25,5 @@ psqlodbc.installdir.empty=The installation directory cannot be empty
 psqlodbc.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
 progress.text.register.odbc.windows=Registering ODBC Drivers.
+
+error.installing.runtimes=An error occured executing the Microsoft VC++ runtime installer.

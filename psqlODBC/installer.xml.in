@@ -160,6 +160,12 @@ EOF
     </preShowHelpActionList>	
     <!-- Prebuild Actons-->
     <preBuildActionList>	
+      <setInstallerVariable name="vcredist_executable" value="vcredist_x86.exe"/>
+      <setInstallerVariable name="vcredist_executable" value="vcredist_x64.exe">
+      <ruleList>
+          <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+      </ruleList>
+      </setInstallerVariable>
       <setInstallerVariable name="project.installerFilename" value="${product_shortname}-${product_version}-${platform_name}-x64.${platform_exec_suffix}">
             <ruleList>
                 <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
@@ -734,6 +740,56 @@ EOF
                 <setInstallerVariable name="odbcuninstallfile" value="${odbcinstpath}">
                     <persist>1</persist>
                 </setInstallerVariable>
+ 
+                <!-- WIN: Install redist --> 
+                <actionGroup>
+                  <actionList>
+                     <setInstallerVariable name="vcredist_executable" value="vcredist_x86.exe"/>
+                     <setInstallerVariable name="vcredist_executable" value="vcredist_x64.exe">
+                     <ruleList>
+                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                     </ruleList>
+                     </setInstallerVariable>
+ 
+                     <!-- Unpacking the Script file to temporary directory -->
+                     <unpackFile>
+                       <component>psqlODBC</component>
+                       <destination>${system_temp_directory}\${product_shortname}_${random_number}\${vcredist_executable}</destination>
+                       <folder>redist</folder>
+                       <origin>${vcredist_executable}</origin>
+                     </unpackFile>
+                     <!-- Running VC Dist file | WIN  -->  
+                     <runProgram>
+                        <program>${system_temp_directory}\${product_shortname}_${random_number}\${vcredist_executable}</program>
+                        <programArguments>"/Q"</programArguments>
+                        <workingDirectory>${system_temp_directory}\${product_shortname}_${random_number}</workingDirectory>
+                        <showMessageOnError>0</showMessageOnError>
+                        <abortOnError>0</abortOnError>     
+                     </runProgram>
+                     <throwError>
+                        <text>${msg(error.installing.runtimes)}</text>
+                        <ruleList>
+                           <compareText>
+                              <logic>does_not_equal</logic>
+                              <text>3010</text>
+                              <value>${program_exit_code}</value>
+                           </compareText>
+                           <compareText>
+                              <logic>does_not_equal</logic>
+                              <text>0</text>
+                              <value>${program_exit_code}</value>
+                           </compareText>
+                        </ruleList>
+                     </throwError>
+                  </actionList>
+                  <ruleList>
+                     <compareText>
+                        <logic>equals</logic>
+                        <text>${platform_name}</text>
+                        <value>windows</value>
+                     </compareText>
+                  </ruleList>
+                </actionGroup>
             </actionList>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
@@ -1405,6 +1461,17 @@ EOF
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>VC++ Runtime</description>
+                    <destination>${system_temp_directory}\${product_shortname}_${random_number}</destination>
+                    <name>redist</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/${vcredist_executable}</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>

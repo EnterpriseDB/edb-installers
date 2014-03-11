@@ -115,6 +115,7 @@ EOT
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/lib/engines/capi.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (capi.dll)"
 
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/ssl/openssl.cnf $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/etc || _die "Failed to copy the openssl.cnf"
+    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/vcredist/vcredist_x64.exe $WD/psqlODBC/staging/windows-x64/ || _die "Failed to copy the vcredist"
 
 }
 
