@@ -232,10 +232,13 @@ fi
 
 # Create a remote directory if not present
 echo "Creating $remote_location on the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
+ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location $remote_location/../../../PEM/$DATE >> autobuild.log 2>&1
+
+echo "Uploading pem installers to /var/www/html/builds/DailyBuilds/Installers/PEM/$DATE  on the builds server"
+rsync -avh --del output/{pem*,sqlprof*,build-pvt*} buildfarm@builds.enterprisedb.com:$remote_location/../../../PEM/$DATE >> autobuild.log 2>&1
 
 echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-rsync -avh --del output/ buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
+rsync -avh --del --exclude={pem*,sqlprof*,build-pvt*} output/ buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
 
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
