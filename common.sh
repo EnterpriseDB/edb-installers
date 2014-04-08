@@ -172,7 +172,7 @@ win32_sign()
                return
             fi
             NOT_SIGNED=0
-            ssh $PG_SSH_WINDOWS "cmd /c \"$PG_SIGNTOOL_WINDOWS\" sign /a /t http://tsa.starfieldtech.com $PG_PATH_WINDOWS/$FILENAME" || NOT_SIGNED=1
+            ssh $PG_SSH_WINDOWS "cmd /c \"$PG_SIGNTOOL_WINDOWS\" sign /a /t http://timestamp.comodoca.com/authenticode $PG_PATH_WINDOWS/$FILENAME" || NOT_SIGNED=1
             COUNT=`expr $COUNT + 1`
         done
         scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/$FILENAME $FILEPATH/$FILENAME || _die "Failed to copy the executable from the windows host after signing ($FILENAME)"
