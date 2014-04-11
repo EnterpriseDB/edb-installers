@@ -1,6 +1,10 @@
 #!/bin/bash
 # Copyright (c) 2012-2014, EnterpriseDB Corporation.  All rights reserved
 
+# RM 32745
+LC_CTYPE_ORG=$LC_CYTPE
+LC_CTYPE="C"
+
 # Fatal error handler
 _die() {
         echo ""
@@ -26,3 +30,4 @@ _replace @@INSTALL_DIR@@ "$1" "$file"
  chmod +x "$file"
 done
 
+LC_CTYPE=$LC_CYTPE_ORG
