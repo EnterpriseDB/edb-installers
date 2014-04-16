@@ -29,7 +29,8 @@ fi
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
-    source $WD/StackBuilderPlus/build-windows.sh
+    echo "Temporarily disabling StackBuilderPlus for Windows"
+    #source $WD/StackBuilderPlus/build-windows.sh
 fi
     
 # Solaris x64
@@ -117,7 +118,8 @@ _prep_stackbuilderplus() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_stackbuilderplus_windows || exit 1
+	echo "Temporarily disabling StackBuilderPlus for Windows"
+        #_prep_stackbuilderplus_windows || exit 1
     fi
     
     # Solaris x64
@@ -172,7 +174,8 @@ _build_stackbuilderplus() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_stackbuilderplus_windows || exit 1
+	echo "Temporarily disabling StackBuilderPlus for Windows"
+        #_build_stackbuilderplus_windows || exit 1
     fi
     
     # Solaris x64
@@ -245,7 +248,8 @@ _postprocess_stackbuilderplus() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-       _postprocess_stackbuilderplus_windows || exit 1
+       echo "Temporarily disabling StackBuilderPlus for Windows"
+       #_postprocess_stackbuilderplus_windows || exit 1
     fi
 
     # Solaris x64
