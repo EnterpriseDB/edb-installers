@@ -19,7 +19,7 @@ _set_config()
 _set_config PG_ARCH_OSX 0
 _set_config PG_ARCH_LINUX 1
 _set_config PG_ARCH_LINUX_X64 1
-_set_config PG_ARCH_WINDOWS 0
+_set_config PG_ARCH_WINDOWS 1
 _set_config PG_ARCH_WINDOWS_X64 0
 _set_config PG_ARCH_LINUX_PPC64 0
 _set_config PG_ARCH_SOLARIS_X64 0
@@ -91,22 +91,22 @@ PG_OCI_LINUX_X64=/opt/oracle_10.2
 PG_CHRPATH_PATH_LINUX_X64=/usr
 
 # Windows-x32
-PG_SSH_WINDOWS=buildfarm@bfas93-windows.pn.in.enterprisedb.com
-PG_PATH_WINDOWS=D:\\\\pginstaller.auto-repo
-PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0"
+PG_SSH_WINDOWS=buildfarm@172.24.32.132
+PG_PATH_WINDOWS=D:\\\\pginstaller.ppas.auto
+PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 12.0"
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
 PG_FRAMEWORKVERSION_WINDOWS=v4.0.30319
-PG_FRAMEWORKSDKDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0\\\\SDK\\\\v4.0.30319"
-PG_DEVENVDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0\\\\Common7\\\\IDE"
+PG_FRAMEWORKSDKDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 12.0\\\\SDK\\\\v3.5"
+PG_DEVENVDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 12.0\\\\Common7\\\\IDE"
 PG_PGBUILD_WINDOWS="C:\\\\pgBuild32"
 PG_WXWIN_WINDOWS="$PG_PGBUILD_WINDOWS\\\\wxWidgets-2.8.12"
 PG_CMAKE_WINDOWS="C:\\\\cmake-x86"
 PG_ANT_WINDOWS="$PG_PGBUILD_WINDOWS"
 PG_MINGW_WINDOWS=C:\\\\MinGW
 PG_MSYS_WINDOWS=C:\\\\MinGW\\\\msys\\\\1.0
-PG_JAVA_HOME_WINDOWS="C:\\\\Program Files (x86)\\\\Java\\\\jdk1.6.0_33"
+PG_JAVA_HOME_WINDOWS="C:\\\\Program Files\\\\Java\\\\jdk1.7.0_51"
 PG_QTPATH_WINDOWS=C:\\\\QtSDK
-PG_SDK_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.0A"
+PG_SDK_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_SIGNTOOL_WINDOWS="$PG_SDK_WINDOWS\\\\Bin\\\\signtool.exe"
 PG_PERL_WINDOWS=C:\\\\Perl32
 PG_PYTHON_WINDOWS=C:\\\\Python32-x86
@@ -114,21 +114,21 @@ PG_TCL_WINDOWS=C:\\\\Tcl32
 PG_OCI_WINDOWS=C:\\\\instantclient_11_2_x32
 
 # Windows-x64
-PG_SSH_WINDOWS_X64=buildfarm@bfas93-windows-x64.pn.in.enterprisedb.com
-PG_PATH_WINDOWS_X64=D:\\\\pginstaller.auto-repo-x64
-PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0"
+PG_SSH_WINDOWS_X64=buildfarm@172.24.32.128
+PG_PATH_WINDOWS_X64=D:\\\\pginstaller.ppas.auto-x64
+PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0"
 PG_FRAMEWORKDIR_WINDOWS_X64="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework64"
 PG_FRAMEWORKVERSION_WINDOWS_X64=v4.0.30319
-PG_FRAMEWORKSDKDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0\\\\SDK\\\\v4.0.30319"
-PG_DEVENVDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0\\\\Common7\\\\IDE"
+PG_FRAMEWORKSDKDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0\\\\SDK\\\\v3.5"
+PG_DEVENVDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0\\\\Common7\\\\IDE"
 PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild64"
 PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets-2.8.12"
-PG_JAVA_HOME_WINDOWS_X64="C:\\\\Program Files\\\\Java\\\\jdk1.6.0_33"
+PG_JAVA_HOME_WINDOWS_X64="C:\\\\Program Files\\\\Java\\\\jdk1.7.0_51"
 PG_CMAKE_WINDOWS_X64="C:\\\\cmake-x86"
 PG_PERL_WINDOWS_X64=C:\\\\Perl64
 PG_PYTHON_WINDOWS_X64=C:\\\\Python32-x64
 PG_TCL_WINDOWS_X64=C:\\\\Tcl64
-PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.0A"
+PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_OCI_WINDOWS_X64=C:\\\\instantclient_11_2_x64
 PG_SIGNTOOL_WINDOWS="$PG_SDK_WINDOWS\\\\Bin\\\\signtool.exe"
 
