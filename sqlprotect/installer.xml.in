@@ -136,7 +136,7 @@
         <setInstallerVariable name="default_installdir" value=""/>
 
         <!-- Custome Page for Registration -->
-        <include file="staging/registration_initialization.xml"/>
+        <include file="staging/registration_plus_initialization.xml"/>
 
     </initializationActionList>
     <!-- Preinstallation actions -->
@@ -414,7 +414,7 @@
         </actionGroup>
 
         <!-- Custome Page for Registration -->
-        <include file="staging/registration_preinstallation.xml"/>
+        <include file="staging/registration_plus_preinstallation.xml"/>
 
     </preInstallationActionList>
     <readyToInstallActionList>
@@ -483,7 +483,7 @@
         </actionGroup>
 
         <!-- Custome Page for Registration -->
-        <include file="staging/registration_postinstallation.xml"/>
+        <include file="staging/registration_plus_postinstallation.xml"/>
 
     </postInstallationActionList>
     <!-- preUninstallation actions -->
@@ -521,7 +521,7 @@
         <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\sqlprotect-PG_PG_MAJOR_VERSION"/>
 
         <!-- Custome Page for Registration -->
-        <include file="staging/registration_preuninstallation.xml"/>
+        <include file="staging/registration_plus_preuninstallation.xml"/>
     </preUninstallationActionList>
 
     <!-- postUninstallation actions -->
@@ -639,14 +639,14 @@
         </component>
 
         <!-- Custome Page for Registration -->
-        <include file="staging/registration_component.xml"/>
+        <include file="staging/registration_plus_component.xml"/>
 
     </componentList>
     <parameterList>
 
         <!-- Custome Page for Registration -->
-        <include file="staging/registration_already_registered_parameter.xml"/>
-        <include file="staging/registration_authentication_parameter.xml"/>
+        <include file="staging/registration_plus_already_registered_parameter.xml"/>
+        <include file="staging/registration_plus_authentication_parameter.xml"/>
 
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>

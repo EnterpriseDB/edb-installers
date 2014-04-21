@@ -71,7 +71,7 @@ _build_sqlprotect_windows_x64() {
    
    ssh $PG_SSH_WINDOWS_X64 "cp $PG_PATH_WINDOWS_X64/postgres.windows-x64/release/sqlprotect/sqlprotect.dll $PG_PATH_WINDOWS_X64/sqlprotect.staging/lib/postgresql" || _die "Failed to copy sqlprotect.dll to staging directory"
    ssh $PG_SSH_WINDOWS_X64 "cp $PG_PATH_WINDOWS_X64/postgres.windows-x64/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_WINDOWS_X64/sqlprotect.staging/share" || _die "Failed to copy sqlprotect.sql to staging directory"
-   ssh $PG_SSH_WINDOWS_X64 "cp $PG_PATH_WINDOWS_X64/postgres.windows-x64/contrib/SQLPROTECT/README-sqlprotect.postgresql $PG_PATH_WINDOWS_X64/sqlprotect.staging/doc/README.sqlprotect" || _die "Failed to copy README-sqlprotect.postgresql to staging directory"
+   ssh $PG_SSH_WINDOWS_X64 "cp $PG_PATH_WINDOWS_X64/postgres.windows-x64/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_WINDOWS_X64/sqlprotect.staging/doc" || _die "Failed to copy README-sqlprotect.txt to staging directory"
    
    # Zip up the installed code, copy it back here, and unpack.
    echo "Copying sqlprotect build tree to Unix host"
@@ -100,16 +100,18 @@ _postprocess_sqlprotect_windows_x64() {
 
     cd $WD/sqlprotect
 
-    if [ -f installer-windows.xml ]; then
-        rm -f installer-windows.xml
+    if [ -f installer-win-x64.xml ]; then
+        rm -f installer-win-x64.xml
     fi
-    cp installer.xml installer-windows.xml
+    cp installer.xml installer-win-x64.xml
 
-    _replace @@WIN64MODE@@ "1" installer-windows.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
-    _replace @@WINDIR@@ "windows-x64" installer-windows.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
+    _replace @@WIN64MODE@@ "1" installer-win-x64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+    _replace @@WINDIR@@ "windows-x64" installer-win-x64.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
+    _replace "registration_plus_component" "registration_plus_component_windows_x64" installer-win-x64.xml || _die "Failed to replace the registration_plus component file name"
+    _replace "registration_plus_preinstallation" "registration_plus_preinstallation_windows_x64" installer-win-x64.xml || _die "Failed to replace the registration_plus preinstallation file name"
 
     # Build the installer
-    "$PG_INSTALLBUILDER_BIN" build installer-windows.xml windows || _die "Failed to build the installer"
+    "$PG_INSTALLBUILDER_BIN" build installer-win-x64.xml windows || _die "Failed to build the installer"
 
     # Sign the installer
     win32_sign "sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-windows-x64.exe"
