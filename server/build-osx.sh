@@ -21,18 +21,33 @@ _prep_server_osx() {
       echo "Removing existing postgres.osx source directory"
       rm -rf postgres.osx  || _die "Couldn't remove the existing postgres.osx source directory (source/postgres.osx)"
     fi
+    
+    if [ -e postgres.tar.bz2 ];
+    then
+      echo "Removing existing postgres archive"
+      rm -f postgres.tar.bz2  || _die "Couldn't remove the existing postgres archive (source/postgres.tar.bz2)"
+    fi
 
     # Grab a copy of the postgres source tree
     cp -pR postgresql-$PG_TARBALL_POSTGRESQL postgres.osx || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
+    patch -p0 < ~/tarballs/uuid_mountainlion.patch # Patch to build the uuid-ossp on mountain lion
+    tar -jcvf postgres.tar.bz2 postgres.osx || _die "Failed to create the archive (source/postgres.tar.bz2)"
 
     if [ -e pgadmin.osx ];
     then
       echo "Removing existing pgadmin.osx source directory"
       rm -rf pgadmin.osx  || _die "Couldn't remove the existing pgadmin.osx source directory (source/pgadmin.osx)"
     fi
+    
+    if [ -e pgadmin.tar.bz2 ];
+    then
+      echo "Removing existing pgadmin archive"
+      rm -f pgadmin.tar.bz2  || _die "Couldn't remove the existing pgadmin archive (source/pgadmin.tar.bz2)"
+    fi
 
     # Grab a copy of the pgadmin source tree
     cp -pR pgadmin3-$PG_TARBALL_PGADMIN pgadmin.osx || _die "Failed to copy the source code (source/pgadmin3-$PG_TARBALL_PGADMIN)"
+    tar -jcvf pgadmin.tar.bz2 pgadmin.osx || _die "Failed to create the archive (source/pgadmin.tar.bz2)"
 
     if [ -e stackbuilder.osx ];
     then
@@ -40,14 +55,21 @@ _prep_server_osx() {
       rm -rf stackbuilder.osx  || _die "Couldn't remove the existing stackbuilder.osx source directory (source/stackbuilder.osx)"
     fi
 
+    if [ -e stackbuilder.tar.bz2 ];
+    then
+      echo "Removing existing stackbuilder archive"
+      rm -f stackbuilder.tar.bz2  || _die "Couldn't remove the existing stackbuilder archive (source/stackbuilder.tar.bz2)"
+    fi
     # Grab a copy of the stackbuilder source tree
     cp -pR stackbuilder stackbuilder.osx || _die "Failed to copy the source code (source/stackbuilder)"
+    tar -jcvf stackbuilder.tar.bz2 stackbuilder.osx
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/osx ];
     then
       echo "Removing existing staging directory"
       rm -rf $WD/server/staging/osx || _die "Couldn't remove the existing staging directory"
+      ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/staging/osx" || _die "Falied to remove the staging directory on Mac OS X VM"
     fi
 
     echo "Creating staging directory ($WD/server/staging/osx)"
@@ -57,6 +79,22 @@ _prep_server_osx() {
       rm -f $WD/server/scripts/osx/getlocales/getlocales.osx
     fi
 
+    echo "Copy the sources to the build VM"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source" || _die "Failed to create the source dircetory on the build VM"
+    scp postgres.tar.bz2 pgadmin.tar.bz2 stackbuilder.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server/source/ || _die "Failed to copy the source archives to build VM"
+
+    echo "Copy the scripts required to build VM"
+    cd $WD/server
+    tar -jcvf scripts.tar.bz2 scripts/osx 
+    scp $WD/server/scripts.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server || _die "Failed to copy the scripts to build VM"
+    scp $WD/versions.sh $WD/common.sh $WD/settings.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
+
+    echo "Extracting the archives"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf postgres.tar.bz2"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf pgadmin.tar.bz2"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf stackbuilder.tar.bz2"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; tar -jxvf scripts.tar.bz2"
+    
     echo "END PREP Server OSX"
 }
 
@@ -65,6 +103,7 @@ _prep_server_osx() {
 ################################################################################
 
 _build_server_osx() {
+
     echo "BEGIN BUILD Server OSX"
 
     echo "*******************************************************"
@@ -73,30 +112,33 @@ _build_server_osx() {
 
     # First, build the server
 
-    cd $WD/server/source/postgres.osx
+    PG_STAGING=$PG_PATH_OSX/server/staging/osx
 
-    if [ -f src/backend/catalog/genbki.sh ];
-	then
-      echo "Updating genbki.sh (WARNING: Not 64 bit safe!)..."
-      echo ""
-      _replace "pg_config.h" "pg_config_i386.h" src/backend/catalog/genbki.sh
-    fi
+#    cd $WD/server/source/postgres.osx
+#
+#    if [ -f src/backend/catalog/genbki.sh ];
+#	then
+#      echo "Updating genbki.sh (WARNING: Not 64 bit safe!)..."
+#      echo ""
+#      _replace "pg_config.h" "pg_config_i386.h" src/backend/catalog/genbki.sh
+#    fi
+
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx; _replace 'pg_config.h' 'pg_config_i386.h' src/backend/catalog/genbki.sh"
 
     # Configure the source tree
     echo "Configuring the postgres source tree for Intel"
-    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for i386"
-    mv src/include/pg_config.h src/include/pg_config_i386.h
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386' LDFLAGS="-L/opt/local/Current/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --host=i386-apple-darwin --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/opt/local/Current/include/libxml2:/opt/local/Current/include:/opt/local/Current/include/security --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi" || _die "Failed to configure postgres for i386"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx; mv src/include/pg_config.h src/include/pg_config_i386.h"
 
     echo "Configuring the postgres source tree for x86_64"
-    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --host=x86_64-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for PPC"
-    mv src/include/pg_config.h src/include/pg_config_x86_64.h
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -arch x86_64' LDFLAGS="-L/opt/local/Current/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --host=x86_64-apple-darwin --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/opt/local/Current/include/libxml2:/opt/local/Current/include:/opt/local/Current/include/security --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi" || _die "Failed to configure postgres for x86_64"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx; mv src/include/pg_config.h src/include/pg_config_x86_64.h"
 
     echo "Configuring the postgres source tree for Universal"
-    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for Universal"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64' LDFLAGS="-L/opt/local/Current/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/opt/local/Current/include/libxml2:/opt/local/Current/include:/opt/local/Current/include/security --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi" || _die "Failed to configure postgres for Universal"
 
     # Create a replacement pg_config.h that will pull in the appropriate architecture-specific one:
-    rm -f src/include/pg_config.h
-cat <<EOT > "src/include/pg_config.h"
+cat <<EOT > "/tmp/pg_config.h"
 #ifdef __BIG_ENDIAN__
  #error "Dont support ppc architecture"
 #else
@@ -108,34 +150,33 @@ cat <<EOT > "src/include/pg_config.h"
 #endif
 
 EOT
+    ssh $PG_SSH_OSX "rm -f $PG_PATH_OSX/server/source/postgres.osx/src/include/pg_config.h" || _die "Failed to remove pg_config.h"
+    scp /tmp/pg_config.h $PG_SSH_OSX:$PG_PATH_OSX/server/source/postgres.osx/src/include/
+    rm -f /tmp/pg_config.h
 
     echo "Building postgres"
-    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" make -j4 || _die "Failed to build postgres"
-    make install || _die "Failed to install postgres"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64' make -j4" || _die "Failed to build postgres"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; make install" || _die "Failed to install postgres"
 
-    cp src/include/pg_config_i386.h $WD/server/staging/osx/include/
-    cp src/include/pg_config_x86_64.h $WD/server/staging/osx/include/
-
-    cd $WD/server/source/postgres.osx
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; cp src/include/pg_config_i386.h $PG_STAGING/include/"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; cp src/include/pg_config_x86_64.h $PG_STAGING/include/"
 
     echo "Building contrib modules"
-    cd contrib
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" make -j4 || _die "Failed to build the postgres contrib modules"
-    make install || _die "Failed to install the postgres contrib modules"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64' make -j4" || _die "Failed to build the postgres contrib modules"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; make install" || _die "Failed to install the postgres contrib modules"
 
     echo "Building pldebugger module"
-    cd pldebugger
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" make -j4 || _die "Failed to build the debugger module"
-    make install || _die "Failed to install the debugger module"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64' make -j4" || _die "Failed to build the debugger module"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
     if [ ! -e $WD/server/staging/osx/doc ];
     then
         mkdir -p $WD/server/staging/osx/doc || _die "Failed to create the doc directory"
     fi
-    cp README.pldebugger $WD/server/staging/osx/doc || _die "Failed to copy the debugger README into the staging directory"
+    cp $WD/server/source/postgres.osx/contrib/pldebugger/README.pldebugger $WD/server/staging/osx/doc || _die "Failed to copy the debugger README into the staging directory"
 
-    cd ../uuid-ossp
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" make -j4 || _die "Failed to build the uuid-ossp module"
-    make install || _die "Failed to install the uuid-ossp module"
+    echo "Building uuid-ossp module"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64' make -j4" || _die "Failed to build the uuid-ossp module" 
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
 
     # Install the PostgreSQL docs
     mkdir -p $WD/server/staging/osx/doc/postgresql/html || _die "Failed to create the doc directory"
@@ -151,66 +192,77 @@ EOT
 
     # Now, build pgAdmin
 
-    cd $WD/server/source/pgadmin.osx
-
     # Configure
-    PATH=/usr/local/bin:/opt/local/bin:$PATH CPPFLAGS="$PG_ARCH_OSX_CPPFLAGS" LDFLAGS="$PG_ARCH_OSX_LDFLAGS" ./configure --enable-appbundle --disable-dependency-tracking --with-pgsql=$WD/server/staging/osx --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug --disable-static  --with-sphinx-build=$PG_PYTHON_OSX/bin/sphinx-build || _die "Failed to configure pgAdmin"
+    echo "Configuring the pgAdmin source tree"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; PATH=/opt/local/Current/bin:/opt/local/bin:$PATH CPPFLAGS='$PG_ARCH_OSX_CPPFLAGS' LDFLAGS='$PG_ARCH_OSX_LDFLAGS' ./configure --enable-appbundle --disable-dependency-tracking --with-pgsql=$PG_STAGING --with-wx=/opt/local/Current/wx-28 --with-libxml2=/opt/local/Current --with-libxslt=/opt/local/Current --disable-debug --disable-static  --with-sphinx-build=$PG_PYTHON_OSX/bin/sphinx-build" || _die "Failed to configure pgAdmin"
 
     # Build the app bundle
-    make -j4 all || _die "Failed to build pgAdmin"
-    make doc || _die "Failed to build documentation for pgAdmin"
-    make install || _die "Failed to install pgAdmin"
+    echo "Building & installing pgAdmin"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; make -j4 all" || _die "Failed to build pgAdmin"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; make doc" || _die "Failed to build documentation for pgAdmin"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; make install" || _die "Failed to install pgAdmin"
 
     # Copy the app bundle into place
-    cp -pR pgAdmin3.app $WD/server/staging/osx || _die "Failed to copy pgAdmin into the staging directory"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; cp -pR pgAdmin3.app $PG_STAGING" || _die "Failed to copy pgAdmin into the staging directory"
 
     #Fix permission in the staging/osx/share
-    chmod -R a+r $WD/server/staging/osx/share/postgresql/timezone/*
+    ssh $PG_SSH_OSX "chmod -R a+r $PG_STAGING/share/postgresql/timezone/*"
 
     # Stackbuilder
-
-    cd $WD/server/source/stackbuilder.osx
-
-    PATH=/usr/local/bin:$PATH cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6 -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=i386 .  || _die "Failed to configure StackBuilder"
-    make all || _die "Failed to build StackBuilder"
+    echo "Configuring the StackBuilder"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; PATH=/opt/local/Current/bin:$PATH cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6 -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/wx-28/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=i386 ."  || _die "Failed to configure StackBuilder"
+    echo "Building the StackBuilder"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; make all" || _die "Failed to build StackBuilder"
 
     # Copy the StackBuilder app bundle into place
-    cp -pR stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; cp -pR stackbuilder.app $PG_STAGING" || _die "Failed to copy StackBuilder into the staging directory"
 
-    cd $WD/server/staging/osx
+    #cd $WD/server/staging/osx
     # Copy libxml2 as System's libxml can be old.
-    cp -pR /usr/local/lib/libxml2* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"
-    cp -pR /usr/local/lib/libxslt.* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxslt"
-    cp -pR /usr/local/lib/libuuid* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -pR /usr/local/lib/libedit* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libedit"
-    cp -pR /usr/local/lib/libz* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libz"
-    cp -pR /usr/local/lib/libssl* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libssl"
-    cp -pR /usr/local/lib/libcrypto* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libcrypto"
-    cp -pR /usr/local/lib/libjpeg* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libjpeg"
-    cp -pR /usr/local/lib/libpng16* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libpng15"
-    cp -pR /usr/local/lib/libiconv* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libiconv"
-    cp -pR /usr/local/lib/libexpat* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libexpat"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libxml2* $PG_STAGING/lib/" || _die "Failed to copy the latest libxml2"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libxslt.* $PG_STAGING/lib/" || _die "Failed to copy the latest libxslt"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libuuid* $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libedit* $PG_STAGING/lib/" || _die "Failed to copy the latest libedit"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libz* $PG_STAGING/lib/" || _die "Failed to copy the latest libz"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libssl* $PG_STAGING/lib/" || _die "Failed to copy the latest libssl"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libcrypto* $PG_STAGING/lib/" || _die "Failed to copy the latest libcrypto"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libjpeg* $PG_STAGING/lib/" || _die "Failed to copy the latest libjpeg"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libpng16* $PG_STAGING/lib/" || _die "Failed to copy the latest libpng15"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libiconv* $PG_STAGING/lib/" || _die "Failed to copy the latest libiconv"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libexpat* $PG_STAGING/lib/" || _die "Failed to copy the latest libexpat"
 
-    cp -pR /usr/local/lib/libwx_macu_adv-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -pR /usr/local/lib/libwx_macu_core-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -pR /usr/local/lib/libwx_base_carbonu-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -pR /usr/local/lib/libwx_base_carbonu_net-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
-    cp -pR /usr/local/lib/libwx_base_carbonu_xml-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wx-28/lib/libwx_macu_adv-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wx-28/lib/libwx_macu_core-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wx-28/lib/libwx_base_carbonu-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wx-28/lib/libwx_base_carbonu_net-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wx-28/lib/libwx_base_carbonu_xml-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
 
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
-    cp -f $WD/server/staging/osx/lib/postgresql/plperl.so $WD/server/staging/osx/
+    ssh $PG_SSH_OSX "cp -f $PG_STAGING/lib/postgresql/plperl.so $PG_STAGING"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
-    _rewrite_so_refs $WD/server/staging/osx bin @loader_path/..
-    _rewrite_so_refs $WD/server/staging/osx lib @loader_path/..
-    _rewrite_so_refs $WD/server/staging/osx lib/postgresql @loader_path/../..
-    _rewrite_so_refs $WD/server/staging/osx lib/postgresql/plugins @loader_path/../../..
-    _rewrite_so_refs $WD/server/staging/osx stackbuilder.app/Contents/MacOS @loader_path/../../..
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source settings.sh; source common.sh; cd $PG_STAGING; _rewrite_so_refs $PG_STAGING bin @loader_path/..;\
+        _rewrite_so_refs $PG_STAGING lib @loader_path/..; _rewrite_so_refs $PG_STAGING lib/postgresql @loader_path/../..;\
+        _rewrite_so_refs $PG_STAGING lib/postgresql/plugins @loader_path/../../..;\
+        _rewrite_so_refs $PG_STAGING stackbuilder.app/Contents/MacOS @loader_path/../../.."
 
     # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
-    mv -f $WD/server/staging/osx/plperl.so $WD/server/staging/osx/lib/postgresql/plperl.so
+    ssh $PG_SSH_OSX "mv -f $PG_STAGING/plperl.so $PG_STAGING/lib/postgresql/plperl.so"
 
-    cd $WD/server/scripts/osx/getlocales/; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -o getlocales.osx -O0 getlocales.c  || _die "Failed to build getlocales utility"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/scripts/osx/getlocales; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -o getlocales.osx -O0 getlocales.c"  || _die "Failed to build getlocales utility"
+
+    # Copy the staging to controller to build the installers
+    ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create archive of the server staging"
+    scp $PG_SSH_OSX:$PG_STAGING/server-staging.tar.bz2 $WD/server/staging/osx || _die "Failed to scp server staging"
+    scp $PG_SSH_OSX:$PG_PATH_OSX/server/scripts/osx/getlocales/getlocales.osx $WD/server/scripts/osx/getlocales/ || _die "Failed to scp getlocales.osx"
+
+    # Extract the staging archive
+    cd $WD/server/staging/osx
+    tar -jxvf server-staging.tar.bz2 || _die "Failed to extract the server staging archive"
+    rm -f server-staging.tar.bz2
+
+    # Cleaning the files on the remote build machine
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; rm -rf source scripts.tar.bz2" || _die "Failed to remove the source directory"
 
     cd $WD
     echo "END BUILD Server OSX"
@@ -222,6 +274,7 @@ EOT
 ################################################################################
 
 _postprocess_server_osx() {
+
     echo "BEGIN POST Server OSX"
 
     echo "*******************************************************"
@@ -343,8 +396,14 @@ _postprocess_server_osx() {
     mkdir server.img || _die "Failed to create DMG staging directory"
     mv postgresql-$PG_PACKAGE_VERSION-osx.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
     cp $WD/server/resources/README.osx server.img/README || _die "Failed to copy the installer README file into the DMG staging directory"
-    hdiutil create -quiet -srcfolder server.img -format UDZO -volname "PostgreSQL $PG_PACKAGE_VERSION" -ov "postgresql-$PG_PACKAGE_VERSION-osx.dmg" || _die "Failed to create the disk image (output/postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
+    tar -jcvf server.img.tar.bz2 server.img
+    scp server.img.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source versions.sh; tar -jxvf server.img.tar.bz2; hdiutil create -quiet -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-osx.dmg'" || _die "Failed to create the disk image (output/postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
+    scp $PG_SSH_OSX:$PG_PATH_OSX/postgresql-$PG_PACKAGE_VERSION-osx.dmg .
     rm -rf server.img
+   
+    #Cleaning up the files on remote build machine"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; rm -rf server.img* postgresql-*.dmg"  
 
     cd $WD
     echo "END POST Server OSX"

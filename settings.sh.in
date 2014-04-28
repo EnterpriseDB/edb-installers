@@ -140,15 +140,15 @@ PG_SOLARIS_STUDIO_SOLARIS_SPARC=/opt/sunstudio12.1/prod
 PG_ANT_HOME_SOLARIS_SPARC=/opt/apache-ant-1.8.4
 PG_QMAKE_SOLARIS_SPARC=/usr/local.sun/bin/qmake
 
-
-PG_PATH_OSX=`pwd`
+PG_SSH_OSX=buildfarm@bf4-osx.ox.uk.enterprisedb.com
+PG_PATH_OSX=/mnt/hgfs/pginstaller.auto
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx
 PG_ANT_HOME_OSX=/usr
 PG_DOCBOOK_OSX=/usr/local/docbook-xsl-1.77.1
 PG_JAVA_HOME_OSX=/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home
-PG_PERL_OSX=/usr/local/ActivePerl-5.14
-PG_PYTHON_OSX=/Library/Frameworks/Python.framework/Versions/3.2
-PG_TCL_OSX=/Library/Frameworks/Tcl.framework/Versions/8.5/
+PG_PERL_OSX=/usr/local/ActivePerl-5.16
+PG_PYTHON_OSX=/Library/Frameworks/Python.framework/Versions/3.3
+PG_TCL_OSX=/Library/Frameworks/Tcl.framework/Versions/8.6
 PG_QTFRAMEWORK_OSX=/Library/Frameworks
 PG_QMAKE_OSX=/Developer/Tools/Qt/qmake
 
@@ -156,13 +156,13 @@ PG_QMAKE_OSX=/Developer/Tools/Qt/qmake
 # where we may need to use non-default SDKs if we're building on a platform newer than the
 # oldest supported
 
-SDK_PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk
-PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.5 -headerpad_max_install_names"
-PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.5 -headerpad_max_install_names"
-PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.5 -headerpad_max_install_names"
-PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.5 -headerpad_max_install_names"
+MACOSX_MIN_VERSION=10.7
+SDK_PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk
+PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
+PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
+PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
+PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
 
 # The InstallBuilder main binary.
-PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 8.6.0/bin/Builder.app/Contents/MacOS/installbuilder.sh"
-
+PG_INSTALLBUILDER_BIN="/opt/installbuilder-8.6.0/bin/builder"
 
