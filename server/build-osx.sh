@@ -396,14 +396,19 @@ _postprocess_server_osx() {
     mkdir server.img || _die "Failed to create DMG staging directory"
     mv postgresql-$PG_PACKAGE_VERSION-osx.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
     cp $WD/server/resources/README.osx server.img/README || _die "Failed to copy the installer README file into the DMG staging directory"
+
+    # Copy the DMG staging to remote build, sign the .app, create the DMG
     tar -jcvf server.img.tar.bz2 server.img
-    scp server.img.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source versions.sh; tar -jxvf server.img.tar.bz2; hdiutil create -quiet -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-osx.dmg'" || _die "Failed to create the disk image (output/postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
-    scp $PG_SSH_OSX:$PG_PATH_OSX/postgresql-$PG_PACKAGE_VERSION-osx.dmg .
+    scp server.img.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX || _die "Failed to scp the DMG staging archive"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source versions.sh; tar -jxvf server.img.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign -s 'Developer ID Application' -i 'com.edb.postgresql' server.img/postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source versions.sh; hdiutil create -quiet -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-osx.dmg'" || _die "Failed to create the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
+
+    # Copy the DMG back to Controller"
+    scp $PG_SSH_OSX:$PG_PATH_OSX/postgresql-$PG_PACKAGE_VERSION-osx.dmg . || _die "Failed to get the disk image from the remote build machine"
     rm -rf server.img
    
     #Cleaning up the files on remote build machine"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; rm -rf server.img* postgresql-*.dmg"  
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; rm -rf server.img* postgresql-*.dmg"
 
     cd $WD
     echo "END POST Server OSX"

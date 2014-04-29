@@ -165,4 +165,4 @@ PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSIO
 
 # The InstallBuilder main binary.
 PG_INSTALLBUILDER_BIN="/opt/installbuilder-8.6.0/bin/builder"
-
+KEYCHAIN_PASSWD="XXXXXX"
