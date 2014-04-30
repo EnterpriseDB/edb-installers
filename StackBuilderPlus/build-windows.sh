@@ -30,6 +30,11 @@ _prep_stackbuilderplus_windows() {
     chmod -R ugo+w stackbuilderplus.windows || _die "Couldn't set the permissions on the source directory (stackbuilderplus.windows)"
 
     cp -R SS-UPDATEMANAGER/* updatemanager.windows || _die "Failed to copy the source code (source/SS-UPDATEMANAGER)"
+
+    cd updatemanager.windows
+    patch -p1 <$WD/../patches/convert_updatemonitor_to_qt5_3.patch
+    cd $WD/StackBuilderPlus/source
+
     chmod -R ugo+w updatemanager.windows || _die "Couldn't set the permissions on the source directory (updatemanager.windows)"
 
     # Remove existing archieve
@@ -111,15 +116,14 @@ EOT
     cat <<EOT > "build-sbp.bat"
 @ECHO OFF
 
-REM SET QT_PATH=$PG_QTPATH_WINDOWS\Simulator\Qt\mingw
-SET QT_PATH=$PG_QTPATH_WINDOWS\Desktop\Qt\4.8.1\msvc2010
+SET QT_PATH=$PG_QTPATH_WINDOWS\qtbase
 SET SOURCE_PATH=%CD%
 SET QMAKE=%QT_PATH%\bin\qmake.exe
-SET QT_MINGW_MAKE=$PG_QTPATH_WINDOWS\mingw\bin\mingw32-make.exe
+REM SET QT_MINGW_MAKE=$PG_QTPATH_WINDOWS\mingw\bin\mingw32-make.exe
 SET ERRMSG=No error found
-SET PATH=%PATH%;%QT_PATH%\bin
+SET PATH=$PG_CMAKE_WINDOWS\bin;%PATH%;%QT_PATH%\bin
 REM SET PATH=%PATH%;$PG_QTPATH_WINDOWS\mingw\lib\gcc\mingw32\4.4.0;$PG_QTPATH_WINDOWS\mingw\bin;$PG_QTPATH_WINDOWS\mingw\mingw32\bin
-SET QMAKESPEC=%QT_PATH%\mkspecs\win32-msvc2010
+SET QMAKESPEC=%QT_PATH%\mkspecs\win32-msvc2013
 
 ECHO ******************************************
 ECHO * Build and Install the StackBuilderPlus *
@@ -150,14 +154,14 @@ ECHO * Collecting dependent libraries and Archieving all binaries in one file (s
 ECHO *******************************************************************************************
 cd "%SOURCE_PATH%\stackbuilderplus.staging\UpdateManager\bin"
 REM copy "%QT_PATH%\bin\mingwm10.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (mingwm10.dll) && GOTO EXIT_WITH_ERROR
-echo Copying QtCore4 dll
-copy "%QT_PATH%\bin\QtCore4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtCore4.dll) && GOTO EXIT_WITH_ERROR
-echo Copying QtNetwork4 dll
-copy "%QT_PATH%\bin\QtNetwork4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtNetwork4.dll) && GOTO EXIT_WITH_ERROR
-echo Copying QtGui4.dll
-copy "%QT_PATH%\bin\QtGui4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtGui4.dll) && GOTO EXIT_WITH_ERROR
-echo Copying QtXml4.dll
-copy "%QT_PATH%\bin\QtXml4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtXml4.dll) && GOTO EXIT_WITH_ERROR
+echo Copying Qt5Core dll
+copy "%QT_PATH%\bin\Qt5Core.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Core.dll) && GOTO EXIT_WITH_ERROR
+echo Copying Qt5Network dll
+copy "%QT_PATH%\bin\Qt5Network.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Network.dll) && GOTO EXIT_WITH_ERROR
+echo Copying Qt5Gui.dll
+copy "%QT_PATH%\bin\Qt5Gui.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Gui.dll) && GOTO EXIT_WITH_ERROR
+echo Copying Qt5Xml.dll
+copy "%QT_PATH%\bin\Qt5Xml.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Xml.dll) && GOTO EXIT_WITH_ERROR
 REM copy "%QT_PATH%\bin\libgcc_s_dw2-1.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (libgcc_s_dw2-1.dll) && GOTO EXIT_WITH_ERROR
 
 cd "%SOURCE_PATH%\stackbuilderplus.staging"
