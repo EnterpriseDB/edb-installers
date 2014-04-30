@@ -135,6 +135,7 @@ nmake -f ms\ntdll.mak
 REM Building apache
 cd $PG_PATH_WINDOWS
 SET STAGING_DIR=%CD%
+SET VisualStudioVersion=12.0
 cd $PG_PATH_WINDOWS\apache.windows
 perl srclib\apr\build\lineends.pl
 perl srclib\apr\build\fixwin32mak.pl

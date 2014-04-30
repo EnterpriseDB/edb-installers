@@ -33,6 +33,11 @@ _prep_pgAgent_windows() {
     
     # Grab a copy of the source tree
     cp -R pgAgent-$PG_VERSION_PGAGENT-Source/* pgAgent.windows || _die "Failed to copy the source code (source/pgAgent-$PG_VERSION_PGAGENT)"
+
+    cd pgAgent.windows
+    patch -p1 < $WD/../patches/pgAgent_dynamic_link.patch
+    cd $WD/pgAgent/source
+
     chmod -R ugo+w pgAgent.windows || _die "Couldn't set the permissions on the source directory"
 
     # Copy validateuser to pgAgent directory
@@ -112,7 +117,7 @@ EOT
     scp vc-build.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the vc-build.bat to the windows build host (vcbuild.bat)"
 
     echo "Configuring pgAgent sources"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; PGDIR=$PG_PATH_WINDOWS/output WXWIN=$PG_WXWIN_WINDOWS cmake -DCMAKE_INSTALL_PREFIX=$OUTPUT_DIR -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Couldn't configure the pgAgent sources"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; PGDIR=$PG_PATH_WINDOWS/output WXWIN=$PG_WXWIN_WINDOWS $PG_CMAKE_WINDOWS/bin/cmake -DCMAKE_INSTALL_PREFIX=$OUTPUT_DIR -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Couldn't configure the pgAgent sources"
     echo "Building pgAgent"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; export PGDIR=$PG_PATH_WINDOWS/output ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgagent.vcxproj RELEASE" || _die "Failed to build pgAgent on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/pgaevent; export PGDIR=$PG_PATH_WINDOWS/output ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgaevent.vcxproj RELEASE" || _die "Failed to build pgaevent on the build host"
@@ -124,7 +129,7 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/CreatePGPassconfForUser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat CreatePGPassconfForUser.vcxproj RELEASE" || _die "Failed to build validateuser on the build host"
 
     echo "Installing pgAgent"
-    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c cmake -DBUILD_TYPE=RELEASE -P cmake_install.cmake" || _die "Failed to install pgAgent in output directory"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c $PG_CMAKE_WINDOWS/bin/cmake -DBUILD_TYPE=RELEASE -P cmake_install.cmake" || _die "Failed to install pgAgent in output directory"
     
     echo "copying application files into the output directory"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy validateuser\\\\release\\\\validateuser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"

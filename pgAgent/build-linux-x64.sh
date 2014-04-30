@@ -60,7 +60,7 @@ _build_pgAgent_linux_x64() {
     SOURCE_DIR=$PG_PATH_LINUX_X64/pgAgent/source/pgAgent.linux-x64
 
     echo "Building pgAgent sources"
-    ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; LDFLAGS=' -L$PG_PGHOME_LINUX/lib -lldap ' LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib PGDIR=$PG_PGHOME_LINUX_X64 cmake -DCMAKE_INSTALL_PREFIX=$PG_STAGING -DSTATIC_BUILD=NO CMakeLists.txt " || _die "Couldn't configure the pgAgent sources"
+    ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; LDFLAGS=' -L$PG_PGHOME_LINUX/lib -lldap '; LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib:/opt/local/Current/lib; PATH=/opt/local/Current/bin:$PATH PGDIR=$PG_PGHOME_LINUX_X64 cmake -DCMAKE_INSTALL_PREFIX=$PG_STAGING -DSTATIC_BUILD=NO CMakeLists.txt " || _die "Couldn't configure the pgAgent sources"
 
     echo "Compiling pgAgent"
     ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; LDFLAGS=' -L$PG_PGHOME_LINUX/lib -lldap ' LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib make" || _die "Couldn't compile the pgAgent sources"

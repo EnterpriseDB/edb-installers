@@ -90,12 +90,12 @@ _die() {
 }
 
 cd $POSTGIS_SOURCE_REMOTE
-export PATH=$PG_PERL_LINUX/bin:/usr/local/bin:$PATH
-export LD_LIBRARY_PATH=$POSTGRES_REMOTE_PATH/lib:/usr/local/lib:\$LD_LIBRARY_PATH
+export PATH=$PG_PERL_LINUX/bin:/opt/local/Current/bin:$PATH
+export LD_LIBRARY_PATH=$POSTGRES_REMOTE_PATH/lib:/opt/local/Current/lib:\$LD_LIBRARY_PATH
 export LDFLAGS=-Wl,--rpath,'\\\${ORIGIN}/../lib -lz'
 
 echo "Configuring the postgis source tree"
-./configure --with-pgconfig=$POSTGRES_REMOTE_PATH/bin/pg_config --with-geosconfig=/usr/local/bin/geos-config --with-projdir=/usr/local   || _die "Failed to configure postgis"
+./configure --with-pgconfig=$POSTGRES_REMOTE_PATH/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-libiconv=/opt/local/Current  || _die "Failed to configure postgis"
 
 echo "Building postgis ($PLATFORM)"
 make || _die "Failed to build postgis (make on $PLATFORM)"
@@ -114,16 +114,16 @@ cp $POSTGIS_SOURCE_REMOTE/utils/*.pl $POSTGIS_STAGING_REMOTE/PostGIS/utils/  || 
 
 echo "Copy dependent libraries"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/lib
-cp -pR /usr/local/lib/libproj.so* . || _die "Failed to copy the proj libraries"
-cp -pR /usr/local/lib/libgeos*.so* . || _die "Failed to copy the geos libraries"
-cp -pR /usr/local/lib/libgdal.so* . || _die "Failed to copy the gdal libraries"
-cp -pR /usr/local/lib/libcurl.so* . || _die "Failed to copy the curl libraries"
-cp -pR /usr/local/lib/libpcre.so* . || _die "Failed to copy the pcre libraries"
-cp -pR /usr/local/lib/libtiff.so* . || _die "Failed to copy the libtiff libraries"
-cp -pR /usr/local/lib/libjpeg.so* . || _die "Failed to copy the libjpeg libraries"
-cp -pR /usr/local/lib/libexpat.so* . || _die "Failed to copy the libexpat libraries"
-cp -pR /usr/local/lib/libodbc.so* . || _die "Failed to copy the libodbc libraries"
-cp -pR /usr/local/lib/libodbcinst.so* . || _die "Failed to copy the libodbcinst libraries"
+cp -pR /opt/local/Current/lib/libproj.so* . || _die "Failed to copy the proj libraries"
+cp -pR /opt/local/Current/lib/libgeos*.so* . || _die "Failed to copy the geos libraries"
+cp -pR /opt/local/Current/lib/libgdal.so* . || _die "Failed to copy the gdal libraries"
+cp -pR /opt/local/Current/lib/libcurl.so* . || _die "Failed to copy the curl libraries"
+cp -pR /opt/local/Current/lib/libpcre.so* . || _die "Failed to copy the pcre libraries"
+cp -pR /opt/local/Current/lib/libtiff.so* . || _die "Failed to copy the libtiff libraries"
+cp -pR /opt/local/Current/lib/libjpeg.so* . || _die "Failed to copy the libjpeg libraries"
+cp -pR /opt/local/Current/lib/libexpat.so* . || _die "Failed to copy the libexpat libraries"
+cp -pR /opt/local/Current/lib/libodbc.so* . || _die "Failed to copy the libodbc libraries"
+cp -pR /opt/local/Current/lib/libodbcinst.so* . || _die "Failed to copy the libodbcinst libraries"
 
 cp -pR $POSTGIS_STAGING_REMOTE/PostGIS/$PG_PGHOME_LINUX/bin/* $POSTGIS_STAGING_REMOTE/PostGIS/bin/
 

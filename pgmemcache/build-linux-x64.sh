@@ -59,7 +59,7 @@ _build_pgmemcache_linux_x64() {
     PGMEM_PACKAGE_VM_PATH=$PVT_REPO/pgmemcache/source/pgmemcache.$PGMEM_PLATFORM
 
     cd $PGMEM_SOURCE
-    ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; LD_LIBRARY_PATH=$PG_PATH/lib PATH=$PG_PATH/bin:$PATH make CFLAGS=\" -I/usr/local/include \" LDFLAGS=\" -L/usr/local/lib -Wl,--rpath,$PGMEM_PACKAGE_VM_PATH/../lib\"" || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
+    ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; LD_LIBRARY_PATH=$PG_PATH/lib PATH=$PG_PATH/bin:$PATH make CFLAGS=\" -I/opt/local/Current/include \" LDFLAGS=\" -L/opt/local/Current/lib -Wl,--rpath,$PGMEM_PACKAGE_VM_PATH/../lib\"" || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
 
     echo "Changing rpath"
     ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; chrpath --replace \"\\\${ORIGIN}\" pgmemcache.so"
@@ -71,10 +71,10 @@ _build_pgmemcache_linux_x64() {
     mkdir -p $PGMEM_STAGING/lib || _die "Failed to create lib directory"
     mkdir -p $PGMEM_STAGING/share || _die "Failed to create share directory"
 
-    ssh $PVT_SSH "cp -pR /usr/local/lib/libmemcached.so* $PVT_REPO/pgmemcache/staging/linux-x64/lib/" || _die "Failed to copy the libmemcached binaries"
+    ssh $PVT_SSH "cp -pR /opt/local/Current/lib/libmemcached.so* $PVT_REPO/pgmemcache/staging/linux-x64/lib/" || _die "Failed to copy the libmemcached binaries"
     cp -pR $PGMEM_SOURCE/pgmemcache.so $PGMEM_STAGING/lib || _die "Failed to copy the pgmemcache binary"
     cp -pR $PGMEM_SOURCE/*.sql $PGMEM_STAGING/share || _die "Failed to copy the share files for the pgmemcache"
-    ssh $PVT_SSH "cp -pR /usr/local/include/* $PVT_REPO/pgmemcache/staging/linux-x64/include" || _die "Failed to copy the header files for the libmemcached"
+    ssh $PVT_SSH "cp -pR /opt/local/Current/include/* $PVT_REPO/pgmemcache/staging/linux-x64/include" || _die "Failed to copy the header files for the libmemcached"
 
     chmod a+rx $PGMEM_STAGING/lib/* || _die "Failed to set permissions"
     chmod a+r $PGMEM_STAGING/share/* || _die "Failed to set permissions"

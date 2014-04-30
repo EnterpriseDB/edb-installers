@@ -138,9 +138,9 @@ _build_psqlODBC_linux_x64() {
     SOURCE_DIR=$PG_PATH_LINUX_X64/psqlODBC/source/psqlODBC.linux-x64
 
     echo "Configuring psqlODBC sources"
-    ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; export LD_LIBRARY_PATH=/usr/local/lib:$PG_PGHOME_LINUX_X64/lib:\$LD_LIBRARY_PATH; export PATH=/usr/local/bin:$PG_PGHOME_LINUX_X64/bin:\$PATH; CFLAGS=\"-I/usr/local/include\" LDFLAGS=\"-L/usr/local/lib\" ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
+    ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; export LD_LIBRARY_PATH=/opt/local/Current/lib:$PG_PGHOME_LINUX_X64/lib:\$LD_LIBRARY_PATH; export PATH=/opt/local/Current/bin:$PG_PGHOME_LINUX_X64/bin:\$PATH; CFLAGS=\"-I/opt/local/Current/include\" LDFLAGS=\"-L/opt/local/Current/lib\" ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
     echo "Compiling psqlODBC"
-    ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; CFLAGS=\"-I/usr/local/include\" LDFLAGS=\"-L/usr/local/lib\" make" || _die "Couldn't compile the psqlODBC sources"
+    ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; CFLAGS=\"-I/opt/local/Current/include\" LDFLAGS=\"-L/opt/local/Current/lib\" make" || _die "Couldn't compile the psqlODBC sources"
     echo "Installing psqlODBC into the sources"
     ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; make install" || _die "Couldn't install the psqlODBC into statging directory" 
 
@@ -159,8 +159,8 @@ _build_psqlODBC_linux_x64() {
     cp -pR $WD/server/staging/linux-x64/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
     cp -pR $WD/server/staging/linux-x64/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
     cp -pR $WD/server/staging/linux-x64/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libodbcinst.so* $PG_STAGING/lib" || _die "Failed to copy libodbcinst.so"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libodbc.so* $PG_STAGING/lib" || _die "Failed to copy libodbc.so"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libodbcinst.so* $PG_STAGING/lib" || _die "Failed to copy libodbcinst.so"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libodbc.so* $PG_STAGING/lib" || _die "Failed to copy libodbc.so"
 
     # Process Dependent libs
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libcom_err.so"

@@ -157,19 +157,19 @@ _build_server_linux_x64() {
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/;export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; PYTHON=$PG_PYTHON_LINUX_X64/bin/python3.2 TCLSH=$PG_TCL_LINUX_X64/bin/tclsh TCL_CONFIG_SH=$PG_TCL_LINUX_X64/lib/tclConfig.sh PERL=$PG_PERL_LINUX_X64/bin/perl ./configure --with-libs=/usr/local/lib --with-includes=/usr/local/include/libxml2:/usr/local/include --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX_X64/lib --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi LD_LIBRARY_PATH=/usr/local/lib"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/;export LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; PYTHON=$PG_PYTHON_LINUX_X64/bin/python3.2 TCLSH=$PG_TCL_LINUX_X64/bin/tclsh TCL_CONFIG_SH=$PG_TCL_LINUX_X64/lib/tclConfig.sh PERL=$PG_PERL_LINUX_X64/bin/perl ./configure --with-libs=/opt/local/Current/lib --with-includes=/opt/local/Current/include/libxml2:/opt/local/Current/include --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX_X64/lib --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi LD_LIBRARY_PATH=/opt/local/Current/lib"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; export LD_LIBRARY_PATH=/usr/local/lib; make -j4 shared_libpython=yes" || _die "Failed to build postgres" 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; export LD_LIBRARY_PATH=/usr/local/lib; make shared_libpython=yes install" || _die "Failed to install postgres"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; export LD_LIBRARY_PATH=/opt/local/Current/lib; make -j4 shared_libpython=yes" || _die "Failed to build postgres" 
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64; export LD_LIBRARY_PATH=/opt/local/Current/lib; make shared_libpython=yes install" || _die "Failed to install postgres"
 
     echo "Building contrib modules"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib; export LD_LIBRARY_PATH=/usr/local/lib; make" || _die "Failed to build the postgres contrib modules"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib; LD_LIBRARY_PATH=/usr/local/lib make install" || _die "Failed to install the postgres contrib modules"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib; export LD_LIBRARY_PATH=/opt/local/Current/lib; make" || _die "Failed to build the postgres contrib modules"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib; LD_LIBRARY_PATH=/opt/local/Current/lib make install" || _die "Failed to install the postgres contrib modules"
 
     echo "Building debugger module"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; export LD_LIBRARY_PATH=/usr/local/lib; make" || _die "Failed to build the debugger module"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; LD_LIBRARY_PATH=/usr/local/lib make install" || _die "Failed to install the debugger module"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; export LD_LIBRARY_PATH=/opt/local/Current/lib; make" || _die "Failed to build the debugger module"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; LD_LIBRARY_PATH=/opt/local/Current/lib make install" || _die "Failed to install the debugger module"
 	if [ ! -e $WD/server/staging/linux-x64/doc ];
 	then
 	    mkdir -p $WD/server/staging/linux-x64/doc || _die "Failed to create the doc directory"
@@ -177,7 +177,7 @@ _build_server_linux_x64() {
     cp "$WD/server/source/postgres.linux-x64/contrib/pldebugger/README.pldebugger" $WD/server/staging/linux-x64/doc || _die "Failed to copy the debugger README into the staging directory"
 
     echo "Building uuid-ossp module"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/uuid-ossp; export LD_LIBRARY_PATH=/usr/local/lib; make" || _die "Failed to build the uuid-ossp module"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/uuid-ossp; export LD_LIBRARY_PATH=/opt/local/Current/lib; make" || _die "Failed to build the uuid-ossp module"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
 
     # Install the PostgreSQL docs
@@ -193,24 +193,24 @@ _build_server_linux_x64() {
     cp -pR $WD/server/source/postgres.linux-x64/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
 
     # Copy in the dependency libraries
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libz.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libkrb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libkrb5support* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libk5crypto* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libcom* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libgssapi* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libncurses.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libiconv.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/liblber-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(lber)"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(sasl)"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libldap-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap)"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libldap_r-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap_r)"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libz.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libkrb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libkrb5support* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libk5crypto* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libcom* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libgssapi* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libncurses.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libiconv.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/liblber-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(lber)"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(sasl)"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libldap-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap)"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libldap_r-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap_r)"
 
     # Process Dependent libs
     _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl"  
@@ -279,36 +279,36 @@ EOT
 
     # Configure
     echo "Configuring the pgAdmin source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; LD_LIBRARY_PATH="/usr/local/lib" CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib" ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX_X64/server/staging/linux-x64 --with-wx=/usr/local --with-libxml2=/usr/local --with-libxslt=/usr/local --disable-debug --disable-static --with-sphinx-build=$PG_PYTHON_LINUX_X64/bin/sphinx-build" || _die "Failed to configure pgAdmin"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; LD_LIBRARY_PATH="/opt/local/Current/lib" CPPFLAGS="-I/opt/local/Current/include" LDFLAGS="-L/opt/local/Current/lib" ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX_X64/server/staging/linux-x64 --with-wx=/opt/local/Current --with-libxml2=/opt/local/Current --with-libxslt=/opt/local/Current --disable-debug --disable-static --with-sphinx-build=$PG_PYTHON_LINUX_X64/bin/sphinx-build" || _die "Failed to configure pgAdmin"
 
     # Build the app
     echo "Building & installing pgAdmin"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; LD_LIBRARY_PATH="/usr/local/lib" make all" || _die "Failed to build pgAdmin"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; LD_LIBRARY_PATH="/opt/local/Current/lib" make all" || _die "Failed to build pgAdmin"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; make doc" || _die "Failed to build documentation for pgAdmin"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; make install" || _die "Failed to install pgAdmin"
 
     # Copy in the various libraries
     ssh $PG_SSH_LINUX_X64 "mkdir -p $PG_STAGING/pgAdmin3/lib" || _die "Failed to create the lib directory"
 
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libwx_gtk2u_adv-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libwx_gtk2u_aui-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libwx_gtk2u_core-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libwx_gtk2u_html-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libwx_gtk2u_ogl-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libwx_gtk2u_qa-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libwx_gtk2u_richtext-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libwx_gtk2u_stc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libwx_gtk2u_xrc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libwx_baseu-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libwx_baseu_net-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libwx_baseu_xml-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libwx_gtk2u_adv-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libwx_gtk2u_aui-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libwx_gtk2u_core-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libwx_gtk2u_html-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libwx_gtk2u_ogl-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libwx_gtk2u_qa-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libwx_gtk2u_richtext-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libwx_gtk2u_stc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libwx_gtk2u_xrc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libwx_baseu-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libwx_baseu_net-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libwx_baseu_xml-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
     
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libexpat.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libexpat.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -pR /usr/lib64/libpng12.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libtiff.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libjpeg.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libfreetype.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libfontconfig.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libtiff.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libjpeg.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libfreetype.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libfontconfig.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
 
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libpq.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
 
@@ -354,7 +354,7 @@ EOT
 	
     # Configure
     echo "Configuring the StackBuilder source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/stackbuilder.linux-x64/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/stackbuilder.linux-x64/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
 
     # Build the app
     echo "Building & installing StackBuilder"

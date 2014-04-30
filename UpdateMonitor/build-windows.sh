@@ -131,13 +131,13 @@ EOT
 @ECHO OFF
 CALL "$PG_VSINSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 
-SET QT_PATH=$PG_QTPATH_WINDOWS\Desktop\Qt\4.8.1\msvc2010
+SET QT_PATH=$PG_QTPATH_WINDOWS\qtbase
 SET SOURCE_PATH=%CD%
 SET QMAKE=%QT_PATH%\bin\qmake.exe
 SET QT_MINGW_MAKE=$PG_QTPATH_WINDOWS\mingw\bin\mingw32-make.exe
 SET ERRMSG=No error found
 SET PATH=%PATH%;%QT_PATH%\bin
-SET QMAKESPEC=%QT_PATH%\mkspecs\win32-msvc2010
+SET QMAKESPEC=%QT_PATH%\mkspecs\win32-msvc2013
 
 ECHO ***************************************
 ECHO * Build and Install the UpdateMonitor *
@@ -155,15 +155,15 @@ ECHO ***************************************************************************
 ECHO * Collecting dependent libraries and Archieving all binaries in one file (um_output.zip) *
 ECHO *******************************************************************************************
 cd "%SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\bin"
-echo Copying QtCore4 dll
-copy "%QT_PATH%\bin\QtCore4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtCore4.dll) && GOTO EXIT_WITH_ERROR
-echo Copying QtNetwork4 dll
-copy "%QT_PATH%\bin\QtNetwork4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtNetwork4.dll) && GOTO EXIT_WITH_ERROR
-echo Copying QtGui4.dll
-copy "%QT_PATH%\bin\QtGui4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtGui4.dll) && GOTO EXIT_WITH_ERROR
-echo Copying QtXml4.dll
-copy "%QT_PATH%\bin\QtXml4.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtXml4.dll) && GOTO EXIT_WITH_ERROR
-copy "$PG_PGBUILD_WINDOWS\vcredist\vcredist_x86.exe" . || SET ERRMSG=ERROR: Couldn't copy dependent library (QtXml4.dll) && GOTO EXIT_WITH_ERROR
+echo Copying Qt5Core dll
+copy "%QT_PATH%\bin\Qt5Core.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Core.dll) && GOTO EXIT_WITH_ERROR
+echo Copying Qt5Network dll
+copy "%QT_PATH%\bin\Qt5Network.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Network.dll) && GOTO EXIT_WITH_ERROR
+echo Copying Qt5Gui.dll
+copy "%QT_PATH%\bin\Qt5Gui.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Gui.dll) && GOTO EXIT_WITH_ERROR
+echo Copying Qt5Xml.dll
+copy "%QT_PATH%\bin\Qt5Xml.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Xml.dll) && GOTO EXIT_WITH_ERROR
+copy "$PG_PGBUILD_WINDOWS\vcredist\vcredist_x86.exe" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Xml.dll) && GOTO EXIT_WITH_ERROR
 
 cd "%SOURCE_PATH%\updatemonitor.staging"
 zip -r ..\um_output.zip * || SET ERRMSG=ERROR: Couldn't archieve the UpdateMonitor binaries && GOTO EXIT_WITH_ERROR

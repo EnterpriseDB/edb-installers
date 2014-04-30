@@ -84,7 +84,7 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $PG_REG_COMP_HOST_PATH; cmd /c build-reg-comp.bat" || _die "Building registration_plus component failed..."
 
     scp $PG_SSH_WINDOWS:$PG_REG_COMP_HOST_PATH\\\\dbserver_guid\\\\release\\\\dbserver_guid.exe     $PG_REG_COMP_STAGING/dbserver_guid.exe || _die "Failed to get dbserver_guid utility from the windows VM"
-    ssh $PG_SSH_WINDOWS "cmd /c copy \"$PG_SDK_WINDOWS\\\\Bootstrapper\\\\Packages\\\\vcredist_x86\\\\vcredist_x86.exe\" $PG_REG_COMP_HOST_PATH\\\\dbserver_guid\\\\release" || _die "Failed to copy the VC++ runtimes on the windows build host" 
+    ssh $PG_SSH_WINDOWS "cmd /c copy \"$PG_PGBUILD_WINDOWS\\\\vcredist\\\\vcredist_x86.exe\" $PG_REG_COMP_HOST_PATH\\\\dbserver_guid\\\\release" || _die "Failed to copy the VC++ runtimes on the windows build host" 
     scp $PG_SSH_WINDOWS:$PG_REG_COMP_HOST_PATH\\\\dbserver_guid\\\\release\\\\vcredist_x86.exe     $PG_REG_COMP_STAGING/vcredist_x86.exe || _die "Failed to get vc++ runtimes from the windows VM"
 
     PG_REGISTRATION_PLUS_COMP_BUILT_WIN=Done

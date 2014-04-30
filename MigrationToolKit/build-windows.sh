@@ -117,7 +117,7 @@ EOT
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationtoolkit.windows/dist.zip $WD/MigrationToolKit/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationtoolkit.windows/dist.zip)"
     unzip $WD/MigrationToolKit/staging/windows/dist.zip -d $WD/MigrationToolKit/staging/windows/ || _die "Failed to unpack the built source tree ($WD/staging/windows/dist.zip)"
     rm $WD/MigrationToolKit/staging/windows/dist.zip
-    mv $WD/MigrationToolKit/staging/windows/install $WD/MigrationToolKit/staging/windows/MigrationToolKit || _die "Failed to rename the dist folder"
+    mv $WD/MigrationToolKit/staging/windows/install $WD/MigrationToolKit/staging/windows/MigrationToolkit || _die "Failed to rename the dist folder"
     
     echo "END BUILD MigrationToolKit Windows"
 }

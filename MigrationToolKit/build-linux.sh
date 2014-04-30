@@ -59,8 +59,8 @@ _build_MigrationToolKit_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationToolKit/source/migrationtoolkit.linux; JAVA_HOME=$PG_JAVA_HOME_LINUX $PG_ANT_HOME_LINUX/bin/ant install-pg" || _die "Couldn't build the migrationtoolkit"
   
     # Copying the MigrationToolKit binary to staging directory
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationToolKit/source/migrationtoolkit.linux; mkdir $PG_STAGING/MigrationToolKit" || _die "Couldn't create the migrationtoolkit staging directory (MigrationToolKit/staging/linux/MigrationToolKit)"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationToolKit/source/migrationtoolkit.linux; cp -R install/* $PG_STAGING/MigrationToolKit" || _die "Couldn't copy the binaries to the migrationtoolkit staging directory (MigrationToolKit/staging/linux/MigrationToolKit)"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationToolKit/source/migrationtoolkit.linux; mkdir $PG_STAGING/MigrationToolkit" || _die "Couldn't create the migrationtoolkit staging directory (MigrationToolKit/staging/linux/MigrationToolkit)"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/MigrationToolKit/source/migrationtoolkit.linux; cp -R install/* $PG_STAGING/MigrationToolkit" || _die "Couldn't copy the binaries to the migrationtoolkit staging directory (MigrationToolKit/staging/linux/MigrationToolkit)"
   
     echo "END BUILD MigrationToolKit Linux" 
  

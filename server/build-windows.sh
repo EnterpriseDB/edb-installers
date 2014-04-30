@@ -82,6 +82,11 @@ _prep_server_windows() {
 
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.windows || _die "Failed to copy the source code (source/pgadmin.windows)"
     cp -R stackbuilder stackbuilder.windows || _die "Failed to copy the source code (source/stackbuilder.windows)"
+
+    cd stackbuilder.windows
+    patch -p1 < $WD/../patches/sb_patch_for_pg.patch
+    cd $WD/server/source
+
     
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/windows ];
@@ -277,7 +282,7 @@ EOT
     PG_CYGWIN_TCL_WINDOWS=`echo $PG_TCL_WINDOWS | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'` 
 
     # Build the code and install into a temporary directory
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgres.windows/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS/bin:$PG_CYGWIN_PYTHON_WINDOWS:$PG_CYGWIN_TCL_WINDOWS/bin; ./build.bat " || _die "Failed to build postgres on the windows build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgres.windows/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS/bin:$PG_CYGWIN_PYTHON_WINDOWS:$PG_CYGWIN_TCL_WINDOWS/bin; export VisualStudioVersion=12.0; ./build.bat " || _die "Failed to build postgres on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgres.windows/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS/bin:$PG_CYGWIN_PYTHON_WINDOWS:$PG_CYGWIN_TCL_WINDOWS/bin; ./install.bat $PG_PATH_WINDOWS\\\\output" || _die "Failed to install postgres on the windows build host"
     
     # Build the debugger plugins

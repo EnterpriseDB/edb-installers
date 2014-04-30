@@ -89,8 +89,15 @@ _prep_server_windows_x64() {
     cp -R postgresql-$PG_TARBALL_POSTGRESQL postgres.windows-x64 || _die "Failed to copy the source code (source/postgres.windows-x64)"
 
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.windows-x64 || _die "Failed to copy the source code (source/pgadmin.windows-x64)"
+
+    cp $WD/../patches/Docs.vcxproj pgadmin.windows-x64/docs
+
     cp -R stackbuilder stackbuilder.windows-x64 || _die "Failed to copy the source code (source/stackbuilder.windows-x64)"
-    
+
+    cd stackbuilder.windows-x64
+    patch -p1 < $WD/../patches/sb_patch_for_pg.patch   
+    cd $WD/server/source
+ 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/windows-x64 ];
     then
@@ -123,7 +130,7 @@ CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" x86
 @SET INCLUDE=$PG_PGBUILD_WINDOWS\\include;%INCLUDE%
 @SET LIB=$PG_PGBUILD_WINDOWS\\lib;%LIB%
 @SET PGDIR=$PG_PATH_WINDOWS\\output
-@SET SPHINXBUILD=C:\\Python27-x86\\Scripts\\sphinx-build.exe
+@SET SPHINXBUILD=C:\\Python27-x64\\Scripts\\sphinx-build.exe
 
 IF "%2" == "UPGRADE" GOTO upgrade
 
@@ -318,7 +325,7 @@ EOT
 
  
     # Build the code and install into a temporary directory
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin:$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin; export M4=$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin/m4.exe; ./build.bat RELEASE" || _die "Failed to build postgres on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin:$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin; export M4=$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin/m4.exe; export VisualStudioVersion=12.0; ./build.bat RELEASE" || _die "Failed to build postgres on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin; ./install.bat $PG_PATH_WINDOWS_X64\\\\output" || _die "Failed to install postgres on the windows-x64 build host"
     
     # Build the debugger plugins
@@ -354,7 +361,7 @@ EOT
     # Build the code
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/pgadmin; cmd /c ver_svn.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/pgadmin; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat pgadmin3.vcxproj Release" || _die "Failed to build pgAdmin on the build host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/docs; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build.bat Docs.vcxproj All" || _die "Failed to build the docs on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/docs; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat Docs.vcxproj All" || _die "Failed to build the docs on the build host"
         
     # Copy the application files into place
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\"" || _die "Failed to create a directory on the windows-x64 build host" || _die "Failed to create the studio directory on the build host"
@@ -392,14 +399,14 @@ EOT
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip stackbuilder-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (stackbuilder-win64.zip)"
   
     # Build the code
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c cmake -G \"Visual Studio 10 Win64\" -D MS_VS_10=1 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS_X64 -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS_X64\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"Visual Studio 12 Win64\" -D MS_VS_10=1 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS_X64 -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS_X64\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat stackbuilder.vcxproj Release" || _die "Failed to build stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat INSTALL.vcxproj Release" || _die "Failed to install stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mv $PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder\\\\bin\\\\stackbuilder.exe $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to relocate the stackbuilder executable on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c rd $PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder\\\\bin" || _die "Failed to remove the stackbuilder bin directory on the build host"
 
     # Copy the various support files into place
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vcredist_x64.exe $PG_PATH_WINDOWS_X64\\\\output\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vcredist_x64.exe $PG_PATH_WINDOWS_X64\\\\output\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\ssleay32.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libeay32.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\iconv.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"

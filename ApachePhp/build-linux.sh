@@ -67,7 +67,7 @@ _build_ApachePhp_linux() {
 
     # Configure the source tree
     echo "Configuring the apache source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux/; LD_LIBRARY_PATH=/usr/local/lib CFLAGS=\"-I/usr/local/include\" LDFLAGS=\"-L/usr/local/lib\" ./configure --prefix=$PG_STAGING/apache --with-pcre=/usr/local --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache --with-ssl=/usr/local --enable-mods-shared=all"  || _die "Failed to configure apache"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux/; LD_LIBRARY_PATH=/opt/local/Current/lib CFLAGS=\"-I/opt/local/Current/include\" LDFLAGS=\"-L/opt/local/Current/lib\" ./configure --prefix=$PG_STAGING/apache --with-pcre=/opt/local/Current --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache --with-ssl=/opt/local/Current --enable-mods-shared=all"  || _die "Failed to configure apache"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux/modules/ssl; sed -i \"s^\\(\\t\\\$(SH_LINK).*$\\)^\\1 -Wl,-rpath,\\\${libexecdir}^\" modules.mk"
 
     echo "Building apache"
@@ -94,24 +94,24 @@ _build_ApachePhp_linux() {
     ssh $PG_SSH_LINUX "chmod ugo+rx \"$PG_STAGING/apache/bin/apachectl\""
 
     # Copy in the dependency libraries (apache)
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libssl.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libssl)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libcrypto.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libcrypto)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libcom_err.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libcom_err)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libexpat.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libexpat)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libgssapi_krb5.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libgssapi_krb5)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libkrb5.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libkrb5)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libkrb5support.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libkrb5support)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libk5crypto.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libk5crypto)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libxml2.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libxml2)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libiconv.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libiconv)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libpcre.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libpcre)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libssl.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libssl)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libcrypto.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libcrypto)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libcom_err.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libcom_err)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libexpat.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libexpat)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libgssapi_krb5.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libgssapi_krb5)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libkrb5.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libkrb5)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libkrb5support.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libkrb5support)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libk5crypto.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libk5crypto)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libxml2.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libxml2)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libiconv.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libiconv)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libpcre.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libpcre)"
 
     echo "Configuring the php source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux/; export LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:/usr/local/lib; sh ./configure --prefix=$PG_STAGING/php --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/usr/local/etc --with-pgsql=$PG_PGHOME_LINUX --with-openssl=/usr/local --with-pdo-pgsql=$PG_PGHOME_LINUX --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-png-dir=/usr --with-jpeg-dir=/usr/local --with-freetype-dir=/usr/local --with-iconv=/usr/local --enable-gd-native-ttf --enable-mbstring=all --with-zlib=/usr/local" || _die "Failed to configure php"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux/; export LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:/opt/local/Current/lib; sh ./configure --prefix=$PG_STAGING/php --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/opt/local/Current/etc --with-pgsql=$PG_PGHOME_LINUX --with-openssl=/opt/local/Current --with-pdo-pgsql=$PG_PGHOME_LINUX --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-png-dir=/usr --with-jpeg-dir=/opt/local/Current --with-freetype-dir=/opt/local/Current --with-iconv=/opt/local/Current --enable-gd-native-ttf --enable-mbstring=all --with-zlib=/opt/local/Current" || _die "Failed to configure php"
 
     echo "Building php"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:/usr/local/lib make" || _die "Failed to build php"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:/usr/local/lib make install" || _die "Failed to install php"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:/opt/local/Current/lib make" || _die "Failed to build php"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:/opt/local/Current/lib make install" || _die "Failed to install php"
     cd $WD/ApachePhp
     if [ -f source/php.linux/php.ini-production ]; then
       cp source/php.linux/php.ini-production staging/linux/php/php.ini || _die "Failed to copy php.ini file"
@@ -126,10 +126,10 @@ _build_ApachePhp_linux() {
     ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/lib/libsasl*.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libsasl*)"
     ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/lib/libldap*.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libldap*)"
     ssh $PG_SSH_LINUX "cp -pR /usr/lib/libpng12.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libpng12)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libjpeg.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (jpeg)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libfreetype.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (freetype)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libz.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libz)"
-    ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libxml2.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libxml2)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libjpeg.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (jpeg)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libfreetype.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (freetype)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libz.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libz)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libxml2.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libxml2)"
 
     # Add LD_LIBRARY_PATH in envvars scripts
     cat <<EOT >> $WD/ApachePhp/staging/linux/apache/bin/envvars
@@ -142,12 +142,12 @@ EOT
     cd $WD/ApachePhp/staging/linux/php
     _replace "--with-pgsql=$PG_PGHOME_LINUX" "--with-pgsql" bin/php-config
     _replace "--with-pdo-pgsql=$PG_PGHOME_LINUX" "--with-pdo-pgsql" bin/php-config
-    _replace "--with-openssl=/usr/local" "--with-openssl" bin/php-config
-    _replace " -L/usr/local/lib" "" bin/php-config
+    _replace "--with-openssl=/opt/local/Current" "--with-openssl" bin/php-config
+    _replace " -L/opt/local/Current/lib" "" bin/php-config
     _replace " -L$PG_PGHOME_LINUX/lib" "" bin/php-config
     _replace "--with-pgsql=$PG_PGHOME_LINUX" "--with-pgsql" include/php/main/build-defs.h
     _replace "--with-pdo-pgsql=$PG_PGHOME_LINUX" "--with-pdo-pgsql" include/php/main/build-defs.h
-    _replace "--with-openssl=/usr/local" "--with-openssl" include/php/main/build-defs.h
+    _replace "--with-openssl=/opt/local/Current" "--with-openssl" include/php/main/build-defs.h
     _replace "$PG_STAGING/php" "@@INSTALL_DIR@@/php" bin/phar.phar
     ssh $PG_SSH_LINUX "chmod a+rx \"$PG_STAGING/php/bin/php-config\""
     ssh $PG_SSH_LINUX "chmod a+rx \"$PG_STAGING/php/bin/phar.phar\""
