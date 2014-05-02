@@ -54,7 +54,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            On Windows we don't have a shared directory, so specify a build directory
 #            We can also specify additional directorys to include in the path.
 
-PG_SSH_LINUX=buildfarm@172.24.32.117
+PG_SSH_LINUX=buildfarm@bf4-linux.ox.uk.enterprisedb.com
 PG_PATH_LINUX=/mnt/hgfs/pginstaller.auto
 PG_PGHOME_LINUX=$PG_PATH_LINUX/server/staging/linux
 PG_EXEC_PATH_LINUX=/etc/alternatives/java_sdk_1.7.0/bin
@@ -68,7 +68,7 @@ PG_TCL_LINUX=/opt/ActiveTcl-8.5
 PG_XULRUNNER_SDK_LINUX=/usr/lib/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX=/usr/lib/xulrunner-1.9.2
 
-PG_SSH_LINUX_X64=buildfarm@172.24.32.121
+PG_SSH_LINUX_X64=buildfarm@bf4-linux-x64.ox.uk.enterprisedb.com
 PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller.auto
 PG_PGHOME_LINUX_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64
 PG_EXEC_PATH_LINUX_X64=/etc/alternatives/java_sdk_1.7.0/bin
@@ -82,7 +82,7 @@ PG_TCL_LINUX_X64=/opt/ActiveTcl-8.5
 PG_XULRUNNER_SDK_LINUX_X64=/usr/lib64/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
 
-PG_SSH_WINDOWS=buildfarm@172.24.32.200
+PG_SSH_WINDOWS=buildfarm@bf4-windows.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS=D:\\\\pginstaller.auto
 PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 12.0"
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
@@ -104,7 +104,7 @@ PG_PYTHON_WINDOWS=C:\\\\Python32-x86
 PG_TCL_WINDOWS=C:\\\\Tcl32
 
 
-PG_SSH_WINDOWS_X64=buildfarm@172.24.32.128
+PG_SSH_WINDOWS_X64=buildfarm@bf4-windows-x64.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS_X64=D:\\\\pginstaller.auto
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0"
 PG_FRAMEWORKDIR_WINDOWS_X64="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework64"
