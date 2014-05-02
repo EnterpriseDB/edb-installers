@@ -27,6 +27,11 @@ _prep_stackbuilderplus_windows() {
 
     # Grab a copy of the source tree
     cp -R STACKBUILDER-PLUS/* stackbuilderplus.windows || _die "Failed to copy the source code (source/STACKBUILDER-PLUS)"
+
+    cd stackbuilderplus.windows
+    patch -p1 <$WD/../patches/sbp_dynamic_linking.patch
+    cd $WD/StackBuilderPlus/source
+
     chmod -R ugo+w stackbuilderplus.windows || _die "Couldn't set the permissions on the source directory (stackbuilderplus.windows)"
 
     cp -R SS-UPDATEMANAGER/* updatemanager.windows || _die "Failed to copy the source code (source/SS-UPDATEMANAGER)"
