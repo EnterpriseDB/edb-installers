@@ -219,17 +219,17 @@ EOT
 
     #cd $WD/server/staging/osx
     # Copy libxml2 as System's libxml can be old.
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libxml2* $PG_STAGING/lib/" || _die "Failed to copy the latest libxml2"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libxslt.* $PG_STAGING/lib/" || _die "Failed to copy the latest libxslt"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libuuid* $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libedit* $PG_STAGING/lib/" || _die "Failed to copy the latest libedit"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libz* $PG_STAGING/lib/" || _die "Failed to copy the latest libz"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libssl* $PG_STAGING/lib/" || _die "Failed to copy the latest libssl"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libcrypto* $PG_STAGING/lib/" || _die "Failed to copy the latest libcrypto"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libjpeg* $PG_STAGING/lib/" || _die "Failed to copy the latest libjpeg"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libpng16* $PG_STAGING/lib/" || _die "Failed to copy the latest libpng15"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libiconv* $PG_STAGING/lib/" || _die "Failed to copy the latest libiconv"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libexpat* $PG_STAGING/lib/" || _die "Failed to copy the latest libexpat"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libxml2*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libxml2"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libxslt*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libxslt"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libuuid*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libedit*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libedit"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libz*.dyib $PG_STAGING/lib/" || _die "Failed to copy the latest libz"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libssl*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libssl"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libcrypto*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libcrypto"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libjpeg*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libjpeg"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libpng16*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libpng15"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libiconv*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libiconv"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libexpat*.dyib $PG_STAGING/lib/" || _die "Failed to copy the latest libexpat"
 
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wx-28/lib/libwx_macu_adv-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wx-28/lib/libwx_macu_core-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
