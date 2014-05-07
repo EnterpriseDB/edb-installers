@@ -2288,6 +2288,44 @@ EOF
             <pattern>,</pattern>
         </setInstallerVariableFromRegEx>
 
+        <!-- In fresh installation, check the server port value provided on the command line -->
+        <actionGroup>
+            <actionList>
+                <throwError>
+                    <text>${msg(config.port.invalid)}</text>
+                    <ruleList>
+                        <stringTest text="${serverport}" type="not_digit" />
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(config.port.invalid)}</text>
+                    <ruleList>
+                        <stringTest text="${serverport}" type="empty" />
+                    </ruleList>
+                </throwError>
+                <throwError>
+                   <text>${msg(config.port.invalid)}</text>
+                   <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                   <ruleList>
+                       <compareValues logic="less" value1="${serverport}" value2="1024"/>
+                       <compareValues logic="greater" value1="${serverport}" value2="65535"/>
+                   </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(config.port.in.use)}</text>
+                    <ruleList>
+                        <portTest port="${serverport}" condition="cannot_bind"/>
+                    </ruleList>
+                </throwError>
+            </actionList>
+          <ruleList>
+            <!-- following check means mode equals unattended -->
+            <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
+            <isFalse value="${IsUpgrade}"/>
+            <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
+
     </preInstallationActionList>
 
     <readyToInstallActionList>
