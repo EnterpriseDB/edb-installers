@@ -2920,7 +2920,7 @@ EOF
                     <file>${PostgreSqlIni}</file>
                     <section>PostgreSQL/${product_version}</section>
                     <key>Version</key>
-                    <value>PG_MAJOR_VERSION.PG_MINOR_VERSION</value>
+                    <value>PG_PACKAGE_VERSION</value>
                     <ruleList>
                         <compareText>
                             <logic>does_not_equal</logic>
@@ -2932,7 +2932,7 @@ EOF
                 <registrySet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Version</name>
-                    <value>PG_MAJOR_VERSION.PG_MINOR_VERSION</value>
+                    <value>PG_PACKAGE_VERSION</value>
                 </registrySet>
                 <!-- Shortcuts created ? -->
                 <iniFileSet>
