@@ -255,6 +255,7 @@ _postprocess_server() {
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (server/installer.xml.in)"
     _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the major version in the installer project file (server/installer.xml)"
     _replace PG_MINOR_VERSION $PG_MINOR_VERSION installer.xml || _die "Failed to set the minor version in the installer project file (server/installer.xml)"
+    _replace PG_PACKAGE_VERSION $PG_PACKAGE_VERSION installer.xml || _die "Failed to set the package version in the installer project file (server/installer.xml)"
     _replace PG_STAGING_DIR $WD/server/staging installer.xml || _die "Failed to set the staging directory in the installer project file (server/installer.xml)"
     _replace PG_CATALOG_VERSION $PG_CATALOG_VERSION installer.xml || _die "Failed to set the catalog version number in the installer project file (server/installer.xml)"
     _replace PG_CONTROL_VERSION $PG_CONTROL_VERSION installer.xml || _die "Failed to set the catalog version number in the installer project file (server/installer.xml)"
