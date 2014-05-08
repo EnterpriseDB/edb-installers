@@ -78,7 +78,7 @@ _build_pgbouncer_windows() {
 @SET PATH=%PATH%;$PG_MINGW_WINDOWS\bin;$PG_MSYS_WINDOWS\bin;$PG_PGBUILD_WINDOWS\bin
 
 REM Configuring, building the pgbouncer source tree
-@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/include" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS/lib -static" ./configure --prefix=\$COMMONDIR/pgbouncer.staging --with-libevent=$PG_PGBUILD_MINGW_WINDOWS/libevent-ppas; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/include" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS/lib -static" ./configure --prefix=\$COMMONDIR/pgbouncer.staging --with-libevent=$PG_PGBUILD_MINGW_WINDOWS; make; make install  | $PG_MSYS_WINDOWS\bin\sh --login -i
 
 EOT
 
