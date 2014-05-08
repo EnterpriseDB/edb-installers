@@ -270,7 +270,7 @@ EOT
 
     # Configure
     echo "Configuring the pgAdmin source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; LD_LIBRARY_PATH=/opt/local/Current/lib" CPPFLAGS="-I/opt/local/Current/include" LDFLAGS="-L/opt/local/Current/lib" ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX/server/staging/linux --with-wx=/opt/local/Current --with-libxml2=/opt/local/Current --with-libxslt=/opt/local/Current --disable-debug --disable-static --with-sphinx-build=$PG_PYTHON_LINUX/bin/sphinx-build || _die "Failed to configure pgAdmin"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; LD_LIBRARY_PATH=/opt/local/Current/lib" CPPFLAGS="-I/opt/local/Current/include" LDFLAGS="-L/opt/local/Current/lib" ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX/server/staging/linux --with-wx=/opt/local/Current/wx-28 --with-libxml2=/opt/local/Current --with-libxslt=/opt/local/Current --disable-debug --disable-static --with-sphinx-build=$PG_PYTHON_LINUX/bin/sphinx-build || _die "Failed to configure pgAdmin"
 
     # Build the app
     echo "Building & installing pgAdmin"
@@ -281,18 +281,18 @@ EOT
     # Copy in the various libraries
     ssh $PG_SSH_LINUX "mkdir -p $PG_STAGING/pgAdmin3/lib" || _die "Failed to create the lib directory"
 
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_adv-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_aui-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_core-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_html-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_ogl-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_qa-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_richtext-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_stc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_xrc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu_net-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu_xml-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/wx-28/lib/libwx_gtk2u_adv-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/wx-28/lib/libwx_gtk2u_aui-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/wx-28/lib/libwx_gtk2u_core-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/wx-28/lib/libwx_gtk2u_html-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/wx-28/lib/libwx_gtk2u_ogl-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/wx-28/lib/libwx_gtk2u_qa-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/wx-28/lib/libwx_gtk2u_richtext-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/wx-28/lib/libwx_gtk2u_stc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/wx-28/lib/libwx_gtk2u_xrc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/wx-28/lib/libwx_baseu-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/wx-28/lib/libwx_baseu_net-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/wx-28/lib/libwx_baseu_xml-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
 
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libexpat.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX "cp -pR /usr/lib/libpng12.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
@@ -351,7 +351,7 @@ EOT
     # Stackbuilder
     # Configure
     echo "Configuring the StackBuilder source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/wx-28/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
 
     # Build the app
     echo "Building & installing StackBuilder"

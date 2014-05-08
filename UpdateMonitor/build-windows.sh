@@ -33,8 +33,16 @@ _prep_updatemonitor_windows() {
 
     # Grab a copy of the source tree
     cp -R SS-UPDATEMANAGER/* updatemonitor.windows || _die "Failed to copy the source code (source/SS-UPDATEMANAGER)"
+
+    cd updatemonitor.windows
+    patch -p1 <$WD/../patches/convert_updatemonitor_to_qt5_3.patch
+    cd $WD/UpdateMonitor/source
+
     chmod -R ugo+w updatemonitor.windows || _die "Couldn't set the permissions on the source directory (updatemonitor.windows)"
     cp -R $WD/UpdateMonitor/resources/GetLatestPGInstalled GetLatestPGInstalled.windows
+
+    # Copy vcxproj file with Updated path
+    cp $WD/../patches/GetLatestPGInstalled.vcproj GetLatestPGInstalled.windows
 
     # Remove existing archieve
     if [ -f updatemonitor.zip ];
