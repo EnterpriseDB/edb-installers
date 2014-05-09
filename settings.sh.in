@@ -100,7 +100,7 @@ PG_QTPATH_WINDOWS=C:\\\\QtSDK
 PG_SDK_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_SIGNTOOL_WINDOWS="$PG_SDK_WINDOWS\\\\Bin\\\\signtool.exe"
 PG_PERL_WINDOWS=C:\\\\Perl32
-PG_PYTHON_WINDOWS=C:\\\\Python32-x86
+PG_PYTHON_WINDOWS=C:\\\\Python33-x86
 PG_TCL_WINDOWS=C:\\\\Tcl32
 
 
@@ -116,7 +116,7 @@ PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets-2.8.12"
 PG_JAVA_HOME_WINDOWS_X64="C:\\\\Program Files\\\\Java\\\\jdk1.7.0_51"
 PG_CMAKE_WINDOWS_X64="C:\\\\cmake-x86"
 PG_PERL_WINDOWS_X64=C:\\\\Perl64
-PG_PYTHON_WINDOWS_X64=C:\\\\Python32-x64
+PG_PYTHON_WINDOWS_X64=C:\\\\Python33-x64
 PG_TCL_WINDOWS_X64=C:\\\\Tcl64
 PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_SIGNTOOL_WINDOWS="$PG_SDK_WINDOWS\\\\Bin\\\\signtool.exe"
