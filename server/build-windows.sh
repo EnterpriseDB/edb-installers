@@ -149,7 +149,6 @@ our \$config = {
     tcl=>'$PG_TCL_WINDOWS',            # --with-tls=<path>
     perl=>'$PG_PERL_WINDOWS',             # --with-perl
     python=>'$PG_PYTHON_WINDOWS',         # --with-python=<path>
-    krb5=>'',         # --with-krb5=<path>
     ldap=>1,                # --with-ldap
     openssl=>'$PG_PGBUILD_WINDOWS',     # --with-ssl=<path>
     xml=>'$PG_PGBUILD_WINDOWS',
