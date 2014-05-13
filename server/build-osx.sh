@@ -30,6 +30,7 @@ _prep_server_osx() {
 
     # Grab a copy of the postgres source tree
     cp -pR postgresql-$PG_TARBALL_POSTGRESQL postgres.osx || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
+    patch -p0 < ~/tarballs/configure_uuid.patch # Patch to get away from the OSSP-UUID configure failure on OSX
     patch -p0 < ~/tarballs/uuid_mountainlion.patch # Patch to build the uuid-ossp on mountain lion
     tar -jcvf postgres.tar.bz2 postgres.osx || _die "Failed to create the archive (source/postgres.tar.bz2)"
 
