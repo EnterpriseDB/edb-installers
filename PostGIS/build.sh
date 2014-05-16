@@ -61,8 +61,8 @@ _prep_PostGIS() {
     extract_file  ../../tarballs/postgis-$PG_VERSION_POSTGIS || exit 1
 
     echo "Applying patches..." 
-    cd postgis-$PG_VERSION_POSTGIS
-    patch -p1 < ~/tarballs/postgis-211-liblwgeom.patch
+    #cd postgis-$PG_VERSION_POSTGIS
+    #patch -p1 < ~/tarballs/postgis-211-liblwgeom.patch
 
     cd $WD/PostGIS/source  
 
