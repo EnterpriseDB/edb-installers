@@ -204,6 +204,11 @@ if [ -f settings.sh.full.REL-9_3 ]; then
    cp -f settings.sh.full.REL-9_3 settings.sh
 fi
 
+# Make sure, we always do a full private build
+if [ -e $WD/pvt_settings.sh.full.REL-9_3 ]; then
+    cp $WD/pvt_settings.sh.full.REL-9_3 $WD/pvt_settings.sh
+fi
+
 # Self update
 echo "Updating REL-9_3 branch build system" >> autobuild.log
 git pull >> autobuild.log 2>&1

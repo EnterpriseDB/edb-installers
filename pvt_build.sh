@@ -1,11 +1,7 @@
 #!/bin/bash
 
-if [ -e $WD/pvt_settings.sh -o -e $WD/pvt_settings.sh.full.REL-9_3 ]
+if [ -e $WD/pvt_settings.sh ]
 then
-
-    if [ -e $WD/pvt_settings.sh.full.REL-9_3 ]; then
-	cp $WD/pvt_settings.sh.full.REL-9_3 $WD/pvt_settings.sh
-    fi
 
     # Source the private settings.    
     source $WD/pvt_settings.sh
