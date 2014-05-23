@@ -1,10 +1,14 @@
 #!/bin/bash
 
-if [ -e $WD/pvt_settings.sh.REL-9_3 ]
+if [ -e $WD/pvt_settings.sh -o -e $WD/pvt_settings.sh.full.REL-9_3 ]
 then
 
+    if [ -e $WD/pvt_settings.sh.full.REL-9_3 ]; then
+	cp $WD/pvt_settings.sh.full.REL-9_3 $WD/pvt_settings.sh
+    fi
+
     # Source the private settings.    
-    source $WD/pvt_settings.sh.REL-9_3
+    source $WD/pvt_settings.sh
 
     # Create the pvt_packages directory. If not exist.
     if [ ! -e $WD/pvt_packages ];
