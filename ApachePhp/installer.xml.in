@@ -912,7 +912,7 @@ EOF
       <actionList>
 
         <!-- Stop the existing Apache/PHP service -->
-        <runProgram program="/ete/init.d/EnterpriseDBApachePhp"
+        <runProgram program="/etc/init.d/EnterpriseDBApachePhp"
           programArguments="stop"
           workingDirectory="${installdir}/apache/bin"
           abortOnError="0" showMessageOnError="0">
