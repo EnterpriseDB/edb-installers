@@ -1179,6 +1179,7 @@ include conf\addons\*.conf
     <actionGroup>
         <!--Edit pem.conf to add new syntax-->
         <actionList>
+            <logMessage text="Updating the pem configuration..."/>
             <substitute>
                 <type>exact</type>
                 <files>${installdir}/apache/conf/addons/pem.conf</files>
@@ -1209,6 +1210,7 @@ include conf\addons\*.conf
     <!--Edit httpd-ssl-pem.conf to comment SSLMutex which is no longer supported.-->
     <actionGroup>
         <actionList>
+            <logMessage text="Updating the pem SSL configuration..."/>
             <substitute>
                 <type>regexp</type>
                 <files>${installdir}/apache/conf/addons/httpd-ssl-pem.conf</files>
