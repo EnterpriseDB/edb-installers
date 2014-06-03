@@ -1205,7 +1205,9 @@ include conf\addons\*.conf
         <ruleList>
             <fileExists path="${installdir}/apache/conf/addons/pem.conf" />
         </ruleList>
-        <!--Edit httpd-ssl-pem.conf to comment SSLMutex which is no longer supported.-->
+    </actionGroup>
+    <!--Edit httpd-ssl-pem.conf to comment SSLMutex which is no longer supported.-->
+    <actionGroup>
         <actionList>
             <substitute>
                 <type>regexp</type>
