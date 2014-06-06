@@ -159,7 +159,7 @@ _build_server_linux() {
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/; PYTHON=$PG_PYTHON_LINUX/bin/python3 TCLSH=$PG_TCL_LINUX/bin/tclsh TCL_CONFIG_SH=$PG_TCL_LINUX/lib/tclConfig.sh PERL=$PG_PERL_LINUX/bin/perl ./configure --with-libs=/opt/local/Current/lib --with-includes=/opt/local/Current/include:/opt/local/Current/include/libxml2 --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX/lib --with-pam --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi LD_LIBRARY_PATH=/opt/local/Current/lib"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/; PYTHON=$PG_PYTHON_LINUX/bin/python3 TCLSH=$PG_TCL_LINUX/bin/tclsh TCL_CONFIG_SH=$PG_TCL_LINUX/lib/tclConfig.sh PERL=$PG_PERL_LINUX/bin/perl ./configure --with-libs=/opt/local/Current/lib --with-includes=/opt/local/Current/include:/opt/local/Current/include/libxml2 --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX/lib --with-pam --enable-thread-safety --with-libxml --with-uuid=e2fs --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi LD_LIBRARY_PATH=/opt/local/Current/lib"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; LD_LIBRARY_PATH=/opt/local/Current/lib  make -j4 shared_libpython=yes" || _die "Failed to build postgres" 
