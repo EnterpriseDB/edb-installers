@@ -33,7 +33,7 @@ PG_TAG_MIGRATIONTOOLKIT='AS90R1_90414'
 #                     Minor version is revision.build.
 
 PG_MAJOR_VERSION=9.0
-PG_MINOR_VERSION=17.3
+PG_MINOR_VERSION=17.4
 
 # Other package versions
 PG_VERSION_PGJDBC=9.0-801
