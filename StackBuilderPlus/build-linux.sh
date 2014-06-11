@@ -76,7 +76,7 @@ _build_stackbuilderplus_linux() {
 
     echo "Building & installing UpdateManager"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/StackBuilderPlus/source/updatemanager.linux; $PG_QMAKE_LINUX UpdateManager.pro" || _die "Failed to configuring UpdateManager on linux"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/StackBuilderPlus/source/updatemanager.linux; make" || _die "Failed to build UpdateManager on linux"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/StackBuilderPlus/source/updatemanager.linux; LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH make" || _die "Failed to build UpdateManager on linux"
 
     mkdir -p $WD/StackBuilderPlus/staging/linux/UpdateManager/bin
     mkdir -p $WD/StackBuilderPlus/staging/linux/UpdateManager/lib
