@@ -107,8 +107,8 @@ EOT
 
     ssh $PG_SSH_SOLARIS_SPARC "cp -R $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/lib/libpq* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy libpq in instscripts"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R $PG_PATH_SOLARIS_SPARC/server/staging/solaris-sparc/bin/psql $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy psql in instscripts"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local.sun/lib/libssl.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local.sun/lib/libcrypto.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -R /opt/openssl-ppas/lib/libssl.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_SOLARIS_SPARC "cp -R /opt/openssl-ppas/lib/libcrypto.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libedit.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
     ##ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libxml2.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_SOLARIS_SPARC "cp -R /usr/local/lib/libxslt.so* $PG_PATH_SOLARIS_SPARC/pgbouncer/staging/solaris-sparc/instscripts/" || _die "Failed to copy the dependency library"
