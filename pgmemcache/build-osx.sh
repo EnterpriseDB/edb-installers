@@ -128,9 +128,9 @@ _postprocess_pgmemcache_osx() {
     # Make all the files readable under the given directory
     find "$PGMEM_PACKAGE_PATH" -exec chmod a+r {} \;
     # Make all the directories readable, writable and executable under the given directory
-    find "$PGMEM_PACKAGE_PATH" -type d -exec chmod a+wrx {} \;
+    find "$PGMEM_PACKAGE_PATH" -type d -exec chmod 755 {} \;
     # Make all the shared objects readable and executable under the given directory
-    find "$PGMEM_PACKAGE_PATH" -name "*.dylib" -exec chmod a+rx {} \;
+    find "$PGMEM_PACKAGE_PATH" -name "*.dylib" -exec chmod 755 {} \;
 
     if [ -f installer_1.xml ]; then
         rm -f installer_1.xml
