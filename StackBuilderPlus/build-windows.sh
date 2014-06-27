@@ -129,6 +129,7 @@ SET ERRMSG=No error found
 SET PATH=$PG_CMAKE_WINDOWS\bin;%PATH%;%QT_PATH%\bin
 REM SET PATH=%PATH%;$PG_QTPATH_WINDOWS\mingw\lib\gcc\mingw32\4.4.0;$PG_QTPATH_WINDOWS\mingw\bin;$PG_QTPATH_WINDOWS\mingw\mingw32\bin
 SET QMAKESPEC=%QT_PATH%\mkspecs\win32-msvc2013
+SET WXWIDGETS_PATH=$PG_WXWIN_WINDOWS
 
 ECHO ******************************************
 ECHO * Build and Install the StackBuilderPlus *
@@ -141,6 +142,11 @@ cmake.exe -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WIND
 CALL "%SOURCE_PATH%\vc-build.bat" stackbuilderplus.vcxproj RELEASE || SET ERRMSG=ERROR: Couldn't build StackBuilderPlus on Windows && GOTO EXIT_WITH_ERROR
 CALL "%SOURCE_PATH%\vc-build.bat" INSTALL.vcxproj RELEASE || SET ERRMSG=ERROR:Couldn't install StackBuilderPlus to staging directory && GOTO EXIT_WITH_ERROR
 
+cd "%SOURCE_PATH%\stackbuilderplus.staging\bin"
+echo Copying wxwidgets dll
+copy "%WXWIDGETS_PATH%\lib\vc_dll\wxmsw28u_*.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent wxwidgets libraries && GOTO EXIT_WITH_ERROR
+copy "%WXWIDGETS_PATH%\lib\vc_dll\wxbase28u_*.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent wxwidgets libraries && GOTO EXIT_WITH_ERROR
+
 ECHO ***************************************
 ECHO * Build and Install the UpdateManager *
 ECHO ***************************************
@@ -151,7 +157,8 @@ echo %QMAKESPEC%
 "%QMAKE%" UpdateManager.pro || SET ERRMSG=ERROR: Couldn't configure the UpdateManager on Windows && GOTO EXIT_WITH_ERROR
 nmake -f Makefile.Release || SET ERRMSG=ERROR: Couldn't build the UpdateManager && GOTO EXIT_WITH_ERROR
 REM "%QT_MINGW_MAKE%" release || SET ERRMSG=ERROR: Couldn't build the UpdateManager && GOTO EXIT_WITH_ERROR
-mkdir %SOURCE_PATH%\stackbuilderplus.staging\UpdateManager\bin 
+mkdir %SOURCE_PATH%\stackbuilderplus.staging\UpdateManager\bin
+mkdir %SOURCE_PATH%\stackbuilderplus.staging\UpdateManager\bin\platforms 
 copy release\UpdManager.exe %SOURCE_PATH%\stackbuilderplus.staging\UpdateManager\bin\ || SET ERRMSG=ERROR: Couldn't copy the UpdateManager binary to staging directory && GOTO EXIT_WITH_ERROR
 
 ECHO *******************************************************************************************
@@ -167,7 +174,15 @@ echo Copying Qt5Gui.dll
 copy "%QT_PATH%\bin\Qt5Gui.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Gui.dll) && GOTO EXIT_WITH_ERROR
 echo Copying Qt5Xml.dll
 copy "%QT_PATH%\bin\Qt5Xml.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Xml.dll) && GOTO EXIT_WITH_ERROR
+echo Copying Qt5Widgets.dll
+copy "%QT_PATH%\bin\Qt5Widgets.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Widgets.dll) && GOTO EXIT_WITH_ERROR
 REM copy "%QT_PATH%\bin\libgcc_s_dw2-1.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (libgcc_s_dw2-1.dll) && GOTO EXIT_WITH_ERROR
+echo Copying libGLESv2.dll
+copy "%QT_PATH%\bin\libGLESv2.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (libGLESv2.dll) && GOTO EXIT_WITH_ERROR
+echo Copying libEGL.dll
+copy "%QT_PATH%\bin\libEGL.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (libEGL.dll) && GOTO EXIT_WITH_ERROR
+echo Copying qwindows.dll
+copy "%QT_PATH%\plugins\platforms\qwindows.dll" platforms || SET ERRMSG=ERROR: Couldn't copy dependent library (qwindows.dll) && GOTO EXIT_WITH_ERROR
 
 cd "%SOURCE_PATH%\stackbuilderplus.staging"
 zip -r ..\sbp_output.zip * || SET ERRMSG=ERROR: Couldn't archieve the StackBuilderPlus binaries && GOTO EXIT_WITH_ERROR
