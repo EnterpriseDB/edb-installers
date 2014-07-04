@@ -479,6 +479,11 @@ _postprocess_server_windows() {
     # Sign the installer
     win32_sign "postgresql-$PG_PACKAGE_VERSION-windows.exe"
     
+    # Copy installer onto the build system
+    ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\component_installers"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q component_installers\\\\postgresql*windows.exe"
+    scp $WD/output/postgresql-$PG_PACKAGE_VERSION-windows.exe $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/component_installers || _die "Unable to copy installers at windows build machine."
+
     cd $WD
     echo "END POST Server Windows"
 }
