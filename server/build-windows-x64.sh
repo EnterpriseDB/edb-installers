@@ -527,6 +527,11 @@ _postprocess_server_windows_x64() {
 
     # Sign the installer
     win32_sign "postgresql-$PG_PACKAGE_VERSION-windows-x64.exe"
+
+    # Copy installer onto the build system
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q component_installers"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\component_installers" || _die "Failed to create the component_installers directory on the windows-x64 build host"
+    scp $WD/output/postgresql-$PG_PACKAGE_VERSION-windows-x64.exe $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/component_installers || _die "Unable to copy installers at windows-x64 build machine."
     
     cd $WD
     echo "END POST Server Windows-x64"
