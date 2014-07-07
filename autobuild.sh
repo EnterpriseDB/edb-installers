@@ -121,7 +121,7 @@ _set_config_package UPDATE_MONITOR
 fi
 
 # Generic mail variables
-log_location="/Users/buildfarm/pginstaller_2.auto/output"
+log_location="/home/buildfarm/PG-INSTALLER.auto/output"
 header_fail="Autobuild failed with the following error (last 20 lines of the log):
 ###################################################################################"
 footer_fail="###################################################################################"
@@ -194,40 +194,40 @@ DATE=`date +'%Y-%m-%d'`
 echo "Cleaning up old output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
 
-# Switch to REL-9_3 branch
-echo "Switching to REL-9_3 branch" >> autobuild.log
+# Switch to REL-9_4 branch
+echo "Switching to REL-9_4 branch" >> autobuild.log
 git reset --hard >> autobuild.log 2>&1
-git checkout REL-9_3 >> autobuild.log 2>&1
+git checkout REL-9_4 >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
-if [ -f settings.sh.full.REL-9_3 ]; then
-   cp -f settings.sh.full.REL-9_3 settings.sh
+if [ -f settings.sh.full.REL-9_4 ]; then
+   cp -f settings.sh.full.REL-9_4 settings.sh
 fi
 
 # Self update
-echo "Updating REL-9_3 branch build system" >> autobuild.log
+echo "Updating REL-9_4 branch build system" >> autobuild.log
 git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
-echo "Running the build (REL-9_3) " >> autobuild.log
-./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-93.log
+echo "Running the build (REL-9_4) " >> autobuild.log
+./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-94.log
 
-_mail_status "build-93.log" "build-pvt.log" "9.3"
+_mail_status "build-94.log" "build-pvt.log" "9.4"
 
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
 
 # Different location for the manual and cron triggered builds.
 if [ "$BUILD_USER" == "" ]
 then
-        remote_location="$remote_location/Latest/9.3"
+        remote_location="$remote_location/Latest/9.4"
 else
-        remote_location="$remote_location/Custom/$BUILD_USER/9.3/$BUILD_NUMBER"
+        remote_location="$remote_location/Custom/$BUILD_USER/9.4/$BUILD_NUMBER"
 fi
 
 if [ "$BUILD_USER" == "" ]
 then
         # Get the date of the last successful build (LSB), create the directory of that date and copy the installers from the Latest and copy them to this directory.
-        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-93.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../\$LSB_DATE/9.3; cp $remote_location/* $remote_location/../../\$LSB_DATE/9.3"
+        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-94.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../\$LSB_DATE/9.4; cp $remote_location/* $remote_location/../../\$LSB_DATE/9.4"
 fi
 
 # Create a remote directory if not present
