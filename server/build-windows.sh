@@ -505,6 +505,15 @@ _postprocess_server_windows() {
 
     # Sign the installer
     win32_sign "postgresql-$PG_PACKAGE_VERSION-windows.exe"
+
+       # Delete old installers from regression setup 
+    ssh $PG_SSH_WINDOWS "cd C:\\\\buildfarm\\\\PG91\\\\installers ; cmd /c del /S /Q postgresql*windows.exe"
+
+    # Copy installer onto the regression system
+    scp $WD/output/postgresql-$PG_PACKAGE_VERSION-windows.exe $PG_SSH_WINDOWS:/cygdrive/c/buildfarm/PG91/installers/ || _die "Unable to copy installers at windows build machine."
+
+    # Copy the regress source code folder to regression 
+    scp -rpf $WD/server/source/postgres.windows/src/test/regress  $PG_SSH_WINDOWS:/cygdrive/c/buildfarm/PG91/installers/
     
     cd $WD
 }
