@@ -513,7 +513,7 @@ _postprocess_server_windows() {
     scp $WD/output/postgresql-$PG_PACKAGE_VERSION-windows.exe $PG_SSH_WINDOWS:/cygdrive/c/buildfarm/PG91/installers/ || _die "Unable to copy installers at windows build machine."
 
     # Copy the regress source code folder to regression 
-    scp -rpf $WD/server/source/postgres.windows/src/test/regress  $PG_SSH_WINDOWS:/cygdrive/c/buildfarm/PG91/installers/
+    scp -r $WD/server/source/postgres.windows/src/test/regress  $PG_SSH_WINDOWS:/cygdrive/c/buildfarm/PG91/regress/
     
     cd $WD
 }
