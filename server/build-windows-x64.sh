@@ -531,14 +531,26 @@ _postprocess_server_windows_x64() {
     # Sign the installer
     win32_sign "postgresql-$PG_PACKAGE_VERSION-windows-x64.exe"
 
-   # Delete old installers from regresson setup 
+    # Delete old installers from regresson setup 
     ssh $PG_SSH_WINDOWS_X64 "cd C:\\\\buildfarm\\\\PG91\\\\installers ; cmd /c del /S /Q postgresql-*-windows-x64.exe"
     
     # Copy installer into the regression system/folder
     scp $WD/output/postgresql-$PG_PACKAGE_VERSION-windows-x64.exe $PG_SSH_WINDOWS_X64:/cygdrive/c/buildfarm/PG91/installers/ || _die "Unable to copy installers at windows-x64 build machine."
 
+    # Delete old regress.dll and pg_regress.exe from regression setup 
+    ssh $PG_SSH_WINDOWS_X64 "cd C:\\\\buildfarm\\\\PG91\\\\Release\\\\regress ; cmd /c del /S /Q regress.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cd C:\\\\buildfarm\\\\PG91\\\\Release\\\\pg_regress ; cmd /c del /S /Q pg_regress.exe "
+
+    #Copy Regress binary & dll to regression setup
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\Release\\\\regress\\\\regress.dll C:\\\\buildfarm\\\\PG91\\\\Release\\\\regress" || _die "Failed to copy a regress.dll to regression setup"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\Release\\\\pg_regress\\\\pg_regress.exe C:\\\\buildfarm\\\\PG91\\\\Release\\\\pg_regress" || _die "Failed to copy pg_regress.exe to regression setup"
+    
+
+    # Delete the old regress source folder from regression 
+    ssh $PG_SSH_WINDOWS_X64 "cd /cygdrive/c/buildfarm/PG91/src/test/ ; cmd /c rd /S /Q regress"
+    
     # Copy the regress source code folder to regression 
-    scp -r $WD/server/source/postgres.windows-x64/src/test/regress  $PG_SSH_WINDOWS_X64:/cygdrive/c/buildfarm/PG91/regress/
+    scp -r $WD/server/source/postgres.windows-x64/src/test/regress  $PG_SSH_WINDOWS_X64:/cygdrive/c/buildfarm/PG91/src/test/
     
     cd $WD
 }

@@ -482,10 +482,10 @@ _postprocess_server_linux() {
   cd $WD/server/source
     
   # Check and delete if old regress source directory exist in regression folder
-  ssh $PG_SSH_LINUX "cd /buildfarm/PG91/;  rm -rf regress; "  
+  ssh $PG_SSH_LINUX "cd /buildfarm/PG91/src/test;  rm -rf regress; "  
 
   # Copy the regress folder into Regression Setup folder /buildfarm/PG91/
-  ssh $PG_SSH_LINUX "cp -rf $PG_PATH_LINUX/server/source/postgres.linux/src/test/regress /buildfarm/PG91/;" 
+  ssh $PG_SSH_LINUX "cp -rf $PG_PATH_LINUX/server/source/postgres.linux/src/test/regress /buildfarm/PG91/src/test/;" 
 
   # Delete the old installers present in /buildfarm/PG91/installers/
   ssh $PG_SSH_LINUX "rm -f /buildfarm/PG91/installers/*;" 

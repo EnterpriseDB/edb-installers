@@ -383,7 +383,7 @@ _postprocess_server_osx() {
     rm -rf server.img
 
     # Switch to regression directory  
-    cd /buildfarm/PG91/ 
+    cd /buildfarm/PG91/src/test 
 
     # Check and delete if old regress source directory exist in regression folder
     if [ -e regress ];
@@ -392,8 +392,8 @@ _postprocess_server_osx() {
       rm -rf regress  || _die "Couldn't remove the existing regress source directory (/buildfarm/PG91/regress)"
     fi
 
-    # Copy the regress folder into Regression Setup folder /buildfarm/PG91/
-    cp -rf $WD/server/source/postgres.osx/src/test/regress /buildfarm/PG91/;
+    # Copy the regress folder into Regression Setup folder /buildfarm/PG91/src/test/
+    cp -rf $WD/server/source/postgres.osx/src/test/regress /buildfarm/PG91/src/test/;
 
     # Delete the old installers present in /buildfarm/PG91/installers/
     rm -f /buildfarm/PG91/installers/*  
