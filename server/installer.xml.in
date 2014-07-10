@@ -266,6 +266,7 @@ EOF
                 </compareText>
             </ruleList>
         </setInstallerVariable>
+        <setInstallerVariable name="iDisableStackBuilder" value="0" />
     </preShowHelpActionList>
 
     <!-- Initialisation actions -->
@@ -293,6 +294,7 @@ EOF
         <setInstallerVariable name="project.parameter(servicepassword).ask" value="0" />
         <setInstallerVariable name="project.parameter(servicename).ask" value="0" />
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0" />
+        <setInstallerVariable name="project.parameter(disableStackBuilder).ask" value="0" />
 
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
@@ -4818,7 +4820,7 @@ REM The script sets environment variables helpful for PostgreSQL
         <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0"/>
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
-        <booleanParameter name="disableStackBuilder" cliOptionName="disable-stackbuilder" default="${iDisableStackBuilder}" ask="0" cliOptionShow="0"/>
+        <booleanParameter name="disableStackBuilder" cliOptionName="disable-stackbuilder" default="${iDisableStackBuilder}" ask="1" cliOptionShow="1"/>
         <booleanParameter name="showLaunchStackBuilderOption" cliOptionName="launch-stackbuilder" default="1" ask="0" cliOptionShow="0"/>
 
         <stringParameter name="superaccount" ask="1" cliOptionShow="1" cliOptionName="superaccount" default="postgres"
