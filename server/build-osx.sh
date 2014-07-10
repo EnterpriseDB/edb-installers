@@ -377,18 +377,18 @@ _postprocess_server_osx() {
     hdiutil create -quiet -srcfolder server.img -format UDZO -volname "PostgreSQL $PG_PACKAGE_VERSION" -ov "postgresql-$PG_PACKAGE_VERSION-osx.dmg" || _die "Failed to create the disk image (output/postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
     rm -rf server.img
 
-    # Move to setup regression installers and source
-    cd /buildfarm/PG90/ 
+   # Switch to regression directory  
+    cd /buildfarm/PG90/src/test 
 
     # Check and delete if old regress source directory exist in regression folder
     if [ -e regress ];
     then
       echo "Removing existing regress source directory"
-      rm -rf regress  || _die "Couldn't remove the existing regress source directory - osx (/buildfarm/PG90/regress)"
+      rm -rf regress  || _die "Couldn't remove the existing regress source directory (/buildfarm/PG90/regress)"
     fi
 
-    # Copy the regress folder into Regression Setup folder /buildfarm/PG90/
-    cp -rf $WD/server/source/postgres.osx/src/test/regress /buildfarm/PG90/;
+    # Copy the regress folder into Regression Setup folder /buildfarm/PG90/src/test/
+    cp -rf $WD/server/source/postgres.osx/src/test/regress /buildfarm/PG90/src/test/;
 
     # Delete the old installers present in /buildfarm/PG90/installers/
     rm -f /buildfarm/PG90/installers/*  

@@ -483,16 +483,16 @@ y a menu pick image"
     mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.run || _die "Failed to rename the installer"
 
     # Check and delete if old regress source directory exist in regression folder
-     ssh $PG_SSH_LINUX_X64 "cd /buildfarm/PG90/;  rm -rf regress; " 
+    ssh $PG_SSH_LINUX_X64 "cd /buildfarm/PG91/src/test;  rm -rf regress; " 
 
-    # Copy the regress folder into Regression Setup folder /buildfarm/PG90/
-    ssh $PG_SSH_LINUX_X64 "cp -rf $PG_PATH_LINUX_X64/server/source/postgres.linux/src/test/regress /buildfarm/PG90/;" 
+    # Copy the regress folder into Regression Setup folder /buildfarm/PG91/
+    ssh $PG_SSH_LINUX_X64 "cp -rf $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/src/test/regress /buildfarm/PG91/src/test/;" 
 
-    # Delete the old installers present in /buildfarm/PG90/installers/
-    ssh $PG_SSH_LINUX_X64 "rm -f /buildfarm/PG90/installers/*;" 
-    
-    # Copy the DBServer installer into Regression Setup folder /buildfarm/PG90/installers
-    scp $WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.run $PG_SSH_LINUX_X64:/buildfarm/PG90/installers/ || _die "Unable to copy installers to Linux-64 /buildfarm/PG90/installers/ folder."
+    # Delete the old installers present in /buildfarm/PG91/installers/
+    ssh $PG_SSH_LINUX_X64 "rm -f /buildfarm/PG91/installers/*;" 
+
+    # Copy the DBServer installer into Regression Setup folder /buildfarm/PG91/installers
+    scp $WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.run $PG_SSH_LINUX_X64:/buildfarm/PG91/installers/ || _die "Unable to copy installers to Linux-64 /buildfarm/PG91/installers/ folder."
 
     cd $WD
 }

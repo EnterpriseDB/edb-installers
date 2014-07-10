@@ -472,10 +472,10 @@ _postprocess_server_linux() {
     mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-linux.run || _die "Failed to rename the installer"
 
     # Check and delete if old regress source directory exist in regression folder
-    ssh $PG_SSH_LINUX "cd /buildfarm/PG90/;  rm -rf regress; "  
+    ssh $PG_SSH_LINUX "cd /buildfarm/PG90/src/test;  rm -rf regress; "  
 
     # Copy the regress folder into Regression Setup folder /buildfarm/PG90/
-    ssh $PG_SSH_LINUX "cp -rf $PG_PATH_LINUX/server/source/postgres.linux/src/test/regress /buildfarm/PG90/;" 
+    ssh $PG_SSH_LINUX "cp -rf $PG_PATH_LINUX/server/source/postgres.linux/src/test/regress /buildfarm/PG90/src/test/;" 
 
     # Delete the old installers present in /buildfarm/PG90/installers/
     ssh $PG_SSH_LINUX "rm -f /buildfarm/PG90/installers/*;" 
