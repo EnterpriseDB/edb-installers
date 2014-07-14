@@ -261,6 +261,12 @@ EOT
     cd $WD/server/staging/osx
     tar -jxvf server-staging.tar.bz2 || _die "Failed to extract the server staging archive"
     rm -f server-staging.tar.bz2
+    
+    # Delete the old regress dir from regression setup
+    ssh $PG_SSH_OSX "cd /buildfarm/src/test/; rm -rf regress" || _die "Failed to remove the regression regress directory"
+
+    # Copy the regress source to the regression setup 
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/src/test/; cp -pR regress /buildfarm/src/test/" || _die "Failed to Copy regress to the regression directory"
 
     # Cleaning the files on the remote build machine
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; rm -rf source scripts.tar.bz2" || _die "Failed to remove the source directory"
@@ -407,7 +413,13 @@ _postprocess_server_osx() {
     # Copy the DMG back to Controller"
     scp $PG_SSH_OSX:$PG_PATH_OSX/postgresql-$PG_PACKAGE_VERSION-osx.dmg . || _die "Failed to get the disk image from the remote build machine"
     rm -rf server.img
-   
+
+     # Delete the old installer from regression setup
+    ssh $PG_SSH_OSX "cd /buildfarm/installers; rm -rf postgresql-*.dmg" || _die "Failed to remove the installer from regression installer directory"
+
+    # Copy the installer to regression setup
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; cp -p postgresql-*.dmg /buildfarm/installers/" || _die "Failed to Copy installer to the regression directory"
+
     #Cleaning up the files on remote build machine"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; rm -rf server.img* postgresql-*.dmg"
 
