@@ -407,7 +407,7 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_WXWIN_WINDOWS\\\\lib\\\\vc_dll\\\\wxmsw28u_aui.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_WXWIN_WINDOWS\\\\lib\\\\vc_dll\\\\wxmsw28u_core.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_WXWIN_WINDOWS\\\\lib\\\\vc_dll\\\\wxmsw28u_html.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_WXWIN_WINDOWS\\\\lib\\\\vc_dll\\\\wxmsw28u_stc.li $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_WXWIN_WINDOWS\\\\lib\\\\vc_dll\\\\wxmsw28u_stc.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_WXWIN_WINDOWS\\\\lib\\\\vc_dll\\\\wxmsw28u_xrc.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
 
     # Zip up the installed code, copy it back here, and unpack.
