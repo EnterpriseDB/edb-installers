@@ -223,7 +223,15 @@ EOT
 
     # Copy the StackBuilder app bundle into place
     cp -R stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"
-
+    
+    # Copy the third party headers
+    cp -r /usr/local/include/openssl $WD/server/staging/osx/include" || _die "Failed to copy the required header"
+    cp -r /usr/local/include/libxml2 $WD/server/staging/osx/include" || _die "Failed to copy the required header"
+    cp -r /usr/local/include/libxslt $WD/server/staging/osx/include" || _die "Failed to copy the required header"
+    cp /usr/local/include/uuid.h $WD/server/staging/osx/include" || _die "Failed to copy the required header"
+    cp /usr/local/include/expat*.h $WD/server/staging/osx/include" || _die "Failed to copy the required header"
+    cp /usr/local/include/zlib.h $WD/server/staging/osx/include" || _die "Failed to copy the required header"
+    
     cd $WD/server/staging/osx
     # Copy libxml2 as System's libxml can be old.
     cp /usr/local/lib/libxml2* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libxml2"
