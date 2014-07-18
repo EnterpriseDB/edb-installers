@@ -191,6 +191,21 @@ _build_server_linux_x64() {
     cp -pR $WD/server/source/postgres.linux-x64/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
     cp -pR $WD/server/source/postgres.linux-x64/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
     cp -pR $WD/server/source/postgres.linux-x64/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
+    
+    # Copy the third party headers
+    ssh $PG_SSH_LINUX_X64 "cp -r /usr/local/include/openssl $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX_X64 "cp -r /usr/local/include/libxml2 $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX_X64 "cp -r /usr/local/include/libxslt $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX_X64 "cp -r /usr/local/include/sasl $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX_X64 "cp -r /usr/local/include/krb5 $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX_X64 "cp -r /usr/local/include/gssapi $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX_X64 "cp /usr/local/include/iconv.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX_X64 "cp /usr/local/include/uuid.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX_X64 "cp /usr/local/include/zlib.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX_X64 "cp /usr/local/include/krb5.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX_X64 "cp /usr/local/include/ncurses*.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX_X64 "cp /usr/local/include/gssapi.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX_X64 "cp /usr/local/include/ldap*.h $PG_STAGING/include" || _die "Failed to copy the required header"
 
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX_X64 "cp -pR /usr/local/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
