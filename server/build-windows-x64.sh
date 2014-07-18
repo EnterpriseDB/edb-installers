@@ -416,7 +416,7 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\intl.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libxml2.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libxslt.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host" 
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\zlib.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host" 
     # Copy the third party headers 
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\*.h $PG_PATH_WINDOWS_X64\\\\output\\\\include" || _die "Failed to copy third party headers on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\include\\\\openssl\"" || _die "Failed to create openssl directory"
