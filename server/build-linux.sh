@@ -191,6 +191,15 @@ _build_server_linux() {
     cp -R $WD/server/source/postgres.linux/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (linux)"
     cp -R $WD/server/source/postgres.linux/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (linux)"
     cp -R $WD/server/source/postgres.linux/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux)"
+    
+    ssh $PG_SSH_LINUX "cp -r /usr/local/openssl/include $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp -r /usr/local/include/libxml2 $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp -r /usr/local/include/libxslt $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp -r /usr/local/cyrus-sasl/include/sasl $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp /usr/local/include/uuid.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp /usr/local/include/zlib.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp /usr/local/ldap-2.4.23/include/ldap*.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp /usr/local/ldap-2.4.23/include/lber*.h $PG_STAGING/include" || _die "Failed to copy the required header"
 
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX "cp -R /usr/local/openssl/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
