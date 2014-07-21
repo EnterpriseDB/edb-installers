@@ -354,8 +354,16 @@ _postprocess_server_osx() {
     cp $WD/server/resources/README.osx server.img/README || _die "Failed to copy the installer README file into the DMG staging directory"
     hdiutil create -quiet -srcfolder server.img -format UDZO -volname "PostgreSQL $PG_PACKAGE_VERSION" -ov "postgresql-$PG_PACKAGE_VERSION-osx.dmg" || _die "Failed to create the disk image (output/postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
     rm -rf server.img
-
+    
+    echo "Open the  disk image"
+    hdid postgresql-$PG_PACKAGE_VERSION-osx.dmg || _die "Failed to open the disk image (output/postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
+    cd "/Volumes/PostgreSQL $PG_PACKAGE_VERSION"
+    zip -r $WD/output/postgresql-$PG_PACKAGE_VERSION-osx.zip postgresql-$PG_PACKAGE_VERSION-osx.app || _die "Failed to create the zip file (output/postgresql-$PG_PACKAGE_VERSION-osx.zip)"
     cd $WD
+    sleep 1
+    echo "Detaching /Volumes/PostgreSQL $PG_PACKAGE_VERSION..."
+    hdiutil detach "/Volumes/PostgreSQL $PG_PACKAGE_VERSION" || _die "Failed to detach the /Volumes/PostgreSQL $PG_PACKAGE_VERSION"
+
     echo "END POST Server OSX"
 }
 
