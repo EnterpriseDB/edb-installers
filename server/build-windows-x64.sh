@@ -413,7 +413,7 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\OpenSSL\\\\lib\\\\libeay32.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\OpenSSL\\\\lib\\\\VC\\\\libeay32MD.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\OpenSSL\\\\lib\\\\VC\\\\ssleay32MD.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\libiconv\\\\lib\\\\iconv.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\iconv\\\\lib\\\\iconv.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\gettext\\\\lib\\\\intl.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\libxml2\\\lib\\\\libxml2.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\libxslt\\\\lib\\\\libxslt.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
