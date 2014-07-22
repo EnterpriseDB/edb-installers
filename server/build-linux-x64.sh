@@ -297,8 +297,8 @@ EOT
 
     # Build the app
     echo "Building & installing pgAdmin"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; LD_LIBRARY_PATH="/opt/local/Current/lib" make all" || _die "Failed to build pgAdmin"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; make doc" || _die "Failed to build documentation for pgAdmin"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; LD_LIBRARY_PATH="/opt/local/Current/lib" PATH=/opt/local/Current/bin:$PATH make all" || _die "Failed to build pgAdmin"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; PATH=/opt/local/Current/bin:$PATH make doc" || _die "Failed to build documentation for pgAdmin"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; make install" || _die "Failed to install pgAdmin"
 
     # Copy in the various libraries

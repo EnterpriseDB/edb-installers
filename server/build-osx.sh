@@ -197,8 +197,8 @@ EOT
 
     # Build the app bundle
     echo "Building & installing pgAdmin"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; make -j4 all" || _die "Failed to build pgAdmin"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; make doc" || _die "Failed to build documentation for pgAdmin"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; PATH=/opt/local/Current/bin:$PATH make -j4 all" || _die "Failed to build pgAdmin"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; PATH=/opt/local/Current/bin:$PATH make doc" || _die "Failed to build documentation for pgAdmin"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; make install" || _die "Failed to install pgAdmin"
 
     # Copy the app bundle into place
