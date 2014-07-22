@@ -2,7 +2,6 @@ PgBouncer
 =========
 PgBouncer is a lightweight connection pooler for Postgres.  
 
-
 Controlling the pgbouncer Service
 ---------------------------------
 By default, the PgBouncer service is configured to autostart at system 
@@ -21,86 +20,31 @@ to view status information about the pgbouncer service.  To change the state of
 the pgbouncer daemon, select the service from the list, and use the Start and 
 Stop service links on the Services window.  
 
-Mac
----
-You can control or review the status of the pgbouncer service on a Mac with the 
-launchd daemon; use the launchctl command to control the launchd daemon.
-
-  To load the configuration files associated with launchd, and start the 
-  pgbouncer service enter:
-
-    $ sudo launchctl load \
-    /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist
-
-  To list the jobs currently loaded into launched:
-
-    $ sudo launchctl list | grep com.edb.launchd.pgbouncer
-    5723 - com.edb.launchd.pgbouncer
-
-  The value in the first column of the list output is the process ID of the 
-  pgbouncer daemon.
-
-  To unload the service configuration files and stop the pgbouncer service:
-
-    $ sudo launchctl unload \
-    /Library/LaunchDaemons/com.edb.launchd.pgbouncer.plist
-
-  To list all of the jobs currently running under launchd:
-
-    $ sudo launchctl list | grep com.edb.launchd.pgbouncer
-
-For more information about the options that work with the launchctl command, 
-enter:
- 
-    man launchctl 
-
-at the Mac command line.  
-
 Linux
 -----
 To view the status of the pgbouncer daemon on Linux, open a terminal window, 
 and enter:
 
-    service pgbouncer-9.2 status
+    service pgbouncer-9.x status
+
+    Where x specifies the server version.
 
 If the PgBouncer service is running, Linux echoes back:
 
-    pgbouncer-9.2 is running (PID:2etc618) 
+    pgbouncer-9.x is running (PID:2etc618) 
  
 If the service is not running, Linux echoes:
 
-    pgbouncer-9.2 not running
+    pgbouncer-9.x not running
     
 You can also use the service command to stop or start the pgbouncer service at 
 the command line.  To start the pgbouncer daemon, enter:
 
-    service pgbouncer-9.2 start
+    service pgbouncer-9.x start
     
   To stop the pgbouncer daemon, enter:
 
-    service pgbouncer-9.2 stop 
-
-Solaris
--------
-To view the status of Advanced Server services on a Solaris system, open a terminal window, 
-assume superuser privileges, and enter:
-
-    svcs -algrep 9_2
-    
-Use the following commands to stop or start the pgbouncer service at 
-the command line.  
-  
-  To start the pgbouncer service, enter:
-
-    svcadm enable pgbouncer-9_2
-    
-  To stop the pgbouncer service, enter:
-
-    svcadm disable pgbouncer-9_2 
-
-  To restart the pgbouncer service, enter:
-
-    svcadm restart pgbouncer-9_2
+    service pgbouncer-9.x stop 
 
 
 Configuring PgBouncer
@@ -216,7 +160,7 @@ section of the configuration file:
     listen_addr = * 
     listen_port = 6432 
     auth_type = md5 
-    auth_file = /opt/PostgresPlus/9.2AS/pgbouncer/etc/userlist.txt 
+    auth_file = /opt/PostgresPlus/9.xAS/pgbouncer/etc/userlist.txt 
     admin_users = postgres 
     pool_mode = session 
 
