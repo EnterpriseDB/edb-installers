@@ -418,6 +418,17 @@ _postprocess_server_osx() {
     # Copy the DMG back to Controller"
     scp $PG_SSH_OSX:$PG_PATH_OSX/postgresql-$PG_PACKAGE_VERSION-osx.dmg . || _die "Failed to get the disk image from the remote build machine"
     rm -rf server.img
+    
+    echo "Open the  disk image"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; hdid postgresql-$PG_PACKAGE_VERSION-osx.dmg" || _die "Failed to open the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg in remote host.)"
+
+    ssh $PG_SSH_OSX "cd '/Volumes/PostgreSQL $PG_PACKAGE_VERSION'; zip -r $PG_PATH_OSX/postgresql-$PG_PACKAGE_VERSION-osx.zip postgresql-$PG_PACKAGE_VERSION-osx.app" || _die "Failed to create t
+he installer zip file (postgresql-$PG_PACKAGE_VERSION-osx.zip) in remote host."
+
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; sleep 2; echo 'Detaching /Volumes/PostgreSQL $PG_PACKAGE_VERSION...' ; hdiutil detach '/Volumes/PostgreSQL $PG_PACKAGE_VERSION'" || _die "Failed to detach the /Volumes/PostgreSQL $PG_PACKAGE_VERSION in remote host."
+
+    # Copy the installer zip back to Controller"
+    scp $PG_SSH_OSX:$PG_PATH_OSX/postgresql-$PG_PACKAGE_VERSION-osx.zip . || _die "Failed to get the installer zip file from the remote host."
 
      # Delete the old installer from regression setup
     ssh $PG_SSH_OSX "cd /buildfarm/installers; rm -rf postgresql-*.dmg" || _die "Failed to remove the installer from regression installer directory"
@@ -426,7 +437,7 @@ _postprocess_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; cp -p postgresql-*.dmg /buildfarm/installers/" || _die "Failed to Copy installer to the regression directory"
 
     #Cleaning up the files on remote build machine"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; rm -rf server.img* postgresql-*.dmg"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; rm -rf server.img* postgresql-*.dmg postgresql-*osx.zip"
 
     cd $WD
     echo "END POST Server OSX"
