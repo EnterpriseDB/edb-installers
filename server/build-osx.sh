@@ -68,8 +68,10 @@ _prep_server_osx() {
     then
       echo "Removing existing staging directory"
       rm -rf $WD/server/staging/osx || _die "Couldn't remove the existing staging directory"
-      ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/staging/osx" || _die "Falied to remove the staging directory on Mac OS X VM"
     fi
+    
+    echo "Cleaning the files in remote server directory"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/*" || _die "Falied to clean the server directory on Mac OS X VM"
 
     echo "Creating staging directory ($WD/server/staging/osx)"
     mkdir -p $WD/server/staging/osx || _die "Couldn't create the staging directory"
@@ -272,9 +274,6 @@ EOT
 
     # Copy the regress source to the regression setup 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/src/test/; cp -pR regress /buildfarm/src/test/" || _die "Failed to Copy regress to the regression directory"
-
-    # Cleaning the files on the remote build machine
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; rm -rf source scripts.tar.bz2" || _die "Failed to remove the source directory"
 
     cd $WD
     echo "END BUILD Server OSX"
