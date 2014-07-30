@@ -175,7 +175,7 @@ $footer_fail"
                 fi
         fi
 
-        mail -s "pgInstaller Build $version - $build_status" $mail_receipents <<EOT
+        mutt -s "pgInstaller Build $version - $build_status" $mail_receipents <<EOT
 $mail_content
 EOT
 }
