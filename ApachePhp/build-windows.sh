@@ -18,7 +18,11 @@ _prep_ApachePhp_windows() {
     mv zlib-$PG_TARBALL_ZLIB apache.windows/srclib/zlib
 
     # Apply the patch
-    cd apache.windows
+    cd apache.windows/srclib/apr/atomic/win32/
+    patch -p0 < ~/tarballs/apr-win32.patch
+    cd $WD/ApachePhp/source/apache.windows/srclib/apr-iconv/build
+    patch -p0 < ~/tarballs/apr-iconv-win32.patch
+    cd $WD/ApachePhp/source/apache.windows
     if [ -f $WD/tarballs/apache_win_$PG_VERSION_APACHE.patch ];
     then
       patch -p1 < $WD/tarballs/apache_win_$PG_VERSION_APACHE.patch
