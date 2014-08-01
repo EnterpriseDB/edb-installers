@@ -89,6 +89,7 @@ _prep_server_osx() {
     tar -jcvf scripts.tar.bz2 scripts/osx 
     scp $WD/server/scripts.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server || _die "Failed to copy the scripts to build VM"
     scp $WD/versions.sh $WD/common.sh $WD/settings.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
+    rm -f scripts.tar.bz2 || _die "Couldn't remove the scipts archive (source/scripts.tar.bz2)"    
 
     echo "Extracting the archives"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf postgres.tar.bz2"
@@ -263,6 +264,8 @@ EOT
     ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create archive of the server staging"
     scp $PG_SSH_OSX:$PG_STAGING/server-staging.tar.bz2 $WD/server/staging/osx || _die "Failed to scp server staging"
     scp $PG_SSH_OSX:$PG_PATH_OSX/server/scripts/osx/getlocales/getlocales.osx $WD/server/scripts/osx/getlocales/ || _die "Failed to scp getlocales.osx"
+    
+    ssh $PG_SSH_OSX "cd $PG_STAGING; rm -rf server-staging.tar.bz2 *" || _die "Failed to remove the archive of the server staging" 
 
     # Extract the staging archive
     cd $WD/server/staging/osx
@@ -410,33 +413,32 @@ _postprocess_server_osx() {
 
     # Copy the DMG staging to remote build, sign the .app, create the DMG
     tar -jcvf server.img.tar.bz2 server.img
-    scp server.img.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX || _die "Failed to scp the DMG staging archive"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source versions.sh; tar -jxvf server.img.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign -s 'Developer ID Application' -i 'com.edb.postgresql' server.img/postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source versions.sh; hdiutil create -quiet -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-osx.dmg'" || _die "Failed to create the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
+    scp server.img.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server || _die "Failed to scp the DMG staging archive"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; source $PG_PATH_OSX/versions.sh; tar -jxvf server.img.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign -s 'Developer ID Application' -i 'com.edb.postgresql' server.img/postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; source $PG_PATH_OSX/versions.sh; hdiutil create -quiet -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-osx.dmg'" || _die "Failed to create the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
 
     # Copy the DMG back to Controller"
-    scp $PG_SSH_OSX:$PG_PATH_OSX/postgresql-$PG_PACKAGE_VERSION-osx.dmg . || _die "Failed to get the disk image from the remote build machine"
-    rm -rf server.img
+    scp $PG_SSH_OSX:$PG_PATH_OSX/server/postgresql-$PG_PACKAGE_VERSION-osx.dmg . || _die "Failed to get the disk image from the remote build machine"
+    rm -rf server.img*
     
     echo "Open the  disk image"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; hdid postgresql-$PG_PACKAGE_VERSION-osx.dmg" || _die "Failed to open the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg in remote host.)"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; hdid postgresql-$PG_PACKAGE_VERSION-osx.dmg" || _die "Failed to open the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg in remote host.)"
 
-    ssh $PG_SSH_OSX "cd '/Volumes/PostgreSQL $PG_PACKAGE_VERSION'; zip -r $PG_PATH_OSX/postgresql-$PG_PACKAGE_VERSION-osx.zip postgresql-$PG_PACKAGE_VERSION-osx.app" || _die "Failed to create t
-he installer zip file (postgresql-$PG_PACKAGE_VERSION-osx.zip) in remote host."
+    ssh $PG_SSH_OSX "cd '/Volumes/PostgreSQL $PG_PACKAGE_VERSION'; zip -r $PG_PATH_OSX/server/postgresql-$PG_PACKAGE_VERSION-osx.zip postgresql-$PG_PACKAGE_VERSION-osx.app" || _die "Failed to create the installer zip file (postgresql-$PG_PACKAGE_VERSION-osx.zip) in remote host."
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; sleep 2; echo 'Detaching /Volumes/PostgreSQL $PG_PACKAGE_VERSION...' ; hdiutil detach '/Volumes/PostgreSQL $PG_PACKAGE_VERSION'" || _die "Failed to detach the /Volumes/PostgreSQL $PG_PACKAGE_VERSION in remote host."
 
     # Copy the installer zip back to Controller"
-    scp $PG_SSH_OSX:$PG_PATH_OSX/postgresql-$PG_PACKAGE_VERSION-osx.zip . || _die "Failed to get the installer zip file from the remote host."
+    scp $PG_SSH_OSX:$PG_PATH_OSX/server/postgresql-$PG_PACKAGE_VERSION-osx.zip . || _die "Failed to get the installer zip file from the remote host."
 
      # Delete the old installer from regression setup
     ssh $PG_SSH_OSX "cd /buildfarm/installers; rm -rf postgresql-*.dmg" || _die "Failed to remove the installer from regression installer directory"
 
     # Copy the installer to regression setup
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; cp -p postgresql-*.dmg /buildfarm/installers/" || _die "Failed to Copy installer to the regression directory"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; cp -p postgresql-*.dmg /buildfarm/installers/" || _die "Failed to Copy installer to the regression directory"
 
     #Cleaning up the files on remote build machine"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; rm -rf server.img* postgresql-*.dmg postgresql-*osx.zip"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; rm -rf server.img* postgresql-*.dmg postgresql-*osx.zip scripts*"
 
     cd $WD
     echo "END POST Server OSX"
