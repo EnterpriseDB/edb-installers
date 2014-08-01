@@ -120,7 +120,7 @@ srclib/apr-util/xml/expat/lib/expat"
     for ARCH in \${ARCHS}
     do
       echo "Configuring the apache source tree for \${ARCH}"
-      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch \${ARCH} -I/opt/local/Current/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -L/opt/local/Current/lib -arch \${ARCH}" ./configure --prefix=$PG_STAGING/apache --with-pcre=/opt/local/Current --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for \${ARCH}"
+      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch \${ARCH} -I/opt/local/Current/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -L/opt/local/Current/lib -arch \${ARCH}" ./configure --prefix=$PG_STAGING/apache --with-ssl=/opt/local/Current --with-pcre=/opt/local/Current --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for \${ARCH}"
       ARCH_FLAGS="\${ARCH_FLAGS} -arch \${ARCH}"
       for configFile in \${CONFIG_FILES}
       do
@@ -131,7 +131,7 @@ srclib/apr-util/xml/expat/lib/expat"
     done
 
     echo "Configuring the apache source tree for Universal"
-    CFLAGS="${PG_ARCH_OSX_CFLAGS} \${ARCH_FLAGS} -I/opt/local/Current/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} \${ARCH_FLAGS} -L/opt/local/Current/lib" ./configure --prefix=$PG_STAGING/apache --with-pcre=/opt/local/Current --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for 32 bit Universal"
+    CFLAGS="${PG_ARCH_OSX_CFLAGS} \${ARCH_FLAGS} -I/opt/local/Current/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} \${ARCH_FLAGS} -L/opt/local/Current/lib" ./configure --prefix=$PG_STAGING/apache --with-ssl=/opt/local/Current --with-pcre=/opt/local/Current --with-included-apr --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache || _die "Failed to configure apache for 32 bit Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     for configFile in \${CONFIG_FILES}
@@ -179,9 +179,9 @@ EOT
 #    cd $PG_PATH_OSX/ApachePhp/source/apache.osx
     
     #Configure the apachectl script file
-    _replace "\$HTTPD -k \$ARGV" "\"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$PG_STAGING/apache/bin/apachectl"
-    _replace "\$HTTPD -t" "\"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$PG_STAGING/apache/bin/apachectl"
-    _replace "\$HTTPD \$ARGV" "\"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$PG_STAGING/apache/bin/apachectl"   chmod ugo+x "$PG_STAGING/apache/bin/apachectl"
+    _replace "\\\$HTTPD -k \\\$ARGV" "\\"\\\$HTTPD\\" -k \\\$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$PG_STAGING/apache/bin/apachectl"
+    _replace "\\\$HTTPD -t" "\\"\\\$HTTPD\\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$PG_STAGING/apache/bin/apachectl"
+    _replace "\\\$HTTPD \\\$ARGV" "\\"\\\$HTTPD\\" \\\$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "$PG_STAGING/apache/bin/apachectl"   chmod ugo+x "$PG_STAGING/apache/bin/apachectl"
 
     CONFIG_FILES="acconfig main/build-defs main/php_config"
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
@@ -189,7 +189,7 @@ EOT
     for ARCH in \${ARCHS}
     do
       echo "Configuring the php source tree for \${ARCH}"
-      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch ${ARCH} -I/opt/local/Current/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -L/opt/local/Current/lib -arch \${ARCH}" ./configure --with-libxml-dir=/opt/local/Current --with-openssl-dir=/opt/local/Current --with-zlib-dir=/opt/local/Current --with-iconv=/opt/local/Current --with-libexpat-dir=/opt/local/Current --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/opt/local/Current/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/opt/local/Current --with-png-dir=/opt/local/Current --with-freetype-dir=/opt/local/Current --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for \${ARCH}"
+      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch \${ARCH} -I/opt/local/Current/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -L/opt/local/Current/lib -arch \${ARCH}" ./configure --with-libxml-dir=/opt/local/Current --with-openssl-dir=/opt/local/Current --with-zlib-dir=/opt/local/Current --with-iconv=/opt/local/Current --with-libexpat-dir=/opt/local/Current --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/opt/local/Current/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/opt/local/Current --with-png-dir=/opt/local/Current --with-freetype-dir=/opt/local/Current --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for \${ARCH}"
       for configFile in \${CONFIG_FILES}
       do
            if [ -f "\${configFile}.h" ]; then
@@ -227,11 +227,6 @@ EOT
 
     echo "Building php"
     cd $PG_PATH_OSX/ApachePhp/source/php.osx
-    #Remove the -L/usr/lib LDFLAG as it links to the system libxml2.
-    #Hack for php 5.2.12
-    line=`grep "EXTRA_LDFLAGS =" Makefile | sed -e 's:-L/usr/lib ::g'`
-    sed -e "s:EXTRA_LDFLAGS = .*:$line:g" Makefile > /tmp/Makefile.tmp
-    mv  /tmp/Makefile.tmp Makefile
     CFLAGS="${PG_ARCH_OSX_CFLAGS} \${ARCH_FLAGS} -I/opt/local/Current/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} \${ARCH_FLAGS} -L/opt/local/Current/lib -lresolv" make -j4 || _die "Failed to build php"
     
     install_name_tool -change "libpq.5.dylib" "$PG_PGHOME_OSX/lib/libpq.5.dylib" "$PG_PATH_OSX/ApachePhp/source/php.osx/sapi/cli/php"
@@ -270,61 +265,61 @@ EOT
     _rewrite_so_refs $PG_STAGING php/bin @loader_path/../..
     _rewrite_so_refs $PG_STAGING php/lib @loader_path/../..
 
-    files=`ls $PG_STAGING/apache/modules/libphp*.so`
-    for file in $files
+    files=\`ls $PG_STAGING/apache/modules/libphp*.so\`
+    for file in \$files
     do 
-        install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" $file
-        install_name_tool -change "libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libpng16.16.dylib" "@loader_path/../../php/lib/libpng16.16.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libjpeg.8.dylib" "@loader_path/../../php/lib/libjpeg.8.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" $file
+        install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" \$file
+        install_name_tool -change "libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libpng16.16.dylib" "@loader_path/../../php/lib/libpng16.16.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libjpeg.9.dylib" "@loader_path/../../php/lib/libjpeg.9.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" \$file
     done
 
-    files=`ls $PG_STAGING/apache/bin/*`
-    for file in $files
+    files=\`ls $PG_STAGING/apache/bin/*\`
+    for file in \$files
     do
-        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libpcre.1.dylib" "@loader_path/../../apache/lib/libpcre.1.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libpcre.1.dylib" "@loader_path/../../apache/lib/libpcre.1.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" \$file
     done
-    files=`ls $PG_STAGING/php/bin/*`
-    for file in $files
+    files=\`ls $PG_STAGING/php/bin/*\`
+    for file in \$files
     do
-        install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libpng16.16.dylib" "@loader_path/../../php/lib/libpng16.16.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libjpeg.8.dylib" "@loader_path/../../php/lib/libjpeg.8.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
+        install_name_tool -change "libpq.5.dylib" "@loader_path/../../php/lib/libpq.5.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libfreetype.6.dylib" "@loader_path/../../php/lib/libfreetype.6.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libpng16.16.dylib" "@loader_path/../../php/lib/libpng16.16.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libjpeg.9.dylib" "@loader_path/../../php/lib/libjpeg.9.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libxml2.2.dylib" "@loader_path/../../php/lib/libxml2.2.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" \$file
     done
-    files=`ls $PG_STAGING/apache/lib/lib*.dylib`
-    for file in $files
+    files=\`ls $PG_STAGING/apache/lib/lib*.dylib\`
+    for file in \$files
     do
-        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" \$file
     done
-    files=`ls $PG_STAGING/php/lib/lib*.dylib`
-    for file in $files
+    files=\`ls $PG_STAGING/php/lib/lib*.dylib\`
+    for file in \$files
     do
-        install_name_tool -change "@loader_path/../../lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
-        install_name_tool -change "@loader_path/../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" $file
-        install_name_tool -change "@loader_path/../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" $file
-        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" $file
+        install_name_tool -change "@loader_path/../../lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" \$file
+        install_name_tool -change "@loader_path/../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" \$file
+        install_name_tool -change "@loader_path/../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" \$file
     done
 EOT-APACHEPHP
 
@@ -356,7 +351,7 @@ _postprocess_ApachePhp_osx() {
     echo " Post Process : ApachePHP (OSX)"
     echo "*******************************************************"
 
-    PG_PATH_OSX=$WD
+    #PG_PATH_OSX=$WD
 
     PG_STAGING=$PG_PATH_OSX/ApachePhp/staging/osx
     
