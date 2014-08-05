@@ -34,11 +34,11 @@ _prep_pgbouncer_osx() {
       echo "Removing existing staging directory"
       rm -rf $WD/pgbouncer/staging/osx || _die "Couldn't remove the existing staging directory"
     fi
-
+    
     echo "Creating staging directory ($WD/pgbouncer/staging/osx)"
     mkdir -p $WD/pgbouncer/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/pgbouncer/staging/osx || _die "Couldn't set the permissions on the staging directory"
-
+   
     echo "Creating staging doc directory ($WD/pgbouncer/staging/osx/pgbouncer/doc)"
     mkdir -p $WD/pgbouncer/staging/osx/pgbouncer/doc || _die "Couldn't create the staging doc directory"
     chmod 755 $WD/pgbouncer/staging/osx/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
@@ -60,16 +60,21 @@ _build_pgbouncer_osx() {
     echo "****************************"
     echo "*  Build: pgBouncer (OSX)  *"
     echo "****************************"
+cat<<PGBOUNCER > $WD/pgbouncer/build-pgbouncer.sh
+   
+    source ../settings.sh
+    source ../versions.sh
+    source ../common.sh
 
     cd $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/
     
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -O2" LDFLAGS="-arch i386" MACOSX_DEPLOYMENT_TARGET=10.6 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -O2" LDFLAGS="-arch i386" MACOSX_DEPLOYMENT_TARGET=10.6 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/opt/local/Current || _die "Failed to configure pgbouncer"
     mv lib/usual/config.h lib/usual/config_i386.h || _die "Failed to rename config.h"
 
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -O2" LDFLAGS="-arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.6 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -O2" LDFLAGS="-arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.6 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/opt/local/Current || _die "Failed to configure pgbouncer"
     mv lib/usual/config.h lib/usual/config_x86_64.h || _die "Failed to rename config.h"
 
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -O2" LDFLAGS="-arch i386 -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.6 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/usr/local || _die "Failed to configure pgbouncer"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -O2" LDFLAGS="-arch i386 -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.6 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/opt/local/Current || _die "Failed to configure pgbouncer"
 
     echo "#ifdef __BIG_ENDIAN__" > lib/usual/config.h
     echo "  #error \"Do not support ppc architecture\"" >> lib/usual/config.h
@@ -87,14 +92,14 @@ _build_pgbouncer_osx() {
 
     cp -R $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/share || _die "Failed to copy the ini file to share directory"
 
-    mkdir -p $WD/pgbouncer/staging/osx/pgbouncer/lib || _die "Failed to create the pgbouncer lib directory"
-    cp -pR /usr/local/lib/libevent-*.dylib $WD/pgbouncer/staging/osx/pgbouncer/lib
+    mkdir -p $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/lib || _die "Failed to create the pgbouncer lib directory"
+    cp -pR /opt/local/Current/lib/libevent-*.dylib $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/lib
  
     _rewrite_so_refs $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer bin @loader_path/..
     _rewrite_so_refs $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer lib @loader_path/
 
  
-    mkdir -p $WD/pgbouncer/staging/osx/instscripts || _die "Failed to create the instscripts directory"
+    mkdir -p $PG_PATH_OSX/pgbouncer/staging/osx/instscripts || _die "Failed to create the instscripts directory"
 
     cp -pR $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libpq in instscripts"
     cp -pR $PG_PATH_OSX/server/staging/osx/lib/libedit* $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy libedit in instscripts"
@@ -104,28 +109,33 @@ _build_pgbouncer_osx() {
     cp -pR $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
 
     # Change the referenced libraries
-    OLD_DLL_LIST=`otool -L $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/psql | grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
-    for OLD_DLL in $OLD_DLL_LIST
+    OLD_DLL_LIST=\`otool -L \$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/psql | grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' \`
+    for OLD_DLL in \$OLD_DLL_LIST
     do 
-        NEW_DLL=`echo $OLD_DLL | sed -e "s^@loader_path/../lib/^^g"`
-        install_name_tool -change "$OLD_DLL" "$NEW_DLL" "$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/psql"
+        NEW_DLL=\`echo \$OLD_DLL | sed -e "s^@loader_path/../lib/^^g"\`
+        install_name_tool -change "\$OLD_DLL" "\$NEW_DLL" "\$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/psql"
     done
 
-    OLD_DLLS=`otool -L $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libpq.5.dylib| grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
-    for DLL in $OLD_DLLS
+    OLD_DLLS=\`otool -L \$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libpq.5.dylib| grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' \`
+    for DLL in \$OLD_DLLS
     do
-        NEW_DLL=`echo $DLL | sed -e "s^@loader_path/../lib/^^g"`
-        install_name_tool -change "$DLL" "$NEW_DLL" "$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libpq.5.dylib"
+        NEW_DLL=\`echo \$DLL | sed -e "s^@loader_path/../lib/^^g"\`
+        install_name_tool -change "\$DLL" "\$NEW_DLL" "\$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libpq.5.dylib"
     done
 
-    OLD_DLLS=`otool -L $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.dylib| grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' `
-    for DLL in $OLD_DLLS
+    OLD_DLLS=\`otool -L \$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.dylib| grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' \`
+    for DLL in \$OLD_DLLS
     do
-        NEW_DLL=`echo $DLL | sed -e "s^@loader_path/../lib/^^g"`
-        install_name_tool -change "$DLL" "$NEW_DLL" "$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.dylib"
-        install_name_tool -change "$DLL" "$NEW_DLL" "$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.1.0.0.dylib"
+        NEW_DLL=\`echo $DLL | sed -e "s^@loader_path/../lib/^^g"\`
+        install_name_tool -change "\$DLL" "\$NEW_DLL" "\$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.dylib"
+        install_name_tool -change "\$DLL" "\$NEW_DLL" "\$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.1.0.0.dylib"
     done 
-         
+PGBOUNCER
+    
+    cd $WD
+    scp pgbouncer/build-pgbouncer.sh $PG_SSH_OSX:$PG_PATH_OSX/pgbouncer
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/pgbouncer; sh ./build-pgbouncer.sh" || _die "Failed to build pgbouncer on OSX VM"
+
     echo "END BUILD pgbouncer OSX"  
 }
 

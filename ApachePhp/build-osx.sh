@@ -321,7 +321,7 @@ _postprocess_ApachePhp_osx() {
     echo " Post Process : ApachePHP (OSX)"
     echo "*******************************************************"
 
-    PG_PATH_OSX=$WD
+    #PG_PATH_OSX=$WD
 
     PG_STAGING=$PG_PATH_OSX/ApachePhp/staging/osx
     

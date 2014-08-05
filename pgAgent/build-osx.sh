@@ -34,7 +34,7 @@ _prep_pgAgent_osx() {
       echo "Removing existing staging directory"
       rm -rf $WD/pgAgent/staging/osx || _die "Couldn't remove the existing staging directory"
     fi
-
+    
     echo "Creating staging directory ($WD/pgAgent/staging/osx)"
     mkdir -p $WD/pgAgent/staging/osx || _die "Couldn't create the staging directory"
     
@@ -55,41 +55,52 @@ _build_pgAgent_osx() {
     echo "#####################################"
 
     cd $WD/pgAgent
+cat <<EOT-PGAGENT > $WD/pgAgent/build-pgagent.sh
 
-    PG_STAGING=$WD/pgAgent/staging/osx
-    SOURCE_DIR=$WD/pgAgent/source/pgAgent.osx
+    source ../settings.sh
+    source ../versions.sh
+    source ../common.sh
+    
+
+    PG_STAGING=$PG_PATH_OSX/pgAgent/staging/osx
+    SOURCE_DIR=$PG_PATH_OSX/pgAgent/source/pgAgent.osx
 
     echo "Building pgAgent sources"
-    cd $SOURCE_DIR
-    WXWIN=/usr/local PGDIR=$PG_PGHOME_OSX cmake -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6  -DCMAKE_INSTALL_PREFIX=$PG_STAGING -DSTATIC_BUILD=NO -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=i386 CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
+    cd \$SOURCE_DIR
+    WXWIN=/opt/local/Current PGDIR=$PG_PGHOME_OSX cmake -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6  -DCMAKE_INSTALL_PREFIX=\$PG_STAGING -DSTATIC_BUILD=NO -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=i386 CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
     echo "Compiling pgAgent"
-    cd $SOURCE_DIR
+    cd \$SOURCE_DIR
     make || _die "Couldn't compile the pgAgent sources"
     make install || _die "Couldn't install pgAgent"
 
-    mkdir -p $PG_STAGING/lib
+    mkdir -p \$PG_STAGING/lib
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
-    cp -pR $PG_PGHOME_OSX/bin/psql $PG_STAGING/bin || _die "Failed to copy psql"
-    cp -pR $PG_PGHOME_OSX/lib/libpq.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libpq.5.dylib)"
-    cp -pR $PG_PGHOME_OSX/lib/libedit.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
-    cp -pR $PG_PGHOME_OSX/lib/libssl.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
-    cp -pR $PG_PGHOME_OSX/lib/libcrypto.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
+    cp -pR $PG_PGHOME_OSX/bin/psql \$PG_STAGING/bin || _die "Failed to copy psql"
+    cp -pR $PG_PGHOME_OSX/lib/libpq.*dylib \$PG_STAGING/lib || _die "Failed to copy the dependency library (libpq.5.dylib)"
+    cp -pR $PG_PGHOME_OSX/lib/libedit.*dylib \$PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
+    cp -pR $PG_PGHOME_OSX/lib/libssl.*dylib \$PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
+    cp -pR $PG_PGHOME_OSX/lib/libcrypto.*dylib \$PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
 
     # Copy libxml2 as System's libxml can be old.
-    cp -pR /usr/local/lib/libxml2*dylib $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
-    cp -pR /usr/local/lib/libz*dylib $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
-    cp -pR /usr/local/lib/libiconv*dylib $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
-    cp -pR /usr/local/lib/libwx_base_carbonu-2.8*dylib $PG_STAGING/lib || _die "Failed to copy the latest libxml2"
+    cp -pR /opt/local/Current/lib/libxml2*dylib \$PG_STAGING/lib || _die "Failed to copy the latest libxml2"
+    cp -pR /opt/local/Current/lib/libz*dylib \$PG_STAGING/lib || _die "Failed to copy the latest libxml2"
+    cp -pR /opt/local/Current/lib/libiconv*dylib \$PG_STAGING/lib || _die "Failed to copy the latest libxml2"
+    cp -pR /opt/local/Current/lib/libwx_base_carbonu-2.8*dylib \$PG_STAGING/lib || _die "Failed to copy the latest libxml2"
 
-    otool -L $WD/pgAgent/staging/osx/bin/pgagent
-    install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_STAGING/bin/psql"
-    install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_STAGING/bin/pgagent"
-    _rewrite_so_refs $WD/pgAgent/staging/osx lib @loader_path/..
-    _rewrite_so_refs $WD/pgAgent/staging/osx bin @loader_path/..
+    otool -L $PG_PATH_OSX/pgAgent/staging/osx/bin/pgagent
+    install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "\$PG_STAGING/bin/psql"
+    install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "\$PG_STAGING/bin/pgagent"
+    _rewrite_so_refs $PG_PATH_OSX/pgAgent/staging/osx lib @loader_path/..
+    _rewrite_so_refs $PG_PATH_OSX/pgAgent/staging/osx bin @loader_path/..
 
-    chmod +r $PG_STAGING/lib/*
-    chmod +rx $PG_STAGING/bin/* 
+    chmod +r \$PG_STAGING/lib/*
+    chmod +rx \$PG_STAGING/bin/* 
+EOT-PGAGENT
+    
+    cd $WD
+    scp pgAgent/build-pgagent.sh $PG_SSH_OSX:$PG_PATH_OSX/pgAgent
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/pgAgent; sh ./build-pgagent.sh" || _die "Failed to build pgAgent on OSX VM"
     
     echo "END BUILD pgAgent OSX"
 }
@@ -108,12 +119,12 @@ _postprocess_pgAgent_osx() {
     echo "#####################################"
 
     # Setup the installer scripts.
-    cd $PG_PATH_OSX/pgAgent/staging
-    mkdir -p $PG_PATH_OSX/pgAgent/staging/osx/installer/pgAgent || _die "Failed to create a directory for the install scripts"
+    cd $WD/pgAgent/staging
+    mkdir -p $WD/pgAgent/staging/osx/installer/pgAgent || _die "Failed to create a directory for the install scripts"
 
-    cp -f $PG_PATH_OSX/pgAgent/scripts/osx/*.sh   $PG_PATH_OSX/pgAgent/staging/osx/installer/pgAgent/ || _die "Failed to copy the installer scripts"
-    cp -f $PG_PATH_OSX/pgAgent/scripts/osx/pgpass $PG_PATH_OSX/pgAgent/staging/osx/installer/pgAgent/ || _die "Failed to copy the pgpass script (scripts/osx/pgpass)"
-    chmod ugo+x $PG_PATH_OSX/pgAgent/staging/osx/installer/pgAgent/*
+    cp -f $WD/pgAgent/scripts/osx/*.sh   $WD/pgAgent/staging/osx/installer/pgAgent/ || _die "Failed to copy the installer scripts"
+    cp -f $WD/pgAgent/scripts/osx/pgpass $WD/pgAgent/staging/osx/installer/pgAgent/ || _die "Failed to copy the pgpass script (scripts/osx/pgpass)"
+    chmod ugo+x $WD/pgAgent/staging/osx/installer/pgAgent/*
 
     cd $WD/pgAgent
 

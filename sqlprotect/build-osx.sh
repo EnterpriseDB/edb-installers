@@ -44,15 +44,15 @@ _build_sqlprotect_osx() {
     
     echo "BEGIN BUILD sqlprotect OSX"    
 
-    cd $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/; make distclean ; make || _die "Failed to build sqlprotect"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/; make distclean ; make" || _die "Failed to build sqlprotect"
 	
-    mkdir -p $PG_PATH_OSX/sqlprotect/staging/osx/lib/postgresql || _die "Failed to create staging/osx/lib/postgresql"
-	mkdir -p $PG_PATH_OSX/sqlprotect/staging/osx/share || _die "Failed to create staging/osx/share"
-    mkdir -p $PG_PATH_OSX/sqlprotect/staging/osx/doc || _die "Failed to create staging/osx/doc"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/sqlprotect/staging/osx/lib/postgresql" || _die "Failed to create staging/osx/lib/postgresql"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/sqlprotect/staging/osx/share" || _die "Failed to create staging/osx/share"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/sqlprotect/staging/osx/doc" || _die "Failed to create staging/osx/doc"
 
-    cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.so $PG_PATH_OSX/sqlprotect/staging/osx/lib/postgresql/ || _die "Failed to copy sqlprotect.so to staging directory"
-	cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_OSX/sqlprotect/staging/osx/share/ || _die "Failed to copy sqlprotect.sql to staging directory"
-	cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_OSX/sqlprotect/staging/osx/doc/ || _die "Failed to copy README-sqlprotect.txt to staging directory"
+    ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.so $PG_PATH_OSX/sqlprotect/staging/osx/lib/postgresql/" || _die "Failed to copy sqlprotect.so to staging directory"
+    ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_OSX/sqlprotect/staging/osx/share/" || _die "Failed to copy sqlprotect.sql to staging directory"
+    ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_OSX/sqlprotect/staging/osx/doc/" || _die "Failed to copy README-sqlprotect.txt to staging directory"
     chmod -R ugo+r $WD/sqlprotect/staging/osx
     
     echo "END BUILD sqlprotect OSX"
