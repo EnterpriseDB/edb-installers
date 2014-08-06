@@ -216,6 +216,9 @@ _mail_status "build-94.log" "build-pvt.log" "9.4"
 
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
 
+echo "Purging old builds from the builds server" >> autobuild.log
+ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"$remote_location/20*\" 5" >> autobuild.log 2>&1
+
 # Different location for the manual and cron triggered builds.
 if [ "$BUILD_USER" == "" ]
 then
@@ -238,7 +241,7 @@ echo "Uploading pem installers to /var/www/html/builds/DailyBuilds/Installers/PE
 rsync -avh --del output/{pem*,sqlprof*,build-pvt*} buildfarm@builds.enterprisedb.com:$remote_location/../../../PEM/$DATE >> autobuild.log 2>&1
 
 echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-rsync -avh --del --exclude={pem*,sqlprof*,build-pvt*} output/ buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
+rsync -avh --del --exclude={pem*,sqlprof*,build-pvt*,server.img} output/ buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
 
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
