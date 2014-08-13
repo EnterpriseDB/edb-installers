@@ -109,24 +109,24 @@ cat<<PGBOUNCER > $WD/pgbouncer/build-pgbouncer.sh
     cp -pR $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/pgbouncer/staging/osx/instscripts/ || _die "Failed to copy psql in instscripts"
 
     # Change the referenced libraries
-    OLD_DLL_LIST=\`otool -L \$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/psql | grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' \`
+    OLD_DLL_LIST=\`otool -L \$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/psql | grep @loader_path/../lib |  grep -v ":" | awk '{ print \$1 }' \`
     for OLD_DLL in \$OLD_DLL_LIST
     do 
         NEW_DLL=\`echo \$OLD_DLL | sed -e "s^@loader_path/../lib/^^g"\`
         install_name_tool -change "\$OLD_DLL" "\$NEW_DLL" "\$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/psql"
     done
 
-    OLD_DLLS=\`otool -L \$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libpq.5.dylib| grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' \`
+    OLD_DLLS=\`otool -L \$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libpq.5.dylib| grep @loader_path/../lib |  grep -v ":" | awk '{ print \$1 }' \`
     for DLL in \$OLD_DLLS
     do
         NEW_DLL=\`echo \$DLL | sed -e "s^@loader_path/../lib/^^g"\`
         install_name_tool -change "\$DLL" "\$NEW_DLL" "\$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libpq.5.dylib"
     done
 
-    OLD_DLLS=\`otool -L \$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.dylib| grep @loader_path/../lib |  grep -v ":" | awk '{ print $1 }' \`
+    OLD_DLLS=\`otool -L \$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.dylib| grep @loader_path/../lib |  grep -v ":" | awk '{ print \$1 }' \`
     for DLL in \$OLD_DLLS
     do
-        NEW_DLL=\`echo $DLL | sed -e "s^@loader_path/../lib/^^g"\`
+        NEW_DLL=\`echo \$DLL | sed -e "s^@loader_path/../lib/^^g"\`
         install_name_tool -change "\$DLL" "\$NEW_DLL" "\$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.dylib"
         install_name_tool -change "\$DLL" "\$NEW_DLL" "\$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.1.0.0.dylib"
     done 
