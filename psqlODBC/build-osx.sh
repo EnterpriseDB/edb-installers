@@ -28,6 +28,10 @@ _prep_psqlODBC_osx() {
     # Grab a copy of the source tree
     cp -R psqlodbc-$PG_VERSION_PSQLODBC/* psqlODBC.osx || _die "Failed to copy the source code (source/psqlODBC-$PG_VERSION_PSQLODBC)"
 
+    # patch to make sure it picks libpq from the server staging
+    cd psqlODBC.osx
+    patch -p0 < $WD/tarballs/psqlodbc-osx.patch
+
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/psqlODBC/staging/osx ];
     then
@@ -56,42 +60,48 @@ _build_psqlODBC_osx() {
 
     PG_STAGING=$PG_PATH_OSX/psqlODBC/staging/osx
     SOURCE_DIR=$PG_PATH_OSX/psqlODBC/source/psqlODBC.osx
-    cd $SOURCE_DIR
+    #cd $SOURCE_DIR
+    
+    cat <<EOT-PSQLODBC > $WD/psqlODBC/build-psqlodbc.sh
+    source ../settings.sh
+    source ../versions.sh
+    source ../common.sh
+    cd $PG_PATH_OSX/psqlODBC/source/psqlODBC.osx
 
     CONFIG_FILES="config"
     ARCHS="i386 x86_64"
     ARCH_FLAGS=""
-    for ARCH in ${ARCHS}
+    for ARCH in \${ARCHS}
     do
-      echo "Configuring psqlODBC sources for ${ARCH}"
-      CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ${ARCH}" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for intel"
-      ARCH_FLAGS="${ARCH_FLAGS} -arch ${ARCH}"
-      for configFile in ${CONFIG_FILES}
+      echo "Configuring psqlODBC sources for \${ARCH}"
+      CFLAGS="$PG_ARCH_OSX_CFLAGS -arch \${ARCH}" LDFLAGS="-lssl"  PATH="$PG_PGHOME_OSX/bin:$PATH" sh -x ./configure --disable-dependency-tracking --with-iodbc --with-libpq=$PG_PATH_OSX/server/staging/osx --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for intel"
+      ARCH_FLAGS="\${ARCH_FLAGS} -arch \${ARCH}"
+      for configFile in \${CONFIG_FILES}
       do
-           if [ -f "${configFile}.h" ]; then
-              cp "${configFile}.h" "${configFile}_${ARCH}.h"
+           if [ -f "\${configFile}.h" ]; then
+              cp "\${configFile}.h" "\${configFile}_\${ARCH}.h"
            fi
       done
     done
 
     echo "Configuring psqlODBC sources for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS \${ARCH_FLAGS}" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --with-libpq=$PG_PATH_OSX/server/staging/osx --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
-    for configFile in ${CONFIG_FILES}
+    for configFile in \${CONFIG_FILES}
     do
-      HEADER_FILE=${configFile}.h
-      if [ -f "${HEADER_FILE}" ]; then
-        CONFIG_BASENAME=`basename ${configFile}`
-        rm -f "${HEADER_FILE}"
-        cat <<EOT > "${HEADER_FILE}"
+      HEADER_FILE=\${configFile}.h
+      if [ -f "\${HEADER_FILE}" ]; then
+        CONFIG_BASENAME=\`basename \${configFile}\`
+        rm -f "\${HEADER_FILE}"
+        cat <<EOT > "\${HEADER_FILE}"
 #ifdef __BIG_ENDIAN__
-  #error "${CONFIG_BASENAME}: Does not have support for ppc architecture"
+  #error "\${CONFIG_BASENAME}: Does not have support for ppc architecture"
 #else
  #ifdef __LP64__
-  #include "${CONFIG_BASENAME}_x86_64.h"
+  #include "\${CONFIG_BASENAME}_x86_64.h"
  #else
-  #include "${CONFIG_BASENAME}_i386.h"
+  #include "\${CONFIG_BASENAME}_i386.h"
  #endif
 #endif
 EOT
@@ -99,7 +109,7 @@ EOT
     done
 
     echo "Compiling psqlODBC"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" make || _die "Couldn't compile sources"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS \${ARCH_FLAGS}" make || _die "Couldn't compile sources"
 
     echo "Installing psqlODBC into the sources"
     make install || _die "Couldn't install psqlODBC"
@@ -109,11 +119,16 @@ EOT
     cp -R $PG_PGHOME_OSX/lib/libssl.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library"
     cp -R $PG_PGHOME_OSX/lib/libcrypto.*dylib $PG_STAGING/lib || _die "Failed to copy the dependency library"
 
-    _rewrite_so_refs $WD/psqlODBC/staging/osx lib @loader_path/..
+    _rewrite_so_refs $PG_PATH_OSX/psqlODBC/staging/osx lib @loader_path/..
 
     install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_STAGING/lib/psqlodbcw.so"
     install_name_tool -change "libssl.1.0.0.dylib" "@loader_path/../lib/libssl.1.0.0.dylib" "$PG_STAGING/lib/psqlodbcw.so"
-    
+
+EOT-PSQLODBC
+    cd $WD
+    scp psqlODBC/build-psqlodbc.sh $PG_SSH_OSX:$PG_PATH_OSX/psqlODBC
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/psqlODBC; sh ./build-psqlodbc.sh" || _die "Failed to build the psqlODBC on OSX VM"
+
     echo "END BUILD psqlODBC OSX"
 }
 
