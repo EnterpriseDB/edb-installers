@@ -38,7 +38,7 @@ _prep_MigrationToolKit_osx() {
     echo "Creating staging directory ($WD/MigrationToolKit/staging/osx)"
     mkdir -p $WD/MigrationToolKit/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/MigrationToolKit/staging/osx || _die "Couldn't set the permissions on the staging directory"
-    
+   
     echo "END PREP MigrationToolKit OSX"
 }
 
@@ -53,18 +53,16 @@ _build_MigrationToolKit_osx() {
 
     # build migrationtoolkit    
     PG_STAGING=$PG_PATH_OSX/MigrationToolKit/staging/osx
-    PG_MW_SOURCE=$WD/MigrationToolKit/source/migrationtoolkit.osx
-
-    cd $PG_MW_SOURCE
+    PG_MW_SOURCE=$PG_PATH_OSX/MigrationToolKit/source/migrationtoolkit.osx
 
     echo "Building migrationtoolkit"
-    $PG_ANT_HOME_OSX/bin/ant clean || _die "Couldn't clean the migrationtoolkit"
-    $PG_ANT_HOME_OSX/bin/ant install-pg || _die "Couldn't build the migrationtoolkit"
-  
-    # Copying the MigrationToolKit binary to staging directory
-    mkdir $PG_STAGING/MigrationToolKit || _die "Couldn't create the migrationtoolkit staging directory (MigrationToolKit/staging/osx/MigrationToolKit)"
-    cp -R install/* $PG_STAGING/MigrationToolKit || _die "Couldn't copy the binaries to the migrationtoolkit staging directory (MigrationToolKit/staging/osx/MigrationToolKit)"
-    
+    ssh $PG_SSH_OSX "cd $PG_MW_SOURCE; $PG_ANT_HOME_OSX/bin/ant clean" || _die "Couldn't build the migrationtoolkit"
+    ssh $PG_SSH_OSX "cd $PG_MW_SOURCE; $PG_ANT_HOME_OSX/bin/ant install-pg" || _die "Couldn't build the migrationtoolkit"
+
+     # Copying the MigrationToolKit binary to staging directory
+    ssh $PG_SSH_OSX "cd $PG_MW_SOURCE; mkdir $PG_STAGING/MigrationToolkit" || _die "Couldn't create the migrationtoolkit staging directory (MigrationToolKit/staging/osx/MigrationToolkit)"
+    ssh $PG_SSH_OSX "cd $PG_MW_SOURCE; cp -R install/* $PG_STAGING/MigrationToolkit" || _die "Couldn't copy the binaries to the migrationtoolkit staging directory (MigrationToolKit/staging/osx/MigrationToolkit)"
+
     echo "END BUILD MigrationToolKit OSX"
 }
 
