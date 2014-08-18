@@ -121,6 +121,7 @@ EOT
     echo "Building pgAgent"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; export PGDIR=$PG_PATH_WINDOWS/output ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgagent.vcxproj RELEASE" || _die "Failed to build pgAgent on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/pgaevent; export PGDIR=$PG_PATH_WINDOWS/output ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgaevent.vcxproj RELEASE" || _die "Failed to build pgaevent on the build host"
+    ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat run.vcxproj RELEASE" || _die "Failed to build project run on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/validateuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj UPGRADE" || _die "Failed to build validateuser on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/validateuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcxproj RELEASE" || _die "Failed to build validateuser on the build host"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR/createuser ; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj UPGRADE" || _die "Failed to build validateuser on the build host"
