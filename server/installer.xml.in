@@ -1833,7 +1833,7 @@ EOF
                     <folder>programfileswindows</folder>
                     <origin>bin/pg_controldata.exe</origin>
                 </unpackFile>
-                <setInstallerVariable name="libintl_dll" value="libintl.dll"/>
+                <setInstallerVariable name="libintl_dll" value="intl.dll"/>
                 <setInstallerVariable name="libintl_dll" value="libintl-8.dll">
                     <ruleList>
                         <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
