@@ -63,11 +63,11 @@ _build_updatemonitor_linux_x64() {
     cd $WD/UpdateMonitor/source/GetLatestPGInstalled.linux-x64
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/UpdateMonitor/source/GetLatestPGInstalled.linux-x64; LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH  g++ -I/opt/local/Current/include/wx-2.8/ -I/opt/local/Current/lib/wx/include/gtk2-unicode-release-2.8/ -L/opt/local/Current/lib -lwx_baseud-2.8 -o GetLatestPGInstalled  GetLatestPGInstalled.cpp" || _die "Failed to build GetLatestPGInstalled"
 
-    cd $WD/UpdateMonitor/source/UpdateMonitor.linux-x64
+    cd $WD/UpdateMonitor/source/updatemonitor.linux-x64
 
     echo "Building & installing UpdateMonitor"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/UpdateMonitor/source/updatemonitor.linux-x64; $PG_QMAKE_LINUX_X64 UpdateManager.pro" || _die "Failed to configure UpdateMonitor on linux-x64"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/UpdateMonitor/source/updatemonitor.linux-x64; make" || _die "Failed to build UpdateManger on linux-x64"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/UpdateMonitor/source/updatemonitor.linux-x64; LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH make" || _die "Failed to build UpdateManger on linux-x64"
       
     mkdir -p $WD/UpdateMonitor/staging/linux-x64/UpdateMonitor/bin
     mkdir -p $WD/UpdateMonitor/staging/linux-x64/UpdateMonitor/lib

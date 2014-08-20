@@ -63,12 +63,11 @@ _build_updatemonitor_linux() {
     cd $WD/UpdateMonitor/source/GetLatestPGInstalled.linux
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/UpdateMonitor/source/GetLatestPGInstalled.linux; LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH g++ -I/opt/local/Current/include/wx-2.8/ -I/opt/local/Current/lib/wx/include/gtk2-unicode-release-2.8/ -L/opt/local/Current/lib -lwx_baseud-2.8 -o GetLatestPGInstalled  GetLatestPGInstalled.cpp" || _die "Failed to build GetLatestPGInstalled" 
 
-    cd $WD/UpdateMonitor/source/UpdateMonitor.linux
+    cd $WD/UpdateMonitor/source/updatemonitor.linux
 
     echo "Building & installing UpdateMonitor"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/UpdateMonitor/source/updatemonitor.linux; $PG_QMAKE_LINUX UpdateManager.pro" || _die "Failed to configuring UpdateMonitor on linux"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/UpdateMonitor/source/updatemonitor.linux; make" || _die "Failed to build UpdateMonitor on linux"
-
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/UpdateMonitor/source/updatemonitor.linux; LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH make" || _die "Failed to build UpdateMonitor on linux"
     mkdir -p $WD/UpdateMonitor/staging/linux/UpdateMonitor/bin
     mkdir -p $WD/UpdateMonitor/staging/linux/UpdateMonitor/lib
     mkdir -p $WD/UpdateMonitor/staging/linux/UpdateMonitor/instscripts/bin

@@ -57,24 +57,28 @@ _build_updatemonitor_osx() {
     echo "*************************************"
     echo "* Building - UpdateMonitor (osx) *"
     echo "*************************************"
+cat <<EOT-UPDATEMONITOR > $WD/UpdateMonitor/build-updatemonitor.sh
+     
+    source ../settings.sh
+    source ../common.sh
+     
+    cd $PG_PATH_OSX/UpdateMonitor/source/GetLatestPGInstalled.osx    
+    g++ -I/opt/local/Current/lib/wx/include/mac-unicode-debug-2.8 -I/opt/local/Current/include/wx-2.8 -arch i386 -L/opt/local/Current/lib -lwx_base_carbonud-2.8 -o GetLatestPGInstalled GetLatestPGInstalled.cpp
 
-    cd $WD/UpdateMonitor/source/GetLatestPGInstalled.osx    
-     g++ -I/usr/local/lib/wx/include/mac-unicode-debug-2.8 -I/usr/local/include/wx-2.8 -arch i386 -L/usr/local/lib -lwx_base_carbonud-2.8 -o GetLatestPGInstalled GetLatestPGInstalled.cpp
-
-    cd $WD/UpdateMonitor/source/updatemonitor.osx
+    cd $PG_PATH_OSX/UpdateMonitor/source/updatemonitor.osx
 
     # Append mac specific setting in the UpdateMonitor Project
     cat <<EOT > /tmp/UpdateMonitor.pro
 
 mac {
-    QMAKE_MAC_SDK = $SDK_PATH
+    QMAKE_MAC_SDK = \$SDK_PATH
     CONFIG += x86_64
     QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.6
 }
 
 EOT
     cat /tmp/UpdateMonitor.pro >> UpdateManager.pro
-    $PG_QMAKE_OSX -spec macx-g++ UpdateManager.pro
+    \$PG_QMAKE_OSX -spec macx-g++ UpdateManager.pro
     make
 
     if [ ! -d UpdateManager.app ]; then
@@ -94,37 +98,39 @@ EOT
     cp -R $PG_QTFRAMEWORK_OSX/QtXml.framework  QtXml.framework
 
     # Remove unnecessary files i.e. Headers & debug from the Qt
-    QT_HEADERS_FILES=`find . | grep Headers`
-    for f in $QT_HEADERS_FILES
+    QT_HEADERS_FILES=\`find . | grep Headers\`
+    for f in \$QT_HEADERS_FILES
     do
-        rm -rf $f
+        rm -rf \$f
     done
-    QT_DEBUG_FILES=`find . | grep "_debug"`
-    for f in $QT_DEBUG_FILES
+    QT_DEBUG_FILES=\`find . | grep "_debug"\`
+    for f in \$QT_DEBUG_FILES
     do
-        rm -rf $f
+        rm -rf \$f
     done
 
     #Copy our custom Info.plist
-    cp $WD/UpdateMonitor/source/updatemonitor.osx/Info.plist $WD/UpdateMonitor/source/updatemonitor.osx/UpdateMonitor.app/Contents/Info.plist || _die "Failed to change the Info.plist"     
+    cp $PG_PATH_OSX/UpdateMonitor/source/updatemonitor.osx/Info.plist $PG_PATH_OSX/UpdateMonitor/source/updatemonitor.osx/UpdateMonitor.app/Contents/Info.plist || _die "Failed to change the Info.plist"     
 
-    cd $WD/UpdateMonitor/source
+    cd $PG_PATH_OSX/UpdateMonitor/source
     echo "Copy the UpdateMonitor app bundle into place"
-    cp -R $WD/UpdateMonitor/source/updatemonitor.osx/UpdateMonitor.app $WD/UpdateMonitor/staging/osx/UpdateMonitor.app || _die "Failed to copy UpdateMonitor into the staging directory"
+    cp -R $PG_PATH_OSX/UpdateMonitor/source/updatemonitor.osx/UpdateMonitor.app $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor.app || _die "Failed to copy UpdateMonitor into the staging directory"
 
-    mkdir -p $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/bin
-    mkdir -p $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
+    mkdir -p $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/bin
+    mkdir -p $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
     
-    cp $WD/UpdateMonitor/source/GetLatestPGInstalled.osx/GetLatestPGInstalled $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/bin
-    cp /usr/local/lib/libwx_base_carbonud-2.8.0.dylib $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
-    cp -pR /usr/local/lib/libiconv*.dylib $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
-    cp -pR /usr/local/lib/libz*.dylib $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
+    cp $PG_PATH_OSX/UpdateMonitor/source/GetLatestPGInstalled.osx/GetLatestPGInstalled $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/bin
+    cp /opt/local/Current/lib/libwx_base_carbonud-2.8.0.dylib $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
+    cp -pR /opt/local/Current/lib/libiconv*.dylib $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
+    cp -pR /opt/local/Current/lib/libz*.dylib $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
 
-     _rewrite_so_refs $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts bin @loader_path/..
-     _rewrite_so_refs $WD/UpdateMonitor/staging/osx/UpdateMonitor/instscripts lib @loader_path/..
-
+     _rewrite_so_refs $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts bin @loader_path/..
+     _rewrite_so_refs $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts lib @loader_path/..
+EOT-UPDATEMONITOR
+    
     cd $WD
-
+    scp UpdateMonitor/build-updatemonitor.sh $PG_SSH_OSX:$PG_PATH_OSX/UpdateMonitor
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/UpdateMonitor; sh ./build-updatemonitor.sh" || _die "Failed to build UpdateMonitor on OSX"
     echo "END BUILD updatemonitor OSX"
 }
 
