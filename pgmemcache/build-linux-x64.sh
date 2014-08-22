@@ -102,11 +102,11 @@ _postprocess_pgmemcache_linux_x64() {
     cd $PGMEM_PACKAGE_PATH
 
     # Make all the files readable under the given directory
-    find "$PGMEM_PACKAGE_PATH" -exec chmod a+r {} \;
+    find "$PGMEM_STAGING" -exec chmod a+r {} \;
     # Make all the directories readable, writable and executable under the given directory
-    find "$PGMEM_PACKAGE_PATH" -type d -exec chmod 755 {} \;
+    find "$PGMEM_STAGING" -type d -exec chmod 755 {} \;
     # Make all the shared objects readable and executable under the given directory
-    find "$PGMEM_PACKAGE_PATH" -name "*.so*" -exec chmod 755 {} \;
+    find "$PGMEM_STAGING" -name "*.so*" -exec chmod 755 {} \;
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml ${PGMEM_PLATFORM} || _die "Failed to build the installer (${PGMEM_PLATFORM})"

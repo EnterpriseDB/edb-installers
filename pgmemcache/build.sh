@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 # Read the various build scripts
 
 # Mac OS X
@@ -58,9 +58,9 @@ _prep_pgmemcache() {
     echo "Unpacking pgmemcache source..."
     extract_file ../../tarballs/pgmemcache_$PG_VERSION_PGMEMCACHE || exit 1
 
-    cd $WD/pgmemcache/source/pgmemcache
-    patch -p1 < $WD/tarballs/pgmemcache-libmemcached-1.0.8.patch
-    patch -p1 < $WD/tarballs/pgmemcache-2.0.6.patch
+    #cd $WD/pgmemcache/source/pgmemcache
+    #patch -p1 < $WD/tarballs/pgmemcache-libmemcached-1.0.8.patch
+    #patch -p1 < $WD/tarballs/pgmemcache-2.0.6.patch
 
     # Per-platform prep
     cd $WD

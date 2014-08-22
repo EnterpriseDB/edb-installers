@@ -16,7 +16,7 @@ _prep_pgmemcache_osx() {
     PGMEM_PLATFORM=osx
     PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/$PGMEM_PLATFORM
     PGMEM_SOURCE=$PGMEM_PACKAGE_PATH/source
-
+    
     # Remove any existing source directory that might exists, and create a clean one
     if [ -e $PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM ]; then
         echo "Removing existing source directory (pgmemcache.$PGMEM_PLATFORM/pgmemcache.$PGMEM_PLATFORM)"
@@ -49,31 +49,42 @@ _build_pgmemcache_osx() {
     echo "# pgmemcache : OSX : Build #"
     echo "############################"
 
-    PGMEM_PACKAGE_PATH=$WD/pgmemcache
-    PGMEM_PLATFORM=osx
-    PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/$PGMEM_PLATFORM
-    PGMEM_SOURCE=$PGMEM_PACKAGE_PATH/source/pgmemcache.$PGMEM_PLATFORM
-    PG_PATH=$WD/server/staging/$PGMEM_PLATFORM
+cat <<PGMEMCACHE > $WD/pgmemcache/build-pgmemcache.sh
+    
+    source ../settings.sh
+    source ../versions.sh
+    source ../common.sh
 
-    cd $PGMEM_SOURCE
-    PATH=$PG_PATH/bin:$PATH make CFLAGS="$PG_ARCH_OSX_CFLAGS -I/usr/local/include -arch x86_64 -arch i386" LDFLAGS="-L/usr/local/lib -arch x86_64 -arch i386" || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
+    PGMEM_PACKAGE_PATH=$PG_PATH_OSX/pgmemcache
+    PGMEM_PLATFORM=osx
+    PGMEM_STAGING=$PG_PATH_OSX/pgmemcache/staging/\$PGMEM_PLATFORM
+    PGMEM_SOURCE=$PG_PATH_OSX/pgmemcache/source/pgmemcache.\$PGMEM_PLATFORM
+    PG_PATH=$PG_PATH_OSX/server/staging/\$PGMEM_PLATFORM
+
+    cd \$PGMEM_SOURCE
+    PATH=\$PG_PATH/bin:\$PATH make CFLAGS="$PG_ARCH_OSX_CFLAGS -I/opt/local/Current/include -arch x86_64 -arch i386" LDFLAGS="-L/opt/local/Current/lib -arch x86_64 -arch i386" || _die "Failed to build the pgmemcache for \$PGMEM_PLATFORM"
 
     # Copying the binaries
-    mkdir -p $PGMEM_STAGING/include || _die "Failed to create include directory"
-    mkdir -p $PGMEM_STAGING/lib || _die "Failed to create lib directory"
-    mkdir -p $PGMEM_STAGING/share || _die "Failed to create share directory"
+    mkdir -p \$PGMEM_STAGING/include || _die "Failed to create include directory"
+    mkdir -p \$PGMEM_STAGING/lib || _die "Failed to create lib directory"
+    mkdir -p \$PGMEM_STAGING/share || _die "Failed to create share directory"
 
-    cp -pR /usr/local/lib/libmemcached.*.dylib $PGMEM_STAGING/lib || _die "Failed to copy the libmemcached binaries"
-    cp -pR $PGMEM_SOURCE/pgmemcache.so $PGMEM_STAGING/lib || _die "Failed to copy the pgmemcache binary"
-    cp -pR $PGMEM_SOURCE/*.sql $PGMEM_STAGING/share || _die "Failed to copy the share files for the pgmemcache"
-    cp -pR /usr/local/include/libmemcached* $PGMEM_STAGING/include || _die "Failed to copy the header files for the libmemcached"
+    cp -pR /opt/local/Current/lib/libmemcached.*.dylib \$PGMEM_STAGING/lib || _die "Failed to copy the libmemcached binaries"
+    cp -pR \$PGMEM_SOURCE/pgmemcache.so \$PGMEM_STAGING/lib || _die "Failed to copy the pgmemcache binary"
+    cp -pR \$PGMEM_SOURCE/*.sql \$PGMEM_STAGING/share || _die "Failed to copy the share files for the pgmemcache"
+    cp -pR /opt/local/Current/include/libmemcached* \$PGMEM_STAGING/include || _die "Failed to copy the header files for the libmemcached"
 
-    chmod a+rx $PGMEM_STAGING/lib/* || _die "Failed to set permissions"
-    chmod a+r $PGMEM_STAGING/share/* || _die "Failed to set permissions"
+    chmod a+rx \$PGMEM_STAGING/lib/* || _die "Failed to set permissions"
+    chmod a+r \$PGMEM_STAGING/share/* || _die "Failed to set permissions"
 
-    cd $PGMEM_STAGING/lib
-    _rewrite_so_refs  $PGMEM_STAGING lib @loader_path/..
+    cd \$PGMEM_STAGING/lib
+    _rewrite_so_refs  \$PGMEM_STAGING lib @loader_path/..
+PGMEMCACHE
     
+    cd $WD
+    scp pgmemcache/build-pgmemcache.sh $PG_SSH_OSX:$PG_PATH_OSX/pgmemcache
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/pgmemcache; sh ./build-pgmemcache.sh" || _die "Failed to build the pgmemcache on OSX VM"
+
     echo "END BUILD pgmemcache OSX"
 }
 
@@ -97,11 +108,11 @@ _postprocess_pgmemcache_osx() {
     cd $PGMEM_PACKAGE_PATH
 
     # Make all the files readable under the given directory
-    find "$PGMEM_PACKAGE_PATH" -exec chmod a+r {} \;
+    find "$PGMEM_STAGING" -exec chmod a+r {} \;
     # Make all the directories readable, writable and executable under the given directory
-    find "$PGMEM_PACKAGE_PATH" -type d -exec chmod 755 {} \;
+    find "$PGMEM_STAGING" -type d -exec chmod 755 {} \;
     # Make all the shared objects readable and executable under the given directory
-    find "$PGMEM_PACKAGE_PATH" -name "*.dylib" -exec chmod 755 {} \;
+    find "$PGMEM_STAGING" -name "*.dylib" -exec chmod 755 {} \;
 
     if [ -f installer_1.xml ]; then
         rm -f installer_1.xml
