@@ -42,7 +42,7 @@ _prep_updatemonitor_windows() {
     cp -R $WD/UpdateMonitor/resources/GetLatestPGInstalled GetLatestPGInstalled.windows
 
     # Copy vcxproj file with Updated path
-    cp $WD/../patches/GetLatestPGInstalled.vcproj GetLatestPGInstalled.windows
+    #cp $WD/../patches/GetLatestPGInstalled.vcproj GetLatestPGInstalled.windows
 
     # Remove existing archieve
     if [ -f updatemonitor.zip ];
