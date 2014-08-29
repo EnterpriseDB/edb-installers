@@ -158,6 +158,7 @@ mkdir %SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\bin
 mkdir %SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\instscripts\bin 
 copy release\UpdManager.exe %SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\bin\ || SET ERRMSG=ERROR: Couldn't copy the UpdateMonitor binary to staging directory && GOTO EXIT_WITH_ERROR
 copy %SOURCE_PATH%\GetLatestPGInstalled.windows\release\GetLatestPGInstalled.exe %SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\instscripts\bin\ || SET ERRMSG=ERROR: Couldn't copy the UpdateMonitor binary to staging directory && GOTO EXIT_WITH_ERROR
+copy "$PG_WXWIN_WINDOWS\lib\vc_dll\wxbase28u_vc_custom.dll" %SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\instscripts\bin\ || SET ERRMSG=ERROR: Couldn't copy dependent library (wxbase28u_vc_custom.dll) && GOTO EXIT_WITH_ERROR
 
 ECHO *******************************************************************************************
 ECHO * Collecting dependent libraries and Archieving all binaries in one file (um_output.zip) *
@@ -171,6 +172,10 @@ echo Copying Qt5Gui.dll
 copy "%QT_PATH%\bin\Qt5Gui.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Gui.dll) && GOTO EXIT_WITH_ERROR
 echo Copying Qt5Xml.dll
 copy "%QT_PATH%\bin\Qt5Xml.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Xml.dll) && GOTO EXIT_WITH_ERROR
+copy "%QT_PATH%\bin\Qt5Widgets.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Widgets.dll) && GOTO EXIT_WITH_ERROR
+copy "%QT_PATH%\bin\libGLESv2.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (libGLESv2.dll) && GOTO EXIT_WITH_ERROR
+copy "%QT_PATH%\bin\libEGL.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (libEGL.dll) && GOTO EXIT_WITH_ERROR
+xcopy /f %QT_PATH%\plugins\platforms\qwindows.dll .\plugins\platforms\ /s /i || SET ERRMSG=ERROR: Couldn't copy dependent library (qwindows.dll) && GOTO EXIT_WITH_ERROR
 copy "$PG_PGBUILD_WINDOWS\vcredist\vcredist_x86.exe" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Xml.dll) && GOTO EXIT_WITH_ERROR
 
 cd "%SOURCE_PATH%\updatemonitor.staging"
@@ -184,9 +189,13 @@ ECHO %ERRMSG%
 exit -1
 
 EOT
+#creating qt.conf file to load qt platform plugin windows
+   cat <<EOT > "qt.conf"
+[Paths]
+Libraries=./plugins
+EOT
     scp build-um.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy build-um.bat in staging directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-um.bat" || _die "Error building UpdateMonitor binaries on Windows VM"
-
     # Remove output archieve, if exists
     if [ -f um_output.zip ];
     then
@@ -198,7 +207,9 @@ EOT
 
     unzip um_output.zip
     rm -f um_output.zip
-
+    
+    cp $WD/UpdateMonitor/source/updatemonitor.windows/qt.conf $WD/UpdateMonitor/staging/windows/UpdateMonitor/bin
+    
     win32_sign "UpdManager.exe" "$WD/UpdateMonitor/staging/windows/UpdateMonitor/bin"
     
     echo "END BUILD updtemonitor Windows"
