@@ -67,15 +67,16 @@ cat <<PGMEMCACHE > $WD/pgmemcache/build-pgmemcache.sh
     # Copying the binaries
     mkdir -p \$PGMEM_STAGING/include || _die "Failed to create include directory"
     mkdir -p \$PGMEM_STAGING/lib || _die "Failed to create lib directory"
-    mkdir -p \$PGMEM_STAGING/share || _die "Failed to create share directory"
+    mkdir -p \$PGMEM_STAGING/share/extension || _die "Failed to create share directory"
 
     cp -pR /opt/local/Current/lib/libmemcached.*.dylib \$PGMEM_STAGING/lib || _die "Failed to copy the libmemcached binaries"
     cp -pR \$PGMEM_SOURCE/pgmemcache.so \$PGMEM_STAGING/lib || _die "Failed to copy the pgmemcache binary"
-    cp -pR \$PGMEM_SOURCE/*.sql \$PGMEM_STAGING/share || _die "Failed to copy the share files for the pgmemcache"
+    cp -pR \$PGMEM_SOURCE/*.sql \$PGMEM_STAGING/share/extension || _die "Failed to copy the share files for the pgmemcache"
+    cp -pR \$PGMEM_SOURCE/pgmemcache.control \$PGMEM_STAGING/share/extension || _die "Failed to copy the control file for the pgmemcache"
     cp -pR /opt/local/Current/include/libmemcached* \$PGMEM_STAGING/include || _die "Failed to copy the header files for the libmemcached"
 
     chmod a+rx \$PGMEM_STAGING/lib/* || _die "Failed to set permissions"
-    chmod a+r \$PGMEM_STAGING/share/* || _die "Failed to set permissions"
+    chmod a+r \$PGMEM_STAGING/share/extension/* || _die "Failed to set permissions"
 
     cd \$PGMEM_STAGING/lib
     _rewrite_so_refs  \$PGMEM_STAGING lib @loader_path/..

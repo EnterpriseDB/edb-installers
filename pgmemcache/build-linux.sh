@@ -69,15 +69,16 @@ _build_pgmemcache_linux() {
     # Copying the binaries
     mkdir -p $PGMEM_STAGING/include || _die "Failed to create include directory"
     mkdir -p $PGMEM_STAGING/lib || _die "Failed to create lib directory"
-    mkdir -p $PGMEM_STAGING/share || _die "Failed to create share directory"
+    mkdir -p $PGMEM_STAGING/share/extension || _die "Failed to create share directory"
 
     ssh $PVT_SSH "cp -pR /opt/local/Current/lib/libmemcached.so* $PVT_REPO/pgmemcache/staging/linux/lib/" || _die "Failed to copy the libmemcached binaries"
     cp -pR $PGMEM_SOURCE/pgmemcache.so $PGMEM_STAGING/lib || _die "Failed to copy the pgmemcache binary"
-    cp -pR $PGMEM_SOURCE/*.sql $PGMEM_STAGING/share || _die "Failed to copy the share files for the pgmemcache"
+    cp -pR $PGMEM_SOURCE/*.sql $PGMEM_STAGING/share/extension || _die "Failed to copy the share files for the pgmemcache"
+    cp -pR $PGMEM_SOURCE/pgmemcache.control $PGMEM_STAGING/share/extension || _die "Failed to copy the control file for the pgmemcache"
     ssh $PVT_SSH "cp -pR /opt/local/Current/include/libmemcached* $PVT_REPO/pgmemcache/staging/linux/include/" || _die "Failed to copy the header files for the libmemcached"
 
     chmod a+rx $PGMEM_STAGING/lib/* || _die "Failed to set permissions"
-    chmod a+r $PGMEM_STAGING/share/* || _die "Failed to set permissions"
+    chmod a+r $PGMEM_STAGING/share/extension/* || _die "Failed to set permissions"
 
     echo "END BUILD pgmemcache Linux"
 

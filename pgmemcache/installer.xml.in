@@ -118,6 +118,10 @@
         <!-- Set the default values -->
         <setInstallerVariable name="defaultuser" value=""/>
         <setInstallerVariable name="defaultpassword" value=""/>
+        <!-- Set the PG Major Version -->
+        <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION">
+            <persist>1</persist>
+        </setInstallerVariable>
         <!-- Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
@@ -174,6 +178,40 @@
     </initializationActionList>
     <!-- Preinstallation actions -->
     <preInstallationActionList>
+      <!-- Creates the ini file if not exits -->
+      <touchFile path="/etc/postgres-reg.ini">
+          <ruleList>
+              <compareText>
+                   <logic>does_not_equal</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+              </compareText>
+          </ruleList>
+       </touchFile>
+ 
+	<!-- Get the PG PG_MAJOR_VERSION installation details -->
+	<actionGroup>
+	    <actionList>
+		<iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGMajorVersion}" key="InstallationDirectory" variable="pghome" /> 
+	    </actionList>
+	    <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    </ruleList>
+	</actionGroup>
+
+	<actionGroup>
+	    <actionList>
+		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-${PGMajorVersion}" 
+			     name="Base Directory" variable="pghome" />		 
+	    </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+	</actionGroup>
+
+	<!-- Set installation directory as the PGHOME -->
+	<setInstallerVariable name="installdir" value="${pghome}" />
+
         <actionGroup>
             <actionList>
                 <setInstallerVariable name="branding" value=""/>
@@ -184,6 +222,31 @@
                 <isTrue value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
+        <setInstallerVariable name="sharedir" value="${installdir}/share"/>
+        <setInstallerVariable name="pg_config" value="${installdir}/bin/pg_config"/>
+        <setInstallerVariable name="pg_config" value="${installdir}\bin\pg_config.exe">
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariable>
+
+        <actionGroup>
+            <actionList>
+                <setInstallerVariableFromScriptOutput>
+                    <name>sharedir</name>
+                    <exec>${pg_config}</exec>
+                    <execArgs>--sharedir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <onErrorActionList>
+                        <setInstallerVariable name="sharedir" value="${installdir}/share"/>
+                    </onErrorActionList>
+                </setInstallerVariableFromScriptOutput>
+            </actionList>
+            <ruleList>
+                <fileExists path="${pg_config}"/>
+            </ruleList>
+         </actionGroup>
 
         <!-- Do not perform the below actions in case of extract-only mode -->
         <actionGroup>
@@ -609,17 +672,34 @@
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
+                    <name>programfilesincludelinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/include</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/lib/postgresql</destination>
                     <name>programfilesliblinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux/lib</origin>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/linux/lib/*</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}</destination>
+                    <name>programfilessharelinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux/include</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux/share</origin>
+                            <origin>staging/linux/share/extension</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -627,17 +707,34 @@
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
+                    <name>programfilesincludelinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/include</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/lib/postgresql</destination>
                     <name>programfilesliblinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/lib</origin>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/linux-x64/lib/*</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}</destination>
+                    <name>programfilessharelinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/include</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/share</origin>
+                            <origin>staging/linux-x64/share/extension</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -663,17 +760,34 @@
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
+                    <name>programfilesincludeosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/include</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/lib/postgresql</destination>
                     <name>programfileslibosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/osx/lib</origin>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/osx/lib/*</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}</destination>
+                    <name>programfilesshareosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/osx/include</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/osx/share</origin>
+                            <origin>staging/osx/share/extension</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
