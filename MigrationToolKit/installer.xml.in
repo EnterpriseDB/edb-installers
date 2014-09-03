@@ -462,7 +462,7 @@
             <substitutionList>
                 <substitution>
                    <pattern>java</pattern>
-                   <value>${java_executable}</value>
+                   <value>"${java_executable}"</value>
                 </substitution>
             </substitutionList>
        </substitute>
