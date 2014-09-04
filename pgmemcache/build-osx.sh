@@ -80,6 +80,7 @@ cat <<PGMEMCACHE > $WD/pgmemcache/build-pgmemcache.sh
 
     cd \$PGMEM_STAGING/lib
     _rewrite_so_refs  \$PGMEM_STAGING lib @loader_path/..
+    install_name_tool -change "@loader_path/../lib/libmemcached.10.dylib" "@loader_path/libmemcached.10.dylib" $PG_PATH_OSX/pgmemcache/staging/osx/lib/pgmemcache.so
 PGMEMCACHE
     
     cd $WD
