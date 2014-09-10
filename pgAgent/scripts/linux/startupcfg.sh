@@ -98,11 +98,11 @@ status()
 {
     PID=\`ps -aef | grep '$INSTALL_DIR/bin/pgagent -l1 -s /var/log/pgagent.log host=$PG_HOST port=$PG_PORT dbname=$PG_DATABASE user=$PG_USER' | grep -v grep | awk '{print \$2}'\`
 
-    if [ "x$PID" = "x" ];
+    if [ "x\$PID" = "x" ];
     then
         echo "pgAgent not running"
     else
-        echo "pgAgent is running (PID: $PID)"
+        echo "pgAgent is running (PID: \$PID)"
     fi
     exit 0
 }
@@ -126,8 +126,11 @@ case "\$1" in
         sleep 3
         start
         ;;
+  status)
+        status
+        ;;
   *)
-        echo \$"Usage: \$0 {start|stop|restart}"
+        echo \$"Usage: \$0 {start|stop|restart|status}"
         exit 1
 esac
 
