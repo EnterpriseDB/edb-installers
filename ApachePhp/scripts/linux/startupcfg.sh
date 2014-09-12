@@ -42,7 +42,20 @@ stop()
 {
     su -c "$INSTALLDIR/apache/bin/apachectl stop"
 }
+status()
+{
 
+    PID=\`ps -aef | grep '$INSTALLDIR/apache/bin/httpd -k start -f $INSTALLDIR/apache/conf/httpd.conf' | grep -v grep | grep root | awk '{print \$2}'\`
+    
+    if [ "x\$PID" = "x" ];
+    then
+        echo "httpd not running"
+    else
+        echo "httpd is running (PID: \$PID)"
+    fi
+    exit 0
+
+}
 # See how we were called.
 case "\$1" in
   start)
@@ -56,8 +69,11 @@ case "\$1" in
         sleep 3
         start
         ;;
+  status)
+        status
+        ;;
   *)
-        echo \$"Usage: $0 {start|stop|restart}"
+        echo \$"Usage: $0 {start|stop|restart|status}"
         exit 1
 esac
 
