@@ -59,3 +59,5 @@ upgrade.mode.explanation=Upgrade mode will prevent the installer from modifying 
 cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
 
 pg93libxml.error=Please update PostgreSQL Installation to the latest available version and reinstall PostGIS.
+
+pg93update.error=This version of PostGIS requires PostgreSQL 9.3.5 or a later release of PostgreSQL 9.3. Please upgrade your PostgreSQL installation and then rerun this installer.

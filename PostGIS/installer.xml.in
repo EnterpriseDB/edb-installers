@@ -207,6 +207,29 @@ EOF
                 <fileExists path="/etc/postgres-reg.ini" />
             </ruleList>
         </actionGroup>
+
+        <!-- #33759. PostGIS built against PG 9.3.5 does not work with the previous PG versions because of new symbol added in postgres exe in 9.3.5.
+                     Hence, add a check in the installer -->
+        <actionGroup>
+            <actionList>
+                <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGMajorVersion}" key="Version" variable="PG_INSTALLED_VERSION" />
+                <throwError text="${msg(pg93update.error)}">
+                  <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                  <ruleList>
+                    <compareText logic="contains" text="${PG_INSTALLED_VERSION}" value="9.3.0"/>
+                    <compareText logic="contains" text="${PG_INSTALLED_VERSION}" value="9.3.1"/>
+                    <compareText logic="contains" text="${PG_INSTALLED_VERSION}" value="9.3.2"/>
+                    <compareText logic="contains" text="${PG_INSTALLED_VERSION}" value="9.3.3"/>
+                    <compareText logic="contains" text="${PG_INSTALLED_VERSION}" value="9.3.4"/>
+                  </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <fileExists path="/etc/postgres-reg.ini" />
+            </ruleList>
+        </actionGroup>
+
     </initializationActionList>
     <!-- Preinstallation actions -->
     <preInstallationActionList>
