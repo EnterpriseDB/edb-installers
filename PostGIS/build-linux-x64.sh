@@ -92,7 +92,7 @@ export LD_LIBRARY_PATH=$POSTGRES_REMOTE_PATH/lib:/opt/local/Current/lib:\$LD_LIB
 export LDFLAGS=-Wl,--rpath,'\\\${ORIGIN}/../lib -lz'
 
 echo "Configuring the postgis source tree"
-./configure --with-pgconfig=$POSTGRES_REMOTE_PATH/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-libiconv=/opt/local/Current --with-projdir=/opt/local/Current || _die "Failed to configure postgis"
+./configure --with-pgconfig=$POSTGRES_REMOTE_PATH/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-libiconv=/opt/local/Current --with-projdir=/opt/local/Current --with-jsondir=/opt/local/Current || _die "Failed to configure postgis"
 
 echo "Building postgis ($PLATFORM)"
 make || _die "Failed to build postgis (make on $PLATFORM)"
