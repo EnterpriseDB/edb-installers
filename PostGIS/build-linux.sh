@@ -124,7 +124,7 @@ cp -pR /opt/local/Current/lib/libjpeg.so* . || _die "Failed to copy the libjpeg 
 cp -pR /opt/local/Current/lib/libexpat.so* . || _die "Failed to copy the libexpat libraries"
 cp -pR /opt/local/Current/lib/libodbc.so* . || _die "Failed to copy the libodbc libraries"
 cp -pR /opt/local/Current/lib/libodbcinst.so* . || _die "Failed to copy the libodbcinst libraries"
-cp -pR /usr/lib/libpng12.so* . || _die "Failed to copy the png libraries"
+cp -pR /opt/local/Current/lib/libpng12.so* . || _die "Failed to copy the png libraries"
 
 cp -pR $POSTGIS_STAGING_REMOTE/PostGIS/$PG_PGHOME_LINUX/bin/* $POSTGIS_STAGING_REMOTE/PostGIS/bin/
 
