@@ -122,6 +122,7 @@ cp -pR /opt/local/Current/lib/libexpat.so* . || _die "Failed to copy the libexpa
 cp -pR /opt/local/Current/lib/libodbc.so* . || _die "Failed to copy the libodbc libraries"
 cp -pR /opt/local/Current/lib/libodbcinst.so* . || _die "Failed to copy the libodbcinst libraries"
 cp -pR /opt/local/Current/lib/libpng12.so* . || _die "Failed to copy the png libraries"
+cp -pR /opt/local/Current/lib/libjson-c.so* . || _die "Failed to copy the libjson-c libraries"
 
 cp -pR $POSTGIS_STAGING_REMOTE/PostGIS/$PG_PGHOME_LINUX_X64/bin/* $POSTGIS_STAGING_REMOTE/PostGIS/bin/
 

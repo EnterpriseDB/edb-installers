@@ -257,6 +257,7 @@ cat <<EOT-POSTGIS >> $WD/PostGIS/build-postgis.sh
     cp -pR /opt/local/Current/lib/libcurl*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
     cp -pR /opt/local/Current/lib/libpcre.*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
     cp -pR /opt/local/Current/lib/libintl.*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent libraries"
+    cp -pR /opt/local/Current/lib/libjson-c.*dylib staging/osx/PostGIS/lib || _die "Failed to copy dependent (libjson-c) libraries"
 
     _rewrite_so_refs $PG_PATH_OSX/PostGIS/staging/osx/PostGIS bin @loader_path/..
     _rewrite_so_refs $PG_PATH_OSX/PostGIS/staging/osx/PostGIS lib @loader_path/../..
