@@ -67,6 +67,10 @@ then
         SKIPPVTPACKAGES="-skippvtpkg"
 else
         SKIPPVTPACKAGES=""
+	# Make sure, we always do a full private build
+	if [ -f pvt_settings.sh.full.REL-9_4 ]; then
+		cp -f pvt_settings.sh.full.REL-9_4 pvt_settings.sh.REL-9_4
+	fi
 fi
 
 _set_config_package()
