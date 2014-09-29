@@ -28,6 +28,8 @@ then
 	    else
 		# Update the installer repo
 		cd $WD/pvt_packages/${!C_PKG_NAME}
+		git fetch --all
+		git fetch --tags
 		git checkout ${!C_PKG_INSTALLER_REPO_BRANCH}
 		git pull
 	    fi
