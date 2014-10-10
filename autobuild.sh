@@ -229,7 +229,7 @@ ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"$pem_remote_location/20*\"
 if [ "$BUILD_USER" == "" ]
 then
         remote_location="$remote_location/Latest/9.4"
-	pem_remote_location="$pem_remote_location/Latest"
+	pem_remote_location="$pem_remote_location/$DATE"
 else
         remote_location="$remote_location/Custom/$BUILD_USER/9.4/$BUILD_NUMBER"
 	pem_remote_location="$pem_remote_location/Custom/$BUILD_USER/$BUILD_NUMBER"
@@ -239,7 +239,6 @@ if [ "$BUILD_USER" == "" ]
 then
         # Get the date of the last successful build (LSB), create the directory of that date and copy the installers from the Latest and copy them to this directory.
         ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-94.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../\$LSB_DATE/9.4; cp $remote_location/* $remote_location/../../\$LSB_DATE/9.4"
-        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $pem_remote_location/build-pvt.log | awk '{print \$6}'\`; mkdir -p $pem_remote_location/../\$LSB_DATE; cp $pem_remote_location/* $pem_remote_location/../\$LSB_DATE"
 fi
 
 # Create a remote directory if not present
