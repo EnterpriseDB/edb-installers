@@ -283,6 +283,9 @@ EOT
     _replace "#ServerName www.example.com:8080" "ServerName localhost:@@PORT@@" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
     _replace "#LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
 
+    # disable SSL v3 because of POODLE vulnerability
+    echo "SSLProtocol All -SSLv2 -SSLv3" >> extra/httpd-ssl.conf
+
     mkdir $WD/ApachePhp/staging/windows/php || _die "Failed to create directory for php"
     echo "Copying php built tree to Unix host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\php.staging; cmd /c zip -r ..\\\\php-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/php.staging)"
