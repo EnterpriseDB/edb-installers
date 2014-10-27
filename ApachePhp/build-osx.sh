@@ -261,6 +261,10 @@ EOT
         install_name_tool -change "@loader_path/../../lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" \$file
         install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" \$file
     done
+   
+    install_name_tool -change "@loader_path/../../lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" $PG_STAGING/apache/modules/mod_deflate.so
+    install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.dylib" $PG_STAGING/apache/modules/mod_ssl.so
+    install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.dylib" $PG_STAGING/apache/modules/mod_ssl.so
 
     files=\`ls $PG_STAGING/apache/bin/*\`
     for file in \$files
