@@ -284,7 +284,7 @@ EOT
     _replace "#LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "$WD/ApachePhp/staging/windows/apache/conf/httpd.conf"
 
     # disable SSL v3 because of POODLE vulnerability
-    echo "SSLProtocol All -SSLv2 -SSLv3" >> extra/httpd-ssl.conf
+    echo "SSLProtocol All -SSLv2 -SSLv3" >> "$WD/ApachePhp/staging/windows/apache/conf/extra/httpd-ssl.conf"
 
     mkdir $WD/ApachePhp/staging/windows/php || _die "Failed to create directory for php"
     echo "Copying php built tree to Unix host"
