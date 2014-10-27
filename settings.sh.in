@@ -62,9 +62,9 @@ PG_JAVA_HOME_LINUX=/etc/alternatives/java_sdk_1.7.0
 PG_ANT_HOME_LINUX=/opt/apache-ant-1.8.4
 PG_QMAKE_LINUX=/opt/qtsdk/bin/qmake
 PG_QT_LINUX=/opt/qtsdk
-PG_PERL_LINUX=/opt/ActivePerl-5.16
-PG_PYTHON_LINUX=/opt/ActivePython-3.3
-PG_TCL_LINUX=/opt/ActiveTcl-8.5
+PG_PERL_LINUX=/opt/PostgreSQL/LanguagePack/9.4/Perl-5.16
+PG_PYTHON_LINUX=/opt/PostgreSQL/LanguagePack/9.4/Python-3.3
+PG_TCL_LINUX=/opt/PostgreSQL/LanguagePack/9.4/Tcl-8.5
 PG_XULRUNNER_SDK_LINUX=/usr/lib/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX=/usr/lib/xulrunner-1.9.2
 
@@ -76,9 +76,9 @@ PG_JAVA_HOME_LINUX_X64=/etc/alternatives/java_sdk_1.7.0
 PG_ANT_HOME_LINUX_X64=/opt/apache-ant-1.8.4
 PG_QMAKE_LINUX_X64=/opt/qtsdk/bin/qmake
 PG_QT_LINUX_X64=/opt/qtsdk
-PG_PERL_LINUX_X64=/opt/ActivePerl-5.16
-PG_PYTHON_LINUX_X64=/opt/ActivePython-3.3
-PG_TCL_LINUX_X64=/opt/ActiveTcl-8.5
+PG_PERL_LINUX_X64=/opt/PostgreSQL/LanguagePack/9.4/Perl-5.16
+PG_PYTHON_LINUX_X64=/opt/PostgreSQL/LanguagePack/9.4/Python-3.3
+PG_TCL_LINUX_X64=/opt/PostgreSQL/LanguagePack/9.4/Tcl-8.5
 PG_XULRUNNER_SDK_LINUX_X64=/usr/lib64/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
 
@@ -99,9 +99,9 @@ PG_JAVA_HOME_WINDOWS="C:\\\\Program Files\\\\Java\\\\jdk1.7.0_51"
 PG_QTPATH_WINDOWS=C:\\\\QtSDK
 PG_SDK_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_SIGNTOOL_WINDOWS="$PG_SDK_WINDOWS\\\\Bin\\\\signtool.exe"
-PG_PERL_WINDOWS=C:\\\\Perl32
-PG_PYTHON_WINDOWS=C:\\\\Python33-x86
-PG_TCL_WINDOWS=C:\\\\Tcl32
+PG_PERL_WINDOWS=C:\\\\EnterpriseDB\\\\PostgreSQL\\\\LanguagePack\\\\9.4\\\\i386\\\\Perl-5.16
+PG_PYTHON_WINDOWS=C:\\\\EnterpriseDB\\\\PostgreSQL\\\\LanguagePack\\\\9.4\\\\i386\\\\Python-3.3
+PG_TCL_WINDOWS=C:\\\\EnterpriseDB\\\\PostgreSQL\\\\LanguagePack\\\\9.4\\\\i386\\\\Tcl-8.5
 
 
 PG_SSH_WINDOWS_X64=buildfarm@bf4-windows-x64.ox.uk.enterprisedb.com
@@ -115,9 +115,9 @@ PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild64"
 PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets-2.8.12"
 PG_JAVA_HOME_WINDOWS_X64="C:\\\\Program Files\\\\Java\\\\jdk1.7.0_51"
 PG_CMAKE_WINDOWS_X64="C:\\\\cmake-x86"
-PG_PERL_WINDOWS_X64=C:\\\\Perl64
-PG_PYTHON_WINDOWS_X64=C:\\\\Python33-x64
-PG_TCL_WINDOWS_X64=C:\\\\Tcl64
+PG_PERL_WINDOWS_X64=C:\\\\EnterpriseDB\\\\PostgreSQL\\\\LanguagePack\\\\9.4\\\\x64\\\\Perl-5.16
+PG_PYTHON_WINDOWS_X64=C:\\\\EnterpriseDB\\\\PostgreSQL\\\\LanguagePack\\\\9.4\\\\x64\\\\Python-3.3
+PG_TCL_WINDOWS_X64=C:\\\\EnterpriseDB\\\\PostgreSQL\\\\LanguagePack\\\\9.4\\\\x64\\\\Tcl-8.5
 PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_SIGNTOOL_WINDOWS="$PG_SDK_WINDOWS\\\\Bin\\\\signtool.exe"
 
@@ -146,9 +146,9 @@ PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx
 PG_ANT_HOME_OSX=/usr
 PG_DOCBOOK_OSX=/usr/local/docbook-xsl-1.77.1
 PG_JAVA_HOME_OSX=/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home
-PG_PERL_OSX=/usr/local/ActivePerl-5.16
-PG_PYTHON_OSX=/Library/Frameworks/Python.framework/Versions/3.3
-PG_TCL_OSX=/Library/Frameworks/Tcl.framework/Versions/8.5
+PG_PERL_OSX=/Library/PostgreSQL/LanguagePack/9.4/Perl-5.16
+PG_PYTHON_OSX=/Library/PostgreSQL/LanguagePack/9.4/Python-3.3
+PG_TCL_OSX=/Library/PostgreSQL/LanguagePack/9.4/Tcl-8.5
 PG_QTFRAMEWORK_OSX=/Library/Frameworks
 PG_QMAKE_OSX=/Developer/Tools/Qt/qmake
 
