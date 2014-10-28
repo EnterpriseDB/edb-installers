@@ -304,6 +304,18 @@ EOT
 
 _postprocess_ApachePhp_windows() {
     echo "BEGIN POST ApachePhp Windows"
+    TEMP_PATH=`echo $PG_PATH_WINDOWS | sed -e 's:\\\\\\\\:/:g'`
+
+    #Configure the files in apache and php
+    filelist=`grep -rslI "$TEMP_PATH" "$WD/ApachePhp/staging/windows/apache/conf" | grep -v Binary`
+
+    cd $WD/ApachePhp/staging/windows
+
+    for file in $filelist
+    do
+        _replace "$TEMP_PATH/apache.staging" @@INSTALL_DIR@@ "$file"
+    chmod ugo+x "$file"
+    done
 
     cd $WD/ApachePhp
     #Changing the ServerRoot from htdocs to www in apache

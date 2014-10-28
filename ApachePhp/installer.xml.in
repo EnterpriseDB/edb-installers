@@ -1008,6 +1008,22 @@ EOF
          </substitution>
        </substitutionList>
     </substitute>
+    <substitute>
+       <files>${installdir}/apache/conf/extra/httpd-ssl.conf</files>
+       <substitutionList>
+         <substitution>
+           <pattern>@@INSTALL_DIR@@</pattern>
+           <value>${installdir}/apache</value>
+         </substitution>
+       </substitutionList>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+    </substitute>
     <!-- Configuring Scripts to set the installation path in Apache and Php -->
     <runProgram>
       <customErrorMessage>${msg(error.configure.apachephp)}</customErrorMessage>
