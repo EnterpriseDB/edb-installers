@@ -95,14 +95,14 @@ EOT
     mkdir -p $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin  || _die "Failed to create directory for psqlODBC"
     mkdir -p $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/etc  || _die "Failed to create etc directory for psqlODBC"
     echo "Copying psqlODBC built tree to Unix host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\psqlODBC.windows-x64\\\\X64ANSI; zip -r ..\\\\..\\\\psqlODBC-windows-x64.zip *.dll" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC.windows-x64)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\psqlODBC.windows-x64\\\\_ANSI_Release; zip -r ..\\\\..\\\\psqlODBC-windows-x64.zip *.dll" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC.windows-x64)"
     scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip)"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST psqlODBC-windows-x64.zip del /S /Q psqlODBC-windows-x64.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\\psqlODBC-windows-x64.zip on Windows VM"
     unzip -o $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows-x64.zip -d $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/psqlODBC-windows-x64.zip)"
     rm $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows-x64.zip
 
     echo "Copying psqlODBC built tree to Unix host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\psqlODBC.windows-x64\\\\X64; zip -r ..\\\\..\\\\psqlODBC-windows-x64.zip *.dll" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC.windows-x64)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\psqlODBC.windows-x64\\\\_Unicode_Release; zip -r ..\\\\..\\\\psqlODBC-windows-x64.zip *.dll" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC.windows-x64)"
     scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip)"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST psqlODBC-windows-x64.zip del /S /Q psqlODBC-windows-x64.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\\psqlODBC-windows-x64.zip on Windows VM"
     unzip -o $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows-x64.zip -d $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/psqlODBC-windows-x64.zip)"
