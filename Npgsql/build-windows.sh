@@ -19,18 +19,18 @@ _prep_Npgsql_windows() {
    
     echo "Creating staging directory ($WD/Npgsql/source/Npgsql.windows)"
     mkdir -p $WD/Npgsql/source/Npgsql.windows || _die "Couldn't create the Npgsql.windows directory"
-    mkdir -p $WD/Npgsql/source/Npgsql.windows/ms.net2.0 || _die "Couldn't create the Npgsql.windows/ms.net directory"
-    mkdir -p $WD/Npgsql/source/Npgsql.windows/ms.net3.5sp1 || _die "Couldn't create the Npgsql.windows/ms.net3.5sp1 directory"
-    mkdir -p $WD/Npgsql/source/Npgsql.windows/ms.net4.0 || _die "Couldn't create the Npgsql.windows/ms.net4.0 directory"
-    mkdir -p $WD/Npgsql/source/Npgsql.windows/docs || _die "Couldn't create the Npgsql.windows/docs directory"
+    mkdir -p $WD/Npgsql/source/Npgsql.windows/ms.net20 || _die "Couldn't create the Npgsql.windows/ms.net20 directory"
+    mkdir -p $WD/Npgsql/source/Npgsql.windows/ms.net35 || _die "Couldn't create the Npgsql.windows/ms.net35 directory"
+    mkdir -p $WD/Npgsql/source/Npgsql.windows/ms.net40 || _die "Couldn't create the Npgsql.windows/ms.net40 directory"
+    mkdir -p $WD/Npgsql/source/Npgsql.windows/ms.net45 || _die "Couldn't create the Npgsql.windows/ms.net45 directory"
 
     cd $WD/Npgsql/source
     # Grab a copy of the source tree
-    cp -R Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net2.0/* Npgsql.windows/ms.net2.0/ || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-ms.net)"
-    cp -R Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net3.5sp1/* Npgsql.windows/ms.net3.5sp1/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-ms.net3.5sp1)"
-    cp -R Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net4.0/* Npgsql.windows/ms.net4.0/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-ms.net4.0)"
-    cp -R Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net4.5/* Npgsql.windows/ms.net4.0/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-ms.net4.5)"
-    cp -R Npgsql$PG_VERSION_NPGSQL/Mono2.0/docs/* Npgsql.windows/docs/ || _die "Failed to copy the docs for Npgsql"
+    cp -R Npgsql-"$PG_VERSION_NPGSQL"-net20/* Npgsql.windows/ms.net20/ || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-net20)"
+    cp -R Npgsql-"$PG_VERSION_NPGSQL"-net35/* Npgsql.windows/ms.net35/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-net35)"
+    cp -R Npgsql-"$PG_VERSION_NPGSQL"-net40/* Npgsql.windows/ms.net40/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-net40)"
+    cp -R Npgsql-"$PG_VERSION_NPGSQL"-net45/* Npgsql.windows/ms.net45/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-net45)"
+    
     chmod -R ugo+w Npgsql.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -70,7 +70,6 @@ _postprocess_Npgsql_windows() {
     echo "BEGIN POST Npgsql Windows"
  
     cp -R $WD/Npgsql/source/Npgsql.windows/* $WD/Npgsql/staging/windows || _die "Failed to copy the Npgsql Source into the staging directory"
-    chmod -R ugo+rx $WD/Npgsql/staging/windows/docs
 
     cd $WD/Npgsql
     

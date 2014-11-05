@@ -24,9 +24,17 @@ _prep_Npgsql_osx() {
    
     echo "Creating source directory ($WD/Npgsql/source/Npgsql.osx)"
     mkdir -p $WD/Npgsql/source/Npgsql.osx || _die "Couldn't create the Npgsql.osx directory"
+    mkdir -p $WD/Npgsql/source/Npgsql.osx/ms.net20 || _die "Couldn't create the Npgsql.osx/ms.net20 directory"
+    mkdir -p $WD/Npgsql/source/Npgsql.osx/ms.net35 || _die "Couldn't create the Npgsql.osx/ms.net35 directory"
+    mkdir -p $WD/Npgsql/source/Npgsql.osx/ms.net40 || _die "Couldn't create the Npgsql.osx/ms.net40 directory"
+    mkdir -p $WD/Npgsql/source/Npgsql.osx/ms.net45 || _die "Couldn't create the Npgsql.osx/ms.net45 directory"
 
     # Grab a copy of the source tree
-    cp -R Npgsql$PG_VERSION_NPGSQL/Mono2.0/* Npgsql.osx || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql)"
+    cp -R Npgsql-$PG_VERSION_NPGSQL-net20/* Npgsql.osx/ms.net20 || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-net20)"
+    cp -R Npgsql-$PG_VERSION_NPGSQL-net35/* Npgsql.osx/ms.net35 || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-net35)"
+    cp -R Npgsql-$PG_VERSION_NPGSQL-net40/* Npgsql.osx/ms.net40 || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-net40)"
+    cp -R Npgsql-$PG_VERSION_NPGSQL-net45/* Npgsql.osx/ms.net45 || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-net45)"
+
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/Npgsql/staging/osx ];
@@ -70,7 +78,6 @@ _postprocess_Npgsql_osx() {
     echo "********************************"
  
     cp -R $WD/Npgsql/source/Npgsql.osx/* $WD/Npgsql/staging/osx || _die "Failed to copy the Npgsql Source into the staging directory"
-    chmod -R ugo+rx $WD/Npgsql/staging/osx/docs
 
     cd $WD/Npgsql
 

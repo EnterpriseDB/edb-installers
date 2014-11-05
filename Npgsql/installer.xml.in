@@ -166,7 +166,7 @@ EOF
     <initializationActionList>
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
 	<setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_NPGSQL" />
-	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for Mono 2.0">
+	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for Mono 3.x">
           <ruleList>
               <compareText>
 		<logic>does_not_equal</logic>
@@ -175,7 +175,7 @@ EOF
               </compareText>
           </ruleList>
         </setInstallerVariable>
-	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for .Net 2.0 and .Net 3.5">
+	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for Microsoft .Net [2.0/3.5/4.0/4.5]">
           <ruleList>
               <compareText>
                 <logic>equals</logic>
@@ -678,12 +678,18 @@ EOF
                     <name>programfileslinux</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
-			<distributionDirectory>
-                            <origin>staging/linux/bin</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux/docs</origin>
-                        </distributionDirectory>
+                        <distributionDirectory>^M
+                            <origin>staging/linux/ms.net20</origin>^M
+                        </distributionDirectory>^M
+                        <distributionDirectory>^M
+                            <origin>staging/linux/ms.net35</origin>^M
+                        </distributionDirectory>^M
+                        <distributionDirectory>^M
+                            <origin>staging/linux/ms.net40</origin>^M
+                        </distributionDirectory>^M
+                        <distributionDirectory>^M
+                            <origin>staging/linux/ms.net45</origin>^M
+                        </distributionDirectory>^M
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -715,12 +721,18 @@ EOF
                     <name>programfileslinux-x64</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
-			<distributionDirectory>
-                            <origin>staging/linux-x64/bin</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/docs</origin>
-                        </distributionDirectory>
+                        <distributionDirectory>^M
+                            <origin>staging/linux-x64/ms.net20</origin>^M
+                        </distributionDirectory>^M
+                        <distributionDirectory>^M
+                            <origin>staging/linux-x64/ms.net35</origin>^M
+                        </distributionDirectory>^M
+                        <distributionDirectory>^M
+                            <origin>staging/linux-x64/ms.net40</origin>^M
+                        </distributionDirectory>^M
+                        <distributionDirectory>^M
+                            <origin>staging/linux-x64/ms.net45</origin>^M
+                        </distributionDirectory>^M
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -752,12 +764,18 @@ EOF
                     <name>programfileslinux-ppc64</name>
                     <platforms>linux-ppc</platforms>
                     <distributionFileList>
-			<distributionDirectory>
-                            <origin>staging/linux-ppc64/bin</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux-ppc64/docs</origin>
-                        </distributionDirectory>
+                        <distributionDirectory>^M
+                            <origin>staging/linux-ppc64/ms.net20</origin>^M
+                        </distributionDirectory>^M
+                        <distributionDirectory>^M
+                            <origin>staging/linux-ppc64/ms.net35</origin>^M
+                        </distributionDirectory>^M
+                        <distributionDirectory>^M
+                            <origin>staging/linux-ppc64/ms.net40</origin>^M
+                        </distributionDirectory>^M
+                        <distributionDirectory>^M
+                            <origin>staging/linux-ppc64/ms.net45</origin>^M
+                        </distributionDirectory>^M
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -789,12 +807,18 @@ EOF
                     <name>programfilesosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-			 <distributionDirectory>
-                            <origin>staging/osx/bin</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/osx/docs</origin>
-                        </distributionDirectory>
+                         <distributionDirectory>^M
+                            <origin>staging/osx/ms.net20</origin>^M
+                         </distributionDirectory>^M
+                         <distributionDirectory>^M
+                            <origin>staging/osx/ms.net35</origin>^M
+                         </distributionDirectory>^M
+                         <distributionDirectory>^M
+                            <origin>staging/osx/ms.net40</origin>^M
+                         </distributionDirectory>^M
+                         <distributionDirectory>^M
+                            <origin>staging/osx/ms.net45</origin>^M
+                         </distributionDirectory>^M
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -827,17 +851,17 @@ EOF
                     <platforms>windows</platforms>
                     <distributionFileList>
 			<distributionDirectory>
-                            <origin>staging/windows/ms.net2.0</origin>
+                            <origin>staging/windows/ms.net20</origin>
                         </distributionDirectory>
 			<distributionDirectory>
-                            <origin>staging/windows/ms.net3.5sp1</origin>
+                            <origin>staging/windows/ms.net35</origin>
                         </distributionDirectory>
 			<distributionDirectory>
-                            <origin>staging/windows/ms.net4.0</origin>
+                            <origin>staging/windows/ms.net40</origin>
                         </distributionDirectory>
-			<distributionDirectory>
-                            <origin>staging/windows/docs</origin>
-                        </distributionDirectory>
+                        <distributionDirectory>^M
+                            <origin>staging/windows/ms.net45</origin>^M
+                        </distributionDirectory>^M
                     </distributionFileList>
                 </folder>
                 <folder>

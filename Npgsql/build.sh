@@ -47,31 +47,29 @@ _prep_Npgsql() {
     # Enter the source directory and cleanup if required
     cd $WD/Npgsql/source
 
-    # Windows
-    if [ $PG_ARCH_WINDOWS = 1 ];
+    if [ -e Npgsql-"$PG_VERSION_NPGSQL"-net20 ];
     then
-	if [ -e Npgsql"$PG_VERSION_NPGSQL"-bin-ms.net2.0 ];
-        then
-	  echo "Removing existing Npgsql"${PG_VERSION_NPGSQL}".0-bin-ms.net2.0 source directory"
-          rm -rf Npgsql"${PG_VERSION_NPGSQL}".0-bin-ms.net2.0  || _die "Couldn't remove the existing Npgsql"${PG_VERSION_NPGSQL}".0-bin-ms.net2 source directory (source/Npgsql"${PG_VERSION_Npgsql}.0-bin-ms.net")"
-	fi
-    
-	echo "Unpacking Npgsql source..."
-        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}"-bin-ms.net2.0 || exit 1
-        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}"-bin-ms.net3.5sp1 || exit 1
-        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}"-bin-ms.net4.0 || exit 1
-        extract_file ../../tarballs/Npgsql"${PG_VERSION_NPGSQL}"-bin-ms.net4.5 || exit 1
+       rm -rf Npgsql-"${PG_VERSION_NPGSQL}"-net*  || _die "Couldn't remove the existing Npgsql-"${PG_VERSION_NPGSQL}"-net20  source directory (source/Npgsql"${PG_VERSION_Npgsql}-net20")"
     fi
     
-    # non-Windows
-    if [ -e Npgsql"$PG_VERSION_NPGSQL" ];
-    then
-        echo "Removing existing NpgSQL"$PG_VERSION_NPGSQL" (Mono2.0) source directory"
-        rm -rf Npgsql"$PG_VERSION_NPGSQL"  || _die "Couldn't remove the existing Mono"$PG_VERSION_NPGSQL" source directory (source/Npgsql"$PG_VERSION_NPGSQL"/Mono"$PG_VERSION_NPGSQL")"
-    fi
+    mkdir -p $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net20
+    mkdir -p $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net35
+    mkdir -p $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net40
+    mkdir -p $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net45
+   
+    echo "Unpacking Npgsql source..."
 
-    echo "Unpacking Npgsql (Mono2.0) source..."
-    extract_file ../../tarballs/Npgsql"$PG_VERSION_NPGSQL"-bin-mono2.0 || exit 1
+    cd $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net20
+    extract_file ../../../tarballs/Npgsql-"${PG_VERSION_NPGSQL}"-net20 || exit 1
+
+    cd $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net35
+    extract_file ../../../tarballs/Npgsql-"${PG_VERSION_NPGSQL}"-net35 || exit 1
+    
+    cd $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net40
+    extract_file ../../../tarballs/Npgsql-"${PG_VERSION_NPGSQL}"-net40 || exit 1
+
+    cd $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net45
+    extract_file ../../../tarballs/Npgsql-"${PG_VERSION_NPGSQL}"-net45 || exit 1
 
     # Per-platform prep
     cd $WD
