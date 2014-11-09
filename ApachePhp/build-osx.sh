@@ -172,7 +172,7 @@ EOT
     for ARCH in \${ARCHS}
     do
       echo "Configuring the php source tree for \${ARCH}"
-      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch \${ARCH} -I/opt/local/Current/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -L/opt/local/Current/lib -arch \${ARCH}" ./configure --with-libxml-dir=/opt/local/Current --with-openssl-dir=/opt/local/Current --with-zlib-dir=/opt/local/Current --with-iconv=/opt/local/Current --with-libexpat-dir=/opt/local/Current --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/opt/local/Current/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/opt/local/Current --with-png-dir=/opt/local/Current --with-freetype-dir=/opt/local/Current --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for \${ARCH}"
+      CFLAGS="${PG_ARCH_OSX_CFLAGS} -arch \${ARCH} -I/opt/local/Current/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} -L/opt/local/Current/lib -arch \${ARCH}" ./configure --with-libxml-dir=/opt/local/Current --with-openssl-dir=/opt/local/Current --with-zlib-dir=/opt/local/Current --with-iconv=/opt/local/Current --with-libexpat-dir=/opt/local/Current --prefix=$PG_STAGING/php --with-libmbfl=/opt/local/Current --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/opt/local/Current/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/opt/local/Current --with-png-dir=/opt/local/Current --with-freetype-dir=/opt/local/Current --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for \${ARCH}"
       for configFile in \${CONFIG_FILES}
       do
            if [ -f "\${configFile}.h" ]; then
@@ -182,7 +182,7 @@ EOT
     done
  
     echo "Configuring the php source tree for Universal"
-    CFLAGS="${PG_ARCH_OSX_CFLAGS} \${ARCH_FLAGS} -I/opt/local/Current/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} \${ARCH_FLAGS} -L/opt/local/Current/lib" ./configure --with-libxml-dir=/opt/local/Current --with-openssl-dir=/opt/local/Current --with-zlib-dir=/opt/local/Current --with-iconv=/opt/local/Current --with-libexpat-dir=/opt/local/Current --prefix=$PG_STAGING/php --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/opt/local/Current/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/opt/local/Current --with-png-dir=/opt/local/Current --with-freetype-dir=/opt/local/Current --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for Universal"
+    CFLAGS="${PG_ARCH_OSX_CFLAGS} \${ARCH_FLAGS} -I/opt/local/Current/include"  LDFLAGS="${PG_ARCH_OSX_LDFLAGS} \${ARCH_FLAGS} -L/opt/local/Current/lib" ./configure --with-libxml-dir=/opt/local/Current --with-openssl-dir=/opt/local/Current --with-zlib-dir=/opt/local/Current --with-iconv=/opt/local/Current --with-libexpat-dir=/opt/local/Current --prefix=$PG_STAGING/php --with-libmbfl=/opt/local/Current --with-pgsql=$PG_PGHOME_OSX --with-pdo-pgsql=$PG_PGHOME_OSX --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/opt/local/Current/etc --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-jpeg-dir=/opt/local/Current --with-png-dir=/opt/local/Current --with-freetype-dir=/opt/local/Current --enable-gd-native-ttf --enable-mbstring=all || _die "Failed to configure PHP for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     for configFile in \${CONFIG_FILES}
@@ -233,6 +233,7 @@ EOT
     cp -pR /opt/local/Current/lib/libxml*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -pR /opt/local/Current/lib/libexpat*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -pR /opt/local/Current/lib/libz*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
+    cp -pR /opt/local/Current/lib/libmbfl*.dylib $PG_STAGING/php/lib || _die "Failed to copy the dependency library"
     cp -pR /opt/local/Current/lib/libcrypto*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
     cp -pR /opt/local/Current/lib/libexpat*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"
     cp -pR /opt/local/Current/lib/libssl*.dylib $PG_STAGING/apache/lib || _die "Failed to copy the dependency library"

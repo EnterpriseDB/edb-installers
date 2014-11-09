@@ -110,7 +110,7 @@ _build_ApachePhp_linux() {
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libpcre.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libpcre)"
 
     echo "Configuring the php source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux/; export LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:/opt/local/Current/lib; sh ./configure --prefix=$PG_STAGING/php --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/opt/local/Current/etc --with-pgsql=$PG_PGHOME_LINUX --with-openssl=/opt/local/Current --with-pdo-pgsql=$PG_PGHOME_LINUX --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-png-dir=/usr --with-jpeg-dir=/opt/local/Current --with-freetype-dir=/opt/local/Current --with-iconv=/opt/local/Current --enable-gd-native-ttf --enable-mbstring=all --with-zlib=/opt/local/Current --with-libxml-dir=/opt/local/Current" || _die "Failed to configure php"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux/; export LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:/opt/local/Current/lib; sh ./configure --prefix=$PG_STAGING/php --with-libmbfl=/opt/local/Current --with-apxs2=$PG_STAGING/apache/bin/apxs --with-config-file-path=/opt/local/Current/etc --with-pgsql=$PG_PGHOME_LINUX --with-openssl=/opt/local/Current --with-pdo-pgsql=$PG_PGHOME_LINUX --without-mysql --without-pdo-mysql --without-sqlite --without-pdo-sqlite --with-gd --with-png-dir=/usr --with-jpeg-dir=/opt/local/Current --with-freetype-dir=/opt/local/Current --with-iconv=/opt/local/Current --enable-gd-native-ttf --enable-mbstring=all --with-zlib=/opt/local/Current --with-libxml-dir=/opt/local/Current" || _die "Failed to configure php"
 
     echo "Building php"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/php.linux; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib:/opt/local/Current/lib make" || _die "Failed to build php"
@@ -133,6 +133,7 @@ _build_ApachePhp_linux() {
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libfreetype.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (freetype)"
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libz.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libz)"
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libxml2.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libxml2)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libmbfl.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libmbfl)"
 
     # Add LD_LIBRARY_PATH in envvars scripts
     cat <<EOT >> $WD/ApachePhp/staging/linux/apache/bin/envvars
