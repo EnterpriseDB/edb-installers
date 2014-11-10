@@ -1,0 +1,211 @@
+<actionDefinition name="determineLinuxInitSystem">
+
+  <parameterList>
+    <!-- Temp directory, where you want to create the temporary directory for
+         doing some operation to determine the init system -->
+    <!-- DEFAULT: ${system_temp_directory} -->
+    <stringParameter name="tmpDir" allowEmptyValue="0" 
+      default="${system_temp_directory}"/>
+
+    <!-- Is init system systemd? -->
+    <stringParameter name="isSystemd" default="is_systemd" allowEmptyValue="1"/>
+
+    <!-- Is init system upstart? -->
+    <stringParameter name="isUpstart" default="is_upstart" allowEmptyValue="1"/>
+
+    <!-- Is init system SysVInit? -->
+    <stringParameter name="isSysVInit" default="is_sysvinit" allowEmptyValue="1"/>
+
+  </parameterList>
+
+  <actionList>
+    <actionGroup>
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+      <actionList>
+        <globalVariables names="linux_init_system ${isSystemd} ${isUpstart} ${isSysVInit}"/>
+
+        <setInstallerVariable name="usageDir" value=""/>
+        <setInstallerVariable name="linux_init_system" value=""/>
+        <setInstallerVariable name="${isSystemd}" value="">
+          <ruleList>
+            <compareText logic="equals" text="${isSystemd}" value=""/>
+          </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="${isUpstart}" value="">
+          <ruleList>
+            <compareText logic="equals" text="${isUpstart}" value=""/>
+          </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="${isSysVInit}" value="">
+          <ruleList>
+            <compareText logic="equals" text="${isSysVInit}" value=""/>
+          </ruleList>
+        </setInstallerVariable>
+
+        <setInstallerVariable name="foundNonExists" value="false"/>
+        <setInstallerVariable name="random" value=""/>
+        <setInstallerVariable name="prefix" value=".pg_comp"/>
+
+        <!-- Check if given temp directory exists or not -->
+        <throwError text="${msg(error.not.exist.temp.dir)}">
+          <ruleList>
+            <fileTest condition="not_exists" path="${tmpDir}"/>
+          </ruleList>
+        </throwError>
+
+        <!-- Check if the given temp directory is actual a directory -->
+        <throwError text="${msg(error.temp.dir.not.a.directory)}">
+          <ruleList>
+            <fileTest condition="is_not_directory" path="${tmpDir}"/>
+          </ruleList>
+        </throwError>
+
+        <!-- Check if the given temp directory is writable -->
+        <throwError text="${msg(error.temp.dir.not.writable)}">
+          <ruleList>
+            <fileTest condition="not_writable" path="${tmpDir}"/>
+          </ruleList>
+        </throwError>
+
+        <while>
+          <actionList>
+            <!-- Get a random number -->
+            <generateRandomValue length="10" variable="random"/>
+
+            <!-- This could be our temporary directory -->
+            <setInstallerVariable name="usageDir"
+              value="${tmpDir}/${prefix}-${random}"/>
+
+            <!-- This directory must not be exist -->
+            <setInstallerVariable name="foundNonExists" value="true">
+              <ruleList>
+                <fileTest condition="not_exists" path="${usageDir}"/>
+              </ruleList>
+            </setInstallerVariable>
+          </actionList>
+          <conditionRuleList>
+            <isFalse value="${foundNonExists}"/>
+          </conditionRuleList>
+        </while>
+
+        <runProgram program="sh"
+          customErrorMessage="${msg(error.creating.installer.tempdir)}"
+          programArguments="-c &quot;umask 0077; mkdir &quot;&quot;${usageDir}&quot;&quot; || exit 100;&quot;"/>
+
+        <runProgram program="sh"
+          programArguments="-c &quot;
+if [ -f /sbin/init ]; then&#10;
+        INIT_SYSTEM=\`/usr/bin/readlink -f /sbin/init 2&gt;/dev/null\`&#10;
+else&#10;
+        PATH=/sbin:/usr/sbin:\$PATH INIT_SYSTEM=\`which init 2&gt;/dev/null\`&#10;
+fi&#10;
+&#10;
+if [ -z &quot;&quot;\$INIT_SYSTEM&quot;&quot; ]; then&#10;
+        INIT_VERSION=\`\$INIT_SYSTEM --version 2&gt;/dev/null\`&#10;
+        INIT_VERSION_ERROR=\$?&#10;
+&#10;
+        if [ -z &quot;&quot;\$INIT_VERSION_ERROR&quot;&quot; ]; then&#10;
+                echo 0;&#10;
+        elif [ \$INIT_VERSION_ERROR -ne 0 ]; then&#10;
+                echo 0;&#10;
+        else&#10;
+                IS_UPSTART=\`echo \$INIT_VERSION | /usr/bin/grep upstart 2&gt;/dev/null &gt;/dev/null &amp;&amp; echo 1 || echo 0\`&#10;
+                IS_SYSTEMD=\`echo \$INIT_VERSION | /usr/bin/grep systemd 2&gt;/dev/null &gt;/dev/null &amp;&amp; echo 1 || echo 0\`&#10;
+                if [ \$IS_UPSTART -eq 1 ]; then&#10;
+                        echo 1;&#10;
+                elif [ \$IS_SYSTEMD -eq 1 ]; then&#10;
+                        echo 2;&#10;
+                fi      &#10;
+        fi&#10;
+&#10;
+        exit 0;&#10;
+fi&#10;
+&#10;
+exit 1;&quot;"
+          showMessageOrError="0" abortOnError="0">
+          <onErrorActionList>
+            <logMessage text="Couldn't determine the init system..."/>
+            <setInstallerVariable name="program_stdout" value="0"/>
+          </onErrorActionList>
+        </runProgram>
+
+        <if>
+          <conditionRuleList>
+            <compareText logic="equals" text="${program_stdout}" value="0"/>
+          </conditionRuleList>
+          <actionList>
+            <!-- It is a SysVInit init system -->
+            <setInstallerVariable name="linux_init_system" value="SysVInit"/>
+            <setInstallerVariable name="${isSystemd}" value="false">
+              <ruleList>
+                <compareText logic="equals" text="${isSystemd}" value=""/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="${isUpstart}" value="false">
+              <ruleList>
+                <compareText logic="equals" text="${isUpstart}" value=""/>
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="${isSysVInit}" value="true">
+              <ruleList>
+                <compareText logic="equals" text="${isSysVInit}" value=""/>
+              </ruleList>
+            </setInstallerVariable>
+          </actionList>
+          <elseActionList>
+            <if>
+              <conditionRuleList>
+                <compareText logic="equals" text="${program_stdout}" value="1"/>
+              </conditionRuleList>
+              <actionList>
+                <!-- It is a Upstart init system -->
+                <setInstallerVariable name="linux_init_system"
+                  value="upstart"/>
+                <setInstallerVariable name="${isSystemd}" value="false">
+                  <ruleList>
+                    <compareText logic="equals" text="${isSystemd}" value=""/>
+                  </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="${isUpstart}" value="true">
+                  <ruleList>
+                    <compareText logic="equals" text="${isUpstart}" value=""/>
+                  </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="${isSysVInit}" value="false">
+                  <ruleList>
+                    <compareText logic="equals" text="${isSysVInit}" value=""/>
+                  </ruleList>
+                </setInstallerVariable>
+              </actionList>
+              <elseActionList>
+                <!-- It is a SysVInit init system -->
+                <setInstallerVariable name="linux_init_system"
+                  value="systemd"/>
+                <setInstallerVariable name="${isSystemd}" value="false">
+                  <ruleList>
+                    <compareText logic="equals" text="${isSystemd}" value=""/>
+                  </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="${isUpstart}" value="false">
+                  <ruleList>
+                    <compareText logic="equals" text="${isUpstart}" value=""/>
+                  </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="${isSysVInit}" value="false">
+                  <ruleList>
+                    <compareText logic="equals" text="${isSysVInit}" value=""/>
+                  </ruleList>
+                </setInstallerVariable>
+              </elseActionList>
+            </if>
+          </elseActionList>
+        </if>
+	<logMessage text="==> Determined linux init system: ${linux_init_system}"/>
+
+      </actionList>
+    </actionGroup>
+
+  </actionList>
+</actionDefinition>
