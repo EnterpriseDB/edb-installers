@@ -261,6 +261,7 @@ EOT
         install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/../../apache/lib/libexpat.1.dylib" \$file
         install_name_tool -change "@loader_path/../../lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" \$file
         install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" \$file
+        install_name_tool -change "@loader_path/../../lib/libmbfl.1.dylib" "@loader_path/../../php/lib/libmbfl.1.dylib" \$file
     done
    
     install_name_tool -change "@loader_path/../../lib/libz.1.dylib" "@loader_path/../../php/lib/libz.1.dylib" $PG_STAGING/apache/modules/mod_deflate.so
