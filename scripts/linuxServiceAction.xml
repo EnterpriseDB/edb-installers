@@ -11,7 +11,7 @@
     <booleanParameter name="systemdBooted" default="false"/>
 
     <!-- Use Sys V init service, if not found systemd service (DEFAULT: true) -->
-    <booleanParameter name="trySysvinit" default="true"/>
+    <booleanParameter name="trySysVInit" default="true"/>
 
     <!-- Explanation -->
     <stringParameter name="progressText" allowEmptyValue="1"/>
@@ -23,7 +23,7 @@
     <stringParameter name="customErrorMessage" allowEmptyValue="1"/>
 
     <!-- Show message on error -->
-    <booleanParameter name="showMessageOnError" default="1"/>
+    <booleanParameter name="showMessageOnError" value="1" default="1"/>
 
     <!-- exit code -->
     <stringParameter name="serviceExitCode" default="program_exit_code" allowEmptyValue="0"/>
@@ -43,17 +43,18 @@
       </ruleList>
       <actionList>
         <globalVariables names="${serviceExitCode} ${serviceStdout} ${serviceStderr}"/>
+        <logMessage text="Running action (${action}) on service (${name})..."/>
 
         <setInstallerVariable name="systemd_script_found" value="false"/>
 
-        <if>
+        <if conditionRuleEvaluationLogic="or">
           <conditionRuleList>
             <!-- Allowed actions are -->
-            <compareText text="${action}" value="start" nocase="1"/>
-            <compareText text="${action}" value="stop" nocase="1"/>
-            <compareText text="${action}" value="restart" nocase="1"/>
-            <compareText text="${action}" value="status" nocase="1"/>
-            <compareText text="${action}" value="reload" nocase="1"/>
+            <compareText text="${action}" value="start"/>
+            <compareText text="${action}" value="stop"/>
+            <compareText text="${action}" value="restart"/>
+            <compareText text="${action}" value="status"/>
+            <compareText text="${action}" value="reload"/>
           </conditionRuleList>
           <actionList>
 
@@ -66,14 +67,18 @@
               <actionList>
 
                 <!-- Found the server script no need to try the Sys V Init script now -->
-                <setInstallerVariable name="try_sysvinit" value="false"/>
+                <setInstallerVariable name="trySysVInit" value="false"/>
                 <setInstallerVariable name="systemd_script_found" value="true"/>
+
+                <logMessage text="&#10;
+## Found /usr/lib/systemd/system/${name}.service...&#10;
+## Running /usr/bin/systemctl ${action} &quot;${name}.service&quot;"/>
 
                 <!-- Execute the service action (systemd) -->
                 <runProgram program="/usr/bin/systemctl"
                   programArguments="${action} &quot;${name}.service&quot;"
                   abortOnError="0" showMessageOnError="0"
-                  progressText="${progress_text}">
+                  progressText="${progressText}">
                   <onErrorActionList>
                     <!-- Service failed to run action, we shouldn't try the sysvinit
                          script now -->
@@ -81,6 +86,14 @@
                     <setInstallerVariable name="${serviceExitCode}" value="${program_exit_code}"/>
                     <setInstallerVariable name="${serviceStderr}" value="${program_stderr}"/>
                     <setInstallerVariable name="${serviceStdout}" value="${program_stdout}"/>
+                <logMessage text="&#10;
+## Error found:&#10;
+Exit Code: ${program_exit_code}&#10;
+Program Output:&#10;
+${program_stdout}&#10;
+Program Error:&#10;
+${program_stderr}&#10;
+"/>
 
                     <setInstallerVariable name="customErrorMessage" value="${msg(error.run.linux.service.failed)}">
                       <ruleList>
@@ -103,15 +116,13 @@
                 </runProgram>
               </actionList>
               <elseActionList>
-
                 <!-- Forcefully use sysvinit script to start linux, when
                      systemdBooted is false -->
-                <setInstallerVariable name="try_sysvinit" value="true">
+                <setInstallerVariable name="trySysVInit" value="true">
                   <ruleList>
                     <isFalse value="${systemdBooted}"/>
                   </ruleList>
                 </setInstallerVariable>
-
               </elseActionList>
             </if>
 
@@ -120,20 +131,33 @@
                 <fileTest condition="exists" path="/etc/init.d/${name}"/>
                 <fileTest condition="is_file" path="/etc/init.d/${name}"/>
                 <fileTest condition="executable" path="/etc/init.d/${name}"/>
+                <isTrue value="${trySysVInit}"/>
               </conditionRuleList>
               <actionList>
                 <setInstallerVariable name="systemd_script_found" value="true"/>
+
+                <logMessage text="&#10;
+## Found /etc/init.d/${name}...&#10;
+## Executing: &quot;/etc/init.d/${name} ${action}&quot;"/>
 
                 <!-- Execute the service action -->
                 <runProgram program="/etc/init.d/${name}"
                   programArguments="${action}"
                   abortOnError="0" showMessageOnError="0"
-                  progressText="${progress_text}">
+                  progressText="${progressText}">
                   <onErrorActionList>
                     <setInstallerVariable name="installer_exit_code" value="${program_exit_code}"/>
                     <setInstallerVariable name="${serviceExitCode}" value="${program_exit_code}"/>
                     <setInstallerVariable name="${serviceStderr}" value="${program_stderr}"/>
                     <setInstallerVariable name="${serviceStdout}" value="${program_stdout}"/>
+
+                    <logMessage text="&#10;
+## Error found:&#10;
+Exit Code: ${program_exit_code}&#10;
+Program Output:&#10;
+${program_stdout}&#10;
+Program Error:&#10;
+${program_stderr}&#10;"/>
 
                     <setInstallerVariable name="customErrorMessage" value="${msg(error.run.linux.service.failed)}">
                       <ruleList>
@@ -153,9 +177,6 @@
                       </ruleList>
                     </exit>
                   </onErrorActionList>
-                  <ruleList>
-                    <isTrue value="${try_sysvinit}"/>
-                  </ruleList>
                 </runProgram>
               </actionList>
             </if>
@@ -166,6 +187,7 @@
                 <isFalse value="${systemd_script_found}"/>
               </ruleList>
               <actionList>
+                <logMessage text="&#10;## No service script found for '${name}'..."/>
                 <setInstallerVariable name="installer_exit_code" value="127"/>
                 <setInstallerVariable name="${serviceExitCode}" value="127"/>
                 <setInstallerVariable name="${serviceStderr}" value="${msg(error.run.linux.service.not.found)}"/>
@@ -215,5 +237,4 @@
       </actionList>
     </actionGroup>
   </actionList>
-
 </actionDefinition>
