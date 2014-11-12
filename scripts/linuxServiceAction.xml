@@ -5,25 +5,25 @@
     <stringParameter name="name" allowEmptyValue="0"/>
 
     <!-- Action -->
-    <stringParamter name="action" allowEmptyValue="0"/>
+    <stringParameter name="action" allowEmptyValue="0"/>
 
     <!-- Use systemd service (DEFAULT: false) -->
-    <booleanParameter name="systemdBooted" default="false" allowEmptyValue="0"/>
+    <booleanParameter name="systemdBooted" default="false"/>
 
     <!-- Use Sys V init service, if not found systemd service (DEFAULT: true) -->
-    <booleanParameter name="trySysvinit" default="true" allowEmptyValue="0"/>
+    <booleanParameter name="trySysvinit" default="true"/>
 
     <!-- Explanation -->
     <stringParameter name="progressText" allowEmptyValue="1"/>
 
     <!-- Abort on error -->
-    <booleanParameter name="abortOnError" default="0" allowEmptyValue="0"/>
+    <booleanParameter name="abortOnError" default="0"/>
 
     <!-- custom error message -->
     <stringParameter name="customErrorMessage" allowEmptyValue="1"/>
 
     <!-- Show message on error -->
-    <booleanParameter name="showMessageOnError" default="1" allowEmptyValue="0"/>
+    <booleanParameter name="showMessageOnError" default="1"/>
 
     <!-- exit code -->
     <stringParameter name="serviceExitCode" default="program_exit_code" allowEmptyValue="0"/>

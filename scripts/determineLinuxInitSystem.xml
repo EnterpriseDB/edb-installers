@@ -124,7 +124,7 @@ if [ -z &quot;&quot;\$INIT_SYSTEM&quot;&quot; ]; then&#10;
 fi&#10;
 &#10;
 exit 1;&quot;"
-          showMessageOrError="0" abortOnError="0">
+          showMessageOnError="0" abortOnError="0">
           <onErrorActionList>
             <logMessage text="Couldn't determine the init system..."/>
             <setInstallerVariable name="program_stdout" value="0"/>
