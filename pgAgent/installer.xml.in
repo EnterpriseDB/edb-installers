@@ -1022,7 +1022,7 @@ EOF
             <runProgram>
               <customErrorMessage>${msg(error.create.pgpass)}</customErrorMessage>
               <program>${system_temp_directory}\${product_shortname}_${random_number}\bin\CreatePGPassconfForUser.exe</program>
-              <programArguments>${systemuser} "${systempassword.password}" ${pghost} ${pgport} ${pgdbname} ${pguser} "${pgpassword.password}"</programArguments>
+              <programArguments>"${systemuser}" "${systempassword.password}" ${pghost} ${pgport} ${pgdbname} ${pguser} "${pgpassword.password}"</programArguments>
               <workingDirectory>${windir}</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>1</showMessageOnError>
@@ -1046,7 +1046,7 @@ EOF
             <runProgram>
               <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
               <program>${installdir}\bin\pgagent.exe</program>
-              <programArguments>INSTALL pgAgent -u ${systemuser} -p "${systempassword.password}" host=${pghost} port=${pgport} user=${pguser} dbname=${pgdbname}</programArguments>
+              <programArguments>INSTALL pgAgent -u "${systemuser}" -p "${systempassword.password}" host=${pghost} port=${pgport} user=${pguser} dbname=${pgdbname}</programArguments>
               <workingDirectory>${installdir}\bin</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>1</showMessageOnError>
