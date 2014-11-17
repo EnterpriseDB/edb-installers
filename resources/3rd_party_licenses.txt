@@ -508,7 +508,7 @@ The copyright and license notices on this page only apply to the text on this pa
 
 
 ===============
-geos, gettext, libgcrypt, libgpg_error, libiconv, pthreads, termcap, unixODBC, uuid License
+geos, gettext, libgcrypt, libgpg_error, libiconv, pthreads, termcap, unixODBC, uuid, libmbfl License
 ===============
                   GNU LESSER GENERAL PUBLIC LICENSE
                        Version 2.1, February 1999

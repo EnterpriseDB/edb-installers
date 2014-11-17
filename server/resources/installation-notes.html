@@ -35,7 +35,7 @@
   <li>Python 3.3</li>
   <li>Tcl 8.5</li>
 </ul>
-
+<p>The current pl/Python is dynamically linked with Python's shared library in the LanguagePack installers. Some distributions of Python interpreters (including ActivePython) on Linux do not carry a dynamic library of Python. Such interpreters would no longer be functional with pl/Python.We strongly recommend the users to use LanguagePack installers for pl/Perl, pl/Python and pl/Tcl.</p>
 <h3>Windows Service Account</h3>
 
 <p>Prior to version 9.2, the Windows port used a service account called 'postgres' by default. From 9.2 onwards, the special 'NT AUTHORITY\NetworkService' account is used instead. If you need to use an alternative account, for example, to allow the database server to use server-side COPY with files on a network share, run the installer with a command line option such as <i>--serviceaccount postgres</i>.</p>
