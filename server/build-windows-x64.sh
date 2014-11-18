@@ -130,7 +130,7 @@ CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" x86
 @SET INCLUDE=$PG_PGBUILD_WINDOWS\\include;%INCLUDE%
 @SET LIB=$PG_PGBUILD_WINDOWS\\lib;%LIB%
 @SET PGDIR=$PG_PATH_WINDOWS\\output
-@SET SPHINXBUILD=C:\\Python27-x64\\Scripts\\sphinx-build.exe
+@SET SPHINXBUILD=$PG_PYTHON_WINDOWS_X64\\Scripts\\sphinx-build.exe
 
 IF "%2" == "UPGRADE" GOTO upgrade
 
@@ -155,7 +155,7 @@ CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
 @SET INCLUDE=$PG_PGBUILD_WINDOWS_X64\\include;%INCLUDE%
 @SET LIB=$PG_PGBUILD_WINDOWS_X64\\lib;%LIB%
 @SET PGDIR=$PG_PATH_WINDOWS_X64\\output
-@SET SPHINXBUILD=C:\\Python27-x64\\Scripts\\sphinx-build.exe
+@SET SPHINXBUILD=$PG_PYTHON_WINDOWS_X64\\Scripts\\sphinx-build.exe
 
 IF "%2" == "UPGRADE" GOTO upgrade
 
