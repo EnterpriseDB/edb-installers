@@ -379,7 +379,8 @@ _postprocess_server_osx() {
     cp $WD/server/resources/README.osx server.img/README || _die "Failed to copy the installer README file into the DMG staging directory"
 
     # sign the .app, create the DMG
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign -s 'Developer ID Application' -i 'com.edb.postgresql' server.img/postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' --output ./server.img server.img/postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output/server.img; rm -rf postgresql-$PG_PACKAGE_VERSION-osx.app; mv postgresql-$PG_PACKAGE_VERSION-osx-signed.app postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "could not move the signed app"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; hdiutil create -quiet -anyowners -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-osx.dmg'" || _die "Failed to create the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
 
     echo "Attach the  disk image, create zip and then detach the image"
