@@ -6,7 +6,7 @@ Installer.Installing.Title=Installing Slony ${product_version}
 
 Installer.Parameter.installdir.explanation=Please specify the directory where Slony will be installed.
 
-Installer.Ready.Text1=Setup is now ready to begin installing Slony on your computer.
+Installer.Ready.Text1=Setup is now ready to begin installing Slony on your computer.\n\n ${installdir}
 
 Installer.Installing.Text=Please wait while Setup installs Slony on your computer.
 
