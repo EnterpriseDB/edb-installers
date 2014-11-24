@@ -869,6 +869,21 @@ EOF
          </throwError>
          <throwError>
               <text>${msg(apachephp.installdir.error)}</text>
+              <ruleList>
+                  <regExMatch>
+                      <text>${installdir}</text>
+                      <logic>does_not_match</logic>
+                      <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                  </regExMatch>
+                  <compareText>
+                    <text>${platform_name}</text>
+                      <logic>does_not_equal</logic>
+                      <value>windows</value>
+                  </compareText>
+                </ruleList>
+         </throwError>
+         <throwError>
+              <text>${msg(apachephp.installdir.error)}</text>
 	      <ruleList>
 		<regExMatch>
 		    <text>${installdir}</text>
