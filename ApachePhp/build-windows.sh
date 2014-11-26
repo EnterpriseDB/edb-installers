@@ -19,9 +19,9 @@ _prep_ApachePhp_windows() {
 
     # Apply the patch
     cd apache.windows/srclib/apr/atomic/win32/
-    patch -p0 < ~/tarballs/apr-win32.patch
+    patch -p0 < $WD/tarballs/apr-win32.patch
     cd $WD/ApachePhp/source/apache.windows/srclib/apr-iconv/build
-    patch -p0 < ~/tarballs/apr-iconv-win32.patch
+    patch -p0 < $WD/tarballs/apr-iconv-win32.patch
     cd $WD/ApachePhp/source/apache.windows
     if [ -f $WD/tarballs/apache_win_$PG_VERSION_APACHE.patch ];
     then
@@ -45,6 +45,8 @@ _prep_ApachePhp_windows() {
             patch -p1 < $WD/tarballs/php-$PG_VERSION_PHP-win32.patch
         fi
     fi
+    cd $WD/ApachePhp/source/php.windows/ext/mbstring
+    cp -f $WD/tarballs/mbstring.config.w32 config.w32
 
     cd $WD/ApachePhp/source
 
@@ -203,7 +205,7 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 @IF NOT EXIST "configure.js" @GOTO configure-not-build
 
 @ECHO Configure PHP
-@cscript /nologo configure.js --enable-cli --enable-cgi  --with-openssl --enable-pdo --with-extra-includes=%PGBUILD%\include;%PG_HOME_PATH%\include;%APACHE_STAGING%\include --with-extra-libs=%PGBUILD%\lib;%PG_HOME_PATH%\lib;%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-4handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --with-prefix=%PHP_STAGING% --enable-one-shot --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysqlnd --with-xsl=SHARED  --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-gd=SHARED --without-mysql --without-mysqli --without-sqlite3 --without-pdo-mysql --without-pdo-sqlite
+@cscript /nologo configure.js --enable-cli --enable-cgi  --with-openssl --enable-pdo --with-extra-includes=%PGBUILD%\include;%PG_HOME_PATH%\include;%APACHE_STAGING%\include --with-extra-libs=%PGBUILD%\lib;%PG_HOME_PATH%\lib;%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-4handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --with-prefix=%PHP_STAGING% --enable-one-shot --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysqlnd --with-xsl=SHARED --with-libmbfl=%PGBUILD% --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-gd=SHARED --without-mysql --without-mysqli --without-sqlite3 --without-pdo-mysql --without-pdo-sqlite
 
 @IF NOT EXIST "Makefile" @GOTO make-not-created
 
@@ -225,6 +227,7 @@ IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 @COPY "%PGBUILD%\bin\libxml2.dll" php.staging || echo Failed to copy libxml2\bin\libxml2.dll && EXIT -1
 @COPY "%PGBUILD%\bin\libxslt.dll" php.staging || echo Failed to copy libxslt\bin\libxslt.dll && EXIT -1
 @COPY "%PGBUILD%\bin\zlib1.dll" php.staging || echo Failed to copy zlib.dll && EXIT -1
+@COPY "%PGBUILD%\bin\mbfl.dll" php.staging || echo Failed to copy mbfl.dll && EXIT -1
 @COPY "%PG_HOME_PATH%\bin\libpq.dll" php.staging || echo Failed to copy libpq.dll && EXIT -1
 
 @GOTO end
