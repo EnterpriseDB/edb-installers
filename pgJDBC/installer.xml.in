@@ -432,6 +432,12 @@ EOF
                             <key>InstallationDirectory</key>
                             <variable>installdir</variable>
                         </iniFileGet>
+                      <runProgram>
+                        <program>rm</program>
+                        <programArguments>-f ${installdir}/*.jar</programArguments>
+                        <abortOnError>0</abortOnError>
+                        <showMessageOnError>0</showMessageOnError>
+                      </runProgram>
                     </actionList>
                     <ruleList>
                         <compareText>
@@ -455,6 +461,12 @@ EOF
                             <name>Location</name>
                             <variable>installdir</variable>
                         </registryGet>
+                        <runProgram>
+                          <program>cmd</program>
+                          <programArguments>/c del "${installdir}\*.jar"</programArguments>
+                          <abortOnError>0</abortOnError>
+                          <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
                     </actionList>
                     <ruleList>
                         <compareText>
