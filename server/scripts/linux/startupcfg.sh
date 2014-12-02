@@ -4,9 +4,9 @@
 # PostgreSQL startup configuration script for Linux
 
 # Check the command line
-if [ $# -ne 5 ]; 
+if [ $# -ne 6 ]; 
 then
-    echo "Usage: $0 <Major.Minor version> <Username> <Install dir> <Data dir> <ServiceName>"
+    echo "Usage: $0 <Major.Minor version> <Username> <Install dir> <Data dir> <ServiceName> <initSystem>"
     exit 127
 fi
 
@@ -15,6 +15,7 @@ USERNAME=$2
 INSTALLDIR=$3
 DATADIR=$4
 SERVICENAME=$5
+INIT=$6
 
 # Exit code
 WARN=0
@@ -30,6 +31,46 @@ _warn() {
     WARN=2
 }
 
+determine_services_path() {
+        echo "==>> Checking systemd services path..."
+        echo "Running: /usr/bin/pkg-config --variable=systemdsystemunitdir systemd"
+        SYSTEMD_SERVICES_PATH=`/usr/bin/pkg-config --variable=systemdsystemunitdir systemd`
+
+        if [ -z $SYSTEMD_SERVICES_PATH ]; then
+            SYSTEMD_SERVICES_PATH=/usr/lib/systemd/system
+        fi
+        echo "SYSTEMD_SERVICES_PATH:$SYSTEMD_SERVICES_PATH"
+}
+
+if [ "$INIT" = "systemd" ]; then
+determine_services_path
+    cat <<EOT > "$SYSTEMD_SERVICES_PATH/$SERVICENAME.service"
+[Unit]
+Description=PostgreSQL $VERSION database server
+After=syslog.target network.target
+
+[Service]
+Type=forking
+TimeoutSec=120
+
+User=$USERNAME
+
+Environment=PGDATA=$DATADIR
+PIDFILE=$DATADIR/postmaster.pid
+
+ExecStart=$INSTALLDIR/bin/pg_ctl -w start -D "$DATADIR" -l "$DATADIR/pg_log/startup.log -w -t ${TimeoutSec}"
+ExecStop=$INSTALLDIR/bin/pg_ctl stop -m fast -w -D "$DATADIR"
+ExecReload=$INSTALLDIR/bin/pg_ctl reload -D "$DATADIR"
+
+[Install]
+WantedBy=multi-user.target
+
+EOT
+
+$SYSTEMD_PATH/bin/systemctl daemon-reload
+$SYSTEMD_PATH/bin/systemctl enable $SERVICENAME.service
+
+else
 # Write the startup script
 cat <<EOT > "/etc/init.d/$SERVICENAME"
 #!/bin/bash
@@ -141,6 +182,8 @@ then
 fi
 
 ldconfig || _warn "Failed to run ldconfig"
+
+fi
 
 echo "$0 ran to completion"
 exit $WARN
