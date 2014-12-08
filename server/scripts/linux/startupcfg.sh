@@ -84,6 +84,9 @@ then
     . /etc/init.d/functions
 fi
 
+NAME=\`basename \$0\`
+LOCKFILE=/var/lock/subsys/\$NAME
+
 # PostgreSQL Service script for Linux
 
 start()
@@ -93,6 +96,7 @@ start()
 	
 	if [ \$? -eq 0 ];
 	then
+		touch \$LOCKFILE
 		echo "PostgreSQL $VERSION started successfully"
                 exit 0
 	else
@@ -105,6 +109,10 @@ stop()
 {
 	echo \$"Stopping PostgreSQL $VERSION: "
 	su -s /bin/sh - $USERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib:\$LD_LIBRARY_PATH $INSTALLDIR/bin/pg_ctl stop -m fast -w -D \"$DATADIR\""
+	if [ \$? -eq 0 ];
+	then
+		rm -f \$LOCKFILE
+	fi
 }
 
 restart()
