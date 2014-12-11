@@ -82,14 +82,19 @@ EOT
 
    scp build-Slony.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-Slony.bat" 
+   
+    # Create manifest file for slon.exe and slonik.exe
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cd Slony.windows/src/slon; cmd /c \"$PG_MANIFEST_WINDOWS\"  -manifest slon.exe.manifest -outputresource:slon.exe" || _die "Failed to create manifest file for slon.exe"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cd Slony.windows/src/slonik; cmd /c \"$PG_MANIFEST_WINDOWS\"  -manifest slonik.exe.manifest -outputresource:slonik.exe" || _die "Failed to create manifest file for slonik.exe"
     
    # Slony installs it's files into postgresql directory
    # We need to copy them to staging directory
    ssh $PG_SSH_WINDOWS  "mkdir -p $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to create the bin directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/slon/slon.exe $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slon binary to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/slon/slon.exe.manifest $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slon binary manifest file to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/slonik/slonik.exe.manifest $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary manifest file to staging directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/slonik/slonik.exe $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary to staging directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_MINGW_WINDOWS/lib/pthreadGC2.dll $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary to staging directory"
-
+   ssh $PG_SSH_WINDOWS "cp $PG_PGBUILD_WINDOWS/pthreads/lib/pthreadVC2.dll $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary to staging directory"
    ssh $PG_SSH_WINDOWS "mkdir -p $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to create the bin directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.dll $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to copy slony_funcs.dll to staging directory"
 
