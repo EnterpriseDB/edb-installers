@@ -966,7 +966,7 @@ EOF
                             <origin>staging/windows/bin/slonik.exe.manifest</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/windows/bin/pthreadGC2.dll</origin>
+                            <origin>staging/windows/bin/pthreadVC2.dll</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>

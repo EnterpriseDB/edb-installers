@@ -92,7 +92,7 @@ EOT
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/slon/slon.exe.manifest $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slon binary manifest file to staging directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/slonik/slonik.exe.manifest $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary manifest file to staging directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/slonik/slonik.exe $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary to staging directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_MINGW_WINDOWS/lib/pthreadGC2.dll $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PGBUILD_WINDOWS/pthreads/lib/pthreadVC2.dll $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary to staging directory"
 
    ssh $PG_SSH_WINDOWS "mkdir -p $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to create the bin directory"
    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.dll $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to copy slony_funcs.dll to staging directory"
