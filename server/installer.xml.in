@@ -3111,9 +3111,30 @@ EOF
                     <showMessageOnError>0</showMessageOnError>
                     <ruleList>
                         <compareText>
-                            <logic>does_not_equal</logic>
+                            <logic>contains</logic>
                             <text>${platform_name}</text>
-                            <value>windows</value>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
+                <runProgram>
+                    <program>${installdir}/installer/server/startupcfg.sh</program>
+                    <programArguments>${product_version} "${serviceaccount}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
+                    <progressText>${msg(progress.text.configuring.startup)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>solaris</text>
+                            <value>${platform_name}</value>
+                        </compareText>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>osx</text>
+                            <value>${platform_name}</value>
                         </compareText>
                     </ruleList>
                 </runProgram>
