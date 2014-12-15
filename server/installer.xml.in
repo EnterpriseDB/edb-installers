@@ -2445,11 +2445,6 @@ EOF
 		    <ruleList>
 			<compareText>
 			    <logic>equals</logic>
-			    <text>${IsUpgrade}</text>
-			    <value>1</value>
-			</compareText>
-			<compareText>
-			    <logic>equals</logic>
 			    <text>${servicepassword}</text>
 			    <value></value>
 			</compareText>
@@ -2584,13 +2579,6 @@ EOF
 			</compareText>
 		    </ruleList>
 		</setInstallerVariableFromRegEx>
-
-		<!-- If upgrading, set the servicepassword to password which user has entered on this page -->
-		<setInstallerVariable name="servicepassword" value="${superpassword}">
-		    <ruleList>
-			<isTrue value="${IsUpgrade}"/>
-		    </ruleList>
-		</setInstallerVariable>
 
 		<!-- If not upgrading and servicepassword is not provided through command-line, set the servicepassword
 		to password, which user has entered on this page -->
