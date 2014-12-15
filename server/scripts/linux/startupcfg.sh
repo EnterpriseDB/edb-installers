@@ -84,7 +84,7 @@ then
     . /etc/init.d/functions
 fi
 
-NAME=\`basename \$0\`
+NAME=$SERVICENAME
 LOCKFILE=/var/lock/subsys/\$NAME
 
 # PostgreSQL Service script for Linux
@@ -122,6 +122,7 @@ restart()
 	
 	if [ \$? -eq 0 ];
 	then
+		touch \$LOCKFILE
 		echo "PostgreSQL $VERSION restarted successfully"
                 exit 0
 	else
