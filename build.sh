@@ -387,6 +387,6 @@ then
     if [ -e $WD/pvt_build.sh ];
     then
 	[ -z "${PVT_BUILD_LOG}" ] && PVT_BUILD_LOG=$WD/output/build-pvt.log
-        source $WD/pvt_build.sh > "${PVT_BUILD_LOG}" 2>&1
+        source $WD/pvt_build.sh 2>&1 | tee "${PVT_BUILD_LOG}"
     fi
 fi

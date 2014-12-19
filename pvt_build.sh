@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+
 if [ -e $WD/pvt_settings.sh ]
 then
 
