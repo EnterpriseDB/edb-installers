@@ -819,35 +819,13 @@ EOF
                               progressText="${msg(progress.text.creating.plpgsql)}"
                               abortOnError="0" showMessageOnError="0"
                               workingDirectory="${installdir}/bin"/>
+                        <!-- The core postgis extension installs PostGIS geometry, geography, raster, spatial_ref_sys and all the functions and comments -->
                         <runProgram program="${psql_executable}"
-                              programArguments="-f &quot;${sharedir}/contrib/postgis/postgis.sql&quot; -d template_postgis"
-                              progressText="${msg(progress.text.installing.postgis.sql)}"
-                              abortOnError="0" showMessageOnError="1"
+                              programArguments="-c &quot;CREATE EXTENSION postgis&quot; -d template_postgis"
+                              progressText="${msg(progress.text.installing.postgis.extn)}"
+                              abortOnError="0" showMessageOnError="0"
                               workingDirectory="${installdir}/bin"/>
-                        <runProgram program="${psql_executable}"
-                              programArguments="-f &quot;${sharedir}/contrib/postgis/spatial_ref_sys.sql&quot; -d template_postgis"
-                              progressText="${msg(progress.text.installing.spatial.ref_sys)}"
-                              abortOnError="0" showMessageOnError="1"
-                              workingDirectory="${installdir}/bin"/>
-                    </actionList>
-                    <ruleList>
-                        <isFalse value="${dbexist}"/>
-                        <isFalse value="${upgrade_mode}"/>
-			<compareText>
-			    <logic>equals</logic>
-			    <text>${PostGISVersionInstalled}</text>
-			    <value></value>
-			</compareText>
-                    </ruleList>
-                </actionGroup>
 
-                <actionGroup>
-                    <actionList>
-		        <runProgram program="${psql_executable}"
-                              programArguments="-f &quot;${sharedir}/contrib/postgis/postgis_comments.sql&quot; -d template_postgis"
-                              progressText="${msg(progress.text.installing.postgis.comments)}"
-                              abortOnError="0" showMessageOnError="1"
-                              workingDirectory="${installdir}/bin"/>
                     </actionList>
                     <ruleList>
                         <isFalse value="${dbexist}"/>
@@ -857,7 +835,6 @@ EOF
 			    <text>${PostGISVersionInstalled}</text>
 			    <value></value>
 			</compareText>
-                	<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </actionGroup>
 
