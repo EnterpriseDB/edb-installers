@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2012-2014, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2015, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL server startup script for Linux
 
