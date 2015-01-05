@@ -42,7 +42,7 @@ _prep_PostGIS_osx() {
     POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
 
     echo "Removing existing PostGIS files from the PostgreSQL directory"
-    cd $PG_PGHOME_OSX
+    cd $WD/server/staging
     rm -f bin/shp2pgsql bin/pgsql2shp || _die "Failed to remove postgis binary files"
     rm -f lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so || _die "Failed to remove postgis library files"
     rm -f share/postgresql/contrib/spatial_ref_sys.sql share/postgresql/contrib/postgis.sql || _die "Failed to remove postgis share files"
@@ -267,6 +267,7 @@ cat <<EOT-POSTGIS >> $WD/PostGIS/build-postgis.sh
     install_name_tool -change "@loader_path/../../lib/libgeos-$PG_TARBALL_GEOS.dylib" "@loader_path/libgeos-$PG_TARBALL_GEOS.dylib" $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/lib/libgeos_c.1.dylib
     install_name_tool -change "@loader_path/../../lib/libpcre.1.dylib" "@loader_path/libpcre.1.dylib" $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/lib/libgdal.1.dylib
     install_name_tool -change "@loader_path/../../lib/libcurl.4.dylib" "@loader_path/libcurl.4.dylib" $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/lib/libgdal.1.dylib
+    install_name_tool -change "@loader_path/../../lib/libjson-c.2.dylib" "@loader_path/libjson-c.2.dylib" $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/lib/libgdal.1.dylib
     install_name_tool -change "@loader_path/../../lib/libgeos_c.1.dylib" "@loader_path/libgeos_c.1.dylib" $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/lib/postgis-2.1.so
     install_name_tool -change "@loader_path/../../lib/libgeos_c.1.dylib" "@loader_path/libgeos_c.1.dylib" $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/lib/rtpostgis-2.1.so
     install_name_tool -change "@loader_path/../../lib/libjson-c.2.dylib" "@loader_path/libjson-c.2.dylib" $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/lib/postgis-2.1.so
