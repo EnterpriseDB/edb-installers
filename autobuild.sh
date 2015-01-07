@@ -220,13 +220,16 @@ echo "Running the build (REL-9_3) " >> autobuild.log
 _mail_status "build-93.log" "build-pvt.log" "9.3"
 
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
+pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v4.0"
 
 # Different location for the manual and cron triggered builds.
 if [ "$BUILD_USER" == "" ]
 then
-        remote_location="$remote_location/Latest/9.3"
+	remote_location="$remote_location/Latest/9.3"
+	pem_remote_location="$pem_remote_location/$DATE"
 else
-        remote_location="$remote_location/Custom/$BUILD_USER/9.3/$BUILD_NUMBER"
+	remote_location="$remote_location/Custom/$BUILD_USER/9.3/$BUILD_NUMBER"
+	pem_remote_location="$pem_remote_location/Custom/$BUILD_USER/$BUILD_NUMBER"
 fi
 
 if [ "$BUILD_USER" == "" ]
@@ -237,10 +240,10 @@ fi
 
 # Create a remote directory if not present
 echo "Creating $remote_location on the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location $remote_location/../../../PEM/$DATE >> autobuild.log 2>&1
+ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location $pem_remote_location >> autobuild.log 2>&1
 
-echo "Uploading pem installers to /var/www/html/builds/DailyBuilds/Installers/PEM/$DATE  on the builds server"
-rsync -avh --del output/{pem*,sqlprof*,build-pvt*,php_edbpem*} buildfarm@builds.enterprisedb.com:$remote_location/../../../PEM/$DATE >> autobuild.log 2>&1
+echo "Uploading pem installers to $pem_remote_location on the builds server" >> autobuild.log 2>&1
+rsync -avh --del output/{pem*,sqlprof*,build-pvt*,php_edbpem*} buildfarm@builds.enterprisedb.com:$pem_remote_location/ >> autobuild.log 2>&1
 
 echo "Uploading output to $remote_location on the builds server" >> autobuild.log
 rsync -avh --del --exclude={pem*,sqlprof*,build-pvt*,php_edbpem*} output/ buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
