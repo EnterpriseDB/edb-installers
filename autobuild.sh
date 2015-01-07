@@ -219,7 +219,7 @@ echo "Running the build (REL-9_4) " >> autobuild.log
 _mail_status "build-94.log" "build-pvt.log" "9.4"
 
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
-pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM"
+pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v5.0"
 
 echo "Purging old builds from the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"$remote_location/20*\" 5" >> autobuild.log 2>&1
