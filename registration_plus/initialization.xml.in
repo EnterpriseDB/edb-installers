@@ -1,48 +1,8 @@
 <actionGroup>
   <actionList>
-    <!-- Make temporary directory -->
-    <actionGroup>
-      <actionList>
         <actionGroup>
           <actionList>
-            <setInstallerVariable name="iteration" value="0"/>
-            <!-- Create a random number to use unique filenames -->
-            <while>
-              <actionList>
-                <generateRandomValue length="10" variable="random_number_reg"/>
-                <runProgram>
-                  <program>sh</program>
-                  <programArguments>-c &lt;&lt;EOF '
-                                    umask 0077
-                                    mkdir "${system_temp_directory}/registration_plus_${random_number_reg}"
-                                    if [ $? -ne 0 ];
-                                    then
-                                       exit 100
-                                    fi
-                                    '
-EOF
-                  </programArguments>
-                </runProgram>
-                <break>
-                  <ruleList>
-                    <compareText logic="equals" text="0" value="${program_exit_code}"/>
-                  </ruleList>
-                </break>
-                <actionGroup>
-                  <actionList>
-                    <throwError text="${msg(cannot.create.tmp.dir)}" abortOnError="1">
-                      <ruleList>
-                        <compareValues value1="${iteration}" logic="equals" value2="9"/>
-                      </ruleList>
-                    </throwError>
-                  </actionList>
-                </actionGroup>
-                <mathExpression text="${iteration}+1" variable="iteration"/>
-              </actionList>
-              <conditionRuleList>
-                <compareValues value1="${iteration}" logic="less" value2="10"/>
-              </conditionRuleList>
-            </while>
+            <generateRandomValue length="20" variable="random_number_reg"/>
             <setInstallerVariable name="random_number_reg" value="${random_number_reg}"/>
           </actionList>
           <ruleList>
@@ -52,15 +12,12 @@ EOF
         <actionGroup>
           <actionList>
             <generateRandomValue length="10" variable="random_number_reg"/>
-            <createDirectory path="${system_temp_directory}/registration_plus_${random_number_reg}"/>
             <setInstallerVariable name="random_number_reg" value="${random_number_reg}"/>
           </actionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
         </actionGroup>
-      </actionList>
-    </actionGroup>
 
     <!-- Set Proxy values from environement variables if any -->
     <setInstallerVariable name="proxyHost" value="${env(PROXY_HOST)}" />
@@ -80,7 +37,7 @@ EOF
           <height>100</height>
           <actionList>
             <httpGet>
-              <filename>${system_temp_directory}/registration_plus_${random_number_reg}/connect.html</filename>
+              <filename>${system_temp_directory}/connect_${random_number_reg}.html</filename>
               <url>BASE_URL/connect.jsp</url>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
@@ -93,7 +50,7 @@ EOF
           <value>1</value>
           <ruleList>
             <fileContentTest>
-              <path>${system_temp_directory}/registration_plus_${random_number_reg}/connect.html</path>
+              <path>${system_temp_directory}/connect_${random_number_reg}.html</path>
               <text>EnterpriseDB</text>
               <logic>contains</logic>
             </fileContentTest>
@@ -101,7 +58,7 @@ EOF
         </setInstallerVariable>
         <logMessage text="is_internet_connected:${is_internet_connected}"/>
         <deleteFile>
-          <path>${system_temp_directory}/registration_plus_${random_number_reg}/connect.html</path>
+          <path>${system_temp_directory}/connect_${random_number_reg}.html</path>
         </deleteFile>
       </actionList>
     </actionGroup>
