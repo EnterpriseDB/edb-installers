@@ -1,18 +1,18 @@
 <actionGroup>
   <actionList>
-    <deleteFile path="${system_temp_directory}/registration_plus_${random_number_reg}/auth.html">
+    <deleteFile path="${system_temp_directory}/auth_${random_number_reg}.html">
 	<ruleList>
-	    <fileExists path="${system_temp_directory}/registration_plus_${random_number_reg}/auth.html" />
+	    <fileExists path="${system_temp_directory}/auth_${random_number_reg}.html" />
 	</ruleList>
     </deleteFile>
-    <deleteFile path="${system_temp_directory}/registration_plus_${random_number_reg}/error.html">
+    <deleteFile path="${system_temp_directory}/error_${random_number_reg}.html">
 	<ruleList>
-	    <fileExists path="${system_temp_directory}/registration_plus_${random_number_reg}/error.html" />
+	    <fileExists path="${system_temp_directory}/error_${random_number_reg}.html" />
 	</ruleList>
     </deleteFile>
-    <deleteFile path="${system_temp_directory}/registration_plus_${random_number_reg}/bt.html">
+    <deleteFile path="${system_temp_directory}/bt_${random_number_reg}.html">
 	<ruleList>
-	    <fileExists path="${system_temp_directory}/registration_plus_${random_number_reg}/bt.html" />
+	    <fileExists path="${system_temp_directory}/bt_${random_number_reg}.html" />
 	</ruleList>
     </deleteFile>
     <!-- Write the registered user-name to INI File -->
