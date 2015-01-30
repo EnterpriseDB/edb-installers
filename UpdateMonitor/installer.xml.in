@@ -1019,6 +1019,8 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
             <distributionDirectory origin="staging/linux/installer"/>
             <distributionDirectory origin="staging/linux/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/linux/UpdateMonitor/scripts"/>
+            <distributionFile origin="staging/linux/updatemonitor_3rd_party_licenses.txt"/>
+            <distributionFile origin="staging/linux/updatemonitor_license.txt"/>
           </distributionFileList>
         </folder>
         <!-- LIN-X64 - Program files -->
@@ -1029,6 +1031,8 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
             <distributionDirectory origin="staging/linux-x64/installer"/>
             <distributionDirectory origin="staging/linux-x64/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/linux-x64/UpdateMonitor/scripts"/>
+            <distributionFile origin="staging/linux-x64/updatemonitor_3rd_party_licenses.txt"/>
+            <distributionFile origin="staging/linux-x64/updatemonitor_license.txt"/>
           </distributionFileList>
         </folder>
         <!-- SOLARIS-X64 - Program files -->
@@ -1039,6 +1043,8 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
             <distributionDirectory origin="staging/solaris-x64/installer"/>
             <distributionDirectory origin="staging/solaris-x64/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/solaris-x64/UpdateMonitor/scripts"/>
+            <distributionFile origin="staging/solaris-x64/updatemonitor_3rd_party_licenses.txt"/>
+            <distributionFile origin="staging/solaris-x64/updatemonitor_license.txt"/>
           </distributionFileList>
         </folder>
         <!-- SOLARIS-SPARC - Program files -->
@@ -1049,6 +1055,8 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
             <distributionDirectory origin="staging/solaris-sparc/installer"/>
             <distributionDirectory origin="staging/solaris-sparc/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/solaris-sparc/UpdateMonitor/scripts"/>
+            <distributionFile origin="staging/solaris-sparc/updatemonitor_3rd_party_licenses.txt"/>
+            <distributionFile origin="staging/solaris-sparc/updatemonitor_license.txt"/>
           </distributionFileList>
         </folder>
         <!-- MAC Program Files -->
@@ -1058,6 +1066,8 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
             <distributionDirectory origin="staging/osx/UpdateMonitor/scripts"/>
             <distributionDirectory origin="staging/osx/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/osx/UpdateMonitor/installer"/>
+            <distributionFile origin="staging/osx/updatemonitor_3rd_party_licenses.txt"/>
+            <distributionFile origin="staging/osx/updatemonitor_license.txt"/>
           </distributionFileList>
         </folder>
         <!-- WIN - Program files -->
@@ -1066,6 +1076,8 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
             <distributionDirectory origin="staging/windows/UpdateMonitor/bin"/>
             <distributionDirectory origin="staging/windows/UpdateMonitor/instscripts"/>
             <distributionDirectory origin="staging/windows/scripts"/>
+            <distributionFile origin="staging/windows/updatemonitor_3rd_party_licenses.txt"/>
+            <distributionFile origin="staging/windows/updatemonitor_license.txt"/>
           </distributionFileList>
         </folder>
       </folderList>

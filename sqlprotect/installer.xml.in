@@ -626,6 +626,7 @@ EOF
 		                <distributionDirectory>
                             <origin>staging/@@WINDIR@@/share</origin>
                         </distributionDirectory>
+                        <distributionFile origin="staging/@@WINDIR@@/sqlprotect_license.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -650,6 +651,7 @@ EOF
 						<distributionDirectory>
                             <origin>staging/linux/share</origin>
                         </distributionDirectory>
+                        <distributionFile origin="staging/linux/sqlprotect_license.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -674,6 +676,7 @@ EOF
 						<distributionDirectory>
                             <origin>staging/linux-x64/share</origin>
                         </distributionDirectory>
+                        <distributionFile origin="staging/linux-x64/sqlprotect_license.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -698,6 +701,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/osx/share</origin>
                         </distributionDirectory>
+                        <distributionFile origin="staging/osx/sqlprotect_license.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>

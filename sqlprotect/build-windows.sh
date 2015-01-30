@@ -101,6 +101,10 @@ EOT
       rm -rf postgres.windows/contrib/SQLPROTECT || _die "Couldn't remove the existing sqlprotect directory"
     fi
     
+    cp $WD/sqlprotect/resources/licence.txt $WD/sqlprotect/staging/windows/sqlprotect_license.txt || _die "Unable to copy sqlprotect_license.txt"
+    chmod 444 $WD/sqlprotect/staging/windows/sqlprotect_license.txt || _die "Unable to change permissions for license file"
+
+    
     echo "END BUILD sqlprotect Windows"
 }
 

@@ -89,6 +89,9 @@ _build_updatemonitor_linux_x64() {
    ssh $PG_SSH_LINUX_X64 "chmod a+r $PG_PATH_LINUX_X64/UpdateMonitor/staging/linux-x64/UpdateMonitor/lib/*" || _die "Failed to set the permissions on the lib directory"
     cd $WD
     
+    cp $WD/UpdateMonitor/resources/licence.txt $WD/UpdateMonitor/staging/linux-x64/updatemonitor_license.txt || _die "Unable to copy updatemonitor_license.txt"
+    chmod 444 $WD/UpdateMonitor/staging/linux-x64/updatemonitor_license.txt || _die "Unable to change permissions for license file."
+ 
     echo "END BUILD updatemonitor Linux-x64"
 }
 
@@ -106,6 +109,10 @@ _postprocess_updatemonitor_linux_x64() {
     echo "**************************************************"
  
     cd $WD/UpdateMonitor
+    
+    pushd staging/linux-x64
+    generate_3rd_party_license "updatemonitor"
+    popd
 
     mkdir -p staging/linux-x64/installer/UpdateMonitor || _die "Failed to create a directory for the installer scripts"
     mkdir -p staging/linux-x64/UpdateMonitor/scripts || _die "Failed to create a directory for the installer scripts"

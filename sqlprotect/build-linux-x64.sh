@@ -54,6 +54,9 @@ _build_sqlprotect_linux_x64() {
 	ssh $PG_SSH_LINUX_X64 "cp $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_LINUX_X64/sqlprotect/staging/linux-x64/share/" || _die "Failed to copy sqlprotect.sql to staging directory"
 	ssh $PG_SSH_LINUX_X64 "cp $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_LINUX_X64/sqlprotect/staging/linux-x64/doc/" || _die "Failed to copy README-sqlprotect.txt to staging directory"
     chmod -R ugo+r $WD/sqlprotect/staging/linux-x64
+
+    cp $WD/sqlprotect/resources/licence.txt $WD/sqlprotect/staging/linux-x64/sqlprotect_license.txt || _die "Unable to copy sqlprotect_license.txt"
+    chmod 444 $WD/sqlprotect/staging/linux-x64/sqlprotect_license.txt || _die "Unable to change permissions for license file"
     
     echo "END BUILD sqlprotect Linux-x64"
 }

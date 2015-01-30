@@ -1,0 +1,22 @@
+3_clause_bsd_license.txt	libedit libevent libmemcached tiff jline
+LGPL_v2.1_license.txt	geos gettext libgcrypt libgpg_error libiconv pthreads termcap unixODBC uuid QT
+LGPL_v2_license.txt	libpango
+apache_v2.0.txt	log4j apache.commons.lang3
+curl_license.txt	curl
+expat_license.txt	expat
+fontconfig_license.txt	fontconfig
+freetype_license.txt	freetype
+gcc_runtime_library_exception_license.txt	libgcc_s libstdc++
+icu_license.txt	icu
+jpeg_license.txt	jpeg
+libpng_license.txt	libpng
+libsasl2_license.txt	libsasl2
+memcached_license.txt	memcached
+mit_license.txt	krb5 json-c
+ncurses_license.txt	ncurses
+openldap_license.txt	openldap
+openssl_license.txt	openssl
+proj_license.txt	proj
+wxwidget_license.txt	wxwidget
+xconsortium_license.txt	gdal libxml2 libxslt
+zlib_license.txt	zlib

@@ -211,6 +211,9 @@ EOT
     cp $WD/UpdateMonitor/source/updatemonitor.windows/qt.conf $WD/UpdateMonitor/staging/windows/UpdateMonitor/bin
     
     win32_sign "UpdManager.exe" "$WD/UpdateMonitor/staging/windows/UpdateMonitor/bin"
+
+    cp $WD/UpdateMonitor/resources/licence.txt $WD/UpdateMonitor/staging/windows/updatemonitor_license.txt || _die "Unable to copy updatemonitor_license.txt"
+    chmod 444 $WD/UpdateMonitor/staging/windows/updatemonitor_license.txt || _die "Unable to change permissions for license file."
     
     echo "END BUILD updtemonitor Windows"
 }
@@ -225,6 +228,10 @@ _postprocess_updatemonitor_windows() {
     echo "BEGIN POST updatemonitor Windows"
  
     cd $WD/UpdateMonitor
+
+    pushd staging/windows
+    generate_3rd_party_license "updatemonitor"
+    popd
 
     mkdir -p staging/windows/scripts || _die "Failed to create a directory for the install scripts"
     cp scripts/windows/launchUpdateMonitor.vbs staging/windows/scripts/launchUpdateMonitor.vbs || _die "Failed to copy the start-up script (launchUpdateMonitor.vbs)"

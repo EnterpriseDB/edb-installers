@@ -131,6 +131,10 @@ EOT-UPDATEMONITOR
     cd $WD
     scp UpdateMonitor/build-updatemonitor.sh $PG_SSH_OSX:$PG_PATH_OSX/UpdateMonitor
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/UpdateMonitor; sh ./build-updatemonitor.sh" || _die "Failed to build UpdateMonitor on OSX"
+ 
+    cp $WD/UpdateMonitor/resources/licence.txt $WD/UpdateMonitor/staging/osx/updatemonitor_license.txt || _die "Unable to copy updatemonitor_license.txt"
+    chmod 444 $WD/UpdateMonitor/staging/osx/updatemonitor_license.txt || _die "Unable to change permissions for license file."
+
     echo "END BUILD updatemonitor OSX"
 }
 
@@ -147,6 +151,9 @@ _postprocess_updatemonitor_osx() {
     echo "********************************************"
 
     cd $WD/UpdateMonitor
+    pushd staging/osx
+    generate_3rd_party_license "updatemonitor"
+    popd
 
     mkdir -p staging/osx/installer/UpdateMonitor || _die "Failed to create a directory for the install scripts"
     mkdir -p staging/osx/UpdateMonitor/installer/UpdateMonitor || _die "Failed to create a directory for the install scripts"

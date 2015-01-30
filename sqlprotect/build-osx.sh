@@ -55,6 +55,9 @@ _build_sqlprotect_osx() {
     ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_OSX/sqlprotect/staging/osx/doc/" || _die "Failed to copy README-sqlprotect.txt to staging directory"
     chmod -R ugo+r $WD/sqlprotect/staging/osx
     
+    cp $WD/sqlprotect/resources/licence.txt $WD/sqlprotect/staging/osx/sqlprotect_license.txt || _die "Unable to copy sqlprotect_license.txt"
+    chmod 444 $WD/sqlprotect/staging/osx/sqlprotect_license.txt || _die "Unable to change permissions for license file"
+    
     echo "END BUILD sqlprotect OSX"
 }
 
