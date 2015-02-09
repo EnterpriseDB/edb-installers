@@ -50,7 +50,7 @@ Function IsPathWriteable(Path)' As Boolean
 	Dim fso 'As Scripting.FileSystemObject
 	Dim Temp_Path 'As String
 	Set fso = CreateObject("Scripting.FileSystemObject")
-	Temp_Path = Path & "\" & fso.GetTempName() & ".tmp"
+	Temp_Path = Path & "\" & fso.GetTempName()
 	On Error Resume Next
 	fso.CreateTextFile Temp_Path
 	IsPathWriteable = Err.Number = 0
