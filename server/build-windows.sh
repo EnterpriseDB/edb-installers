@@ -81,6 +81,14 @@ _prep_server_windows() {
     cp -R postgresql-$PG_TARBALL_POSTGRESQL postgres.windows || _die "Failed to copy the source code (source/postgres.windows)"
 
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.windows || _die "Failed to copy the source code (source/pgadmin.windows)"
+
+    # We build only dynamic libs of wxWidgets which puts the hhp2cached in the vc_mswudll instead of vc_mswu.
+    # Patch the builddocs.bat of pgadmin so that it finds the hhp2cached executable
+    cd pgadmin.windows/docs/
+    patch -p0 < ~/tarballs/builddocs.patch
+
+    cd $WD/server/source
+
     cp -R stackbuilder stackbuilder.windows || _die "Failed to copy the source code (source/stackbuilder.windows)"
 
     cd stackbuilder.windows
@@ -125,7 +133,7 @@ CALL "$PG_VSINSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 
 IF "%2" == "UPGRADE" GOTO upgrade
 
-msbuild %1 /p:Configuration=%2
+msbuild %1 /p:Configuration=%2 %3
 GOTO end
 
 :upgrade 
@@ -174,6 +182,7 @@ use warnings;
 \$ENV{FrameworkSDKDir} = '$PG_FRAMEWORKSDKDIR_WINDOWS';
 \$ENV{DevEnvDir} = '$PG_DEVENVDIR_WINDOWS';
 \$ENV{M4} = '$PG_PGBUILD_WINDOWS\bin\m4.exe';
+\$ENV{CONFIG} = 'Release $PLATFORM_TOOLSET';
 
 \$ENV{PATH} = join
 (
@@ -256,11 +265,11 @@ EOT
     
     # Build the code and install into a temporary directory
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\createuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj UPGRADE " || _die "Failed to build createuser on the windows build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\createuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcxproj Release " || _die "Failed to build createuser on the windows build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\createuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build createuser on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\getlocales; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat getlocales.vcproj UPGRADE " || _die "Failed to build getlocales on the windows build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\getlocales; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat getlocales.vcxproj Release " || _die "Failed to build getlocales on the windows build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\getlocales; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat getlocales.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build getlocales on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\validateuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcproj UPGRADE " || _die "Failed to build validateuser on the windows build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\validateuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcxproj Release " || _die "Failed to build validateuser on the windows build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\validateuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat validateuser.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build validateuser on the windows build host"
     
     # Move the resulting binaries into place
     ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\output\\\\installer\\\\server" || _die "Failed to create the server directory on the windows build host"
@@ -307,7 +316,7 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgadmin3.sln UPGRADE" || _die "Failed to build pgAdmin on the build host"
 
     # Build the PNG compiler 
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/xtra/png2c; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat png2c.vcxproj Release" || _die "Failed to build png2c on the build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/xtra/png2c; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat png2c.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build png2c on the build host"
 
     # Precompile the PNG images. We need to do this for the build system, as it 
     # won't work over cygwin.
@@ -315,8 +324,8 @@ EOT
 
     # Build the code
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/pgadmin; cmd /c ver_svn.bat"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/pgadmin; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgadmin3.vcxproj Release " || _die "Failed to build pgAdmin on the build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/docs; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat Docs.vcxproj All" || _die "Failed to build the docs on the build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/pgadmin; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgadmin3.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build pgAdmin on the build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/docs; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat Docs.vcxproj All $PLATFORM_TOOLSET" || _die "Failed to build the docs on the build host"
         
     # Copy the application files into place
     ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\"" || _die "Failed to create a directory on the windows build host" || _die "Failed to create the studio directory on the build host"
@@ -356,8 +365,8 @@ EOT
   
     # Build the code
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c cmake -D MS_VS_10=1 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS\\\\output\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure pgAdmin on the build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat stackbuilder.vcxproj Release " || _die "Failed to build stackbuilder on the build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat INSTALL.vcxproj Release " || _die "Failed to install stackbuilder on the build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat stackbuilder.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build stackbuilder on the build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat INSTALL.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to install stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS "cmd /c mv $PG_PATH_WINDOWS\\\\output\\\\StackBuilder\\\\bin\\\\stackbuilder.exe $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to relocate the stackbuilder executable on the build host"
     ssh $PG_SSH_WINDOWS "cmd /c rd $PG_PATH_WINDOWS\\\\output\\\\StackBuilder\\\\bin" || _die "Failed to remove the stackbuilder bin directory on the build host"
 

@@ -102,7 +102,7 @@ PG_SIGNTOOL_WINDOWS="$PG_SDK_WINDOWS\\\\Bin\\\\signtool.exe"
 PG_PERL_WINDOWS=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\i386\\\\Perl-5.16
 PG_PYTHON_WINDOWS=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\i386\\\\Python-3.3
 PG_TCL_WINDOWS=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\i386\\\\Tcl-8.5
-
+PLATFORM_TOOLSET=/p:PlatformToolset=v120_xp
 
 PG_SSH_WINDOWS_X64=buildfarm@bf4-windows-x64.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS_X64=D:\\\\pginstaller.auto
