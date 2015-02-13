@@ -90,8 +90,6 @@ _prep_server_windows_x64() {
 
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.windows-x64 || _die "Failed to copy the source code (source/pgadmin.windows-x64)"
 
-    cp $WD/../patches/Docs.vcxproj pgadmin.windows-x64/docs
-
     cp -R stackbuilder stackbuilder.windows-x64 || _die "Failed to copy the source code (source/stackbuilder.windows-x64)"
 
     cd stackbuilder.windows-x64
@@ -148,6 +146,30 @@ EOT
     cat <<EOT > "vc-build-x64.bat"
 REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
+
+@SET PGBUILD=$PG_PGBUILD_WINDOWS_X64
+@SET OPENSSL=$PG_PGBUILD_WINDOWS_X64
+@SET WXWIN=$PG_WXWIN_WINDOWS_X64
+@SET INCLUDE=$PG_PGBUILD_WINDOWS_X64\\include;%INCLUDE%
+@SET LIB=$PG_PGBUILD_WINDOWS_X64\\lib;%LIB%
+@SET PGDIR=$PG_PATH_WINDOWS_X64\\output
+@SET SPHINXBUILD=$PG_PYTHON_WINDOWS_X64\\Scripts\\sphinx-build.exe
+
+IF "%2" == "UPGRADE" GOTO upgrade
+
+msbuild %1 /p:Configuration=%2
+GOTO end
+
+:upgrade
+devenv /upgrade %1
+
+:end
+
+EOT
+
+    cat <<EOT > "vc-build-doc.bat"
+REM Setting Visual Studio Environment
+CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" x86
 
 @SET PGBUILD=$PG_PGBUILD_WINDOWS_X64
 @SET OPENSSL=$PG_PGBUILD_WINDOWS_X64
@@ -291,7 +313,7 @@ EOT
     # Zip up the scripts directories and copy them to the build host, then unzip
     cd $WD/server/scripts/windows/
     echo "Copying scripts source tree to Windows build VM"
-    zip -r scripts.zip vc-build.bat vc-build-x64.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build-x64.bat vc-build-x64.bat, createuser, getlocales, validateuser)"
+    zip -r scripts.zip vc-build.bat vc-build-x64.bat vc-build-doc.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build-x64.bat vc-build-x64.bat, createuser, getlocales, validateuser)"
 
     scp -v scripts.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the scripts source tree to the windows-x64 build host (scripts.zip)"
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; unzip scripts.zip" || _die "Failed to unpack the scripts source tree on the windows-x64 build host (scripts.zip)"    
@@ -361,7 +383,7 @@ EOT
     # Build the code
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/pgadmin; cmd /c ver_svn.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/pgadmin; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat pgadmin3.vcxproj Release" || _die "Failed to build pgAdmin on the build host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/docs; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat Docs.vcxproj All" || _die "Failed to build the docs on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/docs; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-doc.bat Docs.vcxproj All" || _die "Failed to build the docs on the build host"
         
     # Copy the application files into place
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\"" || _die "Failed to create a directory on the windows-x64 build host" || _die "Failed to create the studio directory on the build host"
