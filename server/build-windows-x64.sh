@@ -63,6 +63,7 @@ _prep_server_windows_x64() {
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q output.zip"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-x64.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build.bat"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-doc.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q output"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q postgres.windows-x64"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q pgadmin.windows-x64"
@@ -84,7 +85,12 @@ _prep_server_windows_x64() {
         rm -rf $WD/server/scripts/windows/vc-build-x64.bat || _die "Couldn't remove the existing vc-build-x64 script"
     fi
 
-    
+    if [ -f $WD/server/scripts/windows/vc-build-doc.bat ];
+    then
+        echo "Removing existing vc-build-doc script"
+        rm -rf $WD/server/scripts/windows/vc-build-doc.bat || _die "Couldn't remove the existing vc-build-doc script"
+    fi
+
     # Grab a copy of the source tree
     cp -R postgresql-$PG_TARBALL_POSTGRESQL postgres.windows-x64 || _die "Failed to copy the source code (source/postgres.windows-x64)"
 
