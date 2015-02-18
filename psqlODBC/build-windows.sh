@@ -133,6 +133,10 @@ _postprocess_psqlODBC_windows() {
     echo "BEGIN POST psqlODBC Windows"    
 
     cd $WD/psqlODBC
+ 
+    pushd staging/windows
+    generate_3rd_party_license "psqlODBC"
+    popd
 
     mkdir -p staging/windows/scripts/images || _die "Failed to create directory for menu images"
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy menu icon image"

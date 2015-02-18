@@ -153,6 +153,10 @@ _postprocess_pgbouncer_osx() {
     echo "***********************************"
  
     cd $WD/pgbouncer
+ 
+    pushd staging/osx
+    generate_3rd_party_license "pgbouncer"
+    popd
 
     mkdir -p staging/osx/installer/pgbouncer || _die "Failed to create directory for installer scripts"
     cp -R scripts/osx/startupcfg.sh staging/osx/installer/pgbouncer/ || _die "Failed to copy the installer script"

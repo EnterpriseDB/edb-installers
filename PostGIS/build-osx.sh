@@ -329,6 +329,10 @@ _postprocess_PostGIS_osx() {
 
     PG_STAGING=$WD/PostGIS/staging/osx    
 
+    pushd $WD/PostGIS/staging/osx
+    generate_3rd_party_license "postgis"
+    popd
+
     mkdir -p $PG_STAGING/installer/PostGIS || _die "Failed to create a directory for the install scripts"
 
     cp $WD/PostGIS/scripts/osx/createshortcuts.sh $PG_STAGING/installer/PostGIS/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/osx/createshortcuts.sh)"

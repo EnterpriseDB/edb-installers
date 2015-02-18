@@ -1509,6 +1509,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/linux/pgbouncer/doc</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/linux/pgbouncer_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1545,6 +1546,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/linux-x64/pgbouncer/doc</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/linux-x64/pgbouncer_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1580,6 +1582,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/linux-ppc64/pgbouncer/doc</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/linux-ppc64/pgbouncer_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1615,6 +1618,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/osx/pgbouncer/doc</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/osx/pgbouncer_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1647,6 +1651,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/windows/pgbouncer/doc</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/windows/pgbouncer_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1683,6 +1688,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/solaris-x64/pgbouncer/doc</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/solaris-x64/pgbouncer_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1719,6 +1725,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/solaris-sparc/pgbouncer/doc</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/solaris-sparc/pgbouncer_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>

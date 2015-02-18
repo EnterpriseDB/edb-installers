@@ -128,6 +128,10 @@ _postprocess_pgAgent_osx() {
 
     cd $WD/pgAgent
 
+    pushd staging/osx
+    generate_3rd_party_license "pgAgent"
+    popd
+
     if [ -f installer_1.xml ]; then
         rm -f installer_1.xml
     fi

@@ -189,6 +189,10 @@ _postprocess_psqlODBC_linux() {
 
     cd $WD/psqlODBC
 
+    pushd staging/linux
+    generate_3rd_party_license "psqlODBC"
+    popd
+
     # Setup the installer scripts.
     mkdir -p staging/linux/installer/psqlODBC || _die "Failed to create a directory for the install scripts"
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/psqlODBC/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"

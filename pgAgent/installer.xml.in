@@ -1332,6 +1332,7 @@ EOF
             <distributionDirectory>
               <origin>staging/linux/lib</origin>
             </distributionDirectory>
+	    <distributionFile origin="staging/linux/pgAgent_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
         <folder>
@@ -1380,6 +1381,7 @@ EOF
             <distributionDirectory>
               <origin>staging/linux-x64/bin</origin>
             </distributionDirectory>
+	    <distributionFile origin="staging/linux-x64/pgAgent_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
         <folder>
@@ -1440,6 +1442,7 @@ EOF
             <distributionDirectory>
               <origin>staging/linux-ppc64/bin</origin>
             </distributionDirectory>
+	    <distributionFile origin="staging/linux-ppc/pgAgent_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
         <folder>
@@ -1514,6 +1517,7 @@ EOF
             <distributionDirectory>
               <origin>staging/windows/bin</origin>
             </distributionDirectory>
+	    <distributionFile origin="staging/windows/pgAgent_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
         <folder>
@@ -1566,6 +1570,7 @@ EOF
             <distributionDirectory>
               <origin>staging/osx/bin</origin>
             </distributionDirectory>
+	    <distributionFile origin="staging/osx/pgAgent_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
         <folder>

@@ -127,6 +127,10 @@ EOT
 _postprocess_psqlODBC_windows_x64() {
 
     cd $WD/psqlODBC
+    
+    pushd staging/windows-x64
+    generate_3rd_party_license "psqlODBC"
+    popd
 
     mkdir -p staging/windows-x64/scripts/images || _die "Failed to create directory for menu images"
     cp resources/*.ico staging/windows-x64/scripts/images || _die "Failed to copy menu icon image"

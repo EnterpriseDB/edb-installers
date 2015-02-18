@@ -1876,6 +1876,7 @@ include conf\addons\*.conf
             <distributionDirectory>
               <origin>staging/windows/scripts</origin>
             </distributionDirectory>
+	    <distributionFile origin="staging/windows/apache_php_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
         <folder>
@@ -1908,6 +1909,7 @@ include conf\addons\*.conf
             <distributionDirectory>
               <origin>staging/linux/scripts</origin>
             </distributionDirectory>
+	    <distributionFile origin="staging/linux/apache_php_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
         <folder>
@@ -1940,6 +1942,7 @@ include conf\addons\*.conf
             <distributionDirectory>
               <origin>staging/linux-x64/scripts</origin>
             </distributionDirectory>
+	    <distributionFile origin="staging/linux-x64/apache_php_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
         <folder>
@@ -1972,6 +1975,7 @@ include conf\addons\*.conf
             <distributionDirectory>
               <origin>staging/osx/scripts</origin>
             </distributionDirectory>
+	    <distributionFile origin="staging/osx/apache_php_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
         <folder>

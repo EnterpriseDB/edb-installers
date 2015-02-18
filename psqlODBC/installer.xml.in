@@ -1382,6 +1382,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/linux/scripts</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/linux/psqlODBC_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
 				
@@ -1401,6 +1402,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/linux-x64/scripts</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/linux-x64/psqlODBC_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
         	<!--LIN-PPC64: Program Files -->
@@ -1419,6 +1421,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/linux-ppc64/scripts</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/linux-ppc64/psqlODBC_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
 				
@@ -1438,6 +1441,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/osx/scripts</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/osx/psqlODBC_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
 				
@@ -1451,6 +1455,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/PSQLODBC_MAJOR_VERSION</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/@@WINDIR@@/psqlODBC_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>

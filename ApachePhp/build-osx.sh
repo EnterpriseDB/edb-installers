@@ -339,6 +339,10 @@ _postprocess_ApachePhp_osx() {
 
     cd $WD/ApachePhp/staging/osx
 
+    pushd $WD/ApachePhp/staging/osx
+    generate_3rd_party_license "apache_php"
+    popd
+
     for file in $filelist
     do
         _replace "$PG_STAGING" @@INSTALL_DIR@@ "$file"

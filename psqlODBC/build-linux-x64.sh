@@ -190,6 +190,10 @@ _postprocess_psqlODBC_linux_x64() {
     echo "BEGIN POST psqlODBC Linux-x64"    
 
     cd $WD/psqlODBC
+ 
+    pushd staging/linux-x64
+    generate_3rd_party_license "psqlODBC"
+    popd
 
     # Setup the installer scripts.
     mkdir -p staging/linux-x64/installer/psqlODBC || _die "Failed to create a directory for the install scripts"

@@ -123,6 +123,10 @@ _postprocess_pgAgent_linux_x64() {
     chmod ugo+x $WD/pgAgent/staging/linux-x64/installer/pgAgent/*
     chmod o+rx $WD/pgAgent/staging/linux-x64/lib/*
     cd $WD/pgAgent
+ 
+    pushd staging/linux-x64
+    generate_3rd_party_license "pgAgent"
+    popd
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"

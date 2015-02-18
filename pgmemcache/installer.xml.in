@@ -666,6 +666,7 @@
                         <distributionDirectory>
                             <origin>staging/windows/share</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/windows/pgmemcache_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <!-- LIN: Program files -->
@@ -678,6 +679,7 @@
                         <distributionDirectory>
                             <origin>staging/linux/include</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/linux/pgmemcache_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -713,6 +715,7 @@
                         <distributionDirectory>
                             <origin>staging/linux-x64/include</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/linux-x64/pgmemcache_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -754,6 +757,7 @@
                         <distributionDirectory>
                             <origin>staging/linux-ppc64/share</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/linux-ppc64/pgmemcache_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                <!-- MAC: Program files -->
@@ -766,6 +770,7 @@
                         <distributionDirectory>
                             <origin>staging/osx/include</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/osx/pgmemcache_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>

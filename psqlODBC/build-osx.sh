@@ -146,6 +146,10 @@ _postprocess_psqlODBC_osx() {
     echo "*******************************************************"
 
     cd $WD/psqlODBC
+ 
+    pushd staging/osx
+    generate_3rd_party_license "psqlODBC"
+    popd
 
     # Setup the installer scripts.
     mkdir -p staging/osx/installer/psqlODBC || _die "Failed to create a directory for the install scripts"

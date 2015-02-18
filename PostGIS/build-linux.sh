@@ -215,6 +215,10 @@ _postprocess_PostGIS_linux() {
     cd $WD/PostGIS
     mkdir -p staging/linux/installer/PostGIS || _die "Failed to create a directory for the install scripts"
 
+    pushd staging/linux
+    generate_3rd_party_license "postgis"
+    popd
+
     cp scripts/linux/createshortcuts.sh staging/linux/installer/PostGIS/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux/installer/PostGIS/createshortcuts.sh
 

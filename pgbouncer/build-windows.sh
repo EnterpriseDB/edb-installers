@@ -131,6 +131,10 @@ _postprocess_pgbouncer_windows() {
 
     cd $WD/pgbouncer
 
+    pushd staging/windows
+    generate_3rd_party_license "pgbouncer"
+    popd
+
     mkdir -p staging/windows/installer/pgbouncer || _die "Failed to create directory for installer scripts"
     cp -R scripts/windows/check-connection.bat staging/windows/installer/pgbouncer/ || _die "Failed to copy the installer script"
     cp -R scripts/windows/startupcfg.bat staging/windows/installer/pgbouncer/ || _die "Failed to copy the installer script"

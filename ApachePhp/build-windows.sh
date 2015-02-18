@@ -314,6 +314,10 @@ _postprocess_ApachePhp_windows() {
 
     cd $WD/ApachePhp/staging/windows
 
+    pushd $WD/ApachePhp/staging/windows
+    generate_3rd_party_license "apache_php"
+    popd
+
     for file in $filelist
     do
         _replace "$TEMP_PATH/apache.staging" @@INSTALL_DIR@@ "$file"

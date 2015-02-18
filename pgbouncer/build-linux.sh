@@ -102,6 +102,10 @@ _postprocess_pgbouncer_linux() {
     echo "BEGIN POST pgbouncer Linux" 
 
     cd $WD/pgbouncer
+ 
+    pushd staging/linux
+    generate_3rd_party_license "pgbouncer"
+    popd
 
     mkdir -p staging/linux/installer/pgbouncer || _die "Failed to create directory for installer scripts"
     cp -R scripts/linux/startupcfg.sh staging/linux/installer/pgbouncer/ || _die "Failed to copy the installer script"

@@ -195,6 +195,10 @@ _postprocess_ApachePhp_linux() {
 
     cd $WD/ApachePhp
 
+    pushd staging/linux
+    generate_3rd_party_license "apache_php"
+    popd
+
     # Setup the installer scripts.
 
     #Changing the ServerRoot from htdocs to www in apache

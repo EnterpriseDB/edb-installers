@@ -182,6 +182,10 @@ _postprocess_pgAgent_windows() {
     chmod ugo+x $WD/pgAgent/staging/windows/installer/pgAgent/*
 
     cd $WD/pgAgent
+ 
+    pushd staging/windows
+    generate_3rd_party_license "pgAgent"
+    popd
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
