@@ -193,6 +193,45 @@ EOF
             <compareText text="${originalplatform}" value="linux-x32"/>
           </ruleList>
         </throwError>
+        <!-- The Directory structer of Npgsql is different from 2.0.14 to 2.2.3. Throwing an error before upgradation. -->
+        <actionGroup>
+            <actionList>
+                <iniFileGet file="/etc/postgres-reg.ini" section="Npgsql" key="Version" variable="NPGSQL_INSTALLED_VERSION" />
+                <iniFileGet file="/etc/postgres-reg.ini" section="Npgsql" key="InstallationDirectory" variable="NPGSQL_INSTALLED_DIRECTORY" />
+                <throwError text="${msg(upgrade.major.version.error)}">
+                  <ruleList>
+                    <compareText logic="contains" text="${NPGSQL_INSTALLED_VERSION}" value="2.0.14"/>
+                  </ruleList>
+                 </throwError>
+             </actionList>
+             <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <fileExists path="/etc/postgres-reg.ini" />
+             </ruleList>
+        </actionGroup>
+	
+        <actionGroup>
+            <actionList>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
+                    <name>Location</name>
+                    <variable>npgsqlLocation</variable>
+                </registryGet>
+                <registryGet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Npgsql</key>
+                    <name>Version</name>
+                    <variable>npgsqlVersion</variable>
+                </registryGet>
+                <throwError text="${msg(upgrade.major.version.error.windows)}">
+                    <ruleList>
+                       <compareText logic="contains" text="${npgsqlVersion}" value="2.0.14"/>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
         <!-- LIN : Set the default values for unattended mode -->
         <actionGroup>
             <actionList>
@@ -689,6 +728,9 @@ EOF
                         </distributionDirectory>^M
                         <distributionDirectory>^M
                             <origin>staging/linux/ms.net45</origin>^M
+                        </distributionDirectory>^M	
+                        <distributionDirectory>^M
+                            <origin>staging/linux/docs</origin>^M
                         </distributionDirectory>^M
                     </distributionFileList>
                 </folder>
@@ -732,6 +774,9 @@ EOF
                         </distributionDirectory>^M
                         <distributionDirectory>^M
                             <origin>staging/linux-x64/ms.net45</origin>^M
+                        </distributionDirectory>^M	
+                        <distributionDirectory>^M
+                            <origin>staging/linux-x64/docs</origin>^M
                         </distributionDirectory>^M
                     </distributionFileList>
                 </folder>
@@ -775,6 +820,9 @@ EOF
                         </distributionDirectory>^M
                         <distributionDirectory>^M
                             <origin>staging/linux-ppc64/ms.net45</origin>^M
+                        </distributionDirectory>^M	
+                        <distributionDirectory>^M
+                            <origin>staging/linux-ppc64/docs</origin>^M
                         </distributionDirectory>^M
                     </distributionFileList>
                 </folder>
@@ -818,7 +866,10 @@ EOF
                          </distributionDirectory>^M
                          <distributionDirectory>^M
                             <origin>staging/osx/ms.net45</origin>^M
-                         </distributionDirectory>^M
+                         </distributionDirectory>^M 			
+                        <distributionDirectory>^M
+                            <origin>staging/osx/docs</origin>^M
+                        </distributionDirectory>^M
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -861,6 +912,9 @@ EOF
                         </distributionDirectory>
                         <distributionDirectory>^M
                             <origin>staging/windows/ms.net45</origin>^M
+                        </distributionDirectory>^M 
+                        <distributionDirectory>^M
+                            <origin>staging/windows/docs</origin>^M
                         </distributionDirectory>^M
                     </distributionFileList>
                 </folder>

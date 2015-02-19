@@ -23,6 +23,7 @@ _prep_Npgsql_windows() {
     mkdir -p $WD/Npgsql/source/Npgsql.windows/ms.net35 || _die "Couldn't create the Npgsql.windows/ms.net35 directory"
     mkdir -p $WD/Npgsql/source/Npgsql.windows/ms.net40 || _die "Couldn't create the Npgsql.windows/ms.net40 directory"
     mkdir -p $WD/Npgsql/source/Npgsql.windows/ms.net45 || _die "Couldn't create the Npgsql.windows/ms.net45 directory"
+    mkdir -p $WD/Npgsql/source/Npgsql.windows/docs || _die "Couldn't create the Npgsql.windows/docs directory"
 
     cd $WD/Npgsql/source
     # Grab a copy of the source tree
@@ -30,6 +31,7 @@ _prep_Npgsql_windows() {
     cp -R Npgsql-"$PG_VERSION_NPGSQL"-net35/* Npgsql.windows/ms.net35/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-net35)"
     cp -R Npgsql-"$PG_VERSION_NPGSQL"-net40/* Npgsql.windows/ms.net40/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-net40)"
     cp -R Npgsql-"$PG_VERSION_NPGSQL"-net45/* Npgsql.windows/ms.net45/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-net45)"
+    cp -R Npgsql-"$PG_VERSION_NPGSQL"-apidocs/* Npgsql.windows/docs/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-apidocs)"
     
     chmod -R ugo+w Npgsql.windows || _die "Couldn't set the permissions on the source directory"
 
@@ -70,6 +72,7 @@ _postprocess_Npgsql_windows() {
     echo "BEGIN POST Npgsql Windows"
  
     cp -R $WD/Npgsql/source/Npgsql.windows/* $WD/Npgsql/staging/windows || _die "Failed to copy the Npgsql Source into the staging directory"
+    chmod -R ugo+rx $WD/Npgsql/staging/windows/docs
 
     cd $WD/Npgsql
     

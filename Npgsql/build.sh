@@ -56,6 +56,7 @@ _prep_Npgsql() {
     mkdir -p $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net35
     mkdir -p $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net40
     mkdir -p $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net45
+    mkdir -p $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-apidocs
    
     echo "Unpacking Npgsql source..."
 
@@ -70,6 +71,9 @@ _prep_Npgsql() {
 
     cd $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net45
     extract_file ../../../tarballs/Npgsql-"${PG_VERSION_NPGSQL}"-net45 || exit 1
+    
+    cd $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-apidocs
+    extract_file ../../../tarballs/Npgsql-"${PG_VERSION_NPGSQL}"-apidocs || exit 1
 
     # Per-platform prep
     cd $WD

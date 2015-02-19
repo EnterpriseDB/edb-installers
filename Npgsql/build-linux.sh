@@ -24,12 +24,14 @@ _prep_Npgsql_linux() {
     mkdir -p $WD/Npgsql/source/Npgsql.linux/ms.net35 || _die "Couldn't create the Npgsql.linux directory"
     mkdir -p $WD/Npgsql/source/Npgsql.linux/ms.net40 || _die "Couldn't create the Npgsql.linux directory"
     mkdir -p $WD/Npgsql/source/Npgsql.linux/ms.net45 || _die "Couldn't create the Npgsql.linux directory"
+    mkdir -p $WD/Npgsql/source/Npgsql.linux/docs || _die "Couldn't create the Npgsql.linux directory"
     
     # Grab a copy of the source tree
     cp -R Npgsql-$PG_VERSION_NPGSQL-net20/* Npgsql.linux/ms.net20 || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-net20)"
     cp -R Npgsql-$PG_VERSION_NPGSQL-net35/* Npgsql.linux/ms.net35 || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-net35)"
     cp -R Npgsql-$PG_VERSION_NPGSQL-net40/* Npgsql.linux/ms.net40 || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-net40)"
     cp -R Npgsql-$PG_VERSION_NPGSQL-net45/* Npgsql.linux/ms.net45 || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-net45)"
+    cp -R Npgsql-$PG_VERSION_NPGSQL-apidocs/* Npgsql.linux/docs || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-apidocs)"
     
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/Npgsql/staging/linux ];
@@ -69,6 +71,7 @@ _postprocess_Npgsql_linux() {
     echo "BEGIN POST Npgsql Linux"
  
     cp -R $WD/Npgsql/source/Npgsql.linux/* $WD/Npgsql/staging/linux || _die "Failed to copy the Npgsql Source into the staging directory"
+    chmod -R ugo+rx $WD/Npgsql/staging/linux/docs
 
     cd $WD/Npgsql
 
