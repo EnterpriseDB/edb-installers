@@ -31,7 +31,7 @@ _prep_Npgsql_windows() {
     cp -R Npgsql-"$PG_VERSION_NPGSQL"-net35/* Npgsql.windows/ms.net35/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-net35)"
     cp -R Npgsql-"$PG_VERSION_NPGSQL"-net40/* Npgsql.windows/ms.net40/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-net40)"
     cp -R Npgsql-"$PG_VERSION_NPGSQL"-net45/* Npgsql.windows/ms.net45/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-net45)"
-    cp -R Npgsql-"$PG_VERSION_NPGSQL"-apidocs/* Npgsql.windows/docs/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-apidocs)"
+    cp -R Npgsql-"$PG_VERSION_NPGSQL"-docs/* Npgsql.windows/docs/ || _die "Failed to copy the binaries (source/Npgsql-$PG_VERSION_Npgsql-docs)"
     
     chmod -R ugo+w Npgsql.windows || _die "Couldn't set the permissions on the source directory"
 

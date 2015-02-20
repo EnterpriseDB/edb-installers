@@ -31,7 +31,7 @@ _prep_Npgsql_linux() {
     cp -R Npgsql-$PG_VERSION_NPGSQL-net35/* Npgsql.linux/ms.net35 || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-net35)"
     cp -R Npgsql-$PG_VERSION_NPGSQL-net40/* Npgsql.linux/ms.net40 || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-net40)"
     cp -R Npgsql-$PG_VERSION_NPGSQL-net45/* Npgsql.linux/ms.net45 || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-net45)"
-    cp -R Npgsql-$PG_VERSION_NPGSQL-apidocs/* Npgsql.linux/docs || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-apidocs)"
+    cp -R Npgsql-$PG_VERSION_NPGSQL-docs/* Npgsql.linux/docs || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-docs)"
     
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/Npgsql/staging/linux ];
