@@ -200,7 +200,7 @@ EOF
                 <iniFileGet file="/etc/postgres-reg.ini" section="Npgsql" key="InstallationDirectory" variable="NPGSQL_INSTALLED_DIRECTORY" />
                 <throwError text="${msg(upgrade.major.version.error)}">
                   <ruleList>
-                    <compareText logic="contains" text="${NPGSQL_INSTALLED_VERSION}" value="2.0.14"/>
+                    <compareText logic="contains" text="${NPGSQL_INSTALLED_VERSION}" value="2.0"/>
                   </ruleList>
                  </throwError>
              </actionList>
@@ -224,7 +224,7 @@ EOF
                 </registryGet>
                 <throwError text="${msg(upgrade.major.version.error.windows)}">
                     <ruleList>
-                       <compareText logic="contains" text="${npgsqlVersion}" value="2.0.14"/>
+                       <compareText logic="contains" text="${npgsqlVersion}" value="2.0"/>
                     </ruleList>
                 </throwError>
             </actionList>
