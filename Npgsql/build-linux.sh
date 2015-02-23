@@ -103,6 +103,9 @@ _postprocess_Npgsql_linux() {
     
     # Copy in installation xdg Files
     cp -R $WD/scripts/xdg/xdg* staging/linux/installer/xdg || _die "Failed to copy the xdg files "
+
+    # Set permissions to all files and folders in staging
+    _set_permissions linux
      
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"

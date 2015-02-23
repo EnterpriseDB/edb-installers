@@ -115,6 +115,9 @@ _postprocess_Npgsql_osx() {
         rm -rf $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app
     fi
 
+    # Set permissions to all files and folders in staging
+    _set_permissions osx
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
