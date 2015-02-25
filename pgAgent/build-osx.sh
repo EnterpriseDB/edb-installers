@@ -146,6 +146,9 @@ _postprocess_pgAgent_osx() {
 
         rm -rf $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app
     fi
+    
+    # Set permissions to all files and folders in staging
+    _set_permissions osx
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"

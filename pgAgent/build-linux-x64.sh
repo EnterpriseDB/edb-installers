@@ -127,6 +127,9 @@ _postprocess_pgAgent_linux_x64() {
     pushd staging/linux-x64
     generate_3rd_party_license "pgAgent"
     popd
+   
+    # Set permissions to all files and folders in staging
+    _set_permissions linux-x64
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
