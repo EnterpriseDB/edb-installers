@@ -106,6 +106,9 @@ _postprocess_phpPgAdmin_linux_x64() {
     _replace "\$conf\['servers'\]\[0\]\['pg_dump_path'\] = '/usr/bin/pg_dump';" "\$conf\['servers'\]\[0\]\['pg_dump_path'\] = '@@PGDUMP@@';" "$WD/phpPgAdmin/staging/linux-x64/phpPgAdmin/conf/config.inc.php"
     _replace "\$conf\['servers'\]\[0\]\['pg_dumpall_path'\] = '/usr/bin/pg_dumpall';" "\$conf\['servers'\]\[0\]\['pg_dumpall_path'\] = '@@PGDUMPALL@@';" "$WD/phpPgAdmin/staging/linux-x64/phpPgAdmin/conf/config.inc.php"
     _replace "\$conf\['extra_login_security'\] = true;" "\$conf\['extra_login_security'\] = false;" "$WD/phpPgAdmin/staging/linux-x64/phpPgAdmin/conf/config.inc.php"
+    
+    # Set permissions to all files and folders in staging
+    _set_permissions linux-x64
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"

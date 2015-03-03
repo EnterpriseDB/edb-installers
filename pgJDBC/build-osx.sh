@@ -105,6 +105,8 @@ _postprocess_pgJDBC_osx() {
         rm -rf $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app
     fi
 
+    # Set permissions to all files and folders in staging
+    _set_permissions osx
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 

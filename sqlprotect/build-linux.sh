@@ -72,6 +72,9 @@ _postprocess_sqlprotect_linux() {
     echo "BEGIN POST sqlprotect Linux"
 
     cd $WD/sqlprotect
+
+    # Set permissions to all files and folders in staging
+    _set_permissions linux
     
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"

@@ -229,8 +229,6 @@ _postprocess_ApachePhp_linux() {
     cp scripts/linux/launchbrowser.sh staging/linux/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
     chmod ugo+x staging/linux/scripts/launchbrowser.sh
 
-    chmod ugo+x staging/linux/php/php.ini
-
     # Copy the XDG scripts
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the xdg scripts"
     cp -pR $WD/scripts/xdg/xdg* staging/linux/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
@@ -246,12 +244,17 @@ _postprocess_ApachePhp_linux() {
     cp resources/xdg/pg-launchApachePhp.desktop staging/linux/scripts/xdg/pg-launchApachePhp.desktop || _die "Failed to copy a menu pick desktop"
 
     cp resources/index.php staging/linux/apache/www || _die "Failed to copy index.php"
-    chmod ugo+x staging/linux/apache/www/index.php
 
     #Remove the httpd.conf.bak from the staging if exists.
     if [ -f staging/linux/apache/conf/httpd.conf.bak ]; then
       rm -f staging/linux/apache/conf/httpd.conf.bak
     fi
+
+    # Set permissions to all files and folders in staging
+    _set_permissions linux
+
+    chmod ugo+x staging/linux/php/php.ini 
+    chmod ugo+x staging/linux/apache/www/index.php
 
     _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/linux/apache/www/index.php"
     _replace PG_VERSION_PHP $PG_VERSION_PHP "staging/linux/apache/www/index.php"
@@ -262,4 +265,5 @@ _postprocess_ApachePhp_linux() {
     cd $WD
     echo "END POST ApachePhp Linux"
 }
+
 

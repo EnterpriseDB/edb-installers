@@ -363,6 +363,9 @@ _postprocess_PostGIS_osx() {
         rm -rf $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app
     fi
 
+    # Set permissions to all files and folders in staging
+    _set_permissions osx
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 

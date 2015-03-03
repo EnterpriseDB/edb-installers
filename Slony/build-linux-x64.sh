@@ -98,7 +98,7 @@ _postprocess_Slony_linux_x64() {
     chmod +r $WD/Slony/staging/linux-x64/lib/*
 
     mkdir -p $WD/Slony/staging/linux-x64/Slony
-    ssh $PG_SSH_LINUX_X64 "cp $PG_PGHOME_LINUX_X64/share/postgresql/slony*.sql $PG_STAGING/Slony; chmod 755 $PG_STAGING/Slony/slony*.sql" || _die "Failed to share files to staging directory"
+    ssh $PG_SSH_LINUX_X64 "cp $PG_PGHOME_LINUX_X64/share/postgresql/slony*.sql $PG_STAGING/Slony" || _die "Failed to share files to staging directory"
 
     mkdir -p staging/linux-x64/installer/Slony || _die "Failed to create a directory for the install scripts"
 
@@ -135,6 +135,10 @@ _postprocess_Slony_linux_x64() {
     cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-launchSlonyDocs.desktop staging/linux-x64/scripts/xdg/pg-launchSlonyDocs-$SLONY_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
 
+    # Set permissions to all files and folders in staging
+    _set_permissions linux-x64
+    
+    ssh $PG_SSH_LINUX_X64 "chmod 755 $PG_STAGING/Slony/slony*.sql" || _die "Failed to set the permissions for sql files"
  
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"

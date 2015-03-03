@@ -228,6 +228,9 @@ _postprocess_psqlODBC_linux_x64() {
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the xdg entries"
     cp resources/xdg/pg-launchOdbcDocs.desktop staging/linux-x64/scripts/xdg/pg-launchOdbcDocs.desktop || _die "Failed to copy the launch files (resources)"
     cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql.directory || _die "Failed to copy the xdg files (resources)"
+    
+    # Set permissions to all files and folders in staging
+    _set_permissions linux-x64
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"

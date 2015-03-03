@@ -122,6 +122,9 @@ _postprocess_updatemonitor_linux_x64() {
 
     mkdir -p staging/linux-x64/UpdateMonitor/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     cp resources/xdg/edb-um-update-monitor.desktop staging/linux-x64/UpdateMonitor/scripts/xdg/ || _die "Failed to copy the startup pick desktop"
+    
+    # Set permissions to all files and folders in staging
+    _set_permissions linux-x64
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer for linux-x64"

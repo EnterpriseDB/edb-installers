@@ -182,6 +182,9 @@ _postprocess_psqlODBC_osx() {
 
         rm -rf $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app
     fi
+    
+    # Set permissions to all files and folders in staging
+    _set_permissions osx
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"

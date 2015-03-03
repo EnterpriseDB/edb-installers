@@ -510,6 +510,9 @@ y a menu pick image"
     _replace @@WIN64MODE@@ "0" installer-lin64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
     _replace @@SERVICE_SUFFIX@@ "" installer-lin64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
 
+    # Set permissions to all files and folders in staging
+    _set_permissions linux-x64
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-lin64.xml linux-x64 || _die "Failed to build the installer"
 

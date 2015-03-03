@@ -372,8 +372,6 @@ _postprocess_ApachePhp_osx() {
    
     mkdir -p staging/osx/scripts || _die "Failed to create a directory for the launch scripts"
 
-    chmod ugo+x staging/osx/php/php.ini
-
     # Copy in the menu pick images 
     mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.icns staging/osx/scripts/images || _die "Failed to copy the menu pick images (resources/*.icns)"
@@ -383,6 +381,11 @@ _postprocess_ApachePhp_osx() {
     chmod ugo+x staging/osx/scripts/getapacheport.sh
 
     cp resources/index.php staging/osx/apache/www || _die "Failed to copy index.php"
+
+    # Set permissions to all files and folders in staging
+    _set_permissions osx
+
+    chmod ugo+x staging/osx/php/php.ini
     chmod ugo+x staging/osx/apache/www/index.php
 
     _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/osx/apache/www/index.php" 

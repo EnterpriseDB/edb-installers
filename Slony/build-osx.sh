@@ -212,6 +212,9 @@ _postprocess_Slony_osx() {
 
         rm -rf $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app
     fi
+    
+    # Set permissions to all files and folders in staging
+    _set_permissions osx
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"

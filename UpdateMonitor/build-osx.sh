@@ -183,6 +183,9 @@ _postprocess_updatemonitor_osx() {
         rm -rf $WD/output/updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app
     fi
     
+    # Set permissions to all files and folders in staging
+    _set_permissions osx
+    
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer (UpdateMonitor)"
 

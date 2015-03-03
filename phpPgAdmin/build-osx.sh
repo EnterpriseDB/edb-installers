@@ -96,6 +96,9 @@ _postprocess_phpPgAdmin_osx() {
     _replace "\$conf\['servers'\]\[0\]\['pg_dumpall_path'\] = '/usr/bin/pg_dumpall';" "\$conf\['servers'\]\[0\]\['pg_dumpall_path'\] = '@@PGDUMPALL@@';" "$WD/phpPgAdmin/staging/osx/phpPgAdmin/conf/config.inc.php"
     _replace "\$conf\['extra_login_security'\] = true;" "\$conf\['extra_login_security'\] = false;" "$WD/phpPgAdmin/staging/osx/phpPgAdmin/conf/config.inc.php"
 
+    # Set permissions to all files and folders in staging
+    _set_permissions osx
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 

@@ -499,6 +499,8 @@ _postprocess_server_linux() {
     _replace @@WIN64MODE@@ "0" installer-linux.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
     _replace @@SERVICE_SUFFIX@@ "" installer-linux.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
 
+    # Set permissions to all files and folders in staging
+    _set_permissions linux
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-linux.xml linux || _die "Failed to build the installer"

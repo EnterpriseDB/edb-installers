@@ -190,6 +190,9 @@ _postprocess_pgbouncer_osx() {
 
         rm -rf $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-osx.app
     fi
+    
+    # Set permissions to all files and folders in staging
+    _set_permissions osx
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"

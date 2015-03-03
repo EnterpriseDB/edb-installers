@@ -72,6 +72,9 @@ _postprocess_sqlprotect_linux_x64() {
 
     cd $WD/sqlprotect
     
+    # Set permissions to all files and folders in staging
+    _set_permissions linux-x64
+    
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 

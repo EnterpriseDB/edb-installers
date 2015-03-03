@@ -326,6 +326,9 @@ _postprocess_server_osx() {
     else
           PG_DATETIME_SETTING_OSX="64-bit integers"
     fi
+    
+    # Set permissions to all files and folders in staging
+    _set_permissions osx
 
     if [ -f installer-osx.xml ]; then
         rm -f installer-osx.xml

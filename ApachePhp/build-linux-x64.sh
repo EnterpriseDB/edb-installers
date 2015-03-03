@@ -228,8 +228,6 @@ _postprocess_ApachePhp_linux_x64() {
     cp scripts/linux/launchbrowser.sh staging/linux-x64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
     chmod ugo+x staging/linux-x64/scripts/launchbrowser.sh
 
-    chmod ugo+x staging/linux-x64/php/php.ini
-
     # Copy the XDG scripts
     mkdir -p staging/linux-x64/installer/xdg || _die "Failed to create a directory for the xdg scripts"
     cp -pR $WD/scripts/xdg/xdg* staging/linux-x64/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
@@ -245,6 +243,11 @@ _postprocess_ApachePhp_linux_x64() {
     cp resources/xdg/pg-launchApachePhp.desktop staging/linux-x64/scripts/xdg/pg-launchApachePhp.desktop || _die "Failed to copy a menu pick desktop"
 
     cp resources/index.php staging/linux-x64/apache/www || _die "Failed to copy index.php"
+
+    # Set permissions to all files and folders in staging
+    _set_permissions linux-x64
+
+    chmod ugo+x staging/linux-x64/php/php.ini
     chmod ugo+x staging/linux-x64/apache/www/index.php
 
     _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/linux-x64/apache/www/index.php"
