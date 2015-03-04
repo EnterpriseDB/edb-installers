@@ -1,5 +1,5 @@
 3_clause_bsd_license.txt	libedit libevent libmemcached tiff jline
-LGPL_v2.1_license.txt	geos gettext libgcrypt libgpg_error libiconv pthreads termcap unixODBC uuid QT
+LGPL_v2.1_license.txt	geos gettext libgcrypt libgpg_error libiconv pthreads termcap unixODBC uuid QT libmbfl
 LGPL_v2_license.txt	libpango
 apache_v2.0.txt	log4j apache.commons.lang3
 curl_license.txt	curl

@@ -3,6 +3,7 @@ expat	libexpat
 fontconfig	libfontconfig
 freetype	libfreetype
 gdal	libgdal libgdal-1.dll libgdal.dll
+libmbfl		libmbfl mbfl.dll
 geos	libgeos-3 libgeos_c geos_c.dll geos.dll libgeos-3-4-2.dll libgeos_c-1.dll
 gettext	intl.dll libintl.dll libintl-8.dll
 icu	libicudata libicui18n libicuio libicule libiculx libicutest libicutu libicuuc icudt53.dll icuin53.dll icuio53.dll icule53.dll iculx53.dll icutest53.dll icutu53.dll icuuc53.dll
@@ -15,7 +16,7 @@ libgcc_s	libgcc_s_sjlj-1.dll
 libiconv	libiconv iconv.dll libiconv.dll libiconv-2.dll
 libmemcached	libmemcached libmemcachedutil
 libpango	libpango-1 libpangoft2-1
-libpng	libpng12
+libpng	libpng12 libpng16
 libsasl2	libsasl2
 libstdc++	libstdc++-6.dll
 libxml2	libxml2 libxml2.dll
