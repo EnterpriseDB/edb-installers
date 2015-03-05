@@ -290,6 +290,7 @@ EOT
         install_name_tool -change "@loader_path/../../lib/libiconv.2.dylib" "@loader_path/../../php/lib/libiconv.2.dylib" \$file
         install_name_tool -change "@loader_path/../../lib/libcrypto.1.0.0.dylib" "@loader_path/../../apache/lib/libcrypto.1.0.0.dylib" \$file
         install_name_tool -change "@loader_path/../../lib/libssl.1.0.0.dylib" "@loader_path/../../apache/lib/libssl.1.0.0.dylib" \$file
+	install_name_tool -change "@loader_path/../../lib/libmbfl.1.dylib" "@loader_path/../../php/lib/libmbfl.1.dylib" \$file
     done
     files=\`ls $PG_STAGING/apache/lib/lib*.dylib\`
     for file in \$files
