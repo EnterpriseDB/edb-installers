@@ -8,9 +8,9 @@ upgrade.existing.installation.title=Existing installation
 
 upgrade.existing.installation.description=An existing Npgsql installation has been found at ${installdir}. This installation will be upgraded.
 
-upgrade.major.version.error=An existing Npgsql installation has been found at ${NPGSQL_INSTALLED_DIRECTORY}. You can't upgrade Npgsql ${NPGSQL_INSTALLED_VERSION} with Npgsql ${productVersion}. Please uninstall your exsting Npgsql first and rerun this installer.
+upgrade.major.version.error=An existing Npgsql installation has been found at ${NPGSQL_INSTALLED_DIRECTORY}. You can't upgrade Npgsql ${NPGSQL_INSTALLED_VERSION} with Npgsql ${productVersion}. Please uninstall your existing Npgsql first and rerun this installer.
 
-upgrade.major.version.error.windows=An existing Npgsql installation has been found at ${npgsqlLocation}. You can't upgrade Npgsql ${npgsqlVersion} with Npgsql ${productVersion}. Please uninstall your exsting Npgsql first and rerun this installer.
+upgrade.major.version.error.windows=An existing Npgsql installation has been found at ${npgsqlLocation}. You can't upgrade Npgsql ${npgsqlVersion} with Npgsql ${productVersion}. Please uninstall your existing Npgsql first and rerun this installer.
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
