@@ -1,22 +1,26 @@
-3_clause_bsd_license.txt	libedit libevent libmemcached tiff jline
-LGPL_v2.1_license.txt	geos gettext libgcrypt libgpg_error libiconv pthreads termcap unixODBC uuid QT libmbfl
-LGPL_v2_license.txt	libpango
-apache_v2.0.txt	log4j apache.commons.lang3
-curl_license.txt	curl
-expat_license.txt	expat
-fontconfig_license.txt	fontconfig
-freetype_license.txt	freetype
-gcc_runtime_library_exception_license.txt	libgcc_s libstdc++
-icu_license.txt	icu
-jpeg_license.txt	jpeg
-libpng_license.txt	libpng
-libsasl2_license.txt	libsasl2
-memcached_license.txt	memcached
-mit_license.txt	krb5 json-c
-ncurses_license.txt	ncurses
-openldap_license.txt	openldap
-openssl_license.txt	openssl
-proj_license.txt	proj
-wxwidget_license.txt	wxwidget
-xconsortium_license.txt	gdal libxml2 libxslt
-zlib_license.txt	zlib
+3_clause_bsd_license.txt	project_libedit project_libevent project_libmemcached project_tiff project_jline
+GPL_v1_license.txt	project_perl
+LGPL_v2.1_license.txt	project_geos project_gettext project_libgcrypt project_libgpg_error project_libiconv project_pthreads project_termcap project_unixODBC project_uuid project_QT project_libmbfl
+LGPL_v2_license.txt	project_libpango
+apache_v2.0.txt	project_log4j project_apache.commons.lang3
+curl_license.txt	project_curl
+expat_license.txt	project_expat
+fontconfig_license.txt	project_fontconfig
+freetype_license.txt	project_freetype
+gcc_runtime_library_exception_license.txt	project_libgcc_s project_libstdc++
+icu_license.txt	project_icu
+jpeg_license.txt	project_jpeg
+libpng_license.txt	project_libpng
+libsasl2_license.txt	project_libsasl2
+memcached_license.txt	project_memcached
+mit_license.txt	project_krb5 project_json-c
+ncurses_license.txt	project_ncurses
+openldap_license.txt	project_openldap
+openssl_license.txt	project_openssl
+proj_license.txt	project_proj
+python_license.txt	project_python
+tcl_license.txt	project_tcl
+tk_license.txt	project_tk
+wxwidget_license.txt	project_wxwidget
+xconsortium_license.txt	project_gdal project_libxml2 project_libxslt
+zlib_license.txt	project_zlib

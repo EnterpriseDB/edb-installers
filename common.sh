@@ -247,6 +247,8 @@ generate_3rd_party_license()
         system("rm -f "ENVIRON["ComponentFile"]);                                                                                   \
     }                                                                                                                               \
     {                                                                                                                               \
+        gsub(/^project_/, "", $2);                                                                                                  \
+                                                                                                                                    \
         if ( $1 == prevLicenseName )                                                                                                \
         {                                                                                                                           \
             listProject=listProject", "$2;                                                                                          \

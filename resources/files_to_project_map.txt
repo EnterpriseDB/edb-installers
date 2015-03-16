@@ -1,43 +1,47 @@
-curl	libcurl libcurl.dll
-expat	libexpat
-fontconfig	libfontconfig
-freetype	libfreetype
-gdal	libgdal libgdal-1.dll libgdal.dll
-libmbfl		libmbfl mbfl.dll
-geos	libgeos-3 libgeos_c geos_c.dll geos.dll libgeos-3-4-2.dll libgeos_c-1.dll
-gettext	intl.dll libintl.dll libintl-8.dll
-icu	libicudata libicui18n libicuio libicule libiculx libicutest libicutu libicuuc icudt53.dll icuin53.dll icuio53.dll icule53.dll iculx53.dll icutest53.dll icutu53.dll icuuc53.dll
-jpeg	libjpeg
-json-c	libjson-c libjson-c-2.dll 
-krb5	libcom_err libgssapi_krb5 libk5crypto libkrb5 libkrb5support
-libedit	libedit
-libevent	libevent-2
-libgcc_s	libgcc_s_sjlj-1.dll
-libiconv	libiconv iconv.dll libiconv.dll libiconv-2.dll
-libmemcached	libmemcached libmemcachedutil
-libpango	libpango-1 libpangoft2-1
-libpng	libpng12 libpng16
-libsasl2	libsasl2
-libstdc++	libstdc++-6.dll
-libxml2	libxml2 libxml2.dll
-libxslt	libxslt.dll
-memcached edb-icache
-ncurses	libncurses
-openldap	liblber-2 libldap-2 libldap_r-2
-openssl	libcrypto libssl libeay32.dll ssleay32.dll
-proj	libproj libproj-0.dll
-pthreads	pthreadVC2.dll pthreadVC2_x64.dll
-QT	libQtCore libQtGui libQtNetwork libQtXml libEGL.dll libGLESv2.dll qwindows.dll Qt5Core.dll Qt5Gui.dll Qt5Network.dll Qt5Widgets.dll Qt5Xml.dll QtCore QtGui QtNetwork QtXml
-tiff	libtiff
-uuid	libuuid
-wxwidget	wxbase28u_net_vc_custom.dll wxbase28u_vc_custom.dll wxbase28u_xml_vc_custom.dll wxmsw28u_adv_vc_custom.dll wxmsw28u_aui_vc_custom.dll wxmsw28u_core_vc_custom.dll wxmsw28u_html_vc_custom.dll wxmsw28u_media_vc_custom.dll wxmsw28u_qa_vc_custom.dll wxmsw28u_richtext_vc_custom.dll wxmsw28u_stc_vc_custom.dll wxmsw28u_xrc_vc_custom.dll libwx_baseu-2 libwx_baseud-2 libwx_baseud_net-2 libwx_baseud_xml-2 libwx_baseu_net-2 libwx_baseu_xml-2 libwx_gtk2u_adv-2 libwx_gtk2u_core-2 libwx_base_carbonud-2 libwx_base_carbonu-2
-zlib	libz zlib1.dll
-apache.commons.lang3	commons-lang3-3 
-log4j	log4j-1
-jline	jline-0
+project_curl	libcurl libcurl.dll
+project_expat	libexpat
+project_fontconfig	libfontconfig
+project_freetype	libfreetype
+project_gdal	libgdal libgdal-1.dll libgdal.dll
+project_libmbfl	libmbfl mbfl.dll
+project_geos	libgeos-3 libgeos_c geos_c.dll geos.dll libgeos-3-4-2.dll libgeos_c-1.dll
+project_gettext	intl.dll libintl.dll libintl-8.dll
+project_icu	libicudata libicui18n libicuio libicule libiculx libicutest libicutu libicuuc icudt53.dll icuin53.dll icuio53.dll icule53.dll iculx53.dll icutest53.dll icutu53.dll icuuc53.dll
+project_jpeg	libjpeg
+project_json-c	libjson-c libjson-c-2.dll 
+project_krb5	libcom_err libgssapi_krb5 libk5crypto libkrb5 libkrb5support
+project_libedit	libedit
+project_libevent	libevent-2
+project_libgcc_s	libgcc_s_sjlj-1.dll
+project_libiconv	libiconv iconv.dll libiconv.dll libiconv-2.dll
+project_libmemcached	libmemcached libmemcachedutil
+project_libpango	libpango-1 libpangoft2-1
+project_libpng	libpng12 libpng16
+project_libsasl2	libsasl2
+project_libstdc++	libstdc++-6.dll
+project_libxml2	libxml2 libxml2.dll
+project_libxslt	libxslt.dll
+project_memcached edb-icache
+project_ncurses	libncurses
+project_openldap	liblber-2 libldap-2 libldap_r-2
+project_openssl	libcrypto libssl libeay32.dll ssleay32.dll
+project_proj	libproj libproj-0.dll
+project_pthreads	pthreadVC2.dll pthreadVC2_x64.dll
+project_QT	libQtCore libQtGui libQtNetwork libQtXml libEGL.dll libGLESv2.dll qwindows.dll Qt5Core.dll Qt5Gui.dll Qt5Network.dll Qt5Widgets.dll Qt5Xml.dll QtCore QtGui QtNetwork QtXml
+project_tiff	libtiff
+project_uuid	libuuid
+project_wxwidget	wxbase28u_net_vc_custom.dll wxbase28u_vc_custom.dll wxbase28u_xml_vc_custom.dll wxmsw28u_adv_vc_custom.dll wxmsw28u_aui_vc_custom.dll wxmsw28u_core_vc_custom.dll wxmsw28u_html_vc_custom.dll wxmsw28u_media_vc_custom.dll wxmsw28u_qa_vc_custom.dll wxmsw28u_richtext_vc_custom.dll wxmsw28u_stc_vc_custom.dll wxmsw28u_xrc_vc_custom.dll libwx_baseu-2 libwx_baseud-2 libwx_baseud_net-2 libwx_baseud_xml-2 libwx_baseu_net-2 libwx_baseu_xml-2 libwx_gtk2u_adv-2 libwx_gtk2u_core-2 libwx_base_carbonud-2 libwx_base_carbonu-2
+project_zlib	libz zlib1.dll
+project_apache.commons.lang3	commons-lang3-3 
+project_log4j	log4j-1
+project_jline	jline-0
+project_perl	libperl perl.exe
+project_python	libpython python.exe
+project_tcl	libtcl8
+project_tk	libtk8
 
-termcap
-unixODBC
-libgcrypt
-libgpg_error
+project_termcap
+project_unixODBC
+project_libgcrypt
+project_libgpg_error
 
