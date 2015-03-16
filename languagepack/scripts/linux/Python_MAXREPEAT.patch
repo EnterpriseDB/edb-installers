@@ -1,0 +1,38 @@
+diff -Naur Python-3.2.5/Lib/sre_compile.py Python-3.2.5.new/Lib/sre_compile.py
+--- Python-3.2.5/Lib/sre_compile.py	2013-05-15 21:33:46.000000000 +0500
++++ Python-3.2.5.new/Lib/sre_compile.py	2014-07-04 12:50:59.000000000 +0500
+@@ -13,7 +13,6 @@
+ import _sre, sys
+ import sre_parse
+ from sre_constants import *
+-from _sre import MAXREPEAT
+ 
+ assert _sre.MAGIC == MAGIC, "SRE module mismatch"
+ 
+diff -Naur Python-3.2.5/Lib/sre_constants.py Python-3.2.5.new/Lib/sre_constants.py
+--- Python-3.2.5/Lib/sre_constants.py	2013-05-15 21:33:46.000000000 +0500
++++ Python-3.2.5.new/Lib/sre_constants.py	2014-07-04 12:52:54.000000000 +0500
+@@ -15,7 +15,11 @@
+ 
+ MAGIC = 20031017
+ 
+-from _sre import MAXREPEAT
++try:
++    from _sre import MAXREPEAT
++except ImportError:
++    import _sre
++    MAXREPEAT = _sre.MAXREPEAT = 65535
+ 
+ # SRE standard exception (access as sre.error)
+ # should this really be here?
+diff -Naur Python-3.2.5/Lib/sre_parse.py Python-3.2.5.new/Lib/sre_parse.py
+--- Python-3.2.5/Lib/sre_parse.py	2013-05-15 21:33:46.000000000 +0500
++++ Python-3.2.5.new/Lib/sre_parse.py	2014-07-04 12:53:38.000000000 +0500
+@@ -15,7 +15,6 @@
+ import sys
+ 
+ from sre_constants import *
+-from _sre import MAXREPEAT
+ 
+ SPECIAL_CHARS = ".\\[{()*+?^$|"
+ REPEAT_CHARS = "*+?{"
