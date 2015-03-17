@@ -210,7 +210,7 @@ generate_3rd_party_license()
     export ListGeneratorScriptFileWin="$WD/list-libs-windows.sh"
     export ListGeneratorScriptFileJar="$WD/list-jars.sh"
     export blnIsWindows=false
-    export LibListDir="lib_list_files"
+    export LibListDir="3rd_party_libraries_list"
     export CurrentPlatform="${PWD##*/}" # Current directory name actually
     export Lib_List_File="$WD/output/$LibListDir/${ComponentName}_${CurrentPlatform}_libs.txt"
     export ComponentFile="$PWD/${ComponentName}_3rd_party_licenses.txt"
