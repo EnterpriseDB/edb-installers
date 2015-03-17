@@ -11,7 +11,7 @@ project_jpeg	libjpeg
 project_json-c	libjson-c libjson-c-2.dll 
 project_krb5	libcom_err libgssapi_krb5 libk5crypto libkrb5 libkrb5support
 project_libedit	libedit
-project_libevent	libevent-2
+project_libevent	libevent-2 libevent-2-0-5.dll
 project_libgcc_s	libgcc_s_sjlj-1.dll
 project_libiconv	libiconv iconv.dll libiconv.dll libiconv-2.dll
 project_libmemcached	libmemcached libmemcachedutil
@@ -41,7 +41,7 @@ project_tcl	libtcl8
 project_tk	libtk8
 
 project_termcap
-project_unixODBC
+project_unixODBC	libodbc
 project_libgcrypt
 project_libgpg_error
 
