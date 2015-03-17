@@ -38,6 +38,9 @@
     <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
     <allowWindowResize>1</allowWindowResize>
 
+    <!-- set if it is a native windows 64 bit-->
+    <windows64bitMode>@@WIN64MODE@@</windows64bitMode>
+
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
     <leftImage>../resources/pg-side.png</leftImage>
@@ -120,6 +123,11 @@ EOF
   </functionDefinitionList>
     <!-- Prebuild Actons-->
     <preBuildActionList>
+      <setInstallerVariable name="project.installerFilename" value="slony-pgPG_CURRENT_VERSION-${product_version}-${platform_name}-x64.${platform_exec_suffix}">
+          <ruleList>
+              <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+          </ruleList>
+      </setInstallerVariable>
       <setInstallerVariable name="originalplatform" value="${platform_name}"/>
       <setInstallerVariable name="originalplatform" value="linux-x32">
           <ruleList>
@@ -198,6 +206,13 @@ EOF
             </actionList>
                 <ruleList>
                     <compareText logic="equals" text="${platform_name}" value="windows"/>
+                </ruleList>
+            <actionList>
+		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-${PGMajorVersion}" 
+		   name="Base Directory" variable="pghome" />	 
+            </actionList>
+                <ruleList>
+		    <platformTest type="windows-x64" />
                 </ruleList>
         </actionGroup>
     
@@ -370,14 +385,6 @@ EOF
                         <compareText text="${branding}" logic="equals" value="" />
                     </ruleList>
                 </iniFileGet>
-
-                <!-- Set the windows branding to (x86) on win 64 machines as currently we dont have win 64 port of PostGIS -->
-                <setInstallerVariable name="branding" value="PostgreSQL PG_MAJOR_VERSION (x86)" >
-                    <ruleList>
-                        <platformTest type="windows-x64" />
-                        <compareText text="${branding}" logic="equals" value="" />
-                    </ruleList>
-                </setInstallerVariable>
 
                 <!-- New install, nothing set on the command line -->
                 <setInstallerVariable>

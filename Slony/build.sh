@@ -32,6 +32,12 @@ then
     source $WD/Slony/build-windows.sh
 fi
     
+# Windows x64
+if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+then
+    source $WD/Slony/build-windows-x64.sh
+fi
+    
 ################################################################################
 # Build preparation
 ################################################################################
@@ -97,6 +103,12 @@ _prep_Slony() {
         _prep_Slony_windows || exit 1
     fi
 
+    # Windows x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _prep_Slony_windows_x64 || exit 1
+    fi
+
 }
 
 ################################################################################
@@ -134,6 +146,12 @@ _build_Slony() {
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         _build_Slony_windows || exit 1
+    fi
+ 
+    # Windows x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _build_Slony_windows_x64 || exit 1
     fi
  
 }
@@ -193,6 +211,12 @@ _postprocess_Slony() {
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         _postprocess_Slony_windows || exit 1
+    fi
+    
+    # Windows x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _postprocess_Slony_windows_x64 || exit 1
     fi
     
 }
