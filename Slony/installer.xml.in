@@ -976,13 +976,13 @@ EOF
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/windows/bin/slon.exe</origin>
+                            <origin>staging/@@WINDIR@@/bin/slon.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/windows/bin/slonik.exe</origin>
+                            <origin>staging/@@WINDIR@@/bin/slonik.exe</origin>
                         </distributionFile>
 			<distributionFile>
-                            <origin>staging/windows/bin/pthreadVC2.dll</origin>
+                            <origin>staging/@@WINDIR@@/bin/pthreadVC2.dll</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -993,7 +993,7 @@ EOF
 		    <platforms>windows</platforms>
 		    <distributionFileList>
                         <distributionFile>
-                            <origin>staging/windows/slony_3rd_party_licenses.txt</origin>
+                            <origin>staging/@@WINDIR@@/slony_3rd_party_licenses.txt</origin>
                         </distributionFile>
 		    </distributionFileList>
 		</folder>
@@ -1004,7 +1004,7 @@ EOF
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/windows/lib/slony1_funcs.PG_VERSION_SLONY.dll</origin>
+                            <origin>staging/@@WINDIR@@/lib/slony1_funcs.PG_VERSION_SLONY.dll</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -1015,7 +1015,7 @@ EOF
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/windows/Slony</origin>
+                            <origin>staging/@@WINDIR@@/Slony</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1026,7 +1026,7 @@ EOF
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/windows/installer</origin>
+                            <origin>staging/@@WINDIR@@/installer</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1037,7 +1037,7 @@ EOF
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/windows/scripts</origin>
+                            <origin>staging/@@WINDIR@@/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
