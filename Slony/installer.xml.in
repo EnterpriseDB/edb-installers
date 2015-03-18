@@ -207,6 +207,8 @@ EOF
                 <ruleList>
                     <compareText logic="equals" text="${platform_name}" value="windows"/>
                 </ruleList>
+        </actionGroup>
+        <actionGroup>
             <actionList>
 		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-${PGMajorVersion}" 
 		   name="Base Directory" variable="pghome" />	 
