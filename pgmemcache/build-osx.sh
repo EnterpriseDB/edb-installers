@@ -95,6 +95,10 @@ _postprocess_pgmemcache_osx() {
     PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/$PGMEM_PLATFORM
 
     cd $PGMEM_PACKAGE_PATH
+ 
+    pushd staging/osx
+    generate_3rd_party_license "pgmemcache"
+    popd
 
     # Make all the files readable under the given directory
     find "$PGMEM_PACKAGE_PATH" -exec chmod a+r {} \;
