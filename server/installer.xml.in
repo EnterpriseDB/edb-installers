@@ -3417,7 +3417,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
 
                         <runProgram>
                             <program>cscript</program>
-                            <programArguments>//NoLogo "${installdir}\installer\server\loadmodules.vbs" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport}</programArguments>
+                            <programArguments>//NoLogo "${installdir}\installer\server\loadmodules.vbs" "${superaccount}" ""${superpassword.password}"" "${installdir}" "${datadir}" ${serverport}</programArguments>
                             <progressText>${msg(progress.text.loading.modules)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
