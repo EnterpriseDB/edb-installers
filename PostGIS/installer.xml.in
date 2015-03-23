@@ -1034,6 +1034,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/osx/PostGIS/bin</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/osx/postgis_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1161,6 +1162,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/linux/PostGIS/bin</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/linux/postgis_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1288,6 +1290,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/linux-x64/PostGIS/bin</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/linux-x64/postgis_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1415,6 +1418,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/linux-ppc64/PostGIS/bin</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/linux-ppc64/postgis_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -1497,6 +1501,7 @@ EOF
                         <distributionDirectory>
                             <origin>staging/windows/PostGIS/bin</origin>
                         </distributionDirectory>
+			<distributionFile origin="staging/windows/postgis_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
