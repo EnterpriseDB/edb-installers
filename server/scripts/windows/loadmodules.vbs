@@ -18,6 +18,10 @@ strDataDir = WScript.Arguments.Item(3)
 iPort = WScript.Arguments.Item(4)
 
 Dim regExp, objShell, objFso, objTempFolder
+'Escape the '%' as '%%', if present in the password
+Set regExp = new regexp
+regExp.Pattern = "[%]"
+strFormattedPassword = regExp.Replace(strPassword, "%%")
 
 iWarn = 0
 
@@ -35,8 +39,7 @@ Function DoCmd(strCmd)
     Set objBatchFile = objTempFolder.CreateTextFile(strBatchFile, True)
     objBatchFile.WriteLine "@ECHO OFF"
     objBatchFile.WriteLine "CHCP " & objShell.RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Nls\CodePage\ACP")
-    ' strPassword will support all special characters if argument is passed in double quotes i.e "<PASSWORD>"
-    objBatchFile.WriteLine "SET PGPASSWORD=" & strPassword
+    objBatchFile.WriteLine "SET PGPASSWORD=" & strFormattedPassword
     objBatchFile.WriteLine strCmd & " > """ & strOutputFile & """ 2>&1"
     objBatchFile.WriteLine "SET PGPASSWORD="
 	objBatchFile.WriteLine "EXIT /B %ERRORLEVEL%"
