@@ -59,8 +59,8 @@ _prep_ApachePhp() {
         extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-win32-src || exit 1
         extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB || exit 1
         extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL || exit 1
-        extract_file ../../tarballs/pcre-835-win32-binaries || exit 1
-	mv pcre-835-win32-binaries httpd-$PG_VERSION_APACHE/srclib/pcre || exit 1
+        extract_file ../../tarballs/pcre-836-win32-binaries || exit 1
+	mv pcre-836-win32-binaries httpd-$PG_VERSION_APACHE/srclib/pcre || exit 1
         mv httpd-$PG_VERSION_APACHE apache.windows || _die "Couldn't move httpd-$PG_VERSION_APACHE as apache.windows"
 
     fi
