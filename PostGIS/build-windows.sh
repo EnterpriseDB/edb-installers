@@ -247,6 +247,10 @@ _postprocess_PostGIS_windows() {
 
     cd $WD/PostGIS
 
+    pushd staging/windows
+    generate_3rd_party_license "postgis"
+    popd
+
     mkdir -p staging/windows/installer/PostGIS || _die "Failed to create a directory for the install scripts"
 
     # Copy in the menu pick images

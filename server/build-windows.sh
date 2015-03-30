@@ -465,6 +465,11 @@ a dependency DLL on the windows build host"
 _postprocess_server_windows() {
 
     cd $WD/server
+ 
+    pushd staging/windows
+    generate_3rd_party_license "server"
+    popd
+    mv $WD/server/staging/windows/server_3rd_party_licenses.txt $WD/server/staging/windows/3rd_party_licenses.txt
 
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/windows/doc/" || _die "Failed to install the welcome document"

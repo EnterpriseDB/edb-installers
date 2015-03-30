@@ -381,6 +381,11 @@ _postprocess_server_linux_x64() {
 
     cd $WD/server
 
+    pushd staging/linux-x64
+    generate_3rd_party_license "server"
+    popd
+    mv $WD/server/staging/linux-x64/server_3rd_party_licenses.txt $WD/server/staging/linux-x64/3rd_party_licenses.txt
+
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/linux-x64/doc/" || _die "Failed to install the welcome document"
     cp "$WD/server/resources/enterprisedb.png" "$WD/server/staging/linux-x64/doc/" || _die "Failed to install the welcome logo"
