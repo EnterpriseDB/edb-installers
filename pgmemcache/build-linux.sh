@@ -117,6 +117,10 @@ _postprocess_pgmemcache_linux() {
 
     cd $PGMEM_PACKAGE_PATH
 
+    pushd staging/linux
+    generate_3rd_party_license "pgmemcache"
+    popd
+
     # Make all the files readable under the given directory
     find "$PGMEM_PACKAGE_PATH" -exec chmod a+r {} \;
     # Make all the directories readable and executable under the given directory
