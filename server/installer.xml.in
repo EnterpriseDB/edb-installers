@@ -4413,6 +4413,15 @@ REM The script sets environment variables helpful for PostgreSQL
           <showMessageOnError>0</showMessageOnError>
         </deleteFile>
 
+        <deleteFile>
+	  <path>${installdir}/.cache</path>
+	  <abortOnError>0</abortOnError>
+	  <showMessageOnError>0</showMessageOnError>
+	  <ruleList>
+		<compareText text="${platform_name}" logic="contains" value="linux" />
+	  </ruleList>	
+	</deleteFile>
+
         <showWarning>
             <text>${msg(info.datadirectory.user.kept)}</text>
             <ruleList>

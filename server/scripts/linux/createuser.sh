@@ -23,24 +23,31 @@ then
     groupadd $1 || _die $1
 fi
 
+MSG=""
 # Create the user account if required
 if getent passwd $1 > /dev/null
 then
 
     HOME_DIR=`su $1 -c "echo \\\$HOME"`
     if [ -e $HOME_DIR ]; then
-        echo "User account '$1' already exists"
-        exit 0
+       MSG="User account '$1' already exists"
     else
-        echo "User account '$1' already exists - fixing non-existent home directory to $2"
+        MSG="User account '$1' already exists - fixing non-existent home directory to $2"
         usermod -d "$2" $1
-        exit 0
     fi
    
 else
 	useradd -m -c "PostgreSQL" -d "$2" -g $1 $1 || _die $1
 	usermod -p "*" $1
+	MSG="$0 ran to completion"
 fi
 
-echo "$0 ran to completion"
+echo "$MSG"
+
+#Add a raise condition for creation of $HOME/.cache folder
+#As a part of centos 7 and RHL 7 and above , new user try to create .cache folder in $HOME/.cache
+#Since parent folder is own by root and read only it would take care.
+mkdir -p "$2/.cache" || _die $1
+chown $1:$1 "$2/.cache" || _die $1
+
 exit 0
