@@ -1,5 +1,5 @@
 #!/bin/sh 
-# Copyright (c) 2012-2014, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2015, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL cluster init script for Linux
 
@@ -51,9 +51,9 @@ chown $OSUSERNAME:$OSUSERNAME "$DATADIR" || _die "Failed to set the ownership of
 # Initialise the database cluster
 if [ $LOCALE = "DEFAULT" ];
 then
-    su - $OSUSERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib $INSTALLDIR/bin/initdb --pwfile $INSTALLDIR/installer/server/initdbpw.$$ -A md5 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+    su -s /bin/sh - $OSUSERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib:$LD_LIBRARY_PATH $INSTALLDIR/bin/initdb --pwfile $INSTALLDIR/installer/server/initdbpw.$$ -A md5 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
 else
-    su - $OSUSERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib $INSTALLDIR/bin/initdb --pwfile $INSTALLDIR/installer/server/initdbpw.$$ --locale=$LOCALE -A md5 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+    su -s /bin/sh - $OSUSERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib:$LD_LIBRARY_PATH $INSTALLDIR/bin/initdb --pwfile $INSTALLDIR/installer/server/initdbpw.$$ --locale=$LOCALE -A md5 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
 fi
 
 if [ ! -d "$DATADIR/pg_log" ];
@@ -70,13 +70,13 @@ rm $INSTALLDIR/installer/server/initdbpw.$$ || _warn "Failed to remove the initd
 #      log_destination = 'stderr'
 #      logging_collector = on
 #      log_line_prefix = '%t '
-su - $OSUSERNAME -c "sed -e \"s@\#listen_addresses = 'localhost'@listen_addresses = '*'@g\" \
+su -s /bin/sh - $OSUSERNAME -c "sed -e \"s@\#listen_addresses = 'localhost'@listen_addresses = '*'@g\" \
                         -e \"s@\#port = 5432@port = $PORT@g\" \
                         -e \"s@\#log_destination = 'stderr'@log_destination = 'stderr'@g\" \
                         -e \"s@\#logging_collector = off@logging_collector = on@g\" \
                         -e \"s@\#log_line_prefix = ''@log_line_prefix = '%t '@g\" \
                         $DATADIR/postgresql.conf > $DATADIR/postgresql.conf.$$" || _warn "Failed to modify the postgresql.conf file ($DATADIR/postgresql.conf)"
-su - $OSUERNAME -c "mv $DATADIR/postgresql.conf.$$ $DATADIR/postgresql.conf" || _warn "Failed to update the postgresql.conf file ($DATADIR/postgresql.conf)"
+su -s /bin/sh - $OSUERNAME -c "mv $DATADIR/postgresql.conf.$$ $DATADIR/postgresql.conf" || _warn "Failed to update the postgresql.conf file ($DATADIR/postgresql.conf)"
 
 echo "$0 ran to completion"
 exit $WARN
