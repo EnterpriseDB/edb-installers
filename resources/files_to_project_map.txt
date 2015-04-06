@@ -17,6 +17,7 @@ project_libiconv	libiconv iconv.dll libiconv.dll libiconv-2.dll
 project_libmemcached	libmemcached libmemcachedutil
 project_libpango	libpango-1 libpangoft2-1
 project_libpng	libpng12 libpng16
+project_libpq	libpq libpq.dll
 project_libsasl2	libsasl2
 project_libstdc++	libstdc++-6.dll
 project_libxml2	libxml2 libxml2.dll
