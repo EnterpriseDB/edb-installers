@@ -192,6 +192,7 @@ generate_3rd_party_license()
     export Lib_List_File="$WD/output/$LibListDir/${ComponentName}_${CurrentPlatform}_libs.txt"
     export ComponentFile="$PWD/${ComponentName}_3rd_party_licenses.txt"
     export LicenseTypePath="$WD/resources/3rd_party_license_types"
+    export LIBPQPattern="libpq"
 
     echo "[$FUNCNAME] Component Name: $ComponentName"
     echo "[$FUNCNAME] Library List File: $Lib_List_File"
@@ -209,12 +210,17 @@ generate_3rd_party_license()
         ListGeneratorScriptFile="$ListGeneratorScriptFileOSX"
     fi
 
+    if [[ $ComponentName != "server" ]];
+    then
+        LIBPQPattern=xyz${LIBPQPattern}abc
+    fi
+
     tempfoo=`basename $0`
     TempFile=`mktemp -t ${tempfoo}` || exit 1
     $ListGeneratorScriptFile    >> $TempFile
     $ListGeneratorScriptFileJar >> $TempFile
 
-    cat $TempFile | xargs -I{} grep -w {} $WD/resources/files_to_project_map.txt | sort -u | cut -f1 | xargs -I{} echo "/usr/local/bin/gawk '/\<{}\>/ {print \$1\" {}\"}' $WD/resources/license_to_project_map.txt" | sh | sort -u > $Lib_List_File
+    cat $TempFile | xargs -I{} grep -w {} $WD/resources/files_to_project_map.txt | sort -u | cut -f1 | grep -v $LIBPQPattern | xargs -I{} echo "/usr/local/bin/gawk '/\<{}\>/ {print \$1\" {}\"}' $WD/resources/license_to_project_map.txt" | sh | sort -u > $Lib_List_File
 
     /usr/local/bin/gawk '\
     BEGIN                                                                                                                           \
