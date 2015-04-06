@@ -11,6 +11,7 @@ gcc_runtime_library_exception_license.txt	project_libgcc_s project_libstdc++
 icu_license.txt	project_icu
 jpeg_license.txt	project_jpeg
 libpng_license.txt	project_libpng
+libpq_license.txt	project_libpq
 libsasl2_license.txt	project_libsasl2
 memcached_license.txt	project_memcached
 mit_license.txt project_krb5 project_json-c
