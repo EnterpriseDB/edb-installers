@@ -203,10 +203,10 @@ cat <<EOS > pgsql2shp
 #!/bin/sh
 
 CURRENTWD=\\\$PWD
-WD=\\\`dirname \\\$0\\\`
+WD=\\\$(cd \\\`dirname \\\$0\\\` && pwd)
 cd \\\$WD/../lib
 
-LD_LIBRARY_PATH=\\\$PWD:\\\$LD_LIBRARY_PATH \\\$WD/pgsql2shp.bin $*
+LD_LIBRARY_PATH=\\\$PWD:\\\$PWD/postgresql:\\\$LD_LIBRARY_PATH \\\$WD/pgsql2shp.bin \\\$*
 
 cd \\\$CURRENTWD
 EOS
@@ -215,10 +215,10 @@ cat <<EOS > shp2pgsql
 #!/bin/sh
 
 CURRENTWD=\\\$PWD
-WD=\\\`dirname \\\$0\\\`
+WD=\\\$(cd \\\`dirname \\\$0\\\` && pwd)
 cd \\\$WD/../lib
 
-LD_LIBRARY_PATH=\\\$PWD:\\\$LD_LIBRARY_PATH \\\$WD/shp2pgsql.bin $*
+LD_LIBRARY_PATH=\\\$PWD:\\\$PWD/postgresql:\\\$LD_LIBRARY_PATH \\\$WD/shp2pgsql.bin \\\$*
 
 cd \\\$CURRENTWD
 EOS
