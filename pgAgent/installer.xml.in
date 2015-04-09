@@ -616,6 +616,13 @@ EOF
             <compareText logic="does_not_equal" text="${pgagent_schema_exist}" value=""/>
           </ruleList>
         </actionGroup>
+ 
+	<throwError text="${msg(systemuser.name.error)}">
+	    <ruleList>
+	       <regExMatch text="${systemuser}" logic="does_not_match" pattern="^([0-9a-zA-Z_\.\-]*)$"/>
+	       <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	    </ruleList>
+	</throwError>
 
            </actionList>
            <ruleList>
@@ -2300,6 +2307,14 @@ EOF
             <compareText logic="equals" text="${systemuser}" value=""/>
           </ruleList>
         </throwError>
+
+	<throwError text="${msg(systemuser.name.error)}">
+	<ruleList>
+	<regExMatch text="${systemuser}" logic="does_not_match" pattern="^([0-9a-zA-Z_\.\-]*)$"/>
+	<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	</ruleList>
+	</throwError>
+
         <throwError text="${msg(systempassword.blank.error)}">
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>

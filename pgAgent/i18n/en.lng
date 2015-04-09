@@ -59,6 +59,7 @@ pg.blank.error=Values must be entered for all fields.
 systempassword.blank.error=Please provide the password to continue. It will be required to setup the pgAgent service.
 
 systemuser.blank.error=User name can not be blank.
+systemuser.name.error=Invalid user name please specify the valid user name.
 
 config.syspassword.confirm=Retype password
 
