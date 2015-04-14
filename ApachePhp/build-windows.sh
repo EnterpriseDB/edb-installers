@@ -205,7 +205,7 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 @IF NOT EXIST "configure.js" @GOTO configure-not-build
 
 @ECHO Configure PHP
-@cscript /nologo configure.js --enable-cli --enable-cgi  --with-openssl --enable-pdo --with-extra-includes=%PGBUILD%\include;%PG_HOME_PATH%\include;%APACHE_STAGING%\include --with-extra-libs=%PGBUILD%\lib;%PG_HOME_PATH%\lib;%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-4handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --with-prefix=%PHP_STAGING% --enable-one-shot --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysqlnd --with-xsl=SHARED --with-libmbfl=%PGBUILD% --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-gd=SHARED --without-mysql --without-mysqli --without-sqlite3 --without-pdo-mysql --without-pdo-sqlite
+@cscript /nologo configure.js --enable-cli --enable-cgi  --with-openssl --enable-pdo --with-extra-includes=%PGBUILD%\include;%PG_HOME_PATH%\include;%APACHE_STAGING%\include --with-extra-libs=%PGBUILD%\lib;%PG_HOME_PATH%\lib;%APACHE_STAGING%\lib --enable-apache2filter --enable-apache2-2filter --enable-apache2handler --enable-apache2-4handler --with-apache-hooks --with-pgsql --with-pdo-pgsql --with-prefix=%PHP_STAGING% --enable-one-shot --enable-cli-win32 --enable-embed --enable-isapi --enable-ftp --without-mysqlnd --with-xsl=SHARED --with-libmbfl=%PGBUILD% --enable-mbstring --enable-mbregex --enable-shmop  --enable-exif --enable-soap --enable-sockets --with-gd=shared --without-mysql --without-mysqli --without-sqlite3 --without-pdo-mysql --without-pdo-sqlite
 
 @IF NOT EXIST "Makefile" @GOTO make-not-created
 
