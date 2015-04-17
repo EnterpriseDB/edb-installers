@@ -60,12 +60,14 @@ _fixup_file() {
     _replace INSTALL_DIR "$INSTALLDIR" "$1"
     _replace PG_MAJOR_VERSION "$PG_VERSION" "$1"
     _replace PG_BRANDING "$BRANDING" "$1"
+    _replace PG_VERSION_STR "$PG_VERSION_STR" "$1"
+    _replace POSTGIS_VERSION_STR "$POSTGIS_VERSION_STR" "$1"
 }
 
 # Create the icon resources
-"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-postgresql.png"
-"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-postgis.png"
-"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-launchPostGISDocs.png"
+"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-postgresql-$PG_VERSION_STR.png"
+"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-postgis-$POSTGIS_VERSION_STR-$PG_VERSION_STR.png"
+"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.png"
 
 # Fixup the scripts
 chmod ugo+x "$INSTALLDIR/PostGIS/installer/PostGIS/"*.sh
@@ -74,11 +76,12 @@ _fixup_file "$INSTALLDIR/PostGIS/scripts/launchPostGISDocs.sh"
 chmod ugo+x "$INSTALLDIR/PostGIS/scripts/launchPostGISDocs.sh"
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR-$PG_VERSION_STR.directory"
 _fixup_file "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
-chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop"
-chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR.directory"
+chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop"
+chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR-$PG_VERSION_STR.directory"
 chmod ugo+x "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory"
 
 # Copy the primary desktop file to the branded version. We don't do this if
@@ -92,8 +95,8 @@ fi
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/PostGIS/installer/xdg/xdg-desktop-menu" install --mode system \
          "$INSTALLDIR/PostGIS/scripts/xdg/pg-$BRANDING_STR.directory" \
-         "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR.directory" \
-    "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop" \
+         "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR-$PG_VERSION_STR.directory" \
+    "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop" \
 
 #Ubuntu 10.04 and greater require menu cache update
 

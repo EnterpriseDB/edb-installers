@@ -233,18 +233,20 @@ _postprocess_PostGIS_linux_x64() {
     cp -R $WD/scripts/xdg/xdg* staging/linux-x64/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
     chmod ugo+x staging/linux-x64/installer/xdg/xdg*
 
-    # Copy in the menu pick images and XDG items
-    mkdir -p staging/linux-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/*.png staging/linux-x64/scripts/images || _die "Failed to copy the menu pick images (resources/*.png)"
-
     # Version string, for the xdg filenames
     PG_VERSION_STR=`echo $PG_MAJOR_VERSION | sed 's/\./_/g'`
     POSTGIS_VERSION_STR=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "." | sed 's/\./_/g'`
+    
+    # Copy in the menu pick images and XDG items
+    mkdir -p staging/linux-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
+    cp resources/pg-postgresql.png staging/linux-x64/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick png"
+    cp resources/pg-postgis.png staging/linux-x64/scripts/images/pg-postgis-$POSTGIS_VERSION_STR-$PG_VERSION_STR.png || _die "Failed to copy a menu pick png"
+    cp resources/pg-launchPostGISDocs.png staging/linux-x64/scripts/images/pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
 
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/pg-postgis.directory staging/linux-x64/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/pg-launchPostGISDocs.desktop staging/linux-x64/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/pg-postgis.directory staging/linux-x64/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pg-launchPostGISDocs.desktop staging/linux-x64/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
     
     # Set permissions to all files and folders in staging
     _set_permissions linux-x64

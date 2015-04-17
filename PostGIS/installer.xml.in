@@ -674,6 +674,26 @@ EOF
                     </ruleList>
                 </setInstallerVariable>
                 <setEnvironmentVariable name="PGDATABASE" value="${pgdatabase}"/>
+                <!-- LIN : Remove the old Menu shortcuts -->
+		<runProgram>
+		  <program>${installdir}/PostGIS/installer/PostGIS/removeshortcuts.sh</program>
+		  <programArguments>"${installdir}" "${PostGISVersionInstalled}" "PG_MAJOR_VERSION" "${branding}"</programArguments>
+		  <abortOnError>0</abortOnError>
+		  <showMessageOnError>0</showMessageOnError>
+		  <ruleList>
+		    <compareText> 
+                         <logic>contains</logic>
+                         <text>${platform_name}</text>
+                         <value>linux</value>
+                    </compareText>
+		    <compareText>
+		    	<logic>does_not_equal</logic>
+		    	<text>${PostGISVersionInstalled}</text>
+		    	<value></value>
+		    </compareText>
+		  </ruleList>
+		</runProgram>
+
             </actionList>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
@@ -735,24 +755,6 @@ EOF
                     </ruleList>
                 </registrySet>
 
-                <!-- LIN : Remove the old Menu shortcuts -->
-                <actionGroup>
-                    <actionList>
-                       <runProgram>
-                          <program>${installdir}/PostGIS/installer/PostGIS/removeshortcuts.sh</program>
-                          <programArguments>"${installdir}" "${PostGISVersionInstalled}" "PG_MAJOR_VERSION" "${branding}"</programArguments>
-                          <abortOnError>0</abortOnError>
-                          <showMessageOnError>0</showMessageOnError>
-                       </runProgram>
-                    </actionList>
-                    <ruleList>
-                       <compareText>
-                          <logic>contains</logic>
-                          <text>${platform_name}</text>
-                          <value>linux</value>
-                       </compareText>
-                    </ruleList>
-                </actionGroup>
                 <deleteFile path="/Applications/${branding}/PostGIS" >
                    <ruleList>
                        <fileExists path="/Applications/${branding}/PostGIS" />
