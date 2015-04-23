@@ -2806,6 +2806,23 @@ EOF
                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
+	<!-- Validating whether installdir is selected only as drive letters like c: d: etc... valid (Windows) -->
+	<actionGroup>
+	  <actionList>
+	    <pathManipulation>
+	      <action>absolutize</action>
+	      <path>${installdir}</path>
+	      <variable>installdir</variable>
+	    </pathManipulation>
+	    <setInstallerVariableFromRegEx name="installdir_withpath" pattern=":\\" substitution=":\" text="${installdir}"/>
+	    <setInstallerVariable name="installdir" value="${installdir_withpath}">
+	      <ruleList>
+	        <regExMatch text="${installdir}" logic="matches"  pattern="^[a-zA-Z]:/*$" />
+	        <compareText logic="equals" text="${platform_name}" value="windows"/>
+	      </ruleList>
+	    </setInstallerVariable>
+	  </actionList>
+	</actionGroup>
         <setInstallerVariable name="branding" value="" persist="1">
             <ruleList>
                 <isTrue value="${extract_mode}"/>
