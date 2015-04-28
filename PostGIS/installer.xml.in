@@ -877,7 +877,6 @@ EOF
                             <showMessageOnError>1</showMessageOnError>
                             <abortOnError>0</abortOnError>
                         </setInstallerVariableFromScriptOutput>
-                        <showInfo text="Postgis extension exists=${postgis_extension_exists}"/>
                         <actionGroup>
                             <actionList>
                             <logMessage text="Upgrading the PostGIS installation to extension based"/>
