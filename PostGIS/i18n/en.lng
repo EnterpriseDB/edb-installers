@@ -35,9 +35,11 @@ pgplus.blank.error=Values must be entered for all fields.
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 progress.text.creating.templatedb=Creating Template Database
 progress.text.creating.plpgsql=Creating plpgsql language in the template database
-progress.text.installing.postgis.sql=Installing postgis sql in the template database
-progress.text.installing.spatial.ref_sys=Installing spatial system references in the template database
-progress.text.installing.postgis.comments=Installing postgis comment in the template database
+progress.text.installing.postgis.extn=Installing the core postgis extension in the template database
+progress.text.installing.raster=Installing the raster support
+progress.text.upgrade.postgis=Executing the upgrade script for postgis
+progress.text.upgrade.raster=Executing the upgrade script for raster
+progress.text.package.postgis.extn=Packaging the functions in the postgis extension
 
 templatedb.found.info=A database called 'template_postgis' already exists on your server. If you continue with this installation, this database will be reused. \n\nDo you wish to continue?
 

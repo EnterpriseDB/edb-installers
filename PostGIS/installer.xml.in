@@ -848,15 +848,11 @@ EOF
                               progressText="${msg(progress.text.creating.plpgsql)}"
                               abortOnError="0" showMessageOnError="0"
                               workingDirectory="${installdir}/bin"/>
+                        <!-- The core postgis extension installs PostGIS geometry, geography, raster, spatial_ref_sys and all the functions and comments -->
                         <runProgram program="${psql_executable}"
-                              programArguments="-f &quot;${sharedir}/contrib/postgis/postgis.sql&quot; -d template_postgis"
-                              progressText="${msg(progress.text.installing.postgis.sql)}"
-                              abortOnError="0" showMessageOnError="1"
-                              workingDirectory="${installdir}/bin"/>
-                        <runProgram program="${psql_executable}"
-                              programArguments="-f &quot;${sharedir}/contrib/postgis/spatial_ref_sys.sql&quot; -d template_postgis"
-                              progressText="${msg(progress.text.installing.spatial.ref_sys)}"
-                              abortOnError="0" showMessageOnError="1"
+                              programArguments="-c &quot;CREATE EXTENSION postgis&quot; -d template_postgis"
+                              progressText="${msg(progress.text.installing.postgis.extn)}"
+                              abortOnError="0" showMessageOnError="0"
                               workingDirectory="${installdir}/bin"/>
                     </actionList>
                     <ruleList>
@@ -870,26 +866,52 @@ EOF
                     </ruleList>
                 </actionGroup>
 
+                <!-- In case the postgis is installed without extension (using sql), then upgrade it to extension based -->
                 <actionGroup>
                     <actionList>
-		        <runProgram program="${psql_executable}"
-                              programArguments="-f &quot;${sharedir}/contrib/postgis/postgis_comments.sql&quot; -d template_postgis"
-                              progressText="${msg(progress.text.installing.postgis.comments)}"
-                              abortOnError="0" showMessageOnError="1"
-                              workingDirectory="${installdir}/bin"/>
+                        <setInstallerVariableFromScriptOutput>
+                            <name>postgis_extension_exists</name>
+                            <exec>${psql_executable}</exec>
+                            <execArgs>-d template_postgis -t -c "SELECT extname from pg_catalog.pg_extension WHERE extname='postgis'"</execArgs>
+                            <workingDirectory>${installdir}/bin</workingDirectory>
+                            <showMessageOnError>1</showMessageOnError>
+                            <abortOnError>0</abortOnError>
+                        </setInstallerVariableFromScriptOutput>
+                        <showInfo text="Postgis extension exists=${postgis_extension_exists}"/>
+                        <actionGroup>
+                            <actionList>
+                            <logMessage text="Upgrading the PostGIS installation to extension based"/>
+                            <runProgram program="${psql_executable}"
+                                  programArguments="-f &quot;${sharedir}/contrib/postgis/rtpostgis.sql&quot; -d template_postgis"
+                                  progressText="${msg(progress.text.installing.raster)}"
+                                  abortOnError="0" showMessageOnError="1"
+                                  workingDirectory="${installdir}/bin"/>
+                            <runProgram program="${psql_executable}"
+                                  programArguments="-f &quot;${sharedir}/contrib/postgis/postgis_upgrade_21_minor.sql&quot; -d template_postgis"
+                                  progressText="${msg(progress.text.upgrade.postgis)}"
+                                  abortOnError="0" showMessageOnError="1"
+                                  workingDirectory="${installdir}/bin"/>
+                            <runProgram program="${psql_executable}"
+                                  programArguments="-f &quot;${sharedir}/contrib/postgis/rtpostgis_upgrade_21_minor.sql&quot; -d template_postgis"
+                                  progressText="${msg(progress.text.upgrade.raster)}"
+                                  abortOnError="0" showMessageOnError="1"
+                                  workingDirectory="${installdir}/bin"/>
+                            <runProgram program="${psql_executable}"
+                                  programArguments="-c &quot;CREATE EXTENSION postgis FROM unpackaged&quot; -d template_postgis"
+                                  progressText="${msg(progress.text.package.postgis.extn)}"
+                                  abortOnError="0" showMessageOnError="1"
+                                  workingDirectory="${installdir}/bin"/>
+                            </actionList>
+                            <ruleList>
+                                <stringTest text="${postgis_extension_exists}" type="empty"/>
+                            </ruleList>
+                        </actionGroup>
                     </actionList>
                     <ruleList>
-                        <isFalse value="${dbexist}"/>
-                        <isFalse value="${upgrade_mode}"/>
-			<compareText>
-			    <logic>equals</logic>
-			    <text>${PostGISVersionInstalled}</text>
-			    <value></value>
-			</compareText>
-                	<compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <compareText logic="does_not_equal" text="${PostGISVersionInstalled}" value=""/>
+                        <compareValues logic="does_not_equal" value1="${PostGISVersionInstalled}" value2="${productVersion}"/>
                     </ruleList>
                 </actionGroup>
-
                 <!-- In case of upgrade (different version), ask user to run the upgrade script manually -->
                 <showInfo text="${msg(postgis.upgrade.info)}" >
                     <ruleList>
@@ -1111,6 +1133,18 @@ EOF
                         </distributionFile>
                     </distributionFileList>
                 </folder>
+		<folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}/extension</destination>
+                    <name>programfilesshareosxextn5</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/osx/PostGIS/share/extension/postgis*unpackaged*.sql</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
                 <folder>
                     <description>Program Files</description>
                     <destination>${docdir}</destination>
@@ -1241,6 +1275,18 @@ EOF
                 </folder>
 		<folder>
                     <description>Program Files</description>
+                    <destination>${sharedir}/extension</destination>
+                    <name>programfilessharelinuxextn5</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/linux/PostGIS/share/extension/postgis*unpackaged*.sql</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+		<folder>
+                    <description>Program Files</description>
                     <destination>${docdir}</destination>
                     <name>programfilesdoclinux</name>
                     <platforms>linux</platforms>
@@ -1364,6 +1410,18 @@ EOF
                     <distributionFileList>
                         <distributionFile>
                             <origin>staging/linux-x64/PostGIS/share/extension/postgis_tiger_geocoder--PG_VERSION_POSTGIS.sql</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+		<folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}/extension</destination>
+                    <name>programfilessharelinux64extn5</name>
+                    <platforms>linux-64</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/linux-64/PostGIS/share/extension/postgis*unpackaged*.sql</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -1699,13 +1757,9 @@ EOF
                 </booleanParameter>
             </parameterList>
             <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${PostGISVersionInstalled}</text>
-                    <value></value>
-                </compareText>
                 <isFalse value="${extract_mode}"/>
                 <isFalse value="${upgrade_mode}"/>
+                <compareValues logic="does_not_equal" value1="${PostGISVersionInstalled}" value2="${productVersion}"/>
             </ruleList>
             <!-- Checking the validity of PostgreSQL Server Details -->
             <validationActionList>
