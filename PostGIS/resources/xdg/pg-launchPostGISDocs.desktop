@@ -3,6 +3,6 @@ Version=1.0
 Encoding=UTF-8
 Name=PostGIS Docs
 Exec="INSTALL_DIR/PostGIS/scripts/launchPostGISDocs.sh"
-Icon=pg-launchPostGISDocs.png
+Icon=pg-launchPostGISDocs-POSTGIS_VERSION_STR-PG_VERSION_STR.png
 Terminal=false
 Type=Application
