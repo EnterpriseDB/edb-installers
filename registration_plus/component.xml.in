@@ -9,7 +9,7 @@
     <!-- WIN: Program files -->
     <folder>
       <description>UserValidateScripts</description>
-      <destination>${system_temp_directory}/registration_plus_${random_number_reg}</destination>
+      <destination>${system_temp_directory}</destination>
       <name>registration_pluswindows</name>
       <platforms>windows</platforms>
       <distributionFileList>

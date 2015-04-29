@@ -37,7 +37,17 @@
 	    <compareText text="${platform_name}" logic="equals" value="windows"/>
 	</ruleList>
     </actionGroup>
-    <deleteFile path="${system_temp_directory}/registration_plus_${random_number_reg}" abortOnError="0" showMessageOnError="0"/>
+
+    <deleteFile path="${system_temp_directory}/registration_plus_${random_number_reg}" abortOnError="0" showMessageOnError="0">
+     <ruleList>
+          <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+     </ruleList>
+    </deleteFile>
+    <deleteFile path="${system_temp_directory}/UserValidation" abortOnError="0" showMessageOnError="0">
+     <ruleList>
+       	  <compareText logic="equals" text="${platform_name}" value="windows"/>
+     </ruleList>
+    </deleteFile>
   </actionList>
   <ruleList>
     <isTrue value="${is_internet_connected}" />
