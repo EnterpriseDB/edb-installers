@@ -173,7 +173,7 @@
     <!-- Unpack scripts and required libraries -->
     <unpackDirectory
 	    component="userValidation"
-	    destination="${system_temp_directory}/registration_plus_${random_number_reg}"
+	    destination="${system_temp_directory}"
 	    folder="registration_plus${platform_name}"
 	    origin="UserValidation">
        <ruleList>
@@ -189,8 +189,8 @@
 	</ruleList>
     </setInstallerVariable>	
 
-    <runProgram program="${system_temp_directory}\registration_plus_${random_number_reg}\UserValidation\${vcredist_exe}"
-               programArguments="/q" workingDirectory="${system_temp_directory}\registration_plus_${random_number_reg}\UserValidation"
+    <runProgram program="${system_temp_directory}\UserValidation\${vcredist_exe}"
+               programArguments="/q" workingDirectory="${system_temp_directory}\UserValidation"
                abortOnError="0" showMessageOnError="0">
 	<ruleList>
 	    <compareText text="${platform_name}" logic="equals" value="windows" />
@@ -207,7 +207,7 @@
 		<setInstallerVariableFromScriptOutput
 		    name="machine_id"
 		    showMessageOnError="0"
-		    exec="${system_temp_directory}\registration_plus_${random_number_reg}\UserValidation\dbserver_guid.exe"
+		    exec="${system_temp_directory}\UserValidation\dbserver_guid.exe"
 		    abortOnError="0">
 		</setInstallerVariableFromScriptOutput>
 
@@ -254,7 +254,7 @@
 		<setInstallerVariableFromScriptOutput
 		    name="installation_id"
 		    showMessageOnError="0"
-		    exec="${system_temp_directory}\registration_plus_${random_number_reg}\UserValidation\dbserver_guid.exe"
+		    exec="${system_temp_directory}\UserValidation\dbserver_guid.exe"
 		    abortOnError="0"/>
 
 		<setInstallerVariableFromRegEx
