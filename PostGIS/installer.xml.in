@@ -502,33 +502,6 @@ EOF
                             <key>InstallationDirectory</key>
                             <variable>installdir</variable>
                         </iniFileGet>
-	                <!-- LIN : Remove Menu shortcuts of old 1.5 installer -->
-			<runProgram>
-			    <program>${installdir}/PostGIS/installer/PostGIS/removeshortcuts.sh</program>
-			    <programArguments>"${installdir}" "1.5.1" "PG_MAJOR_VERSION" "${branding}"</programArguments>
-			    <abortOnError>0</abortOnError>
-			    <showMessageOnError>0</showMessageOnError>
-			    <ruleList>
-				<compareText>
-				    <logic>equals</logic>
-				    <text>${PostGISVersionInstalled}</text>
-				    <value>1.5.1</value>
-				</compareText>
-			    </ruleList>
-			</runProgram>
-			<runProgram>
-			    <program>${installdir}/PostGIS/installer/PostGIS/removeshortcuts.sh</program>
-			    <programArguments>"${installdir}" "1.5.8" "PG_MAJOR_VERSION" "${branding}"</programArguments>
-			    <abortOnError>0</abortOnError>
-			    <showMessageOnError>0</showMessageOnError>
-			    <ruleList>
-				<compareText>
-				    <logic>equals</logic>
-				    <text>${PostGISVersionInstalled}</text>
-				    <value>1.5.8</value>
-				</compareText>
-			    </ruleList>
-			</runProgram>
                     </actionList>
                     <ruleList>
                         <compareText>
@@ -759,6 +732,11 @@ EOF
                           <logic>contains</logic>
                           <text>${platform_name}</text>
                           <value>linux</value>
+                       </compareText>
+		       <compareText>
+                          <logic>does_not_equal</logic>
+                          <text>${PostGISVersionInstalled}</text>
+                          <value></value>
                        </compareText>
                     </ruleList>
                 </actionGroup>

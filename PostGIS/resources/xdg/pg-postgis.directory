@@ -4,4 +4,4 @@ Type=Directory
 Name=PostGIS
 Comment=PostGIS, packaged by EnterpriseDB
 Encoding=UTF-8
-Icon=pg-postgis.png
+Icon=pg-postgis-POSTGIS_VERSION_STR-PG_VERSION_STR.png
