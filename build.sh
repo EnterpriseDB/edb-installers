@@ -322,9 +322,8 @@ then
     _postprocess_pgbouncer || exit 1
 fi
 
-#Package: MigrationToolKitA
-#The replication server always needs the latest build of MTK...
-if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 -o $PG_PACKAGE_REPLICATIONSERVER = 1 ];
+#Package: MigrationToolKit
+if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 ];
 then
     cd $WD
     source ./MigrationToolKit/build.sh
@@ -334,21 +333,6 @@ then
         _build_MigrationToolKit || exit 1
     fi
         _postprocess_MigrationToolKit || exit 1
-fi
-
-# Package: PLPGSQLO
-if [ $PG_PACKAGE_PLPGSQLO = 1 ];
-then
-    cd $WD
-    source ./plpgsqlo/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_plpgsqlo || exit 1
-        _build_plpgsqlo || exit 1
-    fi
-
-    _postprocess_plpgsqlo || exit 1
 fi
 
 # Package: SQLPROTECT

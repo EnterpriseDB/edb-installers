@@ -17,7 +17,7 @@ usage()
         echo "      [-platforms list]  list of platforms. It may include the list of supported platforms separated by comma or all" 
         echo "      [-packages list]   list of packages. It may include the list of supported platforms separated by comma or all"
         echo "    Examples:"
-        echo "     $BASENAME -skipbuild 0 -platforms "linux, linux_64, windows, windows_x64, osx" -packages "server, apachephp, phppgadmin, pgjdbc, psqlodbc, slony, postgis, npgsql, pgagent, pgmemcache, pgbouncer, migrationtoolkit, replicationserver, plpgsqlo, sqlprotect, update_monitor""
+        echo "     $BASENAME -skipbuild 0 -platforms "linux, linux_64, windows, windows_x64, osx" -packages "server, apachephp, phppgadmin, pgjdbc, psqlodbc, slony, postgis, npgsql, pgagent, pgmemcache, pgbouncer, migrationtoolkit, sqlprotect, update_monitor""
         echo "     $BASENAME -skipbuild 1 -platforms "all" -packages "all""
         echo "     $BASENAME -skipbuild 1 -skippvtpkg 1 -platforms "all" -packages "all""
         echo ""
@@ -118,8 +118,6 @@ _set_config_package PGAGENT
 _set_config_package PGMEMCACHE
 _set_config_package PGBOUNCER
 _set_config_package MIGRATIONTOOLKIT
-_set_config_package REPLICATIONSERVER
-_set_config_package PLPGSQLO
 _set_config_package SQLPROTECT
 _set_config_package UPDATE_MONITOR
 fi

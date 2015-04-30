@@ -1,9 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Encoding=UTF-8
-Name=xDB Replication Console
-Exec="INSTALL_DIR/bin/runRepConsole.sh"
-Icon=pg-launchReplicationConsole.png
-Terminal=false
-Type=Application
-

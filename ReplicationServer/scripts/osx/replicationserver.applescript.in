@@ -1,2 +1,0 @@
-set ret to do shell script "cd INSTALL_DIR/bin; ./runRepConsole.sh &" 
-
