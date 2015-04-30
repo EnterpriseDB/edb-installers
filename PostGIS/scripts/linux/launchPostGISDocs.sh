@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2012-2014, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2015, EnterpriseDB Corporation.  All rights reserved
 
 INSTALLDIR="INSTALL_DIR"
 DOCDIR="DOC_DIR"
