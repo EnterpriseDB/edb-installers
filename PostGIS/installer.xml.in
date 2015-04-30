@@ -1140,7 +1140,7 @@ EOF
                     <distributionFileList>
                         <distributionFile>
                             <allowWildcards>1</allowWildcards>
-                            <origin>staging/osx/PostGIS/share/extension/postgis*unpackaged*.sql</origin>
+                            <origin>staging/osx/PostGIS/share/extension/postgis*--unpackaged--PG_VERSION_POSTGIS.sql</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -1280,7 +1280,7 @@ EOF
                     <distributionFileList>
                         <distributionFile>
                             <allowWildcards>1</allowWildcards>
-                            <origin>staging/linux/PostGIS/share/extension/postgis*unpackaged*.sql</origin>
+                            <origin>staging/linux/PostGIS/share/extension/postgis*--unpackaged--PG_VERSION_POSTGIS.sql</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -1416,11 +1416,11 @@ EOF
                     <description>Program Files</description>
                     <destination>${sharedir}/extension</destination>
                     <name>programfilessharelinux64extn5</name>
-                    <platforms>linux-64</platforms>
+                    <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionFile>
                             <allowWildcards>1</allowWildcards>
-                            <origin>staging/linux-x64/PostGIS/share/extension/postgis*unpackaged*.sql</origin>
+                            <origin>staging/linux-x64/PostGIS/share/extension/postgis*--unpackaged--PG_VERSION_POSTGIS.sql</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
