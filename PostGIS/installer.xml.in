@@ -1420,7 +1420,7 @@ EOF
                     <distributionFileList>
                         <distributionFile>
                             <allowWildcards>1</allowWildcards>
-                            <origin>staging/linux-64/PostGIS/share/extension/postgis*unpackaged*.sql</origin>
+                            <origin>staging/linux-x64/PostGIS/share/extension/postgis*unpackaged*.sql</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
