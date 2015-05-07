@@ -61,6 +61,13 @@ _prep_pgmemcache() {
     if [ ! -e $WD/pgmemcache/source ];
     then
         mkdir $WD/pgmemcache/source
+    else
+        #Clean up pgmemcache/source directory if it contains pgmemcache<Version> folder
+        if [ -e $WD/pgmemcache/source/pgmemcache_$PG_VERSION_PGMEMCACHE ];
+        then
+            echo "Removing existing $WD/pgmemcache/source/pgmemcache_$PG_VERSION_PGMEMCACHE source directory"
+            rm -rf $WD/pgmemcache/source/pgmemcache_$PG_VERSION_PGMEMCACHE  || _die "Couldn't remove the existing pgmemcache_$PG_VERSION_PGMEMCACHE source directory (source/pgmemcache_$PG_VERSION_PGMEMCACHE)"
+         fi
     fi
 
     # Enter the source directory and cleanup if required
@@ -81,13 +88,6 @@ _prep_pgmemcache() {
         cd $WD/pgmemcache/source/libmemcached-$PG_TARBALL_LIBMEMCACHED
         patch -p0 < $WD/tarballs/libmemcached-$PG_TARBALL_LIBMEMCACHED.patch
         cd $WD/pgmemcache/source
-    fi
-
-    # pgmemcache
-    if [ -e pgmemcache_$PG_VERSION_PGMEMCACHE ];
-    then
-      echo "Removing existing pgmemcache_$PG_VERSION_PGMEMCACHE source directory"
-      rm -rf pgmemcache_$PG_VERSION_PGMEMCACHE  || _die "Couldn't remove the existing pgmemcache_$PG_VERSION_PGMEMCACHE source directory (source/pgmemcache_$PG_VERSION_PGMEMCACHE)"
     fi
 
     echo "Unpacking pgmemcache source..."
