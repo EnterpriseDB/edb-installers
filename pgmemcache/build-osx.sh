@@ -22,7 +22,7 @@ _prep_pgmemcache_osx() {
         echo "Removing existing source directory (pgmemcache.$PGMEM_PLATFORM/pgmemcache.$PGMEM_PLATFORM)"
         rm -rf $PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM || _die "Couldn't remove the existing source directory ($PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM)"
     fi
-    cp -r $PGMEM_SOURCE/pgmemcache  $PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM || _die "Couldn't copy the source directory (pgmemcache.$PGMEM_PLATFORM)"
+    cp -r $PGMEM_SOURCE/pgmemcache-$PG_VERSION_PGMEMCACHE $PGMEM_SOURCE/pgmemcache.$PGMEM_PLATFORM || _die "Couldn't copy the source directory (pgmemcache.$PGMEM_PLATFORM)"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $PGMEM_STAGING ];
