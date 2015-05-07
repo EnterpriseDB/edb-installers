@@ -43,17 +43,17 @@ _prep_pgmemcache() {
     if [ ! -e $WD/pgmemcache/source ];
     then
         mkdir $WD/pgmemcache/source
+    else
+       #Clean up pgmemcache source directory if it contains pgmemcache folder
+       if [ -e $WD/pgmemcache/source/pgmemcache ];
+       then
+           echo "Removing existing $WD/pgmemcache/source/pgmemcache source directory"
+           rm -rf $WD/pgmemcache/source/pgmemcache || _die "Couldn't remove the existing $WD/pgmemcache/source/pgmemcache source directory (source/pgmemcache)"
+       fi
     fi
 
     # Enter the source directory and cleanup if required
     cd $WD/pgmemcache/source
-
-    # pgmemcache
-    if [ -e pgmemcache_$PG_VERSION_PGMEMCACHE ];
-    then
-      echo "Removing existing pgmemcache_$PG_VERSION_PGMEMCACHE source directory"
-      rm -rf pgmemcache_$PG_VERSION_PGMEMCACHE  || _die "Couldn't remove the existing pgmemcache_$PG_VERSION_PGMEMCACHE source directory (source/pgmemcache_$PG_VERSION_PGMEMCACHE)"
-    fi
 
     echo "Unpacking pgmemcache source..."
     extract_file ../../tarballs/pgmemcache_$PG_VERSION_PGMEMCACHE || exit 1
