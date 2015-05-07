@@ -382,7 +382,7 @@ then
 fi
 
 # Package: LanguagePack
-if [ $EDB_PACKAGE_LANGUAGEPACK = 1 ];
+if [ $PG_PACKAGE_LANGUAGEPACK = 1 ];
 then
     cd $WD
     source ./languagepack/build.sh
