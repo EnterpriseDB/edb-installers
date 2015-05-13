@@ -504,6 +504,14 @@ _postprocess_server_linux() {
     _replace @@WIN64MODE@@ "0" installer-linux.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
     _replace @@SERVICE_SUFFIX@@ "" installer-linux.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
 
+    # Copy plLanguages.config
+    mkdir -p $WD/server/staging/linux/etc/sysconfig || _die "Failed to create etc/sysconfig directory"
+    cp $WD/server/scripts/common/plLanguages.config $WD/server/staging/linux/etc/sysconfig || _die "Failed to copy plLanguages.config in etc/sysconfig directory"
+    cp $WD/server/scripts/common/loadplLanguages.sh $WD/server/staging/linux/etc/sysconfig || _die "Failed to copy loadplLanguages.sh in etc/sysconfig directory"
+
+    _replace PERL_PACKAGE_VERSION $PG_VERSION_PERL $WD/server/staging/linux/etc/sysconfig/plLanguages.config || _die "Failed to set the PERL version in config file."
+    _replace PYTHON_PACKAGE_VERSION $PG_VERSION_PYTHON $WD/server/staging/linux/etc/sysconfig/plLanguages.config || _die "Failed to set the PYTHON version in config file."
+    _replace TCL_PACKAGE_VERSION $PG_VERSION_TCL $WD/server/staging/linux/etc/sysconfig/plLanguages.config || _die "Failed to set the TCL version in config file."
     # Set permissions to all files and folders in staging
     _set_permissions linux
 

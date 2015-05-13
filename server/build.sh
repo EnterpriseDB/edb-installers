@@ -259,6 +259,10 @@ _postprocess_server() {
     _replace PG_STAGING_DIR $WD/server/staging installer.xml || _die "Failed to set the staging directory in the installer project file (server/installer.xml)"
     _replace PG_CATALOG_VERSION $PG_CATALOG_VERSION installer.xml || _die "Failed to set the catalog version number in the installer project file (server/installer.xml)"
     _replace PG_CONTROL_VERSION $PG_CONTROL_VERSION installer.xml || _die "Failed to set the catalog version number in the installer project file (server/installer.xml)"
+
+    _replace PERL_PACKAGE_VERSION $PG_VERSION_PERL installer.xml || _die "Failed to set the PERL version in server/installer.xml file."
+    _replace PYTHON_PACKAGE_VERSION $PG_VERSION_PYTHON installer.xml || _die "Failed to set the PYTHON version in server/installer.xml file."
+    _replace TCL_PACKAGE_VERSION $PG_VERSION_TCL installer.xml || _die "Failed to set the TCL version in server/installer.xml file."
    
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
