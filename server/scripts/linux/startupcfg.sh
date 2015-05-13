@@ -87,13 +87,22 @@ fi
 NAME=$SERVICENAME
 LOCKFILE=/var/lock/subsys/\$NAME
 
+source $INSTALLDIR/etc/sysconfig/loadplLanguages.sh $INSTALLDIR
+
 # PostgreSQL Service script for Linux
 
 start()
 {
+	su - $USERNAME -c "touch $DATADIR/pg_log/startup.log"
 	echo \$"Starting PostgreSQL $VERSION: "
-	su -s /bin/sh - $USERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib:\$LD_LIBRARY_PATH $INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\""
-	
+
+	echo
+	VerifyPLPaths &> $DATADIR/pg_log/startup.log
+	LoadPLPaths
+	echo
+
+	su -s /bin/sh - $USERNAME -c "PATH=$INSTALLDIR/bin:\$PATH_PL_LANGUAGES:\$PATH LD_LIBRARY_PATH=$INSTALLDIR/lib:\$LD_LIBRARY_PATH_PL_LANGUAGES:\$LD_LIBRARY_PATH $INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\""
+
 	if [ \$? -eq 0 ];
 	then
 		touch \$LOCKFILE
@@ -117,8 +126,15 @@ stop()
 
 restart()
 {
+	su - $USERNAME -c "touch $DATADIR/pg_log/startup.log"
 	echo \$"Restarting PostgreSQL $VERSION: "
-	su -s /bin/sh - $USERNAME -c "LD_LIBRARY_PATH=$INSTALLDIR/lib:\$LD_LIBRARY_PATH $INSTALLDIR/bin/pg_ctl -w restart -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\" -m fast"
+
+        echo
+        VerifyPLPaths &> $DATADIR/pg_log/startup.log
+        LoadPLPaths
+        echo
+
+	su -s /bin/sh - $USERNAME -c "PATH=$INSTALLDIR/bin:\$PATH_PL_LANGUAGES:\$PATH LD_LIBRARY_PATH=$INSTALLDIR/lib:\$LD_LIBRARY_PATH_PL_LANGUAGES:\$LD_LIBRARY_PATH $INSTALLDIR/bin/pg_ctl -w restart -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\" -m fast"
 	
 	if [ \$? -eq 0 ];
 	then

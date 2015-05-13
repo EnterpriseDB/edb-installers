@@ -2823,6 +2823,37 @@ EOF
                     <text>Running the post-installation/upgrade actions:</text>
                 </logMessage>
 
+	        <setInstallerVariable name="languagepack_installdir" value="" />
+	        <!-- Search for LanguagePack installers and replcae placeholders in plLanguages.config file -->
+	        <iniFileGet file="${PostgreSqlIni}" key="InstallationDirectory" section="edb_languagepack_${product_version}" variable="languagepack_installdir">
+	            <ruleList>
+	                <fileTest condition="readable" path="${PostgreSqlIni}"/>
+	                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	            </ruleList>
+	        </iniFileGet>
+
+	        <substitute>
+	            <files>${installdir}/etc/sysconfig/plLanguages.config</files>
+	            <substitutionList>
+	                <substitution>
+	                     <pattern>PERL_INSTALL_PATH</pattern>
+	                     <value>${languagepack_installdir}/Perl-PERL_PACKAGE_VERSION</value>
+	                </substitution>
+	                <substitution>
+	                    <pattern>PYTHON_INSTALL_PATH</pattern>
+	                    <value>${languagepack_installdir}/Python-PYTHON_PACKAGE_VERSION</value>
+	                </substitution>
+	                <substitution>
+	                    <pattern>TCL_INSTALL_PATH</pattern>
+	                    <value>${languagepack_installdir}/Tcl-TCL_PACKAGE_VERSION</value>
+	                </substitution>
+	           </substitutionList>
+	           <ruleList>
+	               <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	               <compareText logic="does_not_equal" text="${languagepack_installdir}" value=""/>
+	           </ruleList>
+	        </substitute>
+
                 <!-- Log Installation directory -->
                 <logMessage>
                     <text>Write the base directory to the ini file...</text>
@@ -4465,6 +4496,9 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/linux/share</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/etc</origin>
+                        </distributionDirectory>
                         <distributionFile>
                             <origin>../resources/license.txt</origin>
                         </distributionFile>
@@ -4514,6 +4548,9 @@ REM The script sets environment variables helpful for PostgreSQL
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux-x64/share</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/etc</origin>
                         </distributionDirectory>
                         <distributionFile>
                             <origin>../resources/license.txt</origin>
