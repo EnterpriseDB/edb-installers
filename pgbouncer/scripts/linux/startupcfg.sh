@@ -2,14 +2,15 @@
 # Copyright (c) 2012-2015, EnterpriseDB Corporation.  All rights reserved
 
 # Check the command line
-if [ $# -ne 2 ]; 
+if [ $# -ne 3 ]; 
 then
-echo "Usage: $0 <Installdir> <SystemUser>"
+echo "Usage: $0 <Installdir> <SystemUser> <initSystem>"
     exit 127
 fi
 
 INSTALL_DIR=$1
 SYSTEM_USER=$2
+INIT=$3
 
 # Exit code
 WARN=0
@@ -25,6 +26,50 @@ _warn() {
     WARN=2
 }
 
+determine_services_path() {
+        echo "==>> Checking systemd services path..."
+        echo "Running: /usr/bin/pkg-config --variable=systemdsystemunitdir systemd"
+        SYSTEMD_SERVICES_PATH=`/usr/bin/pkg-config --variable=systemdsystemunitdir systemd`
+
+        if [ -z $SYSTEMD_SERVICES_PATH ]; then
+            SYSTEMD_SERVICES_PATH=/usr/lib/systemd/system
+        fi
+        echo "SYSTEMD_SERVICES_PATH:$SYSTEMD_SERVICES_PATH"
+}
+
+if [ "$INIT" = "systemd" ]; then
+determine_services_path
+cat <<EOT > "/usr/lib/tmpfiles.d/pgbouncer.conf"
+d /var/log/pgbouncer 0755 $SYSTEM_USER $SYSTEM_USER - 
+d /var/pgbouncer-$SYSTEM_USER 0755 $SYSTEM_USER $SYSTEM_USER - 
+
+EOT
+systemd-tmpfiles --create
+    cat <<EOT > "$SYSTEMD_SERVICES_PATH/pgbouncer.service"
+[Unit]
+Description=PgBouncer daemon
+After=syslog.target network.target
+
+[Service]
+TimeoutSec=20
+Type=forking
+User=$SYSTEM_USER
+SuccessExitStatus=1
+PIDFile=/var/pgbouncer-$SYSTEM_USER/pgbouncer.pid
+StandardError=syslog
+
+Environment=LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH
+ExecStart=$INSTALL_DIR/bin/pgbouncer -d $INSTALL_DIR/share/pgbouncer.ini
+
+[Install]
+WantedBy=multi-user.target
+
+EOT
+
+$SYSTEMD_PATH/bin/systemctl daemon-reload
+$SYSTEMD_PATH/bin/systemctl enable pgbouncer.service
+
+else
 # Write the startup script
 cat <<EOT > "/etc/init.d/pgbouncer"
 #!/bin/bash
@@ -141,5 +186,6 @@ then
     fi
 fi
 
+fi
 echo "$0 ran to completion"
 exit $WARN

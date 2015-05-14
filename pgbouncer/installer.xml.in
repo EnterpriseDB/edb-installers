@@ -134,6 +134,8 @@ EOF
          <stringParameter name="dirPrefix" allowEmptyValue="0"/>
        </parameterList>
     </actionDefinition>
+    <include file="../scripts/determineLinuxInitSystem.xml"/>
+    <include file="../scripts/linuxServiceAction.xml"/>
   </functionDefinitionList>
     <preShowHelpActionList>
         <!-- Set the default values -->
@@ -416,6 +418,10 @@ EOF
                         </compareText>
                     </ruleList>
                 </touchFile>
+
+                <!-- determine the init on Linux -->
+                <determineLinuxInitSystem/>
+
                 <!-- LIN & MAC : Get the check Previous Installation of pgbouncer-->
                 <actionGroup>
                     <actionList>
@@ -563,11 +569,9 @@ EOF
                             </ruleList>
                         </runProgram>
                         <!-- Linux: Stop the pgbouncer service -->    
-                        <runProgram>
-                            <program>/etc/init.d/pgbouncer</program>
-                            <programArguments>stop</programArguments>
-                            <abortOnError>0</abortOnError>
-                            <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+                        <linuxServiceAction
+                          name="pgbouncer" action="stop" systemdBooted="${is_init_systemd}"
+                          abortOnError="0" showMessageOnError="0">
                             <ruleList>
                                 <compareText>
                                     <logic>contains</logic>
@@ -575,7 +579,7 @@ EOF
                                     <value>linux</value>
                                 </compareText>
                             </ruleList>
-                        </runProgram>
+                        </linuxServiceAction>
                         <!-- Solaris Stop the pgbouncer service -->  
                         <actionGroup>
                             <actionList>  
@@ -1096,7 +1100,7 @@ EOF
                 <!-- LINUX | MAC: Install pgbouncer service -->
                 <runProgram>
                     <program>${installdir}/installer/pgbouncer/startupcfg.sh</program>
-                    <programArguments>"${installdir}" "${system_user}"</programArguments>
+                    <programArguments>"${installdir}" "${system_user}" "${linux_init_system}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(pgbouncer.linux.service.error)}</customErrorMessage>
                     <ruleList>
@@ -1161,11 +1165,9 @@ EOF
                 </startWindowsService>  
  
                 <!-- Linux: Start the pgbouncer service -->    
-                <runProgram>
-                    <program>/etc/init.d/pgbouncer</program>
-                    <programArguments>start</programArguments>
-                    <abortOnError>0</abortOnError>
-                    <customErrorMessage>${msg(pgbouncer.service.start.error)}</customErrorMessage>
+                <linuxServiceAction
+                  name="pgbouncer" action="start" systemdBooted="${is_init_systemd}"
+                  abortOnError="0" showMessageOnError="0" customErrorMessage="${msg(pgbouncer.service.stop.error)}">
                     <ruleList>
                         <compareText>
                             <logic>contains</logic>
@@ -1177,8 +1179,8 @@ EOF
                             <text>${autostart}</text>
                             <value>yes</value>
                         </compareText>
-                    </ruleList>
-                </runProgram>
+                            </ruleList>
+                </linuxServiceAction>
        
                 <!-- Solaris: Start the pgbouncer service -->    
                 <runProgram>
@@ -1278,6 +1280,12 @@ EOF
 
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
+        <!-- determine the init on Linux -->
+        <determineLinuxInitSystem>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </determineLinuxInitSystem>
 
         <!-- Abort uninstallation if not super-user/Administrator -->
         <actionGroup>
@@ -1357,11 +1365,9 @@ EOF
             </ruleList>
         </runProgram>
 
-        <runProgram>
-            <program>/etc/init.d/pgbouncer</program>
-            <programArguments>stop</programArguments>
-            <abortOnError>0</abortOnError>
-            <customErrorMessage>${msg(pgbouncer.service.stop.error)}</customErrorMessage>
+        <linuxServiceAction
+          name="pgbouncer" action="stop" systemdBooted="${is_init_systemd}"
+          abortOnError="0" showMessageOnError="0" customErrorMessage="${msg(pgbouncer.service.stop.error)}">
             <ruleList>
                 <compareText>
                     <logic>contains</logic>
@@ -1369,7 +1375,7 @@ EOF
                     <value>linux</value>
                 </compareText>
             </ruleList>
-        </runProgram>
+        </linuxServiceAction>
 
         <actionGroup>
             <actionList>
@@ -1397,17 +1403,57 @@ EOF
             </ruleList>
         </actionGroup>
          
-   
-        <deleteFile>
-            <path>/etc/init.d/pgbouncer</path>
-            <ruleList>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-            </ruleList>
-        </deleteFile>
+        <!-- LINUX: Remove the startup item -->
+        <actionGroup>
+            <actionList>
+                <!-- Attempt to remove any runlevel config with chkconfig -->
+                <runProgram>
+                    <program>/sbin/chkconfig</program>
+                    <programArguments>--del pgbouncer</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <isTrue value="${is_init_sysvinit}"/>
+                    </ruleList>
+                </runProgram>
+
+                <!-- Attempt to remove any runlevel config with update-rc.d -->
+                <runProgram>
+                    <program>/usr/sbin/update-rc.d</program>
+                    <programArguments>-f pgbouncer remove</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <isTrue value="${is_init_upstart}"/>
+                    </ruleList>
+                </runProgram>
+                <!-- Attempt to remove any runlevel config with systemctl -->
+                <runProgram program="/usr/bin/systemctl"
+                  programArguments="disable pgbouncer.service"
+                  abortOnError="0" showMessageOnError="0"
+                  customErrorMessage="${msg(error.uninstall.pgbouncer)}">
+                  <ruleList>
+                      <isTrue value="${is_init_systemd}"/>
+                  </ruleList>
+               </runProgram>
+  
+               <!-- Remove the startup script --> 
+               <deleteFile>
+                   <path>/etc/init.d/pgbouncer</path>
+                   <ruleList>
+                       <isFalse value="${is_init_sysvinit}"/>
+                   </ruleList>
+               </deleteFile>
+               <deleteFile path="/usr/lib/systemd/system/pgbouncer.service">
+                   <ruleList>
+                       <isTrue value="${is_init_systemd}"/>
+                   </ruleList>
+               </deleteFile>
+             </actionList>
+             <ruleList>
+                 <compareText logic="contains" text="${platform_name}" value="linux"/>
+             </ruleList>
+         </actionGroup>
 
         <deleteFile>
             <path>${installdir}/etc</path>
