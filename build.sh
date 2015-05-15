@@ -404,3 +404,5 @@ then
         source $WD/pvt_build.sh > "${PVT_BUILD_LOG}" 2>&1
     fi
 fi
+
+echo "--> Completed!"
