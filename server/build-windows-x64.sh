@@ -168,9 +168,15 @@ CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
 @SET PGDIR=$PG_PATH_WINDOWS_X64\\output
 @SET SPHINXBUILD=$PG_PYTHON_WINDOWS_X64\\Scripts\\sphinx-build.exe
 
-IF "%2" == "UPGRADE" GOTO upgrade
+REM batch file splits single argument containing "=" sign into two
+REM Following code handles this scenario
 
-msbuild %1 /p:Configuration=%2 %3
+IF "%2" == "UPGRADE" GOTO upgrade
+IF "%~3" == "" ( SET VAR3=""
+) ELSE (
+SET VAR3="%3=%4"
+)
+msbuild %1 /p:Configuration=%2 %VAR3%
 GOTO end
 
 :upgrade
@@ -192,9 +198,15 @@ CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" x86
 @SET PGDIR=$PG_PATH_WINDOWS_X64\\output
 @SET SPHINXBUILD=$PG_PYTHON_WINDOWS_X64\\Scripts\\sphinx-build.exe
 
-IF "%2" == "UPGRADE" GOTO upgrade
+REM batch file splits single argument containing "=" sign into two
+REM Following code handles this scenario
 
-msbuild %1 /p:Configuration=%2 %3
+IF "%2" == "UPGRADE" GOTO upgrade
+IF "%~3" == "" ( SET VAR3=""
+) ELSE (
+SET VAR3="%3=%4"
+)
+msbuild %1 /p:Configuration=%2 %VAR3%
 GOTO end
 
 :upgrade
@@ -348,6 +360,7 @@ EOT
     
     # Zip up the source directory and copy it to the build host, then unzip
     cd $WD/server/source/
+    chmod +x postgres.windows-x64/src/tools/msvc/install.bat
     echo "Copying source tree to Windows build VM"
     rm postgres.windows-x64/contrib/pldebugger/Makefile # Remove the unix makefile so that the build scripts don't try to parse it - we have our own.
     zip -r postgres-win64.zip postgres.windows-x64 || _die "Failed to pack the source tree (postgres.windows-x64)"

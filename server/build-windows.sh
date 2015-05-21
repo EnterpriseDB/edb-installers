@@ -131,9 +131,15 @@ CALL "$PG_VSINSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 @SET PGDIR=$PG_PATH_WINDOWS\\output
 @SET SPHINXBUILD=$PG_PYTHON_WINDOWS\\Scripts\\sphinx-build.exe
 
-IF "%2" == "UPGRADE" GOTO upgrade
+REM batch file splits single argument containing "=" sign into two
+REM Following code handles this scenario
 
-msbuild %1 /p:Configuration=%2 %3
+IF "%2" == "UPGRADE" GOTO upgrade
+IF "%~3" == "" ( SET VAR3=""
+) ELSE (
+SET VAR3="%3=%4"
+)
+msbuild %1 /p:Configuration=%2 %VAR3%
 GOTO end
 
 :upgrade 
@@ -279,6 +285,7 @@ EOT
     
     # Zip up the source directory and copy it to the build host, then unzip
     cd $WD/server/source/
+    chmod +x postgres.windows/src/tools/msvc/install.bat
     echo "Copying source tree to Windows build VM"
     rm postgres.windows/contrib/pldebugger/Makefile # Remove the unix makefile so that the build scripts don't try to parse it - we have our own.
     zip -r postgres.zip postgres.windows || _die "Failed to pack the source tree (postgres.windows)"

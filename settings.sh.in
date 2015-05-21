@@ -29,7 +29,7 @@ _set_config PG_ARCH_HPUX 0
 # Packages. Set to 1 to enable a specific packages. Note that many packages will be interdependent
 #           so you must ensure that all the required dependencies are enabled.
 
-_set_config PG_PACKAGE_SERVER 1
+_set_config PG_PACKAGE_SERVER 0
 _set_config PG_PACKAGE_APACHEPHP 0
 _set_config PG_PACKAGE_PHPPGADMIN 0
 _set_config PG_PACKAGE_PGJDBC 0
@@ -53,7 +53,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            On Windows we don't have a shared directory, so specify a build directory
 #            We can also specify additional directorys to include in the path.
 
-PG_SSH_LINUX=buildfarm@bf4-linux.ox.uk.enterprisedb.com
+PG_SSH_LINUX=buildfarm@bf5-linux.ox.uk.enterprisedb.com
 PG_PATH_LINUX=/mnt/hgfs/pginstaller.auto
 PG_PGHOME_LINUX=$PG_PATH_LINUX/server/staging/linux
 PG_EXEC_PATH_LINUX=/etc/alternatives/java_sdk_1.7.0/bin
@@ -67,7 +67,7 @@ PG_TCL_LINUX=/opt/EnterpriseDB/LanguagePack/9.4/Tcl-8.5
 PG_XULRUNNER_SDK_LINUX=/usr/lib/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX=/usr/lib/xulrunner-1.9.2
 
-PG_SSH_LINUX_X64=buildfarm@bf4-linux-x64.ox.uk.enterprisedb.com
+PG_SSH_LINUX_X64=buildfarm@bf5-linux-x64.ox.uk.enterprisedb.com
 PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller.auto
 PG_PGHOME_LINUX_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64
 PG_EXEC_PATH_LINUX_X64=/etc/alternatives/java_sdk_1.7.0/bin
@@ -81,29 +81,30 @@ PG_TCL_LINUX_X64=/opt/EnterpriseDB/LanguagePack/9.4/Tcl-8.5
 PG_XULRUNNER_SDK_LINUX_X64=/usr/lib64/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
 
-PG_SSH_WINDOWS=buildfarm@bf4-windows.ox.uk.enterprisedb.com
+PG_SSH_WINDOWS=buildfarm@bf5-windows.ox.uk.enterprisedb.com
+PG_SSH_SIGN_WINDOWS=buildfarm@bf4-windows.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS=D:\\\\pginstaller.auto
-PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 12.0"
+PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0"
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
 PG_FRAMEWORKVERSION_WINDOWS=v4.0.30319
-PG_FRAMEWORKSDKDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 12.0\\\\SDK\\\\v4.0.30319"
-PG_DEVENVDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 12.0\\\\Common7\\\\IDE"
+PG_FRAMEWORKSDKDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0\\\\SDK\\\\v3.5"
+PG_DEVENVDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0\\\\Common7\\\\IDE"
 PG_PGBUILD_WINDOWS="C:\\\\pgBuild32"
 PG_WXWIN_WINDOWS="$PG_PGBUILD_WINDOWS\\\\wxWidgets-2.8.12"
 PG_CMAKE_WINDOWS="C:\\\\cmake-x86"
-PG_ANT_WINDOWS="$PG_PGBUILD_WINDOWS"
+PG_ANT_WINDOWS="C:\\\\apache-ant-1.8.4"
 PG_MINGW_WINDOWS=C:\\\\MinGW
 PG_MSYS_WINDOWS=C:\\\\MinGW\\\\msys\\\\1.0
-PG_JAVA_HOME_WINDOWS="C:\\\\Program Files\\\\Java\\\\jdk1.7.0_51"
+PG_JAVA_HOME_WINDOWS="C:\\\\jdk1.7.0_51"
 PG_QTPATH_WINDOWS=C:\\\\QtSDK
-PG_SDK_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
-PG_SIGNTOOL_WINDOWS="$PG_SDK_WINDOWS\\\\Bin\\\\signtool.exe"
+PG_SDK_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
+PG_SIGNTOOL_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
 PG_PERL_WINDOWS=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\i386\\\\Perl-5.16
 PG_PYTHON_WINDOWS=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\i386\\\\Python-3.3
 PG_TCL_WINDOWS=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\i386\\\\Tcl-8.5
 PLATFORM_TOOLSET=/p:PlatformToolset=v120_xp
 
-PG_SSH_WINDOWS_X64=buildfarm@bf4-windows-x64.ox.uk.enterprisedb.com
+PG_SSH_WINDOWS_X64=buildfarm@bf5-windows-x64.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS_X64=D:\\\\pginstaller.auto
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0"
 PG_FRAMEWORKDIR_WINDOWS_X64="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework64"
@@ -165,5 +166,5 @@ PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSI
 PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
 
 # The InstallBuilder main binary.
-PG_INSTALLBUILDER_BIN="/opt/installbuilder-9.5.2/bin/builder"
+PG_INSTALLBUILDER_BIN="/opt/installbuilder-9.5.5/bin/builder"
 KEYCHAIN_PASSWD="XXXXXX"
