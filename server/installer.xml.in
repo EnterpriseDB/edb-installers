@@ -3421,10 +3421,20 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                     </setEnvironmentVariable>
+                    <setInstallerVariable name="adminpack_path" value="${installdir}/share/contrib/adminpack.sql">
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                    </setInstallerVariable>
+                    <setInstallerVariable name="adminpack_path" value="${installdir}/share/postgresql/contrib/adminpack.sql">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                    </setInstallerVariable>
                     <runProgram>
                         <abortOnError>0</abortOnError>
                         <program>${psql_path}</program>
-                        <programArguments>-f "${installdir}/share/contrib/adminpack.sql" -d postgres</programArguments>
+                        <programArguments>-f "${adminpack_path}" -d postgres</programArguments>
                         <showMessageOnError>1</showMessageOnError>
                         <customErrorMessage>${msg(error.could.not.load.modules)}</customErrorMessage>
                         <workingDirectory>${installdir}/bin</workingDirectory>
