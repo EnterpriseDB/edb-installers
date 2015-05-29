@@ -427,6 +427,14 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\libxml2\\\\include\\\\libxml\\\\*.h $PG_PATH_WINDOWS_X64\\\\output\\\\include\\\\libxml" || _die "Failed to copy third party headers on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\include\\\\libxslt\"" || _die "Failed to create libxslt directory"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\libxslt\\\\include\\\\libxslt\\\\*.h $PG_PATH_WINDOWS_X64\\\\output\\\\include\\\\libxslt" || _die "Failed to copy third party headers on the windows-x64 build host"
+    # Removing GPL license third party headers.
+    mkdir $WD/server/staging/windows-x64/3rdinclude/
+    scp -r $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output/include/*  $WD/server/staging/windows-x64/3rdinclude/ || _die "Failed to copy the third party headers to $WD/server/staging/windows-x64/3rdinclude/ )"
+    find $WD/server/staging/windows-x64/3rdinclude/ -name '*.h' | xargs grep -rwl 'GNU General Public License\|GNU Library General Public' | grep -v 'gram.h' | xargs rm || _die "Failed to remove the GPL license header files."
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c rd /S /Q $PG_PATH_WINDOWS_X64\\\\output\\\\include" || _die "Failed to remove include directory"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\include\"" || _die "Failed to create include directory"
+    scp -r $WD/server/staging/windows-x64/3rdinclude/* $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64\\\\output\\\\include || _die "Failed to copy the third party headers to ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output/include)"
+    rm -rf $WD/server/staging/windows-x64/3rdinclude || _die "Failed to remove the third party headers directory"
 
     # Copy the wxWidgets libraries
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy C:\\\\pgBuild\\\\wxWidgets\\\\lib\\\\vc_dll\\\\wxbase28u_net_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
