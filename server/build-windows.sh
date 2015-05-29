@@ -377,8 +377,13 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\lib\\\\libxslt.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\lib\\\\zlib.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
     
-    # Copy the third party headers 
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\include\\\\*.h $PG_PATH_WINDOWS\\\\output\\\\include" || _die "Failed to copy a third party include files on the windows build host"
+    # Copy the third party headers except GPL license headers
+    mkdir $WD/server/staging/windows/3rdinclude/
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/include/*.h  $WD/server/staging/windows/3rdinclude/ || _die "Failed to copy the third party headers to $WD/server/staging/windows/3rdinclude/ )"
+    find $WD/server/staging/windows/3rdinclude/ -name "*.h" -exec grep -rwl "GNU General Public License\|GNU Library General Public" {} \; -exec rm  {} \; || _die "Failed to remove the GPL license header files."
+    scp -r $WD/server/staging/windows/3rdinclude/* $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\output\\\\include || _die "Failed to copy the third party headers to ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/include)"
+    rm -rf $WD/server/staging/windows/3rdinclude || _die "Failed to remove the third party headers directory"
+ 
     ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\include\\\\openssl\"" || _die "Failed to create openssl directory"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\include\\\\openssl\\\\*.h $PG_PATH_WINDOWS\\\\output\\\\include\\\\openssl" || _die "Failed to copy third party headers on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\include\\\\libxml\"" || _die "Failed to create libxml directory"
