@@ -208,6 +208,8 @@ set -x
     ssh $PG_SSH_LINUX "cp /opt/local/Current/include/ncurses*.h $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_LINUX "cp /opt/local/Current/include/gssapi.h $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_LINUX "cp /opt/local/Current/include/ldap*.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    # Removing third party GPL license headres
+    ssh $PG_SSH_LINUX "find $PG_STAGING/include -name '*.h' | xargs grep -rwl 'GNU General Public License\|GNU Library General Public' | grep -v 'gram.h' | xargs rm " || _die "Failed to remove GPL license headers."
 
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
