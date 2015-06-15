@@ -32,7 +32,7 @@ PG_TAG_MIGRATIONTOOLKIT='EDBAS9_1_STABLE'
 #                     Minor version is revision.build.
 
 PG_MAJOR_VERSION=9.1
-PG_MINOR_VERSION=18.1
+PG_MINOR_VERSION=18.2
 
 # Other package versions
 PG_VERSION_PGJDBC=9.1-901
