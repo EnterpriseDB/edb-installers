@@ -282,9 +282,6 @@ EOT
     tar -jxvf server-staging.tar.bz2 || _die "Failed to extract the server staging archive"
     rm -f server-staging.tar.bz2
 
-    # Cleaning the files on the remote build machine
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; rm -rf source scripts.tar.bz2" || _die "Failed to remove the source directory"
-
     echo "END BUILD Server OSX"
 }
 
@@ -425,6 +422,7 @@ _postprocess_server_osx() {
     cp $WD/server/resources/README.osx server.img/README || _die "Failed to copy the installer README file into the DMG staging directory"
    
     tar -jcvf server.img.tar.bz2 server.img
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; rm -r server.img*" || _die "Failed to clean the $PG_PATH_OSX/output directory on sign server."
     scp server.img.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX/output
     rm server.img.tar.bz2
 
