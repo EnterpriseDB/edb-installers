@@ -4503,7 +4503,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>../resources/license.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/linux/3rd_party_licenses.txt</origin>
+                            <origin>staging/linux/server_3rd_party_licenses.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                     <ruleList>
@@ -4556,7 +4556,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>../resources/license.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/linux-x64/3rd_party_licenses.txt</origin>
+                            <origin>staging/linux-x64/server_3rd_party_licenses.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4599,7 +4599,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>../resources/license.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/linux-ppc64/3rd_party_licenses.txt</origin>
+                            <origin>staging/linux-ppc64/server_3rd_party_licenses.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4642,7 +4642,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>../resources/license.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/osx/3rd_party_licenses.txt</origin>
+                            <origin>staging/osx/server_3rd_party_licenses.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4688,7 +4688,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>../resources/license.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/@@WINDIR@@/3rd_party_licenses.txt</origin>
+                            <origin>staging/@@WINDIR@@/server_3rd_party_licenses.txt</origin>
                         </distributionFile>
                     </distributionFileList>
 		</folder>
@@ -4731,7 +4731,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>../resources/license.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/solaris-x64/3rd_party_licenses.txt</origin>
+                            <origin>staging/solaris-x64/server_3rd_party_licenses.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -4774,7 +4774,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>../resources/license.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/solaris-sparc/3rd_party_licenses.txt</origin>
+                            <origin>staging/solaris-sparc/server_3rd_party_licenses.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>

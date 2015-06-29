@@ -306,7 +306,6 @@ _postprocess_server_osx() {
     pushd staging/osx
     generate_3rd_party_license "server"
     popd
-    mv $WD/server/staging/osx/server_3rd_party_licenses.txt $WD/server/staging/osx/3rd_party_licenses.txt
 
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/osx/doc/" || _die "Failed to install the welcome document"
