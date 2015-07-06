@@ -119,7 +119,7 @@ PG_PERL_WINDOWS_X64=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\x64\\\\Perl-5.1
 PG_PYTHON_WINDOWS_X64=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\x64\\\\Python-3.3
 PG_TCL_WINDOWS_X64=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\x64\\\\Tcl-8.5
 PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
-PG_SIGNTOOL_WINDOWS="$PG_SDK_WINDOWS\\\\Bin\\\\signtool.exe"
+PG_SIGNTOOL_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
 
 PG_SSH_SOLARIS_X64=buildfarm@bf3-solaris-x64.pn.in.enterprisedb.com
 PG_PATH_SOLARIS_X64=/mnt/buildfarm/pginstaller_2.auto-repo
