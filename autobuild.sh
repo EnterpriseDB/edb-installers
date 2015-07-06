@@ -68,8 +68,8 @@ then
 else
         SKIPPVTPACKAGES=""
 	# Make sure, we always do a full private build
-	if [ -f pvt_settings.sh.full.REL-9_4 ]; then
-		cp -f pvt_settings.sh.full.REL-9_4 pvt_settings.sh.REL-9_4
+	if [ -f pvt_settings.sh.full.REL-9_5 ]; then
+		cp -f pvt_settings.sh.full.REL-9_5 pvt_settings.sh.REL-9_5
 	fi
 fi
 
@@ -196,25 +196,25 @@ DATE=`date +'%Y-%m-%d'`
 echo "Cleaning up old output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
 
-# Switch to REL-9_4 branch
-echo "Switching to REL-9_4 branch" >> autobuild.log
+# Switch to REL-9_5 branch
+echo "Switching to REL-9_5 branch" >> autobuild.log
 git reset --hard >> autobuild.log 2>&1
-git checkout REL-9_4 >> autobuild.log 2>&1
+git checkout REL-9_5 >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
-if [ -f settings.sh.full.REL-9_4 ]; then
-   cp -f settings.sh.full.REL-9_4 settings.sh
+if [ -f settings.sh.full.REL-9_5 ]; then
+   cp -f settings.sh.full.REL-9_5 settings.sh
 fi
 
 # Self update
-echo "Updating REL-9_4 branch build system" >> autobuild.log
+echo "Updating REL-9_5 branch build system" >> autobuild.log
 git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
-echo "Running the build (REL-9_4) " >> autobuild.log
-./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-94.log
+echo "Running the build (REL-9_5) " >> autobuild.log
+./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-95.log
 
-_mail_status "build-94.log" "build-pvt.log" "9.4"
+_mail_status "build-95.log" "build-pvt.log" "9.5"
 
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
 pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v5.0"
@@ -226,17 +226,17 @@ ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"$pem_remote_location/20*\"
 # Different location for the manual and cron triggered builds.
 if [ "$BUILD_USER" == "" ]
 then
-        remote_location="$remote_location/Latest/9.4"
+        remote_location="$remote_location/Latest/9.5"
 	pem_remote_location="$pem_remote_location/$DATE"
 else
-        remote_location="$remote_location/Custom/$BUILD_USER/9.4/$BUILD_NUMBER"
+        remote_location="$remote_location/Custom/$BUILD_USER/9.5/$BUILD_NUMBER"
 	pem_remote_location="$pem_remote_location/Custom/$BUILD_USER/$BUILD_NUMBER"
 fi
 
 if [ "$BUILD_USER" == "" ]
 then
         # Get the date of the last successful build (LSB), create the directory of that date and copy the installers from the Latest and copy them to this directory.
-        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-94.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../\$LSB_DATE/9.4; cp $remote_location/* $remote_location/../../\$LSB_DATE/9.4"
+        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-95.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../\$LSB_DATE/9.5; cp $remote_location/* $remote_location/../../\$LSB_DATE/9.5"
 fi
 
 # Create a remote directory if not present
