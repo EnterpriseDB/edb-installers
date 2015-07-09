@@ -240,10 +240,14 @@ fi
 
 # Create a remote directory if not present
 echo "Creating $remote_location on the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location $pem_remote_location >> autobuild.log 2>&1
+ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
 
-echo "Uploading pem installers to $pem_remote_location on the builds server" >> autobuild.log 2>&1
-rsync -avh --del output/{pem*,sqlprof*,build-pvt*,php_edbpem*} buildfarm@builds.enterprisedb.com:$pem_remote_location/ >> autobuild.log 2>&1
+if ! $SKIPPVTPACKAGES ;
+then
+	ssh buildfarm@builds.enterprisedb.com mkdir -p $pem_remote_location >> autobuild.log 2>&1
+	echo "Uploading pem installers to $pem_remote_location on the builds server" >> autobuild.log 2>&1
+	rsync -avh --del output/{pem*,sqlprof*,build-pvt*,php_edbpem*} buildfarm@builds.enterprisedb.com:$pem_remote_location/ >> autobuild.log 2>&1
+fi
 
 echo "Uploading output to $remote_location on the builds server" >> autobuild.log
 rsync -avh --del --exclude={pem*,sqlprof*,build-pvt*,php_edbpem*} output/ buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
