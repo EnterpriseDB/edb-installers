@@ -28,6 +28,7 @@ _prep_ApachePhp_osx() {
 
     # Grab a copy of the apache source tree
     cp -pR httpd-$PG_VERSION_APACHE/* apache.osx || _die "Failed to copy the source code (source/httpd-$PG_VERSION_APACHE)"
+    tar -jcvf apache.tar.bz2 apache.osx
 
     if [ -e php.osx ];
     then
@@ -47,7 +48,8 @@ _prep_ApachePhp_osx() {
       patch -p1 < $WD/tarballs/php-${PG_VERSION_PHP}_osx.patch
     fi
 
-    ln -s $PG_PGHOME_OSX/lib/libpq.5.dylib sapi/cli/libpq.5.dylib
+    cd $WD/ApachePhp/source
+    tar -jcvf php.tar.bz2 php.osx
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/ApachePhp/staging/osx ];
@@ -59,6 +61,25 @@ _prep_ApachePhp_osx() {
     echo "Creating staging directory ($WD/ApachePhp/staging/osx)"
     mkdir -p $WD/ApachePhp/staging/osx || _die "Couldn't create the staging directory"
     chmod 755 $WD/ApachePhp/staging/osx || _die "Couldn't set the permissions on the staging directory"
+
+    # Remove existing source and staging directories
+    ssh $PG_SSH_OSX "if [ -d $PG_PATH_OSX/ApachePhp ]; then rm -rf $PG_PATH_OSX/ApachePhp/*; fi" || _die "Couldn't remove the existing files on OS X build server"
+
+    echo "Copy the sources to the build VM"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/ApachePhp/source" || _die "Failed to create the source dircetory on the build VM"
+    scp $WD/ApachePhp/source/apache.tar.bz2 php.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/ApachePhp/source/ || _die "Failed to copy the source archives to build VM"
+
+    echo "Copy the scripts required to build VM"
+    cd $WD/ApachePhp
+    tar -jcvf scripts.tar.bz2 scripts/osx
+    scp $WD/ApachePhp/scripts.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/ApachePhp || _die "Failed to copy the scripts to build VM"
+
+    echo "Extracting the archives"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/ApachePhp/source; tar -jxvf apache.tar.bz2"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/ApachePhp/source; tar -jxvf php.tar.bz2"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/ApachePhp; tar -jxvf scripts.tar.bz2"
+
+    ssh $PG_SSH_OSX "ln -s $PG_PGHOME_OSX/lib/libpq.5.dylib $PG_PATH_OSX/ApachePhp/source/php.osx/sapi/cli/libpq.5.dylib"
    
     echo "END PREP ApachePhp OSX"
 }
@@ -315,6 +336,15 @@ EOT-APACHEPHP
 
     scp build-apachephp.sh $PG_SSH_OSX:$PG_PATH_OSX/ApachePhp
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/ApachePhp; sh ./build-apachephp.sh" || _die "Failed to build ApachePhp on OSX"
+
+    # Copy the staging to controller to build the installers
+    ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf apachephp-staging.tar.bz2 *" || _die "Failed to create archive of the apachephp staging"
+    scp $PG_SSH_OSX:$PG_STAGING/apachephp-staging.tar.bz2 $WD/ApachePhp/staging/osx || _die "Failed to scp apachephp staging"
+
+    # Extract the staging archive
+    cd $WD/ApachePhp/staging/osx
+    tar -jxvf apachephp-staging.tar.bz2 || _die "Failed to extract the apachephp staging archive"
+    rm -f apachephp-staging.tar.bz2
 
     echo "END BUILD ApachePhp OSX"
 }
