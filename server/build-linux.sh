@@ -209,7 +209,7 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cp /usr/local/include/gssapi.h $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_LINUX "cp /usr/local/include/ldap*.h $PG_STAGING/include" || _die "Failed to copy the required header"
     # Removing third party GPL license headres
-    ssh $PG_SSH_LINUX "find $PG_STAGING/include -name '*.h' | xargs grep -rwl 'GNU General Public License\|GNU Library General Public' | grep -v 'gram.h' | xargs rm " || _die "Failed to remove GPL license headers."
+    ssh $PG_SSH_LINUX "find $PG_STAGING/include -name '*.h' | xargs grep -rwl 'GNU General Public License' | grep -v 'gram.h' | xargs rm " || _die "Failed to remove GPL license headers."
 
     # Copy in the dependency libraries
     ssh $PG_SSH_LINUX "cp -pR /usr/local/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
