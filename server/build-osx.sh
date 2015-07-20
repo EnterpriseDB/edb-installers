@@ -190,7 +190,7 @@ EOT
     cp /usr/local/include/expat*.h $WD/server/staging/osx/include || _die "Failed to copy the required header"
     cp /usr/local/include/zlib.h $WD/server/staging/osx/include || _die "Failed to copy the required header"
     # Removing third party GPL license headres
-    find $WD/server/staging/osx/include -name '*.h' | xargs grep -rwl 'GNU General Public License\|GNU Library General Public' | grep -v 'gram.h' | xargs rm || _die "Failed to remove GPL license headers."
+    find $WD/server/staging/osx/include -name '*.h' | xargs grep -rwl 'GNU General Public License' | grep -v 'gram.h' | xargs rm || _die "Failed to remove GPL license headers."
 
     cd $WD/server/staging/osx
     # Copy libxml2 as System's libxml can be old.
