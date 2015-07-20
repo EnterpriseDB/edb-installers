@@ -393,7 +393,7 @@ EOT
     # Copy the third party headers except GPL license headers
     mkdir $WD/server/staging/windows/3rdinclude/
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/include/*.h  $WD/server/staging/windows/3rdinclude/ || _die "Failed to copy the third party headers to $WD/server/staging/windows/3rdinclude/ )"
-    find $WD/server/staging/windows/3rdinclude/ -name "*.h" -exec grep -rwl "GNU General Public License\|GNU Library General Public" {} \; -exec rm  {} \; || _die "Failed to remove the GPL license header files."
+    find $WD/server/staging/windows/3rdinclude/ -name "*.h" -exec grep -rwl "GNU General Public License" {} \; -exec rm  {} \; || _die "Failed to remove the GPL license header files."
     scp -r $WD/server/staging/windows/3rdinclude/* $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\output\\\\include || _die "Failed to copy the third party headers to ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/include)"
     rm -rf $WD/server/staging/windows/3rdinclude || _die "Failed to remove the third party headers directory"
 

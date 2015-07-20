@@ -204,7 +204,7 @@ EOT
     ssh $PG_SSH_OSX "cp /opt/local/Current/include/iconv.h $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_OSX "cp /opt/local/Current/include/zlib.h $PG_STAGING/include" || _die "Failed to copy the required header"
     # Removing third party GPL license headres
-    ssh $PG_SSH_OSX "find $PG_STAGING/include -name '*.h' | xargs grep -rwl 'GNU General Public License\|GNU Library General Public' | grep -v 'gram.h' | xargs rm " || _die "Failed to remove GPL license headers."
+    ssh $PG_SSH_OSX "find $PG_STAGING/include -name '*.h' | xargs grep -rwl 'GNU General Public License' | grep -v 'gram.h' | xargs rm " || _die "Failed to remove GPL license headers."
 
     #cd $WD/server/staging/osx
     # Copy libxml2 as System's libxml can be old.
