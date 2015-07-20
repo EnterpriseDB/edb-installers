@@ -242,7 +242,7 @@ fi
 echo "Creating $remote_location on the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
 
-if ! $SKIPPVTPACKAGES ;
+if [ "$SKIPPVTPACKAGES" == "" ]
 then
 	ssh buildfarm@builds.enterprisedb.com mkdir -p $pem_remote_location >> autobuild.log 2>&1
 	echo "Uploading pem installers to $pem_remote_location on the builds server" >> autobuild.log 2>&1
