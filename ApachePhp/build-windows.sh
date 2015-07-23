@@ -131,10 +131,10 @@ if EXIST "$PG_PATH_WINDOWS\apache.windows\srclib\zlib\zlib.lib" copy "$PG_PATH_W
 
 REM Building openssl
 cd $PG_PATH_WINDOWS\apache.windows\srclib\openssl
-SET LIB=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild\lib;%LIB%
-SET INCLUDE=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild\OpenSSL\include;%INCLUDE%
+SET LIB=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild32\lib;%LIB%
+SET INCLUDE=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild32\include\openssl;%INCLUDE%
 SET PATH=$PG_PATH_WINDOWS;$PG_PGBUILD_WINDOWS\bin;$PG_PERL_WINDOWS\bin;$PG_PYTHON_WINDOWS;$PG_TCL_WINDOWS\bin;%PATH%;C:\cygwin\bin
-perl Configure no-mdc2 no-rc5 no-idea enable-zlib VC-WIN32
+perl Configure no-mdc2 no-rc5 no-idea no-asm enable-zlib VC-WIN32
 CALL ms\do_ms.bat
 nmake -f ms\ntdll.mak
 
