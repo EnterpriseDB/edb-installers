@@ -252,7 +252,7 @@ _build_server_linux_x64() {
     # create a symlink libtermcap.so pointing to libncurses.
     cd $WD/server/staging/linux-x64/lib
 
-    ln -s libncurses.so libtermcap.so
+    ln -s libncurses.so.5 libtermcap.so
 
     # Copying psql to psql.bin and the creating a caller script psql
     # which will set the LD_PRELOAD to libreadline if found on the system.
