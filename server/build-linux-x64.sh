@@ -249,13 +249,6 @@ _build_server_linux_x64() {
     _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap-2.4"
     _process_dependent_libs_linux_x64 "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap_r-2.4"
 
-    # Hack for bypassing dependency on the deprecated libtermcap
-    # As libnucurses is API compatible with the termcap so we copy libtermcap and then just
-    # create a symlink libtermcap.so pointing to libncurses.
-    cd $WD/server/staging/linux-x64/lib
-
-    ln -s libncurses.so libtermcap.so
-
     # Copying psql to psql.bin and the creating a caller script psql
     # which will set the LD_PRELOAD to libreadline if found on the system.
     cd $WD/server/staging/linux-x64/bin
