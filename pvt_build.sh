@@ -1,10 +1,10 @@
 #!/bin/bash
 
-if [ -e $WD/pvt_settings.sh.REL-9_4 ]
+if [ -e $WD/pvt_settings.sh.REL-9_5 ]
 then
 
     # Source the private settings.    
-    source $WD/pvt_settings.sh.REL-9_4
+    source $WD/pvt_settings.sh.REL-9_5
 
     # Create the pvt_packages directory. If not exist.
     if [ ! -e $WD/pvt_packages ];
