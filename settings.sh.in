@@ -141,8 +141,9 @@ PG_ANT_HOME_SOLARIS_SPARC=/opt/apache-ant-1.8.4
 PG_QMAKE_SOLARIS_SPARC=/usr/local.sun/bin/qmake
 
 PG_SSH_OSX=buildfarm@bf5-osx.ox.uk.enterprisedb.com
-PG_SSH_OSX_SIGN=buildfarm@bf-osx-sign.ox.uk.enterprisedb.com
 PG_PATH_OSX=/mnt/hgfs/pginstaller.auto
+PG_SSH_OSX_SIGN=buildfarm@bf-osx-sign.ox.uk.enterprisedb.com
+PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_2.auto
 PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx
 PG_ANT_HOME_OSX=/usr
