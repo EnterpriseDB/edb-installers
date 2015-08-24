@@ -50,6 +50,15 @@ _prep_ApachePhp() {
       rm -rf httpd-$PG_VERSION_APACHE  || _die "Couldn't remove the existing httpd-$PG_VERSION_APACHE source directory (source/httpd-$PG_VERSION_APACHE)"
     fi
 
+    # WSGI
+    if [ -e mod_wsgi-$PG_VERSION_WSGI ];
+    then
+      echo "Removing existing mod_wsgi-$PG_VERSION_WSGI source directory"
+      rm -rf mod_wsgi-$PG_VERSION_WSGI  || _die "Couldn't remove the existing mod_wsgi-$PG_VERSION_WSGI source directory (source/mod_wsgi-$PG_VERSION_WSGI)"
+    fi
+
+    extract_file ../../tarballs/mod_wsgi-$PG_VERSION_WSGI || exit 1
+
     echo "Unpacking apache source..."
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
@@ -164,7 +173,8 @@ _postprocess_ApachePhp() {
     _replace PG_VERSION_APACHEPHP $PG_VERSION_APACHE-$PG_VERSION_PHP installer.xml || _die "Failed to set the major version in the installer project file (ApachePhp/installer.xml)"
     _replace PG_BUILDNUM_APACHEPHP $PG_BUILDNUM_APACHEPHP installer.xml || _die "Failed to set the major version in the installer project file (ApachePhp/installer.xml)"
     _replace PHP_MAJOR_VERSION $PHP_MAJOR_VERSION installer.xml || _die "Failed to set the major version in the installer project file (ApachePhp/installer.xml)"
-    
+    _replace PG_VERSION_PYTHON $PG_VERSION_PYTHON installer.xml || _die "Failed to set the Python version in the file (ApachePhp/installer.xml)"    
+    _replace PG_VERSION_LANGUAGEPACK $PG_VERSION_LANGUAGEPACK installer.xml || _die "Failed to set the languagepack version in the installer project file (ApachePhp/installer.xml)"
  
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

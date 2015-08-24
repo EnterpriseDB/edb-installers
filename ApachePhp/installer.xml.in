@@ -311,6 +311,70 @@ EOF
     </touchFile>
     <setInstallerVariable name="apachephpVersion" value="" />
     <setInstallerVariable name="iBranding" value="" />
+
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="req_lp_version" value="PG_VERSION_LANGUAGEPACK" persist="1"/>
+        <iniFileGet file="/etc/postgres-reg.ini" variable="lp_tmp_var"
+          section="edb_languagepack_PG_VERSION_LANGUAGEPACK" key="InstallationDirectory"/>
+        <iniFileGet file="/etc/postgres-reg.ini" variable="lp_version"
+          section="edb_languagepack_PG_VERSION_LANGUAGEPACK" key="Version"/>
+        <setInstallerVariable name="python_path" value="${lp_tmp_var}/Python-PG_VERSION_PYTHON" persist="1"/>
+        <throwError>
+          <text>${msg(languagepack.not.installed)}</text>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${lp_tmp_var}</text>
+              <value></value>
+            </compareText>
+            <compareText>
+              <logic>does_not_contain</logic>
+              <text>${lp_version}</text>
+              <value>${req_lp_version}</value>
+            </compareText>
+            <fileExists negate="1" path="${python_path}/bin/python"/>
+          </ruleList>
+        </throwError>
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="req_lp_version" value="PG_VERSION_LANGUAGEPACK" persist="1"/>
+        <registryGet wowMode="32" name="Base Directory" variable="lp_tmp_var"
+          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\PG_VERSION_LANGUAGEPACK"/>
+        <registryGet wowMode="32" name="Version" variable="lp_version"
+          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\PG_VERSION_LANGUAGEPACK"/>
+        <setInstallerVariable name="python_path" value="${lp_tmp_var}/Python-PG_VERSION_PYTHON" persist="1"/>
+        <logMessage text="${lp_tmp_var} == ${lp_version} == ${python_path}"/>
+        <throwError>
+          <text>${msg(languagepack.not.installed)}</text>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${lp_tmp_var}</text>
+              <value></value>
+            </compareText>
+            <compareText>
+              <logic>does_not_contain</logic>
+              <text>${lp_version}</text>
+              <value>${req_lp_version}</value>
+            </compareText>
+            <fileExists negate="1" path="${python_path}\python.exe"/>
+          </ruleList>
+        </throwError>
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
     <!-- Getting apache home value from ini file - Linux | Mac -->
     <actionGroup>
       <actionList>
@@ -1070,6 +1134,84 @@ EOF
         </compareText>
       </ruleList>
     </runProgram>
+
+    <actionGroup>
+      <actionList>
+        <iniFileGet file="/etc/postgres-reg.ini" variable="python_tmp_var"
+          section="edb_languagepack_PG_VERSION_LANGUAGEPACK" key="InstallationDirectory"/>
+        <setInstallerVariable name="python_home" value="${python_tmp_var}/Python-PG_VERSION_PYTHON" persist="1"/>
+        <logMessage text="Setting Python path in envvars"/>
+        <substitute files="${installdir}/apache/bin/envvars">
+          <substitutionList>
+            <substitution>
+              <pattern>@@LP_PYTHON_HOME@@</pattern>
+              <value>${python_home}</value>
+            </substitution>
+          </substitutionList>
+        </substitute>
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <actionGroup>
+      <actionList>
+        <registryGet wowMode="32" name="Base Directory" variable="python_tmp_var"
+          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\PG_VERSION_LANGUAGEPACK"/>
+        <setInstallerVariable name="python_home" value="${python_tmp_var}\Python-PG_VERSION_PYTHON" persist="1"/>
+        <logMessage text="Setting Python path in start-apache.bat"/>
+        <substitute files="${installdir}\apache\installer\ApachePhp\start-apache.bat">
+          <substitutionList>
+            <substitution>
+              <pattern>@@LP_PYTHON_HOME@@</pattern>
+              <value>${python_home}</value>
+            </substitution>
+          </substitutionList>
+        </substitute>
+        <substitute files="${installdir}\apache\installer\ApachePhp\install-apache.bat">
+          <substitutionList>
+            <substitution>
+              <pattern>@@LP_PYTHON_HOME@@</pattern>
+              <value>${python_home}</value>
+            </substitution>
+          </substitutionList>
+        </substitute>
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- LIN | MAC: Adding text for mod_wsgi config in apache -->
+    <addTextToFile>
+      <file>${installdir}/apache/conf/httpd.conf</file>
+      <text>
+LoadModule wsgi_module ${installdir}/apache/modules/mod_wsgi.so
+      </text>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </addTextToFile>
+    <!-- WIN: Adding text for mod_wsgi config in apache -->
+    <addTextToFile>
+      <file>${installdir}\apache\conf\httpd.conf</file>
+      <text>
+LoadModule wsgi_module "${installdir.dos}\apache\modules\mod_wsgi-py33-VC10.so"
+      </text>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </addTextToFile>
+
     <!-- LIN | MAC: Adding text for php config in apache -->
     <addTextToFile>
        <file>${installdir}/apache/conf/httpd.conf</file>

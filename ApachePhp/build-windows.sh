@@ -18,8 +18,8 @@ _prep_ApachePhp_windows() {
     mv zlib-$PG_TARBALL_ZLIB apache.windows/srclib/zlib
 
     # Apply the patch
-    cd apache.windows/srclib/apr/atomic/win32/
-    patch -p0 < $WD/tarballs/apr-win32.patch
+    #cd apache.windows/srclib/apr/atomic/win32/
+    #patch -p0 < $WD/tarballs/apr-win32.patch
     cd $WD/ApachePhp/source/apache.windows/srclib/apr-iconv/build
     patch -p0 < $WD/tarballs/apr-iconv-win32.patch
     cd $WD/ApachePhp/source/apache.windows
@@ -30,6 +30,16 @@ _prep_ApachePhp_windows() {
     cd ..
 
     cd $WD/ApachePhp/source
+
+    mkdir -p apache.windows/mod_wsgi || _die "Couldn't create the mod_wsgi directory"
+    cp -pR mod_wsgi-$PG_VERSION_WSGI/* apache.windows/mod_wsgi || _die "Failed to copy the source code (source/mod_wsgi-$PG_VERSION_WSGI)"
+
+    cd apache.windows/mod_wsgi/win32
+    sed -i '/ap24py34-win32-VC10.mk/s/^/REM /g' build-win32-VC10.bat
+    sed -i "s/^APACHE_ROOTDIR =\(.*\)$/APACHE_ROOTDIR=$PG_PATH_WINDOWS\\\\apache.staging/g" ap24py33-win32-VC10.mk #> ap24py33-win32-VC10.mk.bk && mv ap24py33-win32-VC10.mk.bk ap24py33-win32-VC10.mk
+    sed -i "s/^PYTHON_ROOTDIR =\(.*\)$/PYTHON_ROOTDIR=$PG_PYTHON_WINDOWS/g" ap24py33-win32-VC10.mk #> ap24py33-win32-VC10.mk.bk && mv ap24py33-win32-VC10.mk.bk ap24py33-win32-VC10.mk 
+    cd $WD/ApachePhp/source
+
     if [ -e php.windows ]; then 
         echo "Removing old php sources"
         rm -rf php.windows || _die "Couldn't remove the php sources"
@@ -131,8 +141,8 @@ if EXIST "$PG_PATH_WINDOWS\apache.windows\srclib\zlib\zlib.lib" copy "$PG_PATH_W
 
 REM Building openssl
 cd $PG_PATH_WINDOWS\apache.windows\srclib\openssl
-SET LIB=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild32\lib;%LIB%
-SET INCLUDE=$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild32\include\openssl;%INCLUDE%
+SET LIB=$PG_PYTHON_WINDOWS\Lib;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild32\lib;%LIB%
+SET INCLUDE=$PG_PYTHON_WINDOWS\include;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild32\include\openssl;%INCLUDE%
 SET PATH=$PG_PATH_WINDOWS;$PG_PGBUILD_WINDOWS\bin;$PG_PERL_WINDOWS\bin;$PG_PYTHON_WINDOWS;$PG_TCL_WINDOWS\bin;%PATH%;C:\cygwin\bin
 perl Configure no-mdc2 no-rc5 no-idea no-asm enable-zlib VC-WIN32
 CALL ms\do_ms.bat
@@ -149,6 +159,13 @@ perl srclib\apr\build\fixwin32mak.pl
 REM Compiling Apache with Standard configuration
 nmake -f Makefile.win PORT=8080 NO_EXTERNAL_DEPS=1 _buildr || exit 1
 nmake -f Makefile.win PORT=8080 INSTDIR="%STAGING_DIR%\apache.staging" NO_EXTERNAL_DEPS=1 installr || exit 1
+
+SET INCLUDE=$PG_PYTHON_WINDOWS\include;$PG_PATH_WINDOWS\apache.staging\include;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;C:\pgBuild32\include\openssl;%INCLUDE%
+
+REM Building mod_wsgi
+cd $PG_PATH_WINDOWS\apache.windows\mod_wsgi\win32
+build-win32-VC10.bat
+
 
 EOT
 

@@ -53,3 +53,6 @@ Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of val
 cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
 
 launch.apache24.doc=Would you like to visit the Apache 2.4 upgrade documentation link in the browser?
+
+languagepack.not.installed=LanguagePack ${req_lp_version} not installed or corrupted on your system. Please install LanguagePack ${req_lp_version} before installing ApachePhp.
+

@@ -61,9 +61,9 @@ PG_JAVA_HOME_LINUX=/etc/alternatives/java_sdk_1.7.0
 PG_ANT_HOME_LINUX=/opt/apache-ant-1.8.4
 PG_QMAKE_LINUX=/opt/qtsdk/bin/qmake
 PG_QT_LINUX=/opt/qtsdk
-PG_PERL_LINUX=/opt/EnterpriseDB/LanguagePack/9.4/Perl-5.16
-PG_PYTHON_LINUX=/opt/EnterpriseDB/LanguagePack/9.4/Python-3.3
-PG_TCL_LINUX=/opt/EnterpriseDB/LanguagePack/9.4/Tcl-8.5
+PG_PERL_LINUX=/opt/EnterpriseDB/LanguagePack/9.5/Perl-5.16
+PG_PYTHON_LINUX=/opt/EnterpriseDB/LanguagePack/9.5/Python-3.3
+PG_TCL_LINUX=/opt/EnterpriseDB/LanguagePack/9.5/Tcl-8.5
 PG_XULRUNNER_SDK_LINUX=/usr/lib/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX=/usr/lib/xulrunner-1.9.2
 
@@ -75,9 +75,9 @@ PG_JAVA_HOME_LINUX_X64=/etc/alternatives/java_sdk_1.7.0
 PG_ANT_HOME_LINUX_X64=/opt/apache-ant-1.8.4
 PG_QMAKE_LINUX_X64=/opt/qtsdk/bin/qmake
 PG_QT_LINUX_X64=/opt/qtsdk
-PG_PERL_LINUX_X64=/opt/EnterpriseDB/LanguagePack/9.4/Perl-5.16
-PG_PYTHON_LINUX_X64=/opt/EnterpriseDB/LanguagePack/9.4/Python-3.3
-PG_TCL_LINUX_X64=/opt/EnterpriseDB/LanguagePack/9.4/Tcl-8.5
+PG_PERL_LINUX_X64=/opt/EnterpriseDB/LanguagePack/9.5/Perl-5.16
+PG_PYTHON_LINUX_X64=/opt/EnterpriseDB/LanguagePack/9.5/Python-3.3
+PG_TCL_LINUX_X64=/opt/EnterpriseDB/LanguagePack/9.5/Tcl-8.5
 PG_XULRUNNER_SDK_LINUX_X64=/usr/lib64/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
 

@@ -20,10 +20,13 @@ _prep_ApachePhp_linux() {
 
     echo "Creating apache source directory ($WD/ApachePhp/source/apache.linux)"
     mkdir -p apache.linux || _die "Couldn't create the apache.linux directory"
+    mkdir -p apache.linux/mod_wsgi || _die "Couldn't create the mod_wsgi directory"
     chmod ugo+w apache.linux || _die "Couldn't set the permissions on the source directory"
+    chmod ugo+w apache.linux/mod_wsgi || _die "Couldn't set the permissions on the source directory"
 
     # Grab a copy of the apache source tree
     cp -pR httpd-$PG_VERSION_APACHE/* apache.linux || _die "Failed to copy the source code (source/httpd-$PG_VERSION_APACHE)"
+    cp -pR mod_wsgi-$PG_VERSION_WSGI/* apache.linux/mod_wsgi || _die "Failed to copy the source code (source/mod_wsgi-$PG_VERSION_WSGI)"
 
     if [ -e php.linux ];
     then
@@ -73,6 +76,14 @@ _build_ApachePhp_linux() {
     echo "Building apache"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux; make" || _die "Failed to build apache"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux; make install" || _die "Failed to install apache"
+
+    echo "Configuring the mod_wsgi source tree"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PG_PYTHON_LINUX/lib CFLAGS=\"-I/opt/local/Current/include -I$PG_PYTHON_LINUX/include\" LDFLAGS=\"-L/opt/local/Current/lib -L$PG_PYTHON_LINUX/lib\" ./configure --prefix=$PG_STAGING/apache --with-apxs=$PG_STAGING/apache/bin/apxs --with-python=$PG_PYTHON_LINUX/bin/python"  || _die "Failed to configure mod_wsgi"
+
+    echo "Building mod_wsgi"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PG_PYTHON_LINUX/lib:$LD_LIBRARY_PATH make" || _die "Failed to build mod_wsgi"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux/mod_wsgi; make install" || _die "Failed to install mod_wsgi"
+
 
     # Configure the httpd.conf file
     cd $WD/ApachePhp/staging/linux/apache/conf
@@ -137,7 +148,9 @@ _build_ApachePhp_linux() {
 
     # Add LD_LIBRARY_PATH in envvars scripts
     cat <<EOT >> $WD/ApachePhp/staging/linux/apache/bin/envvars
-LD_LIBRARY_PATH=@@INSTALL_DIR@@/apache/lib:@@INSTALL_DIR@@/php/lib:\$LD_LIBRARY_PATH
+export PYTHONHOME=@@LP_PYTHON_HOME@@
+export PYTHONPATH=\$PYTHONHOME
+LD_LIBRARY_PATH=@@INSTALL_DIR@@/apache/lib:\$PYTHONPATH/lib:@@INSTALL_DIR@@/php/lib:\$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH
 EOT
     ssh $PG_SSH_LINUX "chmod ugo+rx \"$PG_STAGING/apache/bin/envvars\""
