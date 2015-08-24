@@ -152,9 +152,6 @@ EOT
     _replace "#LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "$PG_STAGING/apache/conf/httpd.conf"
     _replace "#LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "$PG_STAGING/apache/conf/httpd.conf"
 
-    # disable SSL v3 because of POODLE vulnerability
-    echo "SSLProtocol All -SSLv2 -SSLv3" >> extra/httpd-ssl.conf
-
     #Apply patch to apachectl before continuing
 #    echo "Applying apachectl patch to comment ulimit check"
 #    cd $PG_STAGING/apache/bin
