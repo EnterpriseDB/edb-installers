@@ -239,8 +239,8 @@ IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 @COPY "%PGBUILD%\bin\ssleay32.dll" php.staging || echo Failed to copy OpenSSL\bin\ssleay32.dll && EXIT -1
 @COPY "%PGBUILD%\bin\libeay32.dll" php.staging || echo Failed to copy OpenSSL\bin\libeay32.dll && EXIT -1
 
-@COPY "%PGBUILD%\bin\intl.dll" php.staging || echo Failed to copy gettext\bin\intl.dll && EXIT -1
-@COPY "%PGBUILD%\bin\iconv.dll" php.staging || echo Failed to copy gettext\bin\libiconv.dll && EXIT -1
+@COPY "%PGBUILD%\bin\libintl-8.dll" php.staging || echo Failed to copy gettext\bin\libintl-8.dll && EXIT -1
+@COPY "%PGBUILD%\bin\libiconv-2.dll" php.staging || echo Failed to copy gettext\bin\libiconv-2.dll && EXIT -1
 @COPY "%PGBUILD%\bin\libxml2.dll" php.staging || echo Failed to copy libxml2\bin\libxml2.dll && EXIT -1
 @COPY "%PGBUILD%\bin\libxslt.dll" php.staging || echo Failed to copy libxslt\bin\libxslt.dll && EXIT -1
 @COPY "%PGBUILD%\bin\zlib1.dll" php.staging || echo Failed to copy zlib.dll && EXIT -1
@@ -281,7 +281,7 @@ IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 
 EOT
     scp build-php.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-php.bat"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-php.bat" || _die "Failed to execute build-php.bat script."
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-recommended copy php.ini-recommended $PG_PATH_WINDOWS\\\\php.staging\\\\php.ini " || _die "Failed to copy php.ini"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-production copy php.ini-production $PG_PATH_WINDOWS\\\\php.staging\\\\php.ini " || _die "Failed to copy php.ini"
     
