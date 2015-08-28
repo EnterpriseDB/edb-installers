@@ -2674,6 +2674,7 @@ EOF
              Delete the dependent libraries from the existing installation
              The current installer will put only the required version of these libraries
          -->
+
         <actionGroup>
             <actionList>
                 <runProgram>
@@ -2715,6 +2716,33 @@ EOF
                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
+
+        <!-- Clean up libs -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}/installer/server/config_libs.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <progressText>${msg(progress.text.cleaning.libs)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <text>${IsUpgrade}</text>
+                    <logic>equals</logic>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+               <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
 	<!-- Validating whether installdir is selected only as drive letters like c: d: etc... valid (Windows) -->
 	<actionGroup>
 	  <actionList>
@@ -3220,6 +3248,24 @@ EOF
                         </compareText>
                     </ruleList>
                 </showWarning>
+
+
+
+                <!-- Clean up libs -->
+                <runProgram>
+                    <program>${installdir}/installer/server/config_libs.sh</program>
+                    <programArguments>"${installdir}"</programArguments>
+                    <progressText>${msg(progress.text.cleaning.libs)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
 
                 <!-- Shortcuts -->
                 <runProgram>

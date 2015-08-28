@@ -228,6 +228,7 @@ set -x
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(sasl)"
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libldap-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap)"
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libldap_r-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap_r)"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libpango*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(pango)"
 
     # Process Dependent libs
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl"  
@@ -366,7 +367,7 @@ EOT
     # Stackbuilder
     # Configure
     echo "Configuring the StackBuilder source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
 
     # Build the app
     echo "Building & installing StackBuilder"
@@ -433,6 +434,8 @@ _postprocess_server_linux() {
     chmod ugo+x staging/linux/installer/server/startserver.sh
     cp scripts/linux/loadmodules.sh staging/linux/installer/server/loadmodules.sh || _die "Failed to copy the loadmodules script (scripts/linux/loadmodules.sh)"
     chmod ugo+x staging/linux/installer/server/loadmodules.sh
+    cp scripts/linux/config_libs.sh staging/linux/installer/server/config_libs.sh || _die "Failed to copy the cleanlib script (scripts/linux/test.sh)"
+    chmod ugo+x staging/linux/installer/server/config_libs.sh
 
     # Copy the XDG scripts
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the xdg scripts"
