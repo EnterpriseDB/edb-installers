@@ -74,7 +74,6 @@ _prep_languagepack() {
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-	echo " "
         _prep_languagepack_linux || exit 1
     fi
 
@@ -130,7 +129,6 @@ _build_languagepack() {
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-	echo " "
         _build_languagepack_linux || exit 1
     fi
 

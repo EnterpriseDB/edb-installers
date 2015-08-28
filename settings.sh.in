@@ -169,3 +169,7 @@ PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSIO
 # The InstallBuilder main binary.
 PG_INSTALLBUILDER_BIN="/opt/installbuilder-15.1.0/bin/builder"
 KEYCHAIN_PASSWD="XXXXXX"
+
+# LanguagePack Variables
+PG_LANGUAGEPACK_INSTALL_DIR_LINUX="/opt/EnterpriseDB/LanguagePack"
+PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.5"

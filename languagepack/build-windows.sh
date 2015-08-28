@@ -11,10 +11,12 @@ _prep_languagepack_windows() {
     if [ "$ARCH" = "x32" ];
     then
        ARCH="windows-x32"
+       PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\i386"
     else
        ARCH="windows-x64"
        PG_SSH_WINDOWS=$PG_SSH_WINDOWS_X64
        PG_PATH_WINDOWS=$PG_PATH_WINDOWS_X64
+       PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\x64"
     fi
 
     # Enter the source directory and cleanup if required
@@ -45,7 +47,7 @@ _prep_languagepack_windows() {
     then
         # Perl related changes - x32
         cd perl-5.16.3/win32
-        sed -i "s/^INST_DRV\t= c:/INST_DRV\t= $PG_PATH_WINDOWS\\\\languagepack.$ARCH/g" Makefile
+        sed -i "s/^INST_DRV\t= c:/INST_DRV\t= $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS/g" Makefile
         sed -i 's/^INST_TOP\t= $(INST_DRV)\\perl/INST_TOP\t= $(INST_DRV)\\Perl-5.16/g' Makefile
         sed -i 's/^CCTYPE\t\t= MSVC60/CCTYPE\t\t= MSVC120/g' Makefile
         sed -i 's/^BUILDOPT\t= $(BUILDOPT) -DUSE_SITECUSTOMIZE/BUILDOPT\t= $(BUILDOPT) -D_USE_32BIT_TIME_T/g' Makefile
@@ -63,7 +65,7 @@ _prep_languagepack_windows() {
     else
         # Perl related changes - x64
         cd perl-5.16.3/win32
-        sed -i "s/^INST_DRV\t= c:/INST_DRV\t= $PG_PATH_WINDOWS\\\\languagepack.$ARCH/g" Makefile
+        sed -i "s/^INST_DRV\t= c:/INST_DRV\t= $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS/g" Makefile
         sed -i 's/^INST_TOP\t= $(INST_DRV)\\perl/INST_TOP\t= $(INST_DRV)\\Perl-5.16/g' Makefile
         sed -i 's/^CCTYPE\t\t= MSVC60/CCTYPE\t\t= MSVC120/g' Makefile
         sed -i '/^BUILDOPT\t= $(BUILDOPTEXTRA)/a BUILDOPT\t= $(BUILDOPT) -DUSE_SITECUSTOMIZE' Makefile
@@ -115,18 +117,20 @@ _build_languagepack_windows() {
     if [ "$ARCH" = "x32" ];
     then
        ARCH="windows-x32"
+       PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\i386"
     else
        ARCH="windows-x64"
        PG_SSH_WINDOWS=$PG_SSH_WINDOWS_X64
        PG_PATH_WINDOWS=$PG_PATH_WINDOWS_X64
        PG_PGBUILD_WINDOWS=$PG_PGBUILD_WINDOWS_X64
+       PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\x64"
     fi
 
     cd $WD/languagepack/scripts/$ARCH
     cat <<EOT > "Python_Build_Dependencies.bat"
 @ECHO OFF
 
-CALL "C:\Program Files\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
+CALL "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
 
 SET vPythonBuildDir=%1
 SET vXZDir=%2
@@ -139,25 +143,25 @@ CD %vPythonBuildDir%
 ECHO Executing batach file %vPythonBuildDir%\Tools\buildbot\external-common.bat
 CALL %vPythonBuildDir%\Tools\buildbot\external-common.bat
 
-ECHO Changing Directory to C:\LanguagePacks\xz-5.0.3\bin_x86-64
+ECHO Changing Directory to %vXZDir%\bin_i486
 CD %vXZDir%\bin_i486
 dumpbin /exports liblzma.dll > liblzma.def
 EOT
 
     # Tcl/Tk Build
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\languagepack.$ARCH; mkdir Tcl-8.5; cmd /c Tcl_Tk_Build.bat $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\tcl8.5.17 $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Tcl-8.5 $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\tk8.5.17"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Tcl-8.5; cmd /c Tcl_Tk_Build.bat $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\tcl8.5.17 $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Tcl-8.5 $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\tk8.5.17"
 
     # Perl Build
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\languagepack.$ARCH; mkdir Perl-5.16; cmd /c Perl_Build.bat $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\perl-5.16.3 $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Perl-5.16 PERL"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\languagepack.$ARCH; mkdir Perl-5.16; cmd /c Perl_Build.bat $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\perl-5.16.3 $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Perl-5.16 DBI"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\languagepack.$ARCH; mkdir Perl-5.16; cmd /c Perl_Build.bat $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\perl-5.16.3 $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Perl-5.16 DBD"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Perl-5.16; cmd /c Perl_Build.bat $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\perl-5.16.3 $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Perl-5.16 PERL"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Perl-5.16; cmd /c Perl_Build.bat $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\perl-5.16.3 $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Perl-5.16 DBI"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Perl-5.16; cmd /c Perl_Build.bat $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\perl-5.16.3 $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Perl-5.16 DBD"
 
     # Generating/Updating liblzma.def file for Python Build
     if [ "$ARCH" = "windows-x32" ];
     then
         cd $WD/languagepack/scripts/$ARCH
         scp Python_Build_Dependencies.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\languagepack.$ARCH || _die "Failed to copy the Python_Build_Dependencies.bat to the windows build host"
-        ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\languagepack.$ARCH; set VisualStudioVersion=12.0; cmd /c Python_Build_Dependencies.bat $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Python-3.3.4 $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\xz-5.0.3"
+        ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Python-3.3.4; set VisualStudioVersion=12.0; cmd /c ..\\\\Python_Build_Dependencies.bat $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Python-3.3.4 $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\xz-5.0.3"
         scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\xz-5.0.3\\\\bin_i486\\\\liblzma.def $WD/languagepack/scripts/$ARCH/liblzma.def || _die "Failed to get liblzma.def from windows build host"
         LinesBefore=$(grep -n "ordinal .*hint .*RVA .*name" liblzma.def | cut -d":" -f1)
         sed -i "1,$(expr $LinesBefore)d" liblzma.def
@@ -168,7 +172,7 @@ EOT
     fi
 
     # Python Build
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\languagepack.$ARCH; mkdir Python-3.3; set VisualStudioVersion=12.0; cmd /c Python_Build.bat $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Python-3.3.4 $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Python-3.3 $PG_PATH_WINDOWS\\\\languagepack.$ARCH $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Tcl-8.5 $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\xz-5.0.3 $PG_PGBUILD_WINDOWS"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Python-3.3; set VisualStudioVersion=12.0; cmd /c Python_Build.bat $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Python-3.3.4 $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Python-3.3 $PG_PATH_WINDOWS\\\\languagepack.$ARCH $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Tcl-8.5 $PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\xz-5.0.3 $PG_PGBUILD_WINDOWS"
 }
 
 
@@ -184,17 +188,19 @@ _postprocess_languagepack_windows() {
     then
        ARCH="windows-x32"
        OS="windows"
+       PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\i386"
     else
        ARCH="windows-x64"
        OS=$ARCH
        PG_SSH_WINDOWS=$PG_SSH_WINDOWS_X64
        PG_PATH_WINDOWS=$PG_PATH_WINDOWS_X64
        PG_PGBUILD_WINDOWS=$PG_PGBUILD_WINDOWS_X64
+       PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\x64"
  fi
 
-    scp -r $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Tcl-8.5 $WD/languagepack/staging/$ARCH/Tcl-8.5 || _die "Failed to get Tcl-8.5 from windows build host"
-    scp -r $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Perl-5.16 $WD/languagepack/staging/$ARCH/Perl-5.16 || _die "Failed to get Perl-5.16 from windows build host"
-    scp -r $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\languagepack.$ARCH\\\\Python-3.3 $WD/languagepack/staging/$ARCH/Python-3.3 || _die "Failed to get Python-3.3 from windows build host"
+    scp -r $PG_SSH_WINDOWS:$PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Tcl-8.5 $WD/languagepack/staging/$ARCH/Tcl-8.5 || _die "Failed to get Tcl-8.5 from windows build host"
+    scp -r $PG_SSH_WINDOWS:$PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Perl-5.16 $WD/languagepack/staging/$ARCH/Perl-5.16 || _die "Failed to get Perl-5.16 from windows build host"
+    scp -r $PG_SSH_WINDOWS:$PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Python-3.3 $WD/languagepack/staging/$ARCH/Python-3.3 || _die "Failed to get Python-3.3 from windows build host"
 
     cd $WD/languagepack
     pushd staging/$ARCH

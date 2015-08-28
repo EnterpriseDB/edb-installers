@@ -1,6 +1,6 @@
 @ECHO OFF
 
-CALL "C:\Program Files\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
+CALL "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
 
 SET vPythonBuildDir=%1
 SET vPythonInstallDir=%2
@@ -125,6 +125,19 @@ SET PATH=%vPythonInstallDir%\Scripts;D:\edb-postgres.auto-repo\output\bin;%PATH%
 CD %vPythonInstallDir%\Scripts
 SET LINK="/FORCE:MULTIPLE"
 pip install psycopg2
+pip install Flask
+pip install Jinja2
+pip install MarkupSafe
+pip install Werkzeug
+pip install itsdangerous
+pip install Flask-Login
+pip install Flask-Security
+pip install Flask-WTF
+pip install simplejson
+pip install Pillow
+pip install pytz
+pip install sphinx
+pip install cython
 
 ECHO ------------------------
 ECHO ----------Done----------

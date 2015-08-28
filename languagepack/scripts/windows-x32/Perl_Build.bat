@@ -1,37 +1,47 @@
-@echo off 
+@ECHO off 
 
-call "C:\Program Files\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
+CALL "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
  
-set vPerlBuildDir=%1
-set vPerlInstallDir=%2
+SET vPerlBuildDir=%1
+SET vPerlInstallDir=%2
+SET vPerlModule=%3
 
-echo %vPerlBuildDir%
-echo %vPerlInstallDir%
+ECHO %vPerlBuildDir%
+ECHO %vPerlInstallDir%
+ECHO %vPerlModule%
 
-set INCLUDE=%ProgramFiles(x86)%\Microsoft SDKs\Windows\7.1A\Include;%INCLUDE%
-set PATH=%ProgramFiles(x86)%\Microsoft SDKs\Windows\7.1A\Bin;D:\edb-postgres.auto-repo\output\bin;D:\edb-postgres.auto-repo\output\lib;C:\pgBuild32\bin;C:\pgBuild32\lib;%PATH%
-set LIB=%ProgramFiles(x86)%\Microsoft SDKs\Windows\7.1A\Lib;%LIB%
-set CL=/D_USING_V120_SDK71_
-set LINK=/SUBSYSTEM:CONSOLE,5.01
+SET INCLUDE=%ProgramFiles(x86)%\Microsoft SDKs\Windows\7.1A\Include;%INCLUDE%
+SET PATH=%ProgramFiles(x86)%\Microsoft SDKs\Windows\7.1A\Bin;D:\edb-postgres.auto-repo\output\bin;D:\edb-postgres.auto-repo\output\lib;C:\pgBuild32\bin;C:\pgBuild32\lib;%PATH%
+SET LIB=%ProgramFiles(x86)%\Microsoft SDKs\Windows\7.1A\Lib;%LIB%
+SET CL=/D_USING_V120_SDK71_
+SET LINK=/SUBSYSTEM:CONSOLE,5.01
 
-cd %vPerlBuildDir%\win32
-echo ....Starting to Make Perl...
+IF "%vPerlModule%"=="PERL" GOTO PERL
+IF "%vPerlModule%"=="DBI" GOTO DBI
+IF "%vPerlModule%"=="DBD" GOTO DBD
+GOTO END
+
+:PERL
+ECHO ....Starting to Make Perl....
+CD %vPerlBuildDir%\win32
 nmake -f makefile
-echo ....End Make Perl...
-
-cd %vPerlBuildDir%\win32
-echo ....Starting to Install Perl...
 nmake install
-echo ....End Install Perl...
+ECHO ....End Make Perl....
+GOTO END
 
-set PATH=%vPerlInstallDir%\bin;%PATH%
-
-cd %vPerlInstallDir%\bin
-echo ....Starting to Install CPAN DBI ...
+:DBI
+SET PATH=%vPerlInstallDir%\bin;%PATH%
+CD %vPerlInstallDir%\bin
+ECHO ....Starting to Install DBI....
 cpan install DBI
- echo ....End Install DBI ...
+ECHO ....End Install DBI....
+GOTO END
 
-cd %vPerlInstallDir%\bin
-echo ....Starting to Install CPAN DBD::PG ...
+:DBD
+SET PATH=%vPerlInstallDir%\bin;%PATH%
+CD %vPerlInstallDir%\bin
+ECHO ....Starting to Install DBD::PG....
 cpan install DBD::Pg
-echo ....End Install DBD::PG ...
+ECHO ....End Install DBD::PG....
+
+:END

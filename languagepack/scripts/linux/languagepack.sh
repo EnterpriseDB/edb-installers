@@ -43,6 +43,7 @@ OPTIONS can be:
     -P      Perl version
     -t      TCL/TK version
     -v      Language pack version
+    -b      Server's installation path
 
 EOF
 }
@@ -169,9 +170,10 @@ PERL_INSTALL_PATH=
 PYTHON_INSTALL_PATH=
 TCL_TK_INSTALL_PATH=
 
+PG_INSTALL_PATH=
 
 # Check options passed in.
-while getopts "hex i:n:p:d:P:s:t:v:" OPTION
+while getopts "hex i:n:p:d:P:s:t:v:b:" OPTION
 do
     case $OPTION in
         h)
@@ -211,6 +213,9 @@ do
         v)
             PG_LANGUAGE_PACK_VERSION=$OPTARG
             ;;
+        b)
+            PG_INSTALL_PATH=$OPTARG
+            ;;
         x)
             blnBuildNCurses=0
             ;;
@@ -221,7 +226,7 @@ do
     esac
 done
 
-if [[ -z "$PG_VERSION_NCURSES" || -z "$PG_VERSION_TCL_TK" || -z "$PG_VERSION_PYTHON" || -z "$PG_VERSION_PERL" || -z "$PG_LANGUAGE_PACK_VERSION" || -z "$PG_VERSION_PYTHON_DISTRIBUTE" ]]
+if [[ -z "$PG_VERSION_NCURSES" || -z "$PG_VERSION_TCL_TK" || -z "$PG_VERSION_PYTHON" || -z "$PG_VERSION_PERL" || -z "$PG_LANGUAGE_PACK_VERSION" || -z "$PG_INSTALL_PATH" || -z "$PG_VERSION_PYTHON_DISTRIBUTE" ]]
 then
     usage
     exit 1
@@ -381,10 +386,10 @@ then
 
     ExecuteCommand "tar -zxvf Python-$PG_VERSION_PYTHON.tgz"
     
-    if [ "x$PG_LANGUAGE_PACK_VERSION" != "x9.0" -a "x$PG_LANGUAGE_PACK_VERSION" != "x9.1" -a "x$PG_LANGUAGE_PACK_VERSION" != "x9.4" ]
-    then
-        ExecuteCommand "patch -p0 < Python_MAXREPEAT.patch"
-    fi
+    #if [ "x$PG_LANGUAGE_PACK_VERSION" != "x9.0" -a "x$PG_LANGUAGE_PACK_VERSION" != "x9.1" -a "x$PG_LANGUAGE_PACK_VERSION" != "x9.4" ]
+    #then
+    #    ExecuteCommand "patch -p0 < Python_MAXREPEAT.patch"
+    #fi
     
     ExecuteCommand "tar -zxvf distribute-$PG_VERSION_PYTHON_DISTRIBUTE.tar.gz"
 
@@ -439,10 +444,26 @@ then
     ExecuteCommand "pushd distribute-$PG_VERSION_PYTHON_DISTRIBUTE"
     (
     	export PYTHONHOME="$PYTHON_INSTALL_PATH"
-    	export PATH="$PYTHON_INSTALL_PATH/bin:$PATH"
+	export PATH="$PYTHON_INSTALL_PATH/bin:$PG_INSTALL_PATH/bin:$PATH"
 	export LD_LIBRARY_PATH="$SSL_INST/lib:$LD_LIBRARY_PATH"
     	ExecuteCommand "python setup.py install --prefix=\"$PYTHON_INSTALL_PATH\""
     	ExecuteCommand "easy_install pip"
+
+	ExecuteCommand "pip install Flask"
+	ExecuteCommand "pip install Jinja2"
+	ExecuteCommand "pip install MarkupSafe"
+	ExecuteCommand "pip install Werkzeug"
+	ExecuteCommand "pip install itsdangerous"
+	ExecuteCommand "pip install psycopg2"
+	ExecuteCommand "pip install Flask-Login"
+	ExecuteCommand "pip install Flask-Security"
+	ExecuteCommand "pip install Flask-WTF"
+	ExecuteCommand "pip install simplejson"
+	ExecuteCommand "pip install Pillow"
+	ExecuteCommand "pip install pytz"
+	ExecuteCommand "pip install sphinx"
+	ExecuteCommand "CFLAGS=-I$PYTHON_INSTALL_PATH/include LDFLAGS=-L$PYTHON_INSTALL_PATH/lib pip install cython"
+
     )
     ExecuteCommand "popd"
 

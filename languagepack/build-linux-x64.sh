@@ -26,16 +26,21 @@ _prep_languagepack_linux_x64() {
     # Copy Python_MAXREPEAT.patch to build Python
     cp $WD/languagepack/scripts/linux/Python_MAXREPEAT.patch languagepack.linux-x64 || _die "Failed to copy (Python_MAXREPEAT.patch) to build Python"
 
-    # Remove any existing staging directory that might exist, and create a clean one
+    # Remove any existing staging/install directory that might exist, and create a clean one
+    echo "Removing existing install directory"
+    ssh $PG_SSH_LINUX_X64 "rm -rf $PG_LANGUAGEPACK_INSTALL_DIR_LINUX" || _die "Couldn't remove the existing install directory"
+    
     if [ -e $WD/languagepack/staging/linux-x64 ];
     then
       echo "Removing existing staging directory"
       rm -rf $WD/languagepack/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/languagepack/staging/linux-x64)"
+    echo "Creating staging/install directory ($PG_LANGUAGEPACK_INSTALL_DIR_LINUX)"
     mkdir -p $WD/languagepack/staging/linux-x64 || _die "Couldn't create the staging directory"
+    ssh $PG_SSH_LINUX_X64 "mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_LINUX" || _die "Couldn't create the install directory"
     chmod ugo+w $WD/languagepack/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
+    ssh $PG_SSH_LINUX_X64 "chmod ugo+w $PG_LANGUAGEPACK_INSTALL_DIR_LINUX" || _die "Couldn't set the permissions on the install directory"
 }
 
 ################################################################################
@@ -44,7 +49,7 @@ _prep_languagepack_linux_x64() {
 
 _build_languagepack_linux_x64() {
 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/languagepack/source/languagepack.linux-x64; export SSL_INST=/opt/local/Current; ./languagepack.sh -n 5.9 -p 3.3.4 -d 0.6.49 -t 8.5.15 -P 5.16.3 -v 9.4 -i $PG_PATH_LINUX_X64/languagepack/staging/linux-x64" || _die "Failed to build languagepack"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/languagepack/source/languagepack.linux-x64; export SSL_INST=/opt/local/Current; ./languagepack.sh -n 5.9 -p 3.3.4 -d 0.6.49 -t 8.5.15 -P 5.16.3 -v $PG_VERSION_LANGUAGEPACK -b $PG_PGHOME_LINUX_X64/bin -i $PG_LANGUAGEPACK_INSTALL_DIR_LINUX" || _die "Failed to build languagepack"
 }
 
 
@@ -55,12 +60,14 @@ _build_languagepack_linux_x64() {
 _postprocess_languagepack_linux_x64() {
  
     cd $WD/languagepack
+    
+    echo "Copying files to staging directory from install directory"
+    ssh $PG_SSH_LINUX_X64 "mv $PG_LANGUAGEPACK_INSTALL_DIR_LINUX/$PG_VERSION_LANGUAGEPACK/* $PG_PATH_LINUX_X64/languagepack/staging/linux-x64 && rm -rf $PG_LANGUAGEPACK_INSTALL_DIR_LINUX" || _die "Failed to copy the languagepack Source into the staging directory"
+ 
     pushd staging/linux-x64
     generate_3rd_party_license "languagepack"
     popd
     
-    mv staging/linux-x64/$EDB_VERSION_LANGUAGEPACK/* staging/linux-x64 && rm -rf staging/linux-x64/$EDB_VERSION_LANGUAGEPACK || _die "Failed to copy the languagepack Source into the staging directory"
-
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 

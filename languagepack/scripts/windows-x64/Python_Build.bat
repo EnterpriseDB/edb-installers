@@ -119,6 +119,19 @@ SET PATH=%vPythonInstallDir%\Scripts;D:\edb-postgres.auto-repo-x64\output\bin;%P
 CD %vPythonInstallDir%\Scripts
 SET LINK="/FORCE:MULTIPLE"
 pip install psycopg2
+pip install Flask
+pip install Jinja2
+pip install MarkupSafe
+pip install Werkzeug
+pip install itsdangerous
+pip install Flask-Login
+pip install Flask-Security
+pip install Flask-WTF
+pip install simplejson
+pip install Pillow
+pip install pytz
+pip install sphinx
+pip install cython
 
 ECHO ------------------------
 ECHO ----------Done----------
