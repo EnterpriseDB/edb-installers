@@ -7,21 +7,86 @@
 
 _prep_languagepack_osx() {
 
+    echo "BEGIN PREP LanguagePack OSX"
+
+    # Cleanup existing sources on the build machine
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/languagepack"
+ 
     # Enter the source directory and cleanup if required
     cd $WD/languagepack/source
 
-    if [ -e languagepack.osx ];
+    if [ -e Python-$PG_VERSION_PYTHON.$PG_MINOR_VERSION_PYTHON ];
     then
-      echo "Removing existing languagepack.osx source directory"
-      rm -rf languagepack.osx  || _die "Couldn't remove the existing languagepack.osx source directory (source/languagepack.osx)"
+      echo "Removing existing Python-$PG_VERSION_PYTHON.$PG_MINOR_VERSION_PYTHON source directory"
+      rm -rf Python-$PG_VERSION_PYTHON.$PG_MINOR_VERSION_PYTHON  || _die "Couldn't remove the existing source directory (source/Python-$PG_VERSION_PYTHON.$PG_MINOR_VERSION_PYTHON)"
     fi
-   
-    echo "Creating staging directory ($WD/languagepack/source/languagepack.osx)"
-    mkdir -p $WD/languagepack/source/languagepack.osx || _die "Couldn't create the languagepack.osx directory"
 
-    # Grab a copy of the binaries
-    cp -R $EDB_OSX_BLD/LanguagePack/* languagepack.osx || _die "Failed to copy the source code (source/languagepack)"
-    chmod -R ugo+w languagepack.osx || _die "Couldn't set the permissions on the source directory"
+    echo "Unpacking python source..."
+    extract_file  ../../tarballs/Python-$PG_VERSION_PYTHON.$PG_MINOR_VERSION_PYTHON || exit 1
+
+    if [ -e python.osx ];
+    then
+      echo "Removing existing python.osx source directory"
+      rm -rf python.osx  || _die "Couldn't remove the existing python.osx source directory (source/python.osx)"
+    fi
+
+    # Grab a copy of the python source tree
+    cp -pR Python-$PG_VERSION_PYTHON.$PG_MINOR_VERSION_PYTHON python.osx || _die "Failed to copy the source code (source/python-$PG_VERSION_PYTHON.$PG_MINOR_VERSION_PYTHON)" 
+    tar -jcvf python.tar.bz2 python.osx || _die "Failed to create the archive (source/python.tar.bz2)"
+
+    if [ -e perl-$PG_VERSION_PERL.$PG_MINOR_VERSION_PERL ];
+    then
+      echo "Removing existing perl-$PG_VERSION_PERL.$PG_MINOR_VERSION_PERL source directory"
+      rm -rf perl-$PG_VERSION_PERL.$PG_MINOR_VERSION_PERL  || _die "Couldn't remove the existing source directory (source/perl-$PG_VERSION_PERL.$PG_MINOR_VERSION_PERL)"
+    fi
+    
+    echo "Unpacking perl source..."
+    extract_file  ../../tarballs/perl-$PG_VERSION_PERL.$PG_MINOR_VERSION_PERL || exit 1
+
+    if [ -e perl.osx ];
+    then
+      echo "Removing existing perl.osx source directory"
+      rm -rf perl.osx  || _die "Couldn't remove the existing perl.osx source directory (source/perl.osx)"
+    fi
+    
+    # Grab a copy of the perl source tree
+    cp -pR perl-$PG_VERSION_PERL.$PG_MINOR_VERSION_PERL perl.osx || _die "Failed to copy the source code (source/perl-$PG_VERSION_PERL.$PG_MINOR_VERSION_PERL)"
+    tar -jcvf perl.tar.bz2 perl.osx || _die "Failed to create the archive (source/perl.tar.bz2)"
+
+    if [ -e tcl-$PG_VERSION_TCL.$PG_MINOR_VERSION_TCL ];
+    then
+      echo "Removing existing tcl-$PG_VERSION_TCL.$PG_MINOR_VERSION_TCL source directory"
+      rm -rf tcl-$PG_VERSION_TCL.$PG_MINOR_VERSION_TCL  || _die "Couldn't remove the existing source directory (source/tcl-$PG_VERSION_TCL.$PG_MINOR_VERSION_TCL)"
+    fi
+    
+    echo "Unpacking tcl source..."
+    extract_file  ../../tarballs/tcl$PG_VERSION_TCL.$PG_MINOR_VERSION_TCL-src || exit 1
+
+    if [ -e tcl.osx ];
+    then
+      echo "Removing existing tcl.osx source directory"
+      rm -rf tcl.osx  || _die "Couldn't remove the existing tcl.osx source directory (source/tcl.osx)"
+    fi
+    # Grab a copy of the tcl source tree
+    cp -pR tcl$PG_VERSION_TCL.$PG_MINOR_VERSION_TCL tcl.osx || _die "Failed to copy the source code (source/tcl-$PG_VERSION_TCL.$PG_MINOR_VERSION_TCL)"
+    tar -jcvf tcl.tar.bz2 tcl.osx || _die "Failed to create the archive (source/tcl.tar.bz2)"
+   
+    if [ -e distribute-$PG_VERSION_DIST_PYTHON ];
+    then
+      echo "Removing existing distribute-$PG_VERSION_DIST_PYTHON source directory"
+      rm -rf distribute-$PG_VERSION_DIST_PYTHON  || _die "Couldn't remove the existing ditribute-$PG_VERSION_DIST_PYTHON source directory (source/distribute-$PG_VERSION_DIST_PYTHON)"
+    fi
+
+    echo "Unpacking distribute python source..."
+    extract_file  ../../tarballs/distribute-$PG_VERSION_DIST_PYTHON || exit 1
+ 
+    if [ -e distribute-python.osx ];
+    then
+      echo "Removing existing python.osx source directory"
+      rm -rf distribute-python.osx  || _die "Couldn't remove the existing distribute-python.osx source directory (source/distribute-python.osx)"
+    fi
+    cp -pR distribute-$PG_VERSION_DIST_PYTHON distribute-python.osx || _die "Failed to copy the source code (source/python-$PG_VERSION_PYTHON)"             
+    tar -jcvf distribute-python.tar.bz2 distribute-python.osx || _die "Failed to create the archive (source/distribute-python.tar.bz2)"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/languagepack/staging/osx ];
@@ -32,9 +97,22 @@ _prep_languagepack_osx() {
 
     echo "Creating staging directory ($WD/languagepack/staging/osx)"
     mkdir -p $WD/languagepack/staging/osx || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/languagepack/staging/osx || _die "Couldn't set the permissions on the staging directory"
-    
 
+    echo "Copy the sources to the build VM"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/languagepack/source" || _die "Failed to create the source dircetory on the build VM"
+    scp python.tar.bz2 perl.tar.bz2 tcl.tar.bz2 distribute-python.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/languagepack/source/ || _die "Failed to copy the source archives to build VM"
+
+    echo "Copy the scripts required to build VM"
+    cd $WD/languagepack
+    scp $WD/versions.sh $WD/common.sh $WD/settings.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
+
+    echo "Extracting the archives"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/languagepack/source; tar -jxvf python.tar.bz2" || _die "Failed to extract python archive on build VM"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/languagepack/source; tar -jxpvf perl.tar.bz2" || _die "Failed to extract perl archive on build VM"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/languagepack/source; tar -jxvf tcl.tar.bz2" || _die "Failed to extract tcl archive on build VM"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/languagepack/source; tar -jxvf distribute-python.tar.bz2" || _die "Failed to extract distribute-python archive on build VM"
+   
+    echo "END PREP LanguagePack OSX" 
 }
 
 ################################################################################
@@ -42,8 +120,141 @@ _prep_languagepack_osx() {
 ################################################################################
 
 _build_languagepack_osx() {
+    
+   echo "BEGIN BUILD LanguagePack OSX" 
+
+   cd $WD
+   cat <<EOT-LANGUAGEPACK > $WD/languagepack/build-languagepack.sh
+   source ../settings.sh
+   source ../versions.sh
+   source ../common.sh
+    
+   install_path="$PG_LANGUAGEPACK_OSX"
+     
+   PERL_INSTALL_PATH="\$install_path/Perl-\$PG_VERSION_PERL" #$(echo $PG_VERSION_PERL | cut -d'.' -f1,2)"
+   PYTHON_INSTALL_PATH="\$install_path/Python-\$PG_VERSION_PYTHON" #$(echo $PG_VERSION_PYTHON | cut -d'.' -f1,2)"
+   TCL_TK_INSTALL_PATH="\$install_path/Tcl-\$PG_VERSION_TCL" #$(echo $PG_VERSION_TCL_TK | cut -d'.' -f1,2)"
+    
+   rm -rf \$PERL_INSTALL_PATH
+   rm -rf \$PYTHON_INSTALL_PATH
+   rm -rf \$TCL_TK_INSTALL_PATH
+   rm -f $PG_LANGUAGEPACK_OSX/LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2
+
+   cd $PG_PATH_OSX/languagepack/source/tcl.osx/unix
+
+   export LD_RUN_PATH=\$TCL_TK_INSTALL_PATH/lib
+
+   echo "Building TCL..."
+   
+   CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" LDFLAGS="-L\$TCL_TK_INSTALL_PATH/lib -arch i386 -arch x86_64" ./configure --prefix=\$TCL_TK_INSTALL_PATH --enable-threads --enable-shared || _die "Failed to configure tcl"
+   CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" LDFLAGS="-L\$TCL_TK_INSTALL_PATH/lib -arch i386 -arch x86_64" make || _die "Failed to make tcl"
+   make install || _die "Failed to make install tcl"
+
+     echo "Setting RPATHs..."
+
+     cd \$TCL_TK_INSTALL_PATH/bin
+     find * -type f | xargs file | grep ELF | cut -f1 -d":" | xargs -I{} chrpath -r "\$ORIGIN/../lib" {}
+
+     cd \$TCL_TK_INSTALL_PATH/lib
+     find * -type f | xargs file | grep ELF | cut -f1 -d":" | xargs -I{} chrpath -r "\$ORIGIN" {}
+     echo "Building Python..."
+    
+     cd $PG_PATH_OSX/languagepack/source/python.osx
+ 
+     export LDFLAGS="-L/opt/local/Current/lib -L\$TCL_TK_INSTALL_PATH/lib"
+     export CFLAGS="-I/opt/local/Current/include -I\$TCL_TK_INSTALL_PATH/include"
+     export CPPFLAGS=\$CFLAGS
+     export LD_LIBRARY_PATH="\$TCL_TK_INSTALL_PATH/lib:\$LD_LIBRARY_PATH"
+     #export LD_RUN_PATH="\$PYTHON_INSTALL_PATH/lib"
+     export MACOSX_DEPLOYMENT_TARGET=10.7
+     export PYTHONHOME="\$PYTHON_INSTALL_PATH"
+
+     CC='clang' CFLAGS="\$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" LDFLAGS="-L/opt/local/Current/lib \$PG_ARCH_OSX_LDFLAGS -arch i386 -arch x86_64" ./configure --prefix=\$PYTHON_INSTALL_PATH --enable-shared || _die "Failed to configure Python"
+     echo "-----------------------------------------------------"
+     echo "out put of Python Make started"
+     echo "-----------------------------------------------------"
+
+     PYTHONHOME=\$PYTHON_INSTALL_PATH CFLAGS="\$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" LDFLAGS="\$PG_ARCH_OSX_LDFLAGS -arch i386 -arch x86_64" make || _die "Failed to make Python"
+     echo "-----------------------------------------------------"
+     echo "out put of Python Make end"
+     echo "-----------------------------------------------------"
+     make install || _die "Failed to make install Python"
+    
+     echo "Setting RPATHs..."
+
+     cd \$PYTHON_INSTALL_PATH/bin
+     find * -type f | xargs file | grep ELF | cut -f1 -d":" | xargs -I{} chrpath -r "\$ORIGIN/../lib" {}
+     ln -sv python3 python
+
+     cd \$PYTHON_INSTALL_PATH/lib
+     find * -type f | xargs file | grep ELF | cut -f1 -d":" | xargs -I{} chrpath -r "\$ORIGIN" {}
+     echo "=============creating soft link for libpython3.3m.dylib==================="
+     cd \$PYTHON_INSTALL_PATH/lib/python\$PG_VERSION_PYTHON/config-\$PG_VERSION_PYTHON\m
+     ln -s ../../libpython\$PG_VERSION_PYTHON\m.dylib libpython\$PG_VERSION_PYTHON\m.dylib
+     echo "================end========================"
+     chmod 755 \$PYTHON_INSTALL_PATH/lib/libpython*dylib
+     cp -pR /opt/local/Current/lib/libiconv* \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current/lib/libintl* \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current/lib/libssl* \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current/lib/libcrypto* \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current/lib/libz* \$PYTHON_INSTALL_PATH/lib/
+
+     _rewrite_so_refs \$PYTHON_INSTALL_PATH bin @loader_path/..
+     _rewrite_so_refs \$PYTHON_INSTALL_PATH lib @loader_path/..
+     _rewrite_so_refs \$PYTHON_INSTALL_PATH lib/python\$PG_VERSION_PYTHON/lib-dynload @loader_path/../../..
+     
+     cd \$PYTHON_INSTALL_PATH/lib
+     echo "====================install name tool change=================="
+     install_name_tool -change libpython\$PG_VERSION_PYTHON\m.dylib \$PYTHON_INSTALL_PATH/lib/libpython\$PG_VERSION_PYTHON\m.dylib
+     echo "=========================end==============="
+     echo "Building Python Distribute..."
+     cd $PG_PATH_OSX/languagepack/source/distribute-python.osx
+     echo "============PATH Varaibles==========" 
+     export PYTHONHOME="\$PYTHON_INSTALL_PATH"
+     export PATH="\$PYTHON_INSTALL_PATH/bin:\$PATH"
+     export LD_LIBRARY_PATH="/opt/local/Current/lib:\$LD_LIBRARY_PATH"
+
+     python setup.py install --prefix=\$PYTHON_INSTALL_PATH 
+     easy_install pip
+     easy_install sphinx
+
+    echo "Building Perl..."
+    cd $PG_PATH_OSX/languagepack/source/perl.osx
+    export LD_RUN_PATH=\$PERL_INSTALL_PATH/lib
+
+    LDFLAGS='-L\$PERL_INSTALL_PATH/lib' ./Configure -ders -Dcc=gcc -Dusethreads -Duseithreads -Uinstallusrbinperl -Ulocincpth= -Uloclibpth= -A ccflags=-DUSE_SITECUSTOMIZE -A ccflags=-DPERL_RELOCATABLE_INCPUSH -A ccflags=-Duselargefiles -Accflags='\$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -fno-merge-constants' -Aldflags='-arch i386 -arch x86_64' -Duseshrplib -Dprefix=\$PERL_INSTALL_PATH -Dprivlib=\$PERL_INSTALL_PATH/lib -Darchlib=\$PERL_INSTALL_PATH/lib -Dsiteprefix=\$PERL_INSTALL_PATH/site -Dsitelib=\$PERL_INSTALL_PATH/site/lib -Dsitearch=\$PERL_INSTALL_PATH/site/lib || _die "Failed to configure Perl"
+    make || _die "Failed to Make Perl"
+    make install || _die "Failed to make install Perl"   
+    
+    echo "Setting RPATHs..."
+    cd \$PERL_INSTALL_PATH/bin
+    find * -type f | xargs file | grep ELF | cut -f1 -d":" | xargs -I{} chrpath -r "\$ORIGIN/../lib/CORE" {}
+    cd \$PERL_INSTALL_PATH/lib
+    find * -type f | xargs file | grep ELF | cut -f1 -d":" | xargs -I{} chrpath -r "\$ORIGIN" {}
+    echo "copying Tcl,Python,Perl instalation directories into Staging...."
+    
+    #cp -pR \$PYTHON_INSTALL_PATH \$PG_PATH_OSX/languagepack/staging/osx
+    #cp -pR \$PERL_INSTALL_PATH \$PG_PATH_OSX/languagepack/staging/osx
+    #cp -pR \$TCL_TK_INSTALL_PATH \$PG_PATH_OSX/languagepack/staging/osx
+
+    cd \$install_path
+    tar -jcvf LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 *
+
+EOT-LANGUAGEPACK
 
     cd $WD
+    scp languagepack/build-languagepack.sh $PG_SSH_OSX:$PG_PATH_OSX/languagepack
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/languagepack; sh ./build-languagepack.sh" || _die "Failed to build the languagepack on OSX VM"
+
+    # Copy the staging to controller to build the installers
+    scp $PG_SSH_OSX:$PG_LANGUAGEPACK_OSX/LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 $WD/languagepack/staging/osx || _die "Failed to copy the binaries to controller"
+
+    cd languagepack/staging/osx
+    tar -jxvf LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 || _die "Failed to extract the staging binary archive on controller"
+    rm -f LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2
+
+    echo "END BUILD LanguagePack OSX" 
+
 }
 
 
@@ -52,12 +263,15 @@ _build_languagepack_osx() {
 ################################################################################
 
 _postprocess_languagepack_osx() {
- 
-    cp -R $EDB_OSX_BLD/LanguagePack/* $WD/languagepack/staging/osx  || _die "Failed to copy the languagepack Source into the staging directory"
-    
-    cd $WD/languagepack
-    # mv staging/osx/languagepack.config staging/osx/languagepack-$EDB_VERSION_LANGUAGEPACK.config || _die "Failed to rename the config file"
 
+    echo "BEGIN POST LanguagePack OSX"
+
+    cd $WD/languagepack
+
+    pushd $WD/languagepack/staging/osx
+    generate_3rd_party_license "languagepack"
+    popd
+ 
     if [ -f installer_1.xml ]; then
         rm -f installer_1.xml
     fi
@@ -67,28 +281,30 @@ _postprocess_languagepack_osx() {
         _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByRootUser>" installer_1.xml
         # Build the installer (for the root privileges required)
         echo Building the installer with the root privileges required
-        "$EDB_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
-        cp $WD/output/edb_languagepack-$EDB_VERSION_LANGUAGEPACK-$EDB_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/Language\ Pack $WD/risePrivileges || _die "Failed to copy the privileges escalation applet"
+        "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
+        cp $WD/output/edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/Language\ Pack $WD/risePrivileges || _die "Failed to copy the privileges escalation applet"
         echo "Removing the installer previously generated installer"
-        rm -rf $WD/output/edb_languagepack-$EDB_VERSION_LANGUAGEPACK-$EDB_BUILDNUM_LANGUAGEPACK-osx.app
+        rm -rf $WD/output/edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app
     fi
 
     # Build the installer
     echo "Building the installer with the root privileges not required"
-    "$EDB_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
+    "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
     # Using own scripts for extract-only mode
-    cp -f $WD/risePrivileges $WD/output/edb_languagepack-$EDB_VERSION_LANGUAGEPACK-$EDB_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/Language\ Pack
-    chmod a+x $WD/output/edb_languagepack-$EDB_VERSION_LANGUAGEPACK-$EDB_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/Language\ Pack
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/edb_languagepack-$EDB_VERSION_LANGUAGEPACK-$EDB_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ Language\ Pack $WD/output/edb_languagepack-$EDB_VERSION_LANGUAGEPACK-$EDB_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with Language\ Pack ($WD/output/edb_languagepack-$EDB_VERSION_LANGUAGEPACK-$EDB_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/installbuilder.sh)"
-    chmod a+x $WD/output/edb_languagepack-$EDB_VERSION_LANGUAGEPACK-$EDB_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/installbuilder.sh
+    cp -f $WD/risePrivileges $WD/output/edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/Language\ Pack
+    chmod a+x $WD/output/edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/Language\ Pack
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ Language\ Pack $WD/output/edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with Language\ Pack ($WD/output/edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/installbuilder.sh)"
+    chmod a+x $WD/output/edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/installbuilder.sh
 
     # Zip up the output
     cd $WD/output
-    zip -r edb_languagepack-$EDB_VERSION_LANGUAGEPACK-$EDB_BUILDNUM_LANGUAGEPACK-osx.zip edb_languagepack-$EDB_VERSION_LANGUAGEPACK-$EDB_BUILDNUM_LANGUAGEPACK-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf edb_languagepack-$EDB_VERSION_LANGUAGEPACK-$EDB_BUILDNUM_LANGUAGEPACK-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    zip -r edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.zip edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
+    
+    echo "END POST LanguagePack OSX"
 }
 
