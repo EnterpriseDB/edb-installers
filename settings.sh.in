@@ -99,9 +99,9 @@ PG_JAVA_HOME_WINDOWS="C:\\\\jdk1.7.0_51"
 PG_QTPATH_WINDOWS=C:\\\\QtSDK
 PG_SDK_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_SIGNTOOL_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
-PG_PERL_WINDOWS=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\i386\\\\Perl-5.16
-PG_PYTHON_WINDOWS=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\i386\\\\Python-3.3
-PG_TCL_WINDOWS=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\i386\\\\Tcl-8.5
+PG_PERL_WINDOWS=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\i386\\\\Perl-5.16
+PG_PYTHON_WINDOWS=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\i386\\\\Python-3.3
+PG_TCL_WINDOWS=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\i386\\\\Tcl-8.5
 PLATFORM_TOOLSET=/p:PlatformToolset=v120_xp
 
 PG_SSH_WINDOWS_X64=buildfarm@bf5-windows-x64.ox.uk.enterprisedb.com
@@ -115,9 +115,9 @@ PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild64"
 PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets-2.8.12"
 PG_JAVA_HOME_WINDOWS_X64="C:\\\\Program Files\\\\Java\\\\jdk1.7.0_51"
 PG_CMAKE_WINDOWS_X64="C:\\\\cmake-x86"
-PG_PERL_WINDOWS_X64=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\x64\\\\Perl-5.16
-PG_PYTHON_WINDOWS_X64=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\x64\\\\Python-3.3
-PG_TCL_WINDOWS_X64=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4\\\\x64\\\\Tcl-8.5
+PG_PERL_WINDOWS_X64=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\x64\\\\Perl-5.16
+PG_PYTHON_WINDOWS_X64=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\x64\\\\Python-3.3
+PG_TCL_WINDOWS_X64=C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\x64\\\\Tcl-8.5
 PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_SIGNTOOL_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
 
