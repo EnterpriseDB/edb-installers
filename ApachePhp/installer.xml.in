@@ -339,7 +339,7 @@ EOF
         </throwError>
       </actionList>
       <ruleList>
-        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
       </ruleList>
     </actionGroup>
 
@@ -1042,6 +1042,17 @@ EOF
   <!-- Postinstallation actions -->
   <postInstallationActionList>
     <!-- WIN| Substituting Apache-Home in the install/uninstall service script -->
+    <actionGroup>
+      <actionList>
+        <registryGet wowMode="32" name="Base Directory" variable="python_tmp_var"
+          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\PG_VERSION_LANGUAGEPACK"/>
+        <setInstallerVariable name="python_home" value="${python_tmp_var}\Python-PG_VERSION_PYTHON" persist="1"/>
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
     <substitute>
       <files>${installdir}/installer/ApachePhp/install-apache.bat</files>
          <substitutionList>
@@ -1049,6 +1060,10 @@ EOF
                <pattern>@@APACHE_HOME@@</pattern>
                <value>${installdir}\apache</value>
             </substitution>
+            <substitution>    
+              <pattern>@@LP_PYTHON_HOME@@</pattern>
+              <value>${python_home}</value>               
+            </substitution> 
          </substitutionList>
          <ruleList>
             <compareText>
@@ -1065,6 +1080,10 @@ EOF
                <pattern>@@APACHE_HOME@@</pattern>
                <value>${installdir}\apache</value>
             </substitution>
+            <substitution>
+              <pattern>@@LP_PYTHON_HOME@@</pattern>
+              <value>${python_home}</value>               
+            </substitution> 
          </substitutionList>
          <ruleList>
             <compareText>
@@ -1081,6 +1100,10 @@ EOF
                <pattern>@@APACHE_HOME@@</pattern>
                <value>${installdir}\apache</value>
             </substitution>
+            <substitution>
+              <pattern>@@LP_PYTHON_HOME@@</pattern>
+              <value>${python_home}</value>               
+            </substitution> 
          </substitutionList>
          <ruleList>
             <compareText>
@@ -1155,34 +1178,6 @@ EOF
       </ruleList>
     </actionGroup>
 
-    <actionGroup>
-      <actionList>
-        <registryGet wowMode="32" name="Base Directory" variable="python_tmp_var"
-          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\PG_VERSION_LANGUAGEPACK"/>
-        <setInstallerVariable name="python_home" value="${python_tmp_var}\Python-PG_VERSION_PYTHON" persist="1"/>
-        <logMessage text="Setting Python path in start-apache.bat"/>
-        <substitute files="${installdir}\apache\installer\ApachePhp\start-apache.bat">
-          <substitutionList>
-            <substitution>
-              <pattern>@@LP_PYTHON_HOME@@</pattern>
-              <value>${python_home}</value>
-            </substitution>
-          </substitutionList>
-        </substitute>
-        <substitute files="${installdir}\apache\installer\ApachePhp\install-apache.bat">
-          <substitutionList>
-            <substitution>
-              <pattern>@@LP_PYTHON_HOME@@</pattern>
-              <value>${python_home}</value>
-            </substitution>
-          </substitutionList>
-        </substitute>
-      </actionList>
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="windows"/>
-      </ruleList>
-    </actionGroup>
-
     <!-- LIN | MAC: Adding text for mod_wsgi config in apache -->
     <addTextToFile>
       <file>${installdir}/apache/conf/httpd.conf</file>
@@ -1201,7 +1196,7 @@ LoadModule wsgi_module ${installdir}/apache/modules/mod_wsgi.so
     <addTextToFile>
       <file>${installdir}\apache\conf\httpd.conf</file>
       <text>
-LoadModule wsgi_module "${installdir.dos}\apache\modules\mod_wsgi-py33-VC10.so"
+LoadModule wsgi_module "${installdir}\apache\modules\mod_wsgi-py33-VC10.so"
       </text>
       <ruleList>
         <compareText>
@@ -1540,12 +1535,20 @@ include conf\addons\*.conf
     <!-- Install Apache as Service -->
     <actionGroup>
       <actionList>
+        <registrySet>
+          <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EnterpriseDBApachePhp</key>
+          <name>Environment</name>
+          <type>REG_MULTI_SZ</type>
+          <value>PATH=${python_home.unix};%PATH% PYTHONHOME=${python_home.unix} PYTHONPATH=${python_home.unix}</value>
+        </registrySet>
+        <wait ms="3000"/>
         <runProgram>
-          <customErrorMessage>${msg(error.install.apache)}</customErrorMessage>
+          <showMessageOnError>0</showMessageOnError>
           <program>${installdir}\installer\ApachePhp\install-apache.bat</program>
           <programArguments/>
           <workingDirectory>${installdir}\installer\ApachePhp</workingDirectory>
         </runProgram>
+        <wait ms="3000"/>
       </actionList>
       <ruleList>
         <compareText>
@@ -1651,12 +1654,12 @@ include conf\addons\*.conf
     <actionGroup>
       <actionList>
         <!-- WIN - Starting Apache -->
-        <runProgram>
-          <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
-          <program>wscript</program>
-          <programArguments>//NOLOGO "${installdir}\installer\ApachePhp\startApache.vbs" "${installdir}"</programArguments>
-          <workingDirectory>${installdir}\installer\ApachePhp</workingDirectory>
-        </runProgram>
+	<runProgram>
+	  <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
+	  <program>sc</program>
+	  <programArguments>start EnterpriseDBApachePHP</programArguments>
+	  <abortOnError>0</abortOnError>
+	</runProgram>
       </actionList>
       <ruleList>
         <compareText>

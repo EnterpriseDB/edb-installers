@@ -6,6 +6,10 @@ echo       If you have not started this as a administrator,
 echo       then it will not run successfully.
 
 
+SET PYTHONHOME="@@LP_PYTHON_HOME@@"
+SET PYTHONPATH="@@LP_PYTHON_HOME@@"
+SET PATH="@@LP_PYTHON_HOME@@";"@@APACHE_HOME@@\bin";%PATH%
+
 "@@APACHE_HOME@@\bin\httpd.exe" -k stop -n "EnterpriseDB ApachePHP"
 "@@APACHE_HOME@@\bin\httpd.exe" -k uninstall -n "EnterpriseDB ApachePHP"
 
