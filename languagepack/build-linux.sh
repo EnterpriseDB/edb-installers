@@ -40,7 +40,7 @@ _prep_languagepack_linux() {
     echo "Creating staging/install directory ($PG_LANGUAGEPACK_INSTALL_DIR_LINUX)"
     mkdir -p $WD/languagepack/staging/linux || _die "Couldn't create the staging directory"
     ssh $PG_SSH_LINUX "mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_LINUX" || _die "Couldn't create the install directory"
-    chmod ugo+w $$WD/languagepack/staging/linux || _die "Couldn't set the permissions on the staging directory"
+    chmod ugo+w $WD/languagepack/staging/linux || _die "Couldn't set the permissions on the staging directory"
     ssh $PG_SSH_LINUX "chmod ugo+w $PG_LANGUAGEPACK_INSTALL_DIR_LINUX" || _die "Couldn't set the permissions on the install directory"
 }
 
