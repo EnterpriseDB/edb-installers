@@ -152,8 +152,8 @@ EOT
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/bin/libpq.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libpq.dll)"
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/ssleay32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (ssleay32.dll)"
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS//bin/libeay32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libeay32.dll)"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libiconv.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libiconv.dll)"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/intl.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (intl.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libiconv-2.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libiconv-2.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libintl-8.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libintl-8.dll)"
     scp $PG_SSH_WINDOWS:$PG_WXWIN_WINDOWS/lib/vc_dll/wxbase28u_vc_custom.dll $STAGING_DIR/bin || _die "Failed to copy a dependency DLL on the windows build host (wxbase28u_vc_custom.dll)"
     
     echo "END BUILD pgAgent Windows"

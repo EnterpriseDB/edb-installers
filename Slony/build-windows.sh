@@ -32,6 +32,7 @@ _prep_Slony_windows() {
 
     cd Slony.windows
     patch -p1 <$WD/tarballs/slony_for_VS12.patch || _die "Failed to apply patch."
+    patch -p0 <$WD/tarballs/slony_pg95.patch || _die "Failed to apply patch for pg95."
     cd $WD/Slony/source
 
     echo "Archieving Slony sources"
