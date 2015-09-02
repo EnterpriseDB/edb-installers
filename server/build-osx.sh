@@ -261,6 +261,9 @@ EOT
     # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
      ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging/osx/plperl.so $PG_PATH_OSX/server/staging/osx/lib/postgresql/plperl.so"
 
+    # Changing loader path of plpython3.so
+     ssh $PG_SSH_OSX "install_name_tool -change libpython$PG_VERSION_PYTHON\m.dylib $PG_PYTHON_OSX/lib/libpython$PG_VERSION_PYTHON\m.dylib $PG_PATH_OSX/server/staging/osx/lib/postgresql/plpython3.so"
+
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/scripts/osx/getlocales; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -o getlocales.osx -O0 getlocales.c"  || _die "Failed to build getlocales utility"
 
     # Delete the old regress dir from regression setup
