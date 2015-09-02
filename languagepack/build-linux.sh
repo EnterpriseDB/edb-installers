@@ -50,7 +50,7 @@ _prep_languagepack_linux() {
 
 _build_languagepack_linux() {
 
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/languagepack/source/languagepack.linux; export SSL_INST=/opt/local/Current; ./languagepack.sh -n 5.9 -p 3.3.4 -d 0.6.49 -t 8.5.15 -P 5.16.3 -v $PG_VERSION_LANGUAGEPACK -b $PG_PGHOME_LINUX/bin -i $PG_LANGUAGEPACK_INSTALL_DIR_LINUX" || _die "Failed to build languagepack"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/languagepack/source/languagepack.linux; export SSL_INST=/opt/local/Current; ./languagepack.sh -n 5.9 -p 3.3.4 -d 0.6.49 -t 8.5.15 -P 5.16.3 -v $PG_VERSION_LANGUAGEPACK -b $PG_PGHOME_LINUX -i $PG_LANGUAGEPACK_INSTALL_DIR_LINUX" || _die "Failed to build languagepack"
 }
 
 
