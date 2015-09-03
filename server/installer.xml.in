@@ -3260,7 +3260,7 @@ EOF
                     <showMessageOnError>0</showMessageOnError>
                     <ruleList>
                         <compareText>
-                            <logic>equals</logic>
+                            <logic>contains</logic>
                             <text>${platform_name}</text>
                             <value>linux</value>
                         </compareText>
