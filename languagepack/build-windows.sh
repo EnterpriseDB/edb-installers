@@ -101,11 +101,11 @@ _prep_languagepack_windows() {
     chmod ugo+w $WD/languagepack/staging/$ARCH || _die "Couldn't set the permissions on the staging directory"
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q languagepack.zip"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q languagepack.$ARCH"
+    ##ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q languagepack.$ARCH"
     
     echo "Copying languagepack sources to Windows VM"
     scp languagepack.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the languagepack archive to windows VM (languagepack.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip languagepack.zip" || _die "Couldn't extract languagepack archive on windows VM (languagepack.zip)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c \"rd /S /Q languagepack.$ARCH & unzip languagepack.zip\"" || _die "Couldn't extract languagepack archive on windows VM (languagepack.zip)"
 
     echo "END PREP languagepack Windows"
 }
