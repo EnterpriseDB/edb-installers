@@ -117,13 +117,11 @@ _build_languagepack_windows() {
     if [ "$ARCH" = "x32" ];
     then
        ARCH="windows-x32"
-       PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\i386"
     else
        ARCH="windows-x64"
        PG_SSH_WINDOWS=$PG_SSH_WINDOWS_X64
        PG_PATH_WINDOWS=$PG_PATH_WINDOWS_X64
        PG_PGBUILD_WINDOWS=$PG_PGBUILD_WINDOWS_X64
-       PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\x64"
     fi
 
     cd $WD/languagepack/scripts/$ARCH
@@ -188,14 +186,12 @@ _postprocess_languagepack_windows() {
     then
        ARCH="windows-x32"
        OS="windows"
-       PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\i386"
     else
        ARCH="windows-x64"
        OS=$ARCH
        PG_SSH_WINDOWS=$PG_SSH_WINDOWS_X64
        PG_PATH_WINDOWS=$PG_PATH_WINDOWS_X64
        PG_PGBUILD_WINDOWS=$PG_PGBUILD_WINDOWS_X64
-       PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\x64"
  fi
 
     scp -r $PG_SSH_WINDOWS:$PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS\\\\Tcl-8.5 $WD/languagepack/staging/$ARCH/Tcl-8.5 || _die "Failed to get Tcl-8.5 from windows build host"
