@@ -130,7 +130,7 @@ pip install Flask-WTF
 pip install simplejson
 pip install Pillow
 pip install pytz
-pip install sphinx
+pip install sphinx "babel<2.0"
 pip install cython
 
 ECHO ------------------------
