@@ -86,7 +86,10 @@ _prep_languagepack_windows() {
     zip -r languagepack.zip languagepack.$ARCH || _die "Failed to zip the languagepack source"
     chmod -R ugo+w languagepack.$ARCH || _die "Couldn't set the permissions on the source directory"
 
-    # Remove any existing staging directory that might exist, and create a clean one
+    # Remove any existing staging/install directory that might exist, and create a clean one
+    echo "Removing existing install directory"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q $PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS"
+
     if [ -e $WD/languagepack/staging/$ARCH ];
     then
       echo "Removing existing staging directory"
