@@ -240,6 +240,7 @@ IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 @COPY "%PGBUILD%\bin\libeay32.dll" php.staging || echo Failed to copy OpenSSL\bin\libeay32.dll && EXIT -1
 
 @COPY "%PGBUILD%\bin\libintl-8.dll" php.staging || echo Failed to copy gettext\bin\libintl-8.dll && EXIT -1
+@COPY "%PGBUILD%\bin\libintl-8.dll" php.staging\intl.dll || echo Failed to copy gettext\bin\intl.dll && EXIT -1
 @COPY "%PGBUILD%\bin\libiconv-2.dll" php.staging || echo Failed to copy gettext\bin\libiconv-2.dll && EXIT -1
 @COPY "%PGBUILD%\bin\libxml2.dll" php.staging || echo Failed to copy libxml2\bin\libxml2.dll && EXIT -1
 @COPY "%PGBUILD%\bin\libxslt.dll" php.staging || echo Failed to copy libxslt\bin\libxslt.dll && EXIT -1
