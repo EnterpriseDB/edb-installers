@@ -73,6 +73,7 @@ _prep_ApachePhp_osx() {
     cd $WD/ApachePhp
     tar -jcvf scripts.tar.bz2 scripts/osx
     scp $WD/ApachePhp/scripts.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/ApachePhp || _die "Failed to copy the scripts to build VM"
+    scp $WD/versions.sh $WD/common.sh $WD/settings.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
 
     echo "Extracting the archives"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/ApachePhp/source; tar -jxvf apache.tar.bz2"

@@ -27,6 +27,7 @@ _prep_PostGIS_osx() {
 
     # Grab a copy of the postgis source tree
     cp -R postgis-$PG_VERSION_POSTGIS/* postgis.osx || _die "Failed to copy the source code (PostGIS/source/postgis-$PG_VERSION_POSTGIS)"
+    tar -jcvf postgis.tar.bz2 postgis.osx
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/PostGIS/staging/osx ];
@@ -42,15 +43,32 @@ _prep_PostGIS_osx() {
     POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
 
     echo "Removing existing PostGIS files from the PostgreSQL directory"
-    cd $WD/server/staging
-    rm -f bin/shp2pgsql bin/pgsql2shp || _die "Failed to remove postgis binary files"
-    rm -f lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so || _die "Failed to remove postgis library files"
-    rm -f share/postgresql/contrib/spatial_ref_sys.sql share/postgresql/contrib/postgis.sql || _die "Failed to remove postgis share files"
-    rm -f share/postgresql/contrib/uninstall_postgis.sql  share/postgresql/contrib/postgis_upgrade*.sql  || _die "Failed to remove postgis share files"
-    rm -f share/postgresql/contrib/postgis_comments.sql || _die "Failed to remove postgis share files"
-    rm -f doc/postgresql/postgis/postgis.html doc/postgresql/postgis/README.postgis || _die "Failed to remove documentation"
-    rm -f share/man/man1/pgsql2shp.1 share/man/man1/shp2pgsql.1 || _die "Failed to remove man pages"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/staging"
+    ssh $PG_SSH_OSX "rm -f bin/shp2pgsql bin/pgsql2shp" || _die "Failed to remove postgis binary files"
+    ssh $PG_SSH_OSX "rm -f lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so" || _die "Failed to remove postgis library files"
+    ssh $PG_SSH_OSX "rm -f share/postgresql/contrib/spatial_ref_sys.sql share/postgresql/contrib/postgis.sql" || _die "Failed to remove postgis share files"
+    ssh $PG_SSH_OSX "rm -f share/postgresql/contrib/uninstall_postgis.sql  share/postgresql/contrib/postgis_upgrade*.sql"  || _die "Failed to remove postgis share files"
+    ssh $PG_SSH_OSX "rm -f share/postgresql/contrib/postgis_comments.sql" || _die "Failed to remove postgis share files"
+    ssh $PG_SSH_OSX "rm -f doc/postgresql/postgis/postgis.html doc/postgresql/postgis/README.postgis" || _die "Failed to remove documentation"
+    ssh $PG_SSH_OSX "rm -f share/man/man1/pgsql2shp.1 share/man/man1/shp2pgsql.1" || _die "Failed to remove man pages"
     
+    # Remove existing source and staging directories
+    ssh $PG_SSH_OSX "if [ -d $PG_PATH_OSX/PostGIS ]; then rm -rf $PG_PATH_OSX/PostGIS/*; fi" || _die "Couldn't remove the existing files on OS X build server"
+
+    echo "Copy the sources to the build VM"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/PostGIS/source" || _die "Failed to create the source dircetory on the build VM"
+    scp $WD/PostGIS/source/postgis.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/PostGIS/source/ || _die "Failed to copy the source archives to build VM"
+    
+      echo "Copy the scripts required to build VM"
+    cd $WD/PostGIS
+    tar -jcvf scripts.tar.bz2 scripts/osx
+    scp $WD/PostGIS/scripts.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/PostGIS || _die "Failed to copy the scripts to build VM"
+    scp $WD/versions.sh $WD/common.sh $WD/settings.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
+
+    echo "Extracting the archives"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/PostGIS/source; tar -jxvf postgis.tar.bz2"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/PostGIS; tar -jxvf scripts.tar.bz2"
+
     cd $WD
 
     echo "END PREP PostGIS OSX"
@@ -310,6 +328,15 @@ EOT-POSTGIS
     cd $WD
     scp PostGIS/build-postgis.sh $PG_SSH_OSX:$PG_PATH_OSX/PostGIS
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/PostGIS; sh ./build-postgis.sh" || _die "Failed to build PostGIS on OSX"
+
+    # Copy the staging to controller to build the installers
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/PostGIS/staging/osx; tar -jcvf postgis-staging.tar.bz2 *" || _die "Failed to create archive of the postgis staging"
+    scp $PG_SSH_OSX:$PG_PATH_OSX/PostGIS/staging/osx/postgis-staging.tar.bz2 $WD/PostGIS/staging/osx || _die "Failed to scp postgis staging"
+
+    # Extract the staging archive
+    cd $WD/PostGIS/staging/osx
+    tar -jxvf postgis-staging.tar.bz2 || _die "Failed to extract the postgis staging archive"
+    rm -f postgis-staging.tar.bz2
     echo "END BUILD PostGIS OSX"
  
 }
@@ -375,15 +402,24 @@ _postprocess_PostGIS_osx() {
     cp -f $WD/resources/extract_installbuilder.osx $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/Contents/MacOS/installbuilder.sh
     _replace @@PROJECTNAME@@ PostGIS_PG$PG_CURRENT_VERSION $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
     chmod a+x $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/Contents/MacOS/installbuilder.sh
+    
+    cd $WD/output
+    
+    # Copy the versions file to signing server
+    scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
+
+    # Scp the app bundle to the signing machine for signing
+    tar -jcvf postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app.tar.bz2 postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf postgis*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
+    scp postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app.tar.bz2  $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/
 
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; rm -rf postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app; mv postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx-signed.app  postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app; mv postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx-signed.app  postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app;" || _die "could not move the signed app"
 
-    # Zip up the output
-    cd $WD/output
-    zip -r postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    # Archive the .app and copy back to controller
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.app" || _die "Failed to zip the installer bundle"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
     
     cd $WD
 
