@@ -142,6 +142,9 @@ PG_QMAKE_SOLARIS_SPARC=/usr/local.sun/bin/qmake
 
 
 PG_PATH_OSX=`pwd`
+PG_SSH_OSX_SIGN=buildfarm@bf-osx-sign.ox.uk.enterprisedb.com
+PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_93.auto
+PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx
 PG_ANT_HOME_OSX=/usr
 PG_DOCBOOK_OSX=/usr/local/docbook-xsl-1.77.1
@@ -164,5 +167,5 @@ PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.5 -headerpad_ma
 
 # The InstallBuilder main binary.
 PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 8.6.0/bin/Builder.app/Contents/MacOS/installbuilder.sh"
-
+KEYCHAIN_PASSWD="XXXXXX"
 
