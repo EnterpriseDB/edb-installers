@@ -92,6 +92,9 @@ PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets"
 PG_CMAKE_WINDOWS_X64="C:\\\\pgBuild\\\\CMake2.8"
 
 PG_PATH_OSX=`pwd`
+PG_SSH_OSX_SIGN=buildfarm@bf-osx-sign.ox.uk.enterprisedb.com
+PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_90.auto
+PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging/osx
 PG_ANT_HOME_OSX=/usr/local/apache-ant-1.7.1
 PG_DOCBOOK_OSX=/opt/local/share/xsl/docbook-xsl
@@ -108,5 +111,5 @@ PG_ARCH_OSX_LDFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-m
 
 # The InstallBuilder main binary.
 PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 8.6.0/bin/Builder.app/Contents/MacOS/installbuilder.sh"
-
+KEYCHAIN_PASSWD="XXXXX"
 

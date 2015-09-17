@@ -172,10 +172,25 @@ _postprocess_stackbuilderplus_osx() {
     _replace @@PROJECTNAME@@ StackBuilderPlus $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh
     chmod a+x $WD/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/Contents/MacOS/installbuilder.sh
 
-    # Zip up the output
     cd $WD/output
-    zip -r stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app/ || _die "Failed to remove the unpacked installer bundle"
-    
+
+    # Copy the versions file to signing server
+    scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
+
+    # Scp the app bundle to the signing machine for signing
+    tar -jcvf stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app.tar.bz2 stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app || _die "Failed to create the archive."
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf stackbuilderplus*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
+    scp stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/ || _die "Failed to copy the archive to sign server."
+    rm -fr stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app* || _die "Failed to clean the output directory."
+
+    # Sign the app
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX/versions.sh; tar -jxvf stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app; mv stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx-signed.app  stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app;" || _die "could not rename the signed app"
+
+    # Archive the .app and copy back to controller
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.app" || _die "Failed to zip the installer bundle"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/stackbuilderplus-$PG_VERSION_SBP-$PG_BUILDNUM_SBP-osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
+   
+    cd $WD 
 }
 
