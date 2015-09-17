@@ -365,6 +365,24 @@ _postprocess_server_osx() {
     mkdir server.img || _die "Failed to create DMG staging directory"
     mv postgresql-$PG_PACKAGE_VERSION-osx.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
     cp $WD/server/resources/README.osx server.img/README || _die "Failed to copy the installer README file into the DMG staging directory"
+
+    tar -jcvf server.img.tar.bz2 server.img || _die "Failed to create the archive."
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf server.img*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
+    scp server.img.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output || _die "Failed to copy the archive to sign server."
+    rm server.img.tar.bz2 || _die "Failed to remove serer.img"
+
+    # Copy the versions file to signing server
+    scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
+
+    # sign the .app, create the DMG
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh;  tar -jxvf server.img.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' --output ./server.img server.img/postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "Failed to sign the code"
+
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output/server.img; rm -rf postgresql-$PG_PACKAGE_VERSION-osx.app; mv postgresql-$PG_PACKAGE_VERSION-osx-signed.app postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "could not rename the signed app"
+
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; tar -jcvf server.img.tar.bz2 server.img;" || _die "faled to create server.img.tar.bz2 on $PG_SSH_OSX_SIGN"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/server.img.tar.bz2 $WD/output || _die "faled to copy server.img.tar.bz2 to $WD/output"
+    tar -jxvf server.img.tar.bz2
+
     hdiutil create -quiet -srcfolder server.img -format UDZO -volname "PostgreSQL $PG_PACKAGE_VERSION" -ov "postgresql-$PG_PACKAGE_VERSION-osx.dmg" || _die "Failed to create the disk image (output/postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
     rm -rf server.img
 
