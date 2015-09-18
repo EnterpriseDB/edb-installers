@@ -151,6 +151,20 @@ echo "##########################################################################
 echo " Build Packages"
 echo "############################################################################"
 
+# Package: LanguagePack
+if [ $PG_PACKAGE_LANGUAGEPACK = 1 ];
+then
+    cd $WD
+    source ./languagepack/build.sh
+
+    if [ $SKIPBUILD = 0 ];
+    then
+        _prep_languagepack || exit 1
+        _build_languagepack || exit 1
+    fi
+    _postprocess_languagepack || exit 1
+fi
+
 # Package: Server
 if [ $PG_PACKAGE_SERVER = 1 ];
 then
@@ -379,20 +393,6 @@ then
     fi
 
     _postprocess_updatemonitor || exit 1
-fi
-
-# Package: LanguagePack
-if [ $PG_PACKAGE_LANGUAGEPACK = 1 ];
-then
-    cd $WD
-    source ./languagepack/build.sh
-
-    if [ $SKIPBUILD = 0 ];
-    then
-        _prep_languagepack || exit 1
-        _build_languagepack || exit 1
-    fi
-    _postprocess_languagepack || exit 1
 fi
 
 # Check for private builds

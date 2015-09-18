@@ -32,6 +32,9 @@ _prep_psqlODBC_osx() {
     cd psqlODBC.osx
     patch -p0 < $WD/tarballs/psqlodbc-osx.patch
 
+    cd $WD/psqlODBC/source
+    tar -jcvf psqlodbc.tar.bz2 psqlODBC.osx
+
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/psqlODBC/staging/osx ];
     then
@@ -42,6 +45,23 @@ _prep_psqlODBC_osx() {
     echo "Creating staging directory ($WD/psqlODBC/staging/osx)"
     mkdir -p $WD/psqlODBC/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/psqlODBC/staging/osx || _die "Couldn't set the permissions on the staging directory"
+
+    # Remove existing source and staging directories
+    ssh $PG_SSH_OSX "if [ -d $PG_PATH_OSX/psqlODBC ]; then rm -rf $PG_PATH_OSX/psqlODBC/*; fi" || _die "Couldn't remove the existing files on OS X build server"
+
+    echo "Copy the sources to the build VM"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/psqlODBC/source" || _die "Failed to create the source dircetory on the build VM"
+    scp $WD/psqlODBC/source/psqlodbc.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/psqlODBC/source/ || _die "Failed to copy the source archives to build VM"
+
+    echo "Copy the scripts required to build VM"
+    cd $WD/psqlODBC
+    tar -jcvf scripts.tar.bz2 scripts/osx
+    scp $WD/psqlODBC/scripts.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/psqlODBC || _die "Failed to copy the scripts to build VM"
+    scp $WD/versions.sh $WD/common.sh $WD/settings.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
+
+    echo "Extracting the archives"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/psqlODBC/source; tar -jxvf psqlodbc.tar.bz2"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/psqlODBC; tar -jxvf scripts.tar.bz2"
     
     echo "END PREP psqlODBC OSX"
 }
@@ -129,6 +149,14 @@ EOT-PSQLODBC
     scp psqlODBC/build-psqlodbc.sh $PG_SSH_OSX:$PG_PATH_OSX/psqlODBC
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/psqlODBC; sh ./build-psqlodbc.sh" || _die "Failed to build the psqlODBC on OSX VM"
 
+    # Copy the staging to controller to build the installers
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/psqlODBC/staging/osx; tar -jcvf psqlodbc-staging.tar.bz2 *" || _die "Failed to create archive of the psqlodbc staging"
+    scp $PG_SSH_OSX:$PG_PATH_OSX/psqlODBC/staging/osx/psqlodbc-staging.tar.bz2 $WD/psqlODBC/staging/osx || _die "Failed to scp psqlodbc staging"
+
+    # Extract the staging archive
+    cd $WD/psqlODBC/staging/osx
+    tar -jxvf psqlodbc-staging.tar.bz2 || _die "Failed to extract the psqlodbc staging archive"
+    rm -f psqlodbc-staging.tar.bz2
     echo "END BUILD psqlODBC OSX"
 }
 
@@ -195,15 +223,24 @@ _postprocess_psqlODBC_osx() {
     cp -f $WD/resources/extract_installbuilder.osx $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh
     _replace @@PROJECTNAME@@ psqlODBC $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with psqlODBC ($WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh)"
     chmod a+x $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/Contents/MacOS/installbuilder.sh
+    
+    cd $WD/output
+
+    # Copy the versions file to signing server
+    scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
+
+    # Scp the app bundle to the signing machine for signing
+    tar -jcvf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app.tar.bz2 psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf psqlodbc*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
+    scp psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app.tar.bz2  $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/
 
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; rm -rf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app; mv psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx-signed.app  psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app; mv psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx-signed.app  psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app;" || _die "could not move the signed app"
 
-    # Zip up the output
-    cd $WD/output
-    zip -r psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.zip psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    # Archive the .app and copy back to controller
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.zip psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.app" || _die "Failed to zip the installer bundle"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
 
     cd $WD
     
