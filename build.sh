@@ -197,6 +197,22 @@ then
     _postprocess_ApachePhp || exit 1
 fi
 
+# Package: ApacheHTTPD
+if [ $PG_PACKAGE_APACHEHTTPD = 1 ];
+then
+    echo "### Package: ApacheHTTPD"
+    cd $WD
+    source ./ApacheHTTPD/build.sh
+
+    if [ $SKIPBUILD = 0 ];
+    then
+        _prep_ApacheHTTPD || exit 1
+        _build_ApacheHTTPD || exit 1
+    fi
+
+    _postprocess_ApacheHTTPD || exit 1
+fi
+
 # Package: phppgadmin
 if [ $PG_PACKAGE_PHPPGADMIN = 1 ];
 then

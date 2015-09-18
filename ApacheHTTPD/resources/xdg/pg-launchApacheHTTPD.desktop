@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=ApacheHTTPD
+Exec="INSTALL_DIR/scripts/launchApacheHTTPD.sh"
+Icon=pg-launchApacheHTTPD.png
+Terminal=false
+Type=Application
