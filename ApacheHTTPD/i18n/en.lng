@@ -1,0 +1,58 @@
+Installer.Welcome.Title=Setup %1$s
+
+Installer.Welcome.Text=Welcome to the %1$s Setup Wizard.
+
+Installer.Installing.Title=Installing ${product_fullname}
+
+upgrade.existing.installation.title=Existing Installation
+
+upgrade.existing.installation.description=An existing ApacheHTTPD installation has been found at ${installdir}. This installation will be upgraded.
+
+install.summary=ApacheHTTPD is a preconfigured Apache webserver with Python, compiled for use with PostgreSQL
+
+platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
+
+error.installing.runtimes=An error occured executing the Microsoft VC++ runtime installer.
+
+error.install.apache=Error Installing Apache
+
+error.configure.apachehttpd=Error Configuring Apache
+
+error.service.apachehttpd=Error Installing Apache as a Service
+
+error.uninstall.apache=Error Uninstalling Apache
+
+error.uninstall.stop.apache=Error Stopping Apache
+
+error.start.apache=Error Starting Apache
+
+apache.details.title=Apache Server Details
+
+apache.details.explanation=Please specify a port on which Apache will run
+
+config.port.invalid=The port number must be an integer between 1 and 65535.
+
+config.port.in.use=The specified port number is not available. Please enter a different port.
+
+warn.selinux=SELinux is enabled on the system, which might cause apache start/stop/restart to fail.\nPlease ensure proper access privileges to apache after installation.
+
+selinux.not.permissive=Please put SELinux in permissive mode and then run installer again. SELinux can be put in enforcing mode again after installation.
+
+apachehttpd.installdir.empty=The installation directory cannot be empty
+
+apachehttpd.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
+
+apachehttpd.installdir.error.unix=The installation directory cannot not be '/' or '/usr'.
+
+progress.text.creating.shortcuts=Creating Menu Shortcuts
+
+Installer.Installation.Finished.Title=Completed the %1$s Setup Wizard
+
+Installer.Installation.Finished.Text=EnterpriseDB is the leading provider of value-added products and services for the Postgres community.\n\nPlease visit our website at www.enterprisedb.com
+
+cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
+
+launch.apache24.doc=Would you like to visit the Apache 2.4 upgrade documentation link in the browser?
+
+languagepack.not.installed=LanguagePack ${req_lp_version} not installed or corrupted on your system. Please install LanguagePack ${req_lp_version} before installing ApacheHTTPD.
+

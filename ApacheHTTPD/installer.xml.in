@@ -1,0 +1,2118 @@
+<project>
+  <!-- Package details -->
+  <shortName>apachehttpd</shortName>
+  <fullName>ApacheHTTPD</fullName>
+  <version>PG_VERSION_APACHEHTTPD-PG_BUILDNUM_APACHEHTTPD</version>
+  <startMenuGroupName>${branding}</startMenuGroupName>
+  <!-- Product Specific Options -->
+  <productComments>ApacheHTTPD ${productVersion}, packaged by EnterpriseDB</productComments>
+  <productDisplayName>ApacheHTTPD ${productVersion}</productDisplayName>
+  <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
+  <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+  <!-- The options are used for RPM registration -->
+  <description>EnterpriseDB ${product_fullname}</description>
+  <summary>${msg(install.summary)}</summary>
+  <vendor>EnterpriseDB</vendor>
+  <release>1</release>
+
+  <!-- Installer Size -->
+  <width>550</width>
+  <height>400</height>
+
+  <!-- Misc options -->
+  <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+  <compressionAlgorithm>lzma</compressionAlgorithm>
+  <enableRollback>0</enableRollback>
+  <requireInstallationByRootUser>1</requireInstallationByRootUser>
+  <saveRelativePaths>1</saveRelativePaths>
+  <outputDirectory>../output</outputDirectory>
+  <uninstallerName>uninstall-${product_shortname}</uninstallerName>
+  <uninstallerDirectory>${installdir}</uninstallerDirectory>
+  <unattendedModeUI>minimal</unattendedModeUI>
+  <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
+  <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
+  <allowWindowResize>1</allowWindowResize>
+  <windowsSoftwareRegistryPrefix></windowsSoftwareRegistryPrefix>
+
+  <!-- Images -->
+  <disableSplashScreen>1</disableSplashScreen>
+  <leftImage>../resources/pg-side.png</leftImage>
+
+  <!-- i18n files for the UI -->
+  <allowedLanguages>en</allowedLanguages>
+  <customLanguageFileList>
+    <language>
+      <code>en</code>
+      <encoding>iso8859-1</encoding>
+      <file>i18n/en.lng</file>
+    </language>
+  </customLanguageFileList>
+  <!-- Custom functions -->
+  <functionDefinitionList>
+    <actionDefinition name="createTempDir">
+       <actionList>
+         <globalVariables names="random_number"/>
+         <actionGroup>
+           <actionList>
+            <setInstallerVariable name="iteration" value="0"/>
+            <!-- Create a random number to use unique filenames -->
+             <while>
+               <actionList>
+                 <generateRandomValue length="10" variable="random_number"/>
+                 <runProgram>
+                   <program>sh</program>
+                   <programArguments>-c &lt;&lt;EOF '
+                                     umask 0077
+                                     mkdir "${system_temp_directory}/${dirPrefix}_${random_number}"
+                                     if [ $? -ne 0 ];
+                                     then
+                                        exit 100
+                                     fi
+                                     '
+EOF
+                   </programArguments>
+                 </runProgram>
+                 <break>
+                   <ruleList>
+                    <compareText logic="equals" text="0" value="${program_exit_code}"/>
+                   </ruleList>
+                 </break>
+                <actionGroup>
+                  <actionList>
+                    <throwError text="${msg(cannot.create.tmp.dir)}" abortOnError="1">
+                      <ruleList>
+                        <compareValues value1="${iteration}" logic="equals" value2="9"/>
+                      </ruleList>
+                    </throwError>
+                  </actionList>
+                </actionGroup>
+                 <mathExpression text="${iteration}+1" variable="iteration"/>
+               </actionList>
+               <conditionRuleList>
+                 <compareValues value1="${iteration}" logic="less" value2="10"/>
+               </conditionRuleList>
+             </while>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+         <actionGroup>
+           <actionList>
+             <generateRandomValue length="10" variable="random_number"/>
+             <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
+             <setInstallerVariable name="random_number" value="${random_number}"/>
+           </actionList>
+           <ruleList>
+             <compareText logic="equals" text="${platform_name}" value="windows"/>
+           </ruleList>
+         </actionGroup>
+       </actionList>
+       <parameterList>
+         <stringParameter name="dirPrefix" allowEmptyValue="0"/>
+       </parameterList>
+    </actionDefinition>
+  </functionDefinitionList>
+  <!-- Prebuild Actions -->
+  <preBuildActionList>
+    <setInstallerVariable name="originalplatform" value="${platform_name}"/>
+    <setInstallerVariable name="originalplatform" value="linux-x32">
+        <ruleList>
+            <compareText text="${platform_name}" value="linux"/>
+        </ruleList>
+    </setInstallerVariable>
+   </preBuildActionList>
+  <preShowHelpActionList>
+    <!-- LIN & WIN: Set the default installation directory -->
+    <setInstallerVariable>
+      <name>default_installdir</name>
+      <persist>1</persist>
+      <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-ApacheHTTPD</value>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- MAC : Set the default installation directory -->
+    <setInstallerVariable>
+      <name>default_installdir</name>
+      <persist>1</persist>
+      <value>/Library/PostgreSQL/EnterpriseDB-ApacheHTTPD</value>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="defaultport" value="8080"/>
+ </preShowHelpActionList>
+  <!-- Initialisation actions -->
+  <initializationActionList>
+      <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_APACHEHTTPD" />	
+      <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+      <throwError>
+        <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
+        <text>Unknown Error</text>
+        <ruleList>
+          <platformTest type="linux-x64"/>
+          <compareText text="${originalplatform}" value="linux-x32"/>
+        </ruleList>
+      </throwError>
+      <!-- Abort installation if SELinux is enabled -->
+      <throwError>
+        <customErrorMessage>${msg(selinux.not.permissive)}</customErrorMessage>
+        <text>SELinux Error</text>
+        <ruleList>
+          <compareText>
+            <logic>contains</logic>
+            <text>${platform_name}</text>
+            <value>linux</value>
+          </compareText>
+          <fileContentTest text="1" path="/selinux/enforce" logic="contains"/>
+        </ruleList>
+      </throwError>
+      <!-- WIN & LIN: Set the default values for unattended mode -->
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgreSQL/EnterpriseDB-ApacheHTTPD" persist="1"/>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${installer_ui}</text>
+          <value>unattended</value>
+        </compareText>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <!-- MAC : Set the  default values for unattended mode -->
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="installdir" value="/Library/PostgreSQL/EnterpriseDB-ApacheHTTPD"/>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${installer_ui}</text>
+          <value>unattended</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+      <!-- LIN & WIN: Set the default installation directory -->
+    <setInstallerVariable>
+      <name>default_installdir</name>
+      <persist>1</persist>
+      <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-ApacheHTTPD</value>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- MAC : Set the default installation directory -->
+    <setInstallerVariable>
+      <name>default_installdir</name>
+      <persist>1</persist>
+      <value>/Library/PostgreSQL/EnterpriseDB-ApacheHTTPD</value>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
+  </initializationActionList>
+  <!-- Preinstallation actions -->
+  <preInstallationActionList>
+     <!-- Creating a temporary directory -->
+     <createTempDir dirPrefix="${product_shortname}"/>
+
+    <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\ApacheHTTPD"/>
+    <setInstallerVariable name="executablePath" value=""/>
+    <setInstallerVariable name="selinux" value="" />
+    <foreach variables="path" values="/bin /usr/bin /sbin /usr/sbin">
+      <actionList>
+        <setInstallerVariable name="executablePath" value="${path}/getenforce">
+          <ruleList>
+            <fileTest condition="executable"/>
+            <compareText text="${executablePath}" logic="equals" value=""/>
+          </ruleList>
+        </setInstallerVariable>
+      </actionList>
+      <ruleList>
+        <platformTest type="linux"/>
+      </ruleList>
+    </foreach>
+
+    <!-- Check for SELinux -->
+    <actionGroup>
+      <actionList> 
+        <setInstallerVariableFromScriptOutput>
+          <name>selinux</name>
+          <exec>${executablePath}</exec>
+          <execArgs/>
+        </setInstallerVariableFromScriptOutput>
+        <showWarning text="${msg(warn.selinux)}" >
+          <ruleList>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${selinux}</text>
+              <value>Disabled</value>
+            </compareText> 
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${selinux}</text>
+              <value/>
+            </compareText>
+          </ruleList>
+        </showWarning> 
+      </actionList> 
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${executablePath}</text>
+          <value/>
+        </compareText>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+     
+    <!-- Creates the ini file if not exits -->
+    <touchFile path="/etc/postgres-reg.ini">
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </touchFile>
+    <setInstallerVariable name="apachehttpdVersion" value="" />
+    <setInstallerVariable name="iBranding" value="" />
+
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="req_lp_version" value="PG_VERSION_LANGUAGEPACK" persist="1"/>
+        <iniFileGet file="/etc/postgres-reg.ini" variable="lp_tmp_var"
+          section="edb_languagepack_PG_VERSION_LANGUAGEPACK" key="InstallationDirectory"/>
+        <iniFileGet file="/etc/postgres-reg.ini" variable="lp_version"
+          section="edb_languagepack_PG_VERSION_LANGUAGEPACK" key="Version"/>
+        <setInstallerVariable name="python_path" value="${lp_tmp_var}/Python-PG_VERSION_PYTHON" persist="1"/>
+        <throwError>
+          <text>${msg(languagepack.not.installed)}</text>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${lp_tmp_var}</text>
+              <value></value>
+            </compareText>
+            <compareText>
+              <logic>does_not_contain</logic>
+              <text>${lp_version}</text>
+              <value>${req_lp_version}</value>
+            </compareText>
+            <fileExists negate="1" path="${python_path}/bin/python"/>
+          </ruleList>
+        </throwError>
+      </actionList>
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </actionGroup>
+
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="req_lp_version" value="PG_VERSION_LANGUAGEPACK" persist="1"/>
+        <registryGet wowMode="32" name="Base Directory" variable="lp_tmp_var"
+          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\PG_VERSION_LANGUAGEPACK"/>
+        <registryGet wowMode="32" name="Version" variable="lp_version"
+          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\PG_VERSION_LANGUAGEPACK"/>
+        <setInstallerVariable name="python_path" value="${lp_tmp_var}/Python-PG_VERSION_PYTHON" persist="1"/>
+        <logMessage text="${lp_tmp_var} == ${lp_version} == ${python_path}"/>
+        <throwError>
+          <text>${msg(languagepack.not.installed)}</text>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${lp_tmp_var}</text>
+              <value></value>
+            </compareText>
+            <compareText>
+              <logic>does_not_contain</logic>
+              <text>${lp_version}</text>
+              <value>${req_lp_version}</value>
+            </compareText>
+            <fileExists negate="1" path="${python_path}\python.exe"/>
+          </ruleList>
+        </throwError>
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- Getting apache home value from ini file - Linux | Mac -->
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="apacheport" value=""/>
+        <setInstallerVariable name="apache_home" value=""/>
+        <iniFileGet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>APACHE_HOME</key>
+          <variable>apache_home</variable>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </iniFileGet>
+        <iniFileGet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>APACHE_PORT</key>
+          <variable>apacheport</variable>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </iniFileGet>
+        <iniFileGet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>Version</key>
+          <variable>apachehttpdVersion</variable>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </iniFileGet>
+        <!-- LIN & MAC: Get the branding & check Previous Installation of psqlODBC -->
+        <iniFileGet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>Branding</key>
+          <variable>iBranding</variable>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </iniFileGet>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <!-- Linux | Mac : Set the installation directory in case of re-install/upgrade -->
+    <actionGroup>
+      <actionList>
+	<iniFileGet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>InstallationDirectory</key>
+          <variable>installdir</variable>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </iniFileGet>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+	<compareText>
+          <logic>does_not_equal</logic>
+          <text>${apache_home}</text>
+          <value/>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+   <!-- Stopping apache if already started -  MAC  -->
+    <runProgram>
+      <program>launchctl</program>
+      <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.apache.plist</programArguments>
+      <workingDirectory/>
+      <abortOnError>0</abortOnError>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${apache_home}</text>
+          <value/>
+        </compareText>
+      </ruleList>
+    </runProgram>
+   <!-- Stopping apache if already started - Linux and Mac  -->
+    <runProgram>
+      <program>${apache_home}/bin/apachectl</program>
+      <programArguments>"stop"</programArguments>
+      <workingDirectory>${apache_home}/bin</workingDirectory>
+      <abortOnError>0</abortOnError>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${apache_home}</text>
+          <value/>
+        </compareText>
+      </ruleList>
+    </runProgram>
+    <!-- WIN : Set the Apache Port from registry. ApacheHTTPD Installation would have set these values -->
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="apacheport" value=""/>
+        <setInstallerVariable name="apache_home" value=""/>
+        <registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <name>APACHE_PORT</name>
+          <variable>apacheport</variable>
+        </registryGet>
+        <registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <name>APACHE_HOME</name>
+          <variable>apache_home</variable>
+        </registryGet>
+        <registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <name>Branding</name>
+          <variable>iBranding</variable>
+        </registryGet>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <!-- Windows : Set the installation directory in case of re-install/upgrade -->
+    <actionGroup>
+      <actionList>
+	<registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <name>Location</name>
+          <variable>installdir</variable>
+        </registryGet>
+	<registryGet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <name>Version</name>
+          <variable>apachehttpdVersion</variable>
+        </registryGet>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${apache_home}</text>
+          <value/>
+        </compareText>
+      </ruleList>    
+    </actionGroup>
+
+    <!-- If there appears to be an existing installation, with no Branding value. -->
+    <!-- force the default value. Otherwise, set the branding to whatever we read, -->
+    <!-- or, set the default -->
+    <!-- Existing, old install (version, but no branding) -->
+    <setInstallerVariable>
+      <name>branding</name>
+      <persist>0</persist>
+      <value>PostgreSQL</value>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${apachehttpdVersion}</text>
+          <value/>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${iBranding}</text>
+          <value/>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- Existing install, with branding -->
+    <setInstallerVariable>
+      <name>branding</name>
+      <persist>0</persist>
+      <value>${iBranding}</value>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${iBranding}</text>
+          <value/>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- New install, nothing set on the command line -->
+    <setInstallerVariable>
+      <name>branding</name>
+      <persist>0</persist>
+      <value>Postgres Plus Add-ons</value>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${branding}</text>
+          <value/>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
+    <logMessage>
+      <text>Using branding: ${branding}</text>
+    </logMessage>
+    <!-- Getting the Version Installed minus the buildnum --> 
+    <setInstallerVariableFromRegEx>
+        <name>apachehttpdVersionInstalled</name>
+        <text>${apachehttpdVersion}</text>
+        <pattern>([0-9]*)-[0-9]*$</pattern>
+        <substitution>\1</substitution>
+        <ruleList>
+           <compareText>
+               <logic>does_not_equal</logic>
+               <text>${apachehttpdVersion}</text>
+               <value/>
+           </compareText>
+        </ruleList>
+   </setInstallerVariableFromRegEx>
+
+    <actionGroup>
+      <actionList> 
+         <!-- Unpacking the Script file to temporary directory -->
+         <unpackFile>
+           <component>ApacheHTTPD</component>
+           <destination>${system_temp_directory}\vcredist_x86.exe</destination>
+           <folder>programfileswindows</folder>
+           <origin>installer/ApacheHTTPD/vcredist_x86.exe</origin>
+         </unpackFile>
+         <!-- Running VC Dist file | WIN  -->
+         <runProgram>
+            <program>${system_temp_directory}\vcredist_x86.exe</program>
+            <programArguments>"/Q"</programArguments>
+            <workingDirectory>${system_temp_directory}</workingDirectory>
+            <showMessageOnError>0</showMessageOnError>
+            <abortOnError>0</abortOnError>	
+         </runProgram>
+         <throwError>
+            <text>${msg(error.installing.runtimes)}</text>
+            <ruleList>
+               <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>3010</text>
+                  <value>${program_exit_code}</value>
+               </compareText>
+               <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>0</text>
+                  <value>${program_exit_code}</value>
+               </compareText>
+            </ruleList>
+         </throwError>	
+      </actionList>
+      <ruleList>
+         <compareText>
+            <logic>equals</logic>
+            <text>${platform_name}</text>
+            <value>windows</value>
+         </compareText>
+      </ruleList>
+    </actionGroup>
+
+    <!-- Stopping apache if already started - Windows  -->
+    <runProgram>
+      <program>wscript</program>
+      <programArguments>//NOLOGO "${installdir}/installer/ApacheHTTPD/stopApache.vbs" "${installdir}"</programArguments>
+      <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+      <abortOnError>0</abortOnError>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${apache_home}</text>
+          <value/>
+        </compareText>
+        <fileExists>
+          <path>${installdir}/installer/ApacheHTTPD/stopApache.vbs</path>
+        </fileExists>
+      </ruleList>
+    </runProgram>
+    <!-- Stopping apache if already started - (Old) Windows  -->
+    <runProgram>
+      <program>wscript</program>
+      <programArguments>//NOLOGO "${installdir}/apache/stopApache.vbs" "${installdir}\apache"</programArguments>
+      <workingDirectory>${installdir}/apache</workingDirectory>
+      <abortOnError>0</abortOnError>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${apache_home}</text>
+          <value/>
+        </compareText>
+        <fileExists>
+          <path>${installdir}/apache/stopApache.vbs</path>
+        </fileExists>
+      </ruleList>
+    </runProgram>
+
+    <!-- Waiting for the installer to stop Apache service -->
+    <!-- Assuming it can safely stop in 3 sec -->
+    <wait ms="3000"/>
+
+
+    <!-- Get a default port number - ideally 8080 -->
+    <getFreePort>
+        <variable>defaultport</variable>
+        <initialPort>8080</initialPort>
+        <finalPort>65535</finalPort>
+        <ruleList>
+           <isTrue value="${installer_is_root_install}"/>
+        </ruleList>
+    </getFreePort>
+    <!-- Set the default port to the previously installed apache port if exists -->
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="defaultport" value="${apacheport}"/>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <value/>
+          <text>${apacheport}</text>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <!-- Set the actual port value to previously installed apache port, if exist, in order
+         to ignore the CLI option specified -->
+    <setInstallerVariable name="port" value="${apacheport}" > 
+      <ruleList>
+         <compareText logic="does_not_equal" text="${apacheport}" value="" />
+      </ruleList>
+    </setInstallerVariable>
+
+    <actionGroup>
+      <actionList>
+        <throwError>
+           <text>${msg(config.port.invalid)}</text>
+           <ruleEvaluationLogic>or</ruleEvaluationLogic>
+           <ruleList>
+              <compareValues>
+                 <value1>${port}</value1>
+                 <logic>less</logic>
+                 <value2>1</value2>
+              </compareValues>
+              <compareValues>
+    	     <value1>${port}</value1>
+                 <logic>greater</logic>
+                 <value2>65535</value2>
+              </compareValues>
+           </ruleList>
+        </throwError>
+        <throwError>
+           <text>${msg(config.port.in.use)}</text>
+           <ruleList>
+              <portTest>
+                 <condition>cannot_bind</condition>
+                 <port>${port}</port>
+              </portTest>
+           </ruleList>
+        </throwError>
+        <throwError>
+           <text>${msg(config.port.invalid)}</text>
+           <ruleList>
+             <stringTest>
+               <text>${port}</text>
+               <type>not_digit</type>
+             </stringTest>
+           </ruleList>
+        </throwError>
+        <throwError>
+           <text>${msg(config.port.invalid)}</text>
+             <ruleList>
+                <stringTest>
+                    <text>${port}</text>
+                    <type>empty</type>
+                </stringTest>
+             </ruleList>
+         </throwError>
+         <throwError>
+              <text>${msg(apachehttpd.installdir.error.unix)}</text>
+	      <ruleList>
+		<regExMatch>
+		    <text>${installdir}</text>
+		    <logic>matches</logic>
+		    <pattern>^/+(usr)?$</pattern>
+		</regExMatch>
+		<compareText>
+		    <text>${platform_name}</text>
+		    <logic>does_not_equal</logic>
+		    <value>windows</value>
+		</compareText>
+	      </ruleList>
+         </throwError>
+         <throwError>
+              <text>${msg(apachehttpd.installdir.error)}</text>
+              <ruleList>
+                  <regExMatch>
+                      <text>${installdir}</text>
+                      <logic>does_not_match</logic>
+                      <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                  </regExMatch>
+                  <compareText>
+                    <text>${platform_name}</text>
+                      <logic>does_not_equal</logic>
+                      <value>windows</value>
+                  </compareText>
+                </ruleList>
+         </throwError>
+         <throwError>
+              <text>${msg(apachehttpd.installdir.error)}</text>
+	      <ruleList>
+		<regExMatch>
+		    <text>${installdir}</text>
+		    <logic>does_not_match</logic>
+		    <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+		</regExMatch>
+		<compareText>
+		    <text>${platform_name}</text>
+		    <logic>equals</logic>
+		    <value>windows</value>
+		</compareText>
+	      </ruleList>
+         </throwError>
+      </actionList>
+      <ruleList>
+  	<compareText>
+            <logic>equals</logic>
+            <text>${installer_ui}</text>
+            <value>unattended</value>
+          </compareText>	 
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <createBackupFile>
+          <path>${installdir}/apache/conf/httpd.conf</path>
+        </createBackupFile>
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${apachehttpdVersion}" value=""/>
+      </ruleList>
+    </actionGroup>
+  </preInstallationActionList>
+  <!-- Ready to install actions -->
+  <readyToInstallActionList>
+    <actionGroup>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${apachehttpdVersion}"
+          value=""/>
+      </ruleList>
+      <actionList>
+
+        <!-- Stop the existing ApacheHTTPD service -->
+        <runProgram program="/etc/init.d/EnterpriseDBApacheHTTPD"
+          programArguments="stop"
+          workingDirectory="${installdir}/apache/bin"
+          abortOnError="0" showMessageOnError="0">
+          <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="linux"/>
+          </ruleList>
+        </runProgram>
+        <runProgram program="launchctl"
+          programArguments="unload /Library/LaunchDaemons/com.edb.launchd.apache.plist"
+          workingDirectory="${installdir}/apache/bin"
+          abortOnError="0" showMessageOnError="0">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="osx"/>
+          </ruleList>
+        </runProgram>
+        <stopWindowsService serviceName="EnterpriseDBApacheHTTPD"
+          delay="60000"
+          abortOnError="0" showMessageOnError="0">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}"
+              value="windows"/>
+          </ruleList>
+        </stopWindowsService>
+
+        <!-- Wait for sometime after stopping the existing service -->
+        <wait ms="5000"/>
+
+      </actionList>
+    </actionGroup>
+    <!-- Validating whether installdir is selected only as drive letters like c: d: etc... valid (Windows) -->
+    <actionGroup>
+      <actionList>
+        <pathManipulation>
+          <action>absolutize</action>
+          <path>${installdir}</path>
+          <variable>installdir</variable>
+        </pathManipulation>
+        <setInstallerVariableFromRegEx name="installdir_withpath" pattern=":\\" substitution=":\" text="${installdir}"/>
+        <setInstallerVariable name="installdir" value="${installdir_withpath}">
+          <ruleList>
+            <regExMatch text="${installdir}" logic="matches"  pattern="^[a-zA-Z]:/*$" />
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </setInstallerVariable>
+      </actionList>
+    </actionGroup>
+  </readyToInstallActionList>
+  <!-- Postinstallation actions -->
+  <postInstallationActionList>
+    <!-- WIN| Substituting Apache-Home in the install/uninstall service script -->
+    <actionGroup>
+      <actionList>
+        <registryGet wowMode="32" name="Base Directory" variable="python_tmp_var"
+          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\PG_VERSION_LANGUAGEPACK"/>
+        <setInstallerVariable name="python_home" value="${python_tmp_var}\Python-PG_VERSION_PYTHON" persist="1"/>
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <substitute>
+      <files>${installdir}/installer/ApacheHTTPD/install-apache.bat</files>
+         <substitutionList>
+            <substitution>
+               <pattern>@@APACHE_HOME@@</pattern>
+               <value>${installdir}\apache</value>
+            </substitution>
+            <substitution>    
+              <pattern>@@LP_PYTHON_HOME@@</pattern>
+              <value>${python_home}</value>               
+            </substitution>
+         </substitutionList>
+         <ruleList>
+            <compareText>
+               <logic>equals</logic>
+               <text>${platform_name}</text>
+               <value>windows</value>
+            </compareText>
+         </ruleList>
+    </substitute>
+    <substitute>
+      <files>${installdir}/installer/ApacheHTTPD/uninstall-apache.bat</files>
+         <substitutionList>
+            <substitution>
+               <pattern>@@APACHE_HOME@@</pattern>
+               <value>${installdir}\apache</value>
+            </substitution>
+            <substitution>
+              <pattern>@@LP_PYTHON_HOME@@</pattern>
+              <value>${python_home}</value>               
+            </substitution>
+         </substitutionList>
+         <ruleList>
+            <compareText>
+               <logic>equals</logic>
+               <text>${platform_name}</text>
+               <value>windows</value>
+            </compareText>
+         </ruleList>
+    </substitute>
+    <substitute>
+      <files>${installdir}/installer/ApacheHTTPD/start-apache.bat</files>
+         <substitutionList>
+            <substitution>
+               <pattern>@@APACHE_HOME@@</pattern>
+               <value>${installdir}\apache</value>
+            </substitution>
+            <substitution>
+              <pattern>@@LP_PYTHON_HOME@@</pattern>
+              <value>${python_home}</value>               
+            </substitution> 
+         </substitutionList>
+         <ruleList>
+            <compareText>
+               <logic>equals</logic>
+               <text>${platform_name}</text>
+               <value>windows</value>
+            </compareText>
+         </ruleList>
+    </substitute>
+    <!-- Setting the PORT, SERVER-ROOT in httpd.conf file -->
+    <substitute>
+       <files>${installdir}/apache/conf/httpd.conf</files>
+       <substitutionList>
+         <substitution>
+           <pattern>@@PORT@@</pattern>
+           <value>${port}</value>
+         </substitution>
+         <substitution>
+           <pattern>@@INSTALL_DIR@@</pattern>
+           <value>${installdir}/apache</value>
+         </substitution>
+       </substitutionList>
+    </substitute>
+    <substitute>
+       <files>${installdir}/apache/conf/extra/httpd-ssl.conf</files>
+       <substitutionList>
+         <substitution>
+           <pattern>@@INSTALL_DIR@@</pattern>
+           <value>${installdir}/apache</value>
+         </substitution>
+       </substitutionList>
+          <ruleList>
+            <compareText>
+              <logic>equals</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+    </substitute>
+    <!-- Configuring Scripts to set the installation path in Apache -->
+    <runProgram>
+      <customErrorMessage>${msg(error.configure.apachehttpd)}</customErrorMessage>
+      <program>${installdir}/installer/ApacheHTTPD/configureApacheHTTPD.sh</program>
+      <programArguments>"${installdir}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
+      <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </runProgram>
+
+    <actionGroup>
+      <actionList>
+        <iniFileGet file="/etc/postgres-reg.ini" variable="python_tmp_var"
+          section="edb_languagepack_PG_VERSION_LANGUAGEPACK" key="InstallationDirectory"/>
+        <setInstallerVariable name="python_home" value="${python_tmp_var}/Python-PG_VERSION_PYTHON" persist="1"/>
+        <logMessage text="Setting Python path in envvars"/>
+        <substitute files="${installdir}/apache/bin/envvars">
+          <substitutionList>
+            <substitution>
+              <pattern>@@LP_PYTHON_HOME@@</pattern>
+              <value>${python_home}</value>
+            </substitution>
+          </substitutionList>
+        </substitute>
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- LIN | MAC: Adding text for mod_wsgi config in apache -->
+    <addTextToFile>
+      <file>${installdir}/apache/conf/httpd.conf</file>
+      <text>
+LoadModule wsgi_module ${installdir}/apache/modules/mod_wsgi.so
+include conf/addons/*.conf
+      </text>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </addTextToFile>
+    <!-- WIN: Adding text for mod_wsgi config in apache -->
+    <addTextToFile>
+      <file>${installdir}\apache\conf\httpd.conf</file>
+      <text>
+LoadModule wsgi_module "${installdir}\apache\modules\mod_wsgi-py33-VC10.so"
+include conf\addons\*.conf
+      </text>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </addTextToFile>
+
+    <!-- Creating a addons directory for additional conf files -->
+    <createDirectory path="${installdir}/apache/conf/addons" >
+        <ruleList>
+             <fileTest>
+                 <path>${installdir}/apache/conf/addons</path>
+                 <condition>not_exists</condition>
+             </fileTest>
+        </ruleList>
+    </createDirectory>
+
+    <!-- Linux | MAC: Adding a application secure conf which prohibit directory listings of applications under www context -->
+    <actionGroup>
+        <actionList>
+             <touchFile path="${installdir}/apache/conf/addons/application_secure.conf" />
+             <addTextToFile>
+                   <file>${installdir}/apache/conf/addons/application_secure.conf</file>
+                   <text>
+&lt;Directory "${installdir}/apache/www/*/scripts"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+
+&lt;Directory "${installdir}/apache/www/*/installer"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+                   </text>
+             </addTextToFile>
+        </actionList>
+        <ruleList>
+             <fileTest>
+                 <path>${installdir}/apache/conf/addons/application_secure.conf</path>
+                 <condition>not_exists</condition>
+             </fileTest>         
+             <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+             </compareText> 
+        </ruleList>
+     </actionGroup>    
+ 
+    <!-- WIN: Adding a application secure conf which prohibit directory listings of applications under www context -->
+    <actionGroup>
+        <actionList>
+             <touchFile path="${installdir}\apache\conf\addons\application_secure.conf" />
+             <addTextToFile>
+                   <file>${installdir}\apache\conf\addons\application_secure.conf</file>
+                   <text>
+&lt;Directory "${installdir}\apache\www\*\scripts"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+
+&lt;Directory "${installdir}\apache\www\*\installer"&gt;
+   Options -Indexes -FollowSymLinks
+   Order allow,deny
+   Deny from all
+&lt;/Directory&gt;
+                   </text>
+             </addTextToFile>
+        </actionList>
+        <ruleList>
+             <fileTest>
+                 <path>${installdir}\apache\conf\addons\application_secure.conf</path>
+                 <condition>not_exists</condition>
+             </fileTest>         
+             <compareText>
+                  <logic>equals</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+             </compareText>
+        </ruleList>
+     </actionGroup>
+
+    <!--RM32246. If ApacheHTTPD is updated from 2.2 to 2.4, then edit the httpd config files if present with new syntax-->
+    <actionGroup>
+        <!--Edit httpd.conf to add new syntax-->
+        <actionList>
+            <logMessage text="Updating the httpd configuration..."/>
+            <substitute>
+                <type>exact</type>
+                <files>${installdir}/apache/conf/addons/httpd.conf</files>
+                <substitutionList>
+                    <substitution>
+                        <pattern>Options -Indexes -FollowSymLinks MultiViews ExecCGI</pattern>
+                        <value>Options -Indexes -FollowSymLinks +MultiViews +ExecCGI</value>
+                    </substitution>
+                </substitutionList>
+                <substitutionList>
+                    <substitution>
+                        <pattern>Order Allow,Deny</pattern>
+                        <value></value>
+                    </substitution>
+                </substitutionList>
+                <substitutionList>
+                    <substitution>
+                        <pattern>Allow from all</pattern>
+                        <value>Require all granted</value>
+                    </substitution>
+                </substitutionList>
+            </substitute>
+        </actionList>
+        <ruleList>
+            <fileExists path="${installdir}/apache/conf/addons/httpd.conf" />
+        </ruleList>
+    </actionGroup>
+    <!--Edit httpd-ssl-httpd.conf to comment SSLMutex which is no longer supported.-->
+    <actionGroup>
+        <actionList>
+            <logMessage text="Updating the httpd SSL configuration..."/>
+            <substitute>
+                <type>regexp</type>
+                <files>${installdir}/apache/conf/addons/httpd-ssl-httpd.conf</files>
+                <substitutionList>
+                    <substitution>
+                        <pattern>SSLMutex*</pattern>
+                        <value>#SSLMutex*</value>
+                    </substitution>
+                </substitutionList>
+            </substitute>
+        </actionList>
+        <ruleList>
+            <fileExists path="${installdir}/apache/conf/addons/httpd-ssl-httpd.conf" />
+        </ruleList>
+    </actionGroup> 
+    
+    <!-- Install ApacheHTTPD as a service -->
+    <runProgram>
+      <customErrorMessage>${msg(error.service.apachehttpd)}</customErrorMessage>
+      <program>${installdir}/installer/ApacheHTTPD/startupcfg.sh</program>
+      <programArguments>"${installdir}"</programArguments>
+      <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+      <abortOnError>0</abortOnError>
+      <ruleList>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </runProgram>
+    <actionGroup>
+      <actionList>
+        <!-- Set the Apache Home and Apache Port(default 8080) to inifile. -->
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>APACHE_HOME</key>
+          <value>${installdir}/apache</value>
+        </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>APACHE_PORT</key>
+          <value>${port}</value>
+        </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>Description</key>
+          <value>${msg(install.summary)}</value>
+        </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>InstallationDirectory</key>
+          <value>${installdir}</value>
+        </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>Version</key>
+          <value>${product_version}</value>
+        </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>Branding</key>
+          <value>${branding}</value>
+        </iniFileSet>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+     <actionList>
+        <!-- Linux - Starting Apache -->
+        <runProgram>
+          <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
+          <program>${installdir}/apache/bin/apachectl</program>
+          <programArguments>"start"</programArguments>
+          <workingDirectory>${installdir}/apache/bin</workingDirectory>
+          <ruleEvaluationLogic>or</ruleEvaluationLogic>
+          <ruleList>
+             <compareText>
+                <logic>equals</logic>
+                <text>${selinux}</text>
+                <value>Disabled</value>
+             </compareText>
+             <compareText>
+                <logic>equals</logic>
+                <text>${selinux}</text>
+                <value/>
+             </compareText>
+          </ruleList>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <!-- Linux | Mac - Creating Menu Shortcuts -->
+        <runProgram>
+          <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
+          <program>${installdir}/installer/ApacheHTTPD/createshortcuts.sh</program>
+          <programArguments>"${installdir}" "${branding}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
+          <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+          <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+          <abortOnError>0</abortOnError>  
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <!-- Install Apache as Service -->
+    <actionGroup>
+      <actionList>
+        <registrySet>
+          <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EnterpriseDBApacheHTTPD</key>
+          <name>Environment</name>
+          <type>REG_MULTI_SZ</type>
+          <value>PATH=${python_home.unix};%PATH% PYTHONHOME=${python_home.unix} PYTHONPATH=${python_home.unix}</value>
+        </registrySet>
+        <wait ms="3000"/>
+        <runProgram>
+          <showMessageOnError>0</showMessageOnError>
+          <program>${installdir}\installer\ApacheHTTPD\install-apache.bat</program>
+          <programArguments/>
+          <workingDirectory>${installdir}\installer\ApacheHTTPD</workingDirectory>
+        </runProgram>
+        <wait ms="3000"/>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+        <compareText>
+          <logic>equals</logic>
+          <text>${apacheport}</text>
+          <value/>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <!-- MAC: Install Apache as Service -->
+    <actionGroup>
+      <actionList>
+        <runProgram>
+          <customErrorMessage>${msg(error.install.apache)}</customErrorMessage>
+          <program>${installdir}/installer/ApacheHTTPD/startupcfg.sh</program>
+          <programArguments>"${installdir}"</programArguments>
+          <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    
+     <!-- MAC: Install Apache as Service (in upgrade) for older installations -->
+    <actionGroup>
+      <actionList>
+        <runProgram>
+          <customErrorMessage>${msg(error.install.apache)}</customErrorMessage>
+          <program>${installdir}/installer/ApacheHTTPD/startupcfg.sh</program>
+          <programArguments>"${installdir}"</programArguments>
+          <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+	<fileExists>
+          <path>/Library/StartupItems/EnterpriseDB-ApacheHTTPD</path>
+        </fileExists>
+      </ruleList>
+    </actionGroup>
+    
+    <!-- MAC: Remove the startup item from older installations -->
+    <deleteFile>
+      <path>/Library/StartupItems/EnterpriseDB-ApacheHTTPD</path>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+	<fileExists>
+          <path>/Library/StartupItems/EnterpriseDB-ApacheHTTPD</path>
+        </fileExists>
+      </ruleList>
+    </deleteFile>
+
+    <actionGroup>
+      <actionList>
+        <!-- Set the Apache Home and Apache Port(default 8080) to registry. -->
+        <registrySet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <name>APACHE_HOME</name>
+          <value>${installdir}\apache</value>
+        </registrySet>
+        <registrySet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <name>APACHE_PORT</name>
+          <value>${port}</value>
+        </registrySet>
+        <registrySet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <name>Branding</name>
+          <value>${branding}</value>
+        </registrySet>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <!-- WIN - Starting Apache -->
+	<runProgram>
+	  <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
+	  <program>sc</program>
+	  <programArguments>start EnterpriseDBApacheHTTPD</programArguments>
+	  <abortOnError>0</abortOnError>
+	</runProgram>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+
+    <!-- Delete Add/Remove Programs Entry From Old Windows Installation -->
+    <actionGroup>
+        <actionList>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApacheHTTPD ${apachehttpdVersion}</key>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+        </actionList>
+        <ruleList>
+            <compareText>
+                <logic>equals</logic>
+                <text>${platform_name}</text>
+                <value>windows</value>
+            </compareText>
+            <compareText>
+                <logic>does_not_equal</logic>
+                <text>${apache_home}</text>
+                <value/>
+            </compareText>
+        </ruleList>
+    </actionGroup> 
+
+      <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
+            <ruleList>
+                <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}" />
+            </ruleList>
+      </deleteFile>
+
+    </postInstallationActionList>
+
+    <!-- If User is upgrading Apache from 2.2 to 2.4, give them an option to view the documentation link -->
+    <finalPageActionList>
+        <launchBrowser>
+            <url>http://httpd.apache.org/docs/2.4/upgrading.html</url>
+            <progressText>${msg(launch.apache24.doc)}</progressText>
+            <abortOnError>0</abortOnError>
+            <show>1</show>
+            <ruleList>
+                <regExMatch logic="matches" text="${apachehttpdVersionInstalled}" pattern="^2.2"/>
+                <regExMatch logic="matches" text="${productVersion}" pattern="^2.4"/>
+                <compareText logic="equals" text="${installer_ui}" value="gui" />
+            </ruleList>
+        </launchBrowser>
+    </finalPageActionList>
+
+    <installationAbortedActionList>
+      <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
+        <ruleList>
+          <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}" />
+        </ruleList>
+      </deleteFile>
+    </installationAbortedActionList>
+  <!-- preUninstallation actions -->
+  <preUninstallationActionList>
+     <createTempDir dirPrefix="${product_shortname}">
+     <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </createTempDir>
+    <!-- Stop Apache | MAC-->
+    <runProgram>
+       <customErrorMessage>${msg(error.uninstall.stop.apache)}</customErrorMessage>
+       <program>launchctl</program>
+       <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.apache.plist</programArguments>
+       <workingDirectory/>
+       <abortOnError>0</abortOnError>
+        <ruleList>
+           <compareText>
+               <logic>equals</logic>
+               <text>${platform_name}</text>
+               <value>osx</value>
+           </compareText>
+        </ruleList> 
+    </runProgram>
+    <!-- Linux | Mac actionList -->
+    <actionGroup>
+      <actionList>
+        <!-- Stop Apache -->
+        <runProgram>
+          <customErrorMessage>${msg(error.uninstall.stop.apache)}</customErrorMessage>
+          <program>${installdir}/apache/bin/apachectl</program>
+          <programArguments>"stop"</programArguments>
+          <workingDirectory>${installdir}/apache/bin</workingDirectory>
+          <abortOnError>0</abortOnError>
+          <ruleList>
+              <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${platform_name}</text>
+                  <value>windows</value>
+              </compareText>
+          </ruleList> 
+        </runProgram>
+        <!-- Unset values in the ini file -->
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>APACHE_HOME</key>
+          <value/>
+        </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>APACHE_PORT</key>
+          <value/>
+        </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>Description</key>
+          <value/>
+        </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>InstallationDirectory</key>
+          <value/>
+        </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>Version</key>
+          <value/>
+        </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>ApacheHTTPD</section>
+          <key>Branding</key>
+          <value/>
+        </iniFileSet>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <!-- Remove the shortcuts -->
+        <runProgram>
+          <customErrorMessage>${msg(error.uninstall.apache)}</customErrorMessage>
+          <program>${installdir}/installer/ApacheHTTPD/removeshortcuts.sh</program>
+          <programArguments>"${installdir}" "${branding}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
+          <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </runProgram>
+        <!-- Uninstall the ApacheHTTPD service -->
+
+	<!-- Attempt to remove any runlevel config with chkconfig -->
+        <runProgram>
+          <program>/sbin/chkconfig</program>
+          <programArguments>--del EnterpriseDBApacheHTTPD</programArguments>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </runProgram>
+
+        <!-- Remove the startup script -->
+        <deleteFile>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <path>/etc/init.d/EnterpriseDBApacheHTTPD</path>
+        </deleteFile>
+
+        <!-- Attempt to remove any runlevel config with update-rc.d -->
+        <runProgram>
+          <program>/usr/sbin/update-rc.d</program>
+          <programArguments>-f EnterpriseDBApacheHTTPD remove</programArguments>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </runProgram>
+
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <!-- MAC: Remove menu shortcuts -->
+    <deleteFile>
+      <path>/Applications/${branding}/EnterpriseDB ApacheHTTPD</path>
+      <abortOnError>0</abortOnError>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </deleteFile>
+
+    <!-- MAC: Uninstall Apache Service -->
+    <deleteFile>
+      <path>/Library/LaunchDaemons/com.edb.launchd.apache.plist</path>
+      <abortOnError>0</abortOnError>
+      <showMessageOnError>0</showMessageOnError>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>osx</value>
+        </compareText>
+      </ruleList>
+    </deleteFile>
+    <!-- WIN actionList -->
+    <actionGroup>
+      <actionList>
+        <!-- Uninstall Apache Service -->
+        <runProgram>
+          <customErrorMessage>${msg(error.uninstall.apache)}</customErrorMessage>
+          <program>${installdir}\installer\ApacheHTTPD\uninstall-apache.bat</program>
+          <programArguments/>
+          <workingDirectory>${installdir}\installer\ApacheHTTPD</workingDirectory>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+        </runProgram>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <!-- Deleting the apache server logs if exists -->
+    <actionGroup>
+      <actionList>
+        <deleteFile>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
+          <path>${installdir}/apache/logs</path>
+        </deleteFile>
+      </actionList>
+      <ruleList>
+        <fileExists>
+          <path>${installdir}/apache/logs</path>
+        </fileExists>
+      </ruleList>
+    </actionGroup>
+
+    <!-- Remove the application_secure.conf file -->
+    <deleteFile path="${installdir}/apache/conf/addons/application_secure.conf" >
+	<ruleList>
+	    <fileExists path="${installdir}/apache/conf/addons/application_secure.conf" />
+	</ruleList>
+    </deleteFile>
+    
+    <!-- Remove the addons directory -->
+    <deleteFile path="${installdir}/apache/conf/addons" >
+	<ruleList>
+	    <fileExists path="${installdir}/apache/conf/addons" />
+            <fileTest path="${installdir}/apache/conf/addons" condition="is_empty" />
+	</ruleList>
+    </deleteFile>
+
+    <!-- Clear out any residual registry entres -->
+    <actionGroup>
+      <actionList>
+	    <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD" />
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+
+  </preUninstallationActionList>
+    <postUninstallationActionList>
+      <!-- Upgradation of Apache 2.4 on 2.2. new Uninstaller will not remove the old files installed with 2.2. Remove them explicitly.-->
+      <deleteFile path="${installdir}/apache/manual" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/manual" />
+  	</ruleList>
+      </deleteFile>
+      <deleteFile path="${installdir}/apache/icons" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/icons" />
+  	</ruleList>
+      </deleteFile>
+      <deleteFile path="${installdir}/apache/www" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/www" />
+  	</ruleList>
+      </deleteFile>
+      <deleteFile path="${installdir}/apache/include" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/include" />
+  	</ruleList>
+      </deleteFile>
+      <deleteFile path="${installdir}/apache/modules" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/modules" />
+  	</ruleList>
+      </deleteFile>
+      <deleteFile path="${installdir}/apache/lib" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/lib" />
+  	</ruleList>
+      </deleteFile>
+      <deleteFile path="${installdir}/apache/README-win32.txt" >
+  	<ruleList>
+  	    <fileExists path="${installdir}/apache/README-win32.txt" />
+  	</ruleList>
+      </deleteFile>
+      <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
+        <ruleList>
+           <compareText logic="contains" text="${platform_name}" value="linux"/>
+        </ruleList>
+      </deleteFile>
+    </postUninstallationActionList>
+
+  <!-- Components -->
+  <componentList>
+    <component>
+      <name>ApacheHTTPD</name>
+      <description>Apache</description>
+      <canBeEdited>0</canBeEdited>
+      <selected>1</selected>
+      <show>1</show>
+      <folderList>
+        <!-- WIN: Program files -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${installdir}</destination>
+          <name>programfiles</name>
+          <platforms>all</platforms>
+        </folder>
+        <folder>
+          <description>Program Files</description>
+          <destination>${installdir}</destination>
+          <name>programfileswindows</name>
+          <platforms>windows</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+              <origin>staging/windows/apache</origin>
+            </distributionDirectory>
+            <distributionDirectory>
+              <origin>staging/windows/installer</origin>
+            </distributionDirectory>
+            <distributionDirectory>
+              <origin>staging/windows/scripts</origin>
+            </distributionDirectory>
+	    <distributionFile origin="staging/windows/apache_httpd_3rd_party_licenses.txt"/>
+          </distributionFileList>
+        </folder>
+        <folder>
+          <description>Startup Files</description>
+          <destination>${installdir}/apache/www/images</destination>
+          <name>startupimagefileswindows</name>
+          <platforms>windows</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>resources/edblogo.png</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+        <!-- Linux Program Files -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${installdir}</destination>
+          <name>programfileslinux</name>
+          <platforms>linux</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+              <origin>staging/linux/apache</origin>
+            </distributionDirectory>
+            <distributionDirectory>
+              <origin>staging/linux/installer</origin>
+            </distributionDirectory>
+            <distributionDirectory>
+              <origin>staging/linux/scripts</origin>
+            </distributionDirectory>
+	    <distributionFile origin="staging/linux/apache_httpd_3rd_party_licenses.txt"/>
+          </distributionFileList>
+        </folder>
+        <folder>
+          <description>Startup Files</description>
+          <destination>${installdir}/apache/www/images</destination>
+          <name>startupimagefileslinux</name>
+          <platforms>linux</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>resources/edblogo.png</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+        <!-- Linux-X64: Program Files -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${installdir}</destination>
+          <name>programfileslinux-x64</name>
+          <platforms>linux-x64</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+              <origin>staging/linux-x64/apache</origin>
+            </distributionDirectory>
+            <distributionDirectory>
+              <origin>staging/linux-x64/installer</origin>
+            </distributionDirectory>
+            <distributionDirectory>
+              <origin>staging/linux-x64/scripts</origin>
+            </distributionDirectory>
+	    <distributionFile origin="staging/linux-x64/apache_httpd_3rd_party_licenses.txt"/>
+          </distributionFileList>
+        </folder>
+        <folder>
+          <description>Startup Files</description>
+          <destination>${installdir}/apache/www/images</destination>
+          <name>startupimagefileslinux-x64</name>
+          <platforms>linux-x64</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>resources/edblogo.png</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+        <!-- MAC Program Files -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${installdir}</destination>
+          <name>programfilesosx</name>
+          <platforms>osx</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+              <origin>staging/osx/apache</origin>
+            </distributionDirectory>
+            <distributionDirectory>
+              <origin>staging/osx/installer</origin>
+            </distributionDirectory>
+            <distributionDirectory>
+              <origin>staging/osx/scripts</origin>
+            </distributionDirectory>
+	    <distributionFile origin="staging/osx/apache_httpd_3rd_party_licenses.txt"/>
+          </distributionFileList>
+        </folder>
+        <folder>
+          <description>Startup Files</description>
+          <destination>${installdir}/apache/www/images</destination>
+          <name>startupimagefilesosx</name>
+          <platforms>osx</platforms>
+          <distributionFileList>
+            <distributionFile>
+              <origin>resources/edblogo.png</origin>
+            </distributionFile>
+          </distributionFileList>
+        </folder>
+      </folderList>
+      <!-- WIN: Start Menu -->
+      <startMenuShortcutList>
+        <startMenuShortcut>
+          <!-- Launch Apache -->
+          <comment>EnterpriseDB ApacheHTTPD</comment>
+          <name>EnterpriseDB ApacheHTTPD</name>
+          <runInTerminal>0</runInTerminal>
+          <windowsExec>wscript</windowsExec>
+          <windowsExecArgs>//NoLogo "${installdir}\scripts\launchApacheHTTPD.vbs"</windowsExecArgs>
+          <windowsIcon>${installdir}\scripts\images\run.ico</windowsIcon>
+        </startMenuShortcut>
+      </startMenuShortcutList>
+    </component>
+  </componentList>
+  <parameterList>
+    <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+    <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+    <parameterGroup>
+      <!-- Apache Port -->
+      <name>apacheport</name>
+      <title>${msg(apache.details.title)}</title>
+      <explanation>${msg(apache.details.explanation)}</explanation>
+      <value/>
+      <default/>
+      <parameterList>
+        <stringParameter>
+          <name>port</name>
+          <description>Apache Port</description>
+          <explanation/>
+          <value>${defaultport}</value>
+          <default>${defaultport}</default>
+          <allowEmptyValue>0</allowEmptyValue>
+          <width>40</width>
+          <validationActionList>
+              <throwError>
+                  <text>${msg(config.port.invalid)}</text>
+                  <ruleList>
+                     <stringTest>
+                         <text>${port}</text>
+                         <type>not_digit</type>
+                     </stringTest>
+                  </ruleList>
+              </throwError>
+              <throwError>
+                  <text>${msg(config.port.invalid)}</text>
+                  <ruleList>
+                     <stringTest>
+                         <text>${port}</text>
+                         <type>empty</type>
+                     </stringTest>
+                  </ruleList>
+              </throwError>
+              <throwError>
+                  <text>${msg(config.port.invalid)}</text>
+                  <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                  <ruleList>
+                     <compareValues>
+                         <value1>${port}</value1>
+                         <logic>less</logic>
+                         <value2>1</value2>
+                     </compareValues>
+                     <compareValues>
+                         <value1>${port}</value1>
+                         <logic>greater</logic>
+                         <value2>65535</value2>
+                     </compareValues>
+                  </ruleList>
+              </throwError>
+              <throwError>
+                  <text>${msg(config.port.in.use)}</text>
+                  <ruleList>
+                      <portTest>
+                         <condition>cannot_bind</condition>
+                         <port>${port}</port>
+                      </portTest>
+                  </ruleList>
+              </throwError>
+          </validationActionList>
+        </stringParameter>
+      </parameterList>
+      <ruleList>
+        <compareText>
+          <text>${apacheport}</text>
+          <logic>equals</logic>
+          <value/>
+        </compareText>
+      </ruleList>
+    </parameterGroup>
+    <!-- Install Directory -->
+    <directoryParameter>
+      <name>installdir</name>
+      <description>Installer.Parameter.installdir.description</description>
+      <explanation>Installer.Parameter.installdir.explanation</explanation>
+      <value>${default_installdir}</value>
+      <default/>
+      <allowEmptyValue>0</allowEmptyValue>
+      <ask>yes</ask>
+      <cliOptionName>prefix</cliOptionName>
+      <mustBeWritable>yes</mustBeWritable>
+      <mustExist>0</mustExist>
+      <width>40</width>
+      <ruleList>
+        <compareText>
+          <text>${apacheport}</text>
+          <logic>equals</logic>
+          <value/>
+        </compareText>
+      </ruleList>
+      <!-- Validating whether installdir is empty -->
+      <validationActionList>
+        <actionGroup>
+           <actionList>
+             <setInstallerVariable name="installdir" value="${default_installdir}" />
+             <throwError>
+              <text>${msg(apachehttpd.installdir.empty)}</text>
+             </throwError>
+           </actionList>
+           <ruleList>
+             <compareText>
+               <text>${installdir}</text>
+               <logic>equals</logic>
+               <value />
+             </compareText>
+           </ruleList>
+        </actionGroup>
+      </validationActionList>
+      <postShowPageActionList>
+        <!-- Validating whether installdir is valid (Linux | MAC) -->
+        <actionGroup>
+          <actionList>
+	    <setInstallerVariable name="installdir" value="${default_installdir}" />
+            <showWarning>
+              <text>${msg(apachehttpd.installdir.error)}</text>
+            </showWarning>
+            <setInstallerVariable name="next_page" value="installdir"/>
+          </actionList>
+          <ruleList>
+            <regExMatch>
+              <text>${installdir}</text>
+              <logic>does_not_match</logic>
+              <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+            </regExMatch>
+            <compareText>
+              <text>${platform_name}</text>
+              <logic>does_not_equal</logic>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+	    <setInstallerVariable name="installdir" value="${default_installdir}" />
+            <showWarning>
+              <text>${msg(apachehttpd.installdir.error.unix)}</text>
+            </showWarning>
+            <setInstallerVariable name="next_page" value="installdir"/>
+          </actionList>
+          <ruleList>
+            <regExMatch>
+              <text>${installdir}</text>
+              <logic>matches</logic>
+              <pattern>^/+(usr)?$</pattern>
+            </regExMatch>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
+
+        <!-- Validating whether installdir is valid (Windows) -->
+        <actionGroup>
+          <actionList>
+	    <setInstallerVariable name="installdir" value="${default_installdir}" />
+            <showWarning>
+              <text>${msg(apachehttpd.installdir.error)}</text>
+            </showWarning>
+            <setInstallerVariable name="next_page" value="installdir"/>
+          </actionList>
+          <ruleList>
+            <regExMatch>
+              <text>${installdir}</text>
+              <logic>does_not_match</logic>
+              <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+            </regExMatch>
+            <compareText>
+              <text>${platform_name}</text>
+              <logic>equals</logic>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
+      </postShowPageActionList>
+    </directoryParameter>
+     <!-- Explain that we're using an existing installation directory -->
+        <labelParameter>
+            <name>upgrade</name>
+            <title>${msg(upgrade.existing.installation.title)}</title>
+            <description>${msg(upgrade.existing.installation.description)}</description>
+            <ruleList>
+		 <compareText>
+		  <text>${apacheport}</text>
+	          <logic>does_not_equal</logic>
+		  <value/>
+	        </compareText>
+            </ruleList>
+    </labelParameter>
+  </parameterList>
+</project>
