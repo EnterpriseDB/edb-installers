@@ -687,6 +687,9 @@ EOF
                         <distributionFile>
                             <origin>staging/linux/postgresql-PG_VERSION_PGJDBC.jdbc41.jar</origin>
                         </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux/postgresql-PG_VERSION_PGJDBC.jdbc42.jar</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -723,6 +726,9 @@ EOF
                         </distributionFile>
                         <distributionFile>
                             <origin>staging/linux-x64/postgresql-PG_VERSION_PGJDBC.jdbc41.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux-x64/postgresql-PG_VERSION_PGJDBC.jdbc42.jar</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -761,6 +767,9 @@ EOF
                         <distributionFile>
                             <origin>staging/linux-ppc64/postgresql-PG_VERSION_PGJDBC.jdbc41.jar</origin>
                         </distributionFile>
+			<distributionFile>
+                            <origin>staging/linux-ppc64/postgresql-PG_VERSION_PGJDBC.jdbc42.jar</origin>
+			</distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -798,6 +807,9 @@ EOF
                         <distributionFile>
                             <origin>staging/osx/postgresql-PG_VERSION_PGJDBC.jdbc41.jar</origin>
                         </distributionFile>
+                        <distributionFile>
+                            <origin>staging/osx/postgresql-PG_VERSION_PGJDBC.jdbc42.jar</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -834,6 +846,9 @@ EOF
                         </distributionFile>
                         <distributionFile>
                             <origin>staging/windows/postgresql-PG_VERSION_PGJDBC.jdbc41.jar</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/windows/postgresql-PG_VERSION_PGJDBC.jdbc42.jar</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
