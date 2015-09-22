@@ -220,9 +220,28 @@ remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
 # Different location for the manual and cron triggered builds.
 if [ "$BUILD_USER" == "" ]
 then
-        remote_location="$remote_location/$DATE/9.2"
+# create directory with the server country name
+        dns=$(grep -w "172.24" /etc/resolv.conf | cut -f3 -d".") >> autobuild.log 2>&1
+
+        if [ $dns -eq 32 ]
+        then
+                country="UK"
+        elif [ $dns -eq 34 ]
+        then
+                country="IN"
+        elif [ $dns -eq 36 ]
+        then
+                country="PK"
+        elif [ -z "$dns" ]
+        then
+                echo "Unable to determine host location. Check /etc/resolv.conf" >> autobuild.log
+                country="unknownlocation"
+        fi
+
+        echo "Host country = $country" >> autobuild.log
+        remote_location="$remote_location/$DATE/9.2/$country"
 else
-        remote_location="$remote_location/Custom/$BUILD_USER/9.2/$BUILD_NUMBER"
+        remote_location="$remote_location/Custom/$BUILD_USER/9.2/$country/$BUILD_NUMBER"
 fi
 
 # Create a remote directory and upload the output.
