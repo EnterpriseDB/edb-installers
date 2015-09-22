@@ -122,7 +122,26 @@ echo "Running the build (REL-9_1) " >> autobuild.log
 _mail_status "build-91.log" "9.1"
 
 # remote location
-remote_location_91="$remote_location/$DATE/9.1"
+# create directory with the server country name
+dns=$(grep -w "172.24" /etc/resolv.conf | cut -f3 -d".") >> autobuild.log 2>&1
+
+if [ $dns -eq 32 ]
+then
+        country="UK"
+elif [ $dns -eq 34 ]
+then
+        country="IN"
+elif [ $dns -eq 36 ]
+then
+        country="PK"
+elif [ -z "$dns" ]
+then
+        echo "Unable to determine host location. Check /etc/resolv.conf" >> autobuild.log
+        country="unknownlocation"
+fi
+
+echo "Host country = $country" >> autobuild.log
+remote_location_91="$remote_location/$DATE/9.1/$country"
 
 # Create a remote directory and upload the output.
 echo "Creating $remote_location_91 on the builds server" >> autobuild.log
