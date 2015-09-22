@@ -225,11 +225,30 @@ pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v4.0"
 # Different location for the manual and cron triggered builds.
 if [ "$BUILD_USER" == "" ]
 then
-	remote_location="$remote_location/Latest/9.3"
-	pem_remote_location="$pem_remote_location/$DATE"
+        # create directory with the server country name
+        dns=$(grep -w "172.24" /etc/resolv.conf | cut -f3 -d".") >> autobuild.log 2>&1
+
+        if [ $dns -eq 32 ]
+        then
+                country="UK"
+        elif [ $dns -eq 34 ]
+        then
+                country="IN"
+        elif [ $dns -eq 36 ]
+        then
+                country="PK"
+        elif [ -z "$dns" ]
+        then
+                echo "Unable to determine host location. Check /etc/resolv.conf" >> autobuild.log
+                country="unknownlocation"
+        fi
+
+        echo "Host country = $country" >> autobuild.log
+        remote_location="$remote_location/Latest/9.3/$country"
+        pem_remote_location="$pem_remote_location/$DATE/$country"
 else
-	remote_location="$remote_location/Custom/$BUILD_USER/9.3/$BUILD_NUMBER"
-	pem_remote_location="$pem_remote_location/Custom/$BUILD_USER/$BUILD_NUMBER"
+        remote_location="$remote_location/Custom/$BUILD_USER/9.3/$country/$BUILD_NUMBER"
+        pem_remote_location="$pem_remote_location/Custom/$BUILD_USER/$country/$BUILD_NUMBER"
 fi
 
 if [ "$BUILD_USER" == "" ]
