@@ -254,7 +254,7 @@ fi
 if [ "$BUILD_USER" == "" ]
 then
         # Get the date of the last successful build (LSB), create the directory of that date and copy the installers from the Latest and copy them to this directory.
-        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-93.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../\$LSB_DATE/9.3; cp $remote_location/* $remote_location/../../\$LSB_DATE/9.3"
+        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-93.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../../\$LSB_DATE/9.3/$country; cp $remote_location/* $remote_location/../../../\$LSB_DATE/9.3/$country"
 fi
 
 # Create a remote directory if not present
