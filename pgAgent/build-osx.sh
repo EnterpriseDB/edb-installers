@@ -194,9 +194,10 @@ _postprocess_pgAgent_osx() {
     scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
 
     # Scp the app bundle to the signing machine for signing
-    tar -jcvf pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app.tar.bz2 pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app
+    tar -jcvf pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app.tar.bz2 pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app || _die "Failed to create the archive."
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf pgagent*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
-    scp pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app.tar.bz2  $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/
+    scp pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app.tar.bz2  $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/ || _die "Failed to copy the archive to sign server."
+    rm -fr pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app* || _die "Failed to clean the output directory."
     
     # Sign the app
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app;" || _die "Failed to sign the code"
