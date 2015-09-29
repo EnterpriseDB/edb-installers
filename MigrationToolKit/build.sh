@@ -103,22 +103,19 @@ _prep_MigrationToolKit() {
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-      echo "Comment MTK prep linux"
-      # _prep_MigrationToolKit_linux || exit 1
+        _prep_MigrationToolKit_linux || exit 1
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       echo "Comment MTK prep linux-x64"
-       # _prep_MigrationToolKit_linux_x64 || exit 1
+        _prep_MigrationToolKit_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        echo "Comment MTK prep windows"
-        # _prep_MigrationToolKit_windows || exit 1
+         _prep_MigrationToolKit_windows || exit 1
     fi
     
     # Solaris x64
@@ -155,22 +152,19 @@ _build_MigrationToolKit() {
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        echo "Not building MTK on linux because MTK for linux is common for both PG and PPAS."
-        #_build_MigrationToolKit_linux || exit 1
+        _build_MigrationToolKit_linux || exit 1
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        echo "Not building MTK on linux-x64 because MTK for linux-x64 is common for both PG and PPAS."
-        #_build_MigrationToolKit_linux_x64 || exit 1
+        _build_MigrationToolKit_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        echo "Not building MTK on windows because MTK for windows is common for both PG and PPAS."
-    	#_build_MigrationToolKit_windows || exit 1
+    	_build_MigrationToolKit_windows || exit 1
     fi
 
     # Solaris x64
@@ -219,7 +213,8 @@ _postprocess_MigrationToolKit() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_MigrationToolKit_osx || exit 1
+	echo "Comment MTK post process OSX"
+        #_postprocess_MigrationToolKit_osx || exit 1
     fi
 
     # Linux

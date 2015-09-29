@@ -322,9 +322,8 @@ then
     _postprocess_pgbouncer || exit 1
 fi
 
-#Package: MigrationToolKitA
-#The replication server always needs the latest build of MTK...
-if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 -o $PG_PACKAGE_REPLICATIONSERVER = 1 ];
+#Package: MigrationToolKit
+if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 ];
 then
     cd $WD
     source ./MigrationToolKit/build.sh
