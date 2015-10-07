@@ -63,7 +63,7 @@ _process_libs() {
     for install_list_name in $install_liblist
     do
           #Check if the lib is installed or not.
-	  syslib_soname=`/sbin/ldconfig -p | grep "$install_libname" | awk '{print $NF}' `
+	  syslib_soname=`/sbin/ldconfig -p | grep "$install_libname" | awk '{print $NF}' | head -1 `
           if [ "$syslib_soname" != "" ]; then 
                #Check if this is a softlink or not, if yes that the syslib
 	       syslib=`readlink $syslib_soname`
