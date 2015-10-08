@@ -176,7 +176,7 @@ $footer_fail"
                 fi
         fi
 
-        mail -s "pgInstaller Build $version - $build_status" $mail_receipents <<EOT
+        mail -s "pgInstaller Build $version ($country) - $build_status" $mail_receipents <<EOT
 $mail_content
 EOT
 }
@@ -213,36 +213,36 @@ git pull >> autobuild.log 2>&1
 echo "Running the build (REL-9_2) " >> autobuild.log
 ./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-92.log
 
-_mail_status "build-92.log" "build-pvt.log" "9.2"
-
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
+
+# determine the build location
+dns=$(grep -w "172.24" /etc/resolv.conf | cut -f3 -d".") >> autobuild.log 2>&1
+
+if [ $dns -eq 32 ]
+then
+        country="UK"
+elif [ $dns -eq 34 ]
+then
+        country="IN"
+elif [ $dns -eq 36 ]
+then
+        country="PK"
+elif [ -z "$dns" ]
+then
+        echo "Unable to determine host location. Check /etc/resolv.conf" >> autobuild.log
+        country="unknownlocation"
+fi
 
 # Different location for the manual and cron triggered builds.
 if [ "$BUILD_USER" == "" ]
 then
-# create directory with the server country name
-        dns=$(grep -w "172.24" /etc/resolv.conf | cut -f3 -d".") >> autobuild.log 2>&1
-
-        if [ $dns -eq 32 ]
-        then
-                country="UK"
-        elif [ $dns -eq 34 ]
-        then
-                country="IN"
-        elif [ $dns -eq 36 ]
-        then
-                country="PK"
-        elif [ -z "$dns" ]
-        then
-                echo "Unable to determine host location. Check /etc/resolv.conf" >> autobuild.log
-                country="unknownlocation"
-        fi
-
         echo "Host country = $country" >> autobuild.log
         remote_location="$remote_location/$DATE/9.2/$country"
 else
         remote_location="$remote_location/Custom/$BUILD_USER/9.2/$country/$BUILD_NUMBER"
 fi
+
+_mail_status "build-92.log" "build-pvt.log" "9.2"
 
 # Create a remote directory and upload the output.
 echo "Creating $remote_location on the builds server" >> autobuild.log
