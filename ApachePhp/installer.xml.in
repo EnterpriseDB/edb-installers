@@ -1186,9 +1186,9 @@ LoadModule wsgi_module ${installdir}/apache/modules/mod_wsgi.so
       </text>
       <ruleList>
         <compareText>
-          <logic>contains</logic>
+          <logic>does_not_equal</logic>
           <text>${platform_name}</text>
-          <value>linux</value>
+          <value>windows</value>
         </compareText>
       </ruleList>
     </addTextToFile>
