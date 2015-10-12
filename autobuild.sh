@@ -179,7 +179,7 @@ $footer_fail"
                 fi
         fi
 
-        mutt -s "pgInstaller Build $version - $build_status" $mail_receipents <<EOT
+        mutt -s "pgInstaller Build $version ($country) - $build_status" $mail_receipents <<EOT
 $mail_content
 EOT
 }
@@ -216,10 +216,26 @@ git pull >> autobuild.log 2>&1
 echo "Running the build (REL-9_4) " >> autobuild.log
 ./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-94.log
 
-_mail_status "build-94.log" "build-pvt.log" "9.4"
-
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
 pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v5.0"
+
+# Determine the build location
+dns=$(grep -w "172.24" /etc/resolv.conf | cut -f3 -d".") >> autobuild.log 2>&1
+
+if [ $dns -eq 32 ]
+then
+        country="UK"
+elif [ $dns -eq 34 ]
+then
+        country="IN"
+elif [ $dns -eq 36 ]
+then
+        country="PK"
+elif [ -z "$dns" ]
+then
+        echo "Unable to determine host location. Check /etc/resolv.conf" >> autobuild.log
+        country="unknownlocation"
+fi
 
 echo "Purging old builds from the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"$remote_location/20*\" 5" >> autobuild.log 2>&1
@@ -228,24 +244,6 @@ ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"$pem_remote_location/20*\"
 # Different location for the manual and cron triggered builds.
 if [ "$BUILD_USER" == "" ]
 then
-        # create directory with the server country name
-        dns=$(grep -w "172.24" /etc/resolv.conf | cut -f3 -d".") >> autobuild.log 2>&1
-
-        if [ $dns -eq 32 ]
-        then
-                country="UK"
-        elif [ $dns -eq 34 ]
-        then
-                country="IN"
-        elif [ $dns -eq 36 ]
-        then
-                country="PK"
-        elif [ -z "$dns" ]
-        then
-                echo "Unable to determine host location. Check /etc/resolv.conf" >> autobuild.log
-                country="unknownlocation"
-        fi
-
         echo "Host country = $country" >> autobuild.log
         remote_location="$remote_location/Latest/9.4/$country"
         pem_remote_location="$pem_remote_location/$DATE/$country"
@@ -253,6 +251,8 @@ else
         remote_location="$remote_location/Custom/$BUILD_USER/9.4/$country/$BUILD_NUMBER"
         pem_remote_location="$pem_remote_location/Custom/$BUILD_USER/$country/$BUILD_NUMBER"
 fi
+
+_mail_status "build-94.log" "build-pvt.log" "9.4"
 
 if [ "$BUILD_USER" == "" ]
 then
