@@ -218,9 +218,9 @@ EOF
                   <ruleList>
                     <compareText logic="contains" text="${PG_INSTALLED_VERSION}" value="9.3.0"/>
                     <compareText logic="equals" text="${PG_INSTALLED_VERSION}" value="9.3.1.1"/>
-                    <compareText logic="contains" text="${PG_INSTALLED_VERSION}" value="9.3.2"/>
-                    <compareText logic="contains" text="${PG_INSTALLED_VERSION}" value="9.3.3"/>
-                    <compareText logic="contains" text="${PG_INSTALLED_VERSION}" value="9.3.4"/>
+                    <compareText logic="contains" text="${PG_INSTALLED_VERSION}" value="9.3.2."/>
+                    <compareText logic="contains" text="${PG_INSTALLED_VERSION}" value="9.3.3."/>
+                    <compareText logic="contains" text="${PG_INSTALLED_VERSION}" value="9.3.4."/>
                   </ruleList>
                 </throwError>
             </actionList>
