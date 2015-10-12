@@ -11,7 +11,7 @@ rem Install the server
 
 SET PYTHONHOME="@@LP_PYTHON_HOME@@"
 SET PYTHONPATH="@@LP_PYTHON_HOME@@"
-SET PATH="@@LP_PYTHON_HOME@@";"@@APACHE_HOME@@\bin";%PATH%
+SET PATH="@@LP_PYTHON_HOME@@";%PATH%
 
 "@@APACHE_HOME@@\bin\httpd.exe" -k install -n "EnterpriseDB ApachePHP"
 
