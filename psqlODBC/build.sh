@@ -61,7 +61,7 @@ _prep_psqlODBC() {
     fi
 
     echo "Unpacking psqlODBC source..."
-    extract_file  ../../tarballs/psqlODBC-$PG_VERSION_PSQLODBC || exit 1 
+    extract_file  ../../tarballs/psqlodbc-$PG_VERSION_PSQLODBC || exit 1
     
     # Per-platform prep
     cd $WD

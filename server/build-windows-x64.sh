@@ -90,6 +90,11 @@ _prep_server_windows_x64() {
 
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.windows-x64 || _die "Failed to copy the source code (source/pgadmin.windows-x64)"
     cp -R stackbuilder stackbuilder.windows-x64 || _die "Failed to copy the source code (source/stackbuilder.windows-x64)"
+
+    # Cygwin newer version requires execute permission for all .bat to execute
+    find postgres.windows-x64 -name "*.bat" -exec chmod +x {} \;
+    find pgadmin.windows-x64 -name "*.bat" -exec chmod +x {} \;
+    find stackbuilder.windows-x64 -name "*.bat" -exec chmod +x {} \;
     
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/windows-x64 ];
@@ -283,6 +288,8 @@ EOT
         
     # Zip up the scripts directories and copy them to the build host, then unzip
     cd $WD/server/scripts/windows/
+    # Cygwin newer version requires execute permission for all .bat to execute
+    find $WD/server/scripts/windows/ -name "*.bat" -exec chmod +x {} \;
     echo "Copying scripts source tree to Windows build VM"
     zip -r scripts.zip vc-build.bat vc-build-x64.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build-x64.bat vc-build-x64.bat, createuser, getlocales, validateuser)"
 
@@ -353,7 +360,7 @@ EOT
  
     # Build the code
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/pgadmin; cmd /c ver_svn.bat"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/pgadmin; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat pgadmin3.vcxproj Release" || _die "Failed to build pgAdmin on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/pgadmin; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat pgAdmin3.vcxproj Release" || _die "Failed to build pgAdmin on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/docs; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build.bat Docs.vcxproj All" || _die "Failed to build the docs on the build host"
         
     # Copy the application files into place
