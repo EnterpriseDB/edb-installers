@@ -22,8 +22,19 @@ _prep_PostGIS_linux() {
     mkdir -p postgis.linux || _die "Couldn't create the postgis.linux directory"
     chmod ugo+w postgis.linux || _die "Couldn't set the permissions on the source directory"
 
-    # Grab a copy of the postgis source tree
-    cp -R postgis-$PG_VERSION_POSTGIS/* postgis.linux || _die "Failed to copy the source code (source/postgis-$PG_VERSION_POSTGIS)"
+    # Grab a copy of the postgis source tree, adding -p option to preserve the time stamps of all files.
+    cp -pR postgis-$PG_VERSION_POSTGIS/* postgis.linux || _die "Failed to copy the source code (source/postgis-$PG_VERSION_POSTGIS)"
+   
+    # Below flies have a file type issue with PostGIS 2.2.0 version, Once this issue resloved in later version of PostGIS i wll revert back this changes. 
+    iconv -c -t ascii $WD/PostGIS/source/postgis.linux/liblwgeom/varint.h > /tmp/varint.h
+    iconv -c -t ascii $WD/PostGIS/source/postgis.linux/liblwgeom/bytebuffer.h > /tmp/bytebuffer.h
+    iconv -c -t ascii $WD/PostGIS/source/postgis.linux/liblwgeom/effectivearea.h > /tmp/effectivearea.h
+    iconv -c -t ascii $WD/PostGIS/source/postgis.linux/liblwgeom/lwin_twkb.c > /tmp/lwin_twkb.c
+
+    cp -f /tmp/varint.h $WD/PostGIS/source/postgis.linux/liblwgeom/
+    cp -f /tmp/bytebuffer.h $WD/PostGIS/source/postgis.linux/liblwgeom/
+    cp -f /tmp/effectivearea.h $WD/PostGIS/source/postgis.linux/liblwgeom/
+    cp -f /tmp/lwin_twkb.c $WD/PostGIS/source/postgis.linux/liblwgeom/
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/PostGIS/staging/linux ];
