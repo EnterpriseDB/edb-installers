@@ -8,6 +8,7 @@ SET vScriptsDir=%3
 SET vTclInstallDir=%4
 SET vXZDir=%5
 SET vOpenSSLDir=%6
+SET vPgBuildDir=%7
  
 ECHO vPythonBuildDir ----  %vPythonBuildDir%
 ECHO vPythonInstallDir ---- %vPythonInstallDir%
@@ -132,6 +133,14 @@ pip install Pillow
 pip install pytz
 pip install sphinx "babel<2.0"
 pip install cython
+
+ECHO copying required dll's to %vPythonInstallDir%\Lib\site-packages\psycopg2
+
+XCOPY /f /y %vOpenSSLDir%\bin\libeay32.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
+XCOPY /f /y %vOpenSSLDir%\bin\ssleay32.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
+XCOPY /f /y %vOpenSSLDir%\bin\libintl-8.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
+XCOPY /f /y %vOpenSSLDir%\bin\libiconv-2.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
+XCOPY /f /y %vPgBuildDir%\output\bin\libpq.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
 
 ECHO ------------------------
 ECHO ----------Done----------

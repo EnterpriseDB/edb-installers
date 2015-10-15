@@ -176,7 +176,7 @@ EOT
     fi
 
     # Python Build
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.3; set VisualStudioVersion=12.0; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.3.4 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.3 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-8.5 $PG_PATH_WIN\\\\languagepack.$ARCH\\\\xz-5.0.3 $PG_PGBUILD_WIN"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.3; set VisualStudioVersion=12.0; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.3.4 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.3 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-8.5 $PG_PATH_WIN\\\\languagepack.$ARCH\\\\xz-5.0.3 $PG_PGBUILD_WIN $PG_PATH_WIN"
 }
 
 
