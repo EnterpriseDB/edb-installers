@@ -82,6 +82,11 @@ _prep_server_windows() {
 
     cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.windows || _die "Failed to copy the source code (source/pgadmin.windows)"
     cp -R stackbuilder stackbuilder.windows || _die "Failed to copy the source code (source/stackbuilder.windows)"
+
+    # Cygwin newer version requires execute permission for all .bat to execute
+    find postgres.windows -name "*.bat" -exec chmod +x {} \;
+    find pgadmin.windows -name "*.bat" -exec chmod +x {} \;
+    find stackbuilder.windows -name "*.bat" -exec chmod +x {} \;
     
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/windows ];
@@ -244,6 +249,8 @@ EOT
         
     # Zip up the scripts directories and copy them to the build host, then unzip
     cd $WD/server/scripts/windows/
+    # Cygwin newer version requires execute permission for all .bat to execute
+    find $WD/server/scripts/windows/ -name "*.bat" -exec chmod +x {} \;
     echo "Copying scripts source tree to Windows build VM"
     zip -r scripts.zip vc-build.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build.bat, createuser, getlocales, validateuser)"
 
