@@ -288,17 +288,17 @@ _postprocess_ApacheHTTPD_osx() {
 
     # Scp the app bundle to the signing machine for signing
     tar -jcvf apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app.tar.bz2 apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app || _die "Failed to create the archive."
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; rm -rf apache*" || _die "Failed to clean the $PG_PATH_OSX/output directory on sign server."
-    scp apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX/output/ || _die "Failed to copy the archive to sign server."
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf apache*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
+    scp apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/ || _die "Failed to copy the archive to sign server."
     rm -fr apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app* || _die "Failed to clean the output directory."
 
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; tar -jxvf apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; rm -rf apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app; mv apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx-signed.app apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app; mv apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx-signed.app apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app;" || _die "could not move the signed app"
 
     # Archive the .app and copy back to controller
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; zip -r apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.zip apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app" || _die "Failed to zip the installer bundle"
-    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX/output/apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.zip apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app" || _die "Failed to zip the installer bundle"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
     
     cd $WD
     echo "END POST ApacheHTTPD OSX"
