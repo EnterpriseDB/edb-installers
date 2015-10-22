@@ -60,6 +60,9 @@ _prep_languagepack_windows() {
         sed -i 's/<SubSystem>NotSet<\/SubSystem>/<SubSystem>Windows<\/SubSystem>/g' _ctypes.vcxproj || _die "Failed to update _ctypes.vcxproj"
         sed -i 's/<SubSystem>NotSet<\/SubSystem>/<SubSystem>Windows<\/SubSystem>/g' _decimal.vcxproj || _die "Failed to update _decimal.vcxproj"
         sed -i '26,37d' ../Tools/buildbot/external-common.bat || _die "Failed to remove OpenSSL and Tck/Tk checkout in external-common.bat"
+        echo "extraction Pillow binaries into languagepack.$ARCH source folder."
+        cd $WD/languagepack/source/languagepack.$ARCH 
+        extract_file $WD/../tarballs/Pillow-3.0.0.win32 || _die "Failed to extract Pillow binaries."
     else
         # Perl related changes - x64
         cd perl-5.16.3/win32
@@ -77,6 +80,9 @@ _prep_languagepack_windows() {
         sed -i 's/<SubSystem>NotSet<\/SubSystem>/<SubSystem>Console<\/SubSystem>/g' _ctypes.vcxproj || _die "Failed to update _ctypes.vcxproj"
         sed -i 's/<SubSystem>NotSet<\/SubSystem>/<SubSystem>Console<\/SubSystem>/g' _decimal.vcxproj || _die "Failed to update _decimal.vcxproj"
         sed -i '26,37d' ../Tools/buildbot/external-common.bat || _die "Failed to remove OpenSSL and Tck/Tk checkout in external-common.bat"
+        echo "extraction Pillow binaries into languagepack.$ARCH source folder."
+        cd $WD/languagepack/source/languagepack.$ARCH
+        extract_file $WD/../tarballs/Pillow-3.0.0.win-amd64 || _die "Failed to extract Pillow binaries."
     fi
 
     cd $WD/languagepack/source
@@ -220,10 +226,8 @@ _postprocess_languagepack_windows() {
     if [ "$ARCH" = "windows-x64" ];
     then
         scp -r $PG_SSH_WIN:$PG_PGBUILD_WIN\\\\vcredist\\\\vcredist_x64.exe $WD/languagepack/staging/$ARCH/installer/languagepack/vcredist_x64.exe || _die "Failed to get vcredist_x64.exe from windows build host"
-        scp -r $PG_SSH_WIN:$PG_PGBUILD_WIN\\\\vcredist\\\\vcredist10_x64.exe $WD/languagepack/staging/$ARCH/installer/languagepack/vcredist10_x64.exe || _die "Failed to get vcredist10_x64.exe from windows build host"
     else
         scp -r $PG_SSH_WIN:$PG_PGBUILD_WIN\\\\vcredist\\\\vcredist_x86.exe $WD/languagepack/staging/$ARCH/installer/languagepack/vcredist_x86.exe || _die "Failed to get vcredist_x86.exe from windows build host"
-        scp -r $PG_SSH_WIN:$PG_PGBUILD_WIN\\\\vcredist\\\\vcredist10_x86.exe $WD/languagepack/staging/$ARCH/installer/languagepack/vcredist10_x86.exe || _die "Failed to get vcredist10_x86.exe from windows build host"
     fi   
  
     cd $WD/languagepack

@@ -129,7 +129,7 @@ pip install Flask-Login
 pip install Flask-Security
 pip install Flask-WTF
 pip install simplejson
-pip install Pillow
+rem pip install Pillow
 pip install pytz
 pip install sphinx "babel<2.0"
 pip install cython
@@ -141,6 +141,10 @@ XCOPY /f /y %vOpenSSLDir%\bin\ssleay32.dll %vPythonInstallDir%\Lib\site-packages
 XCOPY /f /y %vOpenSSLDir%\bin\libintl-8.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
 XCOPY /f /y %vOpenSSLDir%\bin\libiconv-2.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
 XCOPY /f /y %vPgBuildDir%\output\bin\libpq.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
+
+ECHO copying Pillow binaries to %vPythonInstallDir%
+XCOPY /Y /E /Q  %vScriptsDir%\EnterpriseDB\LanguagePack\9.5\x64\Python-3.3\Lib\site-packages\* %vPythonInstallDir%\Lib\site-packages\
+XCOPY /s /e /f /h %vScriptsDir%\EnterpriseDB\LanguagePack\9.5\x64\Python-3.3\Scripts\* %vPythonInstallDir%\Scripts\
 
 ECHO ------------------------
 ECHO ----------Done----------
