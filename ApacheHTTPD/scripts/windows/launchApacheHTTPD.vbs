@@ -11,7 +11,7 @@ Else
    strRegKey = "HKEY_LOCAL_MACHINE\SOFTWARE\wow6432node\EnterpriseDB\ApacheHTTPD\"
 End If
 
-strApachePort = WSHShell.RegRead(strRegKey & "APACHE_PORT")
+strApachePort = WSHShell.RegRead(strRegKey & "APACHE_HPORT")
 
 strURL="http://localhost:" & strApachePort
 strArgs= "url.dll,FileProtocolHandler " & strURL

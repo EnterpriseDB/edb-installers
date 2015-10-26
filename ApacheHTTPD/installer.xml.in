@@ -391,7 +391,7 @@ EOF
         <iniFileGet>
           <file>/etc/postgres-reg.ini</file>
           <section>ApacheHTTPD</section>
-          <key>APACHE_PORT</key>
+          <key>APACHE_HPORT</key>
           <variable>apacheport</variable>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
@@ -494,7 +494,7 @@ EOF
         <setInstallerVariable name="apache_home" value=""/>
         <registryGet>
           <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
-          <name>APACHE_PORT</name>
+          <name>APACHE_HPORT</name>
           <variable>apacheport</variable>
         </registryGet>
         <registryGet>
@@ -1228,7 +1228,7 @@ include conf\addons\*.conf
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
           <section>ApacheHTTPD</section>
-          <key>APACHE_PORT</key>
+          <key>APACHE_HPORT</key>
           <value>${port}</value>
         </iniFileSet>
         <iniFileSet>
@@ -1412,7 +1412,7 @@ include conf\addons\*.conf
         </registrySet>
         <registrySet>
           <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
-          <name>APACHE_PORT</name>
+          <name>APACHE_HPORT</name>
           <value>${port}</value>
         </registrySet>
         <registrySet>
@@ -1551,7 +1551,7 @@ include conf\addons\*.conf
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
           <section>ApacheHTTPD</section>
-          <key>APACHE_PORT</key>
+          <key>APACHE_HPORT</key>
           <value/>
         </iniFileSet>
         <iniFileSet>
