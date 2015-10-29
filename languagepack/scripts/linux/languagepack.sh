@@ -459,7 +459,7 @@ then
 	ExecuteCommand "pip install Flask-Security"
 	ExecuteCommand "pip install Flask-WTF"
 	ExecuteCommand "pip install simplejson"
-	ExecuteCommand "pip install Pillow"
+	ExecuteCommand "C_INCLUDE_PATH=$SSL_INST/include LD_RUN_PATH=$SSL_INST/lib pip install Pillow"
 	ExecuteCommand "pip install pytz"
 	ExecuteCommand "pip install sphinx"
 	ExecuteCommand "CFLAGS=-I$PYTHON_INSTALL_PATH/include LDFLAGS=-L$PYTHON_INSTALL_PATH/lib pip install cython"
