@@ -203,6 +203,9 @@ _postprocess_ApacheHTTPD_linux_x64() {
     cp resources/xdg/pg-apachehttpd.directory staging/linux-x64/scripts/xdg/pg-apachehttpd.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-launchApacheHTTPD.desktop staging/linux-x64/scripts/xdg/pg-launchApacheHTTPD.desktop || _die "Failed to copy a menu pick desktop"
 
+    cp resources/index.html staging/linux-x64/apache/www || _die "Failed to copy index.html"
+    _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/linux-x64/apache/www/index.html"
+
     # Set permissions to all files and folders in staging
     _set_permissions linux-x64
 

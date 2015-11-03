@@ -210,6 +210,9 @@ _postprocess_ApacheHTTPD_linux() {
     cp resources/xdg/pg-apachehttpd.directory staging/linux/scripts/xdg/pg-apachehttpd.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-launchApacheHTTPD.desktop staging/linux/scripts/xdg/pg-launchApacheHTTPD.desktop || _die "Failed to copy a menu pick desktop"
 
+    cp resources/index.html staging/linux/apache/www || _die "Failed to copy index.html"
+    _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/linux/apache/www/index.html"
+
     #Remove the httpd.conf.bak from the staging if exists.
     if [ -f staging/linux/apache/conf/httpd.conf.bak ]; then
       rm -f staging/linux/apache/conf/httpd.conf.bak

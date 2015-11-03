@@ -220,6 +220,9 @@ _postprocess_ApacheHTTPD_windows() {
     mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy the menu pick images (resources/logo.ico)" 
 
+    cp resources/index.html staging/windows/apache/www || _die "Failed to copy index.html"
+    _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/windows/apache/www/index.html"
+
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
