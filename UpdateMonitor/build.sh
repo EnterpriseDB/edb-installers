@@ -5,7 +5,12 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    source $WD/UpdateMonitor/build-osx.sh
+    if [ "`uname`" == "Darwin" ];
+    then
+        source $WD/UpdateMonitor/build-osx.sh
+    else
+        source $WD/UpdateMonitor/build-osx-backup.sh
+    fi
 fi
 
 # Linux

@@ -5,7 +5,12 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    source $WD/pgbouncer/build-osx.sh
+    if [ "`uname`" == "Darwin" ];
+    then
+        source $WD/pgbouncer/build-osx.sh
+    else
+        source $WD/pgbouncer/build-osx-backup.sh
+    fi
 fi
 
 # Linux

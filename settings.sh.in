@@ -134,8 +134,13 @@ PG_SOLARIS_STUDIO_SOLARIS_SPARC=/opt/sunstudio12.1/prod
 PG_ANT_HOME_SOLARIS_SPARC=/opt/apache-ant-1.8.4
 PG_QMAKE_SOLARIS_SPARC=/usr/local.sun/bin/qmake
 
-
-PG_PATH_OSX=`pwd`
+if [ "`uname`" == "Darwin" ];
+then
+     PG_PATH_OSX=`pwd`
+else
+     PG_PATH_OSX=/mnt/hgfs/pginstaller.auto-repo
+fi
+PG_SSH_OSX=buildfarm@bf3-osx.ox.uk.enterprisedb.com
 PG_SSH_OSX_SIGN=buildfarm@bf-osx-sign.ox.uk.enterprisedb.com
 PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_92.auto
 PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
