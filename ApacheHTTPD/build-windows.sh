@@ -35,6 +35,7 @@ _prep_ApacheHTTPD_windows() {
     cp -pR mod_wsgi-$PG_VERSION_WSGI/* apache.windows/mod_wsgi || _die "Failed to copy the source code (source/mod_wsgi-$PG_VERSION_WSGI)"
 
     cd apache.windows/mod_wsgi/win32
+    patch -p0 < $WD/tarballs/mod_wsgi_psapi.patch
     sed -i '/ap24py34-win32-VC10.mk/s/^/REM /g' build-win32-VC10.bat
     sed -i "s/^APACHE_ROOTDIR =\(.*\)$/APACHE_ROOTDIR=$PG_PATH_WINDOWS\\\\apache.staging/g" ap24py33-win32-VC10.mk #> ap24py33-win32-VC10.mk.bk && mv ap24py33-win32-VC10.mk.bk ap24py33-win32-VC10.mk
     sed -i "s/^PYTHON_ROOTDIR =\(.*\)$/PYTHON_ROOTDIR=$PG_PYTHON_WINDOWS/g" ap24py33-win32-VC10.mk #> ap24py33-win32-VC10.mk.bk && mv ap24py33-win32-VC10.mk.bk ap24py33-win32-VC10.mk 
