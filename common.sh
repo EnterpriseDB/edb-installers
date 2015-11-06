@@ -21,6 +21,29 @@ _replace() {
     mv /tmp/$$.tmp $3 || _die "Failed to move /tmp/$$.tmp to $3"
 }
 
+_set_permissions() {
+
+    permissionsDirectory="staging/$1/"
+
+    if [ "x$2" != "x" ];
+    then
+        permissionsDirectory="$2"
+    fi
+
+    # Set 644 for all files and folders
+    find $permissionsDirectory -type f | xargs -I{} chmod 644 {}
+
+    # Set Permissions for links and folders
+    find $permissionsDirectory -xtype l | xargs -I{} chmod 777 {}
+    find $permissionsDirectory -type d | xargs -I{} chmod 755 {}
+
+    # " executable" requires a ' ' prefix to ensure it is not a filename
+    find $permissionsDirectory -type f | xargs -I{} file {} | grep -i " executable" | cut -f1 -d":" | xargs -I{} chmod +x {}
+    find $permissionsDirectory -type f | xargs -I{} file {} | grep "ELF" | cut -f1 -d":" | xargs -I{} chmod +x {}
+    find $permissionsDirectory -type f | xargs -I{} file {} | grep "Mach-O" | cut -f1 -d":" | xargs -I{} chmod +x {}
+}
+
+
 # Rewrite so references on Mac - _rewrite_so_refs($base_path, $file_path, $loader_path)
 #
 # base_path - The base installation path (normally ($WD/staging/osx)

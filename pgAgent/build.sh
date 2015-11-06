@@ -5,8 +5,14 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-   source $WD/pgAgent/build-osx.sh
+    if [ "`uname`" == "Darwin" ];
+    then
+         source $WD/pgAgent/build-osx.sh
+    else
+         source $WD/pgAgent/build-osx-backup.sh
+    fi
 fi
+
 
 # Linux
 if [ $PG_ARCH_LINUX = 1 ];
