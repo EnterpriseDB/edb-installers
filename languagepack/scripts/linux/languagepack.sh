@@ -257,8 +257,10 @@ CheckRPMInstallation "libX11-devel"
 
 
 NCURSES_LINK="http://ftp.gnu.org/gnu/ncurses/ncurses-$PG_VERSION_NCURSES.tar.gz"
-TCL_LINK="http://prdownloads.sourceforge.net/tcl/tcl$PG_VERSION_TCL_TK-src.tar.gz"
-TK_LINK="http://prdownloads.sourceforge.net/tcl/tk$PG_VERSION_TCL_TK-src.tar.gz"
+##TCL_LINK="http://prdownloads.sourceforge.net/tcl/tcl$PG_VERSION_TCL_TK-src.tar.gz"
+##TK_LINK="http://prdownloads.sourceforge.net/tcl/tk$PG_VERSION_TCL_TK-src.tar.gz"
+TCL_LINK="ftp://ftp.tcl.tk/pub/tcl/tcl8_5/tcl$PG_VERSION_TCL_TK-src.tar.gz"
+TK_LINK="ftp://ftp.tcl.tk/pub/tcl/tcl8_5/tk$PG_VERSION_TCL_TK-src.tar.gz"
 PYTHON_LINK="https://www.python.org/ftp/python/$PG_VERSION_PYTHON/Python-$PG_VERSION_PYTHON.tgz"
 PYTHON_DISTRIBUTE_LINK="http://pypi.python.org/packages/source/d/distribute/distribute-$PG_VERSION_PYTHON_DISTRIBUTE.tar.gz"
 PERL_LINK="http://www.cpan.org/src/5.0/perl-$PG_VERSION_PERL.tar.gz"
