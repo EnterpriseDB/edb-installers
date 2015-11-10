@@ -113,6 +113,8 @@ EOF
          <stringParameter name="dirPrefix" allowEmptyValue="0"/>
        </parameterList>
     </actionDefinition>
+    <include file="../scripts/determineLinuxInitSystem.xml"/>
+    <include file="../scripts/linuxServiceAction.xml"/>
   </functionDefinitionList>
   <!-- Prebuild Actions -->
   <preBuildActionList>
@@ -312,6 +314,13 @@ EOF
     <setInstallerVariable name="apachehttpdVersion" value="" />
     <setInstallerVariable name="iBranding" value="" />
 
+    <!-- determine the init on Linux -->
+    <determineLinuxInitSystem>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </determineLinuxInitSystem>
+
     <actionGroup>
       <actionList>
         <setInstallerVariable name="req_lp_version" value="PG_VERSION_LANGUAGEPACK" persist="1"/>
@@ -467,7 +476,18 @@ EOF
         </compareText>
       </ruleList>
     </runProgram>
-   <!-- Stopping apache if already started - Linux and Mac  -->
+    <!-- Stopping apache if already started - Linux and Mac  -->
+    <linuxServiceAction
+      name="EnterpriseDBApacheHTTPD" action="stop" systemdBooted="${is_init_systemd}"
+      abortOnError="0" showMessageOnError="0">
+      <ruleList>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </linuxServiceAction>
     <runProgram>
       <program>${apache_home}/bin/apachectl</program>
       <programArguments>"stop"</programArguments>
@@ -475,6 +495,11 @@ EOF
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
+        <compareText>
+          <logic>does_not_contain</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
         <compareText>
           <logic>does_not_equal</logic>
           <text>${platform_name}</text>
@@ -845,6 +870,13 @@ EOF
   </preInstallationActionList>
   <!-- Ready to install actions -->
   <readyToInstallActionList>
+    <!-- determine the init on Linux -->
+    <determineLinuxInitSystem>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </determineLinuxInitSystem>
+
     <actionGroup>
       <ruleList>
         <compareText logic="does_not_equal" text="${apachehttpdVersion}"
@@ -853,14 +885,17 @@ EOF
       <actionList>
 
         <!-- Stop the existing ApacheHTTPD service -->
-        <runProgram program="/etc/init.d/EnterpriseDBApacheHTTPD"
-          programArguments="stop"
-          workingDirectory="${installdir}/apache/bin"
+        <linuxServiceAction
+          name="EnterpriseDBApacheHTTPD" action="stop" systemdBooted="${is_init_systemd}"
           abortOnError="0" showMessageOnError="0">
           <ruleList>
-            <compareText logic="contains" text="${platform_name}" value="linux"/>
+            <compareText>
+              <logic>contains</logic>
+              <text>${platform_name}</text>
+              <value>linux</value>
+            </compareText>
           </ruleList>
-        </runProgram>
+        </linuxServiceAction>
         <runProgram program="launchctl"
           programArguments="unload /Library/LaunchDaemons/com.edb.launchd.apache.plist"
           workingDirectory="${installdir}/apache/bin"
@@ -1205,7 +1240,7 @@ include conf\addons\*.conf
     <runProgram>
       <customErrorMessage>${msg(error.service.apachehttpd)}</customErrorMessage>
       <program>${installdir}/installer/ApacheHTTPD/startupcfg.sh</program>
-      <programArguments>"${installdir}"</programArguments>
+      <programArguments>"${installdir}" "${linux_init_system}"</programArguments>
       <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
       <abortOnError>0</abortOnError>
       <ruleList>
@@ -1267,14 +1302,11 @@ include conf\addons\*.conf
     <actionGroup>
      <actionList>
         <!-- Linux - Starting Apache -->
-        <runProgram>
-          <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
-          <program>${installdir}/apache/bin/apachectl</program>
-          <programArguments>"start"</programArguments>
-          <workingDirectory>${installdir}/apache/bin</workingDirectory>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
-          <ruleList>
-             <compareText>
+	<linuxServiceAction
+          name="EnterpriseDBApacheHTTPD" action="start" systemdBooted="${is_init_systemd}"
+          customErrorMessage="${msg(error.start.apache)}" ruleEvaluationLogic="or">
+          <ruleList>    
+	    <compareText>
                 <logic>equals</logic>
                 <text>${selinux}</text>
                 <value>Disabled</value>
@@ -1283,9 +1315,9 @@ include conf\addons\*.conf
                 <logic>equals</logic>
                 <text>${selinux}</text>
                 <value/>
-             </compareText>
-          </ruleList>
-        </runProgram>
+             </compareText>    
+          </ruleList>       
+        </linuxServiceAction>
       </actionList>
       <ruleList>
         <compareText>
@@ -1299,7 +1331,6 @@ include conf\addons\*.conf
       <actionList>
         <!-- Linux | Mac - Creating Menu Shortcuts -->
         <runProgram>
-          <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
           <program>${installdir}/installer/ApacheHTTPD/createshortcuts.sh</program>
           <programArguments>"${installdir}" "${branding}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
           <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
@@ -1503,6 +1534,14 @@ include conf\addons\*.conf
     </installationAbortedActionList>
   <!-- preUninstallation actions -->
   <preUninstallationActionList>
+
+     <!-- determine the init on Linux -->
+     <determineLinuxInitSystem>
+       <ruleList>
+         <isFalse value="${extract_mode}"/>
+       </ruleList>
+     </determineLinuxInitSystem>
+
      <createTempDir dirPrefix="${product_shortname}">
      <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
@@ -1527,6 +1566,17 @@ include conf\addons\*.conf
     <actionGroup>
       <actionList>
         <!-- Stop Apache -->
+        <linuxServiceAction
+          name="EnterpriseDBApacheHTTPD" action="stop" systemdBooted="${is_init_systemd}"
+          abortOnError="0" showMessageOnError="0">
+          <ruleList>
+            <compareText>
+              <logic>contains</logic>
+              <text>${platform_name}</text>
+              <value>linux</value>
+            </compareText>
+          </ruleList>
+        </linuxServiceAction>
         <runProgram>
           <customErrorMessage>${msg(error.uninstall.stop.apache)}</customErrorMessage>
           <program>${installdir}/apache/bin/apachectl</program>
@@ -1534,6 +1584,11 @@ include conf\addons\*.conf
           <workingDirectory>${installdir}/apache/bin</workingDirectory>
           <abortOnError>0</abortOnError>
           <ruleList>
+	      <compareText>
+                <logic>does_not_contain</logic>
+                <text>${platform_name}</text>
+                <value>linux</value>
+              </compareText>
               <compareText>
                   <logic>does_not_equal</logic>
                   <text>${platform_name}</text>
@@ -1606,13 +1661,35 @@ include conf\addons\*.conf
           <programArguments>--del EnterpriseDBApacheHTTPD</programArguments>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
+	  <ruleList>
+            <isTrue value="${is_init_sysvinit}"/>
+          </ruleList>
         </runProgram>
 
         <!-- Remove the startup script -->
+
+        <runProgram program="/usr/bin/systemctl"
+          programArguments="disable EnterpriseDBApacheHTTPD.service"
+          abortOnError="0" showMessageOnError="0"
+          customErrorMessage="${msg(error.uninstall.apache)}">
+          <ruleList>
+            <isTrue value="${is_init_systemd}"/>
+          </ruleList>
+        </runProgram>
+
         <deleteFile>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
           <path>/etc/init.d/EnterpriseDBApacheHTTPD</path>
+	  <ruleList>
+	    <fileExists path="/etc/init.d/EnterpriseDBApacheHTTPD"/>
+          </ruleList>
+        </deleteFile>
+
+	<deleteFile path="/usr/lib/systemd/system/EnterpriseDBApacheHTTPD.service">
+          <ruleList>
+	    <fileExists path="/usr/lib/systemd/system/EnterpriseDBApacheHTTPD.service"/>
+          </ruleList>
         </deleteFile>
 
         <!-- Attempt to remove any runlevel config with update-rc.d -->
@@ -1621,6 +1698,9 @@ include conf\addons\*.conf
           <programArguments>-f EnterpriseDBApacheHTTPD remove</programArguments>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
+	  <ruleList>
+            <isTrue value="${is_init_upstart}"/>
+          </ruleList>
         </runProgram>
 
       </actionList>
