@@ -37,16 +37,16 @@ _prep_languagepack_windows() {
     cd $WD/languagepack/source/languagepack.$ARCH
     extract_file $WD/../tarballs/tcl8.5.17-src || _die "Failed to extract tcl/tk source (tcl-8.5.17-src.tar.gz)"
     extract_file $WD/../tarballs/tk8.5.17-src || _die "Failed to extract tcl/tk source (tk-8.5.17-src.tar.gz)"
-    extract_file $WD/../tarballs/perl-5.22.0 || _die "Failed to extract perl source (perl-5.22.0.tar.gz)"
+    extract_file $WD/../tarballs/perl-5.20.3 || _die "Failed to extract perl source (perl-5.20.3.tar.gz)"
     extract_file $WD/../tarballs/Python-3.3.4 || _die "Failed to extract python source (Python-3.3.4.tgz)"
     extract_file $WD/../tarballs/distribute-0.6.49 || _die "Failed to extract python source (distribute-0.6.49)"
 
     if [ "$ARCH" = "windows-x32" ];
     then
         # Perl related changes - x32
-        cd perl-5.22.0/win32
+        cd perl-5.20.3/win32
         sed -i "s/^INST_DRV\t= c:/INST_DRV\t= $PG_LANGUAGEPACK_INSTALL_DIR_WIN/g" Makefile
-        sed -i 's/^INST_TOP\t= $(INST_DRV)\\perl/INST_TOP\t= $(INST_DRV)\\Perl-5.22/g' Makefile
+        sed -i 's/^INST_TOP\t= $(INST_DRV)\\perl/INST_TOP\t= $(INST_DRV)\\Perl-5.20/g' Makefile
         sed -i 's/^CCTYPE\t\t= MSVC60/CCTYPE\t\t= MSVC120/g' Makefile
         sed -i 's/^BUILDOPT\t= $(BUILDOPT) -DUSE_SITECUSTOMIZE/BUILDOPT\t= $(BUILDOPT) -D_USE_32BIT_TIME_T/g' Makefile
         sed -i '/^DEFINES\t\t= $(DEFINES) -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE/s/^/#/g' Makefile
@@ -65,9 +65,9 @@ _prep_languagepack_windows() {
         extract_file $WD/../tarballs/Pillow-3.0.0.win32 || _die "Failed to extract Pillow binaries."
     else
         # Perl related changes - x64
-        cd perl-5.22.0/win32
+        cd perl-5.20.3/win32
         sed -i "s/^INST_DRV\t= c:/INST_DRV\t= $PG_LANGUAGEPACK_INSTALL_DIR_WIN/g" Makefile
-        sed -i 's/^INST_TOP\t= $(INST_DRV)\\perl/INST_TOP\t= $(INST_DRV)\\Perl-5.22/g' Makefile
+        sed -i 's/^INST_TOP\t= $(INST_DRV)\\perl/INST_TOP\t= $(INST_DRV)\\Perl-5.20/g' Makefile
         sed -i 's/^CCTYPE\t\t= MSVC60/CCTYPE\t\t= MSVC120/g' Makefile
         sed -i '/^BUILDOPT\t= $(BUILDOPTEXTRA)/a BUILDOPT\t= $(BUILDOPT) -DUSE_SITECUSTOMIZE' Makefile
         sed -i '/^DEFINES\t\t= $(DEFINES) -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE/s/^/#/g' Makefile
@@ -162,9 +162,9 @@ EOT
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-8.5; cmd /c Tcl_Tk_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\tcl8.5.17 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-8.5 $PG_PATH_WIN\\\\languagepack.$ARCH\\\\tk8.5.17"
 
     # Perl Build
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.22; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.22.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.22 PERL"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.22; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.22.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.22 DBI"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.22; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.22.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.22 DBD"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 PERL"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 DBI"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 DBD"
 
     # Generating/Updating liblzma.def file for Python Build
     if [ "$ARCH" = "windows-x32" ];
@@ -212,7 +212,7 @@ _postprocess_languagepack_windows() {
     fi
 
     scp -r $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-8.5 $WD/languagepack/staging/$ARCH/Tcl-8.5 || _die "Failed to get Tcl-8.5 from windows build host"
-    scp -r $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.22 $WD/languagepack/staging/$ARCH/Perl-5.22 || _die "Failed to get Perl-5.22 from windows build host"
+    scp -r $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 $WD/languagepack/staging/$ARCH/Perl-5.20 || _die "Failed to get Perl-5.20 from windows build host"
     scp -r $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.3 $WD/languagepack/staging/$ARCH/Python-3.3 || _die "Failed to get Python-3.3 from windows build host"
 
     cd $WD/languagepack
