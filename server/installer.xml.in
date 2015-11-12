@@ -1851,6 +1851,18 @@ EOF
                     <folder>programfileswindows</folder>
                     <origin>bin/pg_controldata.exe</origin>
                 </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\libintl-8.dll</destination>
+                    <folder>programfileswindows</folder>
+                    <origin>bin/libintl-8.dll</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\libiconv-2.dll</destination>
+                    <folder>programfileswindows</folder>
+                    <origin>bin/libiconv-2.dll</origin>
+                </unpackFile>
                 <!-- Validate user binary -->
                 <unpackFile>
                     <component>default</component>
