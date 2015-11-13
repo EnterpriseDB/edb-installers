@@ -368,7 +368,7 @@ _postprocess_PostGIS_osx() {
 
     # Copy in the menu pick images 
     mkdir -p $WD/PostGIS/staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp -pR $WD/PostGIS/resources/pg-launchPostGISDocs.icns $PG_PATH_OSX/PostGIS/staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchPostGISDocs.icns)"
+    cp -pR $WD/PostGIS/resources/pg-launchPostGISDocs.icns $WD/PostGIS/staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchPostGISDocs.icns)"
 
     #cd $PWD/PostGIS/
     cd $WD/PostGIS/
