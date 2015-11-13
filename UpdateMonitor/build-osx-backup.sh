@@ -85,7 +85,7 @@ cat <<EOT-UPDATEMONITOR > $WD/UpdateMonitor/build-updatemonitor.sh
     source ../common.sh
      
     cd $PG_PATH_OSX/UpdateMonitor/source/GetLatestPGInstalled.osx    
-    g++ -I/opt/local/Current/lib/wx/include/mac-unicode-debug-2.8 -I/opt/local/Current/include/wx-2.8 -arch i386 -L/opt/local/Current/lib -lwx_base_carbonud-2.8 -o GetLatestPGInstalled GetLatestPGInstalled.cpp
+    g++ -I/usr/local/lib/wx/include/mac-unicode-debug-2.8 -I/usr/local/include/wx-2.8 -arch i386 -L/usr/local/lib -lwx_base_carbonud-2.8 -o GetLatestPGInstalled GetLatestPGInstalled.cpp
 
     cd $PG_PATH_OSX/UpdateMonitor/source/GetLatestPGInstalled.osx    
      g++ -I/usr/local/lib/wx/include/mac-unicode-debug-2.8 -I/usr/local/include/wx-2.8 -arch i386 -L/usr/local/lib -lwx_base_carbonud-2.8 -o GetLatestPGInstalled GetLatestPGInstalled.cpp
