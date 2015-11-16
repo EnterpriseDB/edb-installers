@@ -262,7 +262,6 @@ EOT-SERVER
     rm -f server-staging.tar.bz2
 
     echo "END BUILD Server OSX"
-    exit
 }
 
 
@@ -397,7 +396,6 @@ _postprocess_server_osx() {
     mkdir server.img || _die "Failed to create DMG staging directory"
     mv postgresql-$PG_PACKAGE_VERSION-osx.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
     cp $WD/server/resources/README.osx server.img/README || _die "Failed to copy the installer README file into the DMG staging directory"
-    set -x
     tar -jcvf server.img.tar.bz2 server.img || _die "Failed to create the archive."
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf server.img*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
     scp server.img.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output || _die "Failed to copy the archive to sign server."

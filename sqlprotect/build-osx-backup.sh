@@ -38,7 +38,6 @@ _prep_sqlprotect_osx() {
     # Remove existing source and staging directories
     ssh $PG_SSH_OSX "if [ -d $PG_PATH_OSX/sqlprotect ]; then rm -rf $PG_PATH_OSX/sqlprotect/*; fi" || _die "Couldn't remove the existing files on OS X build server"
     ssh $PG_SSH_OSX "if [ -d $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT ]; then rm -rf $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT; fi" || _die "Couldn't remove the existing files on OS X build server"
-    set -x
     echo "Copy the sources to the build VM"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT" || _die "Failed to create the source dircetory on the build VM"
     scp $WD/server/source/postgres.osx/contrib/sqlprotect.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server/source/postgres.osx/contrib/ || _die "Failed to copy the source archives to build VM"

@@ -79,7 +79,6 @@ cat <<EOT-PGAGENT > $WD/pgAgent/build-pgagent.sh
     source ../versions.sh
     source ../common.sh
     
-    set -x
     PG_STAGING=$PG_PATH_OSX/pgAgent/staging/osx
     SOURCE_DIR=$PG_PATH_OSX/pgAgent/source/pgAgent.osx
 
