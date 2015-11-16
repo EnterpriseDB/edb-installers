@@ -266,7 +266,6 @@ EOT-SERVER
     rm -f server-staging.tar.bz2
 
     echo "END BUILD Server OSX"
-    exit
 }
 
 

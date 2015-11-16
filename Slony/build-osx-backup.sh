@@ -111,11 +111,9 @@ cat <<EOT-SLONY > $WD/Slony/build-slony.sh
     echo "Configuring the slony source tree for Universal"
     CFLAGS="$PG_ARCH_OSX_CFLAGS ${ARCH_FLAGS}" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --prefix=$PG_PGHOME_OSX --with-pgconfigdir=$PG_PGHOME_OSX/bin --with-pgport=yes || _die "Failed to configure slony for Universal"
 
-	set -x
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     for configFile in ${CONFIG_FILES}
     do
-	echo "************************************** $configFile"
       HEADER_FILE=${configFile}.h
       if [ -f "${HEADER_FILE}" ]; then
         CONFIG_BASENAME=`basename ${configFile}`

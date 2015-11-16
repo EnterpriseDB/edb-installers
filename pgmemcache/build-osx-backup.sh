@@ -73,7 +73,6 @@ cat <<PGMEMCACHE > $WD/pgmemcache/build-pgmemcache.sh
     source ../settings.sh
     source ../versions.sh
     source ../common.sh
-	set -x
 
     PGMEM_PACKAGE_PATH=$PG_PATH_OSX/pgmemcache
     PGMEM_PLATFORM=osx
