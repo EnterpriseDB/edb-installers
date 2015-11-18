@@ -1014,6 +1014,22 @@ EOF
             </ruleList>
         </setInstallerVariable>
 
+        <!-- RM 36432. Fix the Base Directory value in the registry-->
+        <setInstallerVariableFromRegEx>
+            <name>iBaseDirectory</name>
+            <pattern>/</pattern>
+            <substitution>\</substitution>
+            <text>${iBaseDirectory}</text>
+            <ruleList>
+                <stringTest>
+                    <text>${iBaseDirectory}</text>
+                    <type>not_empty</type>
+                </stringTest>
+                <isFalse value="${extract_mode}"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
         <!-- Set installdir if an existing installation is found -->
         <setInstallerVariable>
             <name>installdir</name>
@@ -2731,23 +2747,6 @@ EOF
                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-	<!-- Validating whether installdir is selected only as drive letters like c: d: etc... valid (Windows) -->
-	<actionGroup>
-	  <actionList>
-	    <pathManipulation>
-	      <action>absolutize</action>
-	      <path>${installdir}</path>
-	      <variable>installdir</variable>
-	    </pathManipulation>
-	    <setInstallerVariableFromRegEx name="installdir_withpath" pattern=":\\" substitution=":\" text="${installdir}"/>
-	    <setInstallerVariable name="installdir" value="${installdir_withpath}">
-	      <ruleList>
-	        <regExMatch text="${installdir}" logic="matches"  pattern="^[a-zA-Z]:/*$" />
-	        <compareText logic="equals" text="${platform_name}" value="windows"/>
-	      </ruleList>
-	    </setInstallerVariable>
-	  </actionList>
-	</actionGroup>
         <setInstallerVariable name="branding" value="" persist="1">
             <ruleList>
                 <isTrue value="${extract_mode}"/>
