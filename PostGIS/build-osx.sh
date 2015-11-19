@@ -218,6 +218,18 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
     echo "Copying postgis-utils"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/utils
     cp *.pl $PG_STAGING/PostGIS/utils || _die "Failed to copy the utilities "
+
+    echo "Building postgis-jdbc"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc
+    CLASSPATH=$PG_PATH_OSX/PostGIS/source/postgis.osx/postgresql-$PG_JAR_POSTGRESQL.jar:\$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_OSX $PG_MAVEN_HOME_OSX/bin/mvn clean install || _die "Failed to build postgis-jdbc jar."
+
+    mkdir -p $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/java/jdbc
+
+    echo "Copying postgis-jdbc"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java
+    cp jdbc/target/postgis*.jar $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/java/jdbc || _die "Failed to copy postgis jars into postgis-jdbc"
+    cp -R ejb2 ejb3 $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/java/ || _die "Failed to copy ejb2, ejb3 into postgis-java"
+
 EOT-POSTGIS
 
     cd $WD

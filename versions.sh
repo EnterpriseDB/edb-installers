@@ -64,6 +64,6 @@ PG_VERSION_LANGUAGEPACK=$PG_MAJOR_VERSION
 # Miscellaneous options
 
 # PostgreSQL jdbc jar version used by PostGIS
-PG_JAR_POSTGRESQL=9.2-1000.jdbc4
+PG_JAR_POSTGRESQL=$PG_VERSION_PGJDBC.jdbc41
 BASE_URL=http://sbp.enterprisedb.com
 JRE_VERSIONS_LIST="$PG_MAJOR_VERSION;9.1;9.0"
