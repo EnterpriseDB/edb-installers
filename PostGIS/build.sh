@@ -60,6 +60,10 @@ _prep_PostGIS() {
     echo "Unpacking postgis source..."
     extract_file  ../../tarballs/postgis-$PG_VERSION_POSTGIS || exit 1
 
+    echo "Extracting the postgis-java source..."
+    extract_file  ../../tarballs/postgis-java-$PG_VERSION_POSTGIS_JAVA || exit 1
+    mv postgis-java-$PG_VERSION_POSTGIS_JAVA  postgis-$PG_VERSION_POSTGIS/java/
+
     echo "Applying patches..." 
     #cd postgis-$PG_VERSION_POSTGIS
     #patch -p1 < ~/tarballs/postgis-211-liblwgeom.patch

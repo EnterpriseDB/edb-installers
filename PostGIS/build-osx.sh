@@ -24,6 +24,9 @@ _prep_PostGIS_osx() {
     echo "Creating postgis source directory ($WD/PostGIS/source/postgis.osx)"
     mkdir -p postgis.osx || _die "Couldn't create the postgis.osx directory"
     chmod ugo+w postgis.osx || _die "Couldn't set the permissions on the source directory"
+    
+    echo "Copying pgJDBC jar files.."
+    cp postgresql-$PG_VERSION_PGJDBC*.jar postgis.osx || _die "Failed to copy pgJDBC jar files."
 
     # Grab a copy of the postgis source tree
     cp -R postgis-$PG_VERSION_POSTGIS/* postgis.osx || _die "Failed to copy the source code (PostGIS/source/postgis-$PG_VERSION_POSTGIS)"
@@ -236,6 +239,18 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
     echo "Copying postgis-utils"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/utils
     cp *.pl $PG_STAGING/PostGIS/utils || _die "Failed to copy the utilities "
+
+    echo "Building postgis-jdbc"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc
+    CLASSPATH=$PG_PATH_OSX/PostGIS/source/postgis.osx/postgresql-$PG_JAR_POSTGRESQL.jar:\$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_OSX $PG_MAVEN_HOME_OSX/bin/mvn clean install || _die "Failed to build postgis-jdbc jar."
+
+    mkdir -p $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/java/jdbc
+
+    echo "Copying postgis-jdbc"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java
+    cp jdbc/target/postgis*.jar $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/java/jdbc || _die "Failed to copy postgis jars into postgis-jdbc"
+    cp -R ejb2 ejb3 $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/java/ || _die "Failed to copy ejb2, ejb3 into postgis-java"
+
 EOT-POSTGIS
 
     cd $WD
