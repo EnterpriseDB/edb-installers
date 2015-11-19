@@ -1118,6 +1118,9 @@ EOF
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/osx/PostGIS/utils</origin>
+                        </distributionDirectory>	
+                        <distributionDirectory>
+                            <origin>staging/osx/PostGIS/java</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/osx/PostGIS/man</origin>
@@ -1215,6 +1218,9 @@ EOF
                             <origin>staging/linux/PostGIS/utils</origin>
                         </distributionDirectory>
                         <distributionDirectory>
+                            <origin>staging/linux/PostGIS/java</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
                             <origin>staging/linux/PostGIS/man</origin>
                         </distributionDirectory>
                     </distributionFileList>
@@ -1310,6 +1316,9 @@ EOF
                             <origin>staging/linux-x64/PostGIS/utils</origin>
                         </distributionDirectory>
                         <distributionDirectory>
+                            <origin>staging/linux-x64/PostGIS/java</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
                             <origin>staging/linux-x64/PostGIS/man</origin>
                         </distributionDirectory>
                     </distributionFileList>
@@ -1393,6 +1402,9 @@ EOF
                             <origin>staging/linux-ppc64/PostGIS/utils</origin>
                         </distributionDirectory>
                         <distributionDirectory>
+                            <origin>staging/linux-ppc64/PostGIS/java</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
                             <origin>staging/linux-ppc64/PostGIS/man</origin>
                         </distributionDirectory>
                     </distributionFileList>
@@ -1462,6 +1474,9 @@ EOF
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/windows/PostGIS/utils</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/windows/PostGIS/java</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/windows/PostGIS/man</origin>
