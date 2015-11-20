@@ -112,12 +112,7 @@ echo " Build common utilities or modularized packages"
 echo "################################################"
 
 echo "### Module: registartion"
-source $WD/registration/build.sh
-
-if [ $SKIPBUILD = 0 ];
-then
-  _registration_component_build
-fi
+#source $WD/registration/build.sh
 
 echo "### Module: registartion_plus"
 source $WD/registration_plus/build.sh

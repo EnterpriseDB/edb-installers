@@ -39,7 +39,7 @@ _registration_build_osx()
 
   if [ x"$PG_REGISTRATION_COMP_BUILT_OSX" = x"" ]; then
     echo "Building validateUserClient utility for registration..."
-    gcc -DWITH_OPENSSL -I. -o validateUserClient.o $PG_ARCH_OSX_CFLAGS -arch ppc -arch i386 WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto || _die "Failed to build the validateUserClient utility"
+    gcc -DWITH_OPENSSL -I. -o validateUserClient.o $PG_ARCH_OSX_CFLAGS -arch i386 WSValidateUserClient.c soapC.c soapClient.c stdsoap2.c -lssl -lcrypto || _die "Failed to build the validateUserClient utility"
 
     cp $PG_REG_COMP_PATH/validateUserClient.o $PG_REG_COMP_STAGING/ || _die "Failed to copy the validateUserClient to staging directory"
 

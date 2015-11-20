@@ -216,6 +216,7 @@ generate_3rd_party_license()
     fi
 
     tempfoo=`basename $0`
+    tempfoo="${tempfoo}.XXXXXXXXXX"
     TempFile=`mktemp -t ${tempfoo}` || exit 1
     $ListGeneratorScriptFile    >> $TempFile
     $ListGeneratorScriptFileJar >> $TempFile
