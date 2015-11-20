@@ -1105,9 +1105,22 @@ EOF
                     <customErrorMessage>${msg(pgbouncer.linux.service.error)}</customErrorMessage>
                     <ruleList>
                         <compareText>
-                            <logic>does_not_equal</logic>
+                            <logic>contains</logic>
                             <text>${platform_name}</text>
-                            <value>windows</value>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+                <runProgram>
+                    <program>${installdir}/installer/pgbouncer/startupcfg.sh</program>
+                    <programArguments>"${installdir}" "${system_user}"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <customErrorMessage>${msg(pgbouncer.linux.service.error)}</customErrorMessage>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
                         </compareText>
                     </ruleList>
                 </runProgram>
