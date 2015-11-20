@@ -223,6 +223,12 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc; 
     LDFLAGS="-L/usr/local/lib -arch x86_64 -arch i386" CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -arch i386" MACOSX_DEPLOYMENT_TARGET=10.6 make html || _die "Failed to build postgis-doc"
     make install PGXSOVERRIDE=0 DESTDIR=$PG_PATH_OSX/PostGIS/staging/osx/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$PG_PATH_OSX/PostGIS/staging/osx/PostGIS/doc PGSQL_MANDIR=$PG_PATH_OSX/PostGIS/staging/osx/PostGIS/man PGSQL_SHAREDIR=$PG_PATH_OSX/PostGIS/staging/osx/PostGIS/share/postgresql || _die "Failed to install PostGIS-doc"
+
+    echo "Building postgis-jdbc"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc
+    make pom.xml
+    export CLASSPATH=$PG_PATH_OSX/PostGIS/source/postgresql-$PG_JAR_POSTGRESQL.jar:$CLASSPATH
+    $PG_MAVEN_HOME_OSX/bin/mvn clean install || _die "Failed to build postgis-jdbc" || _die "Failed to build postgis-jdbc jar."
     
     cd $PG_PATH_OSX/PostGIS
     mkdir -p staging/osx/PostGIS/doc/postgis/
@@ -237,6 +243,16 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
     echo "Copying postgis-utils"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/utils
     cp *.pl $PG_STAGING/PostGIS/utils || _die "Failed to copy the utilities "
+
+    cd $WD/PostGIS
+
+    mkdir -p staging/osx/PostGIS/java/jdbc
+
+    echo "Copying postgis-jdbc"
+    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java
+    cp jdbc/target/postgis*.jar $PG_STAGING/PostGIS/java/jdbc/ || _die "Failed to copy postgis jars into postgis-jdbc directory "
+    cp -R ejb2 $PG_STAGING/PostGIS/java/ || _die "Failed to copy ejb2 into postgis-jdbc directory "
+    cp -R ejb3 $PG_STAGING/PostGIS/java/ || _die "Failed to copy ejb3 into postgis-jdbc directory "
 EOT-POSTGIS
 
     cd $WD
