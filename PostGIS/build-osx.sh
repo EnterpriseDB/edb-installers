@@ -221,6 +221,7 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
 
     echo "Building postgis-jdbc"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc
+    make pom.xml
     CLASSPATH=$PG_PATH_OSX/PostGIS/source/postgis.osx/postgresql-$PG_JAR_POSTGRESQL.jar:\$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_OSX $PG_MAVEN_HOME_OSX/bin/mvn clean install || _die "Failed to build postgis-jdbc jar."
 
     mkdir -p $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/java/jdbc
