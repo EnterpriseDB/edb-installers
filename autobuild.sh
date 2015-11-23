@@ -12,7 +12,7 @@ then
 fi
 
 # Generic mail variables
-log_location="/Users/buildfarm/pginstaller.auto/output"
+log_location="$HOME/pginstaller.auto/output"
 header_fail="Autobuild failed with the following error (last 20 lines of the log):
 ###################################################################################"
 footer_fail="###################################################################################"
@@ -42,7 +42,7 @@ $footer_fail"
                 mail_receipents="pginstaller@enterprisedb.com"
         fi
 
-        mail -s "pgInstaller Build $version - $build_status" $mail_receipents <<EOT
+        mail -s "pgInstaller Build $version ($country) - $build_status" $mail_receipents <<EOT
 $mail_content
 EOT
 }
@@ -79,8 +79,6 @@ echo "Updating REL-9_1 branch build system" >> autobuild.log
 echo "Running the build (REL-9_1) " >> autobuild.log
 ./build.sh > output/build-91.log 2>&1
 
-_mail_status "build-91.log" "9.1"
-
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
 
 # Determine the host location
@@ -103,6 +101,8 @@ fi
 
 echo "Host country = $country" >> autobuild.log
 remote_location_91="$remote_location/$DATE/9.1/$country"
+
+_mail_status "build-91.log" "9.1"
 
 echo "Purging old builds from the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com "bin/culldirs "$remote_location/20*" 5" >> autobuild.log 2>&1
