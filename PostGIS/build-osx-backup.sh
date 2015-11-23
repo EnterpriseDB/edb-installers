@@ -244,7 +244,7 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/utils
     cp *.pl $PG_STAGING/PostGIS/utils || _die "Failed to copy the utilities "
 
-    cd $WD/PostGIS
+    cd $PG_PATH_OSX/PostGIS
 
     mkdir -p staging/osx/PostGIS/java/jdbc
 
