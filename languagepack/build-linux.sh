@@ -24,12 +24,12 @@ _prep_languagepack_linux() {
     cp $WD/languagepack/scripts/linux/languagepack.sh languagepack.linux || _die "Failed to copy the languagepack build script (languagepack.sh)"
 
     # Copy the tarballs
-    cp $WD/tarballs/ncurses-${PG_VERSION_NCURSES}.tar.gz $WD/languagepack/source/languagepack.linux-x64/ || _die  "failed to copy ncurses"
-    cp $WD/tarballs/tcl${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src.tar.gz $WD/languagepack/source/languagepack.linux-x64/ || _die  "failed to copy tcl"
-    cp $WD/tarballs/tk${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src.tar.gz $WD/languagepack/source/languagepack.linux-x64/ || _die  "failed to copy tk"
-    cp $WD/tarballs/perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL}.tar.gz $WD/languagepack/source/languagepack.linux-x64/ || _die  "failed to copy perl"
-    cp $WD/tarballs/Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}.tgz $WD/languagepack/source/languagepack.linux-x64/ || _die  "failed to copy python"
-    cp $WD/tarballs/distribute-${PG_VERSION_DIST_PYTHON}.tar.gz $WD/languagepack/source/languagepack.linux-x64/ || _die  "failed to copy distribute"
+    cp $WD/tarballs/ncurses-${PG_VERSION_NCURSES}.tar.gz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy ncurses"
+    cp $WD/tarballs/tcl${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src.tar.gz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy tcl"
+    cp $WD/tarballs/tk${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src.tar.gz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy tk"
+    cp $WD/tarballs/perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL}.tar.gz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy perl"
+    cp $WD/tarballs/Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}.tgz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy python"
+    cp $WD/tarballs/distribute-${PG_VERSION_DIST_PYTHON}.tar.gz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy distribute"
 
     # Copy Python_MAXREPEAT.patch to build Python
     cp $WD/languagepack/scripts/linux/Python_MAXREPEAT.patch languagepack.linux || _die "Failed to copy (Python_MAXREPEAT.patch) to build Python"
