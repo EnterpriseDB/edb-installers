@@ -121,7 +121,7 @@ _set_config_package UPDATE_MONITOR
 fi
 
 # Generic mail variables
-log_location="/Users/buildfarm/pginstaller_2.auto/output"
+log_location="$DIRNAME/output"
 header_fail="Autobuild failed with the following error (last 20 lines of the log):
 ###################################################################################"
 footer_fail="###################################################################################"
