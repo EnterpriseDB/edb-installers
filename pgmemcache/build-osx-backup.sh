@@ -77,9 +77,9 @@ cat <<PGMEMCACHE > $WD/pgmemcache/build-pgmemcache.sh
 
     PGMEM_PACKAGE_PATH=$PG_PATH_OSX/pgmemcache
     PGMEM_PLATFORM=osx
-    PGMEM_STAGING=$PG_PATH_OSX/pgmemcache/staging/$PGMEM_PLATFORM
-    PGMEM_SOURCE=$PG_PATH_OSX/pgmemcache/source/pgmemcache.$PGMEM_PLATFORM
-    PG_PATH=$PG_PATH_OSX/server/staging/$PGMEM_PLATFORM
+    PGMEM_STAGING=$PG_PATH_OSX/pgmemcache/staging/\$PGMEM_PLATFORM
+    PGMEM_SOURCE=$PG_PATH_OSX/pgmemcache/source/pgmemcache.\$PGMEM_PLATFORM
+    PG_PATH=$PG_PATH_OSX/server/staging/\$PGMEM_PLATFORM
 
     cd \$PGMEM_SOURCE
     PATH=\$PG_PATH/bin:$PATH make CFLAGS="$PG_ARCH_OSX_CFLAGS -I/usr/local/include -arch x86_64 -arch i386" LDFLAGS="-L/usr/local/lib -arch x86_64 -arch i386" || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
