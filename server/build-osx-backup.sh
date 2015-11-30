@@ -220,14 +220,14 @@ EOT
     ssh $PG_SSH_OSX "cp -f $PG_STAGING/lib/postgresql/plperl.so $PG_STAGING/"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source settings.sh; source common.sh; cd $PG_STAGING; _rewrite_so_refs $PG_STAGING bin @loader_path/..\
-        _rewrite_so_refs $PG_STAGING lib @loader_path/..\
-        _rewrite_so_refs $PG_STAGING lib/postgresql @loader_path/../..\
-        _rewrite_so_refs $PG_STAGING lib/postgresql/plugins @loader_path/../../..\
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source settings.sh; source common.sh; cd $PG_STAGING; _rewrite_so_refs $PG_STAGING bin @loader_path/..;\
+        _rewrite_so_refs $PG_STAGING lib @loader_path/..;\
+        _rewrite_so_refs $PG_STAGING lib/postgresql @loader_path/../..;\
+        _rewrite_so_refs $PG_STAGING lib/postgresql/plugins @loader_path/../../..;\
         _rewrite_so_refs $PG_STAGING stackbuilder.app/Contents/MacOS @loader_path/../../.."
 
     # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
-    mv -f $PG_STAGING/plperl.so $PG_STAGING/lib/postgresql/plperl.so
+    ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging/osx/plperl.so $PG_PATH_OSX/server/staging/osx/lib/postgresql/plperl.so"
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/scripts/osx/getlocales/; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -o getlocales.osx -O0 getlocales.c"  || _die "Failed to build getlocales utility"
 
