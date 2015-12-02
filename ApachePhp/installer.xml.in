@@ -807,6 +807,22 @@ EOF
       </ruleList>
     </setInstallerVariable>
 
+   <!-- RM 35851. Fix the Base Directory value in the registry-->
+    <setInstallerVariableFromRegEx>
+      <name>installdir</name>
+      <pattern>/</pattern>
+      <substitution>\</substitution>
+      <text>${installdir}</text>
+      <ruleList>
+        <stringTest>
+          <text>${installdir}</text>
+          <type>not_empty</type>
+        </stringTest>
+        <isFalse value="${extract_mode}"/>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </setInstallerVariableFromRegEx>
+ 
     <actionGroup>
       <actionList>
         <throwError>
@@ -955,23 +971,6 @@ EOF
         <!-- Wait for sometime after stopping the existing service -->
         <wait ms="5000"/>
 
-      </actionList>
-    </actionGroup>
-    <!-- Validating whether installdir is selected only as drive letters like c: d: etc... valid (Windows) -->
-    <actionGroup>
-      <actionList>
-        <pathManipulation>
-          <action>absolutize</action>
-          <path>${installdir}</path>
-          <variable>installdir</variable>
-        </pathManipulation>
-        <setInstallerVariableFromRegEx name="installdir_withpath" pattern=":\\" substitution=":\" text="${installdir}"/>
-        <setInstallerVariable name="installdir" value="${installdir_withpath}">
-          <ruleList>
-            <regExMatch text="${installdir}" logic="matches"  pattern="^[a-zA-Z]:/*$" />
-            <compareText logic="equals" text="${platform_name}" value="windows"/>
-          </ruleList>
-        </setInstallerVariable>
       </actionList>
     </actionGroup>
   </readyToInstallActionList>
