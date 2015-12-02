@@ -204,7 +204,8 @@ _postprocess_ApacheHTTPD_windows() {
     mkdir -p staging/windows/installer/ApacheHTTPD || _die "Failed to create a directory for the install scripts"
     mkdir -p staging/windows/apache/www/images || _die "Failed to create a directory for the images"
 
-    mv staging/windows/apache/vcredist_x86.exe staging/windows/installer/ApacheHTTPD || _die "Failed to move vcredist_x86.exe to staging/windows/installer/ApacheHTTPD"
+    cp staging/windows/apache/vcredist_x86.exe staging/windows/installer/ApacheHTTPD 
+    rm -f staging/windows/apache/vcredist_x86.exe
 
     cp scripts/windows/start-apache.bat staging/windows/installer/ApacheHTTPD/start-apache.bat || _die "Failed to copy the start-apache script (scripts/windows/start-apache.bat)"
     cp scripts/windows/install-apache.bat staging/windows/installer/ApacheHTTPD/install-apache.bat || _die "Failed to copy the install-apache script (scripts/windows/install-apache.bat)"
