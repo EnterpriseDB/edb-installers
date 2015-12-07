@@ -5,8 +5,7 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    echo "ApacheHTTPD OSX build not supported."
-    #source $WD/ApacheHTTPD/build-osx.sh
+    source $WD/ApacheHTTPD/build-osx.sh
 fi
 
 # Linux
@@ -85,8 +84,7 @@ _prep_ApacheHTTPD() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-	echo "ApacheHTTPD OSX build not supported."
-        #_prep_ApacheHTTPD_osx || exit 1
+        _prep_ApacheHTTPD_osx || exit 1
     fi
 
     # Linux
@@ -118,8 +116,7 @@ _build_ApacheHTTPD() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-	echo "ApacheHTTPD OSX build not supported."
-        #_build_ApacheHTTPD_osx || exit 1
+        _build_ApacheHTTPD_osx || exit 1
     fi
 
     # Linux 
@@ -167,8 +164,7 @@ _postprocess_ApacheHTTPD() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-	echo "ApacheHTTPD OSX build not supported."
-        #_postprocess_ApacheHTTPD_osx || exit 1
+        _postprocess_ApacheHTTPD_osx || exit 1
     fi
 
     # Linux
