@@ -468,6 +468,7 @@ then
 	ExecuteCommand "pip install sphinx"
 	ExecuteCommand "CFLAGS=-I$PYTHON_INSTALL_PATH/include LDFLAGS=-L$PYTHON_INSTALL_PATH/lib pip install cython"
 
+	ExecuteCommand "pip list >$PYTHON_INSTALL_PATH/pip_packages_list.txt"
     )
     ExecuteCommand "popd"
 

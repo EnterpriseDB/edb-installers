@@ -209,6 +209,9 @@ generate_3rd_party_license()
     export ListGeneratorScriptFileOSX="$WD/list-libs-osx.sh"
     export ListGeneratorScriptFileWin="$WD/list-libs-windows.sh"
     export ListGeneratorScriptFileJar="$WD/list-jars.sh"
+    export ListPipModules="$WD/list_pip_libs.sh"
+    export ListJSScripts="$WD/list_js_libs.sh"
+    export ListpgAdminFiles="$WD/list_pgadmin_files.sh"
     export blnIsWindows=false
     export LibListDir="3rd_party_libraries_list"
     export CurrentPlatform="${PWD##*/}" # Current directory name actually
@@ -241,7 +244,17 @@ generate_3rd_party_license()
     TempFile=$(mktemp)
     $ListGeneratorScriptFile    >> $TempFile
     $ListGeneratorScriptFileJar >> $TempFile
+    $ListJSScripts >> $TempFile
 
+    if [[ $ComponentName = "languagepack" ]];
+    then
+	$ListPipModules $PWD >> $TempFile
+    fi
+
+    if [[ $ComponentName = "pem_client" ]];
+    then
+        $ListpgAdminFiles >> $TempFile
+    fi
 
     cat $TempFile | xargs -I{} grep -w {} $WD/resources/files_to_project_map.txt | sort -u | cut -f1 | grep -v $LIBPQPattern | xargs -I{} echo "awk '/\<{}\>/ {print \$1\" {}\"}' $WD/resources/license_to_project_map.txt" | sh | sort -u  > $Lib_List_File
 

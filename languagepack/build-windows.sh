@@ -217,6 +217,8 @@ _postprocess_languagepack_windows() {
     scp -r $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 $WD/languagepack/staging/$ARCH/Perl-5.20 || _die "Failed to get Perl-5.20 from windows build host"
     scp -r $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.3 $WD/languagepack/staging/$ARCH/Python-3.3 || _die "Failed to get Python-3.3 from windows build host"
 
+    mv $WD/languagepack/staging/$ARCH/Python-3.3/pip_packages_list.txt $WD/languagepack/staging/$ARCH || _die "Failed to move pip_packages_list.txt to $WD/languagepack/staging/$ARCH"
+
     cd $WD/languagepack
     pushd staging/$ARCH
     generate_3rd_party_license "languagepack"

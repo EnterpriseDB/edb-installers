@@ -152,5 +152,7 @@ ECHO copying Pillow binaries to %vPythonInstallDir%
 XCOPY /Y /E /Q %vScriptsDir%\EnterpriseDB\LanguagePack\9.5\i386\Python-3.3\Lib\site-packages\* %vPythonInstallDir%\Lib\site-packages\
 XCOPY /s /e /f /h %vScriptsDir%\EnterpriseDB\LanguagePack\9.5\i386\Python-3.3\Scripts\* %vPythonInstallDir%\Scripts\
 
+pip list >%vPythonInstallDir%\pip_packages_list.txt
+
 ECHO ------------------------
 ECHO ----------Done----------
