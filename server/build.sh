@@ -90,6 +90,10 @@ _prep_server() {
 
     echo "Unpacking pgAdmin source..."
     tar -zxvf ../../tarballs/pgadmin3-$PG_TARBALL_PGADMIN.tar.gz
+    if [ -f $WD/tarballs/pgadmin-1.22.0-rc1-libssh2.patch ]; then
+        cd pgadmin3-$PG_TARBALL_PGADMIN
+        patch -p1 < $WD/tarballs/pgadmin-1.22.0-rc1-libssh2.patch
+    fi
 
     cd $WD/server/source
 
