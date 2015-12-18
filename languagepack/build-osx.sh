@@ -218,6 +218,9 @@ _build_languagepack_osx() {
      easy_install pip
      easy_install sphinx
 
+     cd \$PYTHON_INSTALL_PATH
+     pip list > \$install_path/pip_packages_list.txt
+
     echo "Building Perl..."
     cd $PG_PATH_OSX/languagepack/source/perl.osx
     export LD_RUN_PATH=\$PERL_INSTALL_PATH/lib
