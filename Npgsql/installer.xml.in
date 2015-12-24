@@ -175,7 +175,7 @@ EOF
               </compareText>
           </ruleList>
         </setInstallerVariable>
-	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for Microsoft .Net [2.0/3.5/4.0/4.5]">
+	<setInstallerVariable name="productFullName" persist="1" value="Npgsql for Microsoft .Net 4.5">
           <ruleList>
               <compareText>
                 <logic>equals</logic>
@@ -199,8 +199,10 @@ EOF
                 <iniFileGet file="/etc/postgres-reg.ini" section="Npgsql" key="Version" variable="NPGSQL_INSTALLED_VERSION" />
                 <iniFileGet file="/etc/postgres-reg.ini" section="Npgsql" key="InstallationDirectory" variable="NPGSQL_INSTALLED_DIRECTORY" />
                 <throwError text="${msg(upgrade.major.version.error)}">
+		<ruleEvaluationLogic>or</ruleEvaluationLogic>
                   <ruleList>
                     <compareText logic="contains" text="${NPGSQL_INSTALLED_VERSION}" value="2.0"/>
+		    <compareText logic="contains" text="${NPGSQL_INSTALLED_VERSION}" value="2.2."/>
                   </ruleList>
                  </throwError>
              </actionList>
@@ -223,8 +225,10 @@ EOF
                     <variable>npgsqlVersion</variable>
                 </registryGet>
                 <throwError text="${msg(upgrade.major.version.error.windows)}">
+		<ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                        <compareText logic="contains" text="${npgsqlVersion}" value="2.0"/>
+		       <compareText logic="contains" text="${npgsqlVersion}" value="2.2."/>
                     </ruleList>
                 </throwError>
             </actionList>
@@ -718,20 +722,9 @@ EOF
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionDirectory>^M
-                            <origin>staging/linux/ms.net20</origin>^M
+                            <origin>staging/linux/bin</origin>^M
                         </distributionDirectory>^M
-                        <distributionDirectory>^M
-                            <origin>staging/linux/ms.net35</origin>^M
-                        </distributionDirectory>^M
-                        <distributionDirectory>^M
-                            <origin>staging/linux/ms.net40</origin>^M
-                        </distributionDirectory>^M
-                        <distributionDirectory>^M
-                            <origin>staging/linux/ms.net45</origin>^M
-                        </distributionDirectory>^M	
-                        <distributionDirectory>^M
-                            <origin>staging/linux/docs</origin>^M
-                        </distributionDirectory>^M
+			<distributionFile origin="staging/linux/LICENSE.txt"/>	
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -764,20 +757,9 @@ EOF
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionDirectory>^M
-                            <origin>staging/linux-x64/ms.net20</origin>^M
+                            <origin>staging/linux-x64/bin</origin>^M
                         </distributionDirectory>^M
-                        <distributionDirectory>^M
-                            <origin>staging/linux-x64/ms.net35</origin>^M
-                        </distributionDirectory>^M
-                        <distributionDirectory>^M
-                            <origin>staging/linux-x64/ms.net40</origin>^M
-                        </distributionDirectory>^M
-                        <distributionDirectory>^M
-                            <origin>staging/linux-x64/ms.net45</origin>^M
-                        </distributionDirectory>^M	
-                        <distributionDirectory>^M
-                            <origin>staging/linux-x64/docs</origin>^M
-                        </distributionDirectory>^M
+			<distributionFile origin="staging/linux-x64/LICENSE.txt"/>	
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -810,20 +792,9 @@ EOF
                     <platforms>linux-ppc</platforms>
                     <distributionFileList>
                         <distributionDirectory>^M
-                            <origin>staging/linux-ppc64/ms.net20</origin>^M
+                            <origin>staging/linux-ppc64/bin</origin>^M
                         </distributionDirectory>^M
-                        <distributionDirectory>^M
-                            <origin>staging/linux-ppc64/ms.net35</origin>^M
-                        </distributionDirectory>^M
-                        <distributionDirectory>^M
-                            <origin>staging/linux-ppc64/ms.net40</origin>^M
-                        </distributionDirectory>^M
-                        <distributionDirectory>^M
-                            <origin>staging/linux-ppc64/ms.net45</origin>^M
-                        </distributionDirectory>^M	
-                        <distributionDirectory>^M
-                            <origin>staging/linux-ppc64/docs</origin>^M
-                        </distributionDirectory>^M
+			<distributionFile origin="staging/linux-ppc64/LICENSE.txt"/>	
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -856,20 +827,9 @@ EOF
                     <platforms>osx</platforms>
                     <distributionFileList>
                          <distributionDirectory>^M
-                            <origin>staging/osx/ms.net20</origin>^M
+                            <origin>staging/osx/bin</origin>^M
                          </distributionDirectory>^M
-                         <distributionDirectory>^M
-                            <origin>staging/osx/ms.net35</origin>^M
-                         </distributionDirectory>^M
-                         <distributionDirectory>^M
-                            <origin>staging/osx/ms.net40</origin>^M
-                         </distributionDirectory>^M
-                         <distributionDirectory>^M
-                            <origin>staging/osx/ms.net45</origin>^M
-                         </distributionDirectory>^M 			
-                        <distributionDirectory>^M
-                            <origin>staging/osx/docs</origin>^M
-                        </distributionDirectory>^M
+			 <distributionFile origin="staging/osx/LICENSE.txt"/>	
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -901,21 +861,10 @@ EOF
                     <name>programfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
-			<distributionDirectory>
-                            <origin>staging/windows/ms.net20</origin>
-                        </distributionDirectory>
-			<distributionDirectory>
-                            <origin>staging/windows/ms.net35</origin>
-                        </distributionDirectory>
-			<distributionDirectory>
-                            <origin>staging/windows/ms.net40</origin>
-                        </distributionDirectory>
                         <distributionDirectory>^M
-                            <origin>staging/windows/ms.net45</origin>^M
-                        </distributionDirectory>^M 
-                        <distributionDirectory>^M
-                            <origin>staging/windows/docs</origin>^M
+                            <origin>staging/windows/bin</origin>^M
                         </distributionDirectory>^M
+			<distributionFile origin="staging/windows/LICENSE.txt"/> 
                     </distributionFileList>
                 </folder>
                 <folder>

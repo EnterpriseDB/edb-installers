@@ -47,34 +47,15 @@ _prep_Npgsql() {
     # Enter the source directory and cleanup if required
     cd $WD/Npgsql/source
 
-    if [ -e Npgsql-"$PG_VERSION_NPGSQL"-net20 ];
-    then
-       rm -rf Npgsql-"${PG_VERSION_NPGSQL}"-net*  || _die "Couldn't remove the existing Npgsql-"${PG_VERSION_NPGSQL}"-net20  source directory (source/Npgsql"${PG_VERSION_Npgsql}-net20")"
-    fi
-    
-    mkdir -p $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net20
-    mkdir -p $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net35
-    mkdir -p $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net40
-    mkdir -p $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net45
-    mkdir -p $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-docs
-   
     echo "Unpacking Npgsql source..."
 
-    cd $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net20
-    extract_file ../../../tarballs/Npgsql-"${PG_VERSION_NPGSQL}"-net20 || exit 1
+    cd $WD/Npgsql/source/
+    extract_file ../../../tarballs/npgsql-"${PG_VERSION_NPGSQL}" || exit 1
 
-    cd $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net35
-    extract_file ../../../tarballs/Npgsql-"${PG_VERSION_NPGSQL}"-net35 || exit 1
-    
-    cd $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net40
-    extract_file ../../../tarballs/Npgsql-"${PG_VERSION_NPGSQL}"-net40 || exit 1
-
-    cd $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-net45
-    extract_file ../../../tarballs/Npgsql-"${PG_VERSION_NPGSQL}"-net45 || exit 1
-    
-    cd $WD/Npgsql/source/Npgsql-"${PG_VERSION_NPGSQL}"-docs
-    extract_file ../../../tarballs/Npgsql-"${PG_VERSION_NPGSQL}"-docs || exit 1
-
+    #Npgsql-3.0.4 patch against VS 2013.
+    cd npgsql-$PG_VERSION_NPGSQL
+    patch -p0 < $WD/tarballs/npgsql.patch
+ 
     # Per-platform prep
     cd $WD
     
