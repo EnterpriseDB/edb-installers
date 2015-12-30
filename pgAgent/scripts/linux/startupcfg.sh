@@ -2,9 +2,9 @@
 # Copyright (c) 2012-2015, EnterpriseDB Corporation.  All rights reserved
 
 # Check the command line
-if [ $# -ne 6 ]; 
+if [ $# -ne 7 ]; 
 then
-echo "Usage: $0 <PG_HOST> <PG_PORT> <PG_USER> <SYSTEMUSER> <Install dir> <PG_DATABASE>"
+echo "Usage: $0 <PG_HOST> <PG_PORT> <PG_USER> <SYSTEMUSER> <Install dir> <PG_DATABASE> <initSystem>"
     exit 127
 fi
 
@@ -14,6 +14,7 @@ PG_USER=$3
 SYSTEM_USER=$4
 INSTALL_DIR=$5
 PG_DATABASE=$6
+INIT=$7
 
 # Exit code
 WARN=0
@@ -27,6 +28,17 @@ _die() {
 _warn() {
     echo $1
     WARN=2
+}
+
+determine_services_path() {
+        echo "==>> Checking systemd services path..."
+        echo "Running: /usr/bin/pkg-config --variable=systemdsystemunitdir systemd"
+        SYSTEMD_SERVICES_PATH=`/usr/bin/pkg-config --variable=systemdsystemunitdir systemd`
+
+        if [ -z $SYSTEMD_SERVICES_PATH ]; then
+            SYSTEMD_SERVICES_PATH=/usr/lib/systemd/system
+        fi
+        echo "SYSTEMD_SERVICES_PATH:$SYSTEMD_SERVICES_PATH"
 }
 
 USER_HOME_DIR=`cat /etc/passwd | grep "^$SYSTEM_USER:" | cut -d":" -f6`
@@ -47,6 +59,32 @@ cat $INSTALL_DIR/installer/pgAgent/pgpass >> $USER_HOME_DIR/.pgpass
 chmod 0600 $USER_HOME_DIR/.pgpass
 chown $SYSTEM_USER:$SYSTEM_USER $USER_HOME_DIR/.pgpass
 
+if [ "$INIT" = "systemd" ]; then
+determine_services_path
+    cat <<EOT > "$SYSTEMD_SERVICES_PATH/pgagent.service"
+[Unit]
+Description=pgAgent
+After=syslog.target network.target
+
+[Service]
+Type=forking
+TimeoutSec=120
+
+User=$SYSTEM_USER
+
+Environment=LD_LIBRARY_PATH=$INSTALL_DIR/lib:\$LD_LIBRARY_PATH
+
+ExecStart=$INSTALL_DIR/bin/pgagent -l 1 -s /var/log/pgagent.log hostaddr=$PG_HOST port=$PG_PORT dbname=$PG_DATABASE user=$PG_USER
+
+[Install]
+WantedBy=multi-user.target
+
+EOT
+
+$SYSTEMD_PATH/bin/systemctl daemon-reload
+$SYSTEMD_PATH/bin/systemctl enable pgagent.service
+
+else
 # Write the startup script
 cat <<EOT > "/etc/init.d/pgagent"
 #!/bin/bash
@@ -173,6 +211,6 @@ fi
 #else
 #    /etc/init.d/pgagent start
 #fi
-
+fi
 echo "$0 ran to completion"
 exit $WARN
