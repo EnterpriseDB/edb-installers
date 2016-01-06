@@ -5,7 +5,12 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    source $WD/MigrationToolKit/build-osx.sh
+    if [ "`uname`" == "Darwin" ];
+    then
+    	source $WD/MigrationToolKit/build-osx.sh
+    else
+	source $WD/MigrationToolKit/build-osx-backup.sh	
+    fi
 fi
 
 # Linux
@@ -213,37 +218,43 @@ _postprocess_MigrationToolKit() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_MigrationToolKit_osx || exit 1
+	echo "Comment MTK post process OSX"
+        #_postprocess_MigrationToolKit_osx || exit 1
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_MigrationToolKit_linux || exit 1
+	echo "Comment MTK post process linux"
+        #_postprocess_MigrationToolKit_linux || exit 1
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_MigrationToolKit_linux_x64 || exit 1
+	echo "Comment MTK post process linux-x64"
+        #_postprocess_MigrationToolKit_linux_x64 || exit 1
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _postprocess_MigrationToolKit_windows || exit 1
+	echo "Comment MTK post process windows"
+        #_postprocess_MigrationToolKit_windows || exit 1
     fi
 
     # Solaris x64
     if [ $PG_ARCH_SOLARIS_X64 = 1 ];
     then
-        _postprocess_MigrationToolKit_solaris_x64 || exit 1
+	echo "Comment MTK post process solaris_x64"
+        #_postprocess_MigrationToolKit_solaris_x64 || exit 1
     fi
 
     # Solaris sparc
     if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
     then
-        _postprocess_MigrationToolKit_solaris_sparc || exit 1
+	echo "Comment MTK post process solaris_sparc"
+        #_postprocess_MigrationToolKit_solaris_sparc || exit 1
     fi
    
     # HPUX
