@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2012-2015, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2016, EnterpriseDB Corporation.  All rights reserved
 
 # RM 32745
 LC_CTYPE_ORG=$LC_CYTPE
