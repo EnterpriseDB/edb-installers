@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2012-2015, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2016, EnterpriseDB Corporation.  All rights reserved
 
 cd INSTALL_DIR/UpdateMonitor.app/Contents/MacOS
 INSTALL_DIR/UpdateMonitor.app/Contents/MacOS/UpdateManager --execute "/Applications/BRANDING/Application Stack Builder.app/Contents/MacOS/applet" &
