@@ -153,52 +153,10 @@ cp -pR $POSTGIS_STAGING_REMOTE/PostGIS/$PG_PGHOME_LINUX/bin/* $POSTGIS_STAGING_R
 
 echo "Changing the rpath for the PostGIS executables and libraries"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
-for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done
+for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \"\\\${ORIGIN}/../lib:\\\${ORIGIN}/../lib/postgresql\" \$f; done
 
 cd $POSTGIS_STAGING_REMOTE/PostGIS/lib
 for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \\\${ORIGIN}/../../lib:\\\${ORIGIN} \$f; done
-chmod a+rx *
-
-echo "Creating wrapper script for pgsql2shp and shp2pgsql"
-cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
-for f in pgsql2shp shp2pgsql raster2pgsql; do mv \$f \$f.bin; done
-
-cat <<EOS > pgsql2shp
-#!/bin/sh
-
-CURRENTWD=\\\$PWD
-WD=\\\$(cd \\\`dirname \\\$0\\\` && pwd)
-cd \\\$WD/../lib
-
-LD_LIBRARY_PATH=\\\$PWD:\\\$PWD/postgresql:\\\$LD_LIBRARY_PATH \\\$WD/pgsql2shp.bin \\\$*
-
-cd \\\$CURRENTWD
-EOS
-
-cat <<EOS > shp2pgsql
-#!/bin/sh
-
-CURRENTWD=\\\$PWD
-WD=\\\$(cd \\\`dirname \\\$0\\\` && pwd)
-cd \\\$WD/../lib
-
-LD_LIBRARY_PATH=\\\$PWD:\\\$PWD/postgresql:\\\$LD_LIBRARY_PATH \\\$WD/shp2pgsql.bin \\\$*
-
-cd \\\$CURRENTWD
-EOS
-
-cat <<EOS > raster2pgsql
-#!/bin/sh
-
-CURRENTWD=\\\$PWD
-WD=\\\$(cd \\\`dirname \\\$0\\\` && pwd)
-cd \\\$WD/../lib
-
-LD_LIBRARY_PATH=\\\$PWD:\\\$PWD/postgresql:\\\$LD_LIBRARY_PATH \\\$WD/raster2pgsql.bin \\\$*
-
-cd \\\$CURRENTWD
-EOS
-
 chmod a+rx *
 
 EOT
