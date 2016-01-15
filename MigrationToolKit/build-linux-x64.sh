@@ -12,7 +12,7 @@ _prep_MigrationToolKit_linux_x64() {
     # Enter the source directory and cleanup if required
     cd $WD/MigrationToolKit/source
 
-    if [ -e migrationToolKit.linux-x64 ];
+    if [ -e migrationtoolkit.linux-x64 ];
     then
       echo "Removing existing migrationtoolkit.linux-x64 source directory"
       rm -rf migrationtoolkit.linux-x64  || _die "Couldn't remove the existing migrationtoolkit.linux-x64 source directory (source/migrationtoolkit.linux-x64)"

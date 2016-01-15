@@ -12,7 +12,7 @@ _prep_MigrationToolKit_linux() {
     # Enter the source directory and cleanup if required
     cd $WD/MigrationToolKit/source
 
-    if [ -e migrationToolKit.linux ];
+    if [ -e migrationtoolkit.linux ];
     then
       echo "Removing existing migrationtoolkit.linux source directory"
       rm -rf migrationtoolkit.linux  || _die "Couldn't remove the existing migrationtoolkit.linux source directory (source/migrationtoolkit.linux)"
