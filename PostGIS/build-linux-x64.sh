@@ -25,17 +25,6 @@ _prep_PostGIS_linux_x64() {
     # Grab a copy of the postgis source tree, adding -p option to preserve the time stamps of all files.
     cp -pR postgis-$PG_VERSION_POSTGIS/* postgis.linux-x64 || _die "Failed to copy the source code (source/postgis-$PG_VERSION_POSTGIS)"
 
-    # Below flies have a file type issue with PostGIS 2.2.0 version, Once this issue resloved in later version of PostGIS i wll revert back this changes. 
-    iconv -c -t ascii $WD/PostGIS/source/postgis.linux-x64/liblwgeom/varint.h > /tmp/varint.h
-    iconv -c -t ascii $WD/PostGIS/source/postgis.linux-x64/liblwgeom/bytebuffer.h > /tmp/bytebuffer.h
-    iconv -c -t ascii $WD/PostGIS/source/postgis.linux-x64/liblwgeom/effectivearea.h > /tmp/effectivearea.h
-    iconv -c -t ascii $WD/PostGIS/source/postgis.linux-x64/liblwgeom/lwin_twkb.c > /tmp/lwin_twkb.c
-
-    cp -f /tmp/varint.h $WD/PostGIS/source/postgis.linux-x64/liblwgeom/
-    cp -f /tmp/bytebuffer.h $WD/PostGIS/source/postgis.linux-x64/liblwgeom/
-    cp -f /tmp/effectivearea.h $WD/PostGIS/source/postgis.linux-x64/liblwgeom/
-    cp -f /tmp/lwin_twkb.c $WD/PostGIS/source/postgis.linux-x64/liblwgeom/
-
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/PostGIS/staging/linux-x64 ];
     then
