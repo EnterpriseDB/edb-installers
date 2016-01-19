@@ -138,6 +138,12 @@ cp -pR /opt/local/Current/lib/libjson-c.so* . || _die "Failed to copy the libjso
 
 cp -pR $POSTGIS_STAGING_REMOTE/PostGIS/$PG_PGHOME_LINUX/bin/* $POSTGIS_STAGING_REMOTE/PostGIS/bin/
 
+cd $POSTGIS_STAGING_REMOTE/PostGIS
+cp -pR usr/local/include . || _die "Failed to copy liblwgeom include files"
+cp -pR usr/local/lib/* lib/ || _die "Failed to copy liblwgeom lib files"
+rm -rf usr
+rm -rf mnt
+
 echo "Changing the rpath for the PostGIS executables and libraries"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
 for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \"\\\${ORIGIN}/../lib:\\\${ORIGIN}/../lib/postgresql\" \$f; done
@@ -151,19 +157,11 @@ EOT
     scp build-postgis-$PLATFORM.sh $PLATFORM_SSH:$BLD_REMOTE_PATH || _die "Failed to copy build script on $PLATFORM VM"
     ssh $PLATFORM_SSH "cd $BLD_REMOTE_PATH; bash ./build-postgis-$PLATFORM.sh" || _die "Failed to execution of build script on $PLATFORM"
 
-    cd $POSTGIS_STAGING/PostGIS
-
     mkdir -p $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux/doc/html/images $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux/doc/html/postgis.html $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux/doc/postgis-$PG_VERSION_POSTGIS.pdf $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux/doc/man $WD/PostGIS/staging/linux/PostGIS/ 
-
-
-    cp -pR $WD/PostGIS/staging/linux/PostGIS/usr/local/include . || _die "Failed to copy liblwgeom include files"
-    cp -pR $WD/PostGIS/staging/linux/PostGIS/usr/local/lib/* lib/ || _die "Failed to copy liblwgeom lib files"
-    rm -rf $WD/PostGIS/staging/linux/PostGIS/usr
-    rm -rf $WD/PostGIS/staging/linux/PostGIS/mnt
 
     cd $WD/PostGIS
     
