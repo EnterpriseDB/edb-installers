@@ -138,6 +138,12 @@ cp -pR /opt/local/Current/lib/libjson-c.so* . || _die "Failed to copy the libjso
 
 cp -pR $POSTGIS_STAGING_REMOTE/PostGIS/$PG_PGHOME_LINUX_X64/bin/* $POSTGIS_STAGING_REMOTE/PostGIS/bin/
 
+cd $POSTGIS_STAGING_REMOTE/PostGIS
+cp -pR usr/local/include . || _die "Failed to copy liblwgeom include files"
+cp -pR usr/local/lib/* lib/ || _die "Failed to copy liblwgeom lib files"
+rm -rf usr
+rm -rf mnt
+
 echo "Changing the rpath for the PostGIS executables and libraries"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
 for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \\\${ORIGIN}/../lib \$f; done
@@ -146,47 +152,6 @@ cd $POSTGIS_STAGING_REMOTE/PostGIS/lib
 for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \\\${ORIGIN}/../../lib:\\\${ORIGIN} \$f; done
 chmod a+rx *
 
-echo "Creating wrapper script for pgsql2shp and shp2pgsql"
-cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
-for f in pgsql2shp shp2pgsql raster2pgsql; do mv \$f \$f.bin; done
-
-cat <<EOS > pgsql2shp
-#!/bin/sh
-
-CURRENTWD=\\\$PWD
-WD=\\\$(cd \\\`dirname \\\$0\\\` && pwd)
-cd \\\$WD/../lib
-
-LD_LIBRARY_PATH=\\\$PWD:\\\$PWD/postgresql:\\\$LD_LIBRARY_PATH \\\$WD/pgsql2shp.bin \\\$*
-
-cd \\\$CURRENTWD
-EOS
-
-cat <<EOS > shp2pgsql
-#!/bin/sh
-
-CURRENTWD=\\\$PWD
-WD=\\\$(cd \\\`dirname \\\$0\\\` && pwd)
-cd \\\$WD/../lib
-
-LD_LIBRARY_PATH=\\\$PWD:\\\$PWD/postgresql:\\\$LD_LIBRARY_PATH \\\$WD/shp2pgsql.bin \\\$*
-
-cd \\\$CURRENTWD
-EOS
-
-cat <<EOS > raster2pgsql
-#!/bin/sh
-
-CURRENTWD=\\\$PWD
-WD=\\\$(cd \\\`dirname \\\$0\\\` && pwd)
-cd \\\$WD/../lib
-
-LD_LIBRARY_PATH=\\\$PWD:\\\$PWD/postgresql:\\\$LD_LIBRARY_PATH \\\$WD/raster2pgsql.bin \\\$*
-
-cd \\\$CURRENTWD
-EOS
-
-chmod a+rx *
 EOT
 
 
@@ -200,11 +165,6 @@ EOT
     cp -pR $WD/PostGIS/source/postgis.linux-x64/doc/html/postgis.html $WD/PostGIS/staging/linux-x64/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux-x64/doc/postgis-$PG_VERSION_POSTGIS.pdf $WD/PostGIS/staging/linux-x64/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux-x64/doc/man $WD/PostGIS/staging/linux-x64/PostGIS/
-
-    cp -pR $WD/PostGIS/staging/linux-x64/PostGIS/usr/local/include . || _die "Failed to copy liblwgeom include files"
-    cp -pR $WD/PostGIS/staging/linux-x64/PostGIS/usr/local/lib/* lib/ || _die "Failed to copy liblwgeom lib files"
-    rm -rf $WD/PostGIS/staging/linux-x64/PostGIS/usr
-    rm -rf $WD/PostGIS/staging/linux-x64/PostGIS/mnt
 
     cd $WD/PostGIS
 

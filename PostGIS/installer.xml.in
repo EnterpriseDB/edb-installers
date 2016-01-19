@@ -703,6 +703,27 @@ EOF
 
     <!-- Post installation actions -->
     <postInstallationActionList>
+        <!-- RM 36772. Remove the .bin -->
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${installdir}/bin/pgsql2shp.bin" >
+                   <ruleList>
+                       <fileExists path="${installdir}/bin/pgsql2shp.bin" />
+                   </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}/bin/shp2pgsql.bin" >
+                   <ruleList>
+                       <fileExists path="${installdir}/bin/shp2pgsql.bin" />
+                   </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}/bin/raster2pgsql.bin" >
+                   <ruleList>
+                       <fileExists path="${installdir}/bin/raster2pgsql.bin" />
+                   </ruleList>
+                </deleteFile>
+            </actionList>
+        </actionGroup>
+
         <!-- Do not perform the below actions in case of extract-only mode -->
         <actionGroup>
             <actionList>
