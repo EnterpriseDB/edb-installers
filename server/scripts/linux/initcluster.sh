@@ -76,7 +76,7 @@ su -s /bin/sh - $OSUSERNAME -c "sed -e \"s@\#listen_addresses = 'localhost'@list
                         -e \"s@\#logging_collector = off@logging_collector = on@g\" \
                         -e \"s@\#log_line_prefix = ''@log_line_prefix = '%t '@g\" \
                         $DATADIR/postgresql.conf > $DATADIR/postgresql.conf.$$" || _warn "Failed to modify the postgresql.conf file ($DATADIR/postgresql.conf)"
-su -s /bin/sh - $OSUERNAME -c "mv $DATADIR/postgresql.conf.$$ $DATADIR/postgresql.conf" || _warn "Failed to update the postgresql.conf file ($DATADIR/postgresql.conf)"
+su -s /bin/sh - $OSUSERNAME -c "mv $DATADIR/postgresql.conf.$$ $DATADIR/postgresql.conf" || _warn "Failed to update the postgresql.conf file ($DATADIR/postgresql.conf)"
 
 echo "$0 ran to completion"
 exit $WARN
