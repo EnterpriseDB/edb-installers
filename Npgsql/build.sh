@@ -52,9 +52,10 @@ _prep_Npgsql() {
     cd $WD/Npgsql/source/
     extract_file ../../../tarballs/npgsql-"${PG_VERSION_NPGSQL}" || exit 1
 
+    #Commenting patch as new version 3.0.5 is already present in the source code.
     #Npgsql-3.0.4 patch against VS 2013.
-    cd npgsql-$PG_VERSION_NPGSQL
-    patch -p0 < $WD/tarballs/npgsql.patch
+    #cd npgsql-$PG_VERSION_NPGSQL
+    #patch -p0 < $WD/tarballs/npgsql.patch
  
     # Per-platform prep
     cd $WD
