@@ -3,7 +3,7 @@
 
 INSTALLDIR="INSTALL_DIR"
 DOCDIR="DOC_DIR"
-URL="file://$DOCDIR/postgis/jdbc/index.html"
+URL="file://$DOCDIR/postgis/overview.html"
 
 "$INSTALLDIR/PostGIS/scripts/launchbrowser.sh" $URL
 
