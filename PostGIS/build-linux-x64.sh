@@ -158,6 +158,7 @@ EOT
     mkdir -p $WD/PostGIS/staging/linux-x64/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux-x64/doc/html/images $WD/PostGIS/staging/linux-x64/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux-x64/doc/html/postgis.html $WD/PostGIS/staging/linux-x64/PostGIS/doc/postgis/
+    cp -pR $WD/PostGIS/source/postgis.linux-x64/java/jdbc/src/main/javadoc/overview.html $WD/PostGIS/staging/linux-x64/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux-x64/doc/postgis-$PG_VERSION_POSTGIS.pdf $WD/PostGIS/staging/linux-x64/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux-x64/doc/man $WD/PostGIS/staging/linux-x64/PostGIS/
 
@@ -196,6 +197,9 @@ _postprocess_PostGIS_linux_x64() {
     cp -R scripts/linux/launchPostGISDocs.sh staging/linux-x64/scripts/launchPostGISDocs.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
     chmod ugo+x staging/linux-x64/scripts/launchPostGISDocs.sh
 
+    cp -R scripts/linux/launchJDBCDocs.sh staging/linux-x64/scripts/launchJDBCDocs.sh || _die "Failed to copy the launch scripts (scripts/linux-x64)"
+    chmod ugo+x staging/linux-x64/scripts/launchJDBCDocs.sh
+
     # Copy the XDG scripts
     mkdir -p staging/linux-x64/installer/xdg || _die "Failed to create a directory for the xdg scripts"
     cp -R $WD/scripts/xdg/xdg* staging/linux-x64/installer/xdg || _die "Failed to copy the xdg scripts (scripts/xdg/*)"
@@ -210,11 +214,13 @@ _postprocess_PostGIS_linux_x64() {
     cp resources/pg-postgresql.png staging/linux-x64/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick png"
     cp resources/pg-postgis.png staging/linux-x64/scripts/images/pg-postgis-$POSTGIS_VERSION_STR-$PG_VERSION_STR.png || _die "Failed to copy a menu pick png"
     cp resources/pg-launchPostGISDocs.png staging/linux-x64/scripts/images/pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
+    cp resources/pg-launchPostGISJDBCDocs.png staging/linux-x64/scripts/images/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.png || _die "Failed to copy the menu pick image (resources/pg-launchJdbcDocs.icns)"
 
     mkdir -p staging/linux-x64/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     cp resources/xdg/pg-postgresql.directory staging/linux-x64/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-postgis.directory staging/linux-x64/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-launchPostGISDocs.desktop staging/linux-x64/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/pg-launchPostGISJDBCDocs.desktop staging/linux-x64/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick desktop"
     
     # Set permissions to all files and folders in staging
     _set_permissions linux-x64

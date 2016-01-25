@@ -57,11 +57,13 @@ _replace() {
 "$INSTALLDIR/PostGIS/installer/xdg/xdg-desktop-menu" uninstall --mode system \
     "$INSTALLDIR/PostGIS/scripts/xdg/pg-postgis-$POSTGIS_VERSION_STR-$PG_VERSION_STR.directory" \
     "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop" \
+    "$INSTALLDIR/PostGIS/scripts/xdg/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop" \
 
       
 # Remove the icon resources
 "$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-postgis-$POSTGIS_VERSION_STR-$PG_VERSION_STR.png"
 "$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.png"
+"$INSTALLDIR/PostGIS/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/PostGIS/scripts/images/pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.png"
 # Only remove the directory file if it's branded
 if [ $BRANDED -ne 0 ];
 then
@@ -83,6 +85,7 @@ xdg_global_dir="$xdg_global_dir/applications-merged"
 
 # Hack up the XDG menu files to make sure everything really does go.
 _replace "<Filename>pg-launchPostGISDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-postgis-$POSTGIS_VERSION_STR-$PG_VERSION_STR.menu"
+_replace "<Filename>pg-launchPostGISJDBCDocs-$POSTGIS_VERSION_STR-$PG_VERSION_STR.desktop</Filename>" "" "$xdg_global_dir/pg-$BRANDING_STR-pg-postgis-$POSTGIS_VERSION_STR-$PG_VERSION_STR.menu"
 
 #Ubuntu 10.04 and greater require menu cache update
 

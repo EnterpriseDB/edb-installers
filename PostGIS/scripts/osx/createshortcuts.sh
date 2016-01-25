@@ -53,6 +53,7 @@ _fixup_file() {
 mkdir -p "$FOLDER" 
 
 # Create the scripts
+_compile_script "$INSTALLDIR/PostGIS/scripts/pg-launchJdbcDocs.applescript" "$FOLDER/JDBC Docs.app" "$INSTALLDIR/PostGIS/scripts/images/pg-launchPostGISJDBCDocs.icns"
 _compile_script "$INSTALLDIR/PostGIS/scripts/pg-launchPostGISDocs.applescript" "$FOLDER/PostGIS Docs.app" "$INSTALLDIR/PostGIS/scripts/images/pg-launchPostGISDocs.icns"
 
 echo "$0 ran to completion"

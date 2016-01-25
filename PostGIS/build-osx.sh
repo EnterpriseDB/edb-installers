@@ -235,6 +235,7 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
     mkdir -p staging/osx/PostGIS/doc/postgis/
     cp -pR source/postgis.osx/doc/html/images staging/osx/PostGIS/doc/postgis/
     cp -pR source/postgis.osx/doc/html/postgis.html staging/osx/PostGIS/doc/postgis/
+    cp -pR source/postgis.osx/java/jdbc/src/main/javadoc/overview.html staging/osx/PostGIS/doc/postgis/
     cp -pR source/postgis.osx/doc/postgis-$PG_VERSION_POSTGIS.pdf staging/osx/PostGIS/doc/postgis/
 
     mkdir -p staging/osx/PostGIS/man
@@ -389,11 +390,13 @@ _postprocess_PostGIS_osx() {
 
     mkdir -p $PG_STAGING/scripts || _die "Failed to create a directory for the launch scripts"
     cp -pR $WD/PostGIS/scripts/osx/pg-launchPostGISDocs.applescript.in $PG_STAGING/scripts/pg-launchPostGISDocs.applescript || _die "Failed to copy the launch script (scripts/osx/pg-launchPostGISDocs.applescript.in)"
+    cp -pR $WD/PostGIS/scripts/osx/pg-launchJdbcDocs.applescript.in $PG_STAGING/scripts/pg-launchJdbcDocs.applescript || _die "Failed to copy the launch script (scripts/osx/pg-launchJdbcDocs.applescript.in)"
 
     # Copy in the menu pick images 
     mkdir -p $WD/PostGIS/staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp -pR $WD/PostGIS/resources/pg-launchPostGISDocs.icns $WD/PostGIS/staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchPostGISDocs.icns)"
-
+    cp -pR $WD/PostGIS/resources/pg-launchPostGISJDBCDocs.icns $WD/PostGIS/staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/pg-launchPostGISJDBCDocs.icns)"
+    
     cd $WD/PostGIS/
 
     if [ -f installer_1.xml ]; then
