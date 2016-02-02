@@ -140,13 +140,13 @@ cp -pR $POSTGIS_STAGING_REMOTE/PostGIS/$PG_PGHOME_LINUX/bin/* $POSTGIS_STAGING_R
 
 cd $POSTGIS_STAGING_REMOTE/PostGIS
 cp -pR usr/local/include . || _die "Failed to copy liblwgeom include files"
-cp -pR usr/local/lib/* lib/ || _die "Failed to copy liblwgeom lib files"
+cp -pR usr/local/lib/*.so* lib/ || _die "Failed to copy liblwgeom lib files"
 rm -rf usr
 rm -rf mnt
 
 echo "Changing the rpath for the PostGIS executables and libraries"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
-for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \"\\\${ORIGIN}/../lib:\\\${ORIGIN}/../lib/postgresql\" \$f; done
+for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \\\${ORIGIN}/../lib:\\\${ORIGIN}/../lib/postgresql \$f; done
 
 cd $POSTGIS_STAGING_REMOTE/PostGIS/lib
 for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \\\${ORIGIN}/../../lib:\\\${ORIGIN} \$f; done
