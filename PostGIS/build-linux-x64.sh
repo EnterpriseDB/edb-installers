@@ -137,7 +137,7 @@ cp -pR $POSTGIS_STAGING_REMOTE/PostGIS/$PG_PGHOME_LINUX_X64/bin/* $POSTGIS_STAGI
 
 cd $POSTGIS_STAGING_REMOTE/PostGIS
 cp -pR usr/local/include . || _die "Failed to copy liblwgeom include files"
-cp -pR usr/local/lib/* lib/ || _die "Failed to copy liblwgeom lib files"
+cp -pR usr/local/lib/*.so* lib/ || _die "Failed to copy liblwgeom lib files"
 rm -rf usr
 rm -rf mnt
 
