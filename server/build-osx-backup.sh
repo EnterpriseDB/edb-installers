@@ -381,35 +381,18 @@ _postprocess_server_osx() {
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; sleep 2; echo 'Detaching /Volumes/PostgreSQL $PG_PACKAGE_VERSION...' ; hdiutil detach '/Volumes/PostgreSQL $PG_PACKAGE_VERSION'" || _die "Failed to detach the /Volumes/PostgreSQL $PG_PACKAGE_VERSION in remote host."
 
-     # Delete the old installer from regression setup
-    #ssh $PG_SSH_OSX "cd /buildfarm/installers; rm -rf postgresql-*.dmg" || _die "Failed to remove the installer from regression installer directory"
-
-    # Copy the installer to regression setup
-    #ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output cp -p postgresql-*.dmg /buildfarm/installers/" || _die "Failed to Copy installer to the regression directory"
-
-    # Delete the installer from remote output directory
-    #ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; rm -rf postgresql* server* " || _die "Failed to clean the remote output directory"
-
-    # Switch to regression directory  
-    #cd /buildfarm/PG91/src/test 
-
     # Check and delete if old regress source directory exist in regression folder
-    #if [ -e regress ];
-    #then
-    #  echo "Removing existing regress source directory"
-    #  rm -rf regress  || _die "Couldn't remove the existing regress source directory (/buildfarm/PG91/regress)"
-    #fi
+    ssh $PG_SSH_OSX "if [ -e /buildfarm/PG91/src/test/regress ]; then rm -rf /buildfarm/PG91/src/test/regress; fi" || _die "Couldn't remove the existing regress source directory (/buildfarm/PG91/regress)"
 
     # Copy the regress folder into Regression Setup folder /buildfarm/PG91/src/test/
-    #cp -rf $WD/server/source/postgres.osx/src/test/regress /buildfarm/PG91/src/test/;
+    ssh $PG_SSH_OSX "cp -rf $PG_PATH_OSX/server/source/postgres.osx/src/test/regress /buildfarm/PG91/src/test/" || _die "Failed to Copy the regress folder into Regression Setup folder /buildfarm/PG91/src/test/"
 
     # Delete the old installers present in /buildfarm/PG91/installers/
-    #rm -f /buildfarm/PG91/installers/*  
+    ssh $PG_SSH_OSX "rm -f /buildfarm/PG91/installers/*" || _die "Failed to  Delete the old installers present in /buildfarm/PG91/installers/"
     
     # Copy the DBServer installer into Regression Setup folder /buildfarm/PG91/installers
-    #cp -p $WD/output/postgresql-$PG_PACKAGE_VERSION-osx.dmg /buildfarm/PG91/installers/ || _die "Unable to copy installers to Linux-64 /buildfarm/PG91/installers/ folder."
-
-
+    ssh $PG_SSH_OSX "cp -p $PG_PATH_OSX/output/postgresql-$PG_PACKAGE_VERSION-osx.dmg /buildfarm/PG91/installers/" || _die "Unable to copy installers to Linux-64 /buildfarm/PG91/installers/ folder."
+ 
     cd $WD
 }
 
