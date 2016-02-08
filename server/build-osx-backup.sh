@@ -434,10 +434,10 @@ _postprocess_server_osx() {
     scp $PG_SSH_OSX:$PG_PATH_OSX/output/postgresql-$PG_PACKAGE_VERSION-osx.* $WD/output || _die "Failed to copy installers to $WD/output."
 
      # Delete the old installer from regression setup
-    ssh $PG_SSH_OSX "cd /buildfarm/installers; rm -rf postgresql-*.dmg" || _die "Failed to remove the installer from regression installer directory"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/installers; rm -rf postgresql-*.dmg" || _die "Failed to remove the installer from regression installer directory"
 
     # Copy the installer to regression setup
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output cp -p postgresql-*.dmg /buildfarm/installers/" || _die "Failed to Copy installer to the regression directory"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; cp -p postgresql-*.dmg $PG_PATH_OSX/installers/" || _die "Failed to Copy installer to the regression directory"
 
     # Delete the installer from remote output directory
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; rm -rf postgresql* server* " || _die "Failed to clean the remote output directory"
