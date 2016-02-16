@@ -497,6 +497,7 @@ EOF
                         </compareText>
                     </ruleList>
                 </actionGroup>
+
                 <!-- LIN: Set the unixODBC Path -->
                 <actionGroup>
                     <actionList>
@@ -796,6 +797,38 @@ EOF
             </ruleList>
         </actionGroup>
     </preInstallationActionList>
+   <readyToInstallActionList>
+
+	   <logMessage>
+                    <text>conf dir: ${installdir}\etc\openssl.cnf</text>
+           </logMessage>
+
+	   <actionGroup>
+            <actionList>
+               <copyFile>
+                   <origin>${installdir}\etc\openssl.cnf</origin>
+                   <destination>${installdir}\etc\openssl.cnf.bak1</destination>
+               </copyFile>
+            </actionList>
+           <ruleList>
+               <compareText>
+                   <logic>does_not_equal</logic>
+                   <text>${psqlODBCVersion}</text>
+                   <value/>
+               </compareText>
+	       <fileTest>
+                    <path>${installdir}\etc\openssl.cnf</path>
+                    <condition>exists</condition>
+               </fileTest>
+	       <compareText>
+                   <logic>equals</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+              </compareText>
+	      <isFalse value="${extract_mode}"/>
+           </ruleList>
+        </actionGroup>
+   </readyToInstallActionList>
     <postInstallationActionList>
 
         <!-- Setting the installation directory in the PostgreSQL.ini file -->
@@ -955,7 +988,7 @@ EOF
                             <name>OPENSSL_CONF</name>
                             <scope>system</scope>
                             <showMessageOnError>0</showMessageOnError>
-                            <value>${installdir}\PSQLODBC_MAJOR_VERSION\etc\openssl.cnf</value>
+                            <value>${installdir}\etc\openssl.cnf</value>
                             <ruleList>
                                 <compareText logic="equals" text="${default_opensslconf_value}" value=""/>
                             </ruleList>
@@ -985,7 +1018,7 @@ EOF
                          <registrySet>
                             <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
                             <name>Driver</name>
-                            <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc30a.dll</value>
+                            <value>${installdir}\bin\psqlodbc30a.dll</value>
                             <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
                          </registrySet>
                          <registrySet>
@@ -1003,7 +1036,7 @@ EOF
                          <registrySet>
                             <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(ANSI)</key>
                             <name>Setup</name>
-                            <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc30a.dll</value>
+                            <value>${installdir}\bin\psqlodbc30a.dll</value>
                             <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
                          </registrySet>
                          <registrySet>
@@ -1034,7 +1067,7 @@ EOF
                          <registrySet>
                             <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
                             <name>Driver</name>
-                            <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc35w.dll</value>
+                            <value>${installdir}\bin\psqlodbc35w.dll</value>
                             <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
                          </registrySet>
                          <registrySet>
@@ -1052,7 +1085,7 @@ EOF
                          <registrySet>
                             <key>HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\PostgreSQL ODBC Driver(UNICODE)</key>
                             <name>Setup</name>
-                            <value>${installdir}\PSQLODBC_MAJOR_VERSION\bin\psqlodbc35w.dll</value>
+                            <value>${installdir}\bin\psqlodbc35w.dll</value>
                             <progressText>${msg(progress.text.register.odbc.windows)}</progressText>
                          </registrySet>
                          <registrySet>
@@ -1076,6 +1109,42 @@ EOF
                         </compareText>
                     </ruleList>
                 </actionGroup>
+
+           <actionGroup>
+              <actionList>
+            <renameFile>
+              <origin>${installdir}\etc\openssl.cnf</origin>
+              <destination>${installdir}\etc\openssl.cnf.new</destination>
+              <ruleList>
+                <compareText logic="does_not_equal" text="${psqlODBCVersion}" value=""/>
+              </ruleList>
+            </renameFile>
+            <addFilesToUninstaller>
+              <files>${installdir}\etc\openssl.cnf.new</files>
+              <ruleList>
+                <compareText logic="does_not_equal" text="${psqlODBCVersion}" value=""/>
+              </ruleList>
+            </addFilesToUninstaller>
+            <copyFile>
+              <origin>${installdir}\etc\openssl.cnf.bak1</origin>
+              <destination>${installdir}\etc\openssl.cnf</destination>
+            </copyFile>
+            <deleteFile>
+              <path>${installdir}\etc\openssl.cnf.bak1</path>
+            </deleteFile>
+          </actionList>
+          <ruleList>
+            <fileTest>
+              <path>${installdir}\etc\openssl.cnf.bak1</path>
+              <condition>exists</condition>
+            </fileTest>
+	    <compareText>
+                <logic>equals</logic>
+                <text>${platform_name}</text>
+                <value>windows</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
         
                 <!-- Branding info -->
                 <logMessage>
@@ -1347,7 +1416,7 @@ EOF
                     <name>OPENSSL_CONF</name>
                     <scope>system</scope>
                         <ruleList>
-                            <compareText logic="equals" text="${opensslconf_value}" value="${installdir}\PSQLODBC_MAJOR_VERSION\etc\openssl.cnf"/>
+                            <compareText logic="equals" text="${opensslconf_value}" value="${installdir}\etc\openssl.cnf"/>
                         </ruleList>
                 </deleteEnvironmentVariable> 
             </actionList>
@@ -1452,20 +1521,23 @@ EOF
                     <name>programfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/PSQLODBC_MAJOR_VERSION</origin>
-                        </distributionDirectory>
 			<distributionFile origin="staging/@@WINDIR@@/psqlODBC_3rd_party_licenses.txt"/>
                     </distributionFileList>
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}/PSQLODBC_MAJOR_VERSION</destination>
+                    <destination>${installdir}</destination>
                     <name>scriptfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/scripts</origin>
+                        </distributionDirectory>	
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/bin</origin>
+                        </distributionDirectory>	
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/etc</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -1491,7 +1563,7 @@ EOF
                     <name>psqlODBC Documentation</name>
                     <runInTerminal>0</runInTerminal>
                     <url>http://psqlodbc.projects.postgresql.org/</url>
-                    <windowsIcon>${installdir}\PSQLODBC_MAJOR_VERSION\scripts\images\pg-launchOdbcDocs.ico</windowsIcon>
+                    <windowsIcon>${installdir}\scripts\images\pg-launchOdbcDocs.ico</windowsIcon>
                     <ruleList>
                         <isFalse value="${extract_mode}"/>
                     </ruleList>

@@ -92,30 +92,30 @@ EOT
 
     PSQLODBC_MAJOR_VERSION=`echo $PG_VERSION_PSQLODBC | cut -f1,2 -d "." | sed -e 's:\.::g'`
 
-    mkdir -p $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin  || _die "Failed to create directory for psqlODBC"
-    mkdir -p $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/etc  || _die "Failed to create etc directory for psqlODBC"
+    mkdir -p $WD/psqlODBC/staging/windows-x64/bin  || _die "Failed to create directory for psqlODBC"
+    mkdir -p $WD/psqlODBC/staging/windows-x64/etc  || _die "Failed to create etc directory for psqlODBC"
     echo "Copying psqlODBC built tree to Unix host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\psqlODBC.windows-x64\\\\_ANSI_Release; zip -r ..\\\\..\\\\psqlODBC-windows-x64.zip *.dll" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC.windows-x64)"
-    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip)"
+    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip)"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST psqlODBC-windows-x64.zip del /S /Q psqlODBC-windows-x64.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\\psqlODBC-windows-x64.zip on Windows VM"
-    unzip -o $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows-x64.zip -d $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/psqlODBC-windows-x64.zip)"
-    rm $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows-x64.zip
+    unzip -o $WD/psqlODBC/staging/windows-x64/bin/psqlODBC-windows-x64.zip -d $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/psqlODBC-windows-x64.zip)"
+    rm $WD/psqlODBC/staging/windows-x64/bin/psqlODBC-windows-x64.zip
 
     echo "Copying psqlODBC built tree to Unix host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\psqlODBC.windows-x64\\\\_Unicode_Release; zip -r ..\\\\..\\\\psqlODBC-windows-x64.zip *.dll" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC.windows-x64)"
-    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip)"
+    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip)"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST psqlODBC-windows-x64.zip del /S /Q psqlODBC-windows-x64.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\\psqlODBC-windows-x64.zip on Windows VM"
-    unzip -o $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows-x64.zip -d $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/psqlODBC-windows-x64.zip)"
-    rm $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows-x64.zip
+    unzip -o $WD/psqlODBC/staging/windows-x64/bin/psqlODBC-windows-x64.zip -d $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/psqlODBC-windows-x64.zip)"
+    rm $WD/psqlODBC/staging/windows-x64/bin/psqlODBC-windows-x64.zip
 
-    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output/lib/libpq.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
-    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/ssleay32.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
-    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libeay32.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
-    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libintl-8.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (libintl.dll)"
-    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libiconv-2.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (libiconv-2.dll)"
-    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/lib/engines/capi.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (capi.dll)"
+    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output/lib/libpq.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dependent dll" 
+    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/ssleay32.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dependent dll" 
+    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libeay32.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dependent dll" 
+    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libintl-8.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dll (libintl.dll)"
+    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libiconv-2.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dll (libiconv-2.dll)"
+    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/lib/engines/capi.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dll (capi.dll)"
 
-    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/ssl/openssl.cnf $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/etc || _die "Failed to copy the openssl.cnf"
+    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/ssl/openssl.cnf $WD/psqlODBC/staging/windows-x64/etc || _die "Failed to copy the openssl.cnf"
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/vcredist/vcredist_x64.exe $WD/psqlODBC/staging/windows-x64/ || _die "Failed to copy the vcredist"
 
 }
