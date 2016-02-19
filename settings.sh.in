@@ -85,8 +85,9 @@ PG_XULRUNNER_SDK_LINUX_X64=/usr/lib64/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
 
 PG_SSH_WINDOWS=buildfarm@bf5-windows.ox.uk.enterprisedb.com
-PG_SSH_SIGN_WINDOWS=buildfarm@bf4-windows.ox.uk.enterprisedb.com
+PG_SSH_SIGN_WINDOWS=buildfarm@bf5-windows.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS=D:\\\\pginstaller.auto
+PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller.auto
 PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0"
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
 PG_FRAMEWORKVERSION_WINDOWS=v4.0.30319
@@ -102,7 +103,7 @@ PG_MSYS_WINDOWS=C:\\\\MinGW\\\\msys\\\\1.0
 PG_JAVA_HOME_WINDOWS="C:\\\\jdk1.7.0_51"
 PG_QTPATH_WINDOWS=C:\\\\QtSDK
 PG_SDK_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
-PG_SIGNTOOL_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
+PG_SIGNTOOL_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
 PG_PERL_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\i386\\\\Perl-5.20
 PG_PYTHON_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\i386\\\\Python-3.3
 PG_TCL_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\i386\\\\Tcl-8.5
@@ -110,6 +111,7 @@ PLATFORM_TOOLSET=/p:PlatformToolset=v120_xp
 
 PG_SSH_WINDOWS_X64=buildfarm@bf5-windows-x64.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS_X64=D:\\\\pginstaller.auto
+PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller.auto
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0"
 PG_FRAMEWORKDIR_WINDOWS_X64="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework64"
 PG_FRAMEWORKVERSION_WINDOWS_X64=v4.0.30319
@@ -123,7 +125,7 @@ PG_PERL_WINDOWS_X64=C:\\\\pgBuild64\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\x6
 PG_PYTHON_WINDOWS_X64=C:\\\\pgBuild64\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\x64\\\\Python-3.3
 PG_TCL_WINDOWS_X64=C:\\\\pgBuild64\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\x64\\\\Tcl-8.5
 PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
-PG_SIGNTOOL_WINDOWS="C:\\\\Program Files\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
+PG_SIGNTOOL_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
 
 PG_SSH_SOLARIS_X64=buildfarm@bf3-solaris-x64.pn.in.enterprisedb.com
 PG_PATH_SOLARIS_X64=/mnt/buildfarm/pginstaller_2.auto-repo
