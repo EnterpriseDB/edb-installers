@@ -181,3 +181,4 @@ KEYCHAIN_PASSWD="XXXXXX"
 # LanguagePack Variables
 PG_LANGUAGEPACK_INSTALL_DIR_LINUX="/opt/EnterpriseDB/LanguagePack"
 PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.5"
+PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/EnterpriseDB/LanguagePack/9.5"

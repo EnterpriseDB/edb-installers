@@ -108,7 +108,7 @@ _prep_languagepack_windows() {
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN; cmd /c del /S /Q languagepack.$ARCH.zip"
     
     echo "Copying languagepack sources to Windows VM"
-    scp languagepack.$ARCH.zip $PG_SSH_WIN:$PG_PATH_WIN || _die "Couldn't copy the languagepack archive to windows VM (languagepack.$ARCH.zip)"
+    rsync -av languagepack.$ARCH.zip $PG_SSH_WIN:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the languagepack archive to windows VM (languagepack.$ARCH.zip)"
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN; cmd /c rd /S /Q languagepack.$ARCH; unzip languagepack.$ARCH.zip" || _die "Couldn't extract languagepack archive on windows VM (languagepack.$ARCH.zip)"
 
     echo "END PREP languagepack Windows"
@@ -203,19 +203,26 @@ _postprocess_languagepack_windows() {
        PG_SSH_WIN=$PG_SSH_WINDOWS
        PG_PATH_WIN=$PG_PATH_WINDOWS
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS
-       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\i386"
+       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_CYG_PATH}/i386"
     else
        ARCH="windows-x64"
        OS=$ARCH
        PG_SSH_WIN=$PG_SSH_WINDOWS_X64
        PG_PATH_WIN=$PG_PATH_WINDOWS_X64
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS_X64
-       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\x64"
+       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_CYG_PATH}/x64"
     fi
+    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN; zip -r Tcl-8.5.zip Tcl-8.5; zip -r Perl-5.20.zip Perl-5.20; zip -r Python-3.3.zip Python-3.3" || _die "Failed to create Tcl-8.5.zip;Perl-5.20.zip;Python-3.3zip on  windows buildhost"
+    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN/Tcl-8.5.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Tcl-8.5.zip"
+    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN/Perl-5.20.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Perl-5.20.zip"
+    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN/Python-3.3.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Python-3.3.zip"
 
-    scp -r $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-8.5 $WD/languagepack/staging/$ARCH/Tcl-8.5 || _die "Failed to get Tcl-8.5 from windows build host"
-    scp -r $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 $WD/languagepack/staging/$ARCH/Perl-5.20 || _die "Failed to get Perl-5.20 from windows build host"
-    scp -r $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.3 $WD/languagepack/staging/$ARCH/Python-3.3 || _die "Failed to get Python-3.3 from windows build host"
+    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN; rm -f Tcl-8.5.zip Perl-5.20.zip Python-3.3.zip " || _die "Failed to remove  Tcl-8.5.zip;Perl-5.20.zip; Python-3.3.zip on  windows buildhost"
+    cd $WD/languagepack/staging/$ARCH/
+    unzip Tcl-8.5.zip ||_die " ailed to unzip Tcl-8.5.zip"
+    unzip Perl-5.20.zip || _die "Failed to unzip Perl-5.20.zip"
+    unzip Python-3.3.zip || _die "Failed to unzip Python-3.3.zip"
+    rm -f Tcl-8.5.zip Perl-5.20.zip Python-3.3.zip || _die "Failed to remove the Tcl-8.5.zip;Perl-5.20.zip;Python-3.3.zip"
 
     mv $WD/languagepack/staging/$ARCH/Python-3.3/pip_packages_list.txt $WD/languagepack/staging/$ARCH || _die "Failed to move pip_packages_list.txt to $WD/languagepack/staging/$ARCH"
 
@@ -254,4 +261,3 @@ _postprocess_languagepack_windows() {
     mv $WD/languagepack/staging/windows $WD/languagepack/staging/$ARCH || _die "Failed to rename windows staging directory to $ARCH"
     cd $WD
 }
-
