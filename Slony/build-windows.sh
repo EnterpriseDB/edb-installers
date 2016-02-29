@@ -51,7 +51,7 @@ _prep_Slony_windows() {
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST build-Slony.bat del /S /Q build-Slony.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\build-Slony.bat on Windows VM"
 
     echo "Copying Slony sources to Windows VM"
-    scp Slony.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the Slony archieve to windows VM (Slony.zip)"
+    scp Slony.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the Slony archieve to windows VM (Slony.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip Slony.zip" || _die "Couldn't extract Slony archieve on windows VM (Slony.zip)"
 
     echo "END PREP Slony Windows"        
@@ -93,7 +93,7 @@ nmake /E /F win32.mak slon.exe
 
 EOT
 
-   scp build-Slony.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
+   scp build-Slony.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS
    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-Slony.bat" 
     
    # Slony installs it's files into postgresql directory

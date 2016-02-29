@@ -110,7 +110,7 @@ build.bat
 
 EOT
 
-    scp $WD/server/source/build64-plpgsqlo.bat $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc || _die "Failed to copy the build64-plpgsqlo.bat"
+    scp $WD/server/source/build64-plpgsqlo.bat $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc || _die "Failed to copy the build64-plpgsqlo.bat"
 
 
     echo "##############################"

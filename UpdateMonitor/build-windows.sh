@@ -74,8 +74,8 @@ _prep_updatemonitor_windows() {
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST vc-build.bat del /Q vc-build.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\vc-build.bat on Windows VM"
 
     echo "Copying UpdateMonitor sources to Windows VM"
-    scp updatemonitor.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the UpdateMonitor archieve to Windows VM (updatemonitor.zip)"
-    scp GetLatestPGInstalled.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the UpdateMonitor archieve to Windows VM (GetLatestPGInstalled.zip)"
+    scp updatemonitor.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the UpdateMonitor archieve to Windows VM (updatemonitor.zip)"
+    scp GetLatestPGInstalled.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the UpdateMonitor archieve to Windows VM (GetLatestPGInstalled.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip updatemonitor.zip" || _die "Couldn't extract UpdateMonitor archieve on Windows VM (updatemonitor.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip GetLatestPGInstalled.zip" || _die "Couldn't extract GetLatestPGInstalled archieve on Windows VM (GetLatestPGInstalled.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir -p updatemonitor.staging" || _die "Couldn't create updatemonitor.staging directory on Windows VM"
@@ -123,7 +123,7 @@ devenv /upgrade %1
 
 EOT
    
-    scp vc-build.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy vc-build.bat in staging directory on Windows VM"
+    scp vc-build.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy vc-build.bat in staging directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\GetLatestPGInstalled.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat GetLatestPGInstalled.vcproj UPGRADE" || _die "Error building UpdateMonitor binaries on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\GetLatestPGInstalled.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat GetLatestPGInstalled.vcxproj Release" || _die "Error building UpdateMonitor binaries on Windows VM"
 
@@ -176,7 +176,7 @@ ECHO %ERRMSG%
 exit -1
 
 EOT
-    scp build-um.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy build-um.bat in staging directory on Windows VM"
+    scp build-um.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy build-um.bat in staging directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-um.bat" || _die "Error building UpdateMonitor binaries on Windows VM"
 
     # Remove output archieve, if exists

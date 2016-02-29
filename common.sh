@@ -183,7 +183,7 @@ win32_sign()
     if [ "$PG_SIGNTOOL_WINDOWS" != "" ];
     then
         echo "Signing $FILEPATH/$FILENAME..."
-        scp $FILEPATH/$FILENAME $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the executable to the windows host for signing ($FILEPATH/$FILENAME)"
+        scp $FILEPATH/$FILENAME $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Failed to copy the executable to the windows host for signing ($FILEPATH/$FILENAME)"
 
         while [ $NOT_SIGNED == 1 ]; do
             # We will stop trying, if the count is more than 3
@@ -196,9 +196,9 @@ win32_sign()
             ssh $PG_SSH_WINDOWS "cmd /c \"$PG_SIGNTOOL_WINDOWS\" sign /a /t http://timestamp.comodoca.com/authenticode $PG_PATH_WINDOWS/$FILENAME" || NOT_SIGNED=1
             COUNT=`expr $COUNT + 1`
         done
-        scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/$FILENAME $FILEPATH/$FILENAME || _die "Failed to copy the executable from the windows host after signing ($FILENAME)"
+        scp $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS/$FILENAME $FILEPATH/$FILENAME || _die "Failed to copy the executable from the windows host after signing ($FILENAME)"
         echo "Removing the signed executable ($FILENAME) from the windows VM..."
-        ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; rm -f $FILENAME" || _die "Failed to remove the signed executable ($FILENAME) on the windows host"
+        ssh $PG_SSH_WINDOWS "cd $PG_CYGWIN_PATH_WINDOWS; rm -f $FILENAME" || _die "Failed to remove the signed executable ($FILENAME) on the windows host"
     fi
 }
 # $1 - Component Name

@@ -105,7 +105,7 @@ cat <<EOT > "$WD/server/source/build32-plpgsqlo.bat"
 @SET PATH=%PATH%;$PG_PERL_WINDOWS\bin
 build.bat RELEASE
 EOT
-    scp $WD/server/source/build32-plpgsqlo.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/postgres.windows/src/tools/msvc || _die "Failed to copy the build32.bat"
+    scp $WD/server/source/build32-plpgsqlo.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS/postgres.windows/src/tools/msvc || _die "Failed to copy the build32.bat"
    
     PGSOURECEDIR=$WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL
     PGPLATFORMDIR=$WD/server/source/postgres.windows

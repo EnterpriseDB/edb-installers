@@ -101,21 +101,21 @@ _prep_PostGIS_windows() {
 
     # Copy sources on windows VM
     echo "Copying postgresql sources to Windows VM"
-    scp postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the postgresql archieve to windows VM ( postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.zip)"
+    scp postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the postgresql archieve to windows VM ( postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if NOT EXIST postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.windows unzip postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.zip" || _die "Couldn't extract postgresql archieve on windows VM (postgresql_mingw-$PG_MAJOR_VERSION.$PG_MINOR_VERSION.zip)"
 
     # Copy sources on windows VM
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST geos.staging rd /S /Q geos.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS\\geos.staging directory on Windows VM"
     echo "Copying proj sources to Windows VM"
-    scp proj-$PG_TARBALL_PROJ.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the proj archieve to windows VM (proj-$PG_TARBALL_PROJ.zip)"
+    scp proj-$PG_TARBALL_PROJ.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the proj archieve to windows VM (proj-$PG_TARBALL_PROJ.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if NOT EXIST proj-$PG_TARBALL_PROJ.windows unzip proj-$PG_TARBALL_PROJ.zip" || _die "Couldn't extract proj archieve on windows VM (proj-$PG_TARBALL_PROJ.zip)"
 
     echo "Copying geos sources to Windows VM"
-    scp geos-$PG_TARBALL_GEOS.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the geos archieve to windows VM (geos-$PG_TARBALL_GEOS.zip)"
+    scp geos-$PG_TARBALL_GEOS.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the geos archieve to windows VM (geos-$PG_TARBALL_GEOS.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if NOT EXIST geos-$PG_TARBALL_GEOS.windows unzip geos-$PG_TARBALL_GEOS.zip" || _die "Couldn't extract geos archieve on windows VM (geos-$PG_TARBALL_GEOS.zip)"
 
     echo "Copying postgis sources to Windows VM"
-    scp postgis.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the postgis archieve to windows VM (postgis.zip)"
+    scp postgis.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the postgis archieve to windows VM (postgis.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip postgis.zip" || _die "Couldn't extract postgis archieve on windows VM (postgis.zip)"
  
     POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
@@ -157,7 +157,7 @@ _build_PostGIS_windows() {
 
 EOT
 
-    scp build-postgresql_mingw.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
+    scp build-postgresql_mingw.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c IF NOT EXIST pgsql-$PG_MAJOR_VERSION.$PG_MINOR_VERSION build-postgresql_mingw.bat" 
      
 
@@ -191,7 +191,7 @@ REM Building postgis-jdbc
    
 EOT
 
-    scp build-postgis.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
+    scp build-postgis.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-postgis.bat"
 
     echo "Copying Readme files"

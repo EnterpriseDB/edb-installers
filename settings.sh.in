@@ -86,6 +86,7 @@ PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
 
 PG_SSH_WINDOWS=buildfarm@bf3-windows-x64.pn.in.enterprisedb.com
 PG_PATH_WINDOWS=D:\\\\pginstaller_2.auto-repo
+PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller_2.auto-repo
 PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0"
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
 PG_FRAMEWORKVERSION_WINDOWS=v4.0.30319
@@ -108,6 +109,7 @@ PG_TCL_WINDOWS=C:\\\\Tcl32
 
 PG_SSH_WINDOWS_X64=buildfarm@bf3-windows-x64.pn.in.enterprisedb.com
 PG_PATH_WINDOWS_X64=D:\\\\pginstaller_2.auto-repo-x64
+PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller_2.auto-repo-x64
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 10.0"
 PG_FRAMEWORKDIR_WINDOWS_X64="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework64"
 PG_FRAMEWORKVERSION_WINDOWS_X64=v4.0.30319

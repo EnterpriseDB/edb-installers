@@ -52,7 +52,7 @@ _prep_psqlODBC_windows() {
 
     # Copy sources on windows VM
     echo "Copying psqlODBC sources to Windows VM"
-    scp psqlODBC.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the psqlODBC archieve to windows VM (psqlODBC.zip)"
+    scp psqlODBC.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the psqlODBC archieve to windows VM (psqlODBC.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip psqlODBC.zip" || _die "Couldn't extract psqlODBC archieve on windows VM (psqlODBC.zip)"
     
     echo "END PREP psqlODBC Windows"
@@ -87,7 +87,7 @@ nmake /f win64.mak CFG=Release ALL PG_INC=%PG_HOME_PATH%\include PG_LIB=%PG_HOME
 
 EOT
 
-    scp build-psqlODBC.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
+    scp build-psqlODBC.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-psqlODBC.bat"
 
     # Zip up the installed code, copy it back here, and unpack.
@@ -110,7 +110,7 @@ EOT
     unzip -o $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows.zip -d $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to unpack the built source tree ($WD/staging/windows/psqlODBC-windows.zip)"
     rm $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows.zip
 
-    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/lib/libpq.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
+    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/lib/libpq.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll"
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/ssleay32.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libeay32.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libintl.dll $WD/psqlODBC/staging/windows/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (libintl-8.dll)"

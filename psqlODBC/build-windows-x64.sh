@@ -53,7 +53,7 @@ _prep_psqlODBC_windows_x64() {
 
     # Copy sources on windows-x64 VM
     echo "Copying psqlODBC sources to Windows VM"
-    scp psqlODBC.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Couldn't copy the psqlODBC archieve to windows-x64 VM (psqlODBC.zip)"
+    scp psqlODBC.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Couldn't copy the psqlODBC archieve to windows-x64 VM (psqlODBC.zip)"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip psqlODBC.zip" || _die "Couldn't extract psqlODBC archieve on windows-x64 VM (psqlODBC.zip)"
     
 }
@@ -85,7 +85,7 @@ nmake /f win64.mak CFG=Release ALL PG_INC=%PG_HOME_PATH%\include PG_LIB=%PG_HOME
 
 EOT
 
-    scp build-psqlODBC.bat $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64
+    scp build-psqlODBC.bat $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c build-psqlODBC.bat"
 
     # Zip up the installed code, copy it back here, and unpack.
@@ -108,7 +108,7 @@ EOT
     unzip -o $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows-x64.zip -d $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/psqlODBC-windows-x64.zip)"
     rm $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin/psqlODBC-windows-x64.zip
 
-    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output/lib/libpq.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
+    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output/lib/libpq.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll"
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/ssleay32.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libeay32.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libintl-8.dll $WD/psqlODBC/staging/windows-x64/$PSQLODBC_MAJOR_VERSION/bin || _die "Failed to copy the dll (libintl.dll)"

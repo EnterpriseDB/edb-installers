@@ -293,7 +293,7 @@ EOT
     echo "Copying scripts source tree to Windows build VM"
     zip -r scripts.zip vc-build.bat vc-build-x64.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build-x64.bat vc-build-x64.bat, createuser, getlocales, validateuser)"
 
-    scp -v scripts.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the scripts source tree to the windows-x64 build host (scripts.zip)"
+    scp -v scripts.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the scripts source tree to the windows-x64 build host (scripts.zip)"
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; unzip scripts.zip" || _die "Failed to unpack the scripts source tree on the windows-x64 build host (scripts.zip)"    
     
     # Build the code and install into a temporary directory
@@ -315,7 +315,7 @@ EOT
     echo "Copying source tree to Windows build VM"
     rm postgres.windows-x64/contrib/pldebugger/Makefile # Remove the unix makefile so that the build scripts don't try to parse it - we have our own.
     zip -r postgres-win64.zip postgres.windows-x64 || _die "Failed to pack the source tree (postgres.windows-x64)"
-    scp -v postgres-win64.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (postgres-win64.zip)"
+    scp -v postgres-win64.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (postgres-win64.zip)"
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip postgres-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (postgres-win64.zip)"
   
     PG_CYGWIN_PERL_WINDOWS_X64=`echo $PG_PERL_WINDOWS_X64 | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'`
@@ -347,7 +347,7 @@ EOT
  
     echo "Copying pgAdmin source tree to Windows build VM"
     zip -r pgadmin-win64.zip pgadmin.windows-x64 || _die "Failed to pack the source tree (pgadmin.windows-x64)"
-    scp -v pgadmin-win64.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (pgadmin-win64.zip)"
+    scp -v pgadmin-win64.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (pgadmin-win64.zip)"
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip pgadmin-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (pgadmin-win64.zip)"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat pgAdmin3.sln UPGRADE" || _die "Failed to build pgAdmin on the build host"
  
@@ -395,7 +395,7 @@ EOT
     cd $WD/server/source/
     echo "Copying StackBuilder source tree to Windows build VM"
     zip -r stackbuilder-win64.zip stackbuilder.windows-x64 || _die "Failed to pack the source tree (stackbuilder.windows-x64)"
-    scp -v stackbuilder-win64.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (stackbuilder-win64.zip)"
+    scp -v stackbuilder-win64.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (stackbuilder-win64.zip)"
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip stackbuilder-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (stackbuilder-win64.zip)"
   
     # Build the code
@@ -566,7 +566,7 @@ _postprocess_server_windows_x64() {
     # Copy installer onto the build system
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\component_installers"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q component_installers\\\\postgresql-*-windows-x64.exe"
-    scp $WD/output/postgresql-$PG_PACKAGE_VERSION-windows-x64.exe $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/component_installers || _die "Unable to copy installers at windows-x64 build machine."
+    scp $WD/output/postgresql-$PG_PACKAGE_VERSION-windows-x64.exe $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64/component_installers || _die "Unable to copy installers at windows-x64 build machine."
 
     cd $WD
     echo "END POST Server Windows-x64"

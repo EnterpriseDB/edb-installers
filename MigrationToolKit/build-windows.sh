@@ -106,8 +106,8 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST \"mw-build.bat\" del /q mw-build.bat" || _die "Failed to remove the build script (mw-build.bat)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST \"migrationtoolkit.windows\" rd /s /q migrationtoolkit.windows" || _die "Failed to remove the source tree on the windows build host (migrationtoolkit.windows)"
 
-    scp migrationtoolkit.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (migrationtoolkit.zip)"
-    scp mw-build.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the build script to windows VM (mw-build.bat)"
+    scp migrationtoolkit.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (migrationtoolkit.zip)"
+    scp mw-build.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Failed to copy the build script to windows VM (mw-build.bat)"
 
     echo "Building migrationtoolkit"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c mw-build.bat" || _die "Couldn't build the migrationtoolkit"

@@ -60,7 +60,7 @@ _prep_pgbouncer_windows() {
     unix2dos $WD/pgbouncer/staging/windows/pgbouncer/doc/README-pgbouncer.txt|| _die "Failed to convert pgbouncer readme in dos readable format."
 
     echo "Copying pgbouncer sources to Windows VM"
-    scp pgbouncer.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the pgbouncer archieve to windows VM (pgbouncer.zip)"
+    scp pgbouncer.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the pgbouncer archieve to windows VM (pgbouncer.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip pgbouncer.zip" || _die "Couldn't extract pgbouncer archieve on windows VM (pgbouncer.zip)"
 
     echo "END PREP pgbouncer Windows"
@@ -85,7 +85,7 @@ REM Configuring, building the pgbouncer source tree
 
 EOT
 
-    scp build-pgbouncer.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the scripts source tree to the windows build host (scripts.zip)"
+    scp build-pgbouncer.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Failed to copy the scripts source tree to the windows build host (scripts.zip)"
     # Build the code and install into a temporary directory
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-pgbouncer.bat " || _die "Failed to build pgbouncer on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\regex2.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging\\\\bin" || _die "Failed to build pgbouncer on the windows build host"

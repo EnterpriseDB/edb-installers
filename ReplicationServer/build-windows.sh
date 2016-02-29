@@ -89,8 +89,8 @@ _prep_ReplicationServer_windows() {
 
     # Copy sources on windows VM
     echo "Copying ReplicationServer sources to Windows VM"
-    scp ReplicationServer.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the ReplicationServer archieve to windows VM (ReplicationServer.zip)"
-    scp DataValidator.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the DataValidator archieve to windows VM (DataValidator.zip)"
+    scp ReplicationServer.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the ReplicationServer archieve to windows VM (ReplicationServer.zip)"
+    scp DataValidator.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the DataValidator archieve to windows VM (DataValidator.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip ReplicationServer.zip" || _die "Couldn't extract ReplicationServer archieve on windows VM (ReplicationServer.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip DataValidator.zip" || _die "Couldn't extract DataValidator archieve on windows VM (DataValidator.zip)"
     
@@ -207,7 +207,7 @@ exit 1
 
 EOT
  
-    scp $WD/ReplicationServer/source/rs-build.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/ReplicationServer.windows/ || _die "Failed to copy the build script"
+    scp $WD/ReplicationServer/source/rs-build.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS/ReplicationServer.windows/ || _die "Failed to copy the build script"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/ReplicationServer.windows; cmd /c rs-build.bat" || _die "Failed to build Replication Server on windows host"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/ReplicationServer.windows/dist.zip $WD/ReplicationServer/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/ReplicationServer.windows/dist.zip)"
     unzip $WD/ReplicationServer/staging/windows/dist.zip -d $WD/ReplicationServer/staging/windows/ || _die "Failed to unpack the built source tree ($WD/staging/windows/dist.zip)"

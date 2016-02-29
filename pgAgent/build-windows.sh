@@ -67,7 +67,7 @@ _prep_pgAgent_windows() {
 
     # Copy sources on windows VM
     echo "Copying pgAgent sources to Windows VM"
-    scp pgAgent.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the pgAgent archieve to windows VM (pgAgent.zip)"
+    scp pgAgent.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the pgAgent archieve to windows VM (pgAgent.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip pgAgent.zip" || _die "Couldn't extract pgAgent archieve on windows VM (pgAgent.zip)"
     
     echo "END PREP pgAgent Windows"
@@ -109,7 +109,7 @@ devenv /upgrade %1
 :end
 
 EOT
-    scp vc-build.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Failed to copy the vc-build.bat to the windows build host (vcbuild.bat)"
+    scp vc-build.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Failed to copy the vc-build.bat to the windows build host (vcbuild.bat)"
 
     echo "Configuring pgAgent sources"
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; PGDIR=$PG_PATH_WINDOWS/output WXWIN=$PG_WXWIN_WINDOWS cmake -DCMAKE_INSTALL_PREFIX=$OUTPUT_DIR -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Couldn't configure the pgAgent sources"

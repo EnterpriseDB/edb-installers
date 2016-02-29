@@ -52,7 +52,7 @@ _prep_sqlprotect_windows() {
 
     # Copy sources on windows VM
     echo "Copying sqlprotect sources to Windows VM"
-    scp sqlprotect.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the sqlprotect archive to windows VM (sqlprotect.zip)"
+    scp sqlprotect.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the sqlprotect archive to windows VM (sqlprotect.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c  unzip sqlprotect.zip" || _die "Couldn't extract postgresql archieve on windows VM (sqlprotect.zip)"
     chmod -R ugo+r $WD/sqlprotect/staging/windows
     
@@ -75,7 +75,7 @@ build.bat sqlprotect RELEASE
 
 EOT
 
-    scp $WD/server/source/build32-sqlprotect.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/postgres.windows/src/tools/msvc || _die "Failed to copy the build32.bat"
+    scp $WD/server/source/build32-sqlprotect.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS/postgres.windows/src/tools/msvc || _die "Failed to copy the build32.bat"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/postgres.windows/src/tools/msvc; ./build32-sqlprotect.bat " || _die "could not build sqlprotect on windows vm"
 
    # We need to copy shared objects to staging directory

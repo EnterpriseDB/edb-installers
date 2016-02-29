@@ -87,12 +87,12 @@ _prep_ApachePhp_windows() {
 
     # Copy sources on windows VM
     echo "Copying apache sources to Windows VM"
-    scp apache.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the apache archieve to windows VM (apache.zip)"
+    scp apache.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the apache archieve to windows VM (apache.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip apache.zip" || _die "Couldn't extract apache archieve on windows VM (apache.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir apache.staging; chmod -R a+wrx apache.staging" || _die "Couldn't give full rights to apache windows directory on windows VM (apache.windows)"
 
     echo "Copying php sources to Windows VM"
-    scp php.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the php archieve to windows VM (php.zip)"
+    scp php.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the php archieve to windows VM (php.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip php.zip" || _die "Couldn't extract php archieve on windows VM (php.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; chmod -R a+wrx php.windows" || _die "Couldn't give full rights to php windows directory on windows VM (php.windows)"
 
@@ -145,7 +145,7 @@ nmake -f Makefile.win PORT=8080 INSTDIR="%STAGING_DIR%\apache.staging" NO_EXTERN
 
 EOT
 
-    scp build-apache.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
+    scp build-apache.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS
     APACHE_BUILT=0
     APACHE_WIN_BUILT_COUNT=0
     while [ $APACHE_BUILT == 0 ]; do
@@ -255,7 +255,7 @@ IF NOT EXIST php.staging/php.exe @GOTO installation-failed
     @cd %BUILD_DIR%
 
 EOT
-    scp build-php.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
+    scp build-php.bat $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-php.bat"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-recommended copy php.ini-recommended $PG_PATH_WINDOWS\\\\php.staging\\\\php.ini " || _die "Failed to copy php.ini"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-production copy php.ini-production $PG_PATH_WINDOWS\\\\php.staging\\\\php.ini " || _die "Failed to copy php.ini"
