@@ -69,6 +69,9 @@ _prep_pgbouncer() {
     echo "Unpacking pgbouncer source..."
     extract_file ../../tarballs/pgbouncer-$PG_VERSION_PGBOUNCER || exit 1
 
+    cd $WD/pgbouncer/source/pgbouncer-$PG_VERSION_PGBOUNCER
+    patch -p0 < $WD/tarballs/pgbouncer-1.7-configure.patch
+
     # Per-platform prep
     cd $WD
     
