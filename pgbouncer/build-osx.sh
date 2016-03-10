@@ -86,7 +86,7 @@ cat<<PGBOUNCER > $WD/pgbouncer/build-pgbouncer.sh
 
     cd $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/
     
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -O2" LDFLAGS="-arch i386" MACOSX_DEPLOYMENT_TARGET=10.6 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/opt/local/Current || _die "Failed to configure pgbouncer"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -O2" LDFLAGS="-arch i386" MACOSX_DEPLOYMENT_TARGET=10.6 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/opt/local/Current --with-openssl=/opt/local/Current || _die "Failed to configure pgbouncer"
     mv lib/usual/config.h lib/usual/config_i386.h || _die "Failed to rename config.h"
 
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -O2" LDFLAGS="-arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.6 ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer --with-libevent=/opt/local/Current || _die "Failed to configure pgbouncer"
@@ -112,6 +112,8 @@ cat<<PGBOUNCER > $WD/pgbouncer/build-pgbouncer.sh
 
     mkdir -p $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/lib || _die "Failed to create the pgbouncer lib directory"
     cp -pR /opt/local/Current/lib/libevent-*.dylib $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/lib
+    cp -pR /opt/local/Current/lib/libssl*.dylib $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/lib
+    cp -pR /opt/local/Current/lib/libcrypto*.dylib $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/lib
  
     _rewrite_so_refs $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer bin @loader_path/..
     _rewrite_so_refs $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer lib @loader_path/
@@ -147,7 +149,9 @@ cat<<PGBOUNCER > $WD/pgbouncer/build-pgbouncer.sh
         NEW_DLL=\`echo \$DLL | sed -e "s^@loader_path/../lib/^^g"\`
         install_name_tool -change "\$DLL" "\$NEW_DLL" "\$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.dylib"
         install_name_tool -change "\$DLL" "\$NEW_DLL" "\$PG_PATH_OSX/pgbouncer/staging/osx/instscripts/libssl.1.0.0.dylib"
-    done 
+    done
+    
+    install_name_tool -change "@loader_path//lib/libcrypto.1.0.0.dylib" "@loader_path/libcrypto.1.0.0.dylib" $PG_PATH_OSX/pgbouncer/staging/osx/pgbouncer/lib/libssl.1.0.0.dylib
 PGBOUNCER
     
     cd $WD
