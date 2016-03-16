@@ -41,8 +41,5 @@ project_python	libpython python.exe
 project_tcl	libtcl8
 project_tk	libtk8
 
-project_termcap
 project_unixODBC	libodbc
-project_libgcrypt
-project_libgpg_error
 
