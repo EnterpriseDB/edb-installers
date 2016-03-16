@@ -93,7 +93,4 @@ project_jquery_alphanumeric	jquery.alphanumeric.js
 project_underscore	underscore-1.3.1.js underscore.js
 project_pgAdmin	settings.ini
 	
-project_termcap
 project_unixODBC	libodbc
-project_libgcrypt
-project_libgpg_error
