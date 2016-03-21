@@ -39,7 +39,7 @@ $log_content
 
 $footer_fail"
                 build_status="FAILED"
-                mail_receipents="pginstaller@enterprisedb.com"
+                mail_receipents="cm@enterprisedb.com"
         fi
 
         mail -s "pgInstaller Build $version ($country) - $build_status" $mail_receipents <<EOT
