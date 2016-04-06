@@ -146,7 +146,7 @@ rm -rf mnt
 
 echo "Changing the rpath for the PostGIS executables and libraries"
 cd $POSTGIS_STAGING_REMOTE/PostGIS/bin
-for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \\\${ORIGIN}/../lib \$f; done
+for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \\\${ORIGIN}/../lib:\\\${ORIGIN}/../lib/postgresql \$f; done
 
 cd $POSTGIS_STAGING_REMOTE/PostGIS/lib
 for f in \`file * | grep ELF | cut -d : -f 1 \`; do chrpath --replace \\\${ORIGIN}/../../lib:\\\${ORIGIN} \$f; done
