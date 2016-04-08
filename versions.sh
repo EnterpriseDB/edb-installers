@@ -35,7 +35,7 @@ PG_TAG_MIGRATIONTOOLKIT='V46_0_STABLE'
 #                     Minor version is revision.build.
 
 PG_MAJOR_VERSION=9.3
-PG_MINOR_VERSION=12.1
+PG_MINOR_VERSION=12.2
 
 # Other package versions
 PG_VERSION_APACHE=2.4.7
