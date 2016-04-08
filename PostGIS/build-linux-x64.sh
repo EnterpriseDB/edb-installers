@@ -131,8 +131,6 @@ cp -pR /opt/local/Current/lib/libpcre.so* . || _die "Failed to copy the pcre lib
 cp -pR /opt/local/Current/lib/libtiff.so* . || _die "Failed to copy the libtiff libraries"
 cp -pR /opt/local/Current/lib/libjpeg.so* . || _die "Failed to copy the libjpeg libraries"
 cp -pR /opt/local/Current/lib/libexpat.so* . || _die "Failed to copy the libexpat libraries"
-cp -pR /opt/local/Current/lib/libodbc.so* . || _die "Failed to copy the libodbc libraries"
-cp -pR /opt/local/Current/lib/libodbcinst.so* . || _die "Failed to copy the libodbcinst libraries"
 cp -pR /opt/local/Current/lib/libpng12.so* . || _die "Failed to copy the png libraries"
 cp -pR /opt/local/Current/lib/libjson-c.so* . || _die "Failed to copy the libjson-c libraries"
 
