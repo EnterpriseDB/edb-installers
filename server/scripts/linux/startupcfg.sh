@@ -105,9 +105,15 @@ start()
 
 	if [ \$? -eq 0 ];
 	then
-		touch \$LOCKFILE
-		echo "PostgreSQL $VERSION started successfully"
-                exit 0
+			OS=\`uname -n\`
+			if [ "\$OS" != "ubuntu" ];
+			touch \$LOCKFILE
+			fi
+			echo "PostgreSQL $VERSION started successfully"
+			exit 0
+
+		fi
+
 	else
 		echo "PostgreSQL $VERSION did not start in a timely fashion, please see $DATADIR/pg_log/startup.log for details"
                 exit 1
@@ -138,7 +144,11 @@ restart()
 	
 	if [ \$? -eq 0 ];
 	then
-		touch \$LOCKFILE
+			OS=\`uname -n\`
+			if [ "\$OS" != "ubuntu" ];
+			then
+			touch \$LOCKFILE
+			fi
 		echo "PostgreSQL $VERSION restarted successfully"
                 exit 0
 	else
