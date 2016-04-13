@@ -107,12 +107,11 @@ start()
 	then
 			OS=\`uname -n\`
 			if [ "\$OS" != "ubuntu" ];
+			then
 			touch \$LOCKFILE
 			fi
 			echo "PostgreSQL $VERSION started successfully"
 			exit 0
-
-		fi
 
 	else
 		echo "PostgreSQL $VERSION did not start in a timely fashion, please see $DATADIR/pg_log/startup.log for details"
