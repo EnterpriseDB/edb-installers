@@ -58,7 +58,7 @@ User=$USERNAME
 Environment=PGDATA=$DATADIR
 PIDFILE=$DATADIR/postmaster.pid
 
-ExecStart=$INSTALLDIR/bin/pg_ctl -w start -D "$DATADIR" -l "$DATADIR/pg_log/startup.log -w -t ${TimeoutSec}"
+ExecStart=$INSTALLDIR/bin/pg_ctl start -w -t \${TimeoutSec} -D "$DATADIR" -l "$DATADIR/pg_log/startup.log"
 ExecStop=$INSTALLDIR/bin/pg_ctl stop -m fast -w -D "$DATADIR"
 ExecReload=$INSTALLDIR/bin/pg_ctl reload -D "$DATADIR"
 
