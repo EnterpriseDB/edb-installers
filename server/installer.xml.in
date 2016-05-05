@@ -2745,32 +2745,6 @@ EOF
             </ruleList>
         </actionGroup>
 
-        <!-- Clean up libs -->
-        <actionGroup>
-            <actionList>
-                <runProgram>
-                    <program>${installdir}/installer/server/config_libs.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
-                    <progressText>${msg(progress.text.cleaning.libs)}</progressText>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                </runProgram>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <text>${IsUpgrade}</text>
-                    <logic>equals</logic>
-                    <value>1</value>
-                </compareText>
-                <compareText>
-                    <logic>contains</logic>
-                    <text>${platform_name}</text>
-                    <value>linux</value>
-                </compareText>
-               <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </actionGroup>
-
         <setInstallerVariable name="branding" value="" persist="1">
             <ruleList>
                 <isTrue value="${extract_mode}"/>
@@ -3260,23 +3234,6 @@ EOF
                     </ruleList>
                 </showWarning>
 
-
-
-                <!-- Clean up libs -->
-                <runProgram>
-                    <program>${installdir}/installer/server/config_libs.sh</program>
-                    <programArguments>"${installdir}"</programArguments>
-                    <progressText>${msg(progress.text.cleaning.libs)}</progressText>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                    <ruleList>
-                        <compareText>
-                            <logic>contains</logic>
-                            <text>${platform_name}</text>
-                            <value>linux</value>
-                        </compareText>
-                    </ruleList>
-                </runProgram>
 
                 <!-- Shortcuts -->
                 <runProgram>
