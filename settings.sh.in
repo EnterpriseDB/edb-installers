@@ -54,7 +54,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            On Windows we don't have a shared directory, so specify a build directory
 #            We can also specify additional directorys to include in the path.
 
-PG_SSH_LINUX=buildfarm@bf5-linux.ox.uk.enterprisedb.com
+PG_SSH_LINUX=buildfarm@bf6-linux.ox.uk.enterprisedb.com
 PG_PATH_LINUX=/mnt/hgfs/pginstaller.auto
 PG_PGHOME_LINUX=$PG_PATH_LINUX/server/staging/linux
 PG_EXEC_PATH_LINUX=/etc/alternatives/java_sdk_1.7.0/bin
@@ -63,13 +63,13 @@ PG_ANT_HOME_LINUX=/opt/apache-ant-1.8.4
 PG_MAVEN_HOME_LINUX=/opt/apache-maven-3.3.3
 PG_QMAKE_LINUX=/opt/qtsdk/bin/qmake
 PG_QT_LINUX=/opt/qtsdk
-PG_PERL_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.5/Perl-5.20
-PG_PYTHON_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.5/Python-3.3
-PG_TCL_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.5/Tcl-8.5
+PG_PERL_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.6/Perl-5.20
+PG_PYTHON_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.6/Python-3.3
+PG_TCL_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.6/Tcl-8.5
 PG_XULRUNNER_SDK_LINUX=/usr/lib/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX=/usr/lib/xulrunner-1.9.2
 
-PG_SSH_LINUX_X64=buildfarm@bf5-linux-x64.ox.uk.enterprisedb.com
+PG_SSH_LINUX_X64=buildfarm@bf6-linux-x64.ox.uk.enterprisedb.com
 PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller.auto
 PG_PGHOME_LINUX_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64
 PG_EXEC_PATH_LINUX_X64=/etc/alternatives/java_sdk_1.7.0/bin
@@ -78,13 +78,13 @@ PG_ANT_HOME_LINUX_X64=/opt/apache-ant-1.8.4
 PG_MAVEN_HOME_LINUX_X64=/opt/apache-maven-3.3.3
 PG_QMAKE_LINUX_X64=/opt/qtsdk/bin/qmake
 PG_QT_LINUX_X64=/opt/qtsdk
-PG_PERL_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.5/Perl-5.20
-PG_PYTHON_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.5/Python-3.3
-PG_TCL_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.5/Tcl-8.5
+PG_PERL_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.6/Perl-5.20
+PG_PYTHON_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.6/Python-3.3
+PG_TCL_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.6/Tcl-8.5
 PG_XULRUNNER_SDK_LINUX_X64=/usr/lib64/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
 
-PG_SSH_WINDOWS=buildfarm@bf5-windows.ox.uk.enterprisedb.com
+PG_SSH_WINDOWS=buildfarm@bf6-windows.ox.uk.enterprisedb.com
 PG_SSH_SIGN_WINDOWS=buildfarm@bf5-windows.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS=D:\\\\pginstaller.auto
 PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller.auto
@@ -106,12 +106,12 @@ PG_JAVA_HOME_WINDOWS="C:\\\\jdk1.7.0_51"
 PG_QTPATH_WINDOWS=C:\\\\QtSDK
 PG_SDK_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_SIGNTOOL_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
-PG_PERL_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\i386\\\\Perl-5.20
-PG_PYTHON_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\i386\\\\Python-3.3
-PG_TCL_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\i386\\\\Tcl-8.5
+PG_PERL_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.6\\\\i386\\\\Perl-5.20
+PG_PYTHON_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.6\\\\i386\\\\Python-3.3
+PG_TCL_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.6\\\\i386\\\\Tcl-8.5
 PLATFORM_TOOLSET=/p:PlatformToolset=v120_xp
 
-PG_SSH_WINDOWS_X64=buildfarm@bf5-windows-x64.ox.uk.enterprisedb.com
+PG_SSH_WINDOWS_X64=buildfarm@bf6-windows-x64.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS_X64=D:\\\\pginstaller.auto
 PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller.auto
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0"
@@ -123,9 +123,9 @@ PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild64"
 PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets-2.8.12"
 PG_JAVA_HOME_WINDOWS_X64="C:\\\\Program Files\\\\Java\\\\jdk1.7.0_51"
 PG_CMAKE_WINDOWS_X64="C:\\\\cmake-x86"
-PG_PERL_WINDOWS_X64=C:\\\\pgBuild64\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\x64\\\\Perl-5.20
-PG_PYTHON_WINDOWS_X64=C:\\\\pgBuild64\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\x64\\\\Python-3.3
-PG_TCL_WINDOWS_X64=C:\\\\pgBuild64\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\x64\\\\Tcl-8.5
+PG_PERL_WINDOWS_X64=C:\\\\pgBuild64\\\\EnterpriseDB\\\\LanguagePack\\\\9.6\\\\x64\\\\Perl-5.20
+PG_PYTHON_WINDOWS_X64=C:\\\\pgBuild64\\\\EnterpriseDB\\\\LanguagePack\\\\9.6\\\\x64\\\\Python-3.3
+PG_TCL_WINDOWS_X64=C:\\\\pgBuild64\\\\EnterpriseDB\\\\LanguagePack\\\\9.6\\\\x64\\\\Tcl-8.5
 PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_SIGNTOOL_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
 
@@ -148,7 +148,7 @@ PG_SOLARIS_STUDIO_SOLARIS_SPARC=/opt/sunstudio12.1/prod
 PG_ANT_HOME_SOLARIS_SPARC=/opt/apache-ant-1.8.4
 PG_QMAKE_SOLARIS_SPARC=/usr/local.sun/bin/qmake
 
-PG_SSH_OSX=buildfarm@bf5-osx.ox.uk.enterprisedb.com
+PG_SSH_OSX=buildfarm@bf6-osx.ox.uk.enterprisedb.com
 PG_PATH_OSX=/mnt/hgfs/pginstaller.auto
 PG_SSH_OSX_SIGN=buildfarm@bf-osx-sign.ox.uk.enterprisedb.com
 PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_2.auto
@@ -158,10 +158,10 @@ PG_ANT_HOME_OSX=/usr
 PG_MAVEN_HOME_OSX=/opt/local/apache-maven-3.3.3
 PG_DOCBOOK_OSX=/usr/local/docbook-xsl-1.77.1
 PG_JAVA_HOME_OSX=/Library/Java/JavaVirtualMachines/jdk1.7.0_67.jdk/Contents/Home
-PG_PERL_OSX=/Library/EnterpriseDB/LanguagePack/9.5/Perl-5.20
-PG_PYTHON_OSX=/Library/EnterpriseDB/LanguagePack/9.5/Python-3.3
-PG_TCL_OSX=/Library/EnterpriseDB/LanguagePack/9.5/Tcl-8.5
-PG_LANGUAGEPACK_OSX=/Library/EnterpriseDB/LanguagePack/9.5
+PG_PERL_OSX=/Library/EnterpriseDB/LanguagePack/9.6/Perl-5.20
+PG_PYTHON_OSX=/Library/EnterpriseDB/LanguagePack/9.6/Python-3.3
+PG_TCL_OSX=/Library/EnterpriseDB/LanguagePack/9.6/Tcl-8.5
+PG_LANGUAGEPACK_OSX=/Library/EnterpriseDB/LanguagePack/9.6
 PG_QTFRAMEWORK_OSX=/Library/Frameworks
 PG_QMAKE_OSX=/Developer/Tools/Qt/qmake
 
@@ -182,5 +182,5 @@ KEYCHAIN_PASSWD="XXXXXX"
 
 # LanguagePack Variables
 PG_LANGUAGEPACK_INSTALL_DIR_LINUX="/opt/EnterpriseDB/LanguagePack"
-PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.5"
-PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/EnterpriseDB/LanguagePack/9.5"
+PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.6"
+PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/EnterpriseDB/LanguagePack/9.6"
