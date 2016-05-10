@@ -3,7 +3,7 @@ ssh buildfarm@tanaka.ox.uk.enterprisedb.com
 
 # Source tarball versions
 
-PG_TARBALL_POSTGRESQL=9.4.7
+PG_TARBALL_POSTGRESQL=9.4.8
 PG_TARBALL_PGADMIN=1.20.0
 PG_TARBALL_DEBUGGER=0.93
 PG_TARBALL_PLJAVA=1.4.0
@@ -37,7 +37,7 @@ PG_TAG_MIGRATIONTOOLKIT=''
 #                     Minor version is revision.build.
 
 PG_MAJOR_VERSION=9.4
-PG_MINOR_VERSION=7.1
+PG_MINOR_VERSION=8.1
 
 # Other package versions
 PG_VERSION_APACHE=2.4.20
