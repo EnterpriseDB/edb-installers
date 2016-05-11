@@ -339,6 +339,8 @@ _postprocess_languagepack_osx() {
 
     ssh $PG_SSH_OSX "rm -rf cd $PG_PATH_OSX/output/edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app" || _die "Failed to remove edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app"
 
+    ssh $PG_SSH_OSX "rm -rf cd $PG_PATH_OSX/output/edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.zip" || _die "Failed to remove edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.zip"
+
     echo "Attach the  disk image, create zip and then detach the image"
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; hdid edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.dmg" || _die "Failed to open the disk image (edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.dmg in remote host)"
