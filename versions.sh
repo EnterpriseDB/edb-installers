@@ -1,4 +1,3 @@
-ssh buildfarm@tanaka.ox.uk.enterprisedb.com 
 #!/bin/sh
 
 # Source tarball versions
