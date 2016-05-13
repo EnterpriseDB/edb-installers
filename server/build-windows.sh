@@ -442,7 +442,7 @@ EOT
     # fixes #35408. In 9.5, some modules were moved from contrib to src/test/modules. They are meant for server testing
     # and should not be packaged for distribution. On Unix, the top level make does not build these, but on windows it does.
     # Hence, removing the files of these modules from the staging
-    find $WD/server/staging/windows/ -type f \( -name "test_parser*" -o -name "test_shm_mq*" -o -name "test_decoding*" -o -name "test_ddl_deparse*" \
+    find $WD/server/staging/windows/ -type f \( -name "test_parser*" -o -name "test_shm_mq*" -o -name "test_ddl_deparse*" \
                                                -o -name "test_rls_hooks*" -o -name "worker_spi*" -o -name "dummy_seclabel*" \) -exec rm {} \;
 
     # sign stackbuilder
