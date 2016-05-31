@@ -28,7 +28,7 @@ PG_TAG_MIGRATIONTOOLKIT='V46_0_STABLE'
 #                     Minor version is revision.build.
 
 PG_MAJOR_VERSION=9.2
-PG_MINOR_VERSION=17.1
+PG_MINOR_VERSION=17.2
 
 # Other package versions
 PG_VERSION_POSTGIS=2.0.7
