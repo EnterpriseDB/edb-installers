@@ -84,15 +84,15 @@ _build_server_osx() {
 
     # Configure the source tree
     echo "Configuring the postgres source tree for Intel"
-    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for i386"
+    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -O2" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for i386"
     mv src/include/pg_config.h src/include/pg_config_i386.h
 
     echo "Configuring the postgres source tree for x86_64"
-    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --host=x86_64-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for PPC"
+    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -O2" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --host=x86_64-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for PPC"
     mv src/include/pg_config.h src/include/pg_config_x86_64.h
 
     echo "Configuring the postgres source tree for Universal"
-    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for Universal"
+    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -O2" LDFLAGS="-L/usr/local/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ./configure --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for Universal"
 
     # Create a replacement pg_config.h that will pull in the appropriate architecture-specific one:
     rm -f src/include/pg_config.h
@@ -110,7 +110,7 @@ cat <<EOT > "src/include/pg_config.h"
 EOT
 
     echo "Building postgres"
-    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64" make -j4 || _die "Failed to build postgres"
+    PATH=/usr/local/bin:$PATH CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -O2" make -j4 || _die "Failed to build postgres"
     make install || _die "Failed to install postgres"
 
     cp src/include/pg_config_i386.h $WD/server/staging/osx/include/
