@@ -202,7 +202,7 @@ _build_server_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp /opt/local/Current/include/iconv.h $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_LINUX_X64 "cp /opt/local/Current/include/zlib.h $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_LINUX_X64 "cp /opt/local/Current/include/krb5.h $PG_STAGING/include" || _die "Failed to copy the required header"
-    ssh $PG_SSH_LINUX_X64 "cp /opt/local/Current/include/ncurses*.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX_X64 "cp -r /opt/local/Current/include/ncurses $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_LINUX_X64 "cp /opt/local/Current/include/gssapi.h $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_LINUX_X64 "cp /opt/local/Current/include/ldap*.h $PG_STAGING/include" || _die "Failed to copy the required header"
 
