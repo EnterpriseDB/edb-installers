@@ -197,9 +197,9 @@ echo "Cleaning up old output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
 
 # Switch to REL-9_6 branch
-echo "Switching to REL-9_6-pgadmin3 branch" >> autobuild.log
+echo "Switching to REL-9_6 branch" >> autobuild.log
 git reset --hard >> autobuild.log 2>&1
-git checkout REL-9_6-pgadmin3 >> autobuild.log 2>&1
+git checkout REL-9_6 >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
 if [ -f settings.sh.full.REL-9_6 ]; then
