@@ -217,27 +217,27 @@ EOF
 		    <platformTest type="windows-x64" />
                 </ruleList>
         </actionGroup>
+	<actionGroup>
+            <actionList>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\PostgreSQL\Installations\postgresql-${PGMajorVersion}" 
+                   name="Base Directory" variable="pghome" />
+            </actionList>
+              <ruleList>
+                   <isTrue value="${win64_platform}"/>
+                   <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+              </ruleList>
+        </actionGroup>
     
         <!-- Throw Error if PG PG_MAJOR_VERSION not found -->
-        <if>
+	<actionGroup>
             <actionList>
-		<throwError text="${msg(pg.not.found.win64)}" >
-		    <ruleList>
-			<compareText text="${pghome}" logic="equals" value="" />
-		    </ruleList>
-		</throwError>
-            </actionList>
-            <elseActionList>
 		<throwError text="${msg(pg.not.found)}" >
 		    <ruleList>
 			<compareText text="${pghome}" logic="equals" value="" />
 		    </ruleList>
 		</throwError>
-            </elseActionList>
-            <conditionRuleList>
-		<platformTest type="windows-x64" />
-            </conditionRuleList>
-        </if>
+            </actionList>
+	</actionGroup>
     
         <!-- Set installation directory as the PGHOME -->
         <setInstallerVariable name="installdir" value="${pghome}" />
