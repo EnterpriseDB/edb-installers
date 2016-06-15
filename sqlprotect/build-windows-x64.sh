@@ -138,7 +138,7 @@ _postprocess_sqlprotect_windows_x64() {
     "$PG_INSTALLBUILDER_BIN" build installer-win-x64.xml windows || _die "Failed to build the installer"
 
     # Sign the installer
-    win32_sign "sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-windows-x64.exe"
+    win32_sign "edb-sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-windows-x64.exe"
 
     cd $WD
     

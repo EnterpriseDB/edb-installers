@@ -248,7 +248,7 @@ _postprocess_updatemonitor_windows() {
     "$PG_INSTALLBUILDER_BIN" build installer-win.xml windows || _die "Failed to build the installer"
 
     # Sign the installer
-    win32_sign "updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-windows.exe"
+    win32_sign "edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-windows.exe"
 	
     cd $WD
     

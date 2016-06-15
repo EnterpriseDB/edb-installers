@@ -29,18 +29,18 @@
     <height>400</height>
 
     <!-- Misc package options -->
-    <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+    <installerFilename>edb-${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
     <wrapLicenseFileText>1</wrapLicenseFileText>
     <enableRollback>0</enableRollback>
     <requireInstallationByRootUser>1</requireInstallationByRootUser>
     <saveRelativePaths>1</saveRelativePaths>
     <outputDirectory>../output</outputDirectory>
     <uninstallerDirectory>${installdir}</uninstallerDirectory>
-    <uninstallerName>uninstall-${product_shortname}</uninstallerName>
+    <uninstallerName>uninstall-edb-${product_shortname}</uninstallerName>
     <unattendedModeUI>minimal</unattendedModeUI>
     <compressionAlgorithm>lzma</compressionAlgorithm>
-    <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
-    <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
+    <installationLogFile>${system_temp_directory}/install-edb-${product_shortname}.log</installationLogFile>
+    <uninstallationLogFile>${system_temp_directory}/uninstall-edb-${product_shortname}.log</uninstallationLogFile>
     <allowWindowResize>1</allowWindowResize>
     <licenseFile encoding="utf-8">resources/licence.txt</licenseFile>
 
@@ -59,19 +59,19 @@
     </customLanguageFileList>
     <preShowHelpActionList>
         <!-- WIN: Set the pghome default value -->
-        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION">
+        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}\postgresql\pgPG_MAJOR_VERSION">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
         <!-- LIN: Set the pghome default value  -->
-        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION">
+        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}/postgresql/pgPG_MAJOR_VERSION">
             <ruleList>
                 <compareText logic="contains" text="${platform_name}" value="linux"/>
             </ruleList>
         </setInstallerVariable>
         <!-- MAC: Set the  pghome default value  -->
-        <setInstallerVariable name="default_installdir" value="/Library/PostgreSQL/PG_VERSION_SQLPROTECT">
+        <setInstallerVariable name="default_installdir" value="/Library/postgresql/pgPG_VERSION_SQLPROTECT">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
@@ -147,7 +147,7 @@ EOF
   </functionDefinitionList>
     <!-- Prebuild Actons-->
     <preBuildActionList>
-        <setInstallerVariable name="project.installerFilename" value="${product_shortname}-${product_version}-${platform_name}-x64.${platform_exec_suffix}">
+        <setInstallerVariable name="project.installerFilename" value="edb-${product_shortname}-${product_version}-${platform_name}-x64.${platform_exec_suffix}">
             <ruleList>
                 <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
             </ruleList>
@@ -176,21 +176,21 @@ EOF
         </throwError>
 
         <!-- WIN: Set the pghome default value -->
-        <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION">
+        <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}\postgresql\pgPG_MAJOR_VERSION">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
 
         <!-- LIN: Set the pghome default value  -->
-        <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION">
+        <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/postgresql/pgPG_MAJOR_VERSION">
             <ruleList>
                 <compareText logic="contains" text="${platform_name}" value="linux"/>
             </ruleList>
         </setInstallerVariable>
 
         <!-- MAC: Set the  pghome default value  -->
-        <setInstallerVariable name="defaultpghome" value="/Library/PostgreSQL/PG_VERSION_SQLPROTECT">
+        <setInstallerVariable name="defaultpghome" value="/Library/postgresql/pgPG_VERSION_SQLPROTECT">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
@@ -337,19 +337,19 @@ EOF
         <actionGroup>
             <actionList>
                 <!-- WIN: Set the pghome default value -->
-                <setInstallerVariable name="default_installdir" value="${platform_install_prefix}\PostgreSQL\PG_MAJOR_VERSION">
+                <setInstallerVariable name="default_installdir" value="${platform_install_prefix}\postgresql\pgPG_MAJOR_VERSION">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </setInstallerVariable>
                 <!-- LIN: Set the pghome default value  -->
-                <setInstallerVariable name="default_installdir" value="${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION">
+                <setInstallerVariable name="default_installdir" value="${platform_install_prefix}/postgresql/pgPG_MAJOR_VERSION">
                     <ruleList>
                         <compareText logic="contains" text="${platform_name}" value="linux"/>
                     </ruleList>
                 </setInstallerVariable>
                 <!-- MAC: Set the  pghome default value  -->
-                <setInstallerVariable name="default_installdir" value="/Library/PostgreSQL/PG_VERSION_SQLPROTECT">
+                <setInstallerVariable name="default_installdir" value="/Library/postgresql/pgPG_VERSION_SQLPROTECT">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="osx"/>
                     </ruleList>

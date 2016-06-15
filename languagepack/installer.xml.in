@@ -22,17 +22,17 @@
   <width>550</width>
   <height>400</height>
   <!-- Misc options -->
-  <installerFilename>edb_${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+  <installerFilename>edb-${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
   <wrapLicenseFileText>0</wrapLicenseFileText>
   <compressionAlgorithm>lzma</compressionAlgorithm>
   <unattendedModeUI>minimal</unattendedModeUI>
   <enableRollback>0</enableRollback>
   <saveRelativePaths>1</saveRelativePaths>
-  <uninstallerName>uninstall-${product_shortname}</uninstallerName>
+  <uninstallerName>uninstall-edb-${product_shortname}</uninstallerName>
   <uninstallerDirectory>${installdir}</uninstallerDirectory>
   <outputDirectory>../output</outputDirectory>
-  <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
-  <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
+  <installationLogFile>${system_temp_directory}/install-edb-${product_shortname}.log</installationLogFile>
+  <uninstallationLogFile>${system_temp_directory}/uninstall-edb-${product_shortname}.log</uninstallationLogFile>
   <windowsSoftwareRegistryPrefix/>
   <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
   <!-- Images -->
@@ -146,7 +146,7 @@ EOF
       </ruleList>
     </setInstallerVariable>
     <!-- Change installer file name for Windows-x64 -->
-    <setInstallerVariable name="project.installerFilename" value="edb_${product_shortname}-${product_version}-${platform_name}-${windowsArchitecture}.${platform_exec_suffix}">
+    <setInstallerVariable name="project.installerFilename" value="edb-${product_shortname}-${product_version}-${platform_name}-${windowsArchitecture}.${platform_exec_suffix}">
       <ruleList>
         <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
       </ruleList>
@@ -157,7 +157,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>${platform_install_prefix}/EnterpriseDB/LanguagePack/EDB_VERSION_LANGUAGEPACK</value>
+      <value>${platform_install_prefix}/edb/languagepack-EDB_VERSION_LANGUAGEPACK</value>
       <ruleEvaluationLogic>or</ruleEvaluationLogic>
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
@@ -169,7 +169,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>C:\EnterpriseDB\LanguagePack\EDB_VERSION_LANGUAGEPACK\x64</value>
+      <value>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\x64</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -183,7 +183,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>C:\EnterpriseDB\LanguagePack\EDB_VERSION_LANGUAGEPACK\i386</value>
+      <value>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\i386</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -194,7 +194,7 @@ EOF
       </ruleList>
     </setInstallerVariable>
     <!-- Mac -->
-    <setInstallerVariable name="default_installdir" value="/Library/EnterpriseDB/LanguagePack/EDB_VERSION_LANGUAGEPACK">
+    <setInstallerVariable name="default_installdir" value="/Library/edb/languagepack-EDB_VERSION_LANGUAGEPACK">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
@@ -215,7 +215,7 @@ EOF
     <!-- MAC: Set the default values for unattended mode -->
     <actionGroup>
       <actionList>
-        <setInstallerVariable name="installdir" value="/Library/EnterpriseDB/LanguagePack/EDB_VERSION_LANGUAGEPACK"/>
+        <setInstallerVariable name="installdir" value="/Library/edb/languagepack-EDB_VERSION_LANGUAGEPACK"/>
       </actionList>
       <ruleList>
 	<!-- following check means mode equals unattended -->
@@ -226,7 +226,7 @@ EOF
     <!-- LIN/SOLARIS/HPUX : Set the default values for unattended mode -->
     <actionGroup>
       <actionList>
-        <setInstallerVariable name="installdir" value="${platform_install_prefix}/EnterpriseDB/LanguagePack/EDB_VERSION_LANGUAGEPACK"/>
+        <setInstallerVariable name="installdir" value="${platform_install_prefix}/edb/languagepack-EDB_VERSION_LANGUAGEPACK"/>
       </actionList>
       <ruleList>
 	<!-- following check means mode equals unattended -->
@@ -246,7 +246,7 @@ EOF
     	<!-- WIN : Set the default installation directory for win64 -->
     	<setInstallerVariable>
       	  <name>installdir</name>
-      	  <value>C:\EnterpriseDB\LanguagePack\EDB_VERSION_LANGUAGEPACK\x64</value>
+      	  <value>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\x64</value>
       	  <ruleList>
             <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
       	  </ruleList>
@@ -254,7 +254,7 @@ EOF
     	<!-- WIN : Set the default installation directory -->
     	<setInstallerVariable>
       	  <name>installdir</name>
-      	  <value>C:\EnterpriseDB\LanguagePack\EDB_VERSION_LANGUAGEPACK\i386</value>
+      	  <value>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\i386</value>
       	  <ruleList>
             <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
       	  </ruleList>
@@ -271,7 +271,7 @@ EOF
       </ruleList>
     </actionGroup>
     <!-- MAC : Set the default installation directory -->
-    <setInstallerVariable name="default_installdir" persist="1" value="/Library/EnterpriseDB/LanguagePack/EDB_VERSION_LANGUAGEPACK">
+    <setInstallerVariable name="default_installdir" persist="1" value="/Library/edb/languagepack-EDB_VERSION_LANGUAGEPACK">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
@@ -280,7 +280,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>${platform_install_prefix}/EnterpriseDB/LanguagePack/EDB_VERSION_LANGUAGEPACK</value>
+      <value>${platform_install_prefix}/edb/languagepack-EDB_VERSION_LANGUAGEPACK</value>
       <ruleEvaluationLogic>or</ruleEvaluationLogic>
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
@@ -292,7 +292,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>C:\EnterpriseDB\LanguagePack\EDB_VERSION_LANGUAGEPACK\x64</value>
+      <value>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\x64</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -306,7 +306,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>C:\EnterpriseDB\LanguagePack\EDB_VERSION_LANGUAGEPACK\i386</value>
+      <value>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\i386</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>

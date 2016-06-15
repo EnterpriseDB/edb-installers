@@ -256,7 +256,7 @@ _postprocess_languagepack_windows() {
     fi
 
     if [ $SIGNING -eq 1 ]; then
-        win32_sign "*_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-$OS.exe"
+        win32_sign "*-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-$OS.exe"
     fi
 
     mv $WD/languagepack/staging/windows $WD/languagepack/staging/$ARCH || _die "Failed to rename windows staging directory to $ARCH"

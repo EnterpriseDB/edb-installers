@@ -19,16 +19,16 @@
   <height>400</height>
 
   <!-- Misc options -->
-  <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+  <installerFilename>edb-${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
   <windowsSoftwareRegistryPrefix/>
   <compressionAlgorithm>lzma</compressionAlgorithm>
   <unattendedModeUI>minimal</unattendedModeUI>
   <enableRollback>0</enableRollback>
   <saveRelativePaths>1</saveRelativePaths>
-  <uninstallerName>uninstall-${product_shortname}</uninstallerName>
+  <uninstallerName>uninstall-edb-${product_shortname}</uninstallerName>
   <outputDirectory>../output</outputDirectory>
-  <installationLogFile>${system_temp_directory}/install-${product_shortname}.log</installationLogFile>
-  <uninstallationLogFile>${system_temp_directory}/uninstall-${product_shortname}.log</uninstallationLogFile>
+  <installationLogFile>${system_temp_directory}/install-edb-${product_shortname}.log</installationLogFile>
+  <uninstallationLogFile>${system_temp_directory}/uninstall-edb-${product_shortname}.log</uninstallationLogFile>
   <allowWindowResize>1</allowWindowResize>
   <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
   <wrapLicenseFileText>1</wrapLicenseFileText>
@@ -113,19 +113,19 @@ EOF
   </functionDefinitionList>
   <preShowHelpActionList>
     <!-- MAC : Set the default installation directory -->
-    <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgreSQL/UpdateMonitor">
+    <setInstallerVariable name="default_installdir" persist="1" value="/Library/postgresql/updatemonitor">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </setInstallerVariable>
     <!-- LIN : Set the default installation directory -->
-    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgreSQL/UpdateMonitor">
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/postgresql/updatemonitor">
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
       </ruleList>
     </setInstallerVariable>
     <!-- WIN : Set the default installation directory -->
-    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgreSQL\UpdateMonitor">
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\postgresql\updatemonitor">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
@@ -190,14 +190,14 @@ EOF
     <setInstallerVariable name="iUMVersion" value="" />
 
     <!-- Do not perform the below actions in case of extract-only mode -->
-    <setInstallerVariable name="default_installdir" persist="1" value="/Library/PostgreSQL/UpdateMonitor">
+    <setInstallerVariable name="default_installdir" persist="1" value="/Library/postgresql/updatemonitor">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </setInstallerVariable>
 
     <!-- LIN | Solaris : Set the default installation directory -->
-    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/PostgreSQL/UpdateMonitor">
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}/postgresql/updatemonitor">
       <ruleEvaluationLogic>or</ruleEvaluationLogic>
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
@@ -206,7 +206,7 @@ EOF
     </setInstallerVariable>
 
     <!-- WIN : Set the default installation directory -->
-    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\PostgreSQL\UpdateMonitor">
+    <setInstallerVariable name="default_installdir" persist="1" value="${platform_install_prefix}\postgresql\updatemonitor">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
