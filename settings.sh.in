@@ -161,7 +161,7 @@ PG_JAVA_HOME_OSX=/Library/Java/JavaVirtualMachines/jdk1.7.0_67.jdk/Contents/Home
 PG_PERL_OSX=/Library/EnterpriseDB/LanguagePack/9.6/Perl-5.20
 PG_PYTHON_OSX=/Library/EnterpriseDB/LanguagePack/9.6/Python-3.3
 PG_TCL_OSX=/Library/EnterpriseDB/LanguagePack/9.6/Tcl-8.5
-PG_LANGUAGEPACK_OSX=/Library/EnterpriseDB/LanguagePack/9.6
+PG_LANGUAGEPACK_OSX=/Library/edb/languagepack-9.6
 PG_QTFRAMEWORK_OSX=/Library/Frameworks
 PG_QMAKE_OSX=/Developer/Tools/Qt/qmake
 
@@ -181,6 +181,8 @@ PG_INSTALLBUILDER_BIN="/opt/installbuilder-15.10.1/bin/builder"
 KEYCHAIN_PASSWD="XXXXXX"
 
 # LanguagePack Variables
-PG_LANGUAGEPACK_INSTALL_DIR_LINUX="/opt/EnterpriseDB/LanguagePack"
-PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.6"
-PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/EnterpriseDB/LanguagePack/9.6"
+PG_LANGUAGEPACK_INSTALL_DIR_LINUX="/opt/edb/languagepack-9.6"
+PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS_X64="C:\\\\edb\\\\languagepack-9.6\\\\x64"
+PG_LANGUAGEPACK_CYG_PATH_X64="/cygdrive/c/edb/languagepack-9.6/x64"
+PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack-9.6\\\\i386"
+PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/edb/languagepack-9.6/i386"
