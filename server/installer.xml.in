@@ -3332,22 +3332,6 @@ PostgreSQLHelpPath=file://${installdir}/doc/postgresql/html
                     </ruleList>
                 </addTextToFile>
 
-                <!--MAC: Adding configuration to the global config file -->
-                <addTextToFile>
-                    <file>${installdir}/pgAdmin3.app/Contents/SharedSupport/settings.ini</file>
-                    <text>
-PostgreSQLPath=${installdir}/bin
-PostgreSQLHelpPath=file://${installdir}/doc/postgresql/html
-                    </text>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>osx</text>
-                            <value>${platform_name}</value>
-                        </compareText>
-                    </ruleList>
-                </addTextToFile>
-
                 <!-- Replace \ with / on windows -->
                 <setInstallerVariableFromRegEx>
                     <text>${installdir}</text>
@@ -4629,7 +4613,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/osx/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/osx/pgAdmin3.app</origin>
+                            <origin>staging/osx/pgAdmin 4.app</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/osx/scripts</origin>

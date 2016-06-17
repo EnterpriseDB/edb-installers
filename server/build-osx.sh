@@ -45,7 +45,7 @@ _prep_server_osx() {
     fi
 
     # Grab a copy of the pgadmin source tree
-    cp -pR pgadmin3-$PG_TARBALL_PGADMIN pgadmin.osx || _die "Failed to copy the source code (source/pgadmin3-$PG_TARBALL_PGADMIN)"
+    cp -pR pgadmin4-$PG_TARBALL_PGADMIN pgadmin.osx || _die "Failed to copy the source code (source/pgadmin4-$PG_TARBALL_PGADMIN)"
     tar -jcvf pgadmin.tar.bz2 pgadmin.osx || _die "Failed to create the archive (source/pgadmin.tar.bz2)"
 
     if [ -e stackbuilder.osx ];
@@ -86,7 +86,7 @@ _prep_server_osx() {
 
     echo "Copy the scripts required to build VM"
     cd $WD/server
-    tar -jcvf scripts.tar.bz2 scripts/osx 
+    tar -jcvf scripts.tar.bz2 scripts/osx resources/complete-bundle.sh
     scp $WD/server/scripts.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server || _die "Failed to copy the scripts to build VM"
     scp $WD/versions.sh $WD/common.sh $WD/settings.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
     rm -f scripts.tar.bz2 || _die "Couldn't remove the scipts archive (source/scripts.tar.bz2)"    
@@ -196,16 +196,82 @@ EOT
 
     # Configure
     echo "Configuring the pgAdmin source tree"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; PATH=/opt/local/Current/bin:/opt/local/bin:$PATH CPPFLAGS='$PG_ARCH_OSX_CPPFLAGS' LDFLAGS='$PG_ARCH_OSX_LDFLAGS' ./configure --enable-appbundle --disable-dependency-tracking --with-pgsql=$PG_STAGING --with-wx=/opt/local/Current --with-libxml2=/opt/local/Current --with-libxslt=/opt/local/Current --disable-debug --disable-static  --with-sphinx-build=$PG_PYTHON_OSX/bin/sphinx-build" || _die "Failed to configure pgAdmin"
+cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
+    source ../versions.sh
+    source ../common.sh
+    PATH=$PG_STAGING/bin:/usr/local/bin:\$PATH
+    LD_LIBRARY_PATH=$PG_STAGING/lib:\$LD_LIBRARY_PATH
+    # Set PYTHON_VERSION variable required for pgadmin build
+    PYTHON_HOME=/System/Library/Frameworks/Python.framework/Versions/2.7
+    BUILDROOT=$PG_PATH_OSX/server/source/pgadmin.osx/mac-build
+    test -d \$BUILDROOT || mkdir \$BUILDROOT
+    cd \$BUILDROOT
+    test -d venv || virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
+    source venv/bin/activate
+    pip install -r $PG_PATH_OSX/server/source/pgadmin.osx/requirements_py2.txt || _die "PIP install failed"
 
-    # Build the app bundle
-    echo "Building & installing pgAdmin"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; PATH=/opt/local/Current/bin:$PATH make -j4 all" || _die "Failed to build pgAdmin"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; PATH=/opt/local/Current/bin:$PATH make doc" || _die "Failed to build documentation for pgAdmin"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; make install" || _die "Failed to install pgAdmin"
+    # Move the python<version> directory to python so that the private environment path is found by the application.
+    export PYMODULES_PATH=\`python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"\`
+    export DIR_PYMODULES_PATH=\`dirname \$PYMODULES_PATH\`
+    if test -d \$DIR_PYMODULES_PATH; then
+        ln -s \$DIR_PYMODULES_PATH \$DIR_PYMODULES_PATH/../python
+    fi
+    # Build runtime
+    cd ../runtime
+    $PG_QMAKE_OSX || _die "qmake failed"
+    make || _die "pgadmin runtime build failed"
 
+    # Build docs
+    pip install Sphinx || _die "PIP Sphinx failed"
+    cd $PG_PATH_OSX/server/source/pgadmin.osx/docs/en_US
+    LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 make -f Makefile.sphinx html || exit 1
+    
+    # Uninstall as it is not required to bundle Sphinx
+    pip uninstall --yes Sphinx
+    
+    # Copy the generated app bundle to buildroot and rename the bundle as required
+    cp -r pgAdmin4.app "\$BUILDROOT/$APP_BUNDLE_NAME"
+
+    # Copy docs
+    test -d "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources" || "mkdir -p \$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources"
+    test -d "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/docs/en_US" || mkdir -p "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/docs/en_US"
+    cp -r _build/html "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/docs/en_US/" || exit 1
+   
+    cd $PG_PATH_OSX/server/source/pgadmin.osx/pkg/mac
+   
+    # Replace the place holders with the current version
+    sed -e "s/PGADMIN_LONG_VERSION/$APP_LONG_VERSION/g" -e "s/PGADMIN_SHORT_VERSION/$APP_SHORT_VERSION/g" pgadmin.Info.plist.in > pgadmin.Info.plist
+
+    # copy Python private environment to app bundle
+    cp -r \$BUILDROOT/venv "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/" || exit 1
+
+    # remove the python bin and include from app bundle as it is not needed
+    rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/bin" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/include"
+    rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/.Python"
+
+    #cd $PG_PATH_OSX/server/resources/
+    # run complete-bundle to copy the dependent libraries and frameworks and fix the rpaths
+    PGDIR=$PG_PATH_OSX/server/staging/osx QTDIR="`dirname $PG_QMAKE_OSX`/.." sh ./complete-bundle.sh "\$BUILDROOT/$APP_BUNDLE_NAME" || _die "complete-bundle.sh failed"
+
+    # copy the web directory to the bundle as it is required by runtime
+    cp -r $PG_PATH_OSX/server/source/pgadmin.osx/web "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/"
+    cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/web"
+    rm -f pgadmin4.db config_local.*
+    echo "SERVER_MODE = False" > config_local.py
+    echo "MINIFY_HTML = False" >> config_local.py
+    echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_local.py
+
+    # Remove the .pyc files if any
+    cd "\$BUILDROOT/$APP_BUNDLE_NAME"
+    find . -name *.pyc | xargs rm -f
+    
     # Copy the app bundle into place
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; cp -pR pgAdmin3.app $PG_PATH_OSX/server/staging/osx" || _die "Failed to copy pgAdmin into the staging directory"
+    cp -pR "\$BUILDROOT/$APP_BUNDLE_NAME" $PG_PATH_OSX/server/staging/osx || _die "Failed to copy pgAdmin into the staging directory"
+EOT-PGADMIN
+
+    cd $WD
+    scp server/build-pgadmin.sh $PG_SSH_OSX:$PG_PATH_OSX/server
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on OSX"
 
     #Fix permission in the staging/osx/share
     ssh $PG_SSH_OSX "chmod -R a+r $PG_PATH_OSX/server/staging/osx/share/postgresql/timezone/*"
@@ -257,6 +323,10 @@ EOT
         _rewrite_so_refs $PG_STAGING lib @loader_path/..; _rewrite_so_refs $PG_STAGING lib/postgresql @loader_path/../..;\
         _rewrite_so_refs $PG_STAGING lib/postgresql/plugins @loader_path/../../..;\
         _rewrite_so_refs $PG_STAGING stackbuilder.app/Contents/MacOS @loader_path/../../.."
+
+    ssh $PG_SSH_OSX "cd $PG_STAGING; install_name_tool -change libpq.5.dylib @loader_path/../../../../../../Frameworks/libpq.5.dylib \"$APP_BUNDLE_NAME/Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg.so\""
+    ssh $PG_SSH_OSX "cd $PG_STAGING; install_name_tool -change /usr/lib/libssl.0.9.8.dylib @loader_path/../../../../../../../Contents/Frameworks/libssl.1.0.0.dylib \"$APP_BUNDLE_NAME/Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg.so\""
+    ssh $PG_SSH_OSX "cd $PG_STAGING; install_name_tool -change /usr/lib/libcrypto.0.9.8.dylib @loader_path/../../../../../../../Contents/Frameworks/libcrypto.1.0.0.dylib \"$APP_BUNDLE_NAME/Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg.so\""
 
     # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
      ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging/osx/plperl.so $PG_PATH_OSX/server/staging/osx/lib/postgresql/plperl.so"
@@ -312,7 +382,7 @@ _postprocess_server_osx() {
     #Creating a archive of the binaries
     mkdir -p $WD/server/staging/osx/pgsql || _die "Failed to create the directory for binaries "
     cd $WD/server/staging/osx
-    cp -pR bin doc include lib pgAdmin3.app share stackbuilder.app pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+    cp -pR bin doc include lib pgAdmin*.app share stackbuilder.app pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
     zip -rq postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip pgsql || _die "Failed to archive the postgresql binaries"
     mv postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip $WD/output/ || _die "Failed to move the archive to output folder"
 

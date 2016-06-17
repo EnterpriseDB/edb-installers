@@ -163,7 +163,7 @@ PG_PYTHON_OSX=/Library/EnterpriseDB/LanguagePack/9.6/Python-3.3
 PG_TCL_OSX=/Library/EnterpriseDB/LanguagePack/9.6/Tcl-8.5
 PG_LANGUAGEPACK_OSX=/Library/edb/languagepack-9.6
 PG_QTFRAMEWORK_OSX=/Library/Frameworks
-PG_QMAKE_OSX=/Developer/Tools/Qt/qmake
+PG_QMAKE_OSX=/opt/local/Qt/5.5/clang_64/bin/qmake
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the

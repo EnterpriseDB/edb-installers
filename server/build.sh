@@ -82,18 +82,14 @@ _prep_server() {
     fi
 
     # pgAdmin
-    if [ -e pgadmin3-$PG_TARBALL_PGADMIN ];
+    if [ -e pgadmin4-$PG_TARBALL_PGADMIN ];
     then
-      echo "Removing existing pgadmin3-$PG_TARBALL_PGADMIN source directory"
-      rm -rf pgadmin3-$PG_TARBALL_PGADMIN  || _die "Couldn't remove the existing pgadmin3-$PG_TARBALL_PGADMIN source directory (source/pgadmin3-$PG_TARBALL_PGADMIN)"
+      echo "Removing existing pgadmin4-$PG_TARBALL_PGADMIN source directory"
+      rm -rf pgadmin4-$PG_TARBALL_PGADMIN  || _die "Couldn't remove the existing pgadmin4-$PG_TARBALL_PGADMIN source directory (source/pgadmin4-$PG_TARBALL_PGADMIN)"
     fi
 
     echo "Unpacking pgAdmin source..."
-    tar -zxvf ../../tarballs/pgadmin3-$PG_TARBALL_PGADMIN.tar.gz
-    if [ -f $WD/tarballs/pgadmin-1.22.0-rc1-libssh2.patch ]; then
-        cd pgadmin3-$PG_TARBALL_PGADMIN
-        patch -p1 < $WD/tarballs/pgadmin-1.22.0-rc1-libssh2.patch
-    fi
+    tar -zxvf ../../tarballs/pgadmin4-$PG_TARBALL_PGADMIN.tar.gz
 
     cd $WD/server/source
 
@@ -186,6 +182,27 @@ _prep_server() {
 ################################################################################
 
 _build_server() {
+
+    # Get the pgAdmin versioning
+    cd $WD/server/source
+    if [ -e pgadmin4-$PG_TARBALL_PGADMIN ];
+    then
+        cd pgadmin4-$PG_TARBALL_PGADMIN
+        export APP_RELEASE=`grep "^APP_RELEASE" web/config.py | cut -d"=" -f2 | sed 's/ //g'`
+        export APP_REVISION=`grep "^APP_REVISION" web/config.py | cut -d"=" -f2 | sed 's/ //g'`
+        export APP_NAME=`grep "^APP_NAME" web/config.py | cut -d"=" -f2 | sed "s/'//g" | sed 's/^ //'`
+        export APP_BUNDLE_NAME=$APP_NAME.app
+        export APP_LONG_VERSION=$APP_RELEASE.$APP_REVISION
+        export APP_SHORT_VERSION=`echo $APP_LONG_VERSION | cut -d . -f1,2`
+        export APP_SUFFIX=`grep "^APP_SUFFIX" web/config.py | cut -d"=" -f2 | sed 's/ //g' | sed "s/'//g"`
+        if [ ! -z $APP_SUFFIX ]; then
+            export APP_LONG_VERSION=$APP_LONG_VERSION-$APP_SUFFIX
+        fi
+    fi
+
+    # Set PYTHON_VERSION variable required for pgadmin build
+    export PYTHON_HOME=/System/Library/Frameworks/Python.framework/Versions/2.7
+    export PYTHON_VERSION="27"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
