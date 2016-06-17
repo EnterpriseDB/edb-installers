@@ -221,6 +221,9 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     $PG_QMAKE_OSX || _die "qmake failed"
     make || _die "pgadmin runtime build failed"
 
+    # Copy the generated app bundle to buildroot and rename the bundle as required
+    cp -r pgAdmin4.app "\$BUILDROOT/$APP_BUNDLE_NAME"
+
     # Build docs
     pip install Sphinx || _die "PIP Sphinx failed"
     cd $PG_PATH_OSX/server/source/pgadmin.osx/docs/en_US
@@ -229,9 +232,6 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     # Uninstall as it is not required to bundle Sphinx
     pip uninstall --yes Sphinx
     
-    # Copy the generated app bundle to buildroot and rename the bundle as required
-    cp -r pgAdmin4.app "\$BUILDROOT/$APP_BUNDLE_NAME"
-
     # Copy docs
     test -d "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources" || "mkdir -p \$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources"
     test -d "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/docs/en_US" || mkdir -p "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/docs/en_US"
