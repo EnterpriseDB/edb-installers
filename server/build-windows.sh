@@ -62,6 +62,7 @@ _prep_server_windows() {
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q scripts.zip"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q output.zip"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q vc-build.bat"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c del /S /Q vc-build-pgadmin4.bat"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q output"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q postgres.windows"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c rd /S /Q pgadmin.windows"
@@ -76,16 +77,22 @@ _prep_server_windows() {
         echo "Removing existing vc-build script"
         rm -rf $WD/server/scripts/windows/vc-build.bat || _die "Couldn't remove the existing vc-build script"
     fi
+
+    if [ -f $WD/server/scripts/windows/vc-build-pgadmin4.bat ];
+    then
+        echo "Removing existing vc-build-pgadmin4 script"
+        rm -rf $WD/server/scripts/windows/vc-build-pgadmin4.bat || _die "Couldn't remove the existing vc-build-pgadmin4 script"
+    fi
     
     # Grab a copy of the source tree
     cp -R postgresql-$PG_TARBALL_POSTGRESQL postgres.windows || _die "Failed to copy the source code (source/postgres.windows)"
 
-    cp -R pgadmin3-$PG_TARBALL_PGADMIN pgadmin.windows || _die "Failed to copy the source code (source/pgadmin.windows)"
+    cp -R pgadmin4-$PG_TARBALL_PGADMIN pgadmin.windows || _die "Failed to copy the source code (source/pgadmin.windows)"
 
     # We build only dynamic libs of wxWidgets which puts the hhp2cached in the vc_mswudll instead of vc_mswu.
     # Patch the builddocs.bat of pgadmin so that it finds the hhp2cached executable
     cd pgadmin.windows/docs/
-    patch -p0 < ~/tarballs/builddocs.patch
+    #patch -p0 < ~/tarballs/builddocs.patch
 
     cd $WD/server/source
 
@@ -148,6 +155,19 @@ devenv /upgrade %1
 :end
 
 EOT
+
+cat <<EOT > "vc-build-pgadmin4.bat"
+REM Setting Visual Studio Environment
+CALL "$PG_VSINSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
+@SET PYTHON_HOME=$PGAMIN_PYTHON_WINDOWS
+@SET PYTHON_VERSION=27
+
+cd "$PG_PATH_WINDOWS\pgadmin.windows\runtime"
+$PG_QMAKE_WINDOWS
+nmake
+
+EOT
+
     
     # Copy in an appropriate config.pl and buildenv.pl
     cd $WD/server/source/
@@ -264,10 +284,10 @@ EOT
     # Zip up the scripts directories and copy them to the build host, then unzip
     cd $WD/server/scripts/windows/
     echo "Copying scripts source tree to Windows build VM"
-    zip -r scripts.zip vc-build.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build.bat, createuser, getlocales, validateuser)"
+    zip -r scripts.zip vc-build.bat vc-build-pgadmin4.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build.bat, createuser, getlocales, validateuser)"
 
     rsync -av scripts.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Failed to copy the scripts source tree to the windows build host (scripts.zip)"
-    ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip scripts.zip" || _die "Failed to unpack the scripts source tree on the windows build host (scripts.zip)"    
+    ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip -o scripts.zip" || _die "Failed to unpack the scripts source tree on the windows build host (scripts.zip)"
     
     # Build the code and install into a temporary directory
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\createuser; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat createuser.vcproj UPGRADE " || _die "Failed to build createuser on the windows build host"
@@ -306,77 +326,6 @@ EOT
     # Copy the debugger plugins into place
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\postgres.windows\\\\contrib\\\\pldebugger\\\\plugin_debugger.dll $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy the debugger plugin on the windows build host"    
     
-    #####################
-    # pgAdmin
-    #####################
-    echo "Copying pgAdmin source tree to Windows build VM"
-    #cd pgadmin.windows/pgadmin
-    #_replace "\$(PGBUILD)/libxml2" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
-    #_replace "\$(PGBUILD)/libxslt" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
-    #_replace "\$(PGBUILD)/iconv" "\$(PGBUILD)" pgAdmin3.vcproj || _die "Failed to replace the include directory"
-    #_replace "iconv_a.lib" " " pgAdmin3.vcproj || _die "Failed to replace the include directory"
-    #cd ../..
-    zip -r pgadmin.zip pgadmin.windows || _die "Failed to pack the source tree (pgadmin.windows)"
-    rsync -av pgadmin.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (pgadmin.zip)"
-    ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip pgadmin.zip" || _die "Failed to unpack the source tree on the windows build host (pgadmin.zip)"
-  
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgadmin3.sln UPGRADE" || _die "Failed to build pgAdmin on the build host"
-
-    # Build the PNG compiler 
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/xtra/png2c; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat png2c.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build png2c on the build host"
-
-    # Precompile the PNG images. We need to do this for the build system, as it 
-    # won't work over cygwin.
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/pgadmin/include/images; for F in *.png; do echo Compiling \${F}... && ../../../xtra/png2c/Release/png2c.exe \${F} \${F}c ; done"
-
-    # Build the code
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/pgadmin; cmd /c ver_svn.bat"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/pgadmin; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat pgadmin3.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build pgAdmin on the build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows/docs; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat Docs.vcxproj All $PLATFORM_TOOLSET" || _die "Failed to build the docs on the build host"
-        
-    # Copy the application files into place
-    ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\"" || _die "Failed to create a directory on the windows build host" || _die "Failed to create the studio directory on the build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\pgadmin\\\\Release\\\\pgAdmin3.exe $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a program file on the windows build host"
-    
-    # Docs
-    ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\en_US\"" || _die "Failed to create a directory on the windows build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\docs\\\\en_US\\\\_build\\\\htmlhelp; cp -R * \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\en_US\\\\\"" || _die "Failed to copy a help file on the windows build host"
-
-    # There's no particularly clean way to do this as we don't want all the files, and each language may or may not be completely transated :-(
-    ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\en_US\\\\hints\"" || _die "Failed to create a directory on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\docs\\\\en_US\\\\hints\\\\*.html \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\docs\\\\en_US\\\\hints\"" || _die "Failed to copy a help file on the windows build host"
-    
-    # i18n
-    ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\i18n\"" || _die "Failed to create a directory on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\i18n\\\\pg_settings.csv \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\i18n\"" || _die "Failed to copy an i18n file on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\i18n\\\\pgadmin3.lng \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\i18n\"" || _die "Failed to copy an i18n file on the windows build host"
-    
-    for LANGCODE in `grep "PUB_TX " $WD/server/source/pgadmin.windows/i18n/Makefile.am | cut -d = -f2`
-    do
-       ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\i18n\\\\$LANGCODE\"" || _die "Failed to create a directory on the windows build host"
-        ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\i18n\\\\$LANGCODE\\\\*.mo \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\i18n\\\\$LANGCODE\"" || _die "Failed to copy an i18n file on the windows build host"    
-     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\pgadmin\\\\*.ini \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\\"" || _die "Failed to copy ini files on the windows build host"    
-    done
-    ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\plugins.d\"" || _die "Failed to create a directory on the windows build host"    
-    ssh $PG_SSH_WINDOWS "cmd /c copy  $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\plugins.d\\\\*.ini \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin III\\\\plugins.d\"" || _die "Failed to copy ini files on the windows build host"
-
-    
-    #####################
-    # StackBuilder
-    #####################
-    cd $WD/server/source
-    echo "Copying StackBuilder source tree to Windows build VM"
-    zip -r stackbuilder.zip stackbuilder.windows || _die "Failed to pack the source tree (stackbuilder.windows)"
-    rsync -av stackbuilder.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (stackbuilder.zip)"
-    ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip stackbuilder.zip" || _die "Failed to unpack the source tree on the windows build host (stackbuilder.zip)"
-  
-    # Build the code
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c cmake -D MS_VS_10=1 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS\\\\output\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure pgAdmin on the build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat stackbuilder.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build stackbuilder on the build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat INSTALL.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to install stackbuilder on the build host"
-    ssh $PG_SSH_WINDOWS "cmd /c mv $PG_PATH_WINDOWS\\\\output\\\\StackBuilder\\\\bin\\\\stackbuilder.exe $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to relocate the stackbuilder executable on the build host"
-    ssh $PG_SSH_WINDOWS "cmd /c rd $PG_PATH_WINDOWS\\\\output\\\\StackBuilder\\\\bin" || _die "Failed to remove the stackbuilder bin directory on the build host"
-
     # Copy the various support files into place
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\vcredist\\\\vcredist_x86.exe $PG_PATH_WINDOWS\\\\output\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\ssleay32.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (ssleay32.dd)"
@@ -431,6 +380,81 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_WXWIN_WINDOWS\\\\lib\\\\vc_dll\\\\wxmsw28u_html.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_WXWIN_WINDOWS\\\\lib\\\\vc_dll\\\\wxmsw28u_stc.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_WXWIN_WINDOWS\\\\lib\\\\vc_dll\\\\wxmsw28u_xrc.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
+
+
+    #####################
+    # pgAdmin
+    #####################
+    echo "Copying pgAdmin source tree to Windows build VM"
+    zip -r pgadmin.zip pgadmin.windows || _die "Failed to pack the source tree (pgadmin.windows)"
+    rsync -av pgadmin.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (pgadmin.zip)"
+    ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip -o pgadmin.zip" || _die "Failed to unpack the source tree on the windows build host (pgadmin.zip)"
+
+    #Create pgAdmin4 folder inside the output
+    ssh $PG_SSH_WINDOWS "mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\"" || _die "Failed to create a pgAdmin 4 directory on the windows build host"
+    #ssh $PG_SSH_WINDOWS "cmd /c cd $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\web; echo #Add any configuration changes to this file > config_local.py" || _die "Failed to create config_local host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\web; echo SERVER_MODE = False > config_local.py; echo HELP_PATH = \'../../pgAdmin 4/docs/en_US/html/\' >> config_local.py; echo MINIFY_HTML = False >> config_local.py" || _die "Failed to copy web folder on the windows build host"
+    ssh $PG_SSH_WINDOWS "cp -R $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\web \"$PG_PATH_WINDOWS\\\\output\\\\\"" || _die "Failed to copy web folder on the windows build host"
+
+
+    #create virtualenv and install required components using pip and compile documents and runtime
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; $PGAMIN_PYTHON_WINDOWS/Scripts/virtualenv.exe venv" || _die "Failed to create venv";
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; source $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/activate; export PATH=$PG_CYGWIN_PATH_WINDOWS/output/bin:$PG_CYGWIN_PATH_WINDOWS/output/lib:$PATH; $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/pip install -r requirements_py2.txt" || _die "pip install failed"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; source $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/activate; $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/pip install sphinx" || _die "pip install sphinx failed"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/sphinx-build $PG_PATH_WINDOWS/pgadmin.windows/docs/en_US \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\docs\\\\en_US\\\\html\"" || _die "Failed to compile html docs"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; source $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/activate; $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/pip uninstall -y sphinx" || _die "pip uninstall sphinx failed"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c $PG_PATH_WINDOWS\\\\vc-build-pgadmin4.bat" || _die "Failed to buildi pgadmin4 on the windows build host"
+
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\runtime\\\Release\\\\pgAdmin4.exe $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a program file on the windows build host"
+
+    #QT related libs
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\icudt54.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency icudt54.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\icuin54.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency icuin54.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\icuuc54.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency icuuc54.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5Core.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5Core.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5Sql.dll  $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5Sql.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5Gui.dll  $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5Gui.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5Qml.dll  $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5Qml.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5OpenGL.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5OpenGL.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5Quick.dll  $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5Quick.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5Sensors.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5Sensors.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5Widgets.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5Widgets.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5WebKit.dll  $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a depenency Qt5WebKit.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5Network.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5WebKit.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5Multimedia.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5Multimedia.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5WebChannel.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5WebChannel.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5Positioning.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5Positioning.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5PrintSupport.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5PrintSupport.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5WebKitWidgets.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5WebKitWidgets.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\bin\\\\Qt5MultimediaWidgets.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency Qt5MultimediaWidgets.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\output\\\\bin\\\\platforms" || _die "Failed to create a directory platforms on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_QTPATH_WINDOWS\\\\plugins\\\\platforms\\\\qwindows.dll $PG_PATH_WINDOWS\\\\output\\\\bin\\\\platforms" || _die "Failed to copy qwindows.dll"
+    ssh $PG_SSH_WINDOWS "cmd /c cd $PG_PATH_WINDOWS\\\\output\\\\bin; echo [Paths] > qt.conf; echo Plugins=plugins >> qt.conf" || _die "Failed to create qt.conf"
+
+
+    ssh $PG_SSH_WINDOWS "cmd /c rd /S /Q $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\Scripts" || _die "Failed to remove the venv\scripts directory on the build host"
+    ssh $PG_SSH_WINDOWS "cmd /c rd /S /Q $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\tcl" || _die "Failed to remove the venv\tcl directory on the build host"
+    ssh $PG_SSH_WINDOWS "cmd /c del $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\pip-selfcheck" || _die "Failed to remove venn\pip-selfcheck on the build host"
+    ssh $PG_SSH_WINDOWS "cp -R $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\ \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\\"" || _die "Failed to copy venv folder on the windows build host"
+    ssh $PG_SSH_WINDOWS "cp -R $PGAMIN_PYTHON_WINDOWS\\\\DLLs \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy DLLs folder on the windows build host"
+    ssh $PG_SSH_WINDOWS "cp -R $PGAMIN_PYTHON_WINDOWS\\\\Lib  \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy Lib folder on the windows build host"
+    ssh $PG_SSH_WINDOWS "cp $PGADMIN_PYTHON_DLL_WINDOWS  $PG_PATH_WINDOWS\\\\output\\\\bin" ||  _die "Failed to copy a dependency $PGADMIN_PYTHON_DLL_WINDOWS"
+
+    #####################
+    # StackBuilder
+    #####################
+    cd $WD/server/source
+    echo "Copying StackBuilder source tree to Windows build VM"
+    zip -r stackbuilder.zip stackbuilder.windows || _die "Failed to pack the source tree (stackbuilder.windows)"
+    rsync -av stackbuilder.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (stackbuilder.zip)"
+    ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip -o stackbuilder.zip" || _die "Failed to unpack the source tree on the windows build host (stackbuilder.zip)"
+
+    # Build the code
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c cmake -D MS_VS_10=1 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS\\\\output\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure pgAdmin on the build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat stackbuilder.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build stackbuilder on the build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat INSTALL.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to install stackbuilder on the build host"
+    ssh $PG_SSH_WINDOWS "cmd /c mv $PG_PATH_WINDOWS\\\\output\\\\StackBuilder\\\\bin\\\\stackbuilder.exe $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to relocate the stackbuilder executable on the build host"
+    ssh $PG_SSH_WINDOWS "cmd /c rd $PG_PATH_WINDOWS\\\\output\\\\StackBuilder\\\\bin" || _die "Failed to remove the stackbuilder bin directory on the build host"
 
     # Zip up the installed code, copy it back here, and unpack.
     echo "Copying built tree to Unix host"

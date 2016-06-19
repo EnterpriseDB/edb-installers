@@ -3348,20 +3348,6 @@ PostgreSQLHelpPath=file://${installdir}/doc/postgresql/html
                 </setInstallerVariableFromRegEx>
 
                 <!--WIN: Adding configuration to the global config file -->
-                <addTextToFile>
-                    <file>${installdir}\pgAdmin III\settings.ini</file>
-                    <text>
-PostgreSQLPath=${installdir_win}/bin
-PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
-                    </text>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>windows</text>
-                            <value>${platform_name}</value>
-                        </compareText>
-                    </ruleList>
-                </addTextToFile>
 
                 <!-- Startup -->
                 <linuxServiceAction
@@ -3499,14 +3485,19 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                     <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
                     <name>EventMessageFile</name>
                     <value>${installdir}\lib\pgevent.dll</value>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>1</showMessageOnError>
                 </registrySet>
                 <registrySet>
                     <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
                     <name>TypesSupported</name>
                     <value>7</value>
                     <type>REG_DWORD</type>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                </registrySet>
+                <registrySet>
+                    <key>HKEY_CURRENT_USER\SOFTWARE\pgAdmin Development Team\pgAdmin 4</key>
+                    <name>PythonPath</name>
+                    <value>${installdir}\pgAdmin 4\venv\Lib\site-packages;${installdir}\pgAdmin 4\venv\Lib;${installdir}\pgAdmin 4\venv\Lib\lib-tk;${installdir}\pgAdmin 4\venv\DLLs</value>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
                 </registrySet>
@@ -4656,7 +4647,10 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/@@WINDIR@@/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/pgAdmin III</origin>
+                            <origin>staging/@@WINDIR@@/pgAdmin 4</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/web</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/scripts</origin>
@@ -4808,7 +4802,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             </ruleList>
                         </startMenuLinkShortcut>
 
-                        <!-- pgAdmin -->
+                        <!-- pgAdmin 
                         <startMenuShortcut>
                             <name>pgAdmin documentation</name>
                             <runInTerminal>0</runInTerminal>
@@ -4816,7 +4810,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <ruleList>
                                 <isTrue value="${create_shortcuts}" />
                             </ruleList>
-                        </startMenuShortcut>
+                        </startMenuShortcut> -->
 
                         <!-- PL Java users guide -->
                         <!-- <startMenuLinkShortcut>
@@ -4850,9 +4844,9 @@ REM The script sets environment variables helpful for PostgreSQL
 
                 <!-- pgAdmin -->
                 <startMenuShortcut>
-                    <name>pgAdmin III</name>
+                    <name>pgAdmin 4</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\bin\pgAdmin3.exe</windowsExec>
+                    <windowsExec>${installdir}\bin\pgAdmin4.exe</windowsExec>
                     <ruleList>
                         <isTrue value="${create_shortcuts}" />
                     </ruleList>
