@@ -4650,9 +4650,6 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/@@WINDIR@@/pgAdmin 4</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/web</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
                             <origin>staging/@@WINDIR@@/scripts</origin>
                         </distributionDirectory>
                         <distributionDirectory>

@@ -394,7 +394,7 @@ EOT
     ssh $PG_SSH_WINDOWS "mkdir \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\"" || _die "Failed to create a pgAdmin 4 directory on the windows build host"
     #ssh $PG_SSH_WINDOWS "cmd /c cd $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\web; echo #Add any configuration changes to this file > config_local.py" || _die "Failed to create config_local host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\web; echo SERVER_MODE = False > config_local.py; echo HELP_PATH = \'../../pgAdmin 4/docs/en_US/html/\' >> config_local.py; echo MINIFY_HTML = False >> config_local.py" || _die "Failed to copy web folder on the windows build host"
-    ssh $PG_SSH_WINDOWS "cp -R $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\web \"$PG_PATH_WINDOWS\\\\output\\\\\"" || _die "Failed to copy web folder on the windows build host"
+    ssh $PG_SSH_WINDOWS "cp -R $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\web \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\"" || _die "Failed to copy web folder on the windows build host"
 
 
     #create virtualenv and install required components using pip and compile documents and runtime
