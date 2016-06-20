@@ -436,6 +436,7 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c rd /S /Q $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\tcl" || _die "Failed to remove the venv\tcl directory on the build host"
     ssh $PG_SSH_WINDOWS "cmd /c del $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\pip-selfcheck" || _die "Failed to remove venn\pip-selfcheck on the build host"
     ssh $PG_SSH_WINDOWS "cp -R $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\ \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\\"" || _die "Failed to copy venv folder on the windows build host"
+    ssh $PG_SSH_WINDOWS "cp -R $PGAMIN_PYTHON_WINDOWS\\\\pythonw.exe \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy pythonw.exe binary on the windows build host"
     ssh $PG_SSH_WINDOWS "cp -R $PGAMIN_PYTHON_WINDOWS\\\\DLLs \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy DLLs folder on the windows build host"
     ssh $PG_SSH_WINDOWS "cp -R $PGAMIN_PYTHON_WINDOWS\\\\Lib  \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy Lib folder on the windows build host"
     ssh $PG_SSH_WINDOWS "cp $PGADMIN_PYTHON_DLL_WINDOWS  $PG_PATH_WINDOWS\\\\output\\\\bin" ||  _die "Failed to copy a dependency $PGADMIN_PYTHON_DLL_WINDOWS"
