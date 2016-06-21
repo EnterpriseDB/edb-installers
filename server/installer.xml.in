@@ -3880,20 +3880,6 @@ REM The script sets environment variables helpful for PostgreSQL
             </ruleList>
         </registrySet>
 
-        <!-- Associate Windows File Extension -->
-        <associateWindowsFileExtension>
-           <extensions>.sql</extensions>
-           <progID>Applications\pgAdmin3.exe</progID>
-           <mimeType>text/plain</mimeType>
-           <commandList>
-              <command>
-                  <verb>open</verb>
-                  <runProgram>${installdir}\bin\pgAdmin3.exe</runProgram>
-                  <runProgramArguments>-q -f "%1"</runProgramArguments>
-             </command>
-           </commandList>
-        </associateWindowsFileExtension>
-
         <!-- Delete the temp scripts directory -->
         <logMessage>
           <text>Delete the temporary scripts directory...</text>
@@ -4755,40 +4741,16 @@ REM The script sets environment variables helpful for PostgreSQL
                             </ruleList>
                         </startMenuLinkShortcut>
 
-                        <!-- pgAdmin 
-                        <startMenuShortcut>
+                        <!-- pgAdmin -->
+                        <startMenuLinkShortcut>
                             <name>pgAdmin documentation</name>
                             <runInTerminal>0</runInTerminal>
-                            <windowsExec>${installdir}/pgAdmin III/docs/en_US/pgadmin3.chm</windowsExec>
-                            <ruleList>
-                                <isTrue value="${create_shortcuts}" />
-                            </ruleList>
-                        </startMenuShortcut> -->
-
-                        <!-- PL Java users guide -->
-                        <!-- <startMenuLinkShortcut>
-                            <name>PL Java users guide</name>
-                            <runInTerminal>0</runInTerminal>
-                            <url>file://${installdir}/doc/pljava/userguide.html</url>
+                            <url>file://${installdir}/pgAdmin 4/docs/en_US/html/index.html</url>
                             <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
                             <ruleList>
                                 <isTrue value="${create_shortcuts}" />
-                                <isFalse value="${win64_platform}" />
                             </ruleList>
-                        </startMenuLinkShortcut> -->
-
-                        <!-- PL Java README -->
-                        <!-- <startMenuLinkShortcut>
-                            <name>PL Java README</name>
-                            <runInTerminal>0</runInTerminal>
-                            <url>file://${installdir}/doc/pljava/readme.html</url>
-                            <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
-                            <ruleList>
-                                <isTrue value="${create_shortcuts}" />
-                                <isFalse value="${win64_platform}" />
-                            </ruleList>
-                        </startMenuLinkShortcut> -->
-
+                        </startMenuLinkShortcut>
 
                         <!-- TODO: Rest of the docs -->
 
@@ -4799,7 +4761,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 <startMenuShortcut>
                     <name>pgAdmin 4</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\bin\pgAdmin4.exe</windowsExec>
+                    <windowsExec>${installdir}\pgAdmin 4\bin\pgAdmin4.exe</windowsExec>
                     <ruleList>
                         <isTrue value="${create_shortcuts}" />
                     </ruleList>
