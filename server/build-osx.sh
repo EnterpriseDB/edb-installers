@@ -202,22 +202,48 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     PATH=$PG_STAGING/bin:/usr/local/bin:\$PATH
     LD_LIBRARY_PATH=$PG_STAGING/lib:\$LD_LIBRARY_PATH
     # Set PYTHON_VERSION variable required for pgadmin build
-    PYTHON_HOME=/System/Library/Frameworks/Python.framework/Versions/2.7
+    PYTHON_HOME=$PGADMIN_PYTHON_OSX
+    export LD_LIBRARY_PATH=\$PYTHON_HOME/lib:\$LD_LIBRARY_PATH
+    # Check if Python is working and calculate PYTHON_VERSION
+    if \$PYTHON_HOME/bin/python2 -V > /dev/null 2>&1; then
+        export PYTHON_VERSION=\`\$PYTHON_HOME/bin/python2 -V 2>&1 | awk '{print \$2}' | cut -d"." -f1-2\`
+    elif \$PYTHON_HOME/bin/python3 -V > /dev/null 2>&1; then
+        export PYTHON_VERSION=\`\$PYTHON_HOME/bin/python3 -V 2>&1 | awk '{print \$2}' | cut -d"." -f1-2\`
+    else
+        echo "Error: Python installation missing!"
+        exit 1
+    fi
+    if echo \$PYTHON_VERSION | grep ^3 > /dev/null 2>&1 ; then
+        export PYTHON=\$PYTHON_HOME/bin/python3
+        export PIP=pip3
+        export REQUIREMENTS=requirements_py3.txt
+    else
+        export PYTHON=\$PYTHON_HOME/bin/python2
+        export PIP=pip
+        export REQUIREMENTS=requirements_py2.txt
+    fi
+    SOURCEDIR=$PG_PATH_OSX/server/source/pgadmin.osx
     BUILDROOT=$PG_PATH_OSX/server/source/pgadmin.osx/mac-build
     test -d \$BUILDROOT || mkdir \$BUILDROOT
     cd \$BUILDROOT
-    test -d venv || virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
+    mkdir -p venv/lib
+    cp \$PYTHON_HOME/lib/lib*.so* venv/lib/
+    virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
+    rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
+    cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
-    pip install -r $PG_PATH_OSX/server/source/pgadmin.osx/requirements_py2.txt || _die "PIP install failed"
+    \$PIP install -r \$SOURCEDIR/\$REQUIREMENTS || _die "PIP install failed"
 
     # Move the python<version> directory to python so that the private environment path is found by the application.
     export PYMODULES_PATH=\`python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"\`
     export DIR_PYMODULES_PATH=\`dirname \$PYMODULES_PATH\`
     if test -d \$DIR_PYMODULES_PATH; then
-        ln -s \$DIR_PYMODULES_PATH \$DIR_PYMODULES_PATH/../python
+        cd \$DIR_PYMODULES_PATH/..
+        ln -s python\$PYTHON_VERSION python
     fi
+
     # Build runtime
-    cd ../runtime
+    cd \$BUILDROOT/../runtime
     $PG_QMAKE_OSX || _die "qmake failed"
     make || _die "pgadmin runtime build failed"
 
@@ -225,12 +251,12 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cp -r pgAdmin4.app "\$BUILDROOT/$APP_BUNDLE_NAME"
 
     # Build docs
-    pip install Sphinx || _die "PIP Sphinx failed"
+    \$PIP install Sphinx || _die "PIP Sphinx failed"
     cd $PG_PATH_OSX/server/source/pgadmin.osx/docs/en_US
     LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 make -f Makefile.sphinx html || exit 1
     
     # Uninstall as it is not required to bundle Sphinx
-    pip uninstall --yes Sphinx
+    \$PIP uninstall --yes Sphinx
     
     # Copy docs
     test -d "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources" || "mkdir -p \$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources"
@@ -245,11 +271,11 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     # copy Python private environment to app bundle
     cp -r \$BUILDROOT/venv "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/" || exit 1
 
-    # remove the python bin and include from app bundle as it is not needed
-    rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/bin" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/include"
-    rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/.Python"
+    # remove the unwanted files from the virtual environment
+    find "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/bin" ! -name python -delete
+    rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/.Python" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/include"
 
-    #cd $PG_PATH_OSX/server/resources/
+    cd $PG_PATH_OSX/server/resources/
     # run complete-bundle to copy the dependent libraries and frameworks and fix the rpaths
     PGDIR=$PG_PATH_OSX/server/staging/osx QTDIR="`dirname $PG_QMAKE_OSX`/.." sh ./complete-bundle.sh "\$BUILDROOT/$APP_BUNDLE_NAME" || _die "complete-bundle.sh failed"
 
@@ -263,7 +289,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
 
     # Remove the .pyc files if any
     cd "\$BUILDROOT/$APP_BUNDLE_NAME"
-    find . -name *.pyc | xargs rm -f
+    find . \( -name "*.pyc" -o -name "*.pyo" \) -delete
     
     # Copy the app bundle into place
     cp -pR "\$BUILDROOT/$APP_BUNDLE_NAME" $PG_PATH_OSX/server/staging/osx || _die "Failed to copy pgAdmin into the staging directory"

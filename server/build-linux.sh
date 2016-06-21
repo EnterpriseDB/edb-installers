@@ -290,6 +290,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     LD_LIBRARY_PATH=$PG_STAGING/lib:\$LD_LIBRARY_PATH
     # Set PYTHON_VERSION variable required for pgadmin build
     PYTHON_HOME=$PGADMIN_PYTHON_LINUX
+    export LD_LIBRARY_PATH=\$PYTHON_HOME/lib:\$LD_LIBRARY_PATH
     # Check if Python is working and calculate PYTHON_VERSION
     if \$PYTHON_HOME/bin/python2 -V > /dev/null 2>&1; then
         export PYTHON_VERSION=\`\$PYTHON_HOME/bin/python2 -V 2>&1 | awk '{print \$2}' | cut -d"." -f1-2\`
@@ -315,7 +316,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     mkdir -p venv/lib
     cp \$PYTHON_HOME/lib/lib*.so* venv/lib/
     virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
-    rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION venv/lib/python\$PYTHON_VERSION
+    rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
     \$PIP install -r \$SOURCEDIR/\$REQUIREMENTS || _die "PIP install failed"
@@ -396,6 +397,7 @@ EOT-PGADMIN
     # Remove the unwanted stuff from staging
     ssh $PG_SSH_LINUX "cd \"$PG_STAGING/pgAdmin 4/venv\"; find . \( -name \"*.pyc\" -o -name \"*.pyo\" \) -delete" || _die "Failed to remove unwanted files from pgadmin staging"
     ssh $PG_SSH_LINUX "cd \"$PG_STAGING/pgAdmin 4/venv/bin\"; find . ! -name python -delete" || _die "Failed to remove unwanted files from pgadmin staging"
+    ssh $PG_SSH_LINUX "cd \"$PG_STAGING/pgAdmin 4/venv/bin\"; rm -rf .Python include"
 
     echo "Changing the rpath for the pgAdmin"
     ssh $PG_SSH_LINUX "cd \"$PG_STAGING/pgAdmin 4/bin\"; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib:\\\${ORIGIN}/../venv/lib\" \$f; done"
