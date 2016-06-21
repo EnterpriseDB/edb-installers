@@ -3310,28 +3310,6 @@ EOF
                     </ruleList>
                 </showWarning>
 
-                <!--LINUX: Adding configuration to the global config file -->
-                <addTextToFile>
-                    <file>${installdir}/pgAdmin3/share/pgadmin3/settings.ini</file>
-                    <text>
-PostgreSQLPath=${installdir}/bin
-PostgreSQLHelpPath=file://${installdir}/doc/postgresql/html
-                    </text>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                    <ruleList>
-                        <compareText>
-                            <logic>contains</logic>
-                            <text>solaris</text>
-                            <value>${platform_name}</value>
-                        </compareText>
-                        <compareText>
-                            <logic>contains</logic>
-                            <text>linux</text>
-                            <value>${platform_name}</value>
-                        </compareText>
-                    </ruleList>
-                </addTextToFile>
-
                 <!-- Replace \ with / on windows -->
                 <setInstallerVariableFromRegEx>
                     <text>${installdir}</text>
@@ -3926,28 +3904,6 @@ REM The script sets environment variables helpful for PostgreSQL
           <showMessageOnError>0</showMessageOnError>
         </deleteFile>
 
-        <!-- Some 3rd party libraries were updated after 9.3.1/9.2.5 release. Adding them to the uninstaller so that the next update removes them.-->
-        <actionGroup>
-          <actionList>
-            <addFilesToUninstaller files="${installdir}/pgAdmin3/lib/libfontconfig.so.1.5.0"/>
-            <addFilesToUninstaller files="${installdir}/pgAdmin3/lib/libfreetype.so.6.8.1"/>
-            <addFilesToUninstaller files="${installdir}/pgAdmin3/lib/libtiff.so.5.0.6"/>
-          </actionList>
-          <ruleList>
-            <compareText logic="contains" text="${platform_name}" value="linux"/>
-          </ruleList>
-        </actionGroup>
-        <actionGroup>
-          <actionList>
-            <addFilesToUninstaller files="${installdir}/lib/libedit.0.0.37.dylib"/>
-            <addFilesToUninstaller files="${installdir}/lib/libz.1.2.7.dylib"/>
-            <addFilesToUninstaller files="${installdir}/lib/libpng15*"/>
-          </actionList>
-          <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="osx"/>
-          </ruleList>
-        </actionGroup>
-
     </postInstallationActionList>
     <installationAbortedActionList>
     <deleteFile path="${system_temp_directory}/postgresql_installer_${random_number}" abortOnError="0" showMessageOnError="0">
@@ -4462,7 +4418,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/linux/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux/pgAdmin3</origin>
+                            <origin>staging/linux/pgAdmin 4</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux/scripts</origin>
@@ -4515,7 +4471,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/linux-x64/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/pgAdmin3</origin>
+                            <origin>staging/linux-x64/pgAdmin 4</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux-x64/scripts</origin>
@@ -4561,7 +4517,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/linux-ppc64/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux-ppc64/pgAdmin3</origin>
+                            <origin>staging/linux-ppc64/pgAdmin 4</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux-ppc64/scripts</origin>
@@ -4693,7 +4649,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/solaris-x64/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/solaris-x64/pgAdmin3</origin>
+                            <origin>staging/solaris-x64/pgAdmin 4</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/solaris-x64/scripts</origin>
@@ -4736,7 +4692,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/solaris-sparc/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/solaris-sparc/pgAdmin3</origin>
+                            <origin>staging/solaris-sparc/pgAdmin 4</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/solaris-sparc/scripts</origin>

@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
 Encoding=UTF-8
-Name=pgAdmin III
+Name=pgAdmin 4
 Exec=PG_INSTALLDIR/scripts/launchpgadmin.sh
 Icon=pg-pgadmin-PG_VERSION_STR.png
 Terminal=false

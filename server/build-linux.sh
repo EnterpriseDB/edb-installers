@@ -28,7 +28,7 @@ _prep_server_linux() {
     fi
 
     # Grab a copy of the source tree
-    cp -pR pgadmin3-$PG_TARBALL_PGADMIN pgadmin.linux || _die "Failed to copy the source code (source/pgadmin-$PG_TARBALL_PGADMIN)"
+    cp -pR pgadmin4-$PG_TARBALL_PGADMIN pgadmin.linux || _die "Failed to copy the source code (source/pgadmin-$PG_TARBALL_PGADMIN)"
 
     if [ -e stackbuilder.linux ];
     then
@@ -282,73 +282,123 @@ EOT
     chmod +x psql || _die "Failed to grant execute permission to psql script"
 
     # Now build pgAdmin
+    echo "Building pgAdmin"
+cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
+    source ../versions.sh
+    source ../common.sh
+    PATH=$PG_STAGING/bin:\$PATH
+    LD_LIBRARY_PATH=$PG_STAGING/lib:\$LD_LIBRARY_PATH
+    # Set PYTHON_VERSION variable required for pgadmin build
+    PYTHON_HOME=$PGADMIN_PYTHON_LINUX
+    # Check if Python is working and calculate PYTHON_VERSION
+    if \$PYTHON_HOME/bin/python2 -V > /dev/null 2>&1; then
+        export PYTHON_VERSION=\`\$PYTHON_HOME/bin/python2 -V 2>&1 | awk '{print \$2}' | cut -d"." -f1-2\`
+    elif \$PYTHON_HOME/bin/python3 -V > /dev/null 2>&1; then
+        export PYTHON_VERSION=\`\$PYTHON_HOME/bin/python3 -V 2>&1 | awk '{print \$2}' | cut -d"." -f1-2\`
+    else
+        echo "Error: Python installation missing!"
+        exit 1
+    fi
+    if echo \$PYTHON_VERSION | grep ^3 > /dev/null 2>&1 ; then
+        export PYTHON=\$PYTHON_HOME/bin/python3
+        export PIP=pip3
+        export REQUIREMENTS=requirements_py3.txt
+    else
+        export PYTHON=\$PYTHON_HOME/bin/python2
+        export PIP=pip
+        export REQUIREMENTS=requirements_py2.txt
+    fi
+    SOURCEDIR=$PG_PATH_LINUX/server/source/pgadmin.linux
+    BUILDROOT=$PG_PATH_LINUX/server/source/pgadmin.linux/linux-build
+    test -d \$BUILDROOT || mkdir \$BUILDROOT
+    cd \$BUILDROOT
+    mkdir -p venv/lib
+    cp \$PYTHON_HOME/lib/lib*.so* venv/lib/
+    virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
+    rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION venv/lib/python\$PYTHON_VERSION
+    cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
+    source venv/bin/activate
+    \$PIP install -r \$SOURCEDIR/\$REQUIREMENTS || _die "PIP install failed"
 
-    # Configure
-    echo "Configuring the pgAdmin source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; LD_LIBRARY_PATH=/opt/local/Current/lib" CPPFLAGS="-I/opt/local/Current/include" LDFLAGS="-L/opt/local/Current/lib" ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX/server/staging/linux --with-wx=/opt/local/Current --with-libxml2=/opt/local/Current --with-libxslt=/opt/local/Current --disable-debug --disable-static --with-sphinx-build=$PG_PYTHON_LINUX/bin/sphinx-build || _die "Failed to configure pgAdmin"
+    # Move the python<version> directory to python so that the private environment path is found by the application.
+    export PYMODULES_PATH=\`python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"\`
+    export DIR_PYMODULES_PATH=\`dirname \$PYMODULES_PATH\`
+    if test -d \$DIR_PYMODULES_PATH; then
+	cd \$DIR_PYMODULES_PATH/..
+	ln -s python\$PYTHON_VERSION python
+    fi
+    # Build runtime
+    cd \$BUILDROOT/../runtime
+    PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib" $PG_QMAKE_LINUX || _die "qmake failed"
+    make || _die "pgadmin runtime build failed"
 
-    # Build the app
-    echo "Building & installing pgAdmin"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; PATH=/opt/local/Current/bin:$PATH LD_LIBRARY_PATH=/opt/local/Current/lib LC_TYPE=en_US.UTF-8 LC_ALL=en_US.UTF-8" make all|| _die "Failed to build pgAdmin"    
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; PATH=/opt/local/Current/bin:$PATH LC_TYPE=en_US.UTF-8 LC_ALL=en_US.UTF-8 make doc" || _die "Failed to build documentation for pgAdmin"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/; make install" || _die "Failed to install pgAdmin"
+    # Create qt.conf
+    cat >> "qt.conf" << EOF
+    [Paths]
+    Plugins = ../plugins
+EOF
 
-    # Copy in the various libraries
-    ssh $PG_SSH_LINUX "mkdir -p $PG_STAGING/pgAdmin3/lib" || _die "Failed to create the lib directory"
+    # Build docs
+    \$PIP install Sphinx || _die "PIP Sphinx failed"
+    cd \$SOURCEDIR/docs/en_US
+    LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 make -f Makefile.sphinx html || exit 1
+    
+    # Uninstall as it is not required to bundle Sphinx
+    \$PIP uninstall --yes Sphinx
 
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_adv-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_aui-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_core-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_html-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_ogl-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_qa-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_richtext-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_stc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_xrc-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu_net-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu_xml-2.8.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    # copy the web directory to the bundle as it is required by runtime
+    cp -r \$SOURCEDIR/web "\$BUILDROOT"
+    cd "\$BUILDROOT/web"
+    rm -f pgadmin4.db config_local.*
+    echo "SERVER_MODE = False" > config_local.py
+    echo "MINIFY_HTML = False" >> config_local.py
+    echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_local.py
+    
+EOT-PGADMIN
 
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libexpat.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libpng12.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libtiff.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libjpeg.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    cd $WD
+    scp server/build-pgadmin.sh $PG_SSH_LINUX:$PG_PATH_LINUX/server
+    # Build
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on Linux"
+  
+    # Prepare Staging 
+    ssh $PG_SSH_LINUX "cd $PG_STAGING; mkdir \"pgAdmin 4\"; cd \"pgAdmin 4\"; mkdir -p bin lib docs/en_US" || _die "Failed to create pgadmin staging directories"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/runtime; cp pgAdmin4 qt.conf \"$PG_STAGING/pgAdmin 4/bin\"" || _die "Failed to copy pgAdmin4 binary to staging"
+    ssh $PG_SSH_LINUX "cp -r $PG_PATH_LINUX/server/source/pgadmin.linux/linux-build/venv \"$PG_STAGING/pgAdmin 4/\"" || _die "Failed to copy venv to staging"
+    ssh $PG_SSH_LINUX "cp -r $PG_PATH_LINUX/server/source/pgadmin.linux/docs/en_US/_build/html \"$PG_STAGING/pgAdmin 4/docs/en_US\"" || _die "Failed to copy pgAdmin4 docs to staging"
+    ssh $PG_SSH_LINUX "cp -r $PG_PATH_LINUX/server/source/pgadmin.linux/linux-build/web \"$PG_STAGING/pgAdmin 4/\"" || _die "Failed to copy pgAdmin4 web to staging"
+    ssh $PG_SSH_LINUX "mkdir -p \"$PG_STAGING/pgAdmin 4/plugins/platforms\"" || _die "Failed to create plugins directory"
 
-    ssh $PG_SSH_LINUX "cp -pR $PG_PATH_LINUX/server/staging/linux/lib/libpq.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/plugins/platforms/libqxcb.so* \"$PG_STAGING/pgAdmin 4/plugins/platforms\"" || _die "Failed to copy qt dependent libs to staging"
 
-    _process_dependent_libs_linux "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libwx_gtk2u_adv-2.8"  
-    _process_dependent_libs_linux "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libwx_gtk2u_aui-2.8"  
-    _process_dependent_libs_linux "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libwx_gtk2u_core-2.8"  
-    _process_dependent_libs_linux "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libwx_gtk2u_html-2.8"
-    _process_dependent_libs_linux "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libwx_gtk2u_ogl-2.8"  
-    _process_dependent_libs_linux "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libwx_gtk2u_qa-2.8.so"  
-    _process_dependent_libs_linux "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libwx_gtk2u_richtext-2.8"  
-    _process_dependent_libs_linux "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libwx_gtk2u_stc-2.8"  
-    _process_dependent_libs_linux "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libwx_gtk2u_xrc-2.8"  
-    _process_dependent_libs_linux "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libwx_baseu-2.8"  
-    _process_dependent_libs_linux "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libwx_baseu_net-2.8"
-    _process_dependent_libs_linux "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libwx_baseu_xml-2.8"  
-    _process_dependent_libs_linux "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libpq"  
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5XcbQpa.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5DBus.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5WebKitWidgets.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5Widgets.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5WebKit.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5Gui.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5Network.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5Core.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5Sensors.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5Positioning.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5MultimediaWidgets.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5Multimedia.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5PrintSupport.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5OpenGL.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5Sql.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libicui18n.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libicuuc.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libicudata.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5Quick.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5Qml.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/gcc/lib/libQt5WebChannel.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
 
+    # Remove the unwanted stuff from staging
+    ssh $PG_SSH_LINUX "cd \"$PG_STAGING/pgAdmin 4/venv\"; find . \( -name \"*.pyc\" -o -name \"*.pyo\" \) -delete" || _die "Failed to remove unwanted files from pgadmin staging"
+    ssh $PG_SSH_LINUX "cd \"$PG_STAGING/pgAdmin 4/venv/bin\"; find . ! -name python -delete" || _die "Failed to remove unwanted files from pgadmin staging"
 
-    echo "Changing the rpath for the pgAdmin binaries"
-    ssh $PG_SSH_LINUX "cd $PG_STAGING/pgAdmin3/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
-
-    #Fix permission in the staging/linux/pgAdmin3/lib
-    ssh $PG_SSH_LINUX "cd $PG_STAGING/pgAdmin3/lib; chmod a+rx *"
-
-    # Copy the pgAdmin docs
-    # We build docs only in osx branch.
-    #cp -pR $WD/server/staging/osx/pgAdmin3.app/Contents/SharedSupport/docs $WD/server/staging/linux/pgAdmin3/share/pgadmin3/ || _die "Failed to copy the pgAdmin docs from osx staging directory"	
-
-    # Copy the Postgres utilities
-    ssh $PG_SSH_LINUX "cp -pR $PG_PATH_LINUX/server/staging/linux/bin/pg_dump $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
-    ssh $PG_SSH_LINUX "cp -pR $PG_PATH_LINUX/server/staging/linux/bin/pg_dumpall $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
-    ssh $PG_SSH_LINUX "cp -pR $PG_PATH_LINUX/server/staging/linux/bin/pg_restore $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
-    ssh $PG_SSH_LINUX "cp -pR $PG_PATH_LINUX/server/staging/linux/bin/psql* $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
-
-    # Move the utilties.ini file out of the way (Uncomment for Postgres Studio or 1.9+)
-    # ssh $PG_SSH_LINUX "mv $PG_STAGING/pgAdmin3/share/pgadmin3/plugins/utilities.ini $PG_STAGING/pgAdmin3/share/pgadmin3/plugins/utilities.ini.new" || _die "Failed to move the utilties.ini file"
+    echo "Changing the rpath for the pgAdmin"
+    ssh $PG_SSH_LINUX "cd \"$PG_STAGING/pgAdmin 4/bin\"; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib:\\\${ORIGIN}/../venv/lib\" \$f; done"
 
     echo "Changing the rpath for the PostgreSQL executables and libraries"
     ssh $PG_SSH_LINUX "cd $PG_STAGING/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
@@ -371,8 +421,39 @@ EOT
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; make all" || _die "Failed to build StackBuilder"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; make install" || _die "Failed to install StackBuilder"
 
-    echo "Changing the rpath for the StackBuilder"
-    ssh $PG_SSH_LINUX "cd $PG_STAGING/stackbuilder/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../../lib:\\\\${ORIGIN}/../../pgAdmin3/lib\" \$f; done"
+    # Copy in the various libraries
+    ssh $PG_SSH_LINUX "mkdir -p $PG_STAGING/stackbuilder/lib" || _die "Failed to create the lib directory"
+
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_adv-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_aui-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_core-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_html-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_ogl-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_qa-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_richtext-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_stc-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_xrc-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu_net-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu_xml-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libexpat.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libpng12.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libtiff.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libjpeg.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_adv-2.8"  
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_aui-2.8"  
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_core-2.8"  
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_html-2.8"
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_ogl-2.8"  
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_qa-2.8.so"  
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_richtext-2.8"  
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_stc-2.8"  
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_xrc-2.8"  
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_baseu-2.8"  
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_baseu_net-2.8"
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_baseu_xml-2.8"  
 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/scripts/linux/getlocales/; gcc -o getlocales.linux -O0 getlocales.c" || _die "Failed to build getlocales utility"
 
@@ -401,7 +482,7 @@ _postprocess_server_linux() {
     #Creating a archive of the binaries
     mkdir -p $WD/server/staging/linux/pgsql || _die "Failed to create the directory for binaries "
     cd $WD/server/staging/linux
-    cp -pR bin doc include lib pgAdmin3 share stackbuilder pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+    cp -pR bin doc include lib pgAdmin* share stackbuilder pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
     tar -czf postgresql-$PG_PACKAGE_VERSION-linux-binaries.tar.gz pgsql || _die "Failed to archive the postgresql binaries"
     mv postgresql-$PG_PACKAGE_VERSION-linux-binaries.tar.gz $WD/output/ || _die "Failed to move the archive to output folder"
 

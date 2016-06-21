@@ -30,13 +30,13 @@ then
 
     if [ $USE_SUDO = "1" ];
     then
-        sudo su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/pgAdmin3/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder""
+        sudo su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder""
     else
-        su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/pgAdmin3/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder""
+        su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder""
     fi
 
 else
-    LD_LIBRARY_PATH="PG_INSTALLDIR/pgAdmin3/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder"
+    LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder"
 fi
 
 # Wait a while to display su or sudo invalid password error if any
