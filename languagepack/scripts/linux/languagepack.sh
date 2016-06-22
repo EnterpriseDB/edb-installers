@@ -266,7 +266,7 @@ PYTHON_DISTRIBUTE_LINK="http://pypi.python.org/packages/source/d/distribute/dist
 PERL_LINK="http://www.cpan.org/src/5.0/perl-$PG_VERSION_PERL.tar.gz"
 
 
-install_path="$install_path/$PG_LANGUAGE_PACK_VERSION"
+install_path="$install_path"
 
 PERL_INSTALL_PATH="$install_path/Perl-$(echo $PG_VERSION_PERL | cut -d'.' -f1,2)"
 PYTHON_INSTALL_PATH="$install_path/Python-$(echo $PG_VERSION_PYTHON | cut -d'.' -f1,2)"
