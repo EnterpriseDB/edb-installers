@@ -272,8 +272,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cp -r \$BUILDROOT/venv "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/" || exit 1
 
     # remove the unwanted files from the virtual environment
-    find "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/bin" ! -name python -delete
-    rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/.Python" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/include"
+    rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/.Python" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/include" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/bin"
 
     cd $PG_PATH_OSX/server/resources/
     # run complete-bundle to copy the dependent libraries and frameworks and fix the rpaths
@@ -281,6 +280,8 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
 
     # copy the web directory to the bundle as it is required by runtime
     cp -r $PG_PATH_OSX/server/source/pgadmin.osx/web "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/"
+    mkdir -p "\$BUILDROOT/pgAdmin 4.app/Contents/Resources/venv/bin"
+    cp "\$BUILDROOT/venv/bin/python" "\$BUILDROOT/pgAdmin 4.app/Contents/Resources/venv/bin"
     cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/web"
     rm -f pgadmin4.db config_local.*
     echo "SERVER_MODE = False" > config_local.py
