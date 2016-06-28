@@ -284,9 +284,10 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cp "\$BUILDROOT/venv/bin/python" "\$BUILDROOT/pgAdmin 4.app/Contents/Resources/venv/bin"
     cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/web"
     rm -f pgadmin4.db config_local.*
-    echo "SERVER_MODE = False" > config_local.py
-    echo "MINIFY_HTML = False" >> config_local.py
-    echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_local.py
+    echo "SERVER_MODE = False" > config_distro.py
+    echo "MINIFY_HTML = False" >> config_distro.py
+    echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_distro.py
+    echo "# Add any configuration changes to this file" > config_local.py
 
     # Remove the .pyc files if any
     cd "\$BUILDROOT/$APP_BUNDLE_NAME"

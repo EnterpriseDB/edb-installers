@@ -350,10 +350,11 @@ EOF
     # copy the web directory to the bundle as it is required by runtime
     cp -r \$SOURCEDIR/web "\$BUILDROOT"
     cd "\$BUILDROOT/web"
-    rm -f pgadmin4.db config_local.*
-    echo "SERVER_MODE = False" > config_local.py
-    echo "MINIFY_HTML = False" >> config_local.py
-    echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_local.py
+    rm -f pgadmin4.db config_local.* config_distro.py
+    echo "SERVER_MODE = False" > config_distro.py
+    echo "MINIFY_HTML = False" >> config_distro.py
+    echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_distro.py
+    echo "# Add any configuration changes to this file." > config_local.py
     
 EOT-PGADMIN
 
