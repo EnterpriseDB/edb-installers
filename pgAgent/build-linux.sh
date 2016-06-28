@@ -83,8 +83,8 @@ _build_pgAgent_linux() {
     ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/lib/libiconv*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber*)"
     ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/lib/libz*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber*)"
     ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/lib/libncurses.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libncurses*)"
-    ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/pgAdmin3/lib/libexpat.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libexpat)"
-    ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/pgAdmin3/lib/libwx_baseu-2.8.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libk5crypto)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libexpat.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libexpat)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu-2.8.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libk5crypto)"
     ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/bin/psql* $PG_STAGING/bin" || _die "Failed to copy psql"
 
     ssh $PG_SSH_LINUX "chmod a+rx $PG_STAGING/bin/*" || _die "Failed to set permissions"

@@ -89,8 +89,8 @@ _build_pgAgent_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PGHOME_LINUX_X64/lib/liblber*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber*)"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PGHOME_LINUX_X64/lib/libiconv*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber*)"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PGHOME_LINUX_X64/lib/libz*.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (liblber*)"    
-    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PGHOME_LINUX_X64/pgAdmin3/lib/libexpat.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libexpat)"
-    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PGHOME_LINUX_X64/pgAdmin3/lib/libwx_baseu-2.8.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libk5crypto
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libexpat.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libexpat)"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libwx_baseu-2.8.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library (libk5crypto
 )"  
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PGHOME_LINUX_X64/bin/psql* $PG_STAGING/bin" || _die "Failed to copy psql"
 
