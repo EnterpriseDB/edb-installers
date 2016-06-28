@@ -98,7 +98,7 @@ mac {
 
 EOT
     cat /tmp/UpdateMonitor.pro >> UpdateManager.pro
-    \$PG_QMAKE_OSX -spec macx-g++ UpdateManager.pro
+    \$PG_QMAKE_OSX_UM -spec macx-g++ UpdateManager.pro
     make
 
     if [ ! -d UpdateManager.app ]; then

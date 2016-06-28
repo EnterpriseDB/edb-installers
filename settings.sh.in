@@ -63,6 +63,7 @@ PG_ANT_HOME_LINUX=/opt/apache-ant-1.8.4
 PG_MAVEN_HOME_LINUX=/opt/apache-maven-3.3.3
 PG_QMAKE_LINUX=/opt/local/Qt/5.5/gcc/bin/qmake
 PG_QT_LINUX=/opt/local/Qt/5.5
+PG_QT_LINUX_UM=/opt/qtsdk
 PG_PERL_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.6/Perl-5.20
 PG_PYTHON_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.6/Python-3.3
 PGADMIN_PYTHON_LINUX=/usr/local
@@ -79,6 +80,7 @@ PG_ANT_HOME_LINUX_X64=/opt/apache-ant-1.8.4
 PG_MAVEN_HOME_LINUX_X64=/opt/apache-maven-3.3.3
 PG_QMAKE_LINUX_X64=/opt/local/Qt/bin/qmake
 PG_QT_LINUX_X64=/opt/local/Qt
+PG_QT_LINUX_X64_UM=/opt/qtsdk
 PG_PERL_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.6/Perl-5.20
 PG_PYTHON_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.6/Python-3.3
 PGADMIN_PYTHON_LINUX_X64=/usr/local
@@ -106,6 +108,7 @@ PG_MINGW_WINDOWS_PGBOUNCER=C:\\\\mingw32
 PG_MSYS_WINDOWS_PGBOUNCER=C:\\\\mingw32\\\\msys\\\\1.0
 PG_JAVA_HOME_WINDOWS="C:\\\\jdk1.7.0_51"
 PG_QTPATH_WINDOWS="D:\\\\Qt\\\\5.5.1\\\\5.5\\\\msvc2013"
+PG_QTPATH_WINDOWS_UM=C:\\\\QtSDK
 PG_SDK_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_SIGNTOOL_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
 PG_PERL_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.6\\\\i386\\\\Perl-5.20
@@ -175,6 +178,7 @@ PG_TCL_OSX=/Library/edb/languagepack-9.6/Tcl-8.5
 PG_LANGUAGEPACK_OSX=/Library/edb/languagepack-9.6
 PG_QTFRAMEWORK_OSX=/Library/Frameworks
 PG_QMAKE_OSX=/opt/local/Qt/5.5/clang_64/bin/qmake
+PG_QMAKE_OSX_UM=/Developer/Tools/Qt/qmake
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the

@@ -207,7 +207,7 @@ if [ -f settings.sh.full.REL-9_6 ]; then
 fi
 
 # Self update
-echo "Updating REL-9_6-pgadmin3 branch build system" >> autobuild.log
+echo "Updating REL-9_6 branch build system" >> autobuild.log
 git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file

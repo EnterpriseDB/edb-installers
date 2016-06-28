@@ -66,7 +66,7 @@ _build_updatemonitor_linux() {
     cd $WD/UpdateMonitor/source/updatemonitor.linux
 
     echo "Building & installing UpdateMonitor"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/UpdateMonitor/source/updatemonitor.linux; $PG_QMAKE_LINUX UpdateManager.pro" || _die "Failed to configuring UpdateMonitor on linux"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/UpdateMonitor/source/updatemonitor.linux; $PG_QT_LINUX_UM/bin/qmake UpdateManager.pro" || _die "Failed to configuring UpdateMonitor on linux"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/UpdateMonitor/source/updatemonitor.linux; LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH make" || _die "Failed to build UpdateMonitor on linux"
     mkdir -p $WD/UpdateMonitor/staging/linux/UpdateMonitor/bin
     mkdir -p $WD/UpdateMonitor/staging/linux/UpdateMonitor/lib
@@ -82,10 +82,10 @@ _build_updatemonitor_linux() {
     ssh $PG_SSH_LINUX "cp /opt/local/Current/lib/libwx_baseud-2.8.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/instscripts/lib" || _die "Failed to copy dependent library (libwx_baseud-2.8.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libiconv.so* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/instscripts/lib" || _die "Failed to copy dependent library (libiconv.so) in staging directory (linux)"
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libpng12.so* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libpng12.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX/lib/libQtXml.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX/lib/libQtNetwork.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX/lib/libQtCore.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX/lib/libQtGui.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX_UM/lib/libQtXml.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX_UM/lib/libQtNetwork.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX_UM/lib/libQtCore.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX_UM/lib/libQtGui.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (linux)"
    ssh $PG_SSH_LINUX "chmod a+r $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib/*" || _die "Failed to set the read permissions on the lib directory"
     cd $WD
    
