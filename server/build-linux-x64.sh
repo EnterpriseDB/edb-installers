@@ -315,7 +315,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     test -d \$BUILDROOT || mkdir \$BUILDROOT
     cd \$BUILDROOT
     mkdir -p venv/lib
-    cp \$PYTHON_HOME/lib/lib*.so* venv/lib/
+    cp -pR \$PYTHON_HOME/lib/lib*.so* venv/lib/
     virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
     rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/

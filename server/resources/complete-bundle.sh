@@ -54,7 +54,7 @@ function CompleteSingleApp() {
 			#Find all libraries $todo_obj depends on, but skip system libraries
 			for lib in $(
 				otool -L $todo_obj | \
-				grep "Qt\|dylib\|Frameworks\|PlugIns" | grep -v ":" | sed 's/(.*//' | egrep -v '(/usr/lib)|(/System)|@executable_path@' \
+				grep "Qt\|dylib\|Frameworks\|PlugIns" | grep -v ":" | sed 's/(.*//' | egrep -v '(/usr/lib)|(/System)|@executable_path@|@loader_path' \
 			) $(otool -L $todo_obj | grep "Python" | grep -v ":" | sed 's/(.*//' \
 			); do
 				if echo $lib | grep "PlugIns\|libqcocoa"  > /dev/null; then

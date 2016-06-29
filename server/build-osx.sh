@@ -227,7 +227,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     test -d \$BUILDROOT || mkdir \$BUILDROOT
     cd \$BUILDROOT
     mkdir -p venv/lib
-    cp \$PYTHON_HOME/lib/lib*.so* venv/lib/
+    cp -pR \$PYTHON_HOME/lib/lib*.dylib* venv/lib/
     virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
     rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
@@ -244,7 +244,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
 
     # Build runtime
     cd \$BUILDROOT/../runtime
-    $PG_QMAKE_OSX || _die "qmake failed"
+    PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib" $PG_QMAKE_OSX || _die "qmake failed"
     make || _die "pgadmin runtime build failed"
 
     # Copy the generated app bundle to buildroot and rename the bundle as required
