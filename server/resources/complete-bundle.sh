@@ -66,13 +66,6 @@ function CompleteSingleApp() {
 						lib_loc="$(dirname $todo_obj)"
 						qtfw_path=$(echo $lib_loc | sed 's/Contents\/Frameworks\///')
 					fi
-				elif echo $lib | grep "Python" > /dev/null; then
-					pyfw_path="$(dirname $lib | sed 's|.*\(Python.*framework\)|\1|')"
-					lib_loc="Contents/Frameworks/$pyfw_path"
-					if [ "$(basename $todo_obj)" = "$lib" ]; then
-						lib_loc="$(dirname $todo_obj)"
-						pyfw_path=$(echo $lib_loc | sed 's/Contents\/Frameworks\///')
-					fi
 				else
 					lib_loc="Contents/Frameworks"
 				fi
@@ -86,9 +79,6 @@ function CompleteSingleApp() {
 					if echo $lib | grep Qt > /dev/null ; then
 						test -d $lib_loc || mkdir -p $lib_loc
 						cp $QTDIR/lib/$qtfw_path/$lib_bn $lib_loc/
-					elif echo $lib | grep Python > /dev/null ; then
-						test -d $lib_loc || mkdir -p $lib_loc
-						cp -R "$lib" "$lib_loc/$lib_bn"
 					else
 						cp -R "$lib" "$lib_loc/$lib_bn"
 					fi
@@ -112,8 +102,8 @@ function CompleteSingleApp() {
 				if echo $lib | grep Qt > /dev/null ; then
 					fw_relpath="$fw_relpath/$qtfw_path"
 				fi
-				if echo $lib | grep Python > /dev/null ; then
-					fw_relpath="$fw_relpath/$pyfw_path"
+				if echo $lib | grep libpython || echo $lib | grep libintl > /dev/null ; then
+					fw_relpath="../../Contents/Resources/venv/lib"
 				fi
 				echo "Rewriting library $lib to @loader_path/$fw_relpath/$lib_bn in $todo_obj"
                                         echo install_name_tool -change "$lib" "@loader_path/$fw_relpath/$lib_bn" "$todo_obj"
