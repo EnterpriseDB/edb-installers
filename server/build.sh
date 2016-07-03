@@ -75,6 +75,12 @@ _prep_server() {
     echo "Unpacking PostgreSQL source..."
     tar -jxvf ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL.tar.bz2
 
+    if [ -f $WD/tarballs/win64-vs2013.patch ]; then
+        cd postgresql-$PG_TARBALL_POSTGRESQL
+        patch -p0 < ~/tarballs/win64-vs2013.patch
+        cd ..
+    fi
+
     if [ -f $WD/tarballs/pg-ldap-liblber.patch ]; then
         cd postgresql-$PG_TARBALL_POSTGRESQL
         patch -p1 < $WD/tarballs/pg-ldap-liblber.patch
