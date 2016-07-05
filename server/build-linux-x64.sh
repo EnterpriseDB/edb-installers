@@ -317,10 +317,10 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     mkdir -p venv/lib
     cp -pR \$PYTHON_HOME/lib/lib*.so* venv/lib/
     virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
-    rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
-    \$PIP install -r \$SOURCEDIR/\$REQUIREMENTS || _die "PIP install failed"
+    \$PIP --cache-dir "~/.cache/\$PIP-pgadmin" install -r \$SOURCEDIR/\$REQUIREMENTS || _die "PIP install failed"
+    rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
 
     # Move the python<version> directory to python so that the private environment path is found by the application.
     export PYMODULES_PATH=\`python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"\`
