@@ -115,7 +115,24 @@ python setup.py install
 ECHO Changing Directory to %vPythonInstallDir%\Scripts
 CD %vPythonInstallDir%\Scripts
 SET PATH=%vPythonInstallDir%\Scripts;D:\;%vPgBuildDir%\bin;%PATH%
-%vPythonInstallDir%\Scripts\easy_install.exe pip
+
+REM Sometimes pip is not able to download due to network issues.
+REM Hence we are tryings to hit pip URL for 5 time.
+
+setlocal EnableDelayedExpansion
+set /a "i = 1"
+:ITERATOR
+    if %i% leq 5 (
+	echo ==========iteration !i! ==================
+        %vPythonInstallDir%\Scripts\easy_install.exe pip
+       IF !ERRORLEVEL! == 0 goto BREAK
+        echo ====error level is !ERRORLEVEL!===========
+        set /a "i = i + 1"
+        goto :ITERATOR
+    )
+goto ERR_HANDLER
+
+:BREAK
 
 CD %vPythonInstallDir%\Scripts
 SET LINK="/FORCE:MULTIPLE"
@@ -150,3 +167,16 @@ pip list >%vPythonInstallDir%\pip_packages_list.txt
 
 ECHO ------------------------
 ECHO ----------Done----------
+
+goto EXIT
+
+:ERR_HANDLER
+    ECHO Aborting build due to pip failed!
+    endlocal
+    exit /B 1
+GOTO:EOF
+
+
+:EXIT
+    endlocal
+    exit /B 0
