@@ -121,9 +121,24 @@ python setup.py install
 ECHO Changing Directory to %vPythonInstallDir%\Scripts
 CD %vPythonInstallDir%\Scripts
 SET PATH=%vPythonInstallDir%\Scripts;%vPgBuildDir%\bin;%PATH%
-%vPythonInstallDir%\Scripts\easy_install.exe pip
 
-CD %vPythonInstallDir%\Scripts
+REM Sometimes pip is not able to download due to network issues.
+REM Hence we are tryings to hit pip URL for 5 time.
+
+setlocal EnableDelayedExpansion
+set /a "i = 1"
+:ITERATOR
+    if %i% leq 5 (
+	echo ==========iteration !i! ==================
+	%vPythonInstallDir%\Scripts\easy_install.exe pip
+ 	echo ====error level is !ERRORLEVEL!===========         
+       IF !ERRORLEVEL! == 0 goto BREAK
+        set /a "i = i + 1"
+        goto :ITERATOR
+    )
+goto ERR_HANDLER
+
+:BREAK
 SET LINK="/FORCE:MULTIPLE"
 pip install psycopg2==2.6
 pip install Flask
@@ -156,3 +171,15 @@ pip list >%vPythonInstallDir%\pip_packages_list.txt
 
 ECHO ------------------------
 ECHO ----------Done----------
+goto EXIT
+
+:ERR_HANDLER
+    ECHO Aborting build due to pip failed!
+    endlocal
+    exit /B 1
+GOTO:EOF
+
+
+:EXIT
+    endlocal
+    exit /B 0
