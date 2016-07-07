@@ -2000,7 +2000,7 @@ include conf\addons\*.conf
     </component>
   </componentList>
   <parameterList>
-    <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
+    <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="0" cliOptionShow="1"/>
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
     <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
     <parameterGroup>
