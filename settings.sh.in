@@ -117,7 +117,7 @@ PGAMIN_PYTHON_WINDOWS=C:\\\\Python27
 PGADMIN_PYTHON_DLL_WINDOWS=C:\\\\Windows\\\\SysWOW64\\\\python27.dll
 PG_TCL_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.6\\\\i386\\\\Tcl-8.5
 PLATFORM_TOOLSET=/p:PlatformToolset=v120_xp
-PG_QMAKE_WINDOWS=$PG_QTPATH_WINDOWS/bin/qmake.exe
+PG_QMAKE_WINDOWS=$PG_QTPATH_WINDOWS\\\\bin\\\\qmake.exe
 PG_QMAKE_WINDOWS="D:\\\\Qt\\\\5.5.1\\\\5.5\\\\msvc2013\\\\bin\\\\qmake.exe"
 
 PG_SSH_WINDOWS_X64=buildfarm@bf6-windows-x64.ox.uk.enterprisedb.com
@@ -140,7 +140,7 @@ PG_TCL_WINDOWS_X64=C:\\\\pgBuild64\\\\EnterpriseDB\\\\LanguagePack\\\\9.6\\\\x64
 PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_SIGNTOOL_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
 PG_QTPATH_WINDOWS_X64="D:\\\\Qt\\\\5.5.1\\\\5.5\\\\msvc2013_64"
-PG_QMAKE_WINDOWS_X64=$PG_QTPATH_WINDOWS_X64/bin/qmake.exe
+PG_QMAKE_WINDOWS_X64=$PG_QTPATH_WINDOWS_X64\\\\bin\\\\qmake.exe
 
 PG_SSH_SOLARIS_X64=buildfarm@bf3-solaris-x64.pn.in.enterprisedb.com
 PG_PATH_SOLARIS_X64=/mnt/buildfarm/pginstaller_2.auto-repo
