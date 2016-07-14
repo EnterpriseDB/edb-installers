@@ -133,7 +133,17 @@ CALL "$PG_VSINSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 
 IF "%2" == "UPGRADE" GOTO upgrade
 
-msbuild %1 /p:Configuration=%2 %3
+REM New cygwin version spliting the one parameter into two parameters if its find the "=" sign
+REM But this is not the same case with old cygwing it is treating as a single parameter.
+REM Hence below logic will work with both old (primay) and new (backup) cygwing versions.
+
+IF "%~3" == "" ( SET VAR3=""
+) ELSE IF "%~4" == "" (
+SET VAR3=%3
+) ELSE (
+SET VAR3="%3=%4"
+)
+msbuild %1 /p:Configuration=%2 %VAR3%
 GOTO end
 
 :upgrade 
@@ -279,6 +289,7 @@ EOT
     
     # Zip up the source directory and copy it to the build host, then unzip
     cd $WD/server/source/
+    chmod +x postgres.windows/src/tools/msvc/install.bat
     echo "Copying source tree to Windows build VM"
     rm postgres.windows/contrib/pldebugger/Makefile # Remove the unix makefile so that the build scripts don't try to parse it - we have our own.
     zip -r postgres.zip postgres.windows || _die "Failed to pack the source tree (postgres.windows)"
