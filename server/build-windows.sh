@@ -310,7 +310,7 @@ EOT
     rm postgres.windows/contrib/pldebugger/Makefile # Remove the unix makefile so that the build scripts don't try to parse it - we have our own.
     zip -r postgres.zip postgres.windows || _die "Failed to pack the source tree (postgres.windows)"
     rsync -av postgres.zip $PG_SSH_WINDOWS:$PG_CYGWIN_PATH_WINDOWS || _die "Failed to copy the source tree to the windows build host (postgres.zip)"
-    ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip postgres.zip" || _die "Failed to unpack the source tree on the windows build host (postgres.zip)"
+    ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip -o postgres.zip" || _die "Failed to unpack the source tree on the windows build host (postgres.zip)"
   
     PG_CYGWIN_PERL_WINDOWS=`echo $PG_PERL_WINDOWS | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'` 
     PG_CYGWIN_PYTHON_WINDOWS=`echo $PG_PYTHON_WINDOWS | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'` 
