@@ -269,7 +269,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     sed -e "s/PGADMIN_LONG_VERSION/$APP_LONG_VERSION/g" -e "s/PGADMIN_SHORT_VERSION/$APP_SHORT_VERSION/g" pgadmin.Info.plist.in > pgadmin.Info.plist
 
     # copy Python private environment to app bundle
-    cp -r \$BUILDROOT/venv "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/" || exit 1
+    cp -pR \$BUILDROOT/venv "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/" || exit 1
 
     # remove the unwanted files from the virtual environment
     rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/.Python" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/include" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/bin"
