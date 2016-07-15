@@ -168,7 +168,7 @@ $footer_fail"
                 build_status="FAILED"
                 if [ ${#build_error_flag} -gt 0 ]
                 then
-                        mail_receipents="-c cm@enterprisedb.com pginstaller@enterprisedb.com"
+                        mail_receipents="-c cm@enterprisedb.com"
                 elif [ ${#pvtbuild_error_flag} -gt 0 ]
                 then
                         mail_receipents="-c cm@enterprisedb.com pem@enterprisedb.com"
