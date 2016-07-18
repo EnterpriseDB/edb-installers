@@ -387,7 +387,6 @@ EOT-PGADMIN
     ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libicui18n.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libicuuc.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libicudata.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libjpeg.so* $PG_STAGING/lib" || _die "Failed to copy jpeg libs to staging"
 
     # Remove the unwanted stuff from staging
     ssh $PG_SSH_LINUX "cd \"$PG_STAGING/pgAdmin 4/venv\"; find . \( -name \"*.pyc\" -o -name \"*.pyo\" \) -delete" || _die "Failed to remove unwanted files from pgadmin staging"

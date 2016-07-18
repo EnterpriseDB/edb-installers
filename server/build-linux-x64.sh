@@ -331,7 +331,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     fi
     # Build runtime
     cd \$BUILDROOT/../runtime
-    PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib -ljpeg" $PG_QMAKE_LINUX_X64 || _die "qmake failed"
+    PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib" $PG_QMAKE_LINUX_X64 || _die "qmake failed"
     make || _die "pgadmin runtime build failed"
 
     # Create qt.conf
@@ -388,7 +388,6 @@ EOT-PGADMIN
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libicui18n.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libicuuc.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libicudata.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libjpeg.so* $PG_STAGING/lib" || _die "Failed to copy jpeg libs to staging"
 
     # Remove the unwanted stuff from staging
     ssh $PG_SSH_LINUX_X64 "cd \"$PG_STAGING/pgAdmin 4/venv\"; find . \( -name \"*.pyc\" -o -name \"*.pyo\" \) -delete" || _die "Failed to remove unwanted files from pgadmin staging"
