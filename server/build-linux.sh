@@ -330,7 +330,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     fi
     # Build runtime
     cd \$BUILDROOT/../runtime
-    PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib" $PG_QMAKE_LINUX || _die "qmake failed"
+    PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib -ljpeg" $PG_QMAKE_LINUX || _die "qmake failed"
     make || _die "pgadmin runtime build failed"
 
     # Create qt.conf
