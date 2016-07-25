@@ -19,6 +19,7 @@ SET LINK=/SUBSYSTEM:CONSOLE,5.01
 IF "%vPerlModule%"=="PERL" GOTO PERL
 IF "%vPerlModule%"=="DBI" GOTO DBI
 IF "%vPerlModule%"=="DBD" GOTO DBD
+IF "%vPerlModule%"=="IPC" GOTO IPC
 GOTO END
 
 :PERL
@@ -43,5 +44,14 @@ CD %vPerlInstallDir%\bin
 ECHO ....Starting to Install DBD::PG....
 cpan install DBD::Pg
 ECHO ....End Install DBD::PG....
+GOTO END
+
+:IPC
+SET PATH=%vPerlInstallDir%\bin;%PATH%
+CD %vPerlInstallDir%\bin
+ECHO ....Starting to Install IPC::Run....
+cpan install IPC::Run
+ECHO ....End Install IPC::Run....
 
 :END
+
