@@ -128,6 +128,11 @@ _prep_server() {
         git pull
     fi
 
+    if [ -f $WD/tarballs/stackbuilder-https.patch ]; then
+        cd $WD/server/source/stackbuilder
+        patch -p1 < $WD/tarballs/stackbuilder-https.patch
+    fi
+
     # Per-platform prep
     cd $WD
     
