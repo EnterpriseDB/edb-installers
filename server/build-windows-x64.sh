@@ -435,7 +435,7 @@ EOT
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip stackbuilder-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (stackbuilder-win64.zip)"
   
     # Build the code
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"Visual Studio 12 Win64\" -D MS_VS_10=1 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS_X64 -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS_X64\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"Visual Studio 12 Win64\" -D MS_VS_10=1 -D CURL_ROOT:PATH=$PG_PGBUILD_WINDOWS_X64 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS_X64 -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS_X64\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat stackbuilder.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat INSTALL.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to install stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mv $PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder\\\\bin\\\\stackbuilder.exe $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to relocate the stackbuilder executable on the build host"
@@ -450,6 +450,7 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib1.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libcurl.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
    
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\ssleay32.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libeay32.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
@@ -460,6 +461,7 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libxml2.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libxslt.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libcurl.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
 
     # Copy the third party headers except GPL license headers 
     mkdir $WD/server/staging/windows-x64/3rdinclude/
