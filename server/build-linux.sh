@@ -228,7 +228,6 @@ set -x
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(sasl)"
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libldap-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap)"
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libldap_r-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap_r)"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libcurl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(libcurl)"
 
     # Process Dependent libs
     _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl"  
@@ -367,7 +366,7 @@ EOT
     # Stackbuilder
     # Configure
     echo "Configuring the StackBuilder source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D CURL_ROOT:PATH=/opt/local/Current -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
 
     # Build the app
     echo "Building & installing StackBuilder"
@@ -376,10 +375,6 @@ EOT
 
     echo "Changing the rpath for the StackBuilder"
     ssh $PG_SSH_LINUX "cd $PG_STAGING/stackbuilder/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../../lib:\\\\${ORIGIN}/../../pgAdmin3/lib\" \$f; done"
-
-    # Creating cert dir and copying cert file.
-    ssh $PG_SSH_LINUX "mkdir -p $PG_STAGING/stackbuilder/share/certs" || _die "Failed to create the certs directory"
-    ssh $PG_SSH_LINUX "cp /opt/local/Current/certs/ca-bundle.crt $PG_STAGING/stackbuilder/share/certs" || _die "Failed to copy the certs directory"
 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/scripts/linux/getlocales/; gcc -o getlocales.linux -O0 getlocales.c" || _die "Failed to build getlocales utility"
 
