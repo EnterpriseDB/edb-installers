@@ -124,7 +124,7 @@ _prep_server() {
     else
         echo "Updating the StackBuilder source tree..."
         cd $WD/server/source/stackbuilder
-        git reset HEAD --hard
+        git reset HEAD --hard && git clean -dfx
         git pull
     fi
 
