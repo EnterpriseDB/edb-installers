@@ -347,14 +347,17 @@ EOT-PGADMIN
     ssh $PG_SSH_OSX "cp -f $PG_PATH_OSX/server/staging/osx/lib/postgresql/plperl.so $PG_PATH_OSX/server/staging/osx/"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
+    echo "Rewrite shared library references"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source settings.sh; source common.sh; cd $PG_STAGING; _rewrite_so_refs $PG_STAGING bin @loader_path/..;\
         _rewrite_so_refs $PG_STAGING lib @loader_path/..; _rewrite_so_refs $PG_STAGING lib/postgresql @loader_path/../..;\
         _rewrite_so_refs $PG_STAGING lib/postgresql/plugins @loader_path/../../..;\
         _rewrite_so_refs $PG_STAGING stackbuilder.app/Contents/MacOS @loader_path/../../.."
 
-    ssh $PG_SSH_OSX "cd $PG_STAGING; install_name_tool -change libpq.5.dylib @loader_path/../../../../../../Frameworks/libpq.5.dylib \"$APP_BUNDLE_NAME/Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg.so\""
+    echo "Some specific rewriting of shared library references"
+    ssh $PG_SSH_OSX "cd $PG_STAGING; install_name_tool -change $PG_STAGING/lib/libpq.5.dylib @loader_path/../../../../../../Frameworks/libpq.5.dylib \"$APP_BUNDLE_NAME/Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg.so\""
     ssh $PG_SSH_OSX "cd $PG_STAGING; install_name_tool -change /usr/lib/libssl.0.9.8.dylib @loader_path/../../../../../../../Contents/Frameworks/libssl.1.0.0.dylib \"$APP_BUNDLE_NAME/Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg.so\""
     ssh $PG_SSH_OSX "cd $PG_STAGING; install_name_tool -change /usr/lib/libcrypto.0.9.8.dylib @loader_path/../../../../../../../Contents/Frameworks/libcrypto.1.0.0.dylib \"$APP_BUNDLE_NAME/Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg.so\""
+    ssh $PG_SSH_OSX "cd $PG_STAGING; install_name_tool -id libpq.5.dylib \"$APP_BUNDLE_NAME/Contents/Frameworks/libpq.5.dylib\""
 
     # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
      ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging/osx/plperl.so $PG_PATH_OSX/server/staging/osx/lib/postgresql/plperl.so"
