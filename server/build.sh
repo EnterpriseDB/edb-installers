@@ -97,11 +97,10 @@ _prep_server() {
     echo "Unpacking pgAdmin source..."
     tar -zxvf ../../tarballs/pgadmin4-$PG_TARBALL_PGADMIN.tar.gz
 
-    if [ -f $WD/tarballs/pgAdmin4_server.patch ]; then
+    if [ -f $WD/tarballs/RM38378.patch ]; then
         cd pgadmin4-$PG_TARBALL_PGADMIN
-        patch -p1 < $WD/tarballs/pgAdmin4_server.patch
+        patch -p1 < $WD/tarballs/RM38378.patch
     fi
-
     cd $WD/server/source
 
     # Debugger
