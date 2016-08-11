@@ -215,6 +215,7 @@ EOT
     ssh $PG_SSH_OSX "cp /usr/local/lib/libssl* $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
     ssh $PG_SSH_OSX "cp /usr/local/lib/libcrypto* $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
     ssh $PG_SSH_OSX "cp /usr/local/lib/libexpat* $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp /usr/local/lib/libiconv* $PG_STAGING/lib/" || _die "Failed to copy the latest libiconv"
 
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
     ssh $PG_SSH_OSX "cp -f $PG_STAGING/lib/postgresql/plperl.so $PG_STAGING/"
