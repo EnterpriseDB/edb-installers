@@ -1,0 +1,812 @@
+<?xml version="1.0"?>
+<project>
+  <!-- Package details -->
+  <shortName>hfdw</shortName>
+  <fullName>EDB Postgres Data Adapter for Hadoop</fullName>
+  <version>PG_VERSION_HDFS_FDW-PG_BUILDNUM_HDFS_FDW</version>
+  <allowWindowResize>1</allowWindowResize>
+  <!-- Product Specific Options -->
+  <productDisplayName>${product_fullname} ${productVersion}</productDisplayName>
+  <productComments>${product_fullname} ${productVersion}</productComments>
+  <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
+  <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
+  <startMenuGroupName/>
+  <!-- to confirm if we need this -->
+  <!-- The options are used for RPM registration -->
+  <description>hdfs_fdw ${productVersion}, by EnterpriseDB</description>
+  <summary>hdfs_fdw ${productVersion}, by EnterpriseDB</summary>
+  <vendor>EnterpriseDB</vendor>
+  <release>1</release>
+  <!-- Installer Size -->
+  <width>550</width>
+  <height>400</height>
+  <!-- Misc package options -->
+  <installerFilename>hdfs_fdw-pgPG_MAJOR_VERSION-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+  <enableRollback>0</enableRollback>
+  <requestedExecutionLevel>asInvoker</requestedExecutionLevel>
+  <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
+  <saveRelativePaths>1</saveRelativePaths>
+  <outputDirectory>../output</outputDirectory>
+  <uninstallerDirectory>${installdir}</uninstallerDirectory>
+  <uninstallerName>uninstall-hdfs_fdw</uninstallerName>
+  <unattendedModeUI>minimal</unattendedModeUI>
+  <compressionAlgorithm>lzma</compressionAlgorithm>
+  <installationLogFile>${system_temp_directory}/install-hdfs_fdw.log</installationLogFile>
+  <uninstallationLogFile>${system_temp_directory}/uninstall-hdfs_fdw.log</uninstallationLogFile>
+  <licenseFile encoding="utf-8">staging/hdfs_fdw_license.txt</licenseFile>
+  <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
+  <!-- Images -->
+  <disableSplashScreen>1</disableSplashScreen>
+  <leftImage>../resources/pg-side-new.png</leftImage>
+  <splashImage>../resources/pg-splash-new.png</splashImage>
+  <!-- i18n files for the UI -->
+  <customLanguageFileList>
+    <language>
+      <code>en</code>
+      <encoding>iso8859-1</encoding>
+      <file>i18n/en.lng</file>
+    </language>
+    <language>
+      <code>en</code>
+      <encoding>iso8859-1</encoding>
+      <file>i18n/jp.lng</file>
+    </language>
+    <language>
+      <code>en</code>
+      <encoding>iso8859-1</encoding>
+      <file>i18n/zh_cn.lng</file>
+    </language>
+    <language>
+      <code>en</code>
+      <encoding>iso8859-1</encoding>
+      <file>i18n/zh_TW.lng</file>
+    </language>
+    <language>
+      <code>en</code>
+      <encoding>iso8859-1</encoding>
+      <file>i18n/ko.lng</file>
+    </language>
+  </customLanguageFileList>
+  <allowedLanguages>en ja zh_CN zh_TW ko</allowedLanguages>
+  <defaultLanguage>auto</defaultLanguage>
+  <!-- Languages allowed? -->
+  <allowLanguageSelection>1</allowLanguageSelection>
+  <!-- Custom functions -->
+  <functionDefinitionList>
+    <actionDefinition name="createTempDir">
+      <actionList>
+        <globalVariables names="random_number"/>
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="iteration" value="0"/>
+            <!-- Create a random number to use unique filenames -->
+            <while>
+              <actionList>
+                <generateRandomValue length="10" variable="random_number"/>
+                <runProgram>
+                  <program>sh</program>
+                  <programArguments>-c &lt;&lt;EOF '
+                                     umask 0077
+                                     mkdir "${system_temp_directory}/${dirPrefix}_${random_number}"
+                                     if [ $? -ne 0 ];
+                                     then
+                                        exit 100
+                                     fi
+                                     '
+EOF
+                  </programArguments>
+                </runProgram>
+                <break>
+                  <ruleList>
+                    <compareText logic="equals" text="0" value="${program_exit_code}"/>
+                  </ruleList>
+                </break>
+                <actionGroup>
+                  <actionList>
+                    <throwError text="${msg(cannot.create.tmp.dir)}" abortOnError="1">
+                      <ruleList>
+                         <compareValues value1="${iteration}" logic="equals" value2="9"/>
+                       </ruleList>
+                     </throwError>
+                  </actionList>
+                </actionGroup>
+                <mathExpression text="${iteration}+1" variable="iteration"/>
+              </actionList>
+              <conditionRuleList>
+                <compareValues value1="${iteration}" logic="less" value2="10"/>
+              </conditionRuleList>
+            </while>
+            <setInstallerVariable name="random_number" value="${random_number}"/>
+          </actionList>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <generateRandomValue length="10" variable="random_number"/>
+            <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
+            <setInstallerVariable name="random_number" value="${random_number}"/>
+          </actionList>
+           <ruleList>
+             <compareText logic="equals" text="${platform_name}" value="windows"/>
+           </ruleList>
+        </actionGroup>
+      </actionList>
+      <parameterList>
+        <stringParameter name="dirPrefix" allowEmptyValue="0"/>
+      </parameterList>
+    </actionDefinition>
+  </functionDefinitionList>
+  <!-- Prebuild Actons-->
+  <preBuildActionList>
+    <setInstallerVariable name="originalplatform" value="${platform_name}"/>
+    <setInstallerVariable name="originalplatform" value="linux-x32">
+      <ruleList>
+        <compareText text="${platform_name}" value="linux"/>
+      </ruleList>
+    </setInstallerVariable>
+  </preBuildActionList>
+  <preShowHelpActionList>
+    <!-- LIN/SOLARIS : Set the default installation directory -->
+    <setInstallerVariable>
+      <name>defaultpghome</name>
+      <persist>1</persist>
+      <value>${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION</value>
+      <ruleEvaluationLogic>or</ruleEvaluationLogic>
+      <ruleList>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>solaris</value>
+        </compareText>
+	<compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>hpux</value>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
+    <!-- MAC : Set the default installation directory -->
+    <setInstallerVariable name="defaultpghome" persist="1" value="/Library/PostgreSQL/PG_MAJOR_VERSION">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="osx"/>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="defaultuser" value="enterprisedb"/>
+    <setInstallerVariable name="defaultpassword" value=""/>
+  </preShowHelpActionList>
+  <!-- Initialisation actions -->
+  <initializationActionList>
+    <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
+    <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_HDFS_FDW"/>
+    <!--<setInstallerVariable name="installerTitle" persist="1" value="Data Adapter for Hadoop"/> -->
+    <setInstallerVariable name="installerTitle" persist="1" value="EDB Postgres Data Adapter for Hadoop"/>
+    <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
+    <throwError>
+      <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
+      <text>Unknown Error</text>
+      <ruleList>
+        <platformTest type="linux-x64"/>
+        <compareText text="${originalplatform}" value="linux-x32"/>
+      </ruleList>
+    </throwError>
+    <!-- Set the pghome varaible -->
+    <setInstallerVariable name="pghome" value="${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION" persist="1" ruleEvaluationLogic="or">
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="defaultpghome" value="${pghome}"/>
+    <!-- Set the hdfs_fdw version(if exists) -->
+    <setInstallerVariable name="fdwVersion" value="">
+      <persist>0</persist>
+    </setInstallerVariable>
+    <setInstallerVariable name="fdwVersionInstalled" value="">
+      <persist>0</persist>
+    </setInstallerVariable>
+    <!-- Set the PG Major Version -->
+    <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION">
+      <persist>1</persist>
+    </setInstallerVariable>
+    <!-- Set the default values -->
+    <setInstallerVariable name="defaultuser" value="postgres"/>
+    <setInstallerVariable name="defaultpassword" value=""/>
+    <!-- Set the default values for unattended mode -->
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="defaultuser" value="postgres"/>
+        <setInstallerVariable name="defaultpassword" value="postgres"/>
+      </actionList>
+      <ruleList>
+	<!-- following check means mode equals unattended -->
+        <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
+      </ruleList>
+    </actionGroup>
+    <!-- LIN: Set the    pghome default value for unattended mode -->
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION"/>
+      </actionList>
+      <ruleList>
+	<!-- following check means mode equals unattended -->
+        <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <!-- LIN: Set the    pghome default value when pghome not set -->
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="defaultpghome" value="${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION"/>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${pghome}</text>
+          <value/>
+        </compareText>
+        <compareText>
+          <logic>contains</logic>
+          <text>${platform_name}</text>
+          <value>linux</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+    <!-- Set the default installation directory -->
+    <setInstallerVariable>
+      <name>default_installdir</name>
+      <persist>1</persist>
+      <value>${platform_install_prefix}/PostgreSQL/PG_MAJOR_VERSION</value>
+      <ruleEvaluationLogic>or</ruleEvaluationLogic>
+      <ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="defaultpghome" value="${default_installdir}">
+    <ruleList>
+        <isFalse value="${extract_mode}"/>
+     </ruleList>
+   </setInstallerVariable>
+  </initializationActionList>
+  <!-- Preinstallation actions -->
+  <preInstallationActionList>
+    <!-- Setting defaultUnixGroup and defaultUnixOwner -->
+    <actionGroup>
+     <actionList>
+       <setInstallerVariable name="project.defaultUnixGroup" value="daemon"/>
+       <setInstallerVariable name="project.defaultUnixOwner" value="root"/>
+     </actionList>
+     <ruleList>
+       <isFalse value="${extract_mode}"/>
+     </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <!-- Do not create uninstaller in case of extract-only mode -->
+        <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
+      </actionList>
+      <ruleList>
+        <isTrue value="${extract_mode}"/>
+      </ruleList>
+    </actionGroup>
+    <!-- Do not perform the below actions in case of extract-only mode -->
+    <actionGroup>
+      <actionList>
+        <!-- Abort installation if not super-user and not running in extract-only mode-->
+        <throwError text="${msg(Installer.Warning.RootPrivileges)}">
+          <ruleList>
+            <isFalse value="${installer_is_root_install}"/>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </throwError>
+        <!-- Creates the ini file if not exits -->
+        <touchFile path="/etc/postgres-reg.ini">
+          <ruleList>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </touchFile>
+        <setInstallerVariable name="defaultpghome" value="${pghome}"/>
+        <!-- LIN : Check Previous Installation of hdfs_fdw -->
+        <actionGroup>
+          <actionList>
+	    <iniFileGet>
+              <file>/etc/postgres-reg.ini</file>
+              <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+              <key>Version</key>
+              <variable>fdwVersionInstalled</variable>
+            </iniFileGet>
+          </actionList>
+          <ruleList>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
+        <!-- LIN Set Installation Directory in case of re-install/upgrade -->
+        <actionGroup>
+          <actionList>
+            <iniFileGet>
+              <file>/etc/postgres-reg.ini</file>
+              <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+              <key>InstallationDirectory</key>
+              <variable>installdir</variable>
+            </iniFileGet>
+          </actionList>
+          <ruleList>
+            <stringTest text="${fdwVersionInstalled}" type="not_empty"/>
+            <compareText>
+              <logic>does_not_equal</logic>
+              <text>${platform_name}</text>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
+        <!-- LIN : Exit the installation if the installdir is not valid (Unattended mode) -->
+        <actionGroup>
+          <actionList>
+            <showWarning>
+              <text>${msg(fdw.installdir.pgerror)}</text>
+            </showWarning>
+            <exit>
+              <exitCode>0</exitCode>
+            </exit>
+          </actionList>
+          <ruleList>
+            <ruleGroup>
+              <ruleEvaluationLogic>or</ruleEvaluationLogic>
+              <ruleList>
+                <fileTest>
+                  <path>${installdir}/bin/psql</path>
+                  <condition>not_exists</condition>
+                </fileTest>
+                <fileTest>
+                  <path>${installdir}/bin/pg_config</path>
+                  <condition>not_exists</condition>
+                </fileTest>
+              </ruleList>
+            </ruleGroup>
+            <ruleGroup>
+              <ruleList>
+                <compareText>
+                  <text>${platform_name}</text>
+                  <logic>does_not_equal</logic>
+                  <value>windows</value>
+                </compareText>
+		<!-- following check means mode equals unattended -->
+               <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
+              </ruleList>
+            </ruleGroup>
+          </ruleList>
+        </actionGroup>
+        <!-- Exits the installation if the postgresql version is not compatible with hdfs_fdw version (Unattended mode) -->
+        <actionGroup>
+          <actionList>
+            <setInstallerVariableFromScriptOutput>
+              <name>pg_version_str</name>
+              <exec>${installdir}/bin/pg_config</exec>
+              <execArgs>--version</execArgs>
+              <workingDirectory>${installdir}/bin</workingDirectory>
+              <ruleList>
+                <compareText>
+                  <text>${platform_name}</text>
+                  <logic>does_not_equal</logic>
+                  <value>windows</value>
+                </compareText>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <setInstallerVariableFromRegEx>
+              <name>pg_version</name>
+              <text>${pg_version_str}</text>
+              <pattern>^PostgreSQL ([0-9].[0-9]).*$</pattern>
+              <substitution>\1</substitution>
+              <ruleList>
+                <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${pg_version_str}</text>
+                  <value/>
+                </compareText>
+              </ruleList>
+            </setInstallerVariableFromRegEx>
+            <showWarning>
+              <text>${msg(fdw.incompatible.pg.error)}</text>
+              <ruleList>
+                <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${pg_version}</text>
+                  <value>PG_MAJOR_VERSION</value>
+                </compareText>
+              </ruleList>
+            </showWarning>
+            <exit>
+              <exitCode>0</exitCode>
+              <ruleList>
+                <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${pg_version}</text>
+                  <value>PG_MAJOR_VERSION</value>
+                </compareText>
+              </ruleList>
+            </exit>
+          </actionList>
+          <ruleList>
+	    <!-- following check means mode equals unattended -->
+            <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
+          </ruleList>
+        </actionGroup>
+        <!-- Setting the installation type as upgrade if previous installation found -->
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="installationType" value="upgrade"/>
+          </actionList>
+          <ruleList>
+            <stringTest text="${fdwVersionInstalled}" type="not_empty"/>
+          </ruleList>
+        </actionGroup>
+      </actionList>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </actionGroup>
+  </preInstallationActionList>
+  <!-- Post installation actions -->
+  <postInstallationActionList>
+    <!-- Do not perform the below actions in case of extract-only mode -->
+    <actionGroup>
+      <actionList>
+        <!-- LIN: Write the hdfs_fdw Version to INI File -->
+        <actionGroup>
+          <actionList>
+            <iniFileSet>
+              <file>/etc/postgres-reg.ini</file>
+              <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+              <key>Description</key>
+              <value>${msg(fdw.desc)}</value>
+            </iniFileSet>
+            <iniFileSet>
+              <file>/etc/postgres-reg.ini</file>
+              <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+              <key>InstallationDirectory</key>
+              <value>${installdir}</value>
+            </iniFileSet>
+            <iniFileSet>
+              <file>/etc/postgres-reg.ini</file>
+              <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+              <key>Version</key>
+              <value>${product_version}</value>
+            </iniFileSet>
+          </actionList>
+          <ruleList>
+            <compareText>
+              <text>${platform_name}</text>
+              <logic>does_not_equal</logic>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
+      </actionList>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- Set SBP component_reference_count -->
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="sbp_comp_ref_count" value="0"/>
+        <iniFileGet file="/etc/postgres-reg.ini" section="Global_ref_counts" key="sbp_components_ref_count" variable="sbp_comp_ref_count">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </iniFileGet>
+        <registryGet name="sbp_components_ref_count" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Global_ref_counts" variable="sbp_comp_ref_count" wowMode="32">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </registryGet>
+        <mathExpression text="${sbp_comp_ref_count} + 1" variable="sbp_comp_ref_count"/>
+        <iniFileSet file="/etc/postgres-reg.ini" key="sbp_components_ref_count" section="Global_ref_counts" value="${sbp_comp_ref_count}">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </iniFileSet>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Global_ref_counts" name="sbp_components_ref_count" type="REG_SZ" value="${sbp_comp_ref_count}" wowMode="32">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </registrySet>
+      </actionList>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+        <compareText text="${fdwVersion}" logic="equals" value=""/>
+      </ruleList>
+    </actionGroup>
+  </postInstallationActionList>
+  <!-- preUninstallation actions -->
+  <preUninstallationActionList>
+    <actionGroup>
+      <actionList>
+        <showWarning text="${msg(Installer.Warning.UninstallerRootPrivileges)}"/>
+        <exit/>
+      </actionList>
+      <ruleList>
+        <isFalse value="${installer_is_root_install}"/>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+    <!-- LIN: Unsetting the hdfs_fdw values in the ini file -->
+    <actionGroup>
+      <actionList>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+          <key>Description</key>
+          <value/>
+        </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+          <key>InstallationDirectory</key>
+          <value/>
+        </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+          <key>Version</key>
+          <value/>
+        </iniFileSet>
+      </actionList>
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </actionGroup>
+  </preUninstallationActionList>
+  <postUninstallationActionList>
+    <!-- Set SBP component_reference_count -->
+    <actionGroup>
+      <actionList>
+        <iniFileGet file="/etc/postgres-reg.ini" section="Global_ref_counts" key="sbp_components_ref_count" variable="sbp_comp_ref_count">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </iniFileGet>
+        <registryGet name="sbp_components_ref_count" key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Global_ref_counts" variable="sbp_comp_ref_count" wowMode="32">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </registryGet>
+        <mathExpression text="${sbp_comp_ref_count} - 1" variable="sbp_comp_ref_count">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${sbp_comp_ref_count}" value="0"/>
+          </ruleList>
+        </mathExpression>
+        <iniFileSet file="/etc/postgres-reg.ini" key="sbp_components_ref_count" section="Global_ref_counts" value="${sbp_comp_ref_count}">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </iniFileSet>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\Global_ref_counts" name="sbp_components_ref_count" type="REG_SZ" value="${sbp_comp_ref_count}" wowMode="32">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </registrySet>
+      </actionList>
+    </actionGroup>
+  </postUninstallationActionList>
+  <!-- Components -->
+  <componentList>
+    <component>
+      <name>hdfs_fdw</name>
+      <description>hdfs_fdw</description>
+      <canBeEdited>0</canBeEdited>
+      <selected>1</selected>
+      <show>1</show>
+      <folderList>
+        <!-- Licenses -->
+        <folder description="Licenses Program Files" destination="${installdir}" name="licensesprogramfiles" platforms="all">
+          <distributionFileList>
+            <distributionFile origin="staging/hdfs_fdw_license.txt"/>
+          </distributionFileList>
+        </folder>
+        <!-- README -->
+        <folder description="Licenses Program Files" destination="${installdir}" name="readmeprogramfiles" platforms="all">
+          <distributionFileList>
+            <distributionFile origin="staging/README.md"/>
+          </distributionFileList>
+        </folder>
+        <!-- INSTALL -->
+        <folder description="Licenses Program Files" destination="${installdir}" name="installprogramfiles" platforms="all">
+          <distributionFileList>
+            <distributionFile origin="staging/INSTALL"/>
+          </distributionFileList>
+        </folder>
+        <!-- LIN-X64: Program files -->
+        <folder>
+          <description>Program Files</description>
+          <destination>${installdir}</destination>
+          <name>programfilesbinlinux_x64</name>
+          <platforms>linux-x64</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+              <origin>staging/linux-x64/lib</origin>
+            </distributionDirectory>
+            <distributionDirectory>
+              <origin>staging/linux-x64/share</origin>
+            </distributionDirectory>
+            <distributionFile origin="staging/linux-x64/hdfs_fdw_3rd_party_licenses.txt"/>
+          </distributionFileList>
+        </folder>
+      </folderList>
+    </component>
+  </componentList>
+  <parameterList>
+    <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
+    <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
+    <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+    <!-- Install Directory -->
+    <directoryParameter>
+      <name>installdir</name>
+      <description>Installer.Parameter.installdir.description</description>
+      <explanation>Installer.Parameter.installdir.explanation</explanation>
+      <value>${defaultpghome}</value>
+      <default/>
+      <allowEmptyValue>0</allowEmptyValue>
+      <ask>yes</ask>
+      <cliOptionName>prefix</cliOptionName>
+      <mustBeWritable>yes</mustBeWritable>
+      <mustExist>0</mustExist>
+      <width>40</width>
+      <ruleEvaluationLogic>or</ruleEvaluationLogic>
+      <ruleList>
+        <compareText text="${installationType}" value="upgrade" logic="does_not_equal"/>
+        <isTrue value="${extract_mode}"/>
+      </ruleList>
+      <!-- Validating whether installdir is empty - only required if not extracting-->
+      <validationActionList>
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="installdir" value="${defaultpghome}"/>
+            <throwError>
+              <text>${msg(fdw.installdir.empty)}</text>
+            </throwError>
+          </actionList>
+          <ruleList>
+            <compareText>
+              <text>${installdir}</text>
+              <logic>equals</logic>
+              <value/>
+            </compareText>
+            <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
+        <!-- Validating whether installdir contains whitespaces (Linux) -->
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="installdir" value="${default_installdir}"/>
+            <showWarning>
+              <text>${msg(fdw.installdir.error)}</text>
+            </showWarning>
+            <setInstallerVariable name="next_page" value="installdir"/>
+          </actionList>
+          <ruleList>
+            <regExMatch>
+              <text>${installdir}</text>
+              <logic>does_not_match</logic>
+              <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+            </regExMatch>
+            <compareText>
+              <text>${platform_name}</text>
+              <logic>does_not_equal</logic>
+              <value>windows</value>
+            </compareText>
+          </ruleList>
+        </actionGroup>
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="installdir" value="${defaultpghome}"/>
+            <throwError>
+              <text>${msg(fdw.installdir.pgerror)}</text>
+            </throwError>
+          </actionList>
+          <ruleList>
+            <isFalse value="${extract_mode}"/>
+            <ruleGroup>
+              <ruleEvaluationLogic>or</ruleEvaluationLogic>
+              <ruleList>
+                <fileTest>
+                  <path>${installdir}/bin/psql</path>
+                  <condition>not_exists</condition>
+                </fileTest>
+                <fileTest>
+                  <path>${installdir}/bin/pg_config</path>
+                  <condition>not_exists</condition>
+                </fileTest>
+              </ruleList>
+            </ruleGroup>
+            <ruleGroup>
+              <ruleList>
+                <compareText>
+                  <text>${platform_name}</text>
+                  <logic>does_not_equal</logic>
+                  <value>windows</value>
+                </compareText>
+              </ruleList>
+            </ruleGroup>
+          </ruleList>
+        </actionGroup>
+	<!-- Exits the installation if the postgresql version is not compatible with fdw version -->
+        <actionGroup>
+          <actionList>
+            <setInstallerVariableFromScriptOutput>
+              <name>pg_version_str</name>
+              <exec>${installdir}/bin/pg_config</exec>
+              <execArgs>--version</execArgs>
+              <workingDirectory>${installdir}/bin</workingDirectory>
+              <ruleList>
+                <compareText>
+                  <text>${platform_name}</text>
+                  <logic>does_not_equal</logic>
+                  <value>windows</value>
+                </compareText>
+              </ruleList>
+            </setInstallerVariableFromScriptOutput>
+            <setInstallerVariableFromRegEx>
+              <name>pg_version</name>
+              <text>${pg_version_str}</text>
+              <pattern>^PostgreSQL ([0-9].[0-9]).*$</pattern>
+              <substitution>\1</substitution>
+              <ruleList>
+                <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${pg_version_str}</text>
+                  <value/>
+                </compareText>
+              </ruleList>
+            </setInstallerVariableFromRegEx>
+	    <throwError>
+              <text>${msg(fdw.incompatible.pg.error)}</text>
+              <ruleList>
+                <compareText>
+                  <logic>does_not_equal</logic>
+                  <text>${pg_version}</text>
+                  <value>PG_MAJOR_VERSION</value>
+                </compareText>
+              </ruleList>
+            </throwError>
+          </actionList>
+	  <ruleList>
+            <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </actionGroup>
+      </validationActionList>
+    </directoryParameter>
+    <!-- Explain that we're using an existing installation directory -->
+    <labelParameter>
+      <name>upgrade</name>
+      <title>${msg(upgrade.existing.installation.title)}</title>
+      <description>${msg(upgrade.existing.installation.description)}</description>
+      <ruleList>
+        <compareText text="${installationType}" value="upgrade" logic="equals"/>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </labelParameter>
+  </parameterList>
+</project>

@@ -40,6 +40,9 @@ project_perl	libperl perl.exe
 project_python	libpython python.exe
 project_tcl	libtcl8 tcl85.dll
 project_tk	libtk8 tk85.dll
+project_thrift	libthrift-0.9.1
+project_fb303	libfb303
+project_hive	libhive
 project_keyutils	libkeyutils-1.2
 project_snmp++	libsnmp++
 project_mod_wsgi	mod_wsgi.so mod_wsgi-py33-VC10.so

@@ -2,9 +2,10 @@
 artistic_license.txt	project_perl
 LGPL_v2.1_license.txt	project_geos project_gettext project_libiconv project_pthreads project_unixODBC project_uuid project_QT project_libmbfl project_keyutils
 LGPL_v2_license.txt	project_libpango
-apache_v2.0.txt	project_log4j project_apache.commons.lang3 project_mod_wsgi project_cython
+apache_v2.0.txt	project_log4j project_apache.commons.lang3 project_mod_wsgi project_cython project_thrift
 curl_license.txt	project_curl
 expat_license.txt	project_expat
+asf_license.txt	project_fb303 project_hive
 fontconfig_license.txt	project_fontconfig
 freetype_license.txt	project_freetype
 gcc_runtime_library_exception_license.txt	project_libgcc_s project_libstdc++

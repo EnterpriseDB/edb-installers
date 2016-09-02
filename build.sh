@@ -395,6 +395,20 @@ then
     _postprocess_updatemonitor || exit 1
 fi
 
+# Package: hdfs_fdw
+if [ $PG_PACKAGE_HDFS_FDW = 1 ];
+then
+    cd $WD
+    source ./hdfs_fdw/build.sh
+
+    if [ $SKIPBUILD = 0 ];
+    then
+        _prep_hdfs_fdw || exit 1
+        _build_hdfs_fdw || exit 1
+    fi
+    _postprocess_hdfs_fdw || exit 1
+fi
+
 # Check for private builds
 if [ $SKIPPVTPACKAGES = 0 ];
 then
