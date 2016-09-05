@@ -21,7 +21,7 @@
   <width>550</width>
   <height>400</height>
   <!-- Misc package options -->
-  <installerFilename>hdfs_fdw-pgPG_MAJOR_VERSION-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+  <installerFilename>hdfs_fdw-pgPG_CURRENT_VERSION-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
   <enableRollback>0</enableRollback>
   <requestedExecutionLevel>asInvoker</requestedExecutionLevel>
   <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
@@ -324,7 +324,7 @@ EOF
           <actionList>
 	    <iniFileGet>
               <file>/etc/postgres-reg.ini</file>
-              <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+              <section>hdfs_fdw_PGPG_CURRENT_VERSION</section>
               <key>Version</key>
               <variable>fdwVersionInstalled</variable>
             </iniFileGet>
@@ -342,7 +342,7 @@ EOF
           <actionList>
             <iniFileGet>
               <file>/etc/postgres-reg.ini</file>
-              <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+              <section>hdfs_fdw_PGPG_CURRENT_VERSION</section>
               <key>InstallationDirectory</key>
               <variable>installdir</variable>
             </iniFileGet>
@@ -473,19 +473,19 @@ EOF
           <actionList>
             <iniFileSet>
               <file>/etc/postgres-reg.ini</file>
-              <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+              <section>hdfs_fdw_PGPG_CURRENT_VERSION</section>
               <key>Description</key>
               <value>${msg(fdw.desc)}</value>
             </iniFileSet>
             <iniFileSet>
               <file>/etc/postgres-reg.ini</file>
-              <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+              <section>hdfs_fdw_PGPG_CURRENT_VERSION</section>
               <key>InstallationDirectory</key>
               <value>${installdir}</value>
             </iniFileSet>
             <iniFileSet>
               <file>/etc/postgres-reg.ini</file>
-              <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+              <section>hdfs_fdw_PGPG_CURRENT_VERSION</section>
               <key>Version</key>
               <value>${product_version}</value>
             </iniFileSet>
@@ -553,19 +553,19 @@ EOF
       <actionList>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+          <section>hdfs_fdw_PGPG_CURRENT_VERSION</section>
           <key>Description</key>
           <value/>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+          <section>hdfs_fdw_PGPG_CURRENT_VERSION</section>
           <key>InstallationDirectory</key>
           <value/>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>hdfs_fdw_PG_MAJOR_VERSION</section>
+          <section>hdfs_fdw_PGPG_CURRENT_VERSION</section>
           <key>Version</key>
           <value/>
         </iniFileSet>

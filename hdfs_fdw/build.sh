@@ -164,9 +164,12 @@ _postprocess_hdfs_fdw() {
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (hdfs_fdw/installer.xml.in)"
 
+    PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
+
     _replace PG_VERSION_HDFS_FDW $PG_VERSION_HDFS_FDW installer.xml || _die "Failed to set the version in the installer project file (hdfs_fdw/installer.xml)"
     _replace PG_BUILDNUM_HDFS_FDW $PG_BUILDNUM_HDFS_FDW installer.xml || _die "Failed to set the version in the installer project file (hdfs_fdw/installer.xml)"
     _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the PG Major version in the installer project file (hdfs_fdw/installer.xml)"
+    _replace PG_CURRENT_VERSION $PG_CURRENT_VERSION installer.xml || _die "Failed to set the PG Current Number in the installer project file (PostGIS/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ];
