@@ -474,7 +474,7 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libxml2.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libxslt.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libcurl.lib $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libcurl.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
 
     # Copy the third party headers except GPL license headers 
     mkdir $WD/server/staging/windows-x64/3rdinclude/
