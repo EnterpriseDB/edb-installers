@@ -2,6 +2,30 @@
 
 # PostgreSQL stackbuilder runner script for Linux
 # Dave Page, EnterpriseDB
+
+# Check if certificate file is passed as argument or not which is optional
+CERTPATH=""
+usage() { echo "Usage: $0 [-c <ca-bundle certificate path> ]" 1>&2; exit 1; }
+
+OPTS=`getopt -o c: --long ca-bundle: -n 'parse-options' -- "$@"`
+if [ $? != 0 ] ; then usage; fi
+eval set -- "$OPTS"
+while true; do
+  case "$1" in
+    -c | --ca-bundle )
+            if [ -f $2 ]; then
+                CERTPATH="-c $2";
+       else
+                echo "ca-bundle certificate file '$2' does not exist"
+                usage
+                exit 1;
+       fi
+       shift; shift;;
+
+   * ) break ;;
+ esac
+done
+
 LOADINGUSER=`whoami`
 echo "No graphical su/sudo program could be found on your system!"
 echo "This window must be kept open while Stack Builder is running."
@@ -30,13 +54,13 @@ then
 
     if [ $USE_SUDO = "1" ];
     then
-        sudo su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/pgAdmin3/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder""
+        sudo su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/pgAdmin3/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $CERTPATH"
     else
-        su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/pgAdmin3/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder""
+        su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/pgAdmin3/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $CERTPATH"
     fi
 
 else
-    LD_LIBRARY_PATH="PG_INSTALLDIR/pgAdmin3/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder"
+    LD_LIBRARY_PATH="PG_INSTALLDIR/pgAdmin3/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $CERTPATH
 fi
 
 # Wait a while to display su or sudo invalid password error if any

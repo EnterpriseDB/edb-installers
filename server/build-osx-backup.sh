@@ -191,8 +191,12 @@ EOT
     # Stackbuilder
     cd $WD/server/source/stackbuilder.osx
 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.5 -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_OSX_SYSROOT:FILEPATH=/Developer/SDKs/MacOSX10.5.sdk -D CMAKE_OSX_ARCHITECTURES:STRING=i386 . " || _die "Failed to configure StackBuilder"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.5 -D CURL_ROOT:PATH=/usr/local -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_OSX_SYSROOT:FILEPATH=/Developer/SDKs/MacOSX10.5.sdk -D CMAKE_OSX_ARCHITECTURES:STRING=i386 . " || _die "Failed to configure StackBuilder"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; make all" || _die "Failed to build StackBuilder"
+
+    # Copy the CA bundle
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs" || _die "Failed to create certs directory"
+    ssh $PG_SSH_OSX "cp /usr/local/lib/libcurl*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libcurl"
 
     # Copy the StackBuilder app bundle into place
     cp -R stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"
