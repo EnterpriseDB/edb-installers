@@ -375,7 +375,7 @@ EOT
     ssh -v $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip stackbuilder.zip" || _die "Failed to unpack the source tree on the windows build host (stackbuilder.zip)"
   
     # Build the code
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c cmake -D MS_VS_10=1 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS\\\\output\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure pgAdmin on the build host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c cmake -D MS_VS_10=1 -D CURL_ROOT:PATH=$PG_PGBUILD_WINDOWS -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS\\\\output\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat stackbuilder.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/stackbuilder.windows; cmd /c $PG_PATH_WINDOWS\\\\vc-build.bat INSTALL.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to install stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS "cmd /c mv $PG_PATH_WINDOWS\\\\output\\\\StackBuilder\\\\bin\\\\stackbuilder.exe $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to relocate the stackbuilder executable on the build host"
@@ -390,6 +390,7 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (libxml2.dll)"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (libxslt.dll)"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\zlib1.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (zlib1.dll)"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libcurl.dll $PG_PATH_WINDOWS\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (libcurl)"
 
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\lib\\\\ssleay32.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\lib\\\\libeay32.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
@@ -400,6 +401,7 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\lib\\\\libxml2.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\lib\\\\libxslt.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\zlib.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\lib\\\\libcurl.lib $PG_PATH_WINDOWS\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows build host"
     
     # Copy the third party headers except GPL license headers
     mkdir $WD/server/staging/windows/3rdinclude/
