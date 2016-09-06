@@ -175,8 +175,12 @@ EOT
 
     cd $WD/server/source/stackbuilder.osx
 
-    PATH=/usr/local/bin:$PATH cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6 -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=i386 .  || _die "Failed to configure StackBuilder"
+    PATH=/usr/local/bin:$PATH cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6 -D CURL_ROOT:PATH=/usr/local -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=i386 .  || _die "Failed to configure StackBuilder"
     make all || _die "Failed to build StackBuilder"
+
+    # Copy the CA bundle
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs" || _die "Failed to create certs directory"
+    ssh $PG_SSH_OSX "cp /usr/local/certs/ca-bundle.crt $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs/ " || _die "Failed to copy certs bundle"
 
     # Copy the StackBuilder app bundle into place
     cp -pR stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"
@@ -203,6 +207,7 @@ EOT
     cp -pR /usr/local/lib/libpng16* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libpng15"
     cp -pR /usr/local/lib/libiconv* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libiconv"
     cp -pR /usr/local/lib/libexpat* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libexpat"
+    cp -pR /usr/local/lib/libcurl*dylib $WD/server/staging/osx/lib/ || _die "Failed to copy latest libcurl"
 
     cp -pR /usr/local/lib/libwx_macu_adv-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
     cp -pR /usr/local/lib/libwx_macu_core-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
