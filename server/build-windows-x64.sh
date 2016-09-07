@@ -296,7 +296,7 @@ EOT
     rm postgres.windows-x64/contrib/pldebugger/Makefile # Remove the unix makefile so that the build scripts don't try to parse it - we have our own.
     zip -r postgres-win64.zip postgres.windows-x64 || _die "Failed to pack the source tree (postgres.windows-x64)"
     scp postgres-win64.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (postgres-win64.zip)"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip postgres-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (postgres-win64.zip)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip -o postgres-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (postgres-win64.zip)"
    
     # Build the code and install into a temporary directory
     ssh $PG_SSH_WINDOWS_X64 "set; cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; ./build.bat RELEASE" || _die "Failed to build postgres on the windows-x64 build host"
@@ -318,7 +318,7 @@ EOT
     echo "Copying pgAdmin source tree to Windows build VM"
     zip -r pgadmin-win64.zip pgadmin.windows-x64 || _die "Failed to pack the source tree (pgadmin.windows-x64)"
     scp pgadmin-win64.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (pgadmin-win64.zip)"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip pgadmin-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (pgadmin-win64.zip)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip -o pgadmin-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (pgadmin-win64.zip)"
   
     # Build the PNG compiler 
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/xtra/png2c; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build.bat png2c.vcproj RELEASE" || _die "Failed to build png2c on the build host"
@@ -390,10 +390,10 @@ EOT
     echo "Copying StackBuilder source tree to Windows build VM"
     zip -r stackbuilder-win64.zip stackbuilder.windows-x64 || _die "Failed to pack the source tree (stackbuilder.windows-x64)"
     scp stackbuilder-win64.zip $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (stackbuilder-win64.zip)"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip stackbuilder-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (stackbuilder-win64.zip)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip -o stackbuilder-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (stackbuilder-win64.zip)"
   
     # Build the code
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c "C:\\\\pgBuild\\\\CMake2.8\\\\bin\\\\cmake" -G Visual\ Studio\ 9\ 2008\ Win64 -D CURL_ROOT:PATH=$PG_PGBUILD_WINDOWS_X64\Curl -D WX_ROOT_DIR=C:\\\\pgBuild\\\\wxWidgets -D MSGFMT_EXECUTABLE=C:\\\\pgBuild\\\\gettext\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder ." || _die "Failed to configure pgAdmin on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c "C:\\\\pgBuild\\\\CMake2.8\\\\bin\\\\cmake" -G Visual\ Studio\ 9\ 2008\ Win64 -D CURL_ROOT:PATH=$PG_PGBUILD_WINDOWS_X64\\\\Curl -D WX_ROOT_DIR=C:\\\\pgBuild\\\\wxWidgets -D MSGFMT_EXECUTABLE=C:\\\\pgBuild\\\\gettext\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder ." || _die "Failed to configure pgAdmin on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat /platform:x64 stackbuilder.vcproj RELEASE" || _die "Failed to build stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat /platform:x64 INSTALL.vcproj RELEASE" || _die "Failed to install stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mv $PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder\\\\bin\\\\stackbuilder.exe $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to relocate the stackbuilder executable on the build host"
