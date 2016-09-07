@@ -179,8 +179,8 @@ EOT
     make all || _die "Failed to build StackBuilder"
 
     # Copy the CA bundle
-    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs" || _die "Failed to create certs directory"
-    ssh $PG_SSH_OSX "cp /usr/local/certs/ca-bundle.crt $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs/ " || _die "Failed to copy certs bundle"
+    mkdir -p $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs || _die "Failed to create certs directory"
+    cp /usr/local/certs/ca-bundle.crt $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs/ || _die "Failed to copy certs bundle"
 
     # Copy the StackBuilder app bundle into place
     cp -pR stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"
