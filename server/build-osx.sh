@@ -175,8 +175,8 @@ EOT
     make all || _die "Failed to build StackBuilder"
 
     # Copy the CA bundle
-    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs" || _die "Failed to create certs directory"
-    ssh $PG_SSH_OSX "cp /usr/local/certs/ca-bundle.crt $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs/ " || _die "Failed to copy certs bundle"
+    mkdir -p $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs || _die "Failed to create certs directory"
+    cp /usr/local/certs/ca-bundle.crt $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs/  || _die "Failed to copy certs bundle"
 
     # Copy the StackBuilder app bundle into place
     cp -pR stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"
@@ -203,7 +203,7 @@ EOT
     cp -pR /usr/local/lib/libpng16* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libpng15"
     cp -pR /usr/local/lib/libiconv* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libiconv"
     cp -pR /usr/local/lib/libexpat* $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libexpat"
-    cp -pR /usr/local/lib/libcurl*dylib $PG_STAGING/lib/ || _die "Failed to copy the latest libcurl"
+    cp -pR /usr/local/lib/libcurl*dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libcurl"
 
     cp -pR /usr/local/lib/libwx_macu_adv-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
     cp -pR /usr/local/lib/libwx_macu_core-*.dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libuuid"
