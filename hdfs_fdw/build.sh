@@ -59,6 +59,22 @@ _prep_hdfs_fdw() {
       fi
     else
       cd hdfs_fdw
+      git reset HEAD --hard
+      echo "Updating HDFS_FDW sources from the repo..."
+      git branch | head -1 | grep "no branch" > /dev/null
+      if [ "$?" -ne "0" ]; then
+        git pull || _die "Failed to pull HDFS_FDW source"
+      fi
+      if  [ x$PG_TAG_HDFS_FDW = x ];
+      then
+        git checkout master || _die "Failed to update existing sources from master"
+      else
+        git checkout $PG_TAG_HDFS_FDW || _die "Failed to update existing source from tag $PG_TAG_HDFS_FDW"
+      fi
+      git branch | head -1 | grep "no branch" > /dev/null
+      if [ "$?" -ne "0" ]; then
+        git pull || _die "Failed to pull HDFS_FDW source"
+      fi
     fi
 
     cd $WD/hdfs_fdw/source
