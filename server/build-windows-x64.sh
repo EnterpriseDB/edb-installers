@@ -342,8 +342,8 @@ EOT
     zip -r scripts.zip vc-build.bat vc-build-x64.bat vc-build-doc.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build-x64.bat vc-build-x64.bat, createuser, getlocales, validateuser)"
 
     rsync -av scripts.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the scripts source tree to the windows-x64 build host (scripts.zip)"
-    ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; unzip scripts.zip" || _die "Failed to unpack the scripts source tree on the windows-x64 build host (scripts.zip)"    
-    
+    ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; unzip -o scripts.zip" || _die "Failed to unpack the scripts source tree on the windows-x64 build host (scripts.zip)"
+
     # Build the code and install into a temporary directory
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\createuser; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat createuser.vcproj UPGRADE" || _die "Failed to build createuser on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\createuser; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat createuser.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build createuser on the windows-x64 build host"
@@ -365,7 +365,7 @@ EOT
     rm postgres.windows-x64/contrib/pldebugger/Makefile # Remove the unix makefile so that the build scripts don't try to parse it - we have our own.
     zip -r postgres-win64.zip postgres.windows-x64 || _die "Failed to pack the source tree (postgres.windows-x64)"
     rsync -av postgres-win64.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (postgres-win64.zip)"
-    ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip postgres-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (postgres-win64.zip)"
+    ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip -o postgres-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (postgres-win64.zip)"
   
     PG_CYGWIN_PERL_WINDOWS_X64=`echo $PG_PERL_WINDOWS_X64 | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'`
     PG_CYGWIN_PYTHON_WINDOWS_X64=`echo $PG_PYTHON_WINDOWS_X64 | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'`    
@@ -397,7 +397,7 @@ EOT
     echo "Copying pgAdmin source tree to Windows build VM"
     zip -r pgadmin-win64.zip pgadmin.windows-x64 || _die "Failed to pack the source tree (pgadmin.windows-x64)"
     rsync -av pgadmin-win64.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (pgadmin-win64.zip)"
-    ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip pgadmin-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (pgadmin-win64.zip)"
+    ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip -o pgadmin-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (pgadmin-win64.zip)"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat pgAdmin3.sln UPGRADE" || _die "Failed to build pgAdmin on the build host"
  
     # Build the PNG compiler 
@@ -445,7 +445,7 @@ EOT
     echo "Copying StackBuilder source tree to Windows build VM"
     zip -r stackbuilder-win64.zip stackbuilder.windows-x64 || _die "Failed to pack the source tree (stackbuilder.windows-x64)"
     rsync -av stackbuilder-win64.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (stackbuilder-win64.zip)"
-    ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip stackbuilder-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (stackbuilder-win64.zip)"
+    ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip -o stackbuilder-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (stackbuilder-win64.zip)"
   
     # Build the code
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"Visual Studio 12 Win64\" -D MS_VS_10=1 -D CURL_ROOT:PATH=$PG_PGBUILD_WINDOWS_X64 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS_X64 -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS_X64\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
@@ -515,7 +515,7 @@ EOT
     echo "Copying built tree to Unix host"
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\output; zip -r ..\\\\output.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output)"
     rsync -av $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64/output.zip $WD/server/staging/windows-x64 || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output.zip)"
-    unzip $WD/server/staging/windows-x64/output.zip -d $WD/server/staging/windows-x64/ || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/output.zip)"
+    unzip -o $WD/server/staging/windows-x64/output.zip -d $WD/server/staging/windows-x64/ || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/output.zip)"
     rm $WD/server/staging/windows-x64/output.zip
 
     # fixes #35408. In 9.5, some modules were moved from contrib to src/test/modules. They are meant for server testing
