@@ -188,7 +188,7 @@ our \$config = {
     xslt=>'$PG_PGBUILD_WINDOWS_X64',
     iconv=>'$PG_PGBUILD_WINDOWS_X64',
     zlib=>'$PG_PGBUILD_WINDOWS_X64',        # --with-zlib=<path>
-    uuid=>'$PG_PGBUILD_WINDOWS_X64'       # --with-uuid-ossp
+    uuid=>'$PG_PGBUILD_WINDOWS_X64\uuid'       # --with-uuid-ossp
 };
 
 1;
