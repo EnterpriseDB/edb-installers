@@ -221,6 +221,7 @@ EOT
 
     # Copy the CA bundle
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs" || _die "Failed to create certs directory"
+    ssh $PG_SSH_OSX "cp /usr/local/certs/ca-bundle.crt $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs/ " || _die "Failed to copy certs bundle"
     ssh $PG_SSH_OSX "cp /usr/local/lib/libcurl*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libcurl"
 
     # Copy the StackBuilder app bundle into place
