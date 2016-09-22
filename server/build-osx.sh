@@ -92,16 +92,8 @@ _build_server_osx() {
     CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -O2" LDFLAGS="-L/usr/local/lib" PYTHON=/usr/local/bin/python3.2 TCLSH=/usr/local/bin/tclsh TCL_CONFIG_SH=/Library/Frameworks/Tcl.framework/tclConfig.sh PERL=/usr/local/ActivePerl-5.14/bin/perl ./configure --host=i386-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for i386"
     mv src/include/pg_config.h src/include/pg_config_i386.h
 
-    echo "Configuring the postgres source tree for PPC"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc -O2" LDFLAGS="-L/usr/local/lib" PYTHON=/usr/local/bin/python3.2 TCLSH=/usr/local/bin/tclsh TCL_CONFIG_SH=/Library/Frameworks/Tcl.framework/tclConfig.sh PERL=/usr/local/ActivePerl-5.14/bin/perl ./configure --host=powerpc-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for PPC"
-    mv src/include/pg_config.h src/include/pg_config_ppc.h
-
-    echo "Configuring the postgres source tree for PPC64"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch ppc64 -O2" LDFLAGS="-L/usr/local/lib" PYTHON=/usr/local/bin/python3.2 TCLSH=/usr/local/bin/tclsh TCL_CONFIG_SH=/Library/Frameworks/Tcl.framework/tclConfig.sh PERL=/usr/local/ActivePerl-5.14/bin/perl ./configure --host=powerpc64-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for PPC64"
-    mv src/include/pg_config.h src/include/pg_config_ppc64.h
-
     echo "Configuring the postgres source tree for x86_64"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -O2" LDFLAGS="-L/usr/local/lib" PYTHON=/usr/local/bin/python3.2 TCLSH=/usr/local/bin/tclsh TCL_CONFIG_SH=/Library/Frameworks/Tcl.framework/tclConfig.sh PERL=/usr/local/ActivePerl-5.14/bin/perl ./configure --host=x86_64-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for PPC"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -O2" LDFLAGS="-L/usr/local/lib" PYTHON=/usr/local/bin/python3.2 TCLSH=/usr/local/bin/tclsh TCL_CONFIG_SH=/Library/Frameworks/Tcl.framework/tclConfig.sh PERL=/usr/local/ActivePerl-5.14/bin/perl ./configure --host=x86_64-apple-darwin --prefix=$WD/server/staging/osx --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-krb5 --enable-thread-safety --with-libxml --with-ossp-uuid --with-includes=/usr/local/include/libxml2:/usr/local/include:/usr/local/include/security --docdir=$WD/server/staging/osx/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi || _die "Failed to configure postgres for x86_64"
     mv src/include/pg_config.h src/include/pg_config_x86_64.h
 
     echo "Configuring the postgres source tree for Universal"
@@ -111,11 +103,7 @@ _build_server_osx() {
     rm -f src/include/pg_config.h
 cat <<EOT > "src/include/pg_config.h"
 #ifdef __BIG_ENDIAN__
- #ifdef __LP64__
-  #include "pg_config_ppc64.h"
- #else
-  #include "pg_config_ppc.h"
- #endif
+ #error "Dont support ppc architecture"
 #else
  #ifdef __LP64__
   #include "pg_config_x86_64.h"
@@ -131,15 +119,15 @@ EOT
     make install || _die "Failed to install postgres"
 
     cp src/include/pg_config_i386.h $WD/server/staging/osx/include/
-    cp src/include/pg_config_ppc.h $WD/server/staging/osx/include/
-    cp src/include/pg_config_ppc64.h $WD/server/staging/osx/include/
+    #cp src/include/pg_config_ppc.h $WD/server/staging/osx/include/
+    #cp src/include/pg_config_ppc64.h $WD/server/staging/osx/include/
     cp src/include/pg_config_x86_64.h $WD/server/staging/osx/include/
 
-    echo "Adding ppc64 arch to libpq"
-    cd $WD/server/source/postgres.osx/src/interfaces/libpq
-    make clean
-    make CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc -arch ppc64 -arch x86_64" LDFLAGS="$PG_ARCH_OSX_LDFLAGS -arch i386 -arch ppc -arch ppc64 -arch x86_64 -L/usr/local/lib"
-    make install
+#    echo "Adding ppc64 arch to libpq"
+#    cd $WD/server/source/postgres.osx/src/interfaces/libpq
+#    make clean
+#    make CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386 -arch ppc -arch ppc64 -arch x86_64" LDFLAGS="$PG_ARCH_OSX_LDFLAGS -arch i386 -arch ppc -arch ppc64 -arch x86_64 -L/usr/local/lib"
+#    make install
 
     cd $WD/server/source/postgres.osx
 
@@ -216,13 +204,13 @@ EOT
 
     cd $WD/server/source/stackbuilder.osx
 
-    cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.5 -D CURL_ROOT:PATH=/usr/local -D CMAKE_BUILD_TYPE:STRING=Release -D  WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_OSX_SYSROOT:FILEPATH=/Developer/SDKs/MacOSX10.5.sdk .  || _die "Failed to configure StackBuilder"
+    cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.5 -D CURL_ROOT:PATH=/usr/local -D CMAKE_BUILD_TYPE:STRING=Release -D  WX_CONFIG_PATH:FILEPATH=/usr/local/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=ON -D CMAKE_OSX_SYSROOT:FILEPATH=/Developer/SDKs/MacOSX10.5.sdk -D CMAKE_OSX_ARCHITECTURES:STRING=i386 . || _die "Failed to configure StackBuilder"
     make all || _die "Failed to build StackBuilder"
 
     # Copy the CA bundle
-    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs" || _die "Failed to create certs directory"
-    ssh $PG_SSH_OSX "cp /usr/local/certs/ca-bundle.crt $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs/ " || _die "Failed to copy certs bundle"
-    ssh $PG_SSH_OSX "cp /usr/local/lib/libcurl*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libcurl"
+    mkdir -p $WD/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs || _die "Failed to create certs directory"
+    cp /usr/local/certs/ca-bundle.crt $WD/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs/ || _die "Failed to copy certs bundle"
+    cp /usr/local/lib/libcurl*dylib $WD/server/staging/osx/lib/ || _die "Failed to copy the latest libcurl"
 
     # Copy the StackBuilder app bundle into place
     cp -R stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"
@@ -339,7 +327,7 @@ _postprocess_server_osx() {
     cp scripts/osx/pgadmin.applescript.in staging/osx/scripts/pgadmin.applescript || _die "Failed to to the menu pick script (scripts/osx/pgadmin.applescript.in)"
     cp scripts/osx/stackbuilder.applescript.in staging/osx/scripts/stackbuilder.applescript || _die "Failed to to the menu pick script (scripts/osx/stackbuilder.applescript.in)"
 
-    PG_DATETIME_SETTING_OSX=`cat staging/osx/include/pg_config_ppc.h | grep "#define USE_INTEGER_DATETIMES 1"`
+    PG_DATETIME_SETTING_OSX=`cat staging/osx/include/pg_config_i386.h | grep "#define USE_INTEGER_DATETIMES 1"`
 
     if [ "x$PG_DATETIME_SETTING_OSX" = "x" ]
     then
