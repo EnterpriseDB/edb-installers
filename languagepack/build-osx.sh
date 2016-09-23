@@ -216,7 +216,7 @@ _build_languagepack_osx() {
 
      python setup.py install --prefix=\$PYTHON_INSTALL_PATH 
      easy_install pip
-     easy_install sphinx
+     pip install sphinx
 
      cd \$PYTHON_INSTALL_PATH
      pip list > \$install_path/pip_packages_list.txt
