@@ -4295,7 +4295,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 <deleteFile>
                     <path>/etc/init.d/${servicename}</path>
                     <ruleList>
-                        <isTrue value="${is_sysvinit}"/>
+                        <isFalse value="${is_init_systemd}"/>
                     </ruleList>
                 </deleteFile>
                 <deleteFile path="/usr/lib/systemd/system/${servicename}.service">
