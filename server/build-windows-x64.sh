@@ -181,7 +181,7 @@ msbuild %1 /p:Configuration=%2 %VAR3%
 GOTO end
 
 :upgrade
-devenv /upgrade %1
+vcupgrade /overwrite %1
 
 :end
 
@@ -223,7 +223,7 @@ msbuild %1 /p:Configuration=%2 %VAR3%
 GOTO end
 
 :upgrade
-devenv /upgrade %1
+vcupgrade /overwrite %1
 
 :end
 
