@@ -98,7 +98,14 @@ _prep_server() {
         echo "Fetching debugger source..."
         git clone git://git.postgresql.org/git/pldebugger.git || _die "Failed to checkout the pldebugger code"
     fi  
-
+    
+    # Get the last commit id
+    cd pldebugger
+    echo "pldebugger repo details:" 
+    echo "Branch: `git branch | sed -n -e 's/^\* \(.*\)/\1/p'`"
+    echo "Last commit:"
+    git log -n 1
+    cd ..
     cp -R pldebugger $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/
 
     # StackBuilder (Git Tree)
@@ -117,7 +124,13 @@ _prep_server() {
         git reset HEAD --hard && git clean -dfx
         git pull
     fi
-
+    
+    # Get the last commit id
+    cd $WD/server/source/stackbuilder
+    echo "stackbuilder repo details:" 
+    echo "Branch: `git branch | sed -n -e 's/^\* \(.*\)/\1/p'`"
+    echo "Last commit:"
+    git log -n 1
     if [ -f $WD/tarballs/stackbuilder-https.patch ]; then
         cd $WD/server/source/stackbuilder
         patch -p1 < $WD/tarballs/stackbuilder-https.patch
