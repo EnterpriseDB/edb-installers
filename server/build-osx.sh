@@ -518,18 +518,16 @@ _postprocess_server_osx() {
     # Now we need to turn this into a DMG file
     echo "Creating disk image"
     cd $WD/output
-    if [ -d server.img ];
-    then
-        rm -rf server.img
-    fi
+    # Clean existing source image directory if any
+    rm -rf server.img*
     mkdir server.img || _die "Failed to create DMG staging directory"
     mv postgresql-$PG_PACKAGE_VERSION-osx.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
     cp $WD/server/resources/README.osx server.img/README || _die "Failed to copy the installer README file into the DMG staging directory"
    
     tar -jcvf server.img.tar.bz2 server.img || _die "Failed to create the archive."
+    # Clean up the output directory on signing server before copying the image
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf server.img*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
     scp server.img.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output || _die "Failed to copy the archive to sign server."
-    rm server.img.tar.bz2 || _die "Failed to remove the server.img"
 
     # Copy the versions file to signing server 
     scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
@@ -540,12 +538,16 @@ _postprocess_server_osx() {
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output/server.img; rm -rf postgresql-$PG_PACKAGE_VERSION-osx.app; mv postgresql-$PG_PACKAGE_VERSION-osx-signed.app postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "could not move the signed app"
 
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; tar -jcvf server.img.tar.bz2 server.img;" || _die "faled to create server.img.tar.bz2 on $PG_SSH_OSX_SIGN"
+    # Remove the existing source image archive before copying the signed image
+    rm server.img.tar.bz2 || _die "Failed to remove the server.img"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/server.img.tar.bz2 $WD/output || _die "faled to copy server.img.tar.bz2 to $WD/output"
+
+    # Cleanup the output directory on build machine before copying the image archive
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; rm -rf postgresql* server* " || _die "Failed to clean the remote output directory"
     scp server.img.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/output || _die "faled to copy server.img.tar.bz2 to $PG_PATH_OSX/output"
     rm -rf server.img* || _die "Failed to remove server.img from output directory."
 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; touch server.img/.Trash"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; tar -jxvf server.img.tar.bz2; hdiutil create -quiet -anyowners -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-osx.dmg'" || _die "Failed to create the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; tar -jxvf server.img.tar.bz2; touch server.img/.Trash; hdiutil create -quiet -anyowners -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-osx.dmg'" || _die "Failed to create the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
 
     echo "Attach the  disk image, create zip and then detach the image"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; hdid postgresql-$PG_PACKAGE_VERSION-osx.dmg" || _die "Failed to open the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg in remote host.)"
@@ -562,8 +564,6 @@ _postprocess_server_osx() {
     # Copy the installer to regression setup
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; cp -p postgresql-*.dmg /buildfarm/installers/" || _die "Failed to Copy installer to the regression directory"
 
-    # Delete the installer from remote output directory
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; rm -rf postgresql* server* " || _die "Failed to clean the remote output directory"
 
     cd $WD
     echo "END POST Server OSX"
