@@ -110,6 +110,14 @@ _prep_server() {
         git clone git://git.postgresql.org/git/pldebugger.git || _die "Failed to checkout the pldebugger code"
     fi  
 
+    # Get the last commit id
+    cd pldebugger
+    echo "pldebugger repo details:" 
+    echo "Branch: `git branch | sed -n -e 's/^\* \(.*\)/\1/p'`"
+    echo "Last commit:"
+    git log -n 1
+    cd ..
+
     cp -R pldebugger $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/
 
     # StackBuilder (Git Tree)
@@ -129,6 +137,13 @@ _prep_server() {
         git pull
     fi
 
+    # Get the last commit id
+    cd $WD/server/source/stackbuilder
+    echo "stackbuilder repo details:" 
+    echo "Branch: `git branch | sed -n -e 's/^\* \(.*\)/\1/p'`"
+    echo "Last commit:"
+    git log -n 1
+    
     # Per-platform prep
     cd $WD
     

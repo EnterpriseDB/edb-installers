@@ -133,6 +133,11 @@ fi
 
 # Initialise the build system
 _init
+cd $WD
+echo "PG-INSTALLER repo details:"
+echo "Branch: `git branch | sed -n -e 's/^\* \(.*\)/\1/p'`"
+echo "Last commit:"
+git log -n 1
 
 echo "################################################"
 echo " Build common utilities or modularized packages"
