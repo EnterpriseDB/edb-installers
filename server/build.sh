@@ -120,7 +120,15 @@ _prep_server() {
     else
         echo "Fetching debugger source..."
         git clone -b PRE_9_2 git://git.postgresql.org/git/pldebugger.git || _die "Failed to checkout the pldebugger code"
-    fi  
+    fi
+
+    # Get the last commit id
+    cd pldebugger
+    echo "pldebugger repo details:"
+    echo "Branch: `git branch | sed -n -e 's/^\* \(.*\)/\1/p'`"
+    echo "Last commit:"
+    git log -n 1
+    cd ..
 
     # StackBuilder (Git Tree)
     if [ -e $WD/server/source/stackbuilder/CVS/Repository ]; then
@@ -138,6 +146,13 @@ _prep_server() {
         git reset HEAD --hard
         git pull
     fi
+
+    # Get the last commit id
+    cd $WD/server/source/stackbuilder
+    echo "stackbuilder repo details:"
+    echo "Branch: `git branch | sed -n -e 's/^\* \(.*\)/\1/p'`"
+    echo "Last commit:"
+    git log -n 1
 
     # Per-platform prep
     cd $WD
