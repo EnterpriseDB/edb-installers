@@ -137,7 +137,7 @@ _prep_server() {
     echo "Branch: `git branch | sed -n -e 's/^\* \(.*\)/\1/p'`"
     echo "Last commit:"
     git log -n 1
-exit
+    
     # Per-platform prep
     cd $WD
     
