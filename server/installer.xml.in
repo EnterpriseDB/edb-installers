@@ -551,23 +551,6 @@ EOF
 
     <!-- Preinstallation actions -->
     <preInstallationActionList>
-         <!-- config_local.py should not overwrite during upgrade mode linux,windows -->
-         <copyFile>
-           <origin>${installdir}/pgAdmin 4/web/config_local.py</origin>
-           <destination>${installdir}/pgAdmin 4/web/config_local.py_org</destination>
-           <ruleList>
-             <fileExists path="${installdir}/pgAdmin 4/web/config_local.py"/>
-           </ruleList>
-         </copyFile>
-
-         <!-- config_local.py should not overwrite during upgrade mode osx -->
-         <copyFile>
-           <origin>${installdir}/pgAdmin 4.app/Contents/Resources/web/config_local.py</origin>
-           <destination>${installdir}/pgAdmin 4.app/Contents/Resources/web/config_local.py_org</destination>
-           <ruleList>
-             <fileExists path="${installdir}/pgAdmin 4.app/Contents/Resources/web/config_local.py"/>
-           </ruleList>
-         </copyFile>
 
         <!-- Create temporary directory where all the temp files will be copied -->   
         <!-- createTempDir is a custom function that creates the unique temporary directory with proper permissions and returns the path in tempDir variable -->
@@ -3906,40 +3889,6 @@ REM The script sets environment variables helpful for PostgreSQL
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
         </deleteFile>
-
-        <!-- Restore config_local.py from config_local.py_org during upgrade mode linux,windows -->
-	<copyFile>
-          <origin>${installdir}/pgAdmin 4/web/config_local.py_org</origin>
-          <destination>${installdir}/pgAdmin 4/web/config_local.py</destination>
-          <ruleEvaluationLogic>and</ruleEvaluationLogic>
-          <ruleList>
-            <fileExists path="${installdir}/pgAdmin 4/web/config_local.py_org"/>
-            <fileExists path="${installdir}/pgAdmin 4/web/config_local.py"/>
-          </ruleList>
-        </copyFile>
-        <deleteFile path="${installdir}/pgAdmin 4/web/config_local.py_org" ruleEvaluationLogic="and">
-          <ruleList>
-            <fileExists path="${installdir}/pgAdmin 4/web/config_local.py_org"/>
-            <fileExists path="${installdir}/pgAdmin 4/web/config_local.py"/>
-          </ruleList>
-	</deleteFile>
-
-        <!-- Restore config_local.py from config_local.py_org during upgrade mode osx -->
-	<copyFile>
-          <origin>${installdir}/pgAdmin 4.app/Contents/Resources/web/config_local.py_org</origin>
-          <destination>${installdir}/pgAdmin 4.app/Contents/Resources/web/config_local.py</destination>
-          <ruleEvaluationLogic>and</ruleEvaluationLogic>
-          <ruleList>
-            <fileExists path="${installdir}/pgAdmin 4.app/Contents/Resources/web/config_local.py_org"/>
-            <fileExists path="${installdir}/pgAdmin 4.app/Contents/Resources/web/config_local.py"/>
-          </ruleList>
-        </copyFile>
-        <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Resources/web/config_local.py_org" ruleEvaluationLogic="and">
-          <ruleList>
-            <fileExists path="${installdir}/pgAdmin 4.app/Contents/Resources/web/config_local.py_org"/>
-            <fileExists path="${installdir}/pgAdmin 4.app/Contents/Resources/web/config_local.py"/>
-          </ruleList>
-	</deleteFile>
 
     </postInstallationActionList>
     <installationAbortedActionList>

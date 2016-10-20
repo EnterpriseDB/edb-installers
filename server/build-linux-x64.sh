@@ -356,7 +356,6 @@ EOF
     echo "SERVER_MODE = False" > config_distro.py
     echo "MINIFY_HTML = False" >> config_distro.py
     echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_distro.py
-    echo "# Add any configuration changes to this file." > config_local.py
     
 EOT-PGADMIN
 
