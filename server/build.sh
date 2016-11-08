@@ -86,6 +86,12 @@ _prep_server() {
         cd ..
     fi
 
+    if [ -f $WD/tarballs/tz-9392.patch ]; then
+        cd postgresql-$PG_TARBALL_POSTGRESQL
+        patch -p1 < $WD/tarballs/tz-9392.patch
+        cd ..
+    fi
+
     # pgAdmin
     if [ -e pgadmin3-$PG_TARBALL_PGADMIN ];
     then
