@@ -1035,29 +1035,8 @@ EOF
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/osx/PostGIS/share/extension/postgis--PG_VERSION_POSTGIS.sql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${sharedir}/extension</destination>
-                    <name>programfilesshareosxextn3</name>
-                    <platforms>osx</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/share/extension/postgis_topology--PG_VERSION_POSTGIS.sql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-		<folder>
-                    <description>Program Files</description>
-                    <destination>${sharedir}/extension</destination>
-                    <name>programfilesshareosxextn4</name>
-                    <platforms>osx</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/osx/PostGIS/share/extension/postgis_tiger_geocoder--PG_VERSION_POSTGIS.sql</origin>
+                           <allowWildcards>1</allowWildcards>
+			    <origin>staging/osx/PostGIS/share/extension/postgis*.*</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -1166,29 +1145,8 @@ EOF
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/linux/PostGIS/share/extension/postgis--PG_VERSION_POSTGIS.sql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${sharedir}/extension</destination>
-                    <name>programfilessharelinuxextn3</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux/PostGIS/share/extension/postgis_topology--PG_VERSION_POSTGIS.sql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-		<folder>
-                    <description>Program Files</description>
-                    <destination>${sharedir}/extension</destination>
-                    <name>programfilessharelinuxextn4</name>
-                    <platforms>linux</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux/PostGIS/share/extension/postgis_tiger_geocoder--PG_VERSION_POSTGIS.sql</origin>
+                           <allowWildcards>1</allowWildcards>
+			    <origin>staging/linux/PostGIS/share/extension/postgis*.*</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -1297,29 +1255,8 @@ EOF
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/share/extension/postgis--PG_VERSION_POSTGIS.sql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${sharedir}/extension</destination>
-                    <name>programfilessharelinux64extn3</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/share/extension/postgis_topology--PG_VERSION_POSTGIS.sql</origin>
-                        </distributionFile>
-                    </distributionFileList>
-                </folder>
-		<folder>
-                    <description>Program Files</description>
-                    <destination>${sharedir}/extension</destination>
-                    <name>programfilessharelinux64extn4</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionFile>
-                            <origin>staging/linux-x64/PostGIS/share/extension/postgis_tiger_geocoder--PG_VERSION_POSTGIS.sql</origin>
+                           <allowWildcards>1</allowWildcards>
+			    <origin>staging/linux-x64/PostGIS/share/extension/postgis*.*</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
