@@ -346,7 +346,7 @@ cat <<EOT-POSTGIS >> $WD/PostGIS/build-postgis.sh
 
     chmod +r $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/lib/*
     chmod +rx $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/bin/*
-    
+    sed -ie 's/nDROP/DROP/g' $PG_PATH_OSX/PostGIS/staging/osx/PostGIS/share/extension/postgis*.sql
 EOT-POSTGIS
     cd $WD
     scp PostGIS/build-postgis.sh $PG_SSH_OSX:$PG_PATH_OSX/PostGIS
