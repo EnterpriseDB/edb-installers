@@ -60,6 +60,13 @@ _prep_ApacheHTTPD() {
     echo "Unpacking apache source..."
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
+        OPENSSL_INSTALLED_VERSION=`ssh $PG_SSH_WINDOWS "cmd /c $PG_PGBUILD_WINDOWS\\\\\bin\\\\\openssl version" | awk '{print $2}'`
+        if [ "$OPENSSL_INSTALLED_VERSION" != "$PG_TARBALL_OPENSSL" ];
+        then
+            echo "WARNING: OpenSSL version defined in versions.sh ($PG_TARBALL_OPENSSL) doesn't match\n
+            with the one that is installed ($OPENSSL_INSTALLED_VERSION) on the build machine"
+            PG_TARBALL_OPENSSL=$OPENSSL_INSTALLED_VERSION
+        fi
         if [ -e apache.windows ]; then
             rm -rf apache.windows || _die "Couldn't remove the existing apache.windows source directory (source/apache.windows)"
         fi
