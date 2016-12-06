@@ -175,6 +175,20 @@ _build_psqlODBC_linux() {
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libodbcinst.so"
     _process_dependent_libs "$PG_STAGING/lib" "$PG_STAGING/lib" "libpq.so"
     
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux/psqlODBC ];
+    then
+        echo "Removing existing $WD/output/symbols/linux/psqlODBC directory"
+        rm -rf $WD/output/symbols/linux/psqlODBC  || _die "Couldn't remove the existing $WD/output/symbols/linux/psqlODBC directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
+    mv $WD/psqlODBC/staging/linux/symbols $WD/output/symbols/linux/psqlODBC || _die "Failed to move $WD/psqlODBC/staging/linux/symbols to $WD/output/symbols/linux/psqlODBC directory"
+
     echo "END BUILD psqlODBC Linux"
 }
 

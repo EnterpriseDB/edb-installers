@@ -54,9 +54,11 @@ _prep_pgbouncer_linux() {
 
 _build_pgbouncer_linux() {
 
+    PG_STAGING=$PG_PATH_LINUX/pgbouncer/staging/linux
+
     echo "BEGIN BUILD pgbouncer Linux"
 
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; ./configure --prefix=$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer --with-libevent=/opt/local/Current" || _die "Failed to configure pgbouncer"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; ./configure --enable-debug --prefix=$PG_PATH_LINUX/pgbouncer/staging/linux/pgbouncer --with-libevent=/opt/local/Current" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; make" || _die "Failed to build pgbouncer"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; make install" || _die "Failed to install pgbouncer"
 
@@ -86,6 +88,20 @@ _build_pgbouncer_linux() {
     cp -pR $WD/server/staging/linux/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
 
     ssh $PG_SSH_LINUX "chmod 755 $PG_PATH_LINUX/pgbouncer/staging/linux/instscripts/*" || _die "Failed to change permission of libraries"
+
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING/pgbouncer" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux/pgbouncer ];
+    then
+        echo "Removing existing $WD/output/symbols/linux/pgbouncer directory"
+        rm -rf $WD/output/symbols/linux/pgbouncer  || _die "Couldn't remove the existing $WD/output/symbols/linux/pgbouncer directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
+    mv $WD/pgbouncer/staging/linux/pgbouncer/symbols $WD/output/symbols/linux/pgbouncer || _die "Failed to move $WD/pgbouncer/staging/linux/pgbouncer/symbols to $WD/output/symbols/linux/pgbouncer directory"
 
     cd $WD
    

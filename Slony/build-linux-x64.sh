@@ -56,7 +56,7 @@ _build_Slony_linux_x64() {
     PG_STAGING=$PG_PATH_LINUX_X64/Slony/staging/linux-x64
 
     echo "Configuring the slony source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/Slony/source/slony.linux-x64/; ./configure --with-pgconfigdir=$PG_PGHOME_LINUX_X64/bin --with-pgport=yes LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib"  || _die "Failed to configure slony"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/Slony/source/slony.linux-x64/; ./configure --enable-debug --with-pgconfigdir=$PG_PGHOME_LINUX_X64/bin --with-pgport=yes LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib"  || _die "Failed to configure slony"
 
     echo "Building slony"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/Slony/source/slony.linux-x64; LD_LIBRARY_PATH=$PG_PGHOME_LINUX_X64/lib make" || _die "Failed to build slony"
@@ -99,6 +99,20 @@ _postprocess_Slony_linux_x64() {
 
     mkdir -p $WD/Slony/staging/linux-x64/Slony
     ssh $PG_SSH_LINUX_X64 "cp $PG_PGHOME_LINUX_X64/share/postgresql/slony*.sql $PG_STAGING/Slony" || _die "Failed to share files to staging directory"
+
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux-x64/Slony ];
+    then
+        echo "Removing existing $WD/output/symbols/linux-x64/Slony directory"
+        rm -rf $WD/output/symbols/linux-x64/Slony  || _die "Couldn't remove the existing $WD/output/symbols/linux-x64/Slony directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
+    mv $WD/Slony/staging/linux-x64/symbols $WD/output/symbols/linux-x64/Slony || _die "Failed to move $WD/Slony/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/Slony directory"
 
     mkdir -p staging/linux-x64/installer/Slony || _die "Failed to create a directory for the install scripts"
 
