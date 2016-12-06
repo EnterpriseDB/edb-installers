@@ -57,7 +57,7 @@ _build_Slony_linux() {
     PG_STAGING=$PG_PATH_LINUX/Slony/staging/linux
 
     echo "Configuring the slony source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/Slony/source/slony.linux/; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib ./configure --with-pgconfigdir=$PG_PGHOME_LINUX/bin --with-pgport=yes"  || _die "Failed to configure slony"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/Slony/source/slony.linux/; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib ./configure --enable-debug --with-pgconfigdir=$PG_PGHOME_LINUX/bin --with-pgport=yes"  || _die "Failed to configure slony"
 
     echo "Building slony"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/Slony/source/slony.linux; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib make" || _die "Failed to build slony"
@@ -100,6 +100,20 @@ _postprocess_Slony_linux() {
 
     mkdir -p $WD/Slony/staging/linux/Slony
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/share/postgresql/slony*.sql $PG_STAGING/Slony; chmod 755 $PG_STAGING/Slony/slony*.sql" || _die "Failed to share files to staging directory"
+
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux/Slony ];
+    then
+        echo "Removing existing $WD/output/symbols/linux/Slony directory"
+        rm -rf $WD/output/symbols/linux/Slony  || _die "Couldn't remove the existing $WD/output/symbols/linux/Slony directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
+    mv $WD/Slony/staging/linux/symbols $WD/output/symbols/linux/Slony || _die "Failed to move $WD/Slony/staging/linux/symbols to $WD/output/symbols/linux/Slony directory"
 
     mkdir -p staging/linux/installer/Slony || _die "Failed to create a directory for the install scripts"
 

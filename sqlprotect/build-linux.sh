@@ -42,6 +42,8 @@ _prep_sqlprotect_linux() {
 
 _build_sqlprotect_linux() {
     
+    PG_STAGING=$PG_PATH_LINUX/sqlprotect/staging/linux
+
     echo "BEGIN BUILD sqlprotect Linux"  
     
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/SQLPROTECT/; make distclean ; make" || _die "Failed to build sqlprotect"
@@ -55,6 +57,20 @@ _build_sqlprotect_linux() {
 	ssh $PG_SSH_LINUX "cp $PG_PATH_LINUX/server/source/postgres.linux/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_LINUX/sqlprotect/staging/linux/doc/" || _die "Failed to copy README-sqlprotect.txt to staging directory"
     chmod -R ugo+r $WD/sqlprotect/staging/linux
     
+    #Generate debug symbols
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING|| _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux/sqlprotect ];
+    then
+        echo "Removing existing $WD/output/symbols/linux/sqlprotect directory"
+        rm -rf $WD/output/symbols/linux/sqlprotect  || _die "Couldn't remove the existing $WD/output/symbols/linux/sqlprotect directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
+    mv $WD/sqlprotect/staging/linux/symbols $WD/output/symbols/linux/sqlprotect || _die "Failed to move $WD/sqlprotect/staging/linux/symbols to $WD/output/symbols/linux/sqlprotect directory"
+
     echo "END BUILD sqlprotect Linux"
 }
 

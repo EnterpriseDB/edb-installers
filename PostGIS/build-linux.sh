@@ -95,7 +95,7 @@ export LD_LIBRARY_PATH=$POSTGRES_REMOTE_PATH/lib:/usr/local/lib:\$LD_LIBRARY_PAT
 export LDFLAGS=-Wl,--rpath,'\\\${ORIGIN}/../lib -lz'
 
 echo "Configuring the postgis source tree"
-./configure --with-pgconfig=$POSTGRES_REMOTE_PATH/bin/pg_config --with-geosconfig=/usr/local/bin/geos-config --with-projdir=/usr/local   || _die "Failed to configure postgis"
+./configure --enable-debug --with-pgconfig=$POSTGRES_REMOTE_PATH/bin/pg_config --with-geosconfig=/usr/local/bin/geos-config --with-projdir=/usr/local   || _die "Failed to configure postgis"
 
 echo "Building postgis ($PLATFORM)"
 make || _die "Failed to build postgis (make on $PLATFORM)"
@@ -164,7 +164,21 @@ EOT
     cp -pR $WD/PostGIS/source/postgis.linux/doc/html/images $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux/doc/html/postgis.html $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
     cp -pR $WD/PostGIS/source/postgis.linux/doc/postgis-$PG_VERSION_POSTGIS.pdf $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
-    cp -pR $WD/PostGIS/source/postgis.linux/doc/man $WD/PostGIS/staging/linux/PostGIS/ 
+    cp -pR $WD/PostGIS/source/postgis.linux/doc/man $WD/PostGIS/staging/linux/PostGIS/
+
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PACKAGE_STAGING/PostGIS" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux/PostGIS ];
+    then
+        echo "Removing existing $WD/output/symbols/linux/PostGIS directory"
+        rm -rf $WD/output/symbols/linux/PostGIS  || _die "Couldn't remove the existing $WD/output/symbols/linux/PostGIS directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
+    mv $WD/PostGIS/staging/linux/PostGIS/symbols $WD/output/symbols/linux/PostGIS || _die "Failed to move $WD/PostGIS/staging/linux/PostGIS/symbols to $WD/output/symbols/linux/PostGIS directory"
 
     cd $WD/PostGIS
     
