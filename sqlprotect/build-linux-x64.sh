@@ -42,6 +42,8 @@ _prep_sqlprotect_linux_x64() {
 
 _build_sqlprotect_linux_x64() {
     
+    PG_STAGING=$PG_PATH_LINUX_X64/sqlprotect/staging/linux-x64
+
     echo "BEGIN BUILD sqlprotect Linux-x64"
 
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/SQLPROTECT/; make distclean ; make" || _die "Failed to build sqlprotect"
@@ -58,7 +60,22 @@ _build_sqlprotect_linux_x64() {
     cp $WD/sqlprotect/resources/licence.txt $WD/sqlprotect/staging/linux-x64/sqlprotect_license.txt || _die "Unable to copy sqlprotect_license.txt"
     chmod 444 $WD/sqlprotect/staging/linux-x64/sqlprotect_license.txt || _die "Unable to change permissions for license file"
     
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING|| _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux-x64/sqlprotect ];
+    then
+        echo "Removing existing $WD/output/symbols/linux-x64/sqlprotect directory"
+        rm -rf $WD/output/symbols/linux-x64/sqlprotect  || _die "Couldn't remove the existing $WD/output/symbols/linux-x64/sqlprotect directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
+    mv $WD/sqlprotect/staging/linux-x64/symbols $WD/output/symbols/linux-x64/sqlprotect || _die "Failed to move $WD/sqlprotect/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/sqlprotect directory"
+
     echo "END BUILD sqlprotect Linux-x64"
+
 }
 
 

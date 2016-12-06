@@ -126,6 +126,20 @@ EOT
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/apache; FILES=\`file \\\`find . -maxdepth 2 -mindepth 2\\\` | grep ELF | cut -d: -f1\`; for F in \$FILES; do RPATH=\`chrpath \$F | grep RPATH | grep -v ORIGIN\`; if [[ x\${RPATH} != x ]]; then chrpath --replace \\\${ORIGIN}/../lib \$F; chmod 755 \$F; fi done"
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/apache; FILES=\`file \\\`find . -maxdepth 3 -mindepth 3\\\` | grep ELF | cut -d: -f1\`; for F in \$FILES; do RPATH=\`chrpath \$F | grep RPATH | grep -v ORIGIN\`; if [[ x\${RPATH} != x ]]; then chrpath --replace \\\${ORIGIN}/../../lib \$F; chmod 755 \$F; fi done"
 
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux-x64/ApacheHTTPD ];
+    then
+        echo "Removing existing $WD/output/symbols/linux-x64/ApacheHTTPD directory"
+        rm -rf $WD/output/symbols/linux-x64/ApacheHTTPD  || _die "Couldn't remove the existing $WD/output/symbols/linux-x64/ApacheHTTPD directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
+    mv $WD/ApacheHTTPD/staging/linux-x64/symbols $WD/output/symbols/linux-x64/ApacheHTTPD || _die "Failed to move $WD/ApacheHTTPD/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/ApacheHTTPD directory"
+
     cd $WD
 
     echo "END BUILD ApacheHTTPD Linux-x64"

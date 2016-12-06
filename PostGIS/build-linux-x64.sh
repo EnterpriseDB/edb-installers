@@ -163,6 +163,20 @@ EOT
     cp -pR $WD/PostGIS/source/postgis.linux-x64/doc/man $WD/PostGIS/staging/linux-x64/PostGIS/
 
 
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PACKAGE_STAGING/PostGIS" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux-x64/PostGIS ];
+    then
+        echo "Removing existing $WD/output/symbols/linux-x64/PostGIS directory"
+        rm -rf $WD/output/symbols/linux-x64/PostGIS  || _die "Couldn't remove the existing $WD/output/symbols/linux-x64/PostGIS directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
+    mv $WD/PostGIS/staging/linux-x64/PostGIS/symbols $WD/output/symbols/linux-x64/PostGIS || _die "Failed to move $WD/PostGIS/staging/linux-x64/PostGIS/symbols to $WD/output/symbols/linux-x64/PostGIS directory"
+
     cd $WD/PostGIS
 
     echo "END BUILD PostGIS Linux-x64"

@@ -99,7 +99,23 @@ _build_pgAgent_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "chmod a+rx $PG_STAGING/bin/*" || _die "Failed to set permissions on binaries in bin directory"
     ssh $PG_SSH_LINUX_X64 "chmod a+rx $PG_STAGING/lib/*" || _die "Failed to set permissions on libraries in lib directory"
     
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux-x64/pgAgent ];
+    then
+        echo "Removing existing $WD/output/symbols/linux-x64/pgAgent directory"
+        rm -rf $WD/output/symbols/linux-x64/pgAgent  || _die "Couldn't remove the existing $WD/output/symbols/linux-x64/pgAgent directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
+    mv $WD/pgAgent/staging/linux-x64/symbols $WD/output/symbols/linux-x64/pgAgent || _die "Failed to move $WD/pgAgent/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/pgAgent directory"
+
+
     echo "END BUILD pgAgent Linux-x64"
+
 }
 
 

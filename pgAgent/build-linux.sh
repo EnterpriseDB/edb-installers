@@ -89,7 +89,22 @@ _build_pgAgent_linux() {
     ssh $PG_SSH_LINUX "chmod a+rx $PG_STAGING/bin/*" || _die "Failed to set permissions"
     ssh $PG_SSH_LINUX "chmod a+rx $PG_STAGING/lib/*" || _die "Failed to set permissions"
     
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux/pgAgent ];
+    then
+        echo "Removing existing $WD/output/symbols/linux/pgAgent directory"
+        rm -rf $WD/output/symbols/linux/pgAgent  || _die "Couldn't remove the existing $WD/output/symbols/linux/pgAgent directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
+    mv $WD/pgAgent/staging/linux/symbols $WD/output/symbols/linux/pgAgent || _die "Failed to move $WD/pgAgent/staging/linux/symbols to $WD/output/symbols/linux/pgAgent directory"
+
     echo "END BUILD pgAgent Linux"
+
 }
 
 

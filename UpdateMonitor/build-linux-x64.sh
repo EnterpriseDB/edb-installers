@@ -54,6 +54,8 @@ _prep_updatemonitor_linux_x64() {
 
 _build_updatemonitor_linux_x64() {
     
+    PG_STAGING=$PG_PATH_LINUX_X64/UpdateMonitor/staging/linux-x64
+
     echo "BEGIN BUILD updatemonitor Linux-x64"   
 
     echo "*******************************************"
@@ -92,7 +94,22 @@ _build_updatemonitor_linux_x64() {
     cp $WD/UpdateMonitor/resources/licence.txt $WD/UpdateMonitor/staging/linux-x64/updatemonitor_license.txt || _die "Unable to copy updatemonitor_license.txt"
     chmod 444 $WD/UpdateMonitor/staging/linux-x64/updatemonitor_license.txt || _die "Unable to change permissions for license file."
  
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux-x64/UpdateMonitor ];
+    then
+        echo "Removing existing $WD/output/symbols/linux-x64/UpdateMonitor directory"
+        rm -rf $WD/output/symbols/linux-x64/UpdateMonitor  || _die "Couldn't remove the existing $WD/output/symbols/linux-x64/UpdateMonitor directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
+    mv $WD/UpdateMonitor/staging/linux-x64/symbols $WD/output/symbols/linux-x64/UpdateMonitor || _die "Failed to move $WD/UpdateMonitor/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/UpdateMonitor directory"
+
     echo "END BUILD updatemonitor Linux-x64"
+
 }
 
 
