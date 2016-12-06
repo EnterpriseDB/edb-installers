@@ -57,6 +57,7 @@ _build_pgmemcache_linux_x64() {
     PVT_SSH=$PG_SSH_LINUX_X64
     PVT_REPO=$PG_PATH_LINUX_X64
     PGMEM_PACKAGE_VM_PATH=$PVT_REPO/pgmemcache/source/pgmemcache.$PGMEM_PLATFORM
+    PG_STAGING=$PG_PATH_LINUX_X64/pgmemcache/staging/linux-x64
 
     cd $PGMEM_SOURCE
     ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; LD_LIBRARY_PATH=$PG_PATH/lib PATH=$PG_PATH/bin:$PATH make CFLAGS=\" -I/usr/local/include \" LDFLAGS=\" -L/usr/local/lib -Wl,--rpath,$PGMEM_PACKAGE_VM_PATH/../lib\"" || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
@@ -79,6 +80,20 @@ _build_pgmemcache_linux_x64() {
     chmod a+rx $PGMEM_STAGING/lib/* || _die "Failed to set permissions"
     chmod a+r $PGMEM_STAGING/share/* || _die "Failed to set permissions"
     
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux-x64/pgmemcache ];
+    then
+        echo "Removing existing $WD/output/symbols/linux-x64/pgmemcache directory"
+        rm -rf $WD/output/symbols/linux-x64/pgmemcache  || _die "Couldn't remove the existing $WD/output/symbols/linux-x64/pgmemcache directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
+    mv $WD/pgmemcache/staging/linux-x64/symbols $WD/output/symbols/linux-x64/pgmemcache || _die "Failed to move $WD/pgmemcache/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/pgmemcache directory"
+
     echo "END BUILD pgmemcache Linux-x64"
 }
 
