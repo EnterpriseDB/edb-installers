@@ -41,7 +41,9 @@ _prep_sqlprotect_linux() {
 ################################################################################
 
 _build_sqlprotect_linux() {
-    
+
+    PG_STAGING=$PG_PATH_LINUX/sqlprotect/staging/linux
+
     echo "BEGIN BUILD sqlprotect Linux"  
     
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/SQLPROTECT/; make distclean ; make" || _die "Failed to build sqlprotect"
@@ -59,8 +61,8 @@ _build_sqlprotect_linux() {
     cp $WD/sqlprotect/resources/licence.txt $WD/sqlprotect/staging/linux/sqlprotect_license.txt || _die "Unable to copy sqlprotect_license.txt"
     chmod 444 $WD/sqlprotect/staging/linux/sqlprotect_license.txt || _die "Unable to change permissions for license file"
 
-     Generate debug symbols
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_PATH_LINUX/sqlprotect/staging/linux|| _die "Failed to execute create_debug_symbols.sh"
+    #Generate debug symbols
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
 
     # Remove existing symbols directory in output directory
     if [ -e $WD/output/symbols/linux/sqlprotect ];
