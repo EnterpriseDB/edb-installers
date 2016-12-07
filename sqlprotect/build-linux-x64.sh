@@ -57,8 +57,8 @@ _build_sqlprotect_linux_x64() {
 	ssh $PG_SSH_LINUX_X64 "cp $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_LINUX_X64/sqlprotect/staging/linux-x64/doc/" || _die "Failed to copy README-sqlprotect.txt to staging directory"
     chmod -R ugo+r $WD/sqlprotect/staging/linux-x64
     
-     # Generate debug symbols
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING|| _die "Failed to execute create_debug_symbols.sh"
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
 
     # Remove existing symbols directory in output directory
     if [ -e $WD/output/symbols/linux-x64/sqlprotect ];
