@@ -58,7 +58,7 @@ _build_sqlprotect_linux_x64() {
     chmod -R ugo+r $WD/sqlprotect/staging/linux-x64
     
      # Generate debug symbols
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING|| _die "Failed to execute create_debug_symbols.sh"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
 
     # Remove existing symbols directory in output directory
     if [ -e $WD/output/symbols/linux-x64/sqlprotect ];
