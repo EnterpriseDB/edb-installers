@@ -216,7 +216,8 @@ _build_languagepack_osx() {
 
      python setup.py install --prefix=\$PYTHON_INSTALL_PATH 
      easy_install pip
-     pip install sphinx
+     # Install specific version of sphinx as the latest versions requires at least Python 2.7 or 3.4 to run
+     pip install sphinx==1.3.1
 
      cd \$PYTHON_INSTALL_PATH
      pip list > \$install_path/pip_packages_list.txt
