@@ -65,6 +65,20 @@ _build_hdfs_fdw_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING_HDFS_FDW/lib/postgresql/; chrpath --replace \"\\\${ORIGIN}\" hdfs_fdw.so"
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING_HDFS_FDW/lib/postgresql/; chrpath --replace \"\\\${ORIGIN}:\\\${ORIGIN}/..\" libhive.so"
     #ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING_HDFS_FDW/lib; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}\" \$f; done"
+
+    # Generate debug symbols
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING_HDFS_FDW" || _die "Failed to execute create_debug_symbols.sh"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/linux-x64/hdfs_fdw ];
+    then
+        echo "Removing existing $WD/output/symbols/linux-x64/hdfs_fdw directory"
+        rm -rf $WD/output/symbols/linux-x64/hdfs_fdw  || _die "Couldn't remove the existing $WD/output/symbols/linux-x64/hdfs_fdw directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
+    mv $WD/hdfs_fdw/staging/linux-x64/symbols $WD/output/symbols/linux-x64/hdfs_fdw || _die "Failed to move $WD/hdfs_fdw/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/hdfs_fdw directory"
 }
 
 
