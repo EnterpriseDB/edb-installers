@@ -241,6 +241,7 @@ EOF
         </compareText>
       </ruleList>
     </setInstallerVariable>
+    <setInstallerVariable name="pemversion" value="0"/>
   </initializationActionList>
   <!-- Preinstallation actions -->
   <preInstallationActionList>
@@ -321,14 +322,95 @@ EOF
       </ruleList>
     </determineLinuxInitSystem>
 
+    <!-- If the branding specified on the command line is not Postgres Enterprise Manager, that means
+         this installer is being run stand alone, Hence check for the PEM installation -->
     <actionGroup>
       <actionList>
-        <setInstallerVariable name="req_lp_version" value="PG_VERSION_LANGUAGEPACK" persist="1"/>
+        <iniFileGet file="/etc/postgres-reg.ini" variable="peminstalledversion"
+          section="PEM/server" key="Version"/>
+        <throwError>
+          <text>${msg(pem.not.installed)}</text>
+          <ruleList>
+            <compareText logic="equals" text="${peminstalledversion}" value=""/>
+          </ruleList>
+        </throwError>
+        <setInstallerVariable name="pemversion" value="6">
+        <ruleList>
+          <compareVersions logic="less" version1="${peminstalledversion}" version2="7.0"/>
+        </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="pemversion" value="7">
+        <ruleList>
+          <compareVersions logic="greater_or_equal" version1="${peminstalledversion}" version2="7.0"/>
+        </ruleList>
+        </setInstallerVariable>
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${branding}" value="Postgres Enterprise Manager"/>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- If the branding specified on the command line is not Postgres Enterprise Manager, that means
+         this installer is being run stand alone, Hence check for the PEM installation -->
+    <actionGroup>
+      <actionList>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM\server" name="peminstalledversion" variable="pem_serverVersion"/>
+        <throwError>
+          <text>${msg(pem.not.installed)}</text>
+          <ruleList>
+            <compareText logic="equals" text="${peminstalledversion}" value=""/>
+          </ruleList>
+        </throwError>
+        <setInstallerVariable name="pemversion" value="6">
+        <ruleList>
+          <compareVersions logic="less" version1="${peminstalledversion}" version2="7.0"/>
+        </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="pemversion" value="7">
+        <ruleList>
+          <compareVersions logic="greater_or_equal" version1="${peminstalledversion}" version2="7.0"/>
+        </ruleList>
+        </setInstallerVariable>
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${branding}" value="Postgres Enterprise Manager"/>
+        <compareText logic="contains" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- PEM 6 requires LP 9.5 and PEM 7 requires LP 10 -->
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="LANGUAGEPACK_VERSION" value="9.5"/>
+        <setInstallerVariable name="PYTHON_VERSION" value="3.3"/>
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${pemversion}" value="6"/>
+      </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="LANGUAGEPACK_VERSION" value="10"/>
+        <setInstallerVariable name="PYTHON_VERSION" value="3.5"/>
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${pemversion}" value="7"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- check for the LanguagePack installation -->
+    <actionGroup>
+      <actionList>
+        <showText text="pemversion=${pemversion}" />
+        <showText text="lpversion=${LANGUAGEPACK_VERSION}"/>
+        <showText text="pyversion=${PYTHON_VERSION}"/>
+        <setInstallerVariable name="req_lp_version" value="${LANGUAGEPACK_VERSION}" persist="1"/>
         <iniFileGet file="/etc/postgres-reg.ini" variable="lp_tmp_var"
-          section="edb_languagepack_PG_VERSION_LANGUAGEPACK" key="InstallationDirectory"/>
+          section="edb_languagepack_${LANGUAGEPACK_VERSION}" key="InstallationDirectory"/>
         <iniFileGet file="/etc/postgres-reg.ini" variable="lp_version"
-          section="edb_languagepack_PG_VERSION_LANGUAGEPACK" key="Version"/>
-        <setInstallerVariable name="python_path" value="${lp_tmp_var}/Python-PG_VERSION_PYTHON" persist="1"/>
+          section="edb_languagepack_${LANGUAGEPACK_VERSION}" key="Version"/>
+        <setInstallerVariable name="python_path" value="${lp_tmp_var}/Python-${PYTHON_VERSION}" persist="1"/>
         <throwError>
           <text>${msg(languagepack.not.installed)}</text>
           <ruleEvaluationLogic>or</ruleEvaluationLogic>
@@ -354,12 +436,12 @@ EOF
 
     <actionGroup>
       <actionList>
-        <setInstallerVariable name="req_lp_version" value="PG_VERSION_LANGUAGEPACK" persist="1"/>
+        <setInstallerVariable name="req_lp_version" value="${LANGUAGEPACK_VERSION}" persist="1"/>
         <registryGet wowMode="32" name="Base Directory" variable="lp_tmp_var"
-          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\PG_VERSION_LANGUAGEPACK"/>
+          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\${LANGUAGEPACK_VERSION}"/>
         <registryGet wowMode="32" name="Version" variable="lp_version"
-          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\PG_VERSION_LANGUAGEPACK"/>
-        <setInstallerVariable name="python_path" value="${lp_tmp_var}/Python-PG_VERSION_PYTHON" persist="1"/>
+          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\${LANGUAGEPACK_VERSION}"/>
+        <setInstallerVariable name="python_path" value="${lp_tmp_var}/Python-${PYTHON_VERSION}" persist="1"/>
         <logMessage text="${lp_tmp_var} == ${lp_version} == ${python_path}"/>
         <throwError>
           <text>${msg(languagepack.not.installed)}</text>
@@ -413,7 +495,7 @@ EOF
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
         </iniFileGet>
-        <!-- LIN & MAC: Get the branding & check Previous Installation of psqlODBC -->
+        <!-- LIN & MAC: Get the branding & check Previous Installation of ApacheHTTPD -->
         <iniFileGet>
           <file>/etc/postgres-reg.ini</file>
           <section>ApacheHTTPD</section>
@@ -941,8 +1023,8 @@ EOF
     <actionGroup>
       <actionList>
         <registryGet wowMode="32" name="Base Directory" variable="python_tmp_var"
-          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\PG_VERSION_LANGUAGEPACK"/>
-        <setInstallerVariable name="python_home" value="${python_tmp_var}\Python-PG_VERSION_PYTHON" persist="1"/>
+          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\${LANGUAGEPACK_VERSION}"/>
+        <setInstallerVariable name="python_home" value="${python_tmp_var}\Python-${PYTHON_VERSION}" persist="1"/>
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -1057,8 +1139,8 @@ EOF
     <actionGroup>
       <actionList>
         <iniFileGet file="/etc/postgres-reg.ini" variable="python_tmp_var"
-          section="edb_languagepack_PG_VERSION_LANGUAGEPACK" key="InstallationDirectory"/>
-        <setInstallerVariable name="python_home" value="${python_tmp_var}/Python-PG_VERSION_PYTHON" persist="1"/>
+          section="edb_languagepack_${LANGUAGEPACK_VERSION}" key="InstallationDirectory"/>
+        <setInstallerVariable name="python_home" value="${python_tmp_var}/Python-${PYTHON_VERSION}" persist="1"/>
         <logMessage text="Setting Python path in envvars"/>
         <substitute files="${installdir}/apache/bin/envvars">
           <substitutionList>
@@ -2003,6 +2085,7 @@ include conf\addons\*.conf
     <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="0" cliOptionShow="1"/>
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
     <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
+    <stringParameter name="pemversion" cliOptionName="pemversion" ask="0" cliOptionShow="0"/>
     <parameterGroup>
       <!-- Apache Port -->
       <name>apacheport</name>

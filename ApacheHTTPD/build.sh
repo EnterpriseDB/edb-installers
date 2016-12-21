@@ -165,8 +165,6 @@ _postprocess_ApacheHTTPD() {
 
     _replace PG_VERSION_APACHEHTTPD $PG_VERSION_APACHE installer.xml || _die "Failed to set the major version in the installer project file (ApacheHTTPD/installer.xml)"
     _replace PG_BUILDNUM_APACHEHTTPD $PG_BUILDNUM_APACHEHTTPD installer.xml || _die "Failed to set the major version in the installer project file (ApacheHTTPD/installer.xml)"
-    _replace PG_VERSION_PYTHON $PG_VERSION_PYTHON installer.xml || _die "Failed to set the Python version in the file (ApacheHTTPD/installer.xml)"    
-    _replace PG_VERSION_LANGUAGEPACK $PG_VERSION_LANGUAGEPACK installer.xml || _die "Failed to set the languagepack version in the installer project file (ApacheHTTPD/installer.xml)"
  
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
