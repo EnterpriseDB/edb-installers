@@ -50,6 +50,12 @@ _prep_ApacheHTTPD_linux_x64() {
 _build_ApacheHTTPD_linux_x64() {
     echo "BEGIN BUILD ApacheHTTPD Linux-x64"
 
+    # For PEM7, apachehttpd needs to be built with python3.5 (LP10)
+    if [ ! -z $PEM_PYTHON_LINUX_X64 ];
+    then
+        PG_PYTHON_LINUX_X64=$PEM_PYTHON_LINUX_X64
+    fi
+        
     # build apache
 
     PG_STAGING=$PG_PATH_LINUX_X64/ApacheHTTPD/staging/linux-x64
