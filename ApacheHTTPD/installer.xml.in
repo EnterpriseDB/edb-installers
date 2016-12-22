@@ -402,9 +402,6 @@ EOF
     <!-- check for the LanguagePack installation -->
     <actionGroup>
       <actionList>
-        <showText text="pemversion=${pemversion}" />
-        <showText text="lpversion=${LANGUAGEPACK_VERSION}"/>
-        <showText text="pyversion=${PYTHON_VERSION}"/>
         <setInstallerVariable name="req_lp_version" value="${LANGUAGEPACK_VERSION}" persist="1"/>
         <iniFileGet file="/etc/postgres-reg.ini" variable="lp_tmp_var"
           section="edb_languagepack_${LANGUAGEPACK_VERSION}" key="InstallationDirectory"/>
