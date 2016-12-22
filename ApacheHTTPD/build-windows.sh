@@ -86,6 +86,11 @@ _prep_ApacheHTTPD_windows() {
 _build_ApacheHTTPD_windows() {
     echo "BEGIN BUILD ApacheHTTPD Windows"
 
+    # For PEM7, apachehttpd needs to be built with python3.5 (LP10)
+    if [ ! -z $PEM_PYTHON_WINDOWS ];
+    then
+        PG_PYTHON_WINDOWS=$PEM_PYTHON_WINDOWS
+    fi
 
     cd $WD/ApacheHTTPD/staging/windows
 
