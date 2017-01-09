@@ -26,7 +26,7 @@ _prep_languagepack_linux_x64() {
     cp $WD/tarballs/tk${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src.tar.gz $WD/languagepack/source/languagepack.linux-x64/ || _die  "failed to copy tk"
     cp $WD/tarballs/perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL}.tar.gz $WD/languagepack/source/languagepack.linux-x64/ || _die  "failed to copy perl"
     cp $WD/tarballs/Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}.tgz $WD/languagepack/source/languagepack.linux-x64/ || _die  "failed to copy python"
-    cp $WD/tarballs/distribute-${PG_VERSION_DIST_PYTHON}.tar.gz $WD/languagepack/source/languagepack.linux-x64/ || _die  "failed to copy distribute"
+    cp $WD/tarballs/setuptools-${PG_VERSION_PYTHON_SETUPTOOLS}.tar.gz $WD/languagepack/source/languagepack.linux-x64/ || _die  "failed to copy setuptools"
 
     # Copy languagepack build script languagepack.sh 
     cp $WD/languagepack/scripts/linux/languagepack.sh languagepack.linux-x64 || _die "Failed to copy the languagepack build script (languagepack.sh)"
@@ -57,7 +57,7 @@ _prep_languagepack_linux_x64() {
 
 _build_languagepack_linux_x64() {
 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/languagepack/source/languagepack.linux-x64; export SSL_INST=/opt/local/Current; ./languagepack.sh -n ${PG_VERSION_NCURSES} -p ${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON} -d ${PG_VERSION_DIST_PYTHON} -t ${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL} -P ${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} -v $PG_VERSION_LANGUAGEPACK -b /opt/local/pg-languagepack -i $PG_LANGUAGEPACK_INSTALL_DIR_LINUX -e" || _die "Failed to build languagepack"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/languagepack/source/languagepack.linux-x64; export SSL_INST=/opt/local/Current; ./languagepack.sh -n ${PG_VERSION_NCURSES} -p ${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON} -d ${PG_VERSION_PYTHON_SETUPTOOLS} -t ${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL} -P ${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} -v $PG_VERSION_LANGUAGEPACK -b /opt/local/pg-languagepack -i $PG_LANGUAGEPACK_INSTALL_DIR_LINUX -e" || _die "Failed to build languagepack"
 }
 
 
@@ -72,7 +72,7 @@ _postprocess_languagepack_linux_x64() {
     echo "Copying files to staging directory from install directory"
     ssh $PG_SSH_LINUX_X64 "mv $PG_LANGUAGEPACK_INSTALL_DIR_LINUX/* $PG_PATH_LINUX_X64/languagepack/staging/linux-x64 && rm -rf $PG_LANGUAGEPACK_INSTALL_DIR_LINUX" || _die "Failed to copy the languagepack Source into the staging directory"
 
-    mv $WD/languagepack/staging/linux-x64/Python-3.3/pip_packages_list.txt $WD/languagepack/staging/linux-x64 || _die "Failed to move pip_packages_list.txt to $WD/languagepack/staging/linux-x64" 
+    mv $WD/languagepack/staging/linux-x64/Python-3.5/pip_packages_list.txt $WD/languagepack/staging/linux-x64 || _die "Failed to move pip_packages_list.txt to $WD/languagepack/staging/linux-x64"
 
     pushd staging/linux-x64
     generate_3rd_party_license "languagepack"

@@ -4,7 +4,6 @@
 #  Program:
 #  Author :
 ############################################################
-
 ## BEGIN SCRIPT
 Control_C()
 {
@@ -39,7 +38,7 @@ OPTIONS can be:
 ------------------------------
     -n      ncurses version
     -p      Python version
-    -d      Python Distribute version
+    -d      Python distrubute Setuptools version
     -P      Perl version
     -t      TCL/TK version
     -v      Language pack version
@@ -121,6 +120,7 @@ ExecuteCommand()
 
     if [[ $commandStatus -ne 0 ]]; then
         Message $MSG_CRITICAL "[Function: $FUNCNAME] Failed to execute command - \"$@\""
+	exit 10
     fi
 }
 
@@ -199,7 +199,7 @@ do
             PG_VERSION_PYTHON=$OPTARG
             ;;
         d)
-            PG_VERSION_PYTHON_DISTRIBUTE=$OPTARG
+            PG_VERSION_PYTHON_SETUPTOOLS=$OPTARG
             ;;
         P)
             PG_VERSION_PERL=$OPTARG
@@ -226,7 +226,7 @@ do
     esac
 done
 
-if [[ -z "$PG_VERSION_NCURSES" || -z "$PG_VERSION_TCL_TK" || -z "$PG_VERSION_PYTHON" || -z "$PG_VERSION_PERL" || -z "$PG_LANGUAGE_PACK_VERSION" || -z "$PG_INSTALL_PATH" || -z "$PG_VERSION_PYTHON_DISTRIBUTE" ]]
+if [[ -z "$PG_VERSION_NCURSES" || -z "$PG_VERSION_TCL_TK" || -z "$PG_VERSION_PYTHON" || -z "$PG_VERSION_PERL" || -z "$PG_LANGUAGE_PACK_VERSION" || -z "$PG_INSTALL_PATH" || -z "$PG_VERSION_PYTHON_SETUPTOOLS" ]]
 then
     usage
     exit 1
@@ -259,10 +259,10 @@ CheckRPMInstallation "libX11-devel"
 NCURSES_LINK="http://ftp.gnu.org/gnu/ncurses/ncurses-$PG_VERSION_NCURSES.tar.gz"
 ##TCL_LINK="http://prdownloads.sourceforge.net/tcl/tcl$PG_VERSION_TCL_TK-src.tar.gz"
 ##TK_LINK="http://prdownloads.sourceforge.net/tcl/tk$PG_VERSION_TCL_TK-src.tar.gz"
-TCL_LINK="ftp://ftp.tcl.tk/pub/tcl/tcl8_5/tcl$PG_VERSION_TCL_TK-src.tar.gz"
-TK_LINK="ftp://ftp.tcl.tk/pub/tcl/tcl8_5/tk$PG_VERSION_TCL_TK-src.tar.gz"
+TCL_LINK="ftp://ftp.tcl.tk/pub/tcl/tcl8.6/tcl$PG_VERSION_TCL_TK-src.tar.gz"
+TK_LINK="ftp://ftp.tcl.tk/pub/tcl/tcl8.6/tk$PG_VERSION_TCL_TK-src.tar.gz"
 PYTHON_LINK="https://www.python.org/ftp/python/$PG_VERSION_PYTHON/Python-$PG_VERSION_PYTHON.tgz"
-PYTHON_DISTRIBUTE_LINK="http://pypi.python.org/packages/source/d/distribute/distribute-$PG_VERSION_PYTHON_DISTRIBUTE.tar.gz"
+PYTHON_SETUPTOOLS_LINK="https://pypi.python.org/packages/f1/92/12c7251039b274c30106c3e0babdcb040cbd13c3ad4b3f0ef9a7c217e36a/setuptools-$PG_VERSION_PYTHON_SETUPTOOLS.tar.gz"
 PERL_LINK="http://www.cpan.org/src/5.0/perl-$PG_VERSION_PERL.tar.gz"
 
 
@@ -281,14 +281,14 @@ then
     rm -rf tcl$PG_VERSION_TCL_TK*tar*
     rm -rf tk$PG_VERSION_TCL_TK*tar*
     rm -rf Python-$PG_VERSION_PYTHON*tar*
-    rm -rf distribute-$PG_VERSION_PYTHON_DISTRIBUTE*tar*
+    rm -rf setuptools-$PG_VERSION_PYTHON_SETUPTOOLS*tar*
     rm -rf perl-$PG_VERSION_PERL*tar*
 
     DownlloadSource "ncurses" "$PG_VERSION_NCURSES" "$NCURSES_LINK"
     DownlloadSource "TCL" "$PG_VERSION_TCL_TK" "$TCL_LINK"
     DownlloadSource "TK" "$PG_VERSION_TCL_TK" "$TK_LINK"
     DownlloadSource "Python" "$PG_VERSION_PYTHON" "$PYTHON_LINK"
-    DownlloadSource "Python Distribute" "$PG_VERSION_PYTHON_DISTRIBUTE" "$PYTHON_DISTRIBUTE_LINK"
+    DownlloadSource "Python Setuptool " "$PG_VERSION_PYTHON_SETUPTOOLS" "$PYTHON_SETUPTOOLS_LINK"
     DownlloadSource "Perl" "$PG_VERSION_PERL" "$PERL_LINK"
 else
     Message $MSG_INFO "Using existing sources..."
@@ -383,7 +383,7 @@ if [ "$PG_VERSION_PYTHON" != "0" ];
 then
     rm -rf $PYTHON_INSTALL_PATH
     rm -rf Python-$PG_VERSION_PYTHON
-    rm -rf distribute-$PG_VERSION_PYTHON_DISTRIBUTE
+    rm -rf setuptools-$PG_VERSION_PYTHON_SETUPTOOLS
     rm -rf perl-$PG_VERSION_PERL
 
     ExecuteCommand "tar -zxvf Python-$PG_VERSION_PYTHON.tgz"
@@ -393,13 +393,13 @@ then
     #    ExecuteCommand "patch -p0 < Python_MAXREPEAT.patch"
     #fi
     
-    ExecuteCommand "tar -zxvf distribute-$PG_VERSION_PYTHON_DISTRIBUTE.tar.gz"
+    ExecuteCommand "tar -zxvf setuptools-$PG_VERSION_PYTHON_SETUPTOOLS.tar.gz"
 
     Message $MSG_INFO_BIG "Building Python..."
 
     ExecuteCommand "pushd Python-$PG_VERSION_PYTHON"
     (
-        export LDFLAGS="-L$NCURSES_INST/lib -L$SSL_INST/lib -L$TCL_TK_INSTALL_PATH/lib"
+        export LDFLAGS="-L$NCURSES_INST/lib -L$SSL_INST/lib -L$TCL_TK_INSTALL_PATH/lib -lexpat"
         export CFLAGS="-I$NCURSES_INST/include/ncursesw -I$NCURSES_INST/include -I$SSL_INST/include -I$TCL_TK_INSTALL_PATH/include"
         export CPPFLAGS=$CFLAGS
         export LD_LIBRARY_PATH="$SSL_INST/lib:$TCL_TK_INSTALL_PATH/lib:$LD_LIBRARY_PATH"
@@ -416,8 +416,8 @@ then
         Message $MSG_INFO_BIG "Copying TCL libraries to Python installation..."
         ExecuteCommand "cp -rp $TCL_TK_INSTALL_PATH/lib/libtcl* $PYTHON_INSTALL_PATH/lib"
         ExecuteCommand "cp -rp $TCL_TK_INSTALL_PATH/lib/libtk* $PYTHON_INSTALL_PATH/lib"
-        ExecuteCommand "cp -rp $TCL_TK_INSTALL_PATH/lib/tcl8.5 $PYTHON_INSTALL_PATH/lib"
-        ExecuteCommand "cp -rp $TCL_TK_INSTALL_PATH/lib/tk8.5 $PYTHON_INSTALL_PATH/lib"
+        ExecuteCommand "cp -rp $TCL_TK_INSTALL_PATH/lib/tcl8.6 $PYTHON_INSTALL_PATH/lib"
+        ExecuteCommand "cp -rp $TCL_TK_INSTALL_PATH/lib/tk8.6 $PYTHON_INSTALL_PATH/lib"
 
         Message $MSG_INFO_BIG "Setting RPATHs..."
         ExecuteCommand "pushd $PYTHON_INSTALL_PATH"
@@ -442,33 +442,34 @@ then
 
     ExecuteCommand "popd"
 
-    Message $MSG_INFO_BIG "Building Python Distribute..."
-    ExecuteCommand "pushd distribute-$PG_VERSION_PYTHON_DISTRIBUTE"
+    Message $MSG_INFO_BIG "Building Python Setuptools..."
+    ExecuteCommand "pushd setuptools-$PG_VERSION_PYTHON_SETUPTOOLS"
     (
     	export PYTHONHOME="$PYTHON_INSTALL_PATH"
+        export PYTHONPATH="$PYTHON_INSTALL_PATH"
 	export PATH="$PYTHON_INSTALL_PATH/bin:$PG_INSTALL_PATH/bin:$PATH"
 	export LD_LIBRARY_PATH="$SSL_INST/lib:$LD_LIBRARY_PATH"
-    	ExecuteCommand "python setup.py install --prefix=\"$PYTHON_INSTALL_PATH\""
+        ExecuteCommand "python setup.py install"
     	ExecuteCommand "easy_install pip"
 
-	ExecuteCommand "pip install Flask"
-	ExecuteCommand "pip install Jinja2"
-	ExecuteCommand "pip install MarkupSafe"
-	ExecuteCommand "pip install Werkzeug"
-	ExecuteCommand "pip install itsdangerous"
-	ExecuteCommand "pip install psycopg2"
-	ExecuteCommand "pip install Flask-Login"
-	ExecuteCommand "pip install Flask-Security"
-	ExecuteCommand "pip install Flask-WTF"
-	ExecuteCommand "pip install simplejson"
-	ExecuteCommand "C_INCLUDE_PATH=$SSL_INST/include LD_RUN_PATH=$SSL_INST/lib pip install Pillow"
+	ExecuteCommand "pip3 install Flask"
+	ExecuteCommand "pip3 install Jinja2"
+	ExecuteCommand "pip3 install MarkupSafe"
+	ExecuteCommand "pip3 install Werkzeug"
+	ExecuteCommand "pip3 install itsdangerous"
+	ExecuteCommand "pip3 install psycopg2"
+	ExecuteCommand "pip3 install Flask-Login"
+	ExecuteCommand "pip3 install Flask-Security"
+	ExecuteCommand "pip3 install Flask-WTF"
+	ExecuteCommand "pip3 install simplejson"
+	ExecuteCommand "C_INCLUDE_PATH=$SSL_INST/include LD_RUN_PATH=$SSL_INST/lib pip3 install Pillow"
 	ExecuteCommand "cp -rp $SSL_INST/lib/libjpeg* $PYTHON_INSTALL_PATH/lib"
 	ExecuteCommand "cp -rp $SSL_INST/lib/libtiff* $PYTHON_INSTALL_PATH/lib"
-	ExecuteCommand "pip install pytz"
-	ExecuteCommand "pip install sphinx"
-	ExecuteCommand "CFLAGS=-I$PYTHON_INSTALL_PATH/include LDFLAGS=-L$PYTHON_INSTALL_PATH/lib pip install cython"
+	ExecuteCommand "pip3 install pytz"
+	ExecuteCommand "pip3 install sphinx"
+	ExecuteCommand "CFLAGS=-I$PYTHON_INSTALL_PATH/include LDFLAGS=-L$PYTHON_INSTALL_PATH/lib pip3 install cython"
 
-	ExecuteCommand "pip list >$PYTHON_INSTALL_PATH/pip_packages_list.txt"
+	ExecuteCommand "pip3 list >$PYTHON_INSTALL_PATH/pip_packages_list.txt"
     )
     ExecuteCommand "popd"
 

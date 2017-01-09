@@ -55,7 +55,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            On Windows we don't have a shared directory, so specify a build directory
 #            We can also specify additional directorys to include in the path.
 
-PG_SSH_LINUX=buildfarm@bf6-linux.ox.uk.enterprisedb.com
+PG_SSH_LINUX=buildfarm@bf10-linux.ox.uk.enterprisedb.com
 PG_PATH_LINUX=/mnt/hgfs/pginstaller.auto
 PG_PGHOME_LINUX=$PG_PATH_LINUX/server/staging/linux
 PG_EXEC_PATH_LINUX=/etc/alternatives/java_sdk_1.7.0/bin
@@ -65,15 +65,15 @@ PG_MAVEN_HOME_LINUX=/opt/apache-maven-3.3.3
 PG_QMAKE_LINUX=/opt/local/Qt/bin/qmake
 PG_QT_LINUX=/opt/local/Qt
 PG_QT_LINUX_UM=/opt/qtsdk
-PG_PERL_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.6/Perl-5.20
-PG_PYTHON_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.6/Python-3.3
-PEM_PYTHON_LINUX=/opt/edb/languagepack-10/Python-3.5
+PG_PERL_LINUX=/opt/local/EnterpriseDB/languagepack-10/Perl-5.24
+PG_PYTHON_LINUX=/opt/local/EnterpriseDB/languagepack-10/Python-3.5
+PEM_PYTHON_LINUX=$PG_PYTHON_LINUX
 PGADMIN_PYTHON_LINUX=$PG_PYTHON_LINUX
-PG_TCL_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.6/Tcl-8.5
+PG_TCL_LINUX=/opt/local/EnterpriseDB/languagepack-10/Tcl-8.6
 PG_XULRUNNER_SDK_LINUX=/usr/lib/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX=/usr/lib/xulrunner-1.9.2
 
-PG_SSH_LINUX_X64=buildfarm@bf6-linux-x64.ox.uk.enterprisedb.com
+PG_SSH_LINUX_X64=buildfarm@bf10-linux-x64.ox.uk.enterprisedb.com
 PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller.auto
 PG_PGHOME_LINUX_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64
 PG_EXEC_PATH_LINUX_X64=/etc/alternatives/java_sdk_1.7.0/bin
@@ -83,15 +83,15 @@ PG_MAVEN_HOME_LINUX_X64=/opt/apache-maven-3.3.3
 PG_QMAKE_LINUX_X64=/opt/local/Qt/bin/qmake
 PG_QT_LINUX_X64=/opt/local/Qt
 PG_QT_LINUX_X64_UM=/opt/qtsdk
-PG_PERL_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.6/Perl-5.20
-PG_PYTHON_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.6/Python-3.3
-PEM_PYTHON_LINUX_X64=/opt/edb/languagepack-10/Python-3.5
+PG_PERL_LINUX_X64=/opt/local/EnterpriseDB/languagepack-10/Perl-5.24
+PG_PYTHON_LINUX_X64=/opt/local/EnterpriseDB/languagepack-10/Python-3.5
+PEM_PYTHON_LINUX_X64=$PG_PYTHON_LINUX_X64
 PGADMIN_PYTHON_LINUX_X64=$PG_PYTHON_LINUX_X64
-PG_TCL_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.6/Tcl-8.5
+PG_TCL_LINUX_X64=/opt/local/EnterpriseDB/languagepack-10/Tcl-8.6
 PG_XULRUNNER_SDK_LINUX_X64=/usr/lib64/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
 
-PG_SSH_WINDOWS=buildfarm@bf6-windows.ox.uk.enterprisedb.com
+PG_SSH_WINDOWS=buildfarm@bf10-windows.ox.uk.enterprisedb.com
 PG_SSH_SIGN_WINDOWS=buildfarm@bf5-windows.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS=D:\\\\pginstaller.auto
 PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller.auto
@@ -123,7 +123,7 @@ PLATFORM_TOOLSET=/p:PlatformToolset=v120_xp
 PG_QMAKE_WINDOWS=$PG_QTPATH_WINDOWS\\\\bin\\\\qmake.exe
 PG_QMAKE_WINDOWS="D:\\\\Qt\\\\5.5.1\\\\5.5\\\\msvc2013\\\\bin\\\\qmake.exe"
 
-PG_SSH_WINDOWS_X64=buildfarm@bf6-windows-x64.ox.uk.enterprisedb.com
+PG_SSH_WINDOWS_X64=buildfarm@bf10-windows-x64.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS_X64=D:\\\\pginstaller.auto
 PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller.auto
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0"
@@ -164,7 +164,7 @@ PG_SOLARIS_STUDIO_SOLARIS_SPARC=/opt/sunstudio12.1/prod
 PG_ANT_HOME_SOLARIS_SPARC=/opt/apache-ant-1.8.4
 PG_QMAKE_SOLARIS_SPARC=/usr/local.sun/bin/qmake
 
-PG_SSH_OSX=buildfarm@bf6-osx.ox.uk.enterprisedb.com
+PG_SSH_OSX=buildfarm@bf10-osx.ox.uk.enterprisedb.com
 PG_PATH_OSX=/mnt/hgfs/pginstaller.auto
 PG_SSH_OSX_SIGN=buildfarm@bf-osx-sign.ox.uk.enterprisedb.com
 PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_2.auto
@@ -195,10 +195,10 @@ PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSI
 PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
 
 # The InstallBuilder main binary.
-PG_INSTALLBUILDER_BIN="/opt/installbuilder-15.10.1/bin/builder"
+PG_INSTALLBUILDER_BIN="/opt/installbuilder-16.11.1/bin/builder"
 KEYCHAIN_PASSWD="XXXXXX"
 
 # LanguagePack Variables
-PG_LANGUAGEPACK_INSTALL_DIR_LINUX="/opt/edb/languagepack-9.6"
-PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack-9.6"
-PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/edb/languagepack-9.6"
+PG_LANGUAGEPACK_INSTALL_DIR_LINUX="/opt/edb/languagepack-10"
+PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack-10"
+PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/edb/languagepack-10"
