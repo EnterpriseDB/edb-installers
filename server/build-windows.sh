@@ -453,6 +453,11 @@ _postprocess_server_windows() {
     echo "BEGIN POST Server Windows"
 
     cd $WD/server
+
+    # Copy debug symbols to output/symbols directory
+    rm -rf $WD/output/symbols/windows/server
+    mkdir -p $WD/output/symbols/windows/server || _die "Failed to create $WD/output/symbols/windows directory"
+    cp -r staging/windows/symbols/* $WD/output/symbols/windows/server || _die "Failed to copy symbols to $WD/output/symbols/windows/server directory"
  
     pushd staging/windows
     generate_3rd_party_license "server"
