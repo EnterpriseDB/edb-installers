@@ -531,6 +531,11 @@ _postprocess_server_windows_x64() {
 
     cd $WD/server
 
+    # Copy debug symbols to output/symbols directory
+    rm -rf $WD/output/symbols/windows-x64/server
+    mkdir -p $WD/output/symbols/windows-x64/server || _die "Failed to create $WD/output/symbols/windows-x64 directory"
+    cp -r staging/windows-x64/symbols/* $WD/output/symbols/windows-x64/server || _die "Failed to copy symbols to $WD/output/symbols/windows-x64/server directory"
+
     pushd staging/windows-x64
     generate_3rd_party_license "server"
     popd
