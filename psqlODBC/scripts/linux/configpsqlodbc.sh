@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2012-2016, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2017, EnterpriseDB Corporation.  All rights reserved
 
 # Check the command line
 if [ $# -ne 1 ];
