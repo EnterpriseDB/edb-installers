@@ -1,4 +1,4 @@
-' Copyright (c) 2012-2016, EnterpriseDB Corporation.  All rights reserved
+' Copyright (c) 2012-2017, EnterpriseDB Corporation.  All rights reserved
 On Error Resume Next
 
 ' PostgreSQL server startup script for Windows
