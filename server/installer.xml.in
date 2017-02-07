@@ -3472,13 +3472,6 @@ EOF
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
                 </registrySet>
-                <registrySet>
-                    <key>HKEY_CURRENT_USER\SOFTWARE\pgAdmin Development Team\pgAdmin 4</key>
-                    <name>PythonPath</name>
-                    <value>${installdir}\pgAdmin 4\venv\Lib\site-packages;${installdir}\pgAdmin 4\venv\Lib;${installdir}\pgAdmin 4\venv\Lib\lib-tk;${installdir}\pgAdmin 4\venv\DLLs</value>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>1</showMessageOnError>
-                </registrySet>
 
                 <!-- Set these last - if we get this far, initdb must have succeeded -->
                 <!-- Data directory -->
@@ -3880,6 +3873,61 @@ REM The script sets environment variables helpful for PostgreSQL
             </ruleList>
         </registrySet>
 
+        <!-- RM # 39338 Remove the webkit files-->
+        <actionGroup>
+          <actionList>
+            <deleteFile path="${installdir}/pgAdmin 4/lib/Qt5WebKit.dll" >
+              <ruleList>
+                <fileTest path="${installdir}/pgAdmin 4/lib/Qt5WebKit.dll" condition="exists" />
+              </ruleList>
+            </deleteFile>
+            <deleteFile path="${installdir}/pgAdmin 4/lib/Qt5WebKitWidgets.dll" >
+              <ruleList>
+                <fileTest path="${installdir}/pgAdmin 4/lib/Qt5WebKitWidgets.dll" condition="exists" />
+              </ruleList>
+            </deleteFile>
+          </actionList>
+          <ruleList>
+            <compareText text="${platform_name}" logic="equals" value="windows" />
+          </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+          <actionList>
+            <deleteFile path="${installdir}/pgAdmin 4/lib/libQt5WebKit.so*" >
+              <ruleList>
+                <fileTest path="${installdir}/pgAdmin 4/lib/libQt5WebKit.so*" condition="exists" />
+              </ruleList>
+            </deleteFile>
+            <deleteFile path="${installdir}/pgAdmin 4/lib/libQt5WebKitWidgets.so*" >
+              <ruleList>
+                <fileTest path="${installdir}/pgAdmin 4/lib/libQt5WebKitWidgets.so*" condition="exists" />
+              </ruleList>
+            </deleteFile>
+          </actionList>
+          <ruleList>
+            <compareText text="${platform_name}" logic="contains" value="Linux" />
+          </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+          <actionList>
+            <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebKit.framework" >
+              <ruleList>
+                <fileTest path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebKit.framework" condition="exists" />
+              </ruleList>
+            </deleteFile>
+            <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebKitWidgets.framework" >
+              <ruleList>
+                <fileTest path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebKitWidgets.framework" condition="exists" />
+              </ruleList>
+            </deleteFile>
+          </actionList>
+          <ruleList>
+            <compareText text="${platform_name}" logic="equals" value="osx" />
+          </ruleList>
+        </actionGroup>
+
         <!-- Delete the temp scripts directory -->
         <logMessage>
           <text>Delete the temporary scripts directory...</text>
@@ -3889,7 +3937,6 @@ REM The script sets environment variables helpful for PostgreSQL
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
         </deleteFile>
-
     </postInstallationActionList>
     <installationAbortedActionList>
     <deleteFile path="${system_temp_directory}/postgresql_installer_${random_number}" abortOnError="0" showMessageOnError="0">

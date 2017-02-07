@@ -24,6 +24,10 @@ EOF
 test -d "$bundle/Contents/Frameworks" || mkdir -p "$bundle/Contents/Frameworks" || exit 1
 test -d "$bundle/Contents/PlugIns/platforms" || mkdir -p "$bundle/Contents/PlugIns/platforms" || exit 1
 cp -f $QTDIR/plugins/platforms/libqcocoa.dylib "$bundle/Contents/PlugIns/platforms" || { echo libqcocoa.dylib not found in $QTDIR/plugins/platforms; exit 1; }
+cp -r $QTDIR/plugins/bearer "$bundle/Contents/PlugIns/" || { echo bearer not found in $QTDIR/plugins/; exit 1; }
+cp -r $QTDIR/plugins/imageformats "$bundle/Contents/PlugIns/" || { echo imageformats not found in $QTDIR/plugins/; exit 1; }
+cp -r $QTDIR/plugins/printsupport "$bundle/Contents/PlugIns/" || { echo printsupport not found in $QTDIR/plugins/; exit 1; }
+find $bundle/Contents/PlugIns/ -name "*debug.dylib" | xargs rm -f || { echo failed to remove debug libs from plugins; exit 1; }
 cp -f $PGDIR/lib/libpq.5.dylib "$bundle/Contents/Frameworks" || { echo libpq.5.dylib not found in $PGDIR; exit 1; }
 
 function CompleteSingleApp() {
@@ -79,6 +83,13 @@ function CompleteSingleApp() {
 					if echo $lib | grep Qt > /dev/null ; then
 						test -d $lib_loc || mkdir -p $lib_loc
 						cp $QTDIR/lib/$qtfw_path/$lib_bn $lib_loc/
+						if [ "$lib_bn" = "QtWebEngineCore" ]; then
+                                                    # QtWebEngineCore has some required resources
+                                                    cp -R $QTDIR/lib/$qtfw_path/Resources $lib_loc/
+                                                    cp -R $QTDIR/lib/$qtfw_path/Helpers $lib_loc/
+                                                    ln -s Versions/5/Resources "$bundle/Contents/Frameworks/QtWebEngineCore.Framework/Resources"
+                                                    ln -s Versions/5/Helpers "$bundle/Contents/Frameworks/QtWebEngineCore.Framework/Helpers"
+                                                fi
 					else
 						cp -R "$lib" "$lib_loc/$lib_bn"
 					fi
@@ -124,6 +135,9 @@ function CompleteSingleApp() {
 	find "$bundle/Contents/Resources/venv/" -name _psycopg.so -print0 | xargs -0 install_name_tool -change libpq.5.dylib @loader_path/../../../../../../Frameworks/libpq.5.dylib
 	find "$bundle/Contents/Resources/venv/" -name _psycopg.so -print0 | xargs -0 install_name_tool -change libssl.1.0.0.dylib @loader_path/../../../../../../Frameworks/libssl.1.0.0.dylib
 	find "$bundle/Contents/Resources/venv/" -name _psycopg.so -print0 | xargs -0 install_name_tool -change libcrypto.1.0.0.dylib @loader_path/../../../../../../Frameworks/libcrypto.1.0.0.dylib
+
+	# Fix the rpath for QtWebEngineProcess
+	find "$bundle/Contents/Frameworks" -name QtWebEngineProcess -print0 | xargs -0 install_name_tool -change @executable_path/../../../../../../../QtCore.framework/QtCore @executable_path/../../../../../../../QtCore.framework/Versions/5/QtCore
 
 	echo "App completed: $bundle"
 	popd > /dev/null

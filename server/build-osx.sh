@@ -285,7 +285,6 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/web"
     rm -f pgadmin4.db config_local.*
     echo "SERVER_MODE = False" > config_distro.py
-    echo "MINIFY_HTML = False" >> config_distro.py
     echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_distro.py
 
     # Remove the .pyc files if any
