@@ -263,6 +263,19 @@ Note: In case of Windows-64 setup you may get errors related to:
 LINK : fatal error LNK1181: cannot open input file 'bufferoverflowU.lib'^M
 Main reason of this issue is bufferoverflowU.lib file missing in parallel directory structures of VC installation. To reslove this copy said file into parallel structure e.g.:
 cp /cygdrive/c/Program\ Files\ \(x86\)/Microsoft\ SDKs/Windows/v5.0/Lib/IA64/bufferoverflowu.lib  /cygdrive/c/Program\ Files/Microsoft\ SDKs/Windows/v6.0A/Lib/x64/.
+
+* Mac OS X
+
+Creating a new VM for new codepath from an existing VM on the same machine:
+- Shutdown the VM
+- Right click the VM and click 'show in finder' and then right click on the bundle to copy to another name
+- Double Click the bundle to power it on and choose "I copied it" when Fusion asks
+- Change the HostName, ComputerName using below commands:
+  sudo scutil --set ComputerName "newname"
+  sudo scutil --set LocalHostName "newname"
+  sudo scutil --set HostName "newname"
+  System Preferences->Users&Groups and Change full name to the new name
+- Restart the VM
  
 Build Machines as external machines
 -----------------------------------
