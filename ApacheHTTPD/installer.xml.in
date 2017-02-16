@@ -156,7 +156,7 @@ EOF
  </preShowHelpActionList>
   <!-- Initialisation actions -->
   <initializationActionList>
-      <setInstallerVariable name="project.parameter(lppython).ask" value="" />
+      <setInstallerVariable name="project.parameter(lppython_loc).ask" value="0" />
 
       <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_APACHEHTTPD" />	
       <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
@@ -330,7 +330,6 @@ EOF
          this installer is being run stand alone, Hence check for the PEM installation -->
     <actionGroup>
       <actionList>
-        <showInfo text="pemversion before set=${pemversion}"/>
         <iniFileGet file="/etc/postgres-reg.ini" variable="peminstalledversion"
           section="PEM/server" key="Version"/>
         <setInstallerVariable name="pemversion" value="6">
@@ -398,9 +397,6 @@ EOF
          case: when PEM is installed and LP python is not provided on command line -->
     <actionGroup>
       <actionList>
-        <showInfo text="pemversion=${pemversion}"/>
-        <showInfo text="LANGUAGEPACK_VERSION=${LANGUAGEPACK_VERSION}" />
-        <showInfo text="PYTHON_VERSION=${PYTHON_VERSION}" />
         <setInstallerVariable name="req_lp_version" value="${LANGUAGEPACK_VERSION}" persist="1"/>
         <iniFileGet file="/etc/postgres-reg.ini" variable="lp_tmp_var"
           section="edb_languagepack_${LANGUAGEPACK_VERSION}" key="InstallationDirectory"/>
@@ -429,9 +425,6 @@ EOF
          case: when PEM is installed and LP python is not provided on command line -->
     <actionGroup>
       <actionList>
-        <showInfo text="pemversion=${pemversion}"/>
-        <showInfo text="LANGUAGEPACK_VERSION=${LANGUAGEPACK_VERSION}" />
-        <showInfo text="PYTHON_VERSION=${PYTHON_VERSION}" />
         <setInstallerVariable name="req_lp_version" value="${LANGUAGEPACK_VERSION}" persist="1"/>
         <registryGet wowMode="32" name="Base Directory" variable="lp_tmp_var"
           key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\${LANGUAGEPACK_VERSION}"/>
@@ -466,7 +459,6 @@ EOF
           <compareText logic="does_not_equal" text="${lppython_loc}" value=""/>
         </ruleList>
         </setInstallerVariable>
-        <showInfo text="python_path=${python_path}"/>
       </actionList>
       <!--<ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
@@ -2106,7 +2098,7 @@ include conf\addons\*.conf
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
     <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
     <stringParameter name="pemversion" cliOptionName="pemversion" ask="0" cliOptionShow="0"/>
-    <stringParameter name="lppython_loc" cliOptionName="lppython" ask="1" cliOptionShow="1"
+    <stringParameter name="lppython_loc" cliOptionName="lppython" default="" ask="1" cliOptionShow="1"
       description="LanguagePack Python installation path"/>
     <parameterGroup>
       <!-- Apache Port -->
