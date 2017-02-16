@@ -156,6 +156,8 @@ EOF
  </preShowHelpActionList>
   <!-- Initialisation actions -->
   <initializationActionList>
+      <setInstallerVariable name="project.parameter(lppython).ask" value="" />
+
       <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_APACHEHTTPD" />	
       <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
       <throwError>
@@ -241,7 +243,9 @@ EOF
         </compareText>
       </ruleList>
     </setInstallerVariable>
+    <setInstallerVariable name="python_path" value=""/>
     <setInstallerVariable name="pemversion" value="0"/>
+    <setInstallerVariable name="lppython_loc" value=""/>
   </initializationActionList>
   <!-- Preinstallation actions -->
   <preInstallationActionList>
@@ -326,22 +330,19 @@ EOF
          this installer is being run stand alone, Hence check for the PEM installation -->
     <actionGroup>
       <actionList>
+        <showInfo text="pemversion before set=${pemversion}"/>
         <iniFileGet file="/etc/postgres-reg.ini" variable="peminstalledversion"
           section="PEM/server" key="Version"/>
-        <throwError>
-          <text>${msg(pem.not.installed)}</text>
-          <ruleList>
-            <compareText logic="equals" text="${peminstalledversion}" value=""/>
-          </ruleList>
-        </throwError>
         <setInstallerVariable name="pemversion" value="6">
         <ruleList>
           <compareVersions logic="less" version1="${peminstalledversion}" version2="7.0"/>
+          <compareText logic="does_not_equal" text="${peminstalledversion}" value=""/>
         </ruleList>
         </setInstallerVariable>
         <setInstallerVariable name="pemversion" value="7">
         <ruleList>
           <compareVersions logic="greater_or_equal" version1="${peminstalledversion}" version2="7.0"/>
+          <compareText logic="does_not_equal" text="${peminstalledversion}" value=""/>
         </ruleList>
         </setInstallerVariable>
       </actionList>
@@ -356,12 +357,6 @@ EOF
     <actionGroup>
       <actionList>
         <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM\server" name="peminstalledversion" variable="pem_serverVersion"/>
-        <throwError>
-          <text>${msg(pem.not.installed)}</text>
-          <ruleList>
-            <compareText logic="equals" text="${peminstalledversion}" value=""/>
-          </ruleList>
-        </throwError>
         <setInstallerVariable name="pemversion" value="6">
         <ruleList>
           <compareVersions logic="less" version1="${peminstalledversion}" version2="7.0"/>
@@ -399,68 +394,83 @@ EOF
       </ruleList>
     </actionGroup>
 
-    <!-- check for the LanguagePack installation -->
+    <!-- LIN: check for the LanguagePack installation and set the python path
+         case: when PEM is installed and LP python is not provided on command line -->
     <actionGroup>
       <actionList>
+        <showInfo text="pemversion=${pemversion}"/>
+        <showInfo text="LANGUAGEPACK_VERSION=${LANGUAGEPACK_VERSION}" />
+        <showInfo text="PYTHON_VERSION=${PYTHON_VERSION}" />
         <setInstallerVariable name="req_lp_version" value="${LANGUAGEPACK_VERSION}" persist="1"/>
         <iniFileGet file="/etc/postgres-reg.ini" variable="lp_tmp_var"
           section="edb_languagepack_${LANGUAGEPACK_VERSION}" key="InstallationDirectory"/>
         <iniFileGet file="/etc/postgres-reg.ini" variable="lp_version"
           section="edb_languagepack_${LANGUAGEPACK_VERSION}" key="Version"/>
-        <setInstallerVariable name="python_path" value="${lp_tmp_var}/Python-${PYTHON_VERSION}" persist="1"/>
-        <throwError>
-          <text>${msg(languagepack.not.installed)}</text>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${lp_tmp_var}</text>
-              <value></value>
-            </compareText>
-            <compareText>
-              <logic>does_not_contain</logic>
-              <text>${lp_version}</text>
-              <value>${req_lp_version}</value>
-            </compareText>
-            <fileExists negate="1" path="${python_path}/bin/python"/>
-          </ruleList>
-        </throwError>
+        <setInstallerVariable name="python_path" value="${lp_tmp_var}/Python-${PYTHON_VERSION}" persist="1">
+        <ruleList>
+          <ruleGroup>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+            <ruleList>
+              <compareText logic="does_not_equal" text="${lp_tmp_var}" value=""/>
+              <compareText logic="contains" text="${lp_version}" value="${req_lp_version}"/>
+            </ruleList>
+          </ruleGroup>
+          <compareText logic="equals" text="${lppython_loc}" value=""/>
+        </ruleList>
+        </setInstallerVariable>
       </actionList>
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
+        <compareText logic="does_not_equal" text="${pemversion}" value="0"/>
       </ruleList>
     </actionGroup>
 
+    <!-- WIN: check for the LanguagePack installation and set the python path
+         case: when PEM is installed and LP python is not provided on command line -->
     <actionGroup>
       <actionList>
+        <showInfo text="pemversion=${pemversion}"/>
+        <showInfo text="LANGUAGEPACK_VERSION=${LANGUAGEPACK_VERSION}" />
+        <showInfo text="PYTHON_VERSION=${PYTHON_VERSION}" />
         <setInstallerVariable name="req_lp_version" value="${LANGUAGEPACK_VERSION}" persist="1"/>
         <registryGet wowMode="32" name="Base Directory" variable="lp_tmp_var"
           key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\${LANGUAGEPACK_VERSION}"/>
         <registryGet wowMode="32" name="Version" variable="lp_version"
           key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\edb\${LANGUAGEPACK_VERSION}"/>
-        <setInstallerVariable name="python_path" value="${lp_tmp_var}/Python-${PYTHON_VERSION}" persist="1"/>
+        <setInstallerVariable name="python_path" value="${lp_tmp_var}/Python-${PYTHON_VERSION}" persist="1">
+        <ruleList>
+          <ruleGroup>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+            <ruleList>
+              <compareText logic="does_not_equal" text="${lp_tmp_var}" value=""/>
+              <compareText logic="contains" text="${lp_version}" value="${req_lp_version}"/>
+            </ruleList>
+          </ruleGroup>
+          <compareText logic="equals" text="${lppython_loc}" value=""/>
+        </ruleList>
+        </setInstallerVariable>
         <logMessage text="${lp_tmp_var} == ${lp_version} == ${python_path}"/>
-        <throwError>
-          <text>${msg(languagepack.not.installed)}</text>
-          <ruleEvaluationLogic>or</ruleEvaluationLogic>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>${lp_tmp_var}</text>
-              <value></value>
-            </compareText>
-            <compareText>
-              <logic>does_not_contain</logic>
-              <text>${lp_version}</text>
-              <value>${req_lp_version}</value>
-            </compareText>
-            <fileExists negate="1" path="${python_path}\python.exe"/>
-          </ruleList>
-        </throwError>
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
+        <compareText logic="does_not_equal" text="${pemversion}" value="0"/>
       </ruleList>
+    </actionGroup>
+
+    <!-- Set Python path 
+         case: when LP python is provided on command line, irrespective of PEM is not installed or not -->
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="python_path" value="${lppython_loc}" persist="1">
+        <ruleList>
+          <compareText logic="does_not_equal" text="${lppython_loc}" value=""/>
+        </ruleList>
+        </setInstallerVariable>
+        <showInfo text="python_path=${python_path}"/>
+      </actionList>
+      <!--<ruleList>
+        <compareText logic="contains" text="${platform_name}" value="linux"/>
+      </ruleList> -->
     </actionGroup>
 
     <!-- Getting apache home value from ini file - Linux | Mac -->
@@ -1133,11 +1143,17 @@ EOF
       </ruleList>
     </runProgram>
 
+    <!-- LIN: Set the LP python location in apache environment when:
+         1) It's Linux
+         2) AND Python path is not empty
+         3) AND when installation is not (upgrade and lppython not provided on command line)
+         4) This means envvars can be updated in upgrade when lppython is provided on command line
+    -->
     <actionGroup>
       <actionList>
         <iniFileGet file="/etc/postgres-reg.ini" variable="python_tmp_var"
           section="edb_languagepack_${LANGUAGEPACK_VERSION}" key="InstallationDirectory"/>
-        <setInstallerVariable name="python_home" value="${python_tmp_var}/Python-${PYTHON_VERSION}" persist="1"/>
+        <setInstallerVariable name="python_home" value="${python_path}" persist="1"/>
         <logMessage text="Setting Python path in envvars"/>
         <substitute files="${installdir}/apache/bin/envvars">
           <substitutionList>
@@ -1150,6 +1166,13 @@ EOF
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+        <compareText logic="does_not_equal" text="${python_path}" value=""/>
+        <ruleGroup ruleEvaluationLogic="and" negate="1">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${apache_home}" value=""/>
+            <compareText logic="equals" text="${lppython_loc}" value=""/>
+          </ruleList>
+        </ruleGroup>
       </ruleList>
     </actionGroup>
 
@@ -2083,6 +2106,8 @@ include conf\addons\*.conf
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
     <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
     <stringParameter name="pemversion" cliOptionName="pemversion" ask="0" cliOptionShow="0"/>
+    <stringParameter name="lppython_loc" cliOptionName="lppython" ask="1" cliOptionShow="1"
+      description="LanguagePack Python installation path"/>
     <parameterGroup>
       <!-- Apache Port -->
       <name>apacheport</name>
