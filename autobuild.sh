@@ -215,7 +215,7 @@ echo "Running the build (REL-9_6) " >> autobuild.log
 ./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-96.log
 
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
-pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v6.0"
+pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v7.0"
 
 # determine the host location
 dns=$(grep -w "172.24" /etc/resolv.conf | cut -f3 -d".") >> autobuild.log 2>&1
