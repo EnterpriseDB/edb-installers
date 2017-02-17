@@ -959,6 +959,11 @@ EOF
         <createBackupFile>
           <path>${installdir}/apache/conf/httpd.conf</path>
         </createBackupFile>
+        <renameFile origin="${installdir}/apache/bin/envvars" destination="${installdir}/apache/bin/envvars.bak" >
+          <ruleList>
+            <fileExists path="${installdir}/apache/bin/envvars"/>
+          </ruleList>
+        </renameFile>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${apachehttpdVersion}" value=""/>
@@ -1135,12 +1140,7 @@ EOF
       </ruleList>
     </runProgram>
 
-    <!-- LIN: Set the LP python location in apache environment when:
-         1) It's Linux
-         2) AND Python path is not empty
-         3) AND when installation is not (upgrade and lppython not provided on command line)
-         4) This means envvars can be updated in upgrade when lppython is provided on command line
-    -->
+    <!-- LIN: Set the LP python location in apache environment -->
     <actionGroup>
       <actionList>
         <iniFileGet file="/etc/postgres-reg.ini" variable="python_tmp_var"
@@ -1158,13 +1158,6 @@ EOF
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-        <compareText logic="does_not_equal" text="${python_path}" value=""/>
-        <ruleGroup ruleEvaluationLogic="and" negate="1">
-          <ruleList>
-            <compareText logic="does_not_equal" text="${apache_home}" value=""/>
-            <compareText logic="equals" text="${lppython_loc}" value=""/>
-          </ruleList>
-        </ruleGroup>
       </ruleList>
     </actionGroup>
 
