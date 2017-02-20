@@ -1140,6 +1140,42 @@ EOF
       </ruleList>
     </runProgram>
 
+    <!-- If LP is not installed, log the message -->
+    <actionGroup>
+      <actionList>
+        <logMessage text="${msg(languagepack.not.installed)}"/>
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${python_path}" value=""/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- LIN: Check if the given Python Path exist -->
+    <actionGroup>
+      <actionList>
+        <logMessage text="${python_path}/bin/python doesn't exist" />
+        <setInstallerVariable name="python_path" value="" />
+      </actionList>
+      <ruleList>
+        <fileExists negate="1" path="${python_path}/bin/python"/>
+        <compareText logic="does_not_equal" text="${python_path}" value=""/>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+    <!-- WIN: Check if the given Python Path exist -->
+    <actionGroup>
+      <actionList>
+        <logMessage text="${python_path}\python.exe doesn't exist" />
+        <setInstallerVariable name="python_path" value="" />
+      </actionList>
+      <ruleList>
+        <fileExists negate="1" path="${python_path}\python.exe"/>
+        <compareText logic="does_not_equal" text="${python_path}" value=""/>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
     <!-- LIN: Set the LP python location in apache environment -->
     <actionGroup>
       <actionList>
@@ -1158,6 +1194,7 @@ EOF
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+        <compareText logic="does_not_equal" text="${python_path}" value=""/>
       </ruleList>
     </actionGroup>
 
@@ -1174,6 +1211,7 @@ include conf/addons/*.conf
           <text>${platform_name}</text>
           <value>windows</value>
         </compareText>
+        <compareText logic="does_not_equal" text="${python_path}" value=""/>
       </ruleList>
     </addTextToFile>
     <!-- WIN: Adding text for mod_wsgi config in apache -->
@@ -1189,6 +1227,7 @@ include conf\addons\*.conf
           <text>${platform_name}</text>
           <value>windows</value>
         </compareText>
+        <compareText logic="does_not_equal" text="${python_path}" value=""/>
       </ruleList>
     </addTextToFile>
 
