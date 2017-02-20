@@ -1032,6 +1032,7 @@ EOF
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
+        <compareText logic="does_not_equal" text="${python_path}" value=""/>
       </ruleList>
     </actionGroup>
 
@@ -1041,6 +1042,22 @@ EOF
             <substitution>
                <pattern>@@APACHE_HOME@@</pattern>
                <value>${installdir}\apache</value>
+            </substitution>
+         </substitutionList>
+         <ruleList>
+            <compareText>
+               <logic>equals</logic>
+               <text>${platform_name}</text>
+               <value>windows</value>
+            </compareText>
+         </ruleList>
+    </substitute>
+    <substitute>
+      <files>${installdir}/installer/ApacheHTTPD/install-apache.bat</files>
+         <substitutionList>
+            <substitution>
+              <pattern>REM</pattern>
+              <value></value>
             </substitution>
             <substitution>    
               <pattern>@@LP_PYTHON_HOME@@</pattern>
@@ -1053,14 +1070,32 @@ EOF
                <text>${platform_name}</text>
                <value>windows</value>
             </compareText>
+            <compareText logic="does_not_equal" text="${python_path}" value=""/>
          </ruleList>
     </substitute>
+
     <substitute>
       <files>${installdir}/installer/ApacheHTTPD/uninstall-apache.bat</files>
          <substitutionList>
             <substitution>
                <pattern>@@APACHE_HOME@@</pattern>
                <value>${installdir}\apache</value>
+            </substitution>
+         </substitutionList>
+         <ruleList>
+            <compareText>
+               <logic>equals</logic>
+               <text>${platform_name}</text>
+               <value>windows</value>
+            </compareText>
+         </ruleList>
+    </substitute>
+    <substitute>
+      <files>${installdir}/installer/ApacheHTTPD/start-apache.bat</files>
+         <substitutionList>
+            <substitution>
+              <pattern>REM</pattern>
+              <value></value>
             </substitution>
             <substitution>
               <pattern>@@LP_PYTHON_HOME@@</pattern>
@@ -1093,6 +1128,7 @@ EOF
                <text>${platform_name}</text>
                <value>windows</value>
             </compareText>
+            <compareText logic="does_not_equal" text="${python_path}" value=""/>
          </ruleList>
     </substitute>
     <!-- Setting the PORT, SERVER-ROOT in httpd.conf file -->
@@ -1479,6 +1515,18 @@ include conf\addons\*.conf
           <name>Environment</name>
           <type>REG_MULTI_SZ</type>
           <value>PATH=${python_home.unix};%PATH% PYTHONHOME=${python_home.unix} PYTHONPATH=${python_home.unix}</value>
+        <ruleList>
+            <compareText logic="does_not_equal" text="${python_path}" value=""/>
+        </ruleList>
+        </registrySet>
+        <registrySet>
+          <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EnterpriseDBApacheHTTPD</key>
+          <name>Environment</name>
+          <type>REG_MULTI_SZ</type>
+          <value>PATH=%PATH%</value>
+        <ruleList>
+            <compareText logic="equals" text="${python_path}" value=""/>
+        </ruleList>
         </registrySet>
         <wait ms="3000"/>
         <runProgram>
@@ -1494,11 +1542,6 @@ include conf\addons\*.conf
           <logic>equals</logic>
           <text>${platform_name}</text>
           <value>windows</value>
-        </compareText>
-        <compareText>
-          <logic>equals</logic>
-          <text>${apacheport}</text>
-          <value/>
         </compareText>
       </ruleList>
     </actionGroup>
