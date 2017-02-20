@@ -168,6 +168,6 @@ PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.5 -headerpad_m
 PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=10.5 -headerpad_max_install_names"
 
 # The InstallBuilder main binary.
-PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 8.6.0/bin/Builder.app/Contents/MacOS/installbuilder.sh"
+PG_INSTALLBUILDER_BIN="/Applications/BitRock InstallBuilder for Qt Enterprise 17.1.0/bin/Builder.app/Contents/MacOS/installbuilder.sh"
 KEYCHAIN_PASSWD="XXXXXX"
 
