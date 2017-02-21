@@ -228,7 +228,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cd \$BUILDROOT
     mkdir -p venv/lib
     cp -pR \$PYTHON_HOME/lib/lib*.dylib* venv/lib/
-    virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
+    \$PYTHON_HOME/bin/virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
     \$PIP --cache-dir "~/Library/Caches/\$PIP-pgadmin" install -r \$SOURCEDIR/\$REQUIREMENTS || _die "PIP install failed"

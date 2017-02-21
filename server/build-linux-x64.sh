@@ -332,13 +332,14 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     fi
     # Build runtime
     cd \$BUILDROOT/../runtime
-    PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib -ljpeg" $PG_QMAKE_LINUX_X64 || _die "qmake failed"
+    PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib" $PG_QMAKE_LINUX_X64 || _die "qmake failed"
     make || _die "pgadmin runtime build failed"
 
     # Create qt.conf
     cat >> "qt.conf" << EOF
     [Paths]
     Plugins = ../plugins
+    Translations = ../translations
 EOF
 
     # Build docs
@@ -354,31 +355,32 @@ EOF
     cd "\$BUILDROOT/web"
     rm -f pgadmin4.db config_local.* config_distro.py
     echo "SERVER_MODE = False" > config_distro.py
-    echo "MINIFY_HTML = False" >> config_distro.py
     echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_distro.py
-    
+
 EOT-PGADMIN
 
     cd $WD
     scp server/build-pgadmin.sh $PG_SSH_LINUX_X64:$PG_PATH_LINUX_X64/server
     # Build
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on Linux"
-  
-    # Prepare Staging 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING; mkdir \"pgAdmin 4\"; cd \"pgAdmin 4\"; mkdir -p bin lib docs/en_US" || _die "Failed to create pgadmin staging directories"
+
+    # Prepare Staging
+    ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING; mkdir \"pgAdmin 4\"; cd \"pgAdmin 4\"; mkdir -p bin lib docs/en_US translations" || _die "Failed to create pgadmin staging directories"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/runtime; cp pgAdmin4 qt.conf \"$PG_STAGING/pgAdmin 4/bin\"" || _die "Failed to copy pgAdmin4 binary to staging"
     ssh $PG_SSH_LINUX_X64 "cp -r $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/linux-build/venv \"$PG_STAGING/pgAdmin 4/\"" || _die "Failed to copy venv to staging"
     ssh $PG_SSH_LINUX_X64 "cp -r $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/docs/en_US/_build/html \"$PG_STAGING/pgAdmin 4/docs/en_US\"" || _die "Failed to copy pgAdmin4 docs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -r $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/linux-build/web \"$PG_STAGING/pgAdmin 4/\"" || _die "Failed to copy pgAdmin4 web to staging"
     ssh $PG_SSH_LINUX_X64 "mkdir -p \"$PG_STAGING/pgAdmin 4/plugins/platforms\"" || _die "Failed to create plugins directory"
-
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/plugins/platforms/libqxcb.so* \"$PG_STAGING/pgAdmin 4/plugins/platforms\"" || _die "Failed to copy qt dependent libs to staging"
-
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/plugins/xcbglintegrations \"$PG_STAGING/pgAdmin 4/plugins/\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/plugins/qtwebengine \"$PG_STAGING/pgAdmin 4/plugins/\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/plugins/bearer \"$PG_STAGING/pgAdmin 4/plugins/\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5XcbQpa.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5DBus.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5WebKitWidgets.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5Widgets.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5WebKit.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5WebEngine.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5WebEngineWidgets.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5WebEngineCore.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5Gui.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5Network.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5Core.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
@@ -388,6 +390,15 @@ EOT-PGADMIN
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libicui18n.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libicuuc.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libicudata.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5Quick.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5WebChannel.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5Qml.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5Positioning.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5Core.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/translations/qtwebengine_locales \"$PG_STAGING/pgAdmin 4/translations/\""|| _die "Failed to copy qt dependent translations to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/icu*.dat \"$PG_STAGING/pgAdmin 4/bin/\""|| _die "Failed to copy qt dependent icu*.dat to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/qtwebengine*.pak \"$PG_STAGING/pgAdmin 4/bin/\""|| _die "Failed to copy qt dependent resources to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/libexec/QtWebEngineProcess \"$PG_STAGING/pgAdmin 4/bin/\""|| _die "Failed to copy qt dependent resources to staging"
 
     # Remove the unwanted stuff from staging
     ssh $PG_SSH_LINUX_X64 "cd \"$PG_STAGING/pgAdmin 4/venv\"; find . \( -name \"*.pyc\" -o -name \"*.pyo\" \) -delete" || _die "Failed to remove unwanted files from pgadmin staging"
@@ -458,6 +469,7 @@ EOT-PGADMIN
 
     # Generate debug symbols
     mv $WD/server/staging/linux-x64/pgAdmin\ 4/ $WD/server/staging/linux-x64/pgAdmin4
+    cd $PG_STAGING
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
 
     # Remove existing symbols directory in output directory

@@ -216,7 +216,8 @@ _build_languagepack_osx() {
 
      python setup.py install --prefix=\$PYTHON_INSTALL_PATH 
      easy_install pip
-     easy_install sphinx
+     pip install sphnix
+     pip install virtualvenv
 
      cd \$PYTHON_INSTALL_PATH
      pip list > \$install_path/pip_packages_list.txt
@@ -327,6 +328,7 @@ _postprocess_languagepack_osx() {
 
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; tar -jcvf lp.img.tar.bz2 lp.img" || _die "Failed to create lp.img on $PG_SSH_OSX_SIGN"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/lp.img.tar.bz2 $WD/output || _die "Failed to copy lp.img.tar.bz2 to $WD/output."
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/output" || _die "Failed to create output directory in $PG_PATH_OSX"
     scp lp.img.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/output ||  _die "Failed to copy lp.img.tar.bz2 to $PG_PATH_OSX/output."
     rm -rf lp.img* || _die "Failed to remove lp.img.tar.bz2 from output directory."
 
