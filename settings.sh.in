@@ -87,6 +87,7 @@ PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
 
 PG_SSH_WINDOWS=buildfarm@bf4-windows.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS=D:\\\\pginstaller.auto
+PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller.auto
 PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files\\\\Microsoft Visual Studio 12.0"
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
 PG_FRAMEWORKVERSION_WINDOWS=v4.0.30319
@@ -109,6 +110,7 @@ PLATFORM_TOOLSET=/p:PlatformToolset=v120_xp
 
 PG_SSH_WINDOWS_X64=buildfarm@bf4-windows-x64.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS_X64=D:\\\\pginstaller.auto
+PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller.auto
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0"
 PG_FRAMEWORKDIR_WINDOWS_X64="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework64"
 PG_FRAMEWORKVERSION_WINDOWS_X64=v4.0.30319
@@ -168,6 +170,10 @@ PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION
 PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
 PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
 PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
+
+# LanguagePack
+PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4"
+PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/EnterpriseDB/LanguagePack/9.4"
 
 # The InstallBuilder main binary.
 PG_INSTALLBUILDER_BIN="/opt/installbuilder-17.1.0/bin/builder"

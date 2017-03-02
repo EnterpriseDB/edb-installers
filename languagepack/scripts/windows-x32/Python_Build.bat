@@ -125,6 +125,7 @@ SET PATH=%vPythonInstallDir%\Scripts;D:\edb-postgres.auto-repo\output\bin;%PATH%
 CD %vPythonInstallDir%\Scripts
 SET LINK="/FORCE:MULTIPLE"
 pip install psycopg2
+pip install sphinx==1.4.6
 
 ECHO ------------------------
 ECHO ----------Done----------

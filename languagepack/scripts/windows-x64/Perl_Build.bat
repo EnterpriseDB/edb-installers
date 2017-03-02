@@ -12,7 +12,7 @@ ECHO %vPerlModule%
 
 SET PROCESSOR_ARCHITECTURE=AMD64
 SET INCLUDE=%ProgramFiles(x86)%\Microsoft SDKs\Windows\v7.1A\Include;%INCLUDE%
-SET PATH=%ProgramFiles(x86)%\Microsoft SDKs\Windows\v7.1A\Bin\x64;D:\edb-postgres.auto-repo-x64\output\bin;D:\edb-postgres.auto-repo-x64\output\lib;C:\pgBuild64\bin;C:\pgBuild64\lib;%PATH%
+SET PATH=%ProgramFiles(x86)%\Microsoft SDKs\Windows\v7.1A\Bin\x64;D:\pginstaller.auto\output\bin;D:\pginstaller.auto\output\lib;C:\pgBuild64\bin;C:\pgBuild64\lib;%PATH%
 SET LIB=%ProgramFiles(x86)%\Microsoft SDKs\Windows\v7.1A\Lib\x64;%LIB%
 SET CL=/D_USING_V120_SDK71_
 SET LINK=/SUBSYSTEM:CONSOLE,5.02
@@ -20,6 +20,8 @@ SET LINK=/SUBSYSTEM:CONSOLE,5.02
 IF "%vPerlModule%"=="PERL" GOTO PERL
 IF "%vPerlModule%"=="DBI" GOTO DBI
 IF "%vPerlModule%"=="DBD" GOTO DBD
+IF "%vPerlModule%"=="cpanminus" GOTO cpanminus
+IF "%vPerlModule%"=="IPC" GOTO IPC
 GOTO END
 
 :PERL
@@ -40,10 +42,23 @@ GOTO END
 
 :DBD
 SET PATH=%vPerlInstallDir%\bin;%PATH%
-set
 CD %vPerlInstallDir%\bin
 ECHO ....Starting to Install DBD::PG....
 cpan install DBD::Pg
 ECHO ....End Install DBD::PG....
+
+:IPC
+SET PATH=%vPerlInstallDir%\bin;%PATH%
+CD %vPerlInstallDir%\bin
+ECHO ....Starting to Install IPC::Run...
+cpanm -f -n install IPC::Run
+ECHO ....End Install IPC::Run...
+
+:cpanminus
+SET PATH=%vPerlInstallDir%\bin;%PATH%
+CD %vPerlInstallDir%\bin
+ECHO ....Starting to Install App::cpanminus....
+cpan install App::cpanminus
+ECHO ....End Install App::cpanminus....
 
 :END
