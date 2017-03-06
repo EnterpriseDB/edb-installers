@@ -214,6 +214,27 @@ git pull >> autobuild.log 2>&1
 echo "Running the build (REL-9_5) " >> autobuild.log
 ./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-95.log
 
+# Archive the symbols
+cd output/symbols
+
+for platform in linux linux-x64 osx windows windows-x64
+do
+        if [ -d $platform ]
+        then
+            if [ "$platform" = "windows" ] || [ "$platform" = "windows-x64" ]
+            then
+                echo "==================== Zipping $platform debug symbols ============================" >> autobuild.log 2>&1
+                zip -r $platform.zip $platform >> autobuild.log 2>&1
+                rm -rf $platform
+            else
+                tar -czf $platform.tar.gz $platform
+                rm -rf $platform
+            fi
+        fi
+done
+
+cd $DIRNAME
+
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
 pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v6.0"
 
