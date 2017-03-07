@@ -443,6 +443,7 @@ then
 	export LD_LIBRARY_PATH="$SSL_INST/lib:$LD_LIBRARY_PATH"
     	ExecuteCommand "python setup.py install --prefix=\"$PYTHON_INSTALL_PATH\""
     	ExecuteCommand "easy_install pip"
+    	ExecuteCommand "pip install sphinx==1.4.6"
     )
     ExecuteCommand "popd"
 
