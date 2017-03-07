@@ -216,11 +216,9 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     if echo \$PYTHON_VERSION | grep ^3 > /dev/null 2>&1 ; then
         export PYTHON=\$PYTHON_HOME/bin/python3
         export PIP=pip3
-        export REQUIREMENTS=requirements_py3.txt
     else
         export PYTHON=\$PYTHON_HOME/bin/python2
         export PIP=pip
-        export REQUIREMENTS=requirements_py2.txt
     fi
     SOURCEDIR=$PG_PATH_OSX/server/source/pgadmin.osx
     BUILDROOT=$PG_PATH_OSX/server/source/pgadmin.osx/mac-build
@@ -231,7 +229,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
-    \$PIP --cache-dir "~/Library/Caches/\$PIP-pgadmin" install -r \$SOURCEDIR/\$REQUIREMENTS || _die "PIP install failed"
+    \$PIP --cache-dir "~/Library/Caches/\$PIP-pgadmin" install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
     rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
 
     # Move the python<version> directory to python so that the private environment path is found by the application.
@@ -282,8 +280,15 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cp -r $PG_PATH_OSX/server/source/pgadmin.osx/web "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/"
     mkdir -p "\$BUILDROOT/pgAdmin 4.app/Contents/Resources/venv/bin"
     cp "\$BUILDROOT/venv/bin/python" "\$BUILDROOT/pgAdmin 4.app/Contents/Resources/venv/bin"
+
+    # Removing the unwanted files and directories from the pgAdmin4 staging
+    cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv"
+    find . \( -name test -o -name tests \) -type d | xargs rm -rf
     cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/web"
+    find . \( -name tests -o -name feature_tests \) -type d | xargs rm -rf
+    rm -rf regression
     rm -f pgadmin4.db config_local.*
+     # Create config_distro
     echo "SERVER_MODE = False" > config_distro.py
     echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_distro.py
 
@@ -296,6 +301,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
 EOT-PGADMIN
 
     cd $WD
+    chmod 755 $WD/server/build-pgadmin.sh
     scp server/build-pgadmin.sh $PG_SSH_OSX:$PG_PATH_OSX/server
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on OSX"
 
