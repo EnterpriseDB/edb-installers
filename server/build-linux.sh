@@ -350,14 +350,14 @@ EOF
     cp -r \$SOURCEDIR/web "\$BUILDROOT"
 
     # Removing the unwanted files and directories from the pgAdmin4 staging
+    cd "\$BUILDROOT/venv"
+    find . \( -name test -o -name tests \) -type d | xargs rm -rf
     cd "\$BUILDROOT/web/pgadmin"
     rm -rf feature_tests
     cd ..
     rm -rf regression
     rm -f pgadmin4.db config_local.* config_distro.py
     find . -name "tests" -type d | xargs rm -rf
-    cd "\$BUILDROOT/venv"
-    find . \( -name test -o -name tests \) -type d | xargs rm -rf
     # Create config_distro
     echo "SERVER_MODE = False" > config_distro.py
     echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_distro.py
