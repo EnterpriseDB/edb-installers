@@ -85,6 +85,9 @@ _prep_server() {
     echo "Unpacking pgAdmin source..."
     tar -zxvf ../../tarballs/pgadmin4-$PG_TARBALL_PGADMIN.tar.gz
 
+    cd pgadmin4-$PG_TARBALL_PGADMIN
+    patch -p1 < ~/tarballs/pgadmin_40517.patch
+
     cd $WD/server/source
 
     # Debugger

@@ -97,13 +97,7 @@ _prep_server_windows_x64() {
 
     cp -R pgadmin4-$PG_TARBALL_PGADMIN pgadmin.windows-x64 || _die "Failed to copy the source code (source/pgadmin.windows-x64)"
 
-    # We build only dynamic libs of wxWidgets which puts the hhp2cached in the vc_mswudll instead of vc_mswu.
-    # Patch the builddocs.bat of pgadmin so that it finds the hhp2cached executable
-    cd pgadmin.windows-x64/docs/
-    patch -p0 < ~/tarballs/builddocs.patch
-
     cd $WD/server/source
-
     cp -R stackbuilder stackbuilder.windows-x64 || _die "Failed to copy the source code (source/stackbuilder.windows-x64)"
 
     cd stackbuilder.windows-x64
@@ -470,7 +464,7 @@ EOT
 
     #create virtualenv and install required components using pip and compile documents and runtime
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; $PGAMIN_PYTHON_WINDOWS_X64/Scripts/virtualenv.exe venv" || _die "Failed to create venv";
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; source $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/activate; export PATH=$PG_CYGWIN_PATH_WINDOWS_X64/output/bin:\$PATH; $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/pip install -r requirements.txt" || _die "pip install failed"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; source $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/activate; export PATH=$PG_CYGWIN_PATH_WINDOWS_X64/output/bin:\$PATH; $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/pip install -r requirements.txt --no-cache-dir" || _die "pip install failed"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; source $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/activate; $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/pip install sphinx" || _die "pip install sphinx failed"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/sphinx-build $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/docs/en_US \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\docs\\\\en_US\\\\html\"" || _die "Failed to compile html docs"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; source $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/activate; $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/pip uninstall -y sphinx" || _die "pip uninstall sphinx failed"
