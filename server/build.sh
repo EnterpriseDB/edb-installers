@@ -85,9 +85,10 @@ _prep_server() {
     echo "Unpacking pgAdmin source..."
     tar -zxvf ../../tarballs/pgadmin4-$PG_TARBALL_PGADMIN.tar.gz
 
+    cd pgadmin4-$PG_TARBALL_PGADMIN
+    patch -p1 < ~/tarballs/pgadmin_40517.patch
+
     cd $WD/server/source
-    # since setuptool require six 1.10.0 so adding > sign in the requirement file
-    sed -i 's/six==1.9.0/six\>==1.9.0/g' pgadmin4-$PG_TARBALL_PGADMIN/requirements_py2.txt
 
     # Debugger
     if [ -e pldebugger ]; 
