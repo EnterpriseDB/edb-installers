@@ -178,5 +178,5 @@ PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\EnterpriseDB\\\\LanguagePack\\\\9.4"
 PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/EnterpriseDB/LanguagePack/9.4"
 
 # The InstallBuilder main binary.
-PG_INSTALLBUILDER_BIN="/opt/installbuilder-17.1.0/bin/builder"
+PG_INSTALLBUILDER_BIN="/opt/installbuilder-17.2.0/bin/builder"
 KEYCHAIN_PASSWD="XXXXXX"
