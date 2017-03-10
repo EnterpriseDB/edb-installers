@@ -11,11 +11,12 @@ ECHO %vPerlInstallDir%
 ECHO %vPerlModule%
 
 SET SHELL=
-SET PATH=D:\postgres.auto-repo-x64\output\bin;D:\postgres.auto-repo-x64\output\lib;C:\pgBuild32\lib;C:\pgBuild32\dmake;C:\MinGW\mingw-w64\mingw32\bin;C:\pgBuild32\bin;%PATH%
+SET PATH=D:\pginstaller.auto\output\bin;D:\pginstaller.auto\output\lib;C:\pgBuild32\lib;C:\pgBuild32\dmake;C:\MinGW\mingw-w64\mingw32\bin;C:\pgBuild32\bin;%PATH%
 
 IF "%vPerlModule%"=="PERL" GOTO PERL
 IF "%vPerlModule%"=="DBI" GOTO DBI
 IF "%vPerlModule%"=="DBD" GOTO DBD
+IF "%vPerlModule%"=="cpanminus" GOTO cpanminus
 IF "%vPerlModule%"=="IPC" GOTO IPC
 GOTO END
 
@@ -53,14 +54,21 @@ SET PATH=%vPerlInstallDir%\bin;%PATH%
 set
 CD %vPerlInstallDir%\bin
 ECHO ....Starting to Install DBD::PG....
-cpan install DBD::Pg
+cpanm -f -n install DBD::Pg
 ECHO ....End Install DBD::PG....
+
+:cpanminus
+SET PATH=%vPerlInstallDir%\bin;%PATH%
+CD %vPerlInstallDir%\bin
+ECHO ....Starting to Install cpanminus....
+cpan install App::cpanminus
+ECHO ....End Install cpanminus....
 
 :IPC
 SET PATH=%vPerlInstallDir%\bin;%PATH%
 CD %vPerlInstallDir%\bin
 ECHO ....Starting to Install IPC::Run....
-cpan install IPC::Run
+cpanm -f -n install IPC::Run
 ECHO ....End Install IPC::Run....
 
 :END

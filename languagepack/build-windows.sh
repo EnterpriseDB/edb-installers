@@ -90,6 +90,7 @@ _prep_languagepack_windows() {
     
     echo "Copying languagepack sources to Windows VM"
     rsync -av languagepack.$ARCH.zip $PG_SSH_WIN:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the languagepack archive to windows VM (languagepack.$ARCH.zip)"
+    scp $WD/../PEM/requirements.txt $PG_SSH_WIN:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy PEM requirements.txt to windows VM (languagepack.$ARCH.zip)"
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN; cmd /c rd /S /Q languagepack.$ARCH; unzip languagepack.$ARCH.zip" || _die "Couldn't extract languagepack archive on windows VM (languagepack.$ARCH.zip)"
 
     echo "END PREP languagepack Windows"
@@ -123,7 +124,8 @@ _build_languagepack_windows() {
     # Perl Build
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 PERL"
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 DBI"
-##    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 DBD"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 cpanminus"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 DBD"
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 IPC"
 
     # Python Build

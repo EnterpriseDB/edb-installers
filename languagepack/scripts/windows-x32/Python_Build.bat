@@ -129,20 +129,8 @@ goto ERR_HANDLER
 
 CD %vPythonInstallDir%\Scripts
 SET LINK="/FORCE:MULTIPLE"
-pip install psycopg2==2.6
-pip install Flask
-pip install Jinja2
-pip install MarkupSafe
-pip install Werkzeug
-pip install itsdangerous
-pip install Flask-Login
-pip install Flask-Security
-pip install Flask-WTF
-pip install simplejson
-pip install Pillow==3.4.2
-pip install pytz
-pip install sphinx "babel<2.0"
-pip install cython
+ECHO pip install -r %vScriptsDir%\..\requirements.txt
+pip install -r %vScriptsDir%\..\requirements.txt
 
 ECHO copying required dll's to %vPythonInstallDir%\Lib\site-packages\psycopg2
 
