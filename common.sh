@@ -313,3 +313,23 @@ generate_3rd_party_license()
     fi
 }
 
+_archive_symbols() {
+    pushd output/symbols
+
+    for platform in linux linux-x64 windows windows-x64
+    do
+        if [ -d $platform ]
+        then
+            echo "==================== Archiving $platform debug symbols ============================"
+            if [ "$platform" = "windows" ] || [ "$platform" = "windows-x64" ]
+            then
+                zip -r $platform.zip $platform
+            else
+                tar -czf $platform.tar.gz $platform
+            fi
+            rm -rf $platform
+        fi
+    done
+    popd
+
+}
