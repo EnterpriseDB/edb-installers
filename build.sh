@@ -408,4 +408,6 @@ then
     fi
 fi
 
+# Archive the symbols
+_archive_symbols
 echo "--> Completed!"
