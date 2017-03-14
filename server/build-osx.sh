@@ -391,6 +391,8 @@ EOT-PGADMIN
     tar -jxvf server-staging.tar.bz2 || _die "Failed to extract the server staging archive"
     rm -f server-staging.tar.bz2
 
+    # Copy the required Python executables
+    scp $PG_SSH_OSX:$PGADMIN_PYTHON_OSX/Python $WD/server/staging/osx/pgAdmin\ 4.app/Contents/Resources/venv/.Python
     echo "END BUILD Server OSX"
 }
 

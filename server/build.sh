@@ -87,6 +87,7 @@ _prep_server() {
 
     cd pgadmin4-$PG_TARBALL_PGADMIN
     patch -p1 < ~/tarballs/pgadmin_40517.patch
+    patch -p1 < ~/tarballs/pgadmin_40517_2.patch
 
     cd $WD/server/source
 
