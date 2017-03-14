@@ -394,3 +394,6 @@ then
         source $WD/pvt_build.sh 2>&1 | tee "${PVT_BUILD_LOG}"
     fi
 fi
+
+# Archive the symbols
+_archive_symbols
