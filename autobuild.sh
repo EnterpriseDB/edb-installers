@@ -68,8 +68,8 @@ then
 else
         SKIPPVTPACKAGES=""
 	# Make sure, we always do a full private build
-	if [ -f pvt_settings.sh.full.REL-9_6 ]; then
-		cp -f pvt_settings.sh.full.REL-9_6 pvt_settings.sh.REL-9_6
+	if [ -f pvt_settings.sh.full.REL-10 ]; then
+		cp -f pvt_settings.sh.full.REL-10 pvt_settings.sh.REL-10
 	fi
 fi
 
@@ -196,26 +196,26 @@ DATE=`date +'%Y-%m-%d'`
 echo "Cleaning up old output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
 
-# Switch to REL-9_6 branch
-echo "Switching to REL-9_6 branch" >> autobuild.log
+# Switch to REL-10 branch
+echo "Switching to REL-10 branch" >> autobuild.log
 git reset --hard >> autobuild.log 2>&1
-git checkout REL-9_6 >> autobuild.log 2>&1
+git checkout REL-10 >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
-if [ -f settings.sh.full.REL-9_6 ]; then
-   cp -f settings.sh.full.REL-9_6 settings.sh
+if [ -f settings.sh.full.REL-10 ]; then
+   cp -f settings.sh.full.REL-10 settings.sh
 fi
 
 # Self update
-echo "Updating REL-9_6 branch build system" >> autobuild.log
+echo "Updating REL-10 branch build system" >> autobuild.log
 git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
-echo "Running the build (REL-9_6) " >> autobuild.log
-./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-96.log
+echo "Running the build (REL-10) " >> autobuild.log
+./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-10.log
 
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
-pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v6.0"
+pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v7.0"
 
 # determine the host location
 dns=$(grep -w "172.24" /etc/resolv.conf | cut -f3 -d".") >> autobuild.log 2>&1
@@ -243,19 +243,19 @@ ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"$pem_remote_location/20*\"
 if [ "$BUILD_USER" == "" ]
 then
         echo "Host country = $country" >> autobuild.log
-        remote_location="$remote_location/Latest/9.6/$country"
+        remote_location="$remote_location/Latest/10/$country"
         pem_remote_location="$pem_remote_location/$DATE/$country"
 else
-        remote_location="$remote_location/Custom/$BUILD_USER/9.6/$country/$BUILD_NUMBER"
+        remote_location="$remote_location/Custom/$BUILD_USER/10/$country/$BUILD_NUMBER"
         pem_remote_location="$pem_remote_location/Custom/$BUILD_USER/$country/$BUILD_NUMBER"
 fi
 
-_mail_status "build-96.log" "build-pvt.log" "9.6"
+_mail_status "build-10.log" "build-pvt.log" "10"
 
 if [ "$BUILD_USER" == "" ]
 then
         # Get the date of the last successful build (LSB), create the directory of that date and copy the installers from the Latest and copy them to this directory.
-        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-96.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../../\$LSB_DATE/9.6/$country; cp $remote_location/* $remote_location/../../../\$LSB_DATE/9.6/$country"
+        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-10.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../../\$LSB_DATE/10/$country; cp $remote_location/* $remote_location/../../../\$LSB_DATE/10/$country"
 fi
 
 # Create a remote directory if not present
