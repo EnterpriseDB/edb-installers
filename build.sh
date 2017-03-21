@@ -397,4 +397,4 @@ then
 fi
 
 # Archive the symbols
-_archive_symbols()
+_archive_symbols
