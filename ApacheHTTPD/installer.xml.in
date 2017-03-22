@@ -355,7 +355,7 @@ EOF
          this installer is being run stand alone, Hence check for the PEM installation -->
     <actionGroup>
       <actionList>
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM\server" name="peminstalledversion" variable="pem_serverVersion"/>
+        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM\server" name="Version" variable="peminstalledversion"/>
         <setInstallerVariable name="pemversion" value="6">
         <ruleList>
           <compareVersions logic="less" version1="${peminstalledversion}" version2="7.0"/>
@@ -378,6 +378,7 @@ EOF
       <actionList>
         <setInstallerVariable name="LANGUAGEPACK_VERSION" value="9.5"/>
         <setInstallerVariable name="PYTHON_VERSION" value="3.3"/>
+        <setInstallerVariable name="MOD_WSGI_MODULE" value="mod_wsgi-py33-VC10.so"/>
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${pemversion}" value="6"/>
@@ -386,7 +387,8 @@ EOF
     <actionGroup>
       <actionList>
         <setInstallerVariable name="LANGUAGEPACK_VERSION" value="10"/>
-        <setInstallerVariable name="PYTHON_VERSION" value="3.5"/>
+        <setInstallerVariable name="PYTHON_VERSION" value="3.4"/>
+        <setInstallerVariable name="MOD_WSGI_MODULE" value="mod_wsgi-py34-VC10.so"/>
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${pemversion}" value="7"/>
@@ -1254,7 +1256,7 @@ include conf/addons/*.conf
     <addTextToFile>
       <file>${installdir}\apache\conf\httpd.conf</file>
       <text>
-LoadModule wsgi_module "${installdir}\apache\modules\mod_wsgi-py33-VC10.so"
+LoadModule wsgi_module "${installdir}\apache\modules\${MOD_WSGI_MODULE}"
 include conf\addons\*.conf
       </text>
       <ruleList>
