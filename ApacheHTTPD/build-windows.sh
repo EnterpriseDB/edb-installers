@@ -8,7 +8,7 @@
 _prep_ApacheHTTPD_windows() {
     # Following echo statement for Jenkins Console Section output
     echo "BEGIN PREP ApacheHTTPD Windows"
-      
+
     # Enter the source directory and cleanup if required
     cd $WD/ApacheHTTPD/source
 
@@ -34,11 +34,22 @@ _prep_ApacheHTTPD_windows() {
     mkdir -p apache.windows/mod_wsgi || _die "Couldn't create the mod_wsgi directory"
     cp -pR mod_wsgi-$PG_VERSION_WSGI/* apache.windows/mod_wsgi || _die "Failed to copy the source code (source/mod_wsgi-$PG_VERSION_WSGI)"
 
+    # Patches to build the correct version
     cd apache.windows/mod_wsgi/win32
     patch -p0 < $WD/tarballs/mod_wsgi_psapi.patch
-    sed -i '/ap24py34-win32-VC10.mk/s/^/REM /g' build-win32-VC10.bat
-    sed -i "s/^APACHE_ROOTDIR =\(.*\)$/APACHE_ROOTDIR=$PG_PATH_WINDOWS\\\\apache.staging/g" ap24py33-win32-VC10.mk #> ap24py33-win32-VC10.mk.bk && mv ap24py33-win32-VC10.mk.bk ap24py33-win32-VC10.mk
-    sed -i "s/^PYTHON_ROOTDIR =\(.*\)$/PYTHON_ROOTDIR=$PG_PYTHON_WINDOWS/g" ap24py33-win32-VC10.mk #> ap24py33-win32-VC10.mk.bk && mv ap24py33-win32-VC10.mk.bk ap24py33-win32-VC10.mk 
+    # For PEM7, apachehttpd needs to be built with python3.4 (LP10)
+    if [ ! -z $PEM_PYTHON_WINDOWS ];
+    then
+        PG_PYTHON_WINDOWS=$PEM_PYTHON_WINDOWS
+        patch -p0 < $WD/tarballs/apache-build-win32.patch
+        MOD_WSGI_MAKEFILE=ap24py34-win32-VC10.mk
+    else #PEM6
+        sed -i '/ap24py34-win32-VC10.mk/s/^/REM /g' build-win32-VC10.bat
+        MOD_WSGI_MAKEFILE=ap24py33-win32-VC10.mk
+    fi
+
+    sed -i "s/^APACHE_ROOTDIR =\(.*\)$/APACHE_ROOTDIR=$PG_PATH_WINDOWS\\\\apache.staging/g" ${MOD_WSGI_MAKEFILE}
+    sed -i "s/^PYTHON_ROOTDIR =\(.*\)$/PYTHON_ROOTDIR=$PG_PYTHON_WINDOWS/g" ${MOD_WSGI_MAKEFILE}
 
     cd $WD/ApacheHTTPD/source
 
@@ -85,12 +96,6 @@ _prep_ApacheHTTPD_windows() {
 
 _build_ApacheHTTPD_windows() {
     echo "BEGIN BUILD ApacheHTTPD Windows"
-
-    # For PEM7, apachehttpd needs to be built with python3.5 (LP10)
-    if [ ! -z $PEM_PYTHON_WINDOWS ];
-    then
-        PG_PYTHON_WINDOWS=$PEM_PYTHON_WINDOWS
-    fi
 
     cd $WD/ApacheHTTPD/staging/windows
 
