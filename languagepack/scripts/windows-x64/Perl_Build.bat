@@ -1,7 +1,7 @@
 @ECHO OFF
 
 CALL "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64
- 
+
 SET vPerlBuildDir=%1
 SET vPerlInstallDir=%2
 SET vPerlModule=%3
@@ -20,6 +20,9 @@ SET LINK=/SUBSYSTEM:CONSOLE,5.02
 IF "%vPerlModule%"=="PERL" GOTO PERL
 IF "%vPerlModule%"=="DBI" GOTO DBI
 IF "%vPerlModule%"=="DBD" GOTO DBD
+IF "%vPerlModule%"=="CPANMINUS" GOTO CPANMINUS
+IF "%vPerlModule%"=="IPC" GOTO IPC
+IF "%vPerlModule%"=="WIN32PROCESS" GOTO WIN32PROCESS
 GOTO END
 
 :PERL
@@ -40,10 +43,32 @@ GOTO END
 
 :DBD
 SET PATH=%vPerlInstallDir%\bin;%PATH%
-set
 CD %vPerlInstallDir%\bin
 ECHO ....Starting to Install DBD::PG....
 cpan install DBD::Pg
 ECHO ....End Install DBD::PG....
+GOTO END
 
+:CPANMINUS
+SET PATH=%vPerlInstallDir%\bin;%PATH%
+CD %vPerlInstallDir%\bin
+ECHO ....Starting to Install App::cpanminus....
+cpan install App::cpanminus
+ECHO ....End Install App::cpanminus....
+GOTO END
+
+:IPC
+SET PATH=%vPerlInstallDir%\bin;%PATH%
+CD %vPerlInstallDir%\bin
+ECHO ....Starting to Install IPC::Run....
+cpanm -f -n install IPC::Run
+ECHO ....End Install IPC::Run....
+GOTO END
+
+:WIN32PROCESS
+SET PATH=%vPerlInstallDir%\bin;%PATH%
+CD %vPerlInstallDir%\bin
+ECHO ....Starting to Install Win32::Process....
+cpan install Win32::Process
+ECHO ....End Install Win32::Process....
 :END

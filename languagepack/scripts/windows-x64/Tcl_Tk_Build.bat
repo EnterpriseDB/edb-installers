@@ -18,13 +18,13 @@ ECHO TCL Install Dir is ... %vTcl_INST_Dir%
 ECHO TK Source Dir is ... %vTk_SRC_Dir%
 
 ECHO ....Starting TCL Build - 64 bit....
-cd %vTcl_SRC_Dir%\win
+CD %vTcl_SRC_Dir%\win
 nmake -f makefile.vc INSTALLDIR=%vTcl_INST_Dir%
 nmake -f makefile.vc INSTALLDIR=%vTcl_INST_Dir% install
 ECHO ....End Build TCL....
 
 ECHO ....Starting TK Build - 64 bit....
-cd %vTk_SRC_Dir%\win
+CD %vTk_SRC_Dir%\win
 nmake -f makefile.vc COMPILERFLAGS=-DWINVER=0x0500 OPTS=noxp INSTALLDIR=%vTcl_INST_Dir% TCLDIR=%vTcl_SRC_Dir%
 nmake -f makefile.vc COMPILERFLAGS=-DWINVER=0x0500 OPTS=noxp INSTALLDIR=%vTcl_INST_Dir% TCLDIR=%vTcl_SRC_Dir% install
 ECHO ....End Build TK....

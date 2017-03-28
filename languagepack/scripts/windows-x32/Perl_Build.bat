@@ -1,6 +1,6 @@
-@ECHO OFF
+@ECHO off
 
-CALL "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
+CALL "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
 
 SET vPerlBuildDir=%1
 SET vPerlInstallDir=%2
@@ -10,34 +10,25 @@ ECHO %vPerlBuildDir%
 ECHO %vPerlInstallDir%
 ECHO %vPerlModule%
 
-SET SHELL=
-SET PATH=D:\pginstaller.auto\output\bin;D:\pginstaller.auto\output\lib;C:\pgBuild32\lib;C:\pgBuild32\dmake;C:\MinGW\mingw-w64\mingw32\bin;C:\pgBuild32\bin;%PATH%
+SET INCLUDE=%ProgramFiles(x86)%\Microsoft SDKs\Windows\7.1A\Include;%INCLUDE%
+SET PATH=%ProgramFiles(x86)%\Microsoft SDKs\Windows\7.1A\Bin;D:\edb-postgres.auto-repo\output\bin;D:\edb-postgres.auto-repo\output\lib;C:\pgBuild32\bin;C:\pgBuild32\lib;%PATH%
+SET LIB=%ProgramFiles(x86)%\Microsoft SDKs\Windows\7.1A\Lib;%LIB%
+SET CL=/D_USING_V120_SDK71_
+SET LINK=/SUBSYSTEM:CONSOLE,5.01
 
 IF "%vPerlModule%"=="PERL" GOTO PERL
 IF "%vPerlModule%"=="DBI" GOTO DBI
 IF "%vPerlModule%"=="DBD" GOTO DBD
-IF "%vPerlModule%"=="cpanminus" GOTO cpanminus
+IF "%vPerlModule%"=="CPANMINUS" GOTO CPANMINUS
 IF "%vPerlModule%"=="IPC" GOTO IPC
+IF "%vPerlModule%"=="WIN32PROCESS" GOTO WIN32PROCESS
 GOTO END
 
 :PERL
 ECHO ....Starting to Make Perl....
 CD %vPerlBuildDir%\win32
-dmake -f makefile.mk
-dmake -f makefile.mk install
-
-ECHO generating perl524.lib from %vPerlBuildDir%\win32\perl524.def in %vPerlInstallDir%\lib\CORE
-lib /def:%vPerlBuildDir%\win32\perl524.def /out:%vPerlInstallDir%\lib\CORE\perl524.lib /machine:x86
-
-ECHO deleting perl524.exp from %vPerlInstallDir%\lib\CORE
-DEL %vPerlInstallDir%\lib\CORE\perl524.exp
-
-ECHO copying libgcc_s_seh-1.dll from C:\MinGW\mingw-w64\mingw32\bin to %vPerlInstallDir%\bin
-XCOPY /f /y C:\MinGW\mingw-w64\mingw32\bin\libgcc_s_sjlj-1.dll %vPerlInstallDir%\bin
-
-ECHO copying libstdc++-6.dll from C:\MinGW\mingw-w64\mingw32\bin to %vPerlInstallDir%\bin
-XCOPY /f /y C:\MinGW\mingw-w64\mingw32\bin\libstdc++-6.dll %vPerlInstallDir%\bin
-
+nmake -f makefile
+nmake install
 ECHO ....End Make Perl....
 GOTO END
 
@@ -51,18 +42,19 @@ GOTO END
 
 :DBD
 SET PATH=%vPerlInstallDir%\bin;%PATH%
-set
 CD %vPerlInstallDir%\bin
 ECHO ....Starting to Install DBD::PG....
-cpanm -f -n install DBD::Pg
+cpan install DBD::Pg
 ECHO ....End Install DBD::PG....
+GOTO END
 
-:cpanminus
+:CPANMINUS
 SET PATH=%vPerlInstallDir%\bin;%PATH%
 CD %vPerlInstallDir%\bin
-ECHO ....Starting to Install cpanminus....
+ECHO ....Starting to Install App::cpanminus....
 cpan install App::cpanminus
-ECHO ....End Install cpanminus....
+ECHO ....End Install App::cpanminus....
+GOTO END
 
 :IPC
 SET PATH=%vPerlInstallDir%\bin;%PATH%
@@ -70,5 +62,12 @@ CD %vPerlInstallDir%\bin
 ECHO ....Starting to Install IPC::Run....
 cpanm -f -n install IPC::Run
 ECHO ....End Install IPC::Run....
+GOTO END
 
+:WIN32PROCESS
+SET PATH=%vPerlInstallDir%\bin;%PATH%
+CD %vPerlInstallDir%\bin
+ECHO ....Starting to Install Win32::Process....
+cpan install Win32::Process
+ECHO ....End Install Win32::Process....
 :END

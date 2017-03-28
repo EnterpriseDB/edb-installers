@@ -1,0 +1,13 @@
+--- a/externals/tix-8.4.3.4/win/python.mak	2014-03-22 05:02:56.154844000 +0000
++++ b/externals/tix-8.4.3.4/win/python.mak	2017-03-17 10:31:39.894490000 +0000
+@@ -15,7 +15,9 @@
+ !if ![echo VCVERSION=_MSC_VER > vercl.x] \
+     && ![cl -nologo -TC -P vercl.x $(ERRNULL)]
+ !include vercl.i
+-!if $(VCVERSION) >= 1600
++!if $(VCVERSION) >= 1800
++VCVER=12
++!elseif $(VCVERSION) >= 1600
+ VCVER=10
+ !elseif $(VCVERSION) >= 1500
+ VCVER=9

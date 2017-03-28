@@ -5,37 +5,62 @@ CALL "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd6
 SET vPythonBuildDir=%1
 SET vPythonInstallDir=%2
 SET vScriptsDir=%3
-SET vTclInstallDir=%4
-SET vXZDir=%5
+SET vPgBuildDir=%4
+SET vPerlInstallDir=%5
 SET vOpenSSLDir=%6
-SET vPgBuildDir=%7
+SET vPythonBuild=%7
  
 ECHO vPythonBuildDir ----  %vPythonBuildDir%
 ECHO vPythonInstallDir ---- %vPythonInstallDir%
 ECHO vScriptsDir ---- %vScriptsDir%
-ECHO vTclInstallDir ----  %vTclInstallDir%
-ECHO vXZDir ----  %vXZDir%
-ECHO vOpenSSLDir ----  %vOpenSSLDir%
+ECHO vPythonBuild ---- %vPythonBuild%
+ECHO vPerlInstallDir ---- %vPerlInstallDir%
+ECHO vOpenSSLDir ---- %vOpenSSLDir%
+ECHO vPgBuildDir ---- %vPgBuildDir%
 
+ECHO "Setting Perl's installation path"
+SET PATH=%vPerlInstallDir%\bin;%PATH%
+
+IF "%vPythonBuild%"=="GETEXTERNALS" GOTO GETEXTERNALS
+IF "%vPythonBuild%"=="UPGRADE" GOTO UPGRADE
+IF "%vPythonBuild%"=="BUILD" GOTO BUILD
+IF "%vPythonBuild%"=="INSTALL" GOTO INSTALL
+GOTO EXIT
+
+:GETEXTERNALS
+ECHO Executing batach file %vPythonBuildDir%\PCbuild\get_externals.bat
+CALL %vPythonBuildDir%\PCbuild\get_externals.bat
+GOTO EXIT
+
+:UPGRADE
+ECHO Upgrading %vPythonBuildDir%\PCbuild\pcbuild.sln
 CD %vPythonBuildDir%\PCbuild
-devenv.exe /upgrade %vPythonBuildDir%\PCbuild\pcbuild.sln
+devenv.exe "pcbuild.sln" /upgrade
+GOTO EXIT
 
-CD %vPythonBuildDir%
+:BUILD
+ECHO ....Starting to Make Python....
+ECHO Generating %vPythonBuildDir%\externals\xz-5.0.5\bin_i486\liblzma.lib
+CD %vPythonBuildDir%\externals\xz-5.0.5\bin_i486
+REM dumpbin /exports liblzma.dll > liblzma.def
+lib /def:liblzma.def /machine:x86 /out:liblzma.lib
 
-ECHO Executing batach file %vPythonBuildDir%\Tools\buildbot\external-common.bat
-CALL %vPythonBuildDir%\Tools\buildbot\external-common.bat
-
+ECHO Upgrading %vPythonBuildDir%\PCbuild\pcbuild.sln
 CD %vPythonBuildDir%\PCbuild
-msbuild pcbuild.sln /p:Configuration=Release /p:PlatformToolset=v120_xp /p:tcltk64Dir="%vTclInstallDir%" /p:tcltk64Lib="%vTclInstallDir%\lib\tcl85.lib;%vTclInstallDir%\lib\tk85.lib" /p:lzmaDir="%vXZDir%" /p:opensslDir="%vOpenSSLDir%"
+devenv.exe "pcbuild.sln" /upgrade
 
-ECHO copying py*.exe from %vPythonBuildDir%\PCbuild\ to %vPythonInstallDir%\
+ECHO Executing batach file %vPythonBuildDir%\PCbuild\build.bat
+CD %vPythonBuildDir%\PCbuild\build.bat
+CALL %vPythonBuildDir%\PCbuild\build.bat -e -c Release -t Build -p Win64
+ECHO ....End Make Python....
+GOTO EXIT
+
+:INSTALL
+ECHO copying py*.exe from %vPythonBuildDir%\PCbuild to %vPythonInstallDir%\
 XCOPY /f /y %vPythonBuildDir%\PCbuild\py*.exe %vPythonInstallDir%\
 
-ECHO copying py*.exe from %vPythonBuildDir%\PCbuild\amd64 to %vPythonInstallDir%\
-XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\py*.exe %vPythonInstallDir%\
-
-ECHO copying py*.dll from %vPythonBuildDir%\PCbuild\amd64 to %vPythonInstallDir% 
-XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\py*.dll %vPythonInstallDir%\
+ECHO copying py*.dll from %vPythonBuildDir%\PCbuild to %vPythonInstallDir%
+XCOPY /f /y %vPythonBuildDir%\PCbuild\py*.dll %vPythonInstallDir%\
 
 ECHO making DIR %vPythonInstallDir%\Include
 mkdir %vPythonInstallDir%\Include
@@ -49,14 +74,14 @@ mkdir %vPythonInstallDir%\Lib
 ECHO copying Files %vPythonBuildDir%\Lib\* to %vPythonInstallDir%\Lib\
 XCOPY /s /e /f /h %vPythonBuildDir%\Lib\* %vPythonInstallDir%\Lib\
 
+ECHO copying Files %vPythonBuildDir%\externals\tcltk\lib\* to %vPythonInstallDir%\Lib\
+XCOPY /s /e /f /h %vPythonBuildDir%\externals\tcltk\lib\* %vPythonInstallDir%\Lib\
+
 ECHO making DIR %vPythonInstallDir%\Tools
 mkdir %vPythonInstallDir%\Tools
 
 ECHO copying Files %vPythonBuildDir%\Tools\* to %vPythonInstallDir%\Tools\
 XCOPY /e /Q /Y %vPythonBuildDir%\Tools\* %vPythonInstallDir%\Tools\
-
-ECHO copying errmap.h from %vPythonBuildDir%\PC\errmap.h to %vPythonInstallDir%\Include\
-XCOPY /f /y %vPythonBuildDir%\PC\errmap.h %vPythonInstallDir%\Include\
 
 ECHO copying pyconfig.h from %vPythonBuildDir%\PC\pyconfig.h to %vPythonInstallDir%\Include\
 XCOPY /f /y  %vPythonBuildDir%\PC\pyconfig.h %vPythonInstallDir%\Include\
@@ -64,41 +89,47 @@ XCOPY /f /y  %vPythonBuildDir%\PC\pyconfig.h %vPythonInstallDir%\Include\
 ECHO making DIR %vPythonInstallDir%\libs
 mkdir %vPythonInstallDir%\libs
 
-ECHO copying Files %vPythonBuildDir%\PCbuild\amd64\*.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\*.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\PCbuild\*.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\PCbuild\*.lib %vPythonInstallDir%\libs\
+
+ECHO copying Files %vPythonBuildDir%\externals\tcltk\lib\*.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcltk\lib\*.lib %vPythonInstallDir%\libs\
+
+ECHO copying Files %vPythonBuildDir%\externals\tcltk\lib\tix8.4.3\*.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcltk\lib\tix8.4.3\*.lib %vPythonInstallDir%\libs\
+
+ECHO copying Files %vPythonBuildDir%\externals\tcl-8.6.1.0\win\Release_VC12\tcldde14.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcl-8.6.1.0\win\Release_VC12\tcldde14.lib %vPythonInstallDir%\libs\
+
+ECHO copying Files %vPythonBuildDir%\externals\tcl-8.6.1.0\win\Release_VC12\tclreg13.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcl-8.6.1.0\win\Release_VC12\tclreg13.lib %vPythonInstallDir%\libs\
 
 ECHO making DIR %vPythonInstallDir%\DLLs
 mkdir %vPythonInstallDir%\DLLs
 
-ECHO copying Files %vPythonBuildDir%\PCbuild\amd64\*.pyd to %vPythonInstallDir%\DLLs\
-XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\*.pyd %vPythonInstallDir%\DLLs\
+ECHO copying Files %vPythonBuildDir%\PCbuild\*.pyd to %vPythonInstallDir%\DLLs\
+XCOPY /f /y %vPythonBuildDir%\PCbuild\*.pyd %vPythonInstallDir%\DLLs\
 
-ECHO copying Files %vPythonBuildDir%\PCbuild\amd64\*.dll to %vPythonInstallDir%\DLLs\
-XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\*.dll %vPythonInstallDir%\DLLs\
+ECHO copying Files %vPythonBuildDir%\PCbuild\*.dll to %vPythonInstallDir%\DLLs\
+XCOPY /f /y %vPythonBuildDir%\PCbuild\*.dll %vPythonInstallDir%\DLLs\
 
-ECHO copying Files %vTclInstallDir%\bin\*.dll to %vPythonInstallDir%\DLLs\
-XCOPY /f /y %vTclInstallDir%\bin\*.dll %vPythonInstallDir%\DLLs\
+ECHO copying Files %vOpenSSLDir%\bin\libeay32.dll to %vPythonInstallDir%\DLLs
+XCOPY /f /y %vOpenSSLDir%\bin\libeay32.dll %vPythonInstallDir%\DLLs
 
-ECHO copying Files c:\pgbuild64\bin\libeay32.dll to %vPythonInstallDir%\DLLs\
-XCOPY /f /y c:\pgbuild64\bin\libeay32.dll %vPythonInstallDir%\DLLs\
+ECHO copying Files  %vOpenSSLDir%\bin\ssleay32.dll to %vPythonInstallDir%\DLLs
+XCOPY /f /y %vOpenSSLDir%\bin\ssleay32.dll %vPythonInstallDir%\DLLs
 
-ECHO copying Files  c:\pgbuild64\bin\ssleay32.dll to %vPythonInstallDir%\DLLs\
-XCOPY /f /y c:\pgbuild64\bin\ssleay32.dll %vPythonInstallDir%\DLLs\
-
-ECHO copying Files %vPythonBuildDir%\PC\*.ico to %vPythonInstallDir%\DLLs\
-XCOPY /f /y %vPythonBuildDir%\PC\*.ico %vPythonInstallDir%\DLLs\
+ECHO deleting Files %vPythonInstallDir%\DLLs\python3*.dll
+DEL %vPythonInstallDir%\DLLs\python3*.dll
 
 ECHO making DIR %vPythonInstallDir%\tcl
 mkdir %vPythonInstallDir%\tcl
 
-ECHO copying Folders & Files %vTclInstallDir%\lib\* to %vPythonInstallDir%\tcl\
-XCOPY /s /e /f /h %vTclInstallDir%\lib\* %vPythonInstallDir%\tcl\
+ECHO copying Folders & Files %vPythonBuildDir%\externals\tcltk\lib\* to %vPythonInstallDir%\tcl\
+XCOPY /s /e /f /h %vPythonBuildDir%\externals\tcltk\lib\* %vPythonInstallDir%\tcl\
 
-ECHO making DIR %vPythonInstallDir%\tcl\include
-mkdir %vPythonInstallDir%\tcl\include
-
-ECHO copying Files %vTclInstallDir%\include\* to %vPythonInstallDir%\tcl\include\
-XCOPY /s /e /f /h %vTclInstallDir%\include\* %vPythonInstallDir%\tcl\include\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk\include\* to %vPythonInstallDir%\tcl\include\
+XCOPY /s /e /f /h %vPythonBuildDir%\externals\tcltk\include\* %vPythonInstallDir%\tcl\include\
 
 SET PYTHONHOME=%vPythonInstallDir%
 SET PYTHONPATH=%vPythonInstallDir%;%vPythonInstallDir%\Lib;%vPythonInstallDir%\DLLs
@@ -136,20 +167,12 @@ goto ERR_HANDLER
 
 CD %vPythonInstallDir%\Scripts
 SET LINK="/FORCE:MULTIPLE"
-pip install psycopg2==2.6
-pip install Flask
-pip install Jinja2
-pip install MarkupSafe
-pip install Werkzeug
-pip install itsdangerous
-pip install Flask-Login
-pip install Flask-Security
-pip install Flask-WTF
-pip install simplejson
-rem pip install Pillow
-pip install pytz
-pip install sphinx "babel<2.0"
-pip install cython
+
+pip install psycopg2==2.6.2 --global-option="build_ext"
+pip install Pillow==3.4.2 --global-option="build_ext" --global-option="--disable-zlib" --global-option="--disable-jpeg"
+
+ECHO pip install -r %vScriptsDir%\..\requirements.txt
+pip install -r %vScriptsDir%\..\requirements.txt
 
 ECHO copying required dll's to %vPythonInstallDir%\Lib\site-packages\psycopg2
 
@@ -159,16 +182,10 @@ XCOPY /f /y %vOpenSSLDir%\bin\libintl-8.dll %vPythonInstallDir%\Lib\site-package
 XCOPY /f /y %vOpenSSLDir%\bin\libiconv-2.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
 XCOPY /f /y %vPgBuildDir%\bin\libpq.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
 
-ECHO copying Pillow binaries to %vPythonInstallDir%
-XCOPY /Y /E /Q  %vScriptsDir%\EnterpriseDB\LanguagePack\9.5\x64\Python-3.3\Lib\site-packages\* %vPythonInstallDir%\Lib\site-packages\
-XCOPY /s /e /f /h %vScriptsDir%\EnterpriseDB\LanguagePack\9.5\x64\Python-3.3\Scripts\* %vPythonInstallDir%\Scripts\
-
 pip list >%vPythonInstallDir%\pip_packages_list.txt
 
-ECHO ------------------------
-ECHO ----------Done----------
-
-goto EXIT
+ECHO ....End Install Python....
+GOTO EXIT
 
 :ERR_HANDLER
     ECHO Aborting build due to pip failed!
