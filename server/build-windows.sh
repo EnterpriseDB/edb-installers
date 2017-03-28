@@ -401,7 +401,7 @@ EOT
 
     #create virtualenv and install required components using pip and compile documents and runtime
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; $PGAMIN_PYTHON_WINDOWS/Scripts/virtualenv.exe venv" || _die "Failed to create venv";
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; source $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/activate; export PATH=$PG_CYGWIN_PATH_WINDOWS/output/bin:$PG_CYGWIN_PATH_WINDOWS/output/lib:$PATH; $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/pip install -r requirements_py2.txt" || _die "pip install failed"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; source $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/activate; export PATH=$PG_CYGWIN_PATH_WINDOWS/output/bin:$PG_CYGWIN_PATH_WINDOWS/output/lib:$PATH; $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/pip install -r requirements.txt" || _die "pip install failed"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; source $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/activate; $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/pip install sphinx" || _die "pip install sphinx failed"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/sphinx-build $PG_PATH_WINDOWS/pgadmin.windows/docs/en_US \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\docs\\\\en_US\\\\html\"" || _die "Failed to compile html docs"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; source $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/activate; $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/pip uninstall -y sphinx" || _die "pip uninstall sphinx failed"
@@ -457,13 +457,16 @@ EOT
 
     ssh $PG_SSH_WINDOWS "cmd /c rd /S /Q $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\Scripts" || _die "Failed to remove the venv\scripts directory on the build host"
     ssh $PG_SSH_WINDOWS "cmd /c rd /S /Q $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\tcl"     || _die "Failed to remove the venv\tcl directory on the build host"
-    ssh $PG_SSH_WINDOWS "cmd /c rd /S /Q $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\Include" || _die "Failed to remove the venv\tcl directory on the build host"
+    ssh $PG_SSH_WINDOWS "cmd /c rd /S /Q $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\Include" || _die "Failed to remove the venv\Include directory on the build host"
     ssh $PG_SSH_WINDOWS "cmd /c del $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\pip-selfcheck.json" || _die "Failed to remove venn\pip-selfcheck.json on the build host"
 
     ssh $PG_SSH_WINDOWS "cp -R $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\ \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\\"" || _die "Failed to copy venv folder on the windows build host"
     ssh $PG_SSH_WINDOWS "cp -R $PGAMIN_PYTHON_WINDOWS\\\\pythonw.exe \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy pythonw.exe binary on the windows build host"
     ssh $PG_SSH_WINDOWS "cp -R $PGAMIN_PYTHON_WINDOWS\\\\DLLs \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy DLLs folder on the windows build host"
     ssh $PG_SSH_WINDOWS "cp -R $PGAMIN_PYTHON_WINDOWS\\\\Lib  \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy Lib folder on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c del /Q  $PG_PATH_WINDOWS\\\\output\\\\pgAdmin\ 4\\\\venv\\\\Lib\\\\*.pyc" || _die "Failed to remove the pyc files on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c rd /S /Q $PG_PATH_WINDOWS\\\\output\\\\pgAdmin\ 4\\\\web\\\\regression" || _die "Failed to remove the regression directory on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c rd /S /Q $PG_PATH_WINDOWS\\\\output\\\\pgAdmin\ 4\\\\web\\\\pgadmin\\\\feature_tests" || _die "Failed to remove the feature_tests directory on the windows build host"
     ssh $PG_SSH_WINDOWS "cp $PGADMIN_PYTHON_DLL_WINDOWS  \"$PG_PATH_WINDOWS\\\\output\\\\pgAdmin 4\\\\bin\"" ||  _die "Failed to copy a dependency $PGADMIN_PYTHON_DLL_WINDOWS"
 
     #####################
@@ -507,6 +510,12 @@ EOT
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/README.pldebugger $WD/server/staging/windows/doc
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi*.sql $WD/server/staging/windows/share/extension
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi.control $WD/server/staging/windows/share/extension
+
+    # Removing the tests and test directories from the Windows Package.
+    cd $WD/server/staging/windows/pgAdmin\ 4/web
+    find . -name "tests" -type d | xargs rm -rf
+    cd $WD/server/staging/windows/pgAdmin\ 4/venv/Lib
+    find . \( -name test -o -name tests \) -type d | xargs rm -rf
      
     cd $WD
     echo "END BUILD Server Windows"
