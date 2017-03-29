@@ -33,16 +33,9 @@ ECHO ....Starting to Make Python....
 @REM dumpbin /exports liblzma.dll > liblzma.def
 @REM lib /def:liblzma.def /machine:x64 /out:liblzma.lib
 
-ECHO Executing batch file %vPythonBuildDir%\PCbuild\get_externals.bat
-CALL %vPythonBuildDir%\PCbuild\get_externals.bat
-
 ECHO Upgrading %vPythonBuildDir%\PCbuild\pcbuild.sln
 CD %vPythonBuildDir%\PCbuild
 devenv.exe "pcbuild.sln" /upgrade
-
-ECHO Applying patch %vPythonBuildDir%\tix-8.4.3.4-VC12.patch
-CD %vPythonBuildDir%
-C:\cygwin64\bin\patch -p1 < tix-8.4.3.4-VC12.patch
 
 ECHO Executing batach file %vPythonBuildDir%\PCbuild\build.bat
 CALL %vPythonBuildDir%\PCbuild\build.bat -e -c Release -t Build -p x64

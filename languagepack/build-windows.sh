@@ -143,12 +143,14 @@ _build_languagepack_windows() {
        PG_PATH_WIN=$PG_PATH_WINDOWS
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS
        PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\i386"
+       CYGWIN_HOME="C:\\\\cygwin32"
     else
        ARCH="windows-x64"
        PG_SSH_WIN=$PG_SSH_WINDOWS_X64
        PG_PATH_WIN=$PG_PATH_WINDOWS_X64
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS_X64
        PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\x64"
+       CYGWIN_HOME="C:\\\\cygwin64"
     fi
 
     cd $WD/languagepack/scripts/$ARCH
@@ -162,6 +164,14 @@ SET vXZDir=%2
 
 ECHO vPythonBuildDir ----  %vPythonBuildDir%
 ECHO vXZDir ----  %vXZDir%
+
+ECHO Executing batch file %vPythonBuildDir%\PCbuild\get_externals.bat
+CD %vPythonBuildDir%\PCbuild
+CALL %vPythonBuildDir%\PCbuild\get_externals.bat
+
+ECHO Applying patch %vPythonBuildDir%\tix-8.4.3.4-VC12.patch
+CD %vPythonBuildDir%
+$CYGWIN_HOME\bin\patch -p1 < tix-8.4.3.4-VC12.patch
 
 ECHO Changing Directory to %vXZDir%\bin_i486
 CD %vXZDir%\bin_i486
@@ -181,12 +191,13 @@ EOT
 ##    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output WIN32PROCESS"
 
     # Python Build
+    cd $WD/languagepack/scripts/$ARCH
+    scp Python_Build_Dependencies.bat $PG_SSH_WIN:$PG_PATH_WIN\\\\languagepack.$ARCH || _die "Failed to copy the Python_Build_Dependencies.bat to the windows build host"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6; cmd /c ..\\\\Python_Build_Dependencies.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6\\\\externals\\\\xz-5.0.5"
+
     # Generating/Updating liblzma.def file for Python Build
     if [ "$ARCH" = "windows-x32" ];
     then
-        cd $WD/languagepack/scripts/$ARCH
-        scp Python_Build_Dependencies.bat $PG_SSH_WIN:$PG_PATH_WIN\\\\languagepack.$ARCH || _die "Failed to copy the Python_Build_Dependencies.bat to the windows build host"
-        ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6; cmd /c ..\\\\Python_Build_Dependencies.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6\\\\externals\\\\xz-5.0.5"
         scp $PG_SSH_WIN:$PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6\\\\externals\\\\xz-5.0.5\\\\bin_i486\\\\liblzma.def $WD/languagepack/scripts/$ARCH/liblzma.def || _die "Failed to get liblzma.def from windows build host"
         LinesBefore=$(grep -n "ordinal .*hint .*RVA .*name" liblzma.def | cut -d":" -f1)
         sed -i "1,$(expr $LinesBefore)d" liblzma.def

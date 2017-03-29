@@ -28,9 +28,6 @@ GOTO EXIT
 :BUILD
 ECHO ....Starting to Make Python....
 
-ECHO Executing batch file %vPythonBuildDir%\PCbuild\get_externals.bat
-CALL %vPythonBuildDir%\PCbuild\get_externals.bat
-
 ECHO Generating %vPythonBuildDir%\externals\xz-5.0.5\bin_i486\liblzma.lib
 CD %vPythonBuildDir%\externals\xz-5.0.5\bin_i486
 REM dumpbin /exports liblzma.dll > liblzma.def
@@ -39,10 +36,6 @@ lib /def:liblzma.def /machine:x86 /out:liblzma.lib
 ECHO Upgrading %vPythonBuildDir%\PCbuild\pcbuild.sln
 CD %vPythonBuildDir%\PCbuild
 devenv.exe "pcbuild.sln" /upgrade
-
-ECHO Applying patch %vPythonBuildDir%\tix-8.4.3.4-VC12.patch
-CD %vPythonBuildDir%
-C:\cygwin\bin\patch -p1 < tix-8.4.3.4-VC12.patch
 
 ECHO Executing batach file %vPythonBuildDir%\PCbuild\build.bat
 CALL %vPythonBuildDir%\PCbuild\build.bat -e -c Release -t Build -p Win32
