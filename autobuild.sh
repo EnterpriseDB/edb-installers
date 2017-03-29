@@ -235,10 +235,6 @@ then
         country="unknownlocation"
 fi
 
-echo "Purging old builds from the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"$remote_location/20*\" 5" >> autobuild.log 2>&1
-ssh buildfarm@builds.enterprisedb.com "bin/culldirs \"$pem_remote_location/20*\" 5" >> autobuild.log 2>&1
-
 # Different location for the manual and cron triggered builds.
 if [ "$BUILD_USER" == "" ]
 then
@@ -255,7 +251,7 @@ _mail_status "build-96.log" "build-pvt.log" "9.6"
 if [ "$BUILD_USER" == "" ]
 then
         # Get the date of the last successful build (LSB), create the directory of that date and copy the installers from the Latest and copy them to this directory.
-        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-96.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../../\$LSB_DATE/9.6/$country; cp $remote_location/* $remote_location/../../../\$LSB_DATE/9.6/$country"
+        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-96.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../../\$LSB_DATE/9.6/$country; cp -R $remote_location/* $remote_location/../../../\$LSB_DATE/9.6/$country"
 fi
 
 # Create a remote directory if not present
