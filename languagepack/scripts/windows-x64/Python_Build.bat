@@ -21,37 +21,31 @@ ECHO vPgBuildDir ---- %vPgBuildDir%
 ECHO "Setting Perl's installation path"
 SET PATH=%vPerlInstallDir%\bin;%PATH%
 
-IF "%vPythonBuild%"=="GETEXTERNALS" GOTO GETEXTERNALS
-IF "%vPythonBuild%"=="UPGRADE" GOTO UPGRADE
 IF "%vPythonBuild%"=="BUILD" GOTO BUILD
 IF "%vPythonBuild%"=="INSTALL" GOTO INSTALL
 GOTO EXIT
 
-:GETEXTERNALS
-ECHO Executing batach file %vPythonBuildDir%\PCbuild\get_externals.bat
-CALL %vPythonBuildDir%\PCbuild\get_externals.bat
-GOTO EXIT
-
-:UPGRADE
-ECHO Upgrading %vPythonBuildDir%\PCbuild\pcbuild.sln
-CD %vPythonBuildDir%\PCbuild
-devenv.exe "pcbuild.sln" /upgrade
-GOTO EXIT
-
 :BUILD
 ECHO ....Starting to Make Python....
-ECHO Generating %vPythonBuildDir%\externals\xz-5.0.5\bin_i486\liblzma.lib
-CD %vPythonBuildDir%\externals\xz-5.0.5\bin_i486
-REM dumpbin /exports liblzma.dll > liblzma.def
-lib /def:liblzma.def /machine:x86 /out:liblzma.lib
+
+@REM ECHO Generating %vPythonBuildDir%\externals\xz-5.0.5\bin_x86-64\liblzma.lib
+@REM CD %vPythonBuildDir%\externals\xz-5.0.5\bin_x86-64
+@REM dumpbin /exports liblzma.dll > liblzma.def
+@REM lib /def:liblzma.def /machine:x64 /out:liblzma.lib
+
+ECHO Executing batch file %vPythonBuildDir%\PCbuild\get_externals.bat
+CALL %vPythonBuildDir%\PCbuild\get_externals.bat
 
 ECHO Upgrading %vPythonBuildDir%\PCbuild\pcbuild.sln
 CD %vPythonBuildDir%\PCbuild
 devenv.exe "pcbuild.sln" /upgrade
 
+ECHO Applying patch %vPythonBuildDir%\tix-8.4.3.4-VC12.patch
+CD %vPythonBuildDir%
+C:\cygwin64\bin\patch -p1 < tix-8.4.3.4-VC12.patch
+
 ECHO Executing batach file %vPythonBuildDir%\PCbuild\build.bat
-CD %vPythonBuildDir%\PCbuild\build.bat
-CALL %vPythonBuildDir%\PCbuild\build.bat -e -c Release -t Build -p Win64
+CALL %vPythonBuildDir%\PCbuild\build.bat -e -c Release -t Build -p x64
 ECHO ....End Make Python....
 GOTO EXIT
 
@@ -59,8 +53,11 @@ GOTO EXIT
 ECHO copying py*.exe from %vPythonBuildDir%\PCbuild to %vPythonInstallDir%\
 XCOPY /f /y %vPythonBuildDir%\PCbuild\py*.exe %vPythonInstallDir%\
 
-ECHO copying py*.dll from %vPythonBuildDir%\PCbuild to %vPythonInstallDir%
-XCOPY /f /y %vPythonBuildDir%\PCbuild\py*.dll %vPythonInstallDir%\
+ECHO copying py*.exe from %vPythonBuildDir%\PCbuild\amd64 to %vPythonInstallDir%\
+XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\py*.exe %vPythonInstallDir%\
+
+ECHO copying py*.dll from %vPythonBuildDir%\PCbuild\amd64 to %vPythonInstallDir%
+XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\py*.dll %vPythonInstallDir%\
 
 ECHO making DIR %vPythonInstallDir%\Include
 mkdir %vPythonInstallDir%\Include
@@ -74,8 +71,8 @@ mkdir %vPythonInstallDir%\Lib
 ECHO copying Files %vPythonBuildDir%\Lib\* to %vPythonInstallDir%\Lib\
 XCOPY /s /e /f /h %vPythonBuildDir%\Lib\* %vPythonInstallDir%\Lib\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcltk\lib\* to %vPythonInstallDir%\Lib\
-XCOPY /s /e /f /h %vPythonBuildDir%\externals\tcltk\lib\* %vPythonInstallDir%\Lib\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk64\lib\* to %vPythonInstallDir%\Lib\
+XCOPY /s /e /f /h %vPythonBuildDir%\externals\tcltk64\lib\* %vPythonInstallDir%\Lib\
 
 ECHO making DIR %vPythonInstallDir%\Tools
 mkdir %vPythonInstallDir%\Tools
@@ -89,29 +86,29 @@ XCOPY /f /y  %vPythonBuildDir%\PC\pyconfig.h %vPythonInstallDir%\Include\
 ECHO making DIR %vPythonInstallDir%\libs
 mkdir %vPythonInstallDir%\libs
 
-ECHO copying Files %vPythonBuildDir%\PCbuild\*.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\PCbuild\*.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\PCbuild\amd64\*.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\*.lib %vPythonInstallDir%\libs\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcltk\lib\*.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\externals\tcltk\lib\*.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk64\lib\*.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcltk64\lib\*.lib %vPythonInstallDir%\libs\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcltk\lib\tix8.4.3\*.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\externals\tcltk\lib\tix8.4.3\*.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk64\lib\tix8.4.3\*.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcltk64\lib\tix8.4.3\*.lib %vPythonInstallDir%\libs\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcl-8.6.1.0\win\Release_VC12\tcldde14.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\externals\tcl-8.6.1.0\win\Release_VC12\tcldde14.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\externals\tcl-8.6.1.0\win\Release_AMD64_VC12\tcldde14.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcl-8.6.1.0\win\Release_AMD64_VC12\tcldde14.lib %vPythonInstallDir%\libs\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcl-8.6.1.0\win\Release_VC12\tclreg13.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\externals\tcl-8.6.1.0\win\Release_VC12\tclreg13.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\externals\tcl-8.6.1.0\win\Release_AMD64_VC12\tclreg13.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcl-8.6.1.0\win\Release_AMD64_VC12\tclreg13.lib %vPythonInstallDir%\libs\
 
 ECHO making DIR %vPythonInstallDir%\DLLs
 mkdir %vPythonInstallDir%\DLLs
 
-ECHO copying Files %vPythonBuildDir%\PCbuild\*.pyd to %vPythonInstallDir%\DLLs\
-XCOPY /f /y %vPythonBuildDir%\PCbuild\*.pyd %vPythonInstallDir%\DLLs\
+ECHO copying Files %vPythonBuildDir%\PCbuild\amd64\*.pyd to %vPythonInstallDir%\DLLs\
+XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\*.pyd %vPythonInstallDir%\DLLs\
 
-ECHO copying Files %vPythonBuildDir%\PCbuild\*.dll to %vPythonInstallDir%\DLLs\
-XCOPY /f /y %vPythonBuildDir%\PCbuild\*.dll %vPythonInstallDir%\DLLs\
+ECHO copying Files %vPythonBuildDir%\PCbuild\amd64\*.dll to %vPythonInstallDir%\DLLs\
+XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\*.dll %vPythonInstallDir%\DLLs\
 
 ECHO copying Files %vOpenSSLDir%\bin\libeay32.dll to %vPythonInstallDir%\DLLs
 XCOPY /f /y %vOpenSSLDir%\bin\libeay32.dll %vPythonInstallDir%\DLLs
@@ -125,11 +122,11 @@ DEL %vPythonInstallDir%\DLLs\python3*.dll
 ECHO making DIR %vPythonInstallDir%\tcl
 mkdir %vPythonInstallDir%\tcl
 
-ECHO copying Folders & Files %vPythonBuildDir%\externals\tcltk\lib\* to %vPythonInstallDir%\tcl\
-XCOPY /s /e /f /h %vPythonBuildDir%\externals\tcltk\lib\* %vPythonInstallDir%\tcl\
+ECHO copying Folders & Files %vPythonBuildDir%\externals\tcltk64\lib\* to %vPythonInstallDir%\tcl\
+XCOPY /s /e /f /h %vPythonBuildDir%\externals\tcltk64\lib\* %vPythonInstallDir%\tcl\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcltk\include\* to %vPythonInstallDir%\tcl\include\
-XCOPY /s /e /f /h %vPythonBuildDir%\externals\tcltk\include\* %vPythonInstallDir%\tcl\include\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk64\include\* to %vPythonInstallDir%\tcl\include\
+XCOPY /s /e /f /h %vPythonBuildDir%\externals\tcltk64\include\* %vPythonInstallDir%\tcl\include\
 
 SET PYTHONHOME=%vPythonInstallDir%
 SET PYTHONPATH=%vPythonInstallDir%;%vPythonInstallDir%\Lib;%vPythonInstallDir%\DLLs

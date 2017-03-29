@@ -151,8 +151,6 @@ _build_languagepack_windows() {
        PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\x64"
     fi
 
-    PPAS_BUILD_PATH=D:\\\\ppas-languagepack
-
     cd $WD/languagepack/scripts/$ARCH
     cat <<EOT > "Python_Build_Dependencies.bat"
 @ECHO OFF
@@ -165,14 +163,6 @@ SET vXZDir=%2
 ECHO vPythonBuildDir ----  %vPythonBuildDir%
 ECHO vXZDir ----  %vXZDir%
 
-CD %vPythonBuildDir%\PCbuild
-ECHO Executing batach file %vPythonBuildDir%\PCbuild\get_externals.bat
-CALL %vPythonBuildDir%\PCbuild\get_externals.bat
-
-ECHO Applying patch %vPythonBuildDir%\tix-8.4.3.4-VC12.patch
-CD %vPythonBuildDir%
-C:\cygwin\bin\patch -p1 < tix-8.4.3.4-VC12.patch
-
 ECHO Changing Directory to %vXZDir%\bin_i486
 CD %vXZDir%\bin_i486
 dumpbin /exports liblzma.dll > liblzma.def
@@ -182,13 +172,13 @@ EOT
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-8.6; cmd /c Tcl_Tk_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\tcl8.6.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-8.6 $PG_PATH_WIN\\\\languagepack.$ARCH\\\\tk8.6.6"
 
     # Perl Build
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 PERL"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 DBI"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 DBD"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output PERL"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output DBI"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output DBD"
 ##    # Changes to build IPC::Run
-##    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 CPANMINUS"
-##    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 IPC"
-##    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 WIN32PROCESS"
+##    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output CPANMINUS"
+##    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output IPC"
+##    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output WIN32PROCESS"
 
     # Python Build
     # Generating/Updating liblzma.def file for Python Build
@@ -206,8 +196,8 @@ EOT
         scp liblzma.def $PG_SSH_WIN:$PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6\\\\externals\\\\xz-5.0.5\\\\bin_i486 || _die "Failed to copy liblzma.def to the windows build host"
     fi
 
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4 $PG_PATH_WIN\\\\languagepack.$ARCH $PPAS_BUILD_PATH C:\\\\edb\\\\languagepack-10\\\\i386\\\\Perl-5.24 $PG_PGBUILD_WIN BUILD"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4 $PG_PATH_WIN\\\\languagepack.$ARCH $PPAS_BUILD_PATH C:\\\\edb\\\\languagepack-10\\\\i386\\\\Perl-5.24 $PG_PGBUILD_WIN INSTALL"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PATH_WIN\\\\output C:\\\\edb\\\\languagepack-10\\\\i386\\\\Perl-5.24 $PG_PGBUILD_WIN BUILD"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PATH_WIN\\\\output C:\\\\edb\\\\languagepack-10\\\\i386\\\\Perl-5.24 $PG_PGBUILD_WIN INSTALL"
     ssh $PG_SSH_WIN "sed -i 's/import winrandom/from Crypto.Random.OSRNG import winrandom/' $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4\\\\Lib\\\\site-packages\\\\Crypto\\\\Random\\\\OSRNG\\\\nt.py"
 }
 
