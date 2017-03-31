@@ -72,7 +72,7 @@ _postprocess_languagepack_linux_x64() {
     echo "Copying files to staging directory from install directory"
     ssh $PG_SSH_LINUX_X64 "mv $PG_LANGUAGEPACK_INSTALL_DIR_LINUX/* $PG_PATH_LINUX_X64/languagepack/staging/linux-x64 && rm -rf $PG_LANGUAGEPACK_INSTALL_DIR_LINUX" || _die "Failed to copy the languagepack Source into the staging directory"
 
-    mv $WD/languagepack/staging/linux-x64/Python-3.5/pip_packages_list.txt $WD/languagepack/staging/linux-x64 || _die "Failed to move pip_packages_list.txt to $WD/languagepack/staging/linux-x64"
+    mv $WD/languagepack/staging/linux-x64/Python-3.4/pip_packages_list.txt $WD/languagepack/staging/linux-x64 || _die "Failed to move pip_packages_list.txt to $WD/languagepack/staging/linux-x64"
 
     pushd staging/linux-x64
     generate_3rd_party_license "languagepack"
