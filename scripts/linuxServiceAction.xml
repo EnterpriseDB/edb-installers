@@ -118,11 +118,7 @@ ${program_stderr}&#10;
               <elseActionList>
                 <!-- Forcefully use sysvinit script to start linux, when
                      systemdBooted is false -->
-                <setInstallerVariable name="trySysVInit" value="true">
-                  <ruleList>
-                    <isFalse value="${systemdBooted}"/>
-                  </ruleList>
-                </setInstallerVariable>
+                <setInstallerVariable name="trySysVInit" value="true"/>
               </elseActionList>
             </if>
 
