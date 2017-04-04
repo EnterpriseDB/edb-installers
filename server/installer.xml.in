@@ -2756,6 +2756,14 @@ EOF
             </ruleList>
         </setInstallerVariable>
 
+        <deleteFile>
+            <path>${installdir}/pgAdmin 4/web/*</path>
+            <progressText>Removing web folder</progressText>
+            <excludeFiles>*/config_local.py</excludeFiles>
+            <ruleList>
+                <fileExists path="${installdir}/pgAdmin 4/web"/>
+            </ruleList>
+        </deleteFile>
     </readyToInstallActionList>
 
     <!-- Postinstallation actions -->
