@@ -478,7 +478,18 @@ EOF
             <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
           </ruleList>
         </unpackFile>
-	
+
+        <unpackFile>
+          <component>default</component>
+          <destination>${system_temp_directory}\languagepack_${random_number}\vcredist_x86_2010.exe</destination>
+          <folder>programfileswindows</folder>
+          <origin>installer/languagepack/vcredist_x86_2010.exe</origin>
+          <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
+	  <ruleList>
+            <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
+          </ruleList>
+        </unpackFile>
+
         <unpackFile>
           <component>default</component>
           <destination>${system_temp_directory}\languagepack_${random_number}\vcredist_x64.exe</destination>
@@ -500,6 +511,17 @@ EOF
         <runProgram>
           <program>cscript</program>
           <programArguments>//NoLogo "${system_temp_directory}\languagepack_${random_number}\installruntimes.vbs" "${system_temp_directory}\languagepack_${random_number}\vcredist_x86.exe"</programArguments>
+          <abortOnError>1</abortOnError>
+          <showMessageOnError>1</showMessageOnError>
+          <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
+	  <ruleList>
+            <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
+          </ruleList>
+        </runProgram>
+
+        <runProgram>
+          <program>cscript</program>
+          <programArguments>//NoLogo "${system_temp_directory}\languagepack_${random_number}\installruntimes.vbs" "${system_temp_directory}\languagepack_${random_number}\vcredist_x86_2010.exe"</programArguments>
           <abortOnError>1</abortOnError>
           <showMessageOnError>1</showMessageOnError>
           <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>

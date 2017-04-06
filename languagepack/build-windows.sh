@@ -264,6 +264,7 @@ _postprocess_languagepack_windows() {
         scp -r $PG_SSH_WIN:$PG_PGBUILD_WIN\\\\vcredist\\\\vcredist_x64.exe $WD/languagepack/staging/$ARCH/installer/languagepack/vcredist_x64.exe || _die "Failed to get vcredist_x64.exe from windows build host"
     else
         scp -r $PG_SSH_WIN:$PG_PGBUILD_WIN\\\\vcredist\\\\vcredist_x86.exe $WD/languagepack/staging/$ARCH/installer/languagepack/vcredist_x86.exe || _die "Failed to get vcredist_x86.exe from windows build host"
+        scp -r $PG_SSH_WIN:$PG_PGBUILD_WIN\\\\vcredist\\\\vc2010\\\\vcredist_x86.exe $WD/languagepack/staging/$ARCH/installer/languagepack/vcredist_x86_2010.exe || _die "Failed to get vcredist_x86.exe of version 2010 from windows build host"
     fi   
  
     cd $WD/languagepack
