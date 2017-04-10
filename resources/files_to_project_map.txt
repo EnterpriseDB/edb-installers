@@ -28,7 +28,7 @@ project_openldap	liblber-2 libldap-2 libldap_r-2
 project_openssl	libcrypto libssl libeay32.dll ssleay32.dll
 project_proj	libproj libproj-0.dll
 project_pthreads	pthreadVC2.dll pthreadVC2_x64.dll
-project_QT	libQt5Core libQt5Gui libQt5Network libQt5Xml libEGL.dll libGLESv2.dll qwindows.dll Qt5Core.dll Qt5Gui.dll Qt5Network.dll Qt5Widgets.dll Qt5Xml.dll libQt5WebEngine libQt5WebEngineCore libQt5WebEngineWidgets Qt5WebEngine.dll Qt5WebEngineCore.dll Qt5WebEngineWidgets.dll
+project_QT	libQt5Core libQt5Gui libQt5Network libQt5Xml libEGL.dll libGLESv2.dll qwindows.dll Qt5Core.dll Qt5Gui.dll Qt5Network.dll Qt5Widgets.dll Qt5Xml.dll libQt5WebKit.dll libQt5WebKitWidgets.dll
 project_tiff	libtiff
 project_uuid	libuuid
 project_wxwidget	wxbase28u_net_vc_custom.dll wxbase28u_vc_custom.dll wxbase28u_xml_vc_custom.dll wxmsw28u_adv_vc_custom.dll wxmsw28u_aui_vc_custom.dll wxmsw28u_core_vc_custom.dll wxmsw28u_html_vc_custom.dll wxmsw28u_media_vc_custom.dll wxmsw28u_qa_vc_custom.dll wxmsw28u_richtext_vc_custom.dll wxmsw28u_stc_vc_custom.dll wxmsw28u_xrc_vc_custom.dll libwx_baseu-2 libwx_baseud-2 libwx_baseud_net-2 libwx_baseud_xml-2 libwx_baseu_net-2 libwx_baseu_xml-2 libwx_gtk2u_adv-2 libwx_gtk2u_core-2 libwx_base_carbonud-2 libwx_base_carbonu-2 libwx_gtk2u_xrc libwx_gtk2u_richtext libwx_gtk2u_qa libwx_gtk2u_html libwx_gtk2u_aui libwx_gtk2u_stc libwx_gtk2u_ogl libwxcode_gtk2u_wxjson

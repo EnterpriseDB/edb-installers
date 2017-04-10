@@ -3884,14 +3884,14 @@ REM The script sets environment variables helpful for PostgreSQL
         <!-- RM # 39338 Remove the webkit files-->
         <actionGroup>
           <actionList>
-            <deleteFile path="${installdir}/pgAdmin 4/lib/Qt5WebKit.dll" >
+            <deleteFile path="${installdir}/pgAdmin 4/lib/Qt5WebEngine.dll" >
               <ruleList>
-                <fileTest path="${installdir}/pgAdmin 4/lib/Qt5WebKit.dll" condition="exists" />
+                <fileTest path="${installdir}/pgAdmin 4/lib/Qt5WebEngine.dll" condition="exists" />
               </ruleList>
             </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/lib/Qt5WebKitWidgets.dll" >
+            <deleteFile path="${installdir}/pgAdmin 4/lib/Qt5WebEngineWidgets.dll" >
               <ruleList>
-                <fileTest path="${installdir}/pgAdmin 4/lib/Qt5WebKitWidgets.dll" condition="exists" />
+                <fileTest path="${installdir}/pgAdmin 4/lib/Qt5WebEngineWidgets.dll" condition="exists" />
               </ruleList>
             </deleteFile>
           </actionList>
@@ -3920,14 +3920,14 @@ REM The script sets environment variables helpful for PostgreSQL
 
         <actionGroup>
           <actionList>
-            <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebKit.framework" >
+            <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebEngine.framework" >
               <ruleList>
-                <fileTest path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebKit.framework" condition="exists" />
+                <fileTest path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebEngine.framework" condition="exists" />
               </ruleList>
             </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebKitWidgets.framework" >
+            <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebEngineWidgets.framework" >
               <ruleList>
-                <fileTest path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebKitWidgets.framework" condition="exists" />
+                <fileTest path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebEngineWidgets.framework" condition="exists" />
               </ruleList>
             </deleteFile>
           </actionList>

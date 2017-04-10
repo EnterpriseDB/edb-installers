@@ -64,7 +64,7 @@ _prep_server_windows_x64() {
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-x64.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-doc.bat"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-pgadmin4.bat"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q mingw-build-pgadmin4.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q output"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q postgres.windows-x64"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q pgadmin.windows-x64"
@@ -184,7 +184,7 @@ EOT
 cat <<EOT > "vc-build-pgadmin4.bat"
 REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
-@SET PYTHON_HOME=$PGAMIN_PYTHON_WINDOWS_X64
+@SET PYTHON_HOME=$PGADMIN_PYTHON_WINDOWS_X64
 @SET PYTHON_VERSION=27
 
 cd "$PG_PATH_WINDOWS_X64\pgadmin.windows-x64\runtime"
@@ -193,6 +193,16 @@ nmake
 
 EOT
 
+cat <<EOT > "mingw-build-pgadmin4.bat"
+@SET PYTHON_HOME=$PGADMIN_PYTHON_WINDOWS_X64
+@SET PYTHON_VERSION=27
+@SET PATH=$PG_MINGW_QTTOOLS_WINDOWS_X64\bin;%PATH%
+cd "$PG_PATH_WINDOWS_X64\pgadmin.windows-x64\runtime"
+$PG_MINGW_QMAKE_WINDOWS_X64 DEFINES+=PGADMIN4_USE_WEBKIT
+mingw32-make clean
+mingw32-make
+
+EOT
     cat <<EOT > "vc-build-doc.bat"
 REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" x86
@@ -346,7 +356,7 @@ EOT
     # Zip up the scripts directories and copy them to the build host, then unzip
     cd $WD/server/scripts/windows/
     echo "Copying scripts source tree to Windows build VM"
-    zip -r scripts.zip vc-build.bat vc-build-pgadmin4.bat vc-build-x64.bat vc-build-doc.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build-x64.bat vc-build-x64.bat, createuser, getlocales, validateuser)"
+    zip -r scripts.zip vc-build.bat mingw-build-pgadmin4.bat vc-build-x64.bat vc-build-doc.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build-x64.bat vc-build-x64.bat, createuser, getlocales, validateuser)"
 
     rsync -av scripts.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the scripts source tree to the windows-x64 build host (scripts.zip)"
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; unzip -o scripts.zip" || _die "Failed to unpack the scripts source tree on the windows-x64 build host (scripts.zip)"
@@ -376,7 +386,7 @@ EOT
   
     PG_CYGWIN_PERL_WINDOWS_X64=`echo $PG_PERL_WINDOWS_X64 | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'`
     PG_CYGWIN_PYTHON_WINDOWS_X64=`echo $PG_PYTHON_WINDOWS_X64 | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'`
-    #PG_CYGWIN_PYTHON_WINDOWS_X64=`echo $PGAMIN_PYTHON_WINDOWS_X64 | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'`
+    #PG_CYGWIN_PYTHON_WINDOWS_X64=`echo $PGADMIN_PYTHON_WINDOWS_X64 | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'`
     PG_CYGWIN_TCL_WINDOWS_X64=`echo $PG_TCL_WINDOWS_X64 | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'`
     PG_CYGWIN_PGBUILD_WINDOWS_X64=`echo $PG_PGBUILD_WINDOWS_X64 | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'`
 
@@ -463,53 +473,48 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\web \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\"" || _die "Failed to copy web folder on the windows build host"
 
     #create virtualenv and install required components using pip and compile documents and runtime
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; $PGAMIN_PYTHON_WINDOWS_X64/Scripts/virtualenv.exe venv" || _die "Failed to create venv";
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; $PGADMIN_PYTHON_WINDOWS_X64/Scripts/virtualenv.exe venv" || _die "Failed to create venv"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; source $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/activate; export PATH=$PG_CYGWIN_PATH_WINDOWS_X64/output/bin:\$PATH; $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/pip install -r requirements.txt --no-cache-dir" || _die "pip install failed"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; source $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/activate; $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/pip install sphinx" || _die "pip install sphinx failed"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/sphinx-build $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/docs/en_US \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\docs\\\\en_US\\\\html\"" || _die "Failed to compile html docs"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; source $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/activate; $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/pip uninstall -y sphinx" || _die "pip uninstall sphinx failed"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-pgadmin4.bat" || _die "Failed to buildi pgadmin4 on the windows build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c $PG_PATH_WINDOWS_X64\\\\mingw-build-pgadmin4.bat" || _die "Failed to buildi pgadmin4 on the windows build host"
 
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\runtime\\\Release\\\\pgAdmin4.exe \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy a program file on the windows build host"
 
     #QT related libs
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\icudt54.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy icudt54.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\icuin54.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy icuin54.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\icuuc54.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy icuuc54.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Core.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Core.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Sql.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Sql.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Gui.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Gui.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Qml.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Qml.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5OpenGL.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5OpenGL.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Quick.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Quick.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Sensors.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Sensors.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Widgets.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Widgets.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5WebEngine.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy WebEngine.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Network.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Network.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Multimedia.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Multimedia.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5WebChannel.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebChannel.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Positioning.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Positioning.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5PrintSupport.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5PrintSupport.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5MultimediaWidgets.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5MultimediaWidgets.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5WebEngineWidgets.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebEngineWidgets.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5WebEngineCore.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebEngineCore.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\QtWebEngineProcess.exe \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy QtWebEngineProcess"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\opengl32sw.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy opengl32sw.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\libEGL.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libEGL.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\libGLESv2.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libGLESv2.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Svg.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Svg.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\d3dcompiler_47.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy d3dcompiler_47.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\icudt57.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy icudt57.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\icuin57.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy icuin57.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\icuuc57.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy icuuc57.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Core.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Core.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Sql.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Sql.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Gui.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Gui.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Qml.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Qml.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5OpenGL.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5OpenGL.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Quick.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Quick.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Sensors.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Sensors.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Widgets.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Widgets.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libQt5WebKit.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebKit.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libQt5WebKitWidgets.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebKitWidgets.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libgcc_s_dw2-1.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libgcc_s_dw2-1.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libst*  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libstdc++-6.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libwinpthread-1.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libwinpthread-1.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libxml2-2.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libxml2-2.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libxslt-1.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libxslt-1.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Network.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Network.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Multimedia.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Multimedia.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5WebChannel.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebChannel.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Positioning.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Positioning.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5PrintSupport.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5PrintSupport.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5MultimediaWidgets.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5MultimediaWidgets.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\opengl32sw.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy opengl32sw.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libEGL.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libEGL.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libGLESv2.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libGLESv2.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Svg.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Svg.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\\\\platforms\"" || _die "Failed to create a directory platforms on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\\\\platforms\\\\bearer\"" || _die "Failed to create bearer directory"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\\\\platforms\\\\qtwebengine\"" || _die "Failed to create qtwebengine directory"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\plugins\\\\platforms\\\\qwindows.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\\\\platforms\"" || _die "Failed to copy qwindows.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\icudtl.dat \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy icudtl.dat"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\qtwebengine_resources.pak \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy qtwebengine_resources.pak"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\qtwebengine_resources_100p.pak \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy qtwebengine_resources_100p.pak"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\qtwebengine_resources_200p.pak \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy qtwebengine_resources_200p.pak"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\plugins\\\\bearer\\\\qgenericbearer.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\\\\platforms\\\\bearer\"" || _die "Failed to copy bearer"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\plugins\\\\bearer\\\\qnativewifibearer.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\\\\platforms\\\\bearer\"" || _die "Failed to copy bearer"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\plugins\\\\qtwebengine \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\\\\platforms\\\\qtwebengine\"" || _die "Failed to copy qtwebengine"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\plugins\\\\platforms\\\\qwindows.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\\\\platforms\"" || _die "Failed to copy qwindows.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\plugins\\\\bearer\\\\qnativewifibearer.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\\\\platforms\\\\bearer\"" || _die "Failed to copy bearer"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c cd \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"; echo [Paths] > qt.conf; echo Plugins=plugins >> qt.conf" || _die "Failed to create qt.conf"
     ssh $PG_SSH_WINDOWS_X64 "cp $PGADMIN_PYTHON_DLL_WINDOWS_X64  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" ||  _die "Failed to copy a dependency $PGADMIN_PYTHON_DLL_WINDOWS_X64"
 
@@ -525,12 +530,12 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c del $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\pip-selfcheck.json" || _die "Failed to remove venn\pip-selfcheck.json on the build host"
 
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\ \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\\"" || _die "Failed to copy venv folder on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cp -R $PGAMIN_PYTHON_WINDOWS_X64\\\\DLLs \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy DLLs folder on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cp -R $PGAMIN_PYTHON_WINDOWS_X64\\\\Lib  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy Lib folder on the windows build host"
+    ssh $PG_SSH_WINDOWS_X64 "cp -R $PGADMIN_PYTHON_WINDOWS_X64\\\\DLLs \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy DLLs folder on the windows build host"
+    ssh $PG_SSH_WINDOWS_X64 "cp -R $PGADMIN_PYTHON_WINDOWS_X64\\\\Lib  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy Lib folder on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c del /Q $PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin\ 4\\\\\venv\\\\Lib\\\\*.pyc" || _die "Failed to remove the pyc files on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c rd /S /Q $PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin\ 4\\\\web\\\\regression" || _die "Failed to remove the regression directory on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c rd /S /Q $PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin\ 4\\\\web\\\\pgadmin\\\feature_tests" || _die "Failed to remove the feature_tests directory on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cp -R $PGAMIN_PYTHON_WINDOWS_X64\\\\pythonw.exe \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy pythonw.exe binary on the windows build host"
+    ssh $PG_SSH_WINDOWS_X64 "cp -R $PGADMIN_PYTHON_WINDOWS_X64\\\\pythonw.exe \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy pythonw.exe binary on the windows build host"
 
     #####################
     # StackBuilder
