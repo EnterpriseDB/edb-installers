@@ -518,8 +518,8 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c cd \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"; echo [Paths] > qt.conf; echo Plugins=plugins >> qt.conf" || _die "Failed to create qt.conf"
     ssh $PG_SSH_WINDOWS_X64 "cp $PGADMIN_PYTHON_DLL_WINDOWS_X64  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" ||  _die "Failed to copy a dependency $PGADMIN_PYTHON_DLL_WINDOWS_X64"
 
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\ssleay32.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy sleay32.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libeay32.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libeay32.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\ssleay32.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy sleay32.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libeay32.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libeay32.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libiconv-2.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libiconv-2.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-8.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libintl-8.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output\\\\bin\\\\libpq.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libpq.dll"
