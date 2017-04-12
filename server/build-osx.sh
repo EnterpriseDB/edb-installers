@@ -226,6 +226,14 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cd \$BUILDROOT
     mkdir -p venv/lib
     cp -pR \$PYTHON_HOME/lib/lib*.dylib* venv/lib/
+
+    #Install virtualenv if not present in python installation to create venv
+    if [ ! -f \$PYTHON_HOME/bin/virtualenv ]; then
+        echo "Installing virtualenv..."
+        \$PYTHON_HOME/bin/pip install virtualenv
+        export UNINSTALL_VIRTUALENV=1
+    fi
+
     \$PYTHON_HOME/bin/virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
@@ -238,6 +246,12 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     if test -d \$DIR_PYMODULES_PATH; then
         cd \$DIR_PYMODULES_PATH/..
         ln -s python\$PYTHON_VERSION python
+    fi
+
+    #Uninstall virtualenv if installed above
+    if [ ! -z "\$UNINSTALL_VIRTUALENV"  ]
+    then
+        \$PYTHON_HOME/bin/pip uninstall --yes virtualenv
     fi
 
     # Build runtime
