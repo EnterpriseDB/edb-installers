@@ -560,6 +560,7 @@ EOT
     rsync -av $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64/output.zip $WD/server/staging/windows-x64 || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output.zip)"
     unzip -o $WD/server/staging/windows-x64/output.zip -d $WD/server/staging/windows-x64/ || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/output.zip)"
     rm $WD/server/staging/windows-x64/output.zip
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/vcredist/vcredist_x86.exe $WD/server/staging/windows-x64/installer || _die "Failed to copy the vcredist_x86.exe to windows-x64 staging"
 
     # fixes #35408. In 9.5, some modules were moved from contrib to src/test/modules. They are meant for server testing
     # and should not be packaged for distribution. On Unix, the top level make does not build these, but on windows it does.
