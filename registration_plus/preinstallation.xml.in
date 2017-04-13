@@ -190,7 +190,7 @@
     </setInstallerVariable>	
 
     <runProgram program="${system_temp_directory}\UserValidation\${vcredist_exe}"
-               programArguments="/q" workingDirectory="${system_temp_directory}\UserValidation"
+               programArguments="/q /norestart" workingDirectory="${system_temp_directory}\UserValidation"
                abortOnError="0" showMessageOnError="0">
 	<ruleList>
 	    <compareText text="${platform_name}" logic="equals" value="windows" />
