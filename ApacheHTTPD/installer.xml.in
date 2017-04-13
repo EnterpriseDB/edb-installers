@@ -729,7 +729,7 @@ EOF
          <!-- Running VC Dist file | WIN  -->
          <runProgram>
             <program>${system_temp_directory}\vcredist_x86.exe</program>
-            <programArguments>"/Q"</programArguments>
+            <programArguments>/q /norestart</programArguments>
             <workingDirectory>${system_temp_directory}</workingDirectory>
             <showMessageOnError>0</showMessageOnError>
             <abortOnError>0</abortOnError>	
