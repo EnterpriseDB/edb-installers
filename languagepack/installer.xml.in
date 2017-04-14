@@ -500,7 +500,7 @@ EOF
 	
         <runProgram>
           <program>${system_temp_directory}\languagepack_${random_number}\vcredist_x86.exe</program>
-          <programArguments>/passive /norestart</programArguments>
+          <programArguments>/q /norestart</programArguments>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
           <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
