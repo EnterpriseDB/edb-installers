@@ -244,6 +244,25 @@ _postprocess_languagepack_windows() {
 
     ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN; rm -f Tcl-8.6.zip Perl-5.24.zip Python-3.4.zip " || _die "Failed to remove  Tcl-8.6.zip;Perl-5.24.zip; Python-3.4.zip on  windows buildhost"
     cd $WD/languagepack/staging/$ARCH/
+    # Remove any existing staging directory that might exist, and create a clean one
+    if [ -e $WD/languagepack/staging/$ARCH/Tcl-8.6 ];
+    then
+       echo "Removing existing staging Tcl-8.6 directory"
+       rm -rf $WD/languagepack/staging/$ARCH/Tcl-8.6 || _die "Failed to remove the Tcl-8.6 directory"
+    fi
+
+    if [ -e $WD/languagepack/staging/$ARCH/Perl-5.24 ];
+    then
+       echo "Removing existing staging Perl-5.24 directory"
+       rm -rf $WD/languagepack/staging/$ARCH/Perl-5.24 || _die "Failed to remove the Perl-5.24 directory"
+    fi
+
+    if [ -e $WD/languagepack/staging/$ARCH/Python-3.4 ];
+    then
+       echo "Removing existing staging Python-3.4 directory"
+       rm -rf $WD/languagepack/staging/$ARCH/Python-3.4 || _die "Failed to remove the Python-3.4 directory"
+    fi
+
     unzip Tcl-8.6.zip ||_die "Failed to unzip Tcl-8.6.zip"
     unzip Perl-5.24.zip || _die "Failed to unzip Perl-5.24.zip"
     unzip Python-3.4.zip || _die "Failed to unzip Python-3.4.zip"
