@@ -6,7 +6,7 @@ Installer.Installing.Title=Installing ${product_fullname}
 
 upgrade.existing.installation.title=Existing Installation
 
-upgrade.existing.installation.description=An existing ApacheHTTPD installation has been found at ${installdir}. This installation will be upgraded.
+upgrade.existing.installation.description=An existing ApacheHTTPD installation has been found at ${installdir}.\n\nThis installation will be upgraded and the existing httpd.conf file will be backed up to ${installdir}/conf/httpd.conf.bak. You may need to manually merge any changes made to the configuration into the new configuration file.
 
 install.summary=ApacheHTTPD is a preconfigured Apache webserver with Python, compiled for use with PostgreSQL
 
