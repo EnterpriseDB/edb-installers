@@ -379,6 +379,7 @@ EOF
         <setInstallerVariable name="LANGUAGEPACK_VERSION" value="9.5"/>
         <setInstallerVariable name="PYTHON_VERSION" value="3.3"/>
         <setInstallerVariable name="MOD_WSGI_MODULE" value="mod_wsgi-py33-VC10.so"/>
+        <setInstallerVariable name="MOD_WSGI_MODULE_UNIX" value="mod_wsgi-py33.so"/>
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${pemversion}" value="6"/>
@@ -389,6 +390,7 @@ EOF
         <setInstallerVariable name="LANGUAGEPACK_VERSION" value="10"/>
         <setInstallerVariable name="PYTHON_VERSION" value="3.4"/>
         <setInstallerVariable name="MOD_WSGI_MODULE" value="mod_wsgi-py34-VC10.so"/>
+        <setInstallerVariable name="MOD_WSGI_MODULE_UNIX" value="mod_wsgi-py34.so"/>
       </actionList>
       <ruleList>
         <compareText logic="equals" text="${pemversion}" value="7"/>
@@ -1240,7 +1242,7 @@ EOF
     <addTextToFile>
       <file>${installdir}/apache/conf/httpd.conf</file>
       <text>
-LoadModule wsgi_module ${installdir}/apache/modules/mod_wsgi.so
+LoadModule wsgi_module ${installdir}/apache/modules/${MOD_WSGI_MODULE_UNIX}
 include conf/addons/*.conf
       </text>
       <ruleList>

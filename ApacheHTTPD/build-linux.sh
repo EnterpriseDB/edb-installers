@@ -50,12 +50,6 @@ _prep_ApacheHTTPD_linux() {
 _build_ApacheHTTPD_linux() {
     echo "BEGIN BUILD ApacheHTTPD Linux"
 
-    # For PEM7, apachehttpd needs to be built with python3.5 (LP10)
-    if [ ! -z $PEM_PYTHON_LINUX ];
-    then
-        PG_PYTHON_LINUX=$PEM_PYTHON_LINUX
-    fi
-
     # build apache
 
     PG_STAGING=$PG_PATH_LINUX/ApacheHTTPD/staging/linux
@@ -75,6 +69,19 @@ _build_ApacheHTTPD_linux() {
     echo "Building mod_wsgi"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApacheHTTPD/source/apache.linux/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PG_PYTHON_LINUX/lib:$LD_LIBRARY_PATH make" || _die "Failed to build mod_wsgi"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApacheHTTPD/source/apache.linux/mod_wsgi; make install" || _die "Failed to install mod_wsgi"
+    ssh $PG_SSH_LINUX "mv $PG_STAGING/apache/modules/mod_wsgi.so $PG_STAGING/apache/modules/mod_wsgi-py33.so"
+
+    # For PEM7, apachehttpd needs to be built with python3.4 as server bundles LP10
+    echo "Cleaning up the mod_wsgi build for Py34"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApacheHTTPD/source/apache.linux/mod_wsgi; make clean && make distclean" || _die "Failed to clean the mod_wsgi build"
+
+    echo "Configuring the mod_wsgi source tree"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApacheHTTPD/source/apache.linux/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PEM_PYTHON_LINUX/lib CFLAGS=\"-I/opt/local/Current/include -I$PEM_PYTHON_LINUX/include\" LDFLAGS=\"-L/opt/local/Current/lib -L$PEM_PYTHON_LINUX/lib\" ./configure --prefix=$PG_STAGING/apache --with-apxs=$PG_STAGING/apache/bin/apxs --with-python=$PEM_PYTHON_LINUX/bin/python"  || _die "Failed to configure mod_wsgi"
+
+    echo "Building mod_wsgi"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApacheHTTPD/source/apache.linux/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PEM_PYTHON_LINUX/lib:$LD_LIBRARY_PATH make" || _die "Failed to build mod_wsgi"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApacheHTTPD/source/apache.linux/mod_wsgi; make install" || _die "Failed to install mod_wsgi"
+    ssh $PG_SSH_LINUX "mv $PG_STAGING/apache/modules/mod_wsgi.so $PG_STAGING/apache/modules/mod_wsgi-py34.so"
 
 
     # Configure the httpd.conf file

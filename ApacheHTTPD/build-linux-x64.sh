@@ -50,12 +50,6 @@ _prep_ApacheHTTPD_linux_x64() {
 _build_ApacheHTTPD_linux_x64() {
     echo "BEGIN BUILD ApacheHTTPD Linux-x64"
 
-    # For PEM7, apachehttpd needs to be built with python3.5 (LP10)
-    if [ ! -z $PEM_PYTHON_LINUX_X64 ];
-    then
-        PG_PYTHON_LINUX_X64=$PEM_PYTHON_LINUX_X64
-    fi
-        
     # build apache
 
     PG_STAGING=$PG_PATH_LINUX_X64/ApacheHTTPD/staging/linux-x64
@@ -75,6 +69,19 @@ _build_ApacheHTTPD_linux_x64() {
     echo "Building mod_wsgi"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApacheHTTPD/source/apache.linux-x64/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PG_PYTHON_LINUX_X64/lib:$LD_LIBRARY_PATH make" || _die "Failed to build mod_wsgi"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApacheHTTPD/source/apache.linux-x64/mod_wsgi; make install" || _die "Failed to install mod_wsgi"
+    ssh $PG_SSH_LINUX_X64 "mv $PG_STAGING/apache/modules/mod_wsgi.so $PG_STAGING/apache/modules/mod_wsgi-py33.so"
+
+    # For PEM7, apachehttpd needs to be built with python3.4 as server bundles LP10
+    echo "Cleaning up the mod_wsgi build for Py34"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApacheHTTPD/source/apache.linux-x64/mod_wsgi; make clean && make distclean" || _die "Failed to clean the mod_wsgi build"
+
+    echo "Configuring the mod_wsgi source tree with LP10"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApacheHTTPD/source/apache.linux-x64/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PEM_PYTHON_LINUX_X64/lib CFLAGS=\"-I/opt/local/Current/include -I$PEM_PYTHON_LINUX_X64/include\" LDFLAGS=\"-L/opt/local/Current/lib -L$PEM_PYTHON_LINUX_X64/lib\" ./configure --prefix=$PG_STAGING/apache --with-apxs=$PG_STAGING/apache/bin/apxs --with-python=$PEM_PYTHON_LINUX_X64/bin/python"  || _die "Failed to configure mod_wsgi with LP10"
+
+    echo "Building mod_wsgi"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApacheHTTPD/source/apache.linux-x64/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PEM_PYTHON_LINUX_X64/lib:$LD_LIBRARY_PATH make" || _die "Failed to build mod_wsgi"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApacheHTTPD/source/apache.linux-x64/mod_wsgi; make install" || _die "Failed to install mod_wsgi"
+    ssh $PG_SSH_LINUX_X64 "mv $PG_STAGING/apache/modules/mod_wsgi.so $PG_STAGING/apache/modules/mod_wsgi-py34.so"
 
     # Configure the httpd.conf file
     cd $WD/ApacheHTTPD/staging/linux-x64/apache/conf

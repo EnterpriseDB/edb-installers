@@ -37,22 +37,13 @@ _prep_ApacheHTTPD_windows() {
     # Patches to build the correct version
     cd apache.windows/mod_wsgi/win32
     patch -p0 < $WD/tarballs/mod_wsgi_psapi.patch
-    # For PEM7, apachehttpd needs to be built with python3.4 (LP10)
-    if [ ! -z $PEM_PYTHON_WINDOWS ];
-    then
-        PG_PYTHON_WINDOWS=$PEM_PYTHON_WINDOWS
-        patch -p0 < $WD/tarballs/apache-build-win32.patch
-        MOD_WSGI_MAKEFILE=ap24py34-win32-VC10.mk
-    else #PEM6
-        sed -i '/ap24py34-win32-VC10.mk/s/^/REM /g' build-win32-VC10.bat
-        MOD_WSGI_MAKEFILE=ap24py33-win32-VC10.mk
-    fi
 
-    sed -i "s/^APACHE_ROOTDIR =\(.*\)$/APACHE_ROOTDIR=$PG_PATH_WINDOWS\\\\apache.staging/g" ${MOD_WSGI_MAKEFILE}
-    sed -i "s/^PYTHON_ROOTDIR =\(.*\)$/PYTHON_ROOTDIR=$PG_PYTHON_WINDOWS/g" ${MOD_WSGI_MAKEFILE}
+    sed -i "s/^PYTHON_ROOTDIR =\(.*\)$/PYTHON_ROOTDIR=$PG_PYTHON_WINDOWS/g" ap24py33-win32-VC10.mk
+    sed -i "s/^APACHE_ROOTDIR =\(.*\)$/APACHE_ROOTDIR=$PG_PATH_WINDOWS\\\\apache.staging/g" ap24py33-win32-VC10.mk
+    sed -i "s/^PYTHON_ROOTDIR =\(.*\)$/PYTHON_ROOTDIR=$PEM_PYTHON_WINDOWS/g" ap24py34-win32-VC10.mk
+    sed -i "s/^APACHE_ROOTDIR =\(.*\)$/APACHE_ROOTDIR=$PG_PATH_WINDOWS\\\\apache.staging/g" ap24py34-win32-VC10.mk
 
     cd $WD/ApacheHTTPD/source
-
 
     if [ -e apache.zip ]; then
         echo "Removing old zip of apache source"
