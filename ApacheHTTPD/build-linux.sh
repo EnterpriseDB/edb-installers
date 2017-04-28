@@ -87,7 +87,7 @@ _build_ApacheHTTPD_linux() {
     # Configure the httpd.conf file
     cd $WD/ApacheHTTPD/staging/linux/apache/conf
     _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "httpd.conf"
-    _replace "Listen 80" "Listen @@PORT@@" "httpd.conf"
+    _replace "Listen 80" "Listen 0.0.0.0:@@PORT@@" "httpd.conf"
     _replace "htdocs" "www" "httpd.conf"
     _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "httpd.conf"
     _replace "#LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "httpd.conf"
