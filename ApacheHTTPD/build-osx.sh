@@ -143,7 +143,7 @@ EOT
 
     #Configure the httpd.conf file
     _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "$PG_STAGING/apache/conf/httpd.conf"
-    _replace "Listen 80" "Listen @@PORT@@" "$PG_STAGING/apache/conf/httpd.conf"
+    _replace "Listen 80" "Listen 0.0.0.0:@@PORT@@" "$PG_STAGING/apache/conf/httpd.conf"
     _replace "htdocs" "www" "$PG_STAGING/apache/conf/httpd.conf"
     _replace "#ServerName www.example.com:80" "ServerName localhost:@@PORT@@" "$PG_STAGING/apache/conf/httpd.conf"
     _replace "#LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" "$PG_STAGING/apache/conf/httpd.conf"
