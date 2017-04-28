@@ -199,7 +199,9 @@ EOT
 cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     source ../versions.sh
     source ../common.sh
-    PATH=$PG_STAGING/bin:/usr/local/bin:\$PATH
+    # In PG10, the version numbering scheme got changed and adopted a single digit major version (10) instead of two which is not supported by psycopg2
+    # and requires a two digit version. Hence, use 9.6 installation to build pgAdmin
+    PATH=/opt/local/pg96-osx:\$PATH
     LD_LIBRARY_PATH=$PG_STAGING/lib:\$LD_LIBRARY_PATH
     # Set PYTHON_VERSION variable required for pgadmin build
     PYTHON_HOME=$PGADMIN_PYTHON_OSX
@@ -256,7 +258,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
 
     # Build runtime
     cd \$BUILDROOT/../runtime
-    PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib" $PG_QMAKE_OSX || _die "qmake failed"
+    PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib" $PG_QMAKE_OSX DEFINES+=PGADMIN4_USE_WEBKIT || _die "qmake failed"
     make || _die "pgadmin runtime build failed"
 
     # Copy the generated app bundle to buildroot and rename the bundle as required
