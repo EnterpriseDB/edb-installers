@@ -605,14 +605,7 @@ _postprocess_server_linux() {
     cp scripts/linux/runstackbuilder.sh staging/linux/scripts/runstackbuilder.sh || _die "Failed to copy the runstackbuilder script (scripts/linux/runstackbuilder.sh)"
     chmod ugo+x staging/linux/scripts/runstackbuilder.sh
 			
-    PG_DATETIME_SETTING_LINUX=`cat staging/linux/include/pg_config.h | grep "#define USE_INTEGER_DATETIMES 1"`
-
-    if [ "x$PG_DATETIME_SETTING_LINUX" = "x" ]
-    then
-          PG_DATETIME_SETTING_LINUX="floating-point numbers"
-    else
-          PG_DATETIME_SETTING_LINUX="64-bit integers"
-    fi
+    PG_DATETIME_SETTING_LINUX="64-bit integers"
 
     if [ -f installer-linux.xml ]; then
         rm -f installer-linux.xml

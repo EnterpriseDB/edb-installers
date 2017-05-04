@@ -244,7 +244,6 @@ use warnings;
 
 our \$config = {
     asserts=>0,                         # --enable-cassert
-    integer_datetimes=>1,               # --enable-integer-datetimes
     nls=>'$PG_PGBUILD_WINDOWS_X64',        # --enable-nls=<path>
     perl=>'$PG_PERL_WINDOWS_X64',             # --with-perl
     python=>'$PG_PYTHON_WINDOWS_X64',         # --with-python=<path>
@@ -645,14 +644,7 @@ _postprocess_server_windows_x64() {
     cp scripts/windows/serverctl.vbs staging/windows-x64/scripts/serverctl.vbs || _die "Failed to copy the serverctl script (scripts/windows/serverctl.vbs)"
     cp scripts/windows/runpsql.bat staging/windows-x64/scripts/runpsql.bat || _die "Failed to copy the runpsql script (scripts/windows/runpsql.bat)"
     
-    PG_DATETIME_SETTING_WINDOWS=`cat staging/windows-x64/include/pg_config.h | grep "#define USE_INTEGER_DATETIMES 1"`
-
-    if [ "x$PG_DATETIME_SETTING_WINDOWS" = "x" ]
-    then
-          PG_DATETIME_SETTING_WINDOWS="floating-point numbers"
-    else
-          PG_DATETIME_SETTING_WINDOWS="64-bit integers"
-    fi
+    PG_DATETIME_SETTING_WINDOWS="64-bit integers"
 
     if [ -f installer-win64.xml ]; then
         rm -f installer-win64.xml

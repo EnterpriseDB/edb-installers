@@ -613,15 +613,9 @@ y a menu pick image"
     chmod ugo+x staging/linux-x64/scripts/launchstackbuilder.sh
     cp scripts/linux/runstackbuilder.sh staging/linux-x64/scripts/runstackbuilder.sh || _die "Failed to copy the runstackbuilder script (scripts/linux/runstackbuilder.sh)"
     chmod ugo+x staging/linux-x64/scripts/runstackbuilder.sh
-		
-    PG_DATETIME_SETTING_LINUX_X64=`cat staging/linux-x64/include/pg_config.h | grep "#define USE_INTEGER_DATETIMES 1"`
 
-    if [ "x$PG_DATETIME_SETTING_LINUX_X64" = "x" ]
-    then
-          PG_DATETIME_SETTING_LINUX_X64="floating-point numbers"
-    else
-          PG_DATETIME_SETTING_LINUX_X64="64-bit integers"
-    fi
+    PG_DATETIME_SETTING_LINUX_X64="64-bit integers"
+
     if [ -f installer-lin64.xml ]; then
         rm -f installer-lin64.xml
     fi

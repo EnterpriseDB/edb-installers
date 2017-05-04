@@ -187,7 +187,6 @@ use warnings;
 
 our \$config = {
     asserts=>0,                         # --enable-cassert
-    integer_datetimes=>1,               # --enable-integer-datetimes
     nls=>'$PG_PGBUILD_WINDOWS',        # --enable-nls=<path>
     tcl=>'$PG_TCL_WINDOWS',            # --with-tls=<path>
     perl=>'$PG_PERL_WINDOWS',             # --with-perl
@@ -576,14 +575,7 @@ _postprocess_server_windows() {
     cp scripts/windows/serverctl.vbs staging/windows/scripts/serverctl.vbs || _die "Failed to copy the serverctl script (scripts/windows/serverctl.vbs)"
     cp scripts/windows/runpsql.bat staging/windows/scripts/runpsql.bat || _die "Failed to copy the runpsql script (scripts/windows/runpsql.bat)"
     
-    PG_DATETIME_SETTING_WINDOWS=`cat staging/windows/include/pg_config.h | grep "#define USE_INTEGER_DATETIMES 1"`
-
-    if [ "x$PG_DATETIME_SETTING_WINDOWS" = "x" ]
-    then
-          PG_DATETIME_SETTING_WINDOWS="floating-point numbers"
-    else
-          PG_DATETIME_SETTING_WINDOWS="64-bit integers"
-    fi
+    PG_DATETIME_SETTING_WINDOWS="64-bit integers"
 
     if [ -f installer-win.xml ]; then
       rm -f installer-win.xml
