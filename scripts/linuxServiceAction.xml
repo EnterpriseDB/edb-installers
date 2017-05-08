@@ -60,8 +60,8 @@
 
             <if>
               <conditionRuleList>
-                <fileTest condition="exists" path="/usr/lib/systemd/system/${name}.service"/>
-                <fileTest condition="is_file" path="/usr/lib/systemd/system/${name}.service"/>
+                <fileTest condition="exists" path="/lib/systemd/system/${name}.service"/>
+                <fileTest condition="is_file" path="/lib/systemd/system/${name}.service"/>
                 <isTrue value="${systemdBooted}"/>
               </conditionRuleList>
               <actionList>
@@ -71,11 +71,11 @@
                 <setInstallerVariable name="systemd_script_found" value="true"/>
 
                 <logMessage text="&#10;
-## Found /usr/lib/systemd/system/${name}.service...&#10;
-## Running /usr/bin/systemctl ${action} &quot;${name}.service&quot;"/>
+## Found /lib/systemd/system/${name}.service...&#10;
+## Running /bin/systemctl ${action} &quot;${name}.service&quot;"/>
 
                 <!-- Execute the service action (systemd) -->
-                <runProgram program="/usr/bin/systemctl"
+                <runProgram program="/bin/systemctl"
                   programArguments="${action} &quot;${name}.service&quot;"
                   abortOnError="0" showMessageOnError="0"
                   progressText="${progressText}">
