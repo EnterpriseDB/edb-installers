@@ -233,6 +233,9 @@ EOT
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
     cp -f $WD/server/staging/osx/lib/postgresql/plperl.so $WD/server/staging/osx/
 
+    # Changing loader path of plpython3.so
+    ssh $PG_SSH_OSX "install_name_tool -change libpython$PG_VERSION_PYTHON\m.dylib $PG_PYTHON_OSX/lib/libpython$PG_VERSION_PYTHON\m.dylib $PG_PATH_OSX/server/staging/osx/lib/postgresql/plpython3.so"
+
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source settings.sh; source common.sh; cd $PG_STAGING; _rewrite_so_refs $PG_STAGING bin @loader_path/..;\
         _rewrite_so_refs $PG_STAGING lib @loader_path/..; _rewrite_so_refs $PG_STAGING lib/postgresql @loader_path/../..;\
