@@ -66,7 +66,6 @@ PG_QMAKE_LINUX=/opt/qtsdk/bin/qmake
 PG_QT_LINUX=/opt/qtsdk
 PG_PERL_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.5/Perl-5.20
 PG_PYTHON_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.5/Python-3.3
-PEM_PYTHON_LINUX=/opt/edb/languagepack-10/Python-3.4
 PG_TCL_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.5/Tcl-8.5
 PG_XULRUNNER_SDK_LINUX=/usr/lib/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX=/usr/lib/xulrunner-1.9.2
@@ -82,7 +81,6 @@ PG_QMAKE_LINUX_X64=/opt/qtsdk/bin/qmake
 PG_QT_LINUX_X64=/opt/qtsdk
 PG_PERL_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.5/Perl-5.20
 PG_PYTHON_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.5/Python-3.3
-PEM_PYTHON_LINUX_X64=/opt/edb/languagepack-10/Python-3.4
 PG_TCL_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.5/Tcl-8.5
 PG_XULRUNNER_SDK_LINUX_X64=/usr/lib64/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
@@ -111,7 +109,6 @@ PG_SDK_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_SIGNTOOL_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
 PG_PERL_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\i386\\\\Perl-5.20
 PG_PYTHON_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\i386\\\\Python-3.3
-PEM_PYTHON_WINDOWS="C:\\\\edb\\\\languagepack-10\\\\i386\\\\Python-3.4"
 PG_TCL_WINDOWS=C:\\\\pgBuild32\\\\EnterpriseDB\\\\LanguagePack\\\\9.5\\\\i386\\\\Tcl-8.5
 PLATFORM_TOOLSET=/p:PlatformToolset=v120_xp
 
