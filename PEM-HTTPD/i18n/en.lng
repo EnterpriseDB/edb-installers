@@ -57,3 +57,5 @@ launch.apache24.doc=Would you like to visit the Apache 2.4 upgrade documentation
 languagepack.not.installed=LanguagePack Python not found on the system. mod_wsgi module will not be enabled.
 
 pem.not.installed=PEM not installed on your system.
+
+error.apachehttpd.exist=An existing installation of EnterpriseDB ApacheHTTPD is found on the system. Please uninstall it before installing PEM-HTTPD.

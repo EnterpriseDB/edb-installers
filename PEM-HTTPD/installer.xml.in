@@ -371,6 +371,40 @@ EOF
       </ruleList>
     </actionGroup>
 
+    <!-- Linux: Check for the existence of ApacheHTTPD -->
+    <actionGroup>
+      <actionList>
+        <iniFileGet file="/etc/postgres-reg.ini" variable="apachehttpd_exist"
+         section="ApacheHTTPD" key="InstallationDirectory"/>
+        <throwError>
+          <text>${msg(error.apachehttpd.exist)}</text>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${apachehttpd_exist}" value=""/>
+          </ruleList>
+        </throwError>
+      </actionList>
+      <ruleList>
+        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+    <!-- Win: Check for the existence of ApacheHTTPD -->
+    <actionGroup>
+      <actionList>
+        <registryGet name="Location" variable="apachehttpd_exist"
+          key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD"/>
+        <throwError>
+          <text>${msg(error.apachehttpd.exist)}</text>
+          <ruleList>
+            <compareText logic="does_not_equal" text="${apachehttpd_exist}" value=""/>
+          </ruleList>
+        </throwError>
+      </actionList>
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </actionGroup>
+
+
     <!-- LIN: check for the LanguagePack installation and set the python path
          case: when PEM is installed and LP python is not provided on command line -->
     <actionGroup>
