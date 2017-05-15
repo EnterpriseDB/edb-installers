@@ -58,7 +58,7 @@ _fixup_file() {
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-launchApacheHTTPD.png"
 
 # Fixup the scripts
-chmod ugo+x "$INSTALLDIR/installer/ApacheHTTPD/"*.sh
+chmod ugo+x "$INSTALLDIR/installer/PEM-HTTPD/"*.sh
 _fixup_file "$INSTALLDIR/scripts/launchApacheHTTPD.sh"
 chmod ugo+x "$INSTALLDIR/scripts/launchApacheHTTPD.sh"
 

@@ -38,7 +38,7 @@ determine_services_path() {
 
 if [ "$INIT" = "systemd" ]; then
 determine_services_path
-    cat <<EOT > "$SYSTEMD_SERVICES_PATH/EnterpriseDBApacheHTTPD.service"
+    cat <<EOT > "$SYSTEMD_SERVICES_PATH/PEMHTTPD.service"
 [Unit]
 Description=Starts and stops the Apache Server
 After=syslog.target network.target
@@ -58,17 +58,17 @@ WantedBy=multi-user.target
 EOT
 
 $SYSTEMD_PATH/bin/systemctl daemon-reload
-$SYSTEMD_PATH/bin/systemctl enable EnterpriseDBApacheHTTPD.service
+$SYSTEMD_PATH/bin/systemctl enable PEMHTTPD.service
 
 else
 # Write the startup script
-cat <<EOT > "/etc/init.d/EnterpriseDBApacheHTTPD"
+cat <<EOT > "/etc/init.d/PEMHTTPD"
 #!/bin/bash
 #
 # chkconfig: 2345 85 15
 # description: Starts and stops the Apache Server
 
-# EnterpriseDBApacheHTTPD Service script for Linux
+# PEMHTTPD Service script for Linux
 
 start()
 {
@@ -117,7 +117,7 @@ esac
 EOT
 
 # Fixup the permissions on the StartupItems
-chmod 0755 "/etc/init.d/EnterpriseDBApacheHTTPD" || _warn "Failed to set the permissions on the startup script (/etc/init.d/EnterpriseDBApacheHTTPD/)"
+chmod 0755 "/etc/init.d/PEMHTTPD" || _warn "Failed to set the permissions on the startup script (/etc/init.d/PEMHTTPD/)"
 
 # Configure the startup. On Redhat and friends we use chkconfig. On Debian, update-rc.d
 # These utilities aren't entirely standard, so use both from their standard locations on
@@ -125,7 +125,7 @@ chmod 0755 "/etc/init.d/EnterpriseDBApacheHTTPD" || _warn "Failed to set the per
 RET=`type /sbin/chkconfig > /dev/null 2>&1 || echo fail`
 if [ ! $RET ];
 then
-    /sbin/chkconfig --add EnterpriseDBApacheHTTPD
+    /sbin/chkconfig --add PEMHTTPD
     if [ $? -ne 0 ]; then
         _warn "Failed to configure the service startup with chkconfig"
     fi
@@ -134,7 +134,7 @@ fi
 RET=`type /usr/sbin/update-rc.d > /dev/null 2>&1 || echo fail`
 if [ ! $RET ];
 then
-    /usr/sbin/update-rc.d EnterpriseDBApacheHTTPD defaults
+    /usr/sbin/update-rc.d PEMHTTPD defaults
     if [ $? -ne 0 ]; then
         _warn "Failed to configure the service startup with update-rc.d"
     fi

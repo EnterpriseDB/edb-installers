@@ -1,12 +1,12 @@
 <project>
   <!-- Package details -->
-  <shortName>apachehttpd</shortName>
-  <fullName>ApacheHTTPD</fullName>
-  <version>PG_VERSION_APACHEHTTPD-PG_BUILDNUM_APACHEHTTPD</version>
+  <shortName>pemhttpd</shortName>
+  <fullName>PEM-HTTPD</fullName>
+  <version>PG_VERSION_PEMHTTPD-PG_BUILDNUM_PEMHTTPD</version>
   <startMenuGroupName>${branding}</startMenuGroupName>
   <!-- Product Specific Options -->
-  <productComments>ApacheHTTPD ${productVersion}, packaged by EnterpriseDB</productComments>
-  <productDisplayName>ApacheHTTPD ${productVersion}</productDisplayName>
+  <productComments>PEM-HTTPD ${productVersion}, packaged by EnterpriseDB</productComments>
+  <productDisplayName>PEM-HTTPD ${productVersion}</productDisplayName>
   <productUrlHelpLink>http://www.enterprisedb.com</productUrlHelpLink>
   <productUrlInfoAbout>http://www.enterprisedb.com</productUrlInfoAbout>
   <!-- The options are used for RPM registration -->
@@ -130,7 +130,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-ApacheHTTPD</value>
+      <value>${platform_install_prefix}/edb/pem/httpd</value>
       <ruleList>
         <compareText>
           <logic>does_not_equal</logic>
@@ -143,7 +143,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>/Library/PostgreSQL/EnterpriseDB-ApacheHTTPD</value>
+      <value>/Library/edb/pem/httpd</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -158,7 +158,7 @@ EOF
   <initializationActionList>
       <setInstallerVariable name="project.parameter(lppython_loc).ask" value="0" />
 
-      <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_APACHEHTTPD" />	
+      <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PEMHTTPD" />	
       <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
       <throwError>
         <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -184,7 +184,7 @@ EOF
       <!-- WIN & LIN: Set the default values for unattended mode -->
     <actionGroup>
       <actionList>
-        <setInstallerVariable name="installdir" value="${platform_install_prefix}/PostgreSQL/EnterpriseDB-ApacheHTTPD" persist="1"/>
+        <setInstallerVariable name="installdir" value="${platform_install_prefix}/edb/pem/httpd" persist="1"/>
       </actionList>
       <ruleList>
         <compareText>
@@ -202,7 +202,7 @@ EOF
     <!-- MAC : Set the  default values for unattended mode -->
     <actionGroup>
       <actionList>
-        <setInstallerVariable name="installdir" value="/Library/PostgreSQL/EnterpriseDB-ApacheHTTPD"/>
+        <setInstallerVariable name="installdir" value="/Library/edb/pem/httpd"/>
       </actionList>
       <ruleList>
         <compareText>
@@ -221,7 +221,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>${platform_install_prefix}/PostgreSQL/EnterpriseDB-ApacheHTTPD</value>
+      <value>${platform_install_prefix}/edb/pem/httpd</value>
       <ruleList>
         <compareText>
           <logic>does_not_equal</logic>
@@ -234,7 +234,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>/Library/PostgreSQL/EnterpriseDB-ApacheHTTPD</value>
+      <value>/Library/edb/pem/httpd</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -244,7 +244,7 @@ EOF
       </ruleList>
     </setInstallerVariable>
     <setInstallerVariable name="python_path" value=""/>
-    <setInstallerVariable name="pemversion" value="0"/>
+    <setInstallerVariable name="pemversion" value="7"/>
     <setInstallerVariable name="lppython_loc" value=""/>
   </initializationActionList>
   <!-- Preinstallation actions -->
@@ -252,7 +252,7 @@ EOF
      <!-- Creating a temporary directory -->
      <createTempDir dirPrefix="${product_shortname}"/>
 
-    <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\ApacheHTTPD"/>
+    <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\PEM-HTTPD"/>
     <setInstallerVariable name="executablePath" value=""/>
     <setInstallerVariable name="selinux" value="" />
     <foreach variables="path" values="/bin /usr/bin /sbin /usr/sbin">
@@ -316,7 +316,7 @@ EOF
         </compareText>
       </ruleList>
     </touchFile>
-    <setInstallerVariable name="apachehttpdVersion" value="" />
+    <setInstallerVariable name="pemhttpdVersion" value="" />
     <setInstallerVariable name="iBranding" value="" />
 
     <!-- determine the init on Linux -->
@@ -330,14 +330,6 @@ EOF
          this installer is being run stand alone, Hence check for the PEM installation -->
     <actionGroup>
       <actionList>
-        <iniFileGet file="/etc/postgres-reg.ini" variable="peminstalledversion"
-          section="PEM/server" key="Version"/>
-        <setInstallerVariable name="pemversion" value="6">
-        <ruleList>
-          <compareVersions logic="less" version1="${peminstalledversion}" version2="7.0"/>
-          <compareText logic="does_not_equal" text="${peminstalledversion}" value=""/>
-        </ruleList>
-        </setInstallerVariable>
         <setInstallerVariable name="pemversion" value="7">
         <ruleList>
           <compareVersions logic="greater_or_equal" version1="${peminstalledversion}" version2="7.0"/>
@@ -355,12 +347,6 @@ EOF
          this installer is being run stand alone, Hence check for the PEM installation -->
     <actionGroup>
       <actionList>
-        <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM\server" name="Version" variable="peminstalledversion"/>
-        <setInstallerVariable name="pemversion" value="6">
-        <ruleList>
-          <compareVersions logic="less" version1="${peminstalledversion}" version2="7.0"/>
-        </ruleList>
-        </setInstallerVariable>
         <setInstallerVariable name="pemversion" value="7">
         <ruleList>
           <compareVersions logic="greater_or_equal" version1="${peminstalledversion}" version2="7.0"/>
@@ -373,17 +359,7 @@ EOF
       </ruleList>
     </actionGroup>
 
-    <!-- PEM 6 requires LP 9.5 and PEM 7 requires LP 10 -->
-    <actionGroup>
-      <actionList>
-        <setInstallerVariable name="LANGUAGEPACK_VERSION" value="9.5"/>
-        <setInstallerVariable name="PYTHON_VERSION" value="3.3"/>
-        <setInstallerVariable name="MOD_WSGI_MODULE" value="mod_wsgi-py33-VC10.so"/>
-      </actionList>
-      <ruleList>
-        <compareText logic="equals" text="${pemversion}" value="6"/>
-      </ruleList>
-    </actionGroup>
+    <!-- PEM 7 requires LP 10 -->
     <actionGroup>
       <actionList>
         <setInstallerVariable name="LANGUAGEPACK_VERSION" value="10"/>
@@ -474,7 +450,7 @@ EOF
         <setInstallerVariable name="apache_home" value=""/>
         <iniFileGet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>APACHE_HOME</key>
           <variable>apache_home</variable>
           <abortOnError>0</abortOnError>
@@ -482,7 +458,7 @@ EOF
         </iniFileGet>
         <iniFileGet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>APACHE_HPORT</key>
           <variable>apacheport</variable>
           <abortOnError>0</abortOnError>
@@ -490,16 +466,16 @@ EOF
         </iniFileGet>
         <iniFileGet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>Version</key>
-          <variable>apachehttpdVersion</variable>
+          <variable>pemhttpdVersion</variable>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
         </iniFileGet>
-        <!-- LIN & MAC: Get the branding & check Previous Installation of ApacheHTTPD -->
+        <!-- LIN & MAC: Get the branding & check Previous Installation of PEM-HTTPD -->
         <iniFileGet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>Branding</key>
           <variable>iBranding</variable>
           <abortOnError>0</abortOnError>
@@ -519,7 +495,7 @@ EOF
       <actionList>
 	<iniFileGet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>InstallationDirectory</key>
           <variable>installdir</variable>
           <abortOnError>0</abortOnError>
@@ -561,7 +537,7 @@ EOF
     </runProgram>
     <!-- Stopping apache if already started - Linux and Mac  -->
     <linuxServiceAction
-      name="EnterpriseDBApacheHTTPD" action="stop" systemdBooted="${is_init_systemd}"
+      name="PEMHTTPD" action="stop" systemdBooted="${is_init_systemd}"
       abortOnError="0" showMessageOnError="0">
       <ruleList>
         <compareText>
@@ -595,23 +571,23 @@ EOF
         </compareText>
       </ruleList>
     </runProgram>
-    <!-- WIN : Set the Apache Port from registry. ApacheHTTPD Installation would have set these values -->
+    <!-- WIN : Set the Apache Port from registry. PEM-HTTPD Installation would have set these values -->
     <actionGroup>
       <actionList>
         <setInstallerVariable name="apacheport" value=""/>
         <setInstallerVariable name="apache_home" value=""/>
         <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM-HTTPD</key>
           <name>APACHE_HPORT</name>
           <variable>apacheport</variable>
         </registryGet>
         <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM-HTTPD</key>
           <name>APACHE_HOME</name>
           <variable>apache_home</variable>
         </registryGet>
         <registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM-HTTPD</key>
           <name>Branding</name>
           <variable>iBranding</variable>
         </registryGet>
@@ -628,14 +604,14 @@ EOF
     <actionGroup>
       <actionList>
 	<registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM-HTTPD</key>
           <name>Location</name>
           <variable>installdir</variable>
         </registryGet>
 	<registryGet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM-HTTPD</key>
           <name>Version</name>
-          <variable>apachehttpdVersion</variable>
+          <variable>pemhttpdVersion</variable>
         </registryGet>
       </actionList>
       <ruleList>
@@ -663,7 +639,7 @@ EOF
       <ruleList>
         <compareText>
           <logic>does_not_equal</logic>
-          <text>${apachehttpdVersion}</text>
+          <text>${pemhttpdVersion}</text>
           <value/>
         </compareText>
         <compareText>
@@ -704,14 +680,14 @@ EOF
     </logMessage>
     <!-- Getting the Version Installed minus the buildnum --> 
     <setInstallerVariableFromRegEx>
-        <name>apachehttpdVersionInstalled</name>
-        <text>${apachehttpdVersion}</text>
+        <name>pemhttpdVersionInstalled</name>
+        <text>${pemhttpdVersion}</text>
         <pattern>([0-9]*)-[0-9]*$</pattern>
         <substitution>\1</substitution>
         <ruleList>
            <compareText>
                <logic>does_not_equal</logic>
-               <text>${apachehttpdVersion}</text>
+               <text>${pemhttpdVersion}</text>
                <value/>
            </compareText>
         </ruleList>
@@ -721,10 +697,10 @@ EOF
       <actionList> 
          <!-- Unpacking the Script file to temporary directory -->
          <unpackFile>
-           <component>ApacheHTTPD</component>
+           <component>PEMHTTPD</component>
            <destination>${system_temp_directory}\vcredist_x86.exe</destination>
            <folder>programfileswindows</folder>
-           <origin>installer/ApacheHTTPD/vcredist_x86.exe</origin>
+           <origin>installer/PEM-HTTPD/vcredist_x86.exe</origin>
          </unpackFile>
          <!-- Running VC Dist file | WIN  -->
          <runProgram>
@@ -762,8 +738,8 @@ EOF
     <!-- Stopping apache if already started - Windows  -->
     <runProgram>
       <program>wscript</program>
-      <programArguments>//NOLOGO "${installdir}/installer/ApacheHTTPD/stopApache.vbs" "${installdir}"</programArguments>
-      <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+      <programArguments>//NOLOGO "${installdir}/installer/PEM-HTTPD/stopApache.vbs" "${installdir}"</programArguments>
+      <workingDirectory>${installdir}/installer/PEM-HTTPD</workingDirectory>
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -778,7 +754,7 @@ EOF
           <value/>
         </compareText>
         <fileExists>
-          <path>${installdir}/installer/ApacheHTTPD/stopApache.vbs</path>
+          <path>${installdir}/installer/PEM-HTTPD/stopApache.vbs</path>
         </fileExists>
       </ruleList>
     </runProgram>
@@ -903,7 +879,7 @@ EOF
              </ruleList>
          </throwError>
          <throwError>
-              <text>${msg(apachehttpd.installdir.error.unix)}</text>
+              <text>${msg(pemhttpd.installdir.error.unix)}</text>
 	      <ruleList>
 		<regExMatch>
 		    <text>${installdir}</text>
@@ -918,7 +894,7 @@ EOF
 	      </ruleList>
          </throwError>
          <throwError>
-              <text>${msg(apachehttpd.installdir.error)}</text>
+              <text>${msg(pemhttpd.installdir.error)}</text>
               <ruleList>
                   <regExMatch>
                       <text>${installdir}</text>
@@ -933,7 +909,7 @@ EOF
                 </ruleList>
          </throwError>
          <throwError>
-              <text>${msg(apachehttpd.installdir.error)}</text>
+              <text>${msg(pemhttpd.installdir.error)}</text>
 	      <ruleList>
 		<regExMatch>
 		    <text>${installdir}</text>
@@ -968,7 +944,7 @@ EOF
         </renameFile>
       </actionList>
       <ruleList>
-        <compareText logic="does_not_equal" text="${apachehttpdVersion}" value=""/>
+        <compareText logic="does_not_equal" text="${pemhttpdVersion}" value=""/>
       </ruleList>
     </actionGroup>
   </preInstallationActionList>
@@ -983,14 +959,14 @@ EOF
 
     <actionGroup>
       <ruleList>
-        <compareText logic="does_not_equal" text="${apachehttpdVersion}"
+        <compareText logic="does_not_equal" text="${pemhttpdVersion}"
           value=""/>
       </ruleList>
       <actionList>
 
-        <!-- Stop the existing ApacheHTTPD service -->
+        <!-- Stop the existing PEMHTTPD service -->
         <linuxServiceAction
-          name="EnterpriseDBApacheHTTPD" action="stop" systemdBooted="${is_init_systemd}"
+          name="PEMHTTPD" action="stop" systemdBooted="${is_init_systemd}"
           abortOnError="0" showMessageOnError="0">
           <ruleList>
             <compareText>
@@ -1008,7 +984,7 @@ EOF
             <compareText logic="equals" text="${platform_name}" value="osx"/>
           </ruleList>
         </runProgram>
-        <stopWindowsService serviceName="EnterpriseDBApacheHTTPD"
+        <stopWindowsService serviceName="PEMHTTPD"
           delay="60000"
           abortOnError="0" showMessageOnError="0">
           <ruleList>
@@ -1039,7 +1015,7 @@ EOF
     </actionGroup>
 
     <substitute>
-      <files>${installdir}/installer/ApacheHTTPD/install-apache.bat</files>
+      <files>${installdir}/installer/PEM-HTTPD/install-apache.bat</files>
          <substitutionList>
             <substitution>
                <pattern>@@APACHE_HOME@@</pattern>
@@ -1055,7 +1031,7 @@ EOF
          </ruleList>
     </substitute>
     <substitute>
-      <files>${installdir}/installer/ApacheHTTPD/install-apache.bat</files>
+      <files>${installdir}/installer/PEM-HTTPD/install-apache.bat</files>
          <substitutionList>
             <substitution>
               <pattern>REM</pattern>
@@ -1077,7 +1053,7 @@ EOF
     </substitute>
 
     <substitute>
-      <files>${installdir}/installer/ApacheHTTPD/uninstall-apache.bat</files>
+      <files>${installdir}/installer/PEM-HTTPD/uninstall-apache.bat</files>
          <substitutionList>
             <substitution>
                <pattern>@@APACHE_HOME@@</pattern>
@@ -1093,7 +1069,7 @@ EOF
          </ruleList>
     </substitute>
     <substitute>
-      <files>${installdir}/installer/ApacheHTTPD/start-apache.bat</files>
+      <files>${installdir}/installer/PEM-HTTPD/start-apache.bat</files>
          <substitutionList>
             <substitution>
               <pattern>REM</pattern>
@@ -1113,7 +1089,7 @@ EOF
          </ruleList>
     </substitute>
     <substitute>
-      <files>${installdir}/installer/ApacheHTTPD/start-apache.bat</files>
+      <files>${installdir}/installer/PEM-HTTPD/start-apache.bat</files>
          <substitutionList>
             <substitution>
                <pattern>@@APACHE_HOME@@</pattern>
@@ -1165,10 +1141,10 @@ EOF
     </substitute>
     <!-- Configuring Scripts to set the installation path in Apache -->
     <runProgram>
-      <customErrorMessage>${msg(error.configure.apachehttpd)}</customErrorMessage>
-      <program>${installdir}/installer/ApacheHTTPD/configureApacheHTTPD.sh</program>
+      <customErrorMessage>${msg(error.configure.pemhttpd)}</customErrorMessage>
+      <program>${installdir}/installer/PEM-HTTPD/configureApacheHTTPD.sh</program>
       <programArguments>"${installdir}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
-      <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+      <workingDirectory>${installdir}/installer/PEM-HTTPD</workingDirectory>
       <ruleList>
         <compareText>
           <logic>does_not_equal</logic>
@@ -1237,12 +1213,22 @@ EOF
     </actionGroup>
 
     <!-- LIN | MAC: Adding text for mod_wsgi config in apache -->
+    <actionGroup>
+      <actionList>
     <addTextToFile>
       <file>${installdir}/apache/conf/httpd.conf</file>
       <text>
 LoadModule wsgi_module ${installdir}/apache/modules/mod_wsgi.so
 include conf/addons/*.conf
       </text>
+    </addTextToFile>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>PEM-HTTPD</section>
+          <key>MODWSGI_ENABLE</key>
+          <value>1</value>
+        </iniFileSet>
+      </actionList>
       <ruleList>
         <compareText>
           <logic>does_not_equal</logic>
@@ -1251,14 +1237,24 @@ include conf/addons/*.conf
         </compareText>
         <compareText logic="does_not_equal" text="${python_path}" value=""/>
       </ruleList>
-    </addTextToFile>
+    </actionGroup>
+
     <!-- WIN: Adding text for mod_wsgi config in apache -->
+    <actionGroup>
+      <actionList>
     <addTextToFile>
       <file>${installdir}\apache\conf\httpd.conf</file>
       <text>
 LoadModule wsgi_module "${installdir}\apache\modules\${MOD_WSGI_MODULE}"
 include conf\addons\*.conf
       </text>
+    </addTextToFile>
+        <registrySet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEMHTTPD</key>
+          <name>MODWSGI_ENABLE</name>
+          <value>1</value>
+        </registrySet>
+      </actionList>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -1267,7 +1263,7 @@ include conf\addons\*.conf
         </compareText>
         <compareText logic="does_not_equal" text="${python_path}" value=""/>
       </ruleList>
-    </addTextToFile>
+      </actionGroup>
 
     <!-- Creating a addons directory for additional conf files -->
     <createDirectory path="${installdir}/apache/conf/addons" >
@@ -1347,7 +1343,7 @@ include conf\addons\*.conf
         </ruleList>
      </actionGroup>
 
-    <!--RM32246. If ApacheHTTPD is updated from 2.2 to 2.4, then edit the httpd config files if present with new syntax-->
+    <!--RM32246. If PEMHTTPD is updated from 2.2 to 2.4, then edit the httpd config files if present with new syntax-->
     <actionGroup>
         <!--Edit httpd.conf to add new syntax-->
         <actionList>
@@ -1399,12 +1395,12 @@ include conf\addons\*.conf
         </ruleList>
     </actionGroup> 
     
-    <!-- Install ApacheHTTPD as a service -->
+    <!-- Install PEM-HTTPD as a service -->
     <runProgram>
-      <customErrorMessage>${msg(error.service.apachehttpd)}</customErrorMessage>
-      <program>${installdir}/installer/ApacheHTTPD/startupcfg.sh</program>
+      <customErrorMessage>${msg(error.service.pemhttpd)}</customErrorMessage>
+      <program>${installdir}/installer/PEM-HTTPD/startupcfg.sh</program>
       <programArguments>"${installdir}" "${linux_init_system}"</programArguments>
-      <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+      <workingDirectory>${installdir}/installer/PEM-HTTPD</workingDirectory>
       <abortOnError>0</abortOnError>
       <ruleList>
         <compareText>
@@ -1419,37 +1415,37 @@ include conf\addons\*.conf
         <!-- Set the Apache Home and Apache Port(default 8080) to inifile. -->
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>APACHE_HOME</key>
           <value>${installdir}/apache</value>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>APACHE_HPORT</key>
           <value>${port}</value>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>Description</key>
           <value>${msg(install.summary)}</value>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>InstallationDirectory</key>
           <value>${installdir}</value>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>Version</key>
           <value>${product_version}</value>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>Branding</key>
           <value>${branding}</value>
         </iniFileSet>
@@ -1466,7 +1462,7 @@ include conf\addons\*.conf
      <actionList>
         <!-- Linux - Starting Apache -->
 	<linuxServiceAction
-          name="EnterpriseDBApacheHTTPD" action="start" systemdBooted="${is_init_systemd}"
+          name="PEMHTTPD" action="start" systemdBooted="${is_init_systemd}"
           customErrorMessage="${msg(error.start.apache)}" ruleEvaluationLogic="or">
           <ruleList>    
 	    <compareText>
@@ -1494,10 +1490,10 @@ include conf\addons\*.conf
       <actionList>
         <!-- Linux | Mac - Creating Menu Shortcuts -->
         <runProgram>
-          <program>${installdir}/installer/ApacheHTTPD/createshortcuts.sh</program>
+          <program>${installdir}/installer/PEM-HTTPD/createshortcuts.sh</program>
           <programArguments>"${installdir}" "${branding}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
           <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-          <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+          <workingDirectory>${installdir}/installer/PEM-HTTPD</workingDirectory>
           <abortOnError>0</abortOnError>  
         </runProgram>
       </actionList>
@@ -1513,7 +1509,7 @@ include conf\addons\*.conf
     <actionGroup>
       <actionList>
         <registrySet>
-          <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EnterpriseDBApacheHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PEMHTTPD</key>
           <name>Environment</name>
           <type>REG_MULTI_SZ</type>
           <value>PATH=${python_home.unix};%PATH% PYTHONHOME=${python_home.unix} PYTHONPATH=${python_home.unix}</value>
@@ -1522,7 +1518,7 @@ include conf\addons\*.conf
         </ruleList>
         </registrySet>
         <registrySet>
-          <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EnterpriseDBApacheHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PEMHTTPD</key>
           <name>Environment</name>
           <type>REG_MULTI_SZ</type>
           <value>PATH=%PATH%</value>
@@ -1533,9 +1529,9 @@ include conf\addons\*.conf
         <wait ms="3000"/>
         <runProgram>
           <showMessageOnError>0</showMessageOnError>
-          <program>${installdir}\installer\ApacheHTTPD\install-apache.bat</program>
+          <program>${installdir}\installer\PEM-HTTPD\install-apache.bat</program>
           <programArguments/>
-          <workingDirectory>${installdir}\installer\ApacheHTTPD</workingDirectory>
+          <workingDirectory>${installdir}\installer\PEM-HTTPD</workingDirectory>
         </runProgram>
         <wait ms="3000"/>
       </actionList>
@@ -1552,9 +1548,9 @@ include conf\addons\*.conf
       <actionList>
         <runProgram>
           <customErrorMessage>${msg(error.install.apache)}</customErrorMessage>
-          <program>${installdir}/installer/ApacheHTTPD/startupcfg.sh</program>
+          <program>${installdir}/installer/PEM-HTTPD/startupcfg.sh</program>
           <programArguments>"${installdir}"</programArguments>
-          <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+          <workingDirectory>${installdir}/installer/PEM-HTTPD</workingDirectory>
         </runProgram>
       </actionList>
       <ruleList>
@@ -1571,9 +1567,9 @@ include conf\addons\*.conf
       <actionList>
         <runProgram>
           <customErrorMessage>${msg(error.install.apache)}</customErrorMessage>
-          <program>${installdir}/installer/ApacheHTTPD/startupcfg.sh</program>
+          <program>${installdir}/installer/PEM-HTTPD/startupcfg.sh</program>
           <programArguments>"${installdir}"</programArguments>
-          <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+          <workingDirectory>${installdir}/installer/PEM-HTTPD</workingDirectory>
         </runProgram>
       </actionList>
       <ruleList>
@@ -1583,14 +1579,14 @@ include conf\addons\*.conf
           <value>osx</value>
         </compareText>
 	<fileExists>
-          <path>/Library/StartupItems/EnterpriseDB-ApacheHTTPD</path>
+          <path>/Library/StartupItems/PEMHTTPD</path>
         </fileExists>
       </ruleList>
     </actionGroup>
     
     <!-- MAC: Remove the startup item from older installations -->
     <deleteFile>
-      <path>/Library/StartupItems/EnterpriseDB-ApacheHTTPD</path>
+      <path>/Library/StartupItems/PEMHTTPD</path>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -1598,7 +1594,7 @@ include conf\addons\*.conf
           <value>osx</value>
         </compareText>
 	<fileExists>
-          <path>/Library/StartupItems/EnterpriseDB-ApacheHTTPD</path>
+          <path>/Library/StartupItems/PEMHTTPD</path>
         </fileExists>
       </ruleList>
     </deleteFile>
@@ -1607,17 +1603,17 @@ include conf\addons\*.conf
       <actionList>
         <!-- Set the Apache Home and Apache Port(default 8080) to registry. -->
         <registrySet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEMHTTPD</key>
           <name>APACHE_HOME</name>
           <value>${installdir}\apache</value>
         </registrySet>
         <registrySet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEMHTTPD</key>
           <name>APACHE_HPORT</name>
           <value>${port}</value>
         </registrySet>
         <registrySet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEMHTTPD</key>
           <name>Branding</name>
           <value>${branding}</value>
         </registrySet>
@@ -1636,7 +1632,7 @@ include conf\addons\*.conf
 	<runProgram>
 	  <customErrorMessage>${msg(error.start.apache)}</customErrorMessage>
 	  <program>sc</program>
-	  <programArguments>start EnterpriseDBApacheHTTPD</programArguments>
+	  <programArguments>start PEMHTTPD</programArguments>
 	  <abortOnError>0</abortOnError>
 	</runProgram>
       </actionList>
@@ -1653,7 +1649,7 @@ include conf\addons\*.conf
     <actionGroup>
         <actionList>
             <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ApacheHTTPD ${apachehttpdVersion}</key>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\PEMHTTPD ${pemhttpdVersion}</key>
                 <showMessageOnError>0</showMessageOnError>
                 <abortOnError>0</abortOnError>
             </registryDelete>
@@ -1688,7 +1684,7 @@ include conf\addons\*.conf
             <abortOnError>0</abortOnError>
             <show>1</show>
             <ruleList>
-                <regExMatch logic="matches" text="${apachehttpdVersionInstalled}" pattern="^2.2"/>
+                <regExMatch logic="matches" text="${pemhttpdVersionInstalled}" pattern="^2.2"/>
                 <regExMatch logic="matches" text="${productVersion}" pattern="^2.4"/>
                 <compareText logic="equals" text="${installer_ui}" value="gui" />
             </ruleList>
@@ -1737,7 +1733,7 @@ include conf\addons\*.conf
       <actionList>
         <!-- Stop Apache -->
         <linuxServiceAction
-          name="EnterpriseDBApacheHTTPD" action="stop" systemdBooted="${is_init_systemd}"
+          name="PEMHTTPD" action="stop" systemdBooted="${is_init_systemd}"
           abortOnError="0" showMessageOnError="0">
           <ruleList>
             <compareText>
@@ -1769,37 +1765,37 @@ include conf\addons\*.conf
         <!-- Unset values in the ini file -->
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>APACHE_HOME</key>
           <value/>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>APACHE_HPORT</key>
           <value/>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>Description</key>
           <value/>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>InstallationDirectory</key>
           <value/>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>Version</key>
           <value/>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>ApacheHTTPD</section>
+          <section>PEM-HTTPD</section>
           <key>Branding</key>
           <value/>
         </iniFileSet>
@@ -1817,18 +1813,18 @@ include conf\addons\*.conf
         <!-- Remove the shortcuts -->
         <runProgram>
           <customErrorMessage>${msg(error.uninstall.apache)}</customErrorMessage>
-          <program>${installdir}/installer/ApacheHTTPD/removeshortcuts.sh</program>
+          <program>${installdir}/installer/PEM-HTTPD/removeshortcuts.sh</program>
           <programArguments>"${installdir}" "${branding}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
-          <workingDirectory>${installdir}/installer/ApacheHTTPD</workingDirectory>
+          <workingDirectory>${installdir}/installer/PEM-HTTPD</workingDirectory>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
         </runProgram>
-        <!-- Uninstall the ApacheHTTPD service -->
+        <!-- Uninstall the PEM-HTTPD service -->
 
 	<!-- Attempt to remove any runlevel config with chkconfig -->
         <runProgram>
           <program>/sbin/chkconfig</program>
-          <programArguments>--del EnterpriseDBApacheHTTPD</programArguments>
+          <programArguments>--del PEMHTTPD</programArguments>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
 	  <ruleList>
@@ -1839,7 +1835,7 @@ include conf\addons\*.conf
         <!-- Remove the startup script -->
 
         <runProgram program="/usr/bin/systemctl"
-          programArguments="disable EnterpriseDBApacheHTTPD.service"
+          programArguments="disable PEMHTTPD.service"
           abortOnError="0" showMessageOnError="0"
           customErrorMessage="${msg(error.uninstall.apache)}">
           <ruleList>
@@ -1850,22 +1846,22 @@ include conf\addons\*.conf
         <deleteFile>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
-          <path>/etc/init.d/EnterpriseDBApacheHTTPD</path>
+          <path>/etc/init.d/PEMHTTPD</path>
 	  <ruleList>
-	    <fileExists path="/etc/init.d/EnterpriseDBApacheHTTPD"/>
+	    <fileExists path="/etc/init.d/PEMHTTPD"/>
           </ruleList>
         </deleteFile>
 
-	<deleteFile path="/usr/lib/systemd/system/EnterpriseDBApacheHTTPD.service">
+	<deleteFile path="/usr/lib/systemd/system/PEMHTTPD.service">
           <ruleList>
-	    <fileExists path="/usr/lib/systemd/system/EnterpriseDBApacheHTTPD.service"/>
+	    <fileExists path="/usr/lib/systemd/system/PEMHTTPD.service"/>
           </ruleList>
         </deleteFile>
 
         <!-- Attempt to remove any runlevel config with update-rc.d -->
         <runProgram>
           <program>/usr/sbin/update-rc.d</program>
-          <programArguments>-f EnterpriseDBApacheHTTPD remove</programArguments>
+          <programArguments>-f PEMHTTPD remove</programArguments>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
 	  <ruleList>
@@ -1884,7 +1880,7 @@ include conf\addons\*.conf
     </actionGroup>
     <!-- MAC: Remove menu shortcuts -->
     <deleteFile>
-      <path>/Applications/${branding}/EnterpriseDB ApacheHTTPD</path>
+      <path>/Applications/${branding}/PEMHTTPD</path>
       <abortOnError>0</abortOnError>
       <showMessageOnError>0</showMessageOnError>
       <ruleList>
@@ -1915,9 +1911,9 @@ include conf\addons\*.conf
         <!-- Uninstall Apache Service -->
         <runProgram>
           <customErrorMessage>${msg(error.uninstall.apache)}</customErrorMessage>
-          <program>${installdir}\installer\ApacheHTTPD\uninstall-apache.bat</program>
+          <program>${installdir}\installer\PEM-HTTPD\uninstall-apache.bat</program>
           <programArguments/>
-          <workingDirectory>${installdir}\installer\ApacheHTTPD</workingDirectory>
+          <workingDirectory>${installdir}\installer\PEM-HTTPD</workingDirectory>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
         </runProgram>
@@ -1964,7 +1960,7 @@ include conf\addons\*.conf
     <!-- Clear out any residual registry entres -->
     <actionGroup>
       <actionList>
-	    <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD" />
+	    <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEMHTTPD" />
       </actionList>
       <ruleList>
         <compareText>
@@ -2023,7 +2019,7 @@ include conf\addons\*.conf
   <!-- Components -->
   <componentList>
     <component>
-      <name>ApacheHTTPD</name>
+      <name>PEMHTTPD</name>
       <description>Apache</description>
       <canBeEdited>0</canBeEdited>
       <selected>1</selected>
@@ -2160,8 +2156,8 @@ include conf\addons\*.conf
       <startMenuShortcutList>
         <startMenuShortcut>
           <!-- Launch Apache -->
-          <comment>EnterpriseDB ApacheHTTPD</comment>
-          <name>EnterpriseDB ApacheHTTPD</name>
+          <comment>PEM-HTTPD</comment>
+          <name>PEMHTTPD</name>
           <runInTerminal>0</runInTerminal>
           <windowsExec>wscript</windowsExec>
           <windowsExecArgs>//NoLogo "${installdir}\scripts\launchApacheHTTPD.vbs"</windowsExecArgs>
@@ -2175,7 +2171,7 @@ include conf\addons\*.conf
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
     <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
     <stringParameter name="pemversion" cliOptionName="pemversion" ask="0" cliOptionShow="0"/>
-    <stringParameter name="lppython_loc" cliOptionName="lppython" default="" ask="1" cliOptionShow="1"
+    <stringParameter name="lppython_loc" cliOptionName="lppython" default="" ask="0" cliOptionShow="0"
       description="LanguagePack Python installation path"/>
     <parameterGroup>
       <!-- Apache Port -->
@@ -2274,7 +2270,7 @@ include conf\addons\*.conf
            <actionList>
              <setInstallerVariable name="installdir" value="${default_installdir}" />
              <throwError>
-              <text>${msg(apachehttpd.installdir.empty)}</text>
+              <text>${msg(pemhttpd.installdir.empty)}</text>
              </throwError>
            </actionList>
            <ruleList>
@@ -2292,7 +2288,7 @@ include conf\addons\*.conf
           <actionList>
 	    <setInstallerVariable name="installdir" value="${default_installdir}" />
             <showWarning>
-              <text>${msg(apachehttpd.installdir.error)}</text>
+              <text>${msg(pemhttpd.installdir.error)}</text>
             </showWarning>
             <setInstallerVariable name="next_page" value="installdir"/>
           </actionList>
@@ -2313,7 +2309,7 @@ include conf\addons\*.conf
           <actionList>
 	    <setInstallerVariable name="installdir" value="${default_installdir}" />
             <showWarning>
-              <text>${msg(apachehttpd.installdir.error.unix)}</text>
+              <text>${msg(pemhttpd.installdir.error.unix)}</text>
             </showWarning>
             <setInstallerVariable name="next_page" value="installdir"/>
           </actionList>
@@ -2336,7 +2332,7 @@ include conf\addons\*.conf
           <actionList>
 	    <setInstallerVariable name="installdir" value="${default_installdir}" />
             <showWarning>
-              <text>${msg(apachehttpd.installdir.error)}</text>
+              <text>${msg(pemhttpd.installdir.error)}</text>
             </showWarning>
             <setInstallerVariable name="next_page" value="installdir"/>
           </actionList>

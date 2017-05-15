@@ -10,6 +10,6 @@ SET PYTHONHOME="@@LP_PYTHON_HOME@@"
 SET PYTHONPATH="@@LP_PYTHON_HOME@@"
 SET PATH="@@LP_PYTHON_HOME@@";"@@APACHE_HOME@@\bin";%PATH%
 
-"@@APACHE_HOME@@\bin\httpd.exe" -k stop -n "EnterpriseDB ApacheHTTPD"
-"@@APACHE_HOME@@\bin\httpd.exe" -k uninstall -n "EnterpriseDB ApacheHTTPD"
+"@@APACHE_HOME@@\bin\httpd.exe" -k stop -n "PEMHTTPD"
+"@@APACHE_HOME@@\bin\httpd.exe" -k uninstall -n "PEMHTTPD"
 

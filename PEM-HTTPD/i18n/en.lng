@@ -6,9 +6,9 @@ Installer.Installing.Title=Installing ${product_fullname}
 
 upgrade.existing.installation.title=Existing Installation
 
-upgrade.existing.installation.description=An existing ApacheHTTPD installation has been found at ${installdir}.\n\nThis installation will be upgraded and the existing httpd.conf file will be backed up to ${installdir}/conf/httpd.conf.bak. You may need to manually merge any changes made to the configuration into the new configuration file.
+upgrade.existing.installation.description=An existing PEM-HTTPD installation has been found at ${installdir}.\n\nThis installation will be upgraded and the existing httpd.conf file will be backed up to ${installdir}/conf/httpd.conf.bak. You may need to manually merge any changes made to the configuration into the new configuration file.
 
-install.summary=ApacheHTTPD is a preconfigured Apache webserver with Python, compiled for use with PostgreSQL
+install.summary=PEM-HTTPD is a preconfigured Apache webserver with Python, compiled for use with PostgreSQL
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 
@@ -38,11 +38,11 @@ warn.selinux=SELinux is enabled on the system, which might cause apache start/st
 
 selinux.not.permissive=Please put SELinux in permissive mode and then run installer again. SELinux can be put in enforcing mode again after installation.
 
-apachehttpd.installdir.empty=The installation directory cannot be empty
+pemhttpd.installdir.empty=The installation directory cannot be empty
 
-apachehttpd.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
+pemhttpd.installdir.error=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 
-apachehttpd.installdir.error.unix=The installation directory cannot not be '/' or '/usr'.
+pemhttpd.installdir.error.unix=The installation directory cannot not be '/' or '/usr'.
 
 progress.text.creating.shortcuts=Creating Menu Shortcuts
 

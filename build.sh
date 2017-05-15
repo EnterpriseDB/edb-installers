@@ -201,20 +201,20 @@ then
     _postprocess_ApachePhp || exit 1
 fi
 
-# Package: ApacheHTTPD
-if [ $PG_PACKAGE_APACHEHTTPD = 1 ];
+# Package: PEM-HTTPD
+if [ $PG_PACKAGE_PEMHTTPD = 1 ];
 then
-    echo "### Package: ApacheHTTPD"
+    echo "### Package: PEM-HTTPD"
     cd $WD
-    source ./ApacheHTTPD/build.sh
+    source ./PEM-HTTPD/build.sh
 
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_ApacheHTTPD || exit 1
-        _build_ApacheHTTPD || exit 1
+        _prep_PEM-HTTPD || exit 1
+        _build_PEM-HTTPD || exit 1
     fi
 
-    _postprocess_ApacheHTTPD || exit 1
+    _postprocess_PEM-HTTPD || exit 1
 fi
 
 # Package: phppgadmin

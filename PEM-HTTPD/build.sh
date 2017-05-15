@@ -5,41 +5,42 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    source $WD/ApacheHTTPD/build-osx.sh
+    echo "Disabling Mac OS X build"
+    #source $WD/PEM-HTTPD/build-osx.sh
 fi
 
 # Linux
 if [ $PG_ARCH_LINUX = 1 ];
 then
-    source $WD/ApacheHTTPD/build-linux.sh
+    source $WD/PEM-HTTPD/build-linux.sh
 fi
 
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
-    source $WD/ApacheHTTPD/build-linux-x64.sh
+    source $WD/PEM-HTTPD/build-linux-x64.sh
 fi
 
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
-    source $WD/ApacheHTTPD/build-windows.sh
+    source $WD/PEM-HTTPD/build-windows.sh
 fi
     
 ################################################################################
 # Build preparation
 ################################################################################
 
-_prep_ApacheHTTPD() {
+_prep_PEM-HTTPD() {
 
     # Create the source directory if required
-    if [ ! -e $WD/ApacheHTTPD/source ];
+    if [ ! -e $WD/PEM-HTTPD/source ];
     then
-        mkdir $WD/ApacheHTTPD/source
+        mkdir $WD/PEM-HTTPD/source
     fi
 
     # Enter the source directory and cleanup if required
-    cd $WD/ApacheHTTPD/source
+    cd $WD/PEM-HTTPD/source
 
     # Apache
     if [ -e httpd-$PG_VERSION_APACHE ];
@@ -84,69 +85,71 @@ _prep_ApacheHTTPD() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_ApacheHTTPD_osx || exit 1
+        echo "Disabling Mac OS X build"
+        #_prep_PEM-HTTPD_osx || exit 1
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _prep_ApacheHTTPD_linux || exit 1
+        _prep_PEM-HTTPD_linux || exit 1
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_ApacheHTTPD_linux_x64 || exit 1
+        _prep_PEM-HTTPD_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_ApacheHTTPD_windows || exit 1
+        _prep_PEM-HTTPD_windows || exit 1
     fi
     
 }
 
 ################################################################################
-# Build ApacheHTTPD
+# Build PEM-HTTPD
 ################################################################################
 
-_build_ApacheHTTPD() {
+_build_PEM-HTTPD() {
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_ApacheHTTPD_osx || exit 1
+        echo "Disabling Mac OS X build"
+        #_build_PEM-HTTPD_osx || exit 1
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _build_ApacheHTTPD_linux || exit 1
+        _build_PEM-HTTPD_linux || exit 1
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _build_ApacheHTTPD_linux_x64 || exit 1
+        _build_PEM-HTTPD_linux_x64 || exit 1
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_ApacheHTTPD_windows || exit 1
+        _build_PEM-HTTPD_windows || exit 1
     fi
 }
 
 ################################################################################
-# Postprocess ApacheHTTPD
+# Postprocess PEM-HTTPD
 ################################################################################
 #
 # Note that this is the only step run if we're executed with -skipbuild so it must
 # be possible to run this against a pre-built tree.
-_postprocess_ApacheHTTPD() {
+_postprocess_PEM-HTTPD() {
 
-    cd $WD/ApacheHTTPD
+    cd $WD/PEM-HTTPD
 
 
     # Prepare the installer XML file
@@ -154,32 +157,33 @@ _postprocess_ApacheHTTPD() {
     then
         rm installer.xml
     fi
-    cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (ApacheHTTPD/installer.xml.in)"
+    cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (PEM-HTTPD/installer.xml.in)"
 
-    _replace PG_VERSION_APACHEHTTPD $PG_VERSION_APACHE installer.xml || _die "Failed to set the major version in the installer project file (ApacheHTTPD/installer.xml)"
-    _replace PG_BUILDNUM_APACHEHTTPD $PG_BUILDNUM_APACHEHTTPD installer.xml || _die "Failed to set the major version in the installer project file (ApacheHTTPD/installer.xml)"
+    _replace PG_VERSION_PEMHTTPD $PG_VERSION_APACHE installer.xml || _die "Failed to set the major version in the installer project file (PEM-HTTPD/installer.xml)"
+    _replace PG_BUILDNUM_PEMHTTPD $PG_BUILDNUM_PEMHTTPD installer.xml || _die "Failed to set the major version in the installer project file (PEM-HTTPD/installer.xml)"
  
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_ApacheHTTPD_osx || exit 1
+        echo "Disabling Mac OS X build"
+        #_postprocess_PEM-HTTPD_osx || exit 1
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_ApacheHTTPD_linux || exit 1
+        _postprocess_PEM-HTTPD_linux || exit 1
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_ApacheHTTPD_linux_x64 || exit 1
+        _postprocess_PEM-HTTPD_linux_x64 || exit 1
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _postprocess_ApacheHTTPD_windows || exit 1
+        _postprocess_PEM-HTTPD_windows || exit 1
     fi
 }

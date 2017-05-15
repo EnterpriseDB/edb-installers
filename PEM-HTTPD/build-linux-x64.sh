@@ -1,16 +1,15 @@
 #!/bin/bash
 
-
 ################################################################################
 # Build preparation
 ################################################################################
 
-_prep_ApacheHTTPD_linux_x64() {
+_prep_PEM-HTTPD_linux_x64() {
     # Following echo statement for Jenkins Console Section output
-    echo "BEGIN PREP ApacheHTTPD Linux-x64"
+    echo "BEGIN PREP PEM-HTTPD Linux-x64"
 
     # Enter the source directory and cleanup if required
-    cd $WD/ApacheHTTPD/source
+    cd $WD/PEM-HTTPD/source
 
     if [ -e apache.linux-x64 ];
     then
@@ -18,7 +17,7 @@ _prep_ApacheHTTPD_linux_x64() {
       rm -rf apache.linux-x64  || _die "Couldn't remove the existing apache.linux-x64 source directory (source/apache.linux-x64)"
     fi
 
-    echo "Creating apache source directory ($WD/ApacheHTTPD/source/apache.linux-x64)"
+    echo "Creating apache source directory ($WD/PEM-HTTPD/source/apache.linux-x64)"
     mkdir -p apache.linux-x64 || _die "Couldn't create the apache.linux-x64 directory"
     mkdir -p apache.linux-x64/mod_wsgi || _die "Couldn't create the mod_wsgi directory"
     chmod ugo+w apache.linux-x64 || _die "Couldn't set the permissions on the source directory"
@@ -29,17 +28,17 @@ _prep_ApacheHTTPD_linux_x64() {
     cp -pR mod_wsgi-$PG_VERSION_WSGI/* apache.linux-x64/mod_wsgi || _die "Failed to copy the source code (source/mod_wsgi-$PG_VERSION_WSGI)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/ApacheHTTPD/staging/linux-x64 ];
+    if [ -e $WD/PEM-HTTPD/staging/linux-x64 ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/ApacheHTTPD/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/PEM-HTTPD/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/ApacheHTTPD/staging/linux-x64)"
-    mkdir -p $WD/ApacheHTTPD/staging/linux-x64 || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/ApacheHTTPD/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/PEM-HTTPD/staging/linux-x64)"
+    mkdir -p $WD/PEM-HTTPD/staging/linux-x64 || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/PEM-HTTPD/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
 
-    echo "END PREP ApacheHTTPD Linux-x64"
+    echo "END PREP PEM-HTTPD Linux-x64"
 }
 
 
@@ -47,37 +46,31 @@ _prep_ApacheHTTPD_linux_x64() {
 # PG Build
 ################################################################################
 
-_build_ApacheHTTPD_linux_x64() {
-    echo "BEGIN BUILD ApacheHTTPD Linux-x64"
+_build_PEM-HTTPD_linux_x64() {
+    echo "BEGIN BUILD PEM-HTTPD Linux-x64"
 
-    # For PEM7, apachehttpd needs to be built with python3.5 (LP10)
-    if [ ! -z $PEM_PYTHON_LINUX_X64 ];
-    then
-        PG_PYTHON_LINUX_X64=$PEM_PYTHON_LINUX_X64
-    fi
-        
     # build apache
 
-    PG_STAGING=$PG_PATH_LINUX_X64/ApacheHTTPD/staging/linux-x64
+    PG_STAGING=$PG_PATH_LINUX_X64/PEM-HTTPD/staging/linux-x64
 
     # Configure the source tree
     echo "Configuring the apache source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApacheHTTPD/source/apache.linux-x64/; LD_LIBRARY_PATH=/opt/local/Current/lib CFLAGS=\"-I/opt/local/Current/include\" LDFLAGS=\"-L/opt/local/Current/lib -ldl\" ./configure --enable-debug --prefix=$PG_STAGING/apache --with-pcre=/opt/local/Current --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache --with-ssl=/opt/local/Current --enable-mods-shared=all"  || _die "Failed to configure apache"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApacheHTTPD/source/apache.linux-x64/modules/ssl; sed -i \"s^\\(\\t\\\$(SH_LINK).*$\\)^\\1 -Wl,-rpath,\\\${libexecdir}^\" modules.mk"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PEM-HTTPD/source/apache.linux-x64/; LD_LIBRARY_PATH=/opt/local/Current/lib CFLAGS=\"-I/opt/local/Current/include\" LDFLAGS=\"-L/opt/local/Current/lib -ldl\" ./configure --enable-debug --prefix=$PG_STAGING/apache --with-pcre=/opt/local/Current --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache --with-ssl=/opt/local/Current --enable-mods-shared=all"  || _die "Failed to configure apache"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PEM-HTTPD/source/apache.linux-x64/modules/ssl; sed -i \"s^\\(\\t\\\$(SH_LINK).*$\\)^\\1 -Wl,-rpath,\\\${libexecdir}^\" modules.mk"
 
     echo "Building apache"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApacheHTTPD/source/apache.linux-x64; make" || _die "Failed to build apache"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApacheHTTPD/source/apache.linux-x64; make install" || _die "Failed to install apache"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PEM-HTTPD/source/apache.linux-x64; make" || _die "Failed to build apache"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PEM-HTTPD/source/apache.linux-x64; make install" || _die "Failed to install apache"
 
     echo "Configuring the mod_wsgi source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApacheHTTPD/source/apache.linux-x64/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PG_PYTHON_LINUX_X64/lib CFLAGS=\"-I/opt/local/Current/include -I$PG_PYTHON_LINUX_X64/include\" LDFLAGS=\"-L/opt/local/Current/lib -L$PG_PYTHON_LINUX_X64/lib\" ./configure --prefix=$PG_STAGING/apache --with-apxs=$PG_STAGING/apache/bin/apxs --with-python=$PG_PYTHON_LINUX_X64/bin/python"  || _die "Failed to configure mod_wsgi"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PEM-HTTPD/source/apache.linux-x64/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PEM_PYTHON_LINUX_X64/lib CFLAGS=\"-I/opt/local/Current/include -I$PEM_PYTHON_LINUX_X64/include\" LDFLAGS=\"-L/opt/local/Current/lib -L$PEM_PYTHON_LINUX_X64/lib\" ./configure --prefix=$PG_STAGING/apache --with-apxs=$PG_STAGING/apache/bin/apxs --with-python=$PEM_PYTHON_LINUX_X64/bin/python"  || _die "Failed to configure mod_wsgi"
 
     echo "Building mod_wsgi"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApacheHTTPD/source/apache.linux-x64/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PG_PYTHON_LINUX_X64/lib:$LD_LIBRARY_PATH make" || _die "Failed to build mod_wsgi"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApacheHTTPD/source/apache.linux-x64/mod_wsgi; make install" || _die "Failed to install mod_wsgi"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PEM-HTTPD/source/apache.linux-x64/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PEM_PYTHON_LINUX_X64/lib:$LD_LIBRARY_PATH make" || _die "Failed to build mod_wsgi"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PEM-HTTPD/source/apache.linux-x64/mod_wsgi; make install" || _die "Failed to install mod_wsgi"
 
     # Configure the httpd.conf file
-    cd $WD/ApacheHTTPD/staging/linux-x64/apache/conf
+    cd $WD/PEM-HTTPD/staging/linux-x64/apache/conf
     _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "httpd.conf"
     _replace "Listen 80" "Listen 0.0.0.0:@@PORT@@" "httpd.conf"
     _replace "htdocs" "www" "httpd.conf"
@@ -92,7 +85,7 @@ _build_ApacheHTTPD_linux_x64() {
     echo "SSLProtocol All -SSLv2 -SSLv3" >> extra/httpd-ssl.conf
 
     # Configure the apachectl script file
-    cd $WD/ApacheHTTPD/staging/linux-x64/apache/bin
+    cd $WD/PEM-HTTPD/staging/linux-x64/apache/bin
     _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
     _replace "\$HTTPD -t" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
     _replace "\$HTTPD \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
@@ -119,7 +112,7 @@ _build_ApacheHTTPD_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PGHOME_LINUX_X64/lib/libldap*.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libldap*)"
 
     # Add LD_LIBRARY_PATH in envvars scripts
-    cat <<EOT >> $WD/ApacheHTTPD/staging/linux-x64/apache/bin/envvars
+    cat <<EOT >> $WD/PEM-HTTPD/staging/linux-x64/apache/bin/envvars
 export PYTHONHOME=@@LP_PYTHON_HOME@@
 export PYTHONPATH=\$PYTHONHOME
 LD_LIBRARY_PATH=@@INSTALL_DIR@@/apache/lib:\$PYTHONPATH/lib:@@INSTALL_DIR@@/httpd/lib:\$LD_LIBRARY_PATH
@@ -136,19 +129,19 @@ EOT
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
 
     # Remove existing symbols directory in output directory
-    if [ -e $WD/output/symbols/linux-x64/ApacheHTTPD ];
+    if [ -e $WD/output/symbols/linux-x64/PEM-HTTPD ];
     then
-        echo "Removing existing $WD/output/symbols/linux-x64/ApacheHTTPD directory"
-        rm -rf $WD/output/symbols/linux-x64/ApacheHTTPD  || _die "Couldn't remove the existing $WD/output/symbols/linux-x64/ApacheHTTPD directory."
+        echo "Removing existing $WD/output/symbols/linux-x64/PEM-HTTPD directory"
+        rm -rf $WD/output/symbols/linux-x64/PEM-HTTPD  || _die "Couldn't remove the existing $WD/output/symbols/linux-x64/PEM-HTTPD directory."
     fi
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
-    mv $WD/ApacheHTTPD/staging/linux-x64/symbols $WD/output/symbols/linux-x64/ApacheHTTPD || _die "Failed to move $WD/ApacheHTTPD/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/ApacheHTTPD directory"
+    mv $WD/PEM-HTTPD/staging/linux-x64/symbols $WD/output/symbols/linux-x64/PEM-HTTPD || _die "Failed to move $WD/PEM-HTTPD/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/PEM-HTTPD directory"
 
     cd $WD
 
-    echo "END BUILD ApacheHTTPD Linux-x64"
+    echo "END BUILD PEM-HTTPD Linux-x64"
 }
 
 
@@ -157,15 +150,15 @@ EOT
 # PG Build
 ################################################################################
 
-_postprocess_ApacheHTTPD_linux_x64() {
-    echo "BEGIN POST ApacheHTTPD Linux-x64"
+_postprocess_PEM-HTTPD_linux_x64() {
+    echo "BEGIN POST PEM-HTTPD Linux-x64"
 
-    PG_STAGING=$PG_PATH_LINUX_X64/ApacheHTTPD/staging/linux-x64
+    PG_STAGING=$PG_PATH_LINUX_X64/PEM-HTTPD/staging/linux-x64
 
     #Configure the files in apache and httpd
-    filelist=`grep -rslI "$PG_STAGING" "$WD/ApacheHTTPD/staging/linux-x64" | grep -v Binary`
+    filelist=`grep -rslI "$PG_STAGING" "$WD/PEM-HTTPD/staging/linux-x64" | grep -v Binary`
 
-    cd $WD/ApacheHTTPD/staging/linux-x64
+    cd $WD/PEM-HTTPD/staging/linux-x64
 
     for file in $filelist
     do
@@ -173,7 +166,7 @@ _postprocess_ApacheHTTPD_linux_x64() {
     chmod ugo+x "$file"
     done
 
-    cd $WD/ApacheHTTPD
+    cd $WD/PEM-HTTPD
 
     pushd staging/linux-x64
     generate_3rd_party_license "apache_httpd"
@@ -185,21 +178,21 @@ _postprocess_ApacheHTTPD_linux_x64() {
     cp -pR staging/linux-x64/apache/htdocs staging/linux-x64/apache/www || _die "Failed to change Server Root"
     chmod 755 staging/linux-x64/apache/www
 
-    mkdir -p staging/linux-x64/installer/ApacheHTTPD || _die "Failed to create a directory for the install scripts"
+    mkdir -p staging/linux-x64/installer/PEM-HTTPD || _die "Failed to create a directory for the install scripts"
     mkdir -p staging/linux-x64/apache/www/images || _die "Failed to create a directory for the images"
     chmod 755 staging/linux-x64/apache/www/images
 
-    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/ApacheHTTPD/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
-    chmod ugo+x staging/linux-x64/installer/ApacheHTTPD/createshortcuts.sh
+    cp scripts/linux/createshortcuts.sh staging/linux-x64/installer/PEM-HTTPD/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
+    chmod ugo+x staging/linux-x64/installer/PEM-HTTPD/createshortcuts.sh
 
-    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/ApacheHTTPD/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
-    chmod ugo+x staging/linux-x64/installer/ApacheHTTPD/removeshortcuts.sh
+    cp scripts/linux/removeshortcuts.sh staging/linux-x64/installer/PEM-HTTPD/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
+    chmod ugo+x staging/linux-x64/installer/PEM-HTTPD/removeshortcuts.sh
 
-    cp scripts/linux/configureApacheHTTPD.sh staging/linux-x64/installer/ApacheHTTPD/configureApacheHTTPD.sh || _die "Failed to copy the configureApacheHTTPD script (scripts/linux/configureApacheHTTPD.sh)"
-    chmod ugo+x staging/linux-x64/installer/ApacheHTTPD/configureApacheHTTPD.sh
+    cp scripts/linux/configureApacheHTTPD.sh staging/linux-x64/installer/PEM-HTTPD/configureApacheHTTPD.sh || _die "Failed to copy the configureApacheHTTPD script (scripts/linux/configureApacheHTTPD.sh)"
+    chmod ugo+x staging/linux-x64/installer/PEM-HTTPD/configureApacheHTTPD.sh
 
-    cp scripts/linux/startupcfg.sh staging/linux-x64/installer/ApacheHTTPD/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/linux/startupcfg.sh)"
-    chmod ugo+x staging/linux-x64/installer/ApacheHTTPD/startupcfg.sh
+    cp scripts/linux/startupcfg.sh staging/linux-x64/installer/PEM-HTTPD/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/linux/startupcfg.sh)"
+    chmod ugo+x staging/linux-x64/installer/PEM-HTTPD/startupcfg.sh
 
     mkdir -p staging/linux-x64/scripts || _die "Failed to create a directory for the launch scripts"
     # Copy the launch scripts
@@ -238,6 +231,6 @@ _postprocess_ApacheHTTPD_linux_x64() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
 
     cd $WD
-    echo "END POST ApacheHTTPD Linux-x64"
+    echo "END POST PEM-HTTPD Linux-x64"
 }
 

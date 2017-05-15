@@ -5,12 +5,12 @@
 # Build preparation
 ################################################################################
 
-_prep_ApacheHTTPD_linux() {
+_prep_PEM-HTTPD_linux() {
     # Following echo statement for Jenkins Console Section output
-    echo "BEGIN PREP ApacheHTTPD Linux"
+    echo "BEGIN PREP PEM-HTTPD Linux"
 
     # Enter the source directory and cleanup if required
-    cd $WD/ApacheHTTPD/source
+    cd $WD/PEM-HTTPD/source
 
     if [ -e apache.linux ];
     then
@@ -18,7 +18,7 @@ _prep_ApacheHTTPD_linux() {
       rm -rf apache.linux  || _die "Couldn't remove the existing apache.linux source directory (source/apache.linux)"
     fi
 
-    echo "Creating apache source directory ($WD/ApacheHTTPD/source/apache.linux)"
+    echo "Creating apache source directory ($WD/PEM-HTTPD/source/apache.linux)"
     mkdir -p apache.linux || _die "Couldn't create the apache.linux directory"
     mkdir -p apache.linux/mod_wsgi || _die "Couldn't create the mod_wsgi directory"
     chmod ugo+w apache.linux || _die "Couldn't set the permissions on the source directory"
@@ -29,17 +29,17 @@ _prep_ApacheHTTPD_linux() {
     cp -pR mod_wsgi-$PG_VERSION_WSGI/* apache.linux/mod_wsgi || _die "Failed to copy the source code (source/mod_wsgi-$PG_VERSION_WSGI)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/ApacheHTTPD/staging/linux ];
+    if [ -e $WD/PEM-HTTPD/staging/linux ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/ApacheHTTPD/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/PEM-HTTPD/staging/linux || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/ApacheHTTPD/staging/linux)"
-    mkdir -p $WD/ApacheHTTPD/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/ApacheHTTPD/staging/linux || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/PEM-HTTPD/staging/linux)"
+    mkdir -p $WD/PEM-HTTPD/staging/linux || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/PEM-HTTPD/staging/linux || _die "Couldn't set the permissions on the staging directory"
 
-    echo "END PREP ApacheHTTPD Linux"
+    echo "END PREP PEM-HTTPD Linux"
 }
 
 
@@ -47,38 +47,32 @@ _prep_ApacheHTTPD_linux() {
 # PG Build
 ################################################################################
 
-_build_ApacheHTTPD_linux() {
-    echo "BEGIN BUILD ApacheHTTPD Linux"
-
-    # For PEM7, apachehttpd needs to be built with python3.5 (LP10)
-    if [ ! -z $PEM_PYTHON_LINUX ];
-    then
-        PG_PYTHON_LINUX=$PEM_PYTHON_LINUX
-    fi
+_build_PEM-HTTPD_linux() {
+    echo "BEGIN BUILD PEM-HTTPD Linux"
 
     # build apache
 
-    PG_STAGING=$PG_PATH_LINUX/ApacheHTTPD/staging/linux
+    PG_STAGING=$PG_PATH_LINUX/PEM-HTTPD/staging/linux
 
     # Configure the source tree
     echo "Configuring the apache source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApacheHTTPD/source/apache.linux/; LD_LIBRARY_PATH=/opt/local/Current/lib CFLAGS=\"-I/opt/local/Current/include\" LDFLAGS=\"-L/opt/local/Current/lib -ldl\" ./configure --enable-debug --prefix=$PG_STAGING/apache --with-pcre=/opt/local/Current --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache --with-ssl=/opt/local/Current --enable-mods-shared=all"  || _die "Failed to configure apache"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApacheHTTPD/source/apache.linux/modules/ssl; sed -i \"s^\\(\\t\\\$(SH_LINK).*$\\)^\\1 -Wl,-rpath,\\\${libexecdir}^\" modules.mk"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PEM-HTTPD/source/apache.linux/; LD_LIBRARY_PATH=/opt/local/Current/lib CFLAGS=\"-I/opt/local/Current/include\" LDFLAGS=\"-L/opt/local/Current/lib -ldl\" ./configure --enable-debug --prefix=$PG_STAGING/apache --with-pcre=/opt/local/Current --enable-so --enable-ssl --enable-rewrite --enable-proxy --enable-info --enable-cache --with-ssl=/opt/local/Current --enable-mods-shared=all"  || _die "Failed to configure apache"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PEM-HTTPD/source/apache.linux/modules/ssl; sed -i \"s^\\(\\t\\\$(SH_LINK).*$\\)^\\1 -Wl,-rpath,\\\${libexecdir}^\" modules.mk"
 
     echo "Building apache"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApacheHTTPD/source/apache.linux; make" || _die "Failed to build apache"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApacheHTTPD/source/apache.linux; make install" || _die "Failed to install apache"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PEM-HTTPD/source/apache.linux; make" || _die "Failed to build apache"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PEM-HTTPD/source/apache.linux; make install" || _die "Failed to install apache"
 
     echo "Configuring the mod_wsgi source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApacheHTTPD/source/apache.linux/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PG_PYTHON_LINUX/lib CFLAGS=\"-I/opt/local/Current/include -I$PG_PYTHON_LINUX/include\" LDFLAGS=\"-L/opt/local/Current/lib -L$PG_PYTHON_LINUX/lib\" ./configure --prefix=$PG_STAGING/apache --with-apxs=$PG_STAGING/apache/bin/apxs --with-python=$PG_PYTHON_LINUX/bin/python"  || _die "Failed to configure mod_wsgi"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PEM-HTTPD/source/apache.linux/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PEM_PYTHON_LINUX/lib CFLAGS=\"-I/opt/local/Current/include -I$PEM_PYTHON_LINUX/include\" LDFLAGS=\"-L/opt/local/Current/lib -L$PEM_PYTHON_LINUX/lib\" ./configure --prefix=$PG_STAGING/apache --with-apxs=$PG_STAGING/apache/bin/apxs --with-python=$PEM_PYTHON_LINUX/bin/python"  || _die "Failed to configure mod_wsgi"
 
     echo "Building mod_wsgi"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApacheHTTPD/source/apache.linux/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PG_PYTHON_LINUX/lib:$LD_LIBRARY_PATH make" || _die "Failed to build mod_wsgi"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApacheHTTPD/source/apache.linux/mod_wsgi; make install" || _die "Failed to install mod_wsgi"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PEM-HTTPD/source/apache.linux/mod_wsgi; LD_LIBRARY_PATH=/opt/local/Current/lib:$PEM_PYTHON_LINUX/lib:$LD_LIBRARY_PATH make" || _die "Failed to build mod_wsgi"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/PEM-HTTPD/source/apache.linux/mod_wsgi; make install" || _die "Failed to install mod_wsgi"
 
 
     # Configure the httpd.conf file
-    cd $WD/ApacheHTTPD/staging/linux/apache/conf
+    cd $WD/PEM-HTTPD/staging/linux/apache/conf
     _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "httpd.conf"
     _replace "Listen 80" "Listen 0.0.0.0:@@PORT@@" "httpd.conf"
     _replace "htdocs" "www" "httpd.conf"
@@ -93,7 +87,7 @@ _build_ApacheHTTPD_linux() {
     echo "SSLProtocol All -SSLv2 -SSLv3" >> extra/httpd-ssl.conf
 
     # Configure the apachectl script file
-    cd $WD/ApacheHTTPD/staging/linux/apache/bin
+    cd $WD/PEM-HTTPD/staging/linux/apache/bin
     _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
     _replace "\$HTTPD -t" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
     _replace "\$HTTPD \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
@@ -102,7 +96,7 @@ _build_ApacheHTTPD_linux() {
 
 
     # Configure the apachectl script file
-    cd $WD/ApacheHTTPD/staging/linux/apache/bin
+    cd $WD/PEM-HTTPD/staging/linux/apache/bin
     ssh $PG_SSH_LINUX "chmod ugo+rx \"$PG_STAGING/apache/bin/apachectl\""
 
     # Copy in the dependency libraries (apache)
@@ -127,7 +121,7 @@ _build_ApacheHTTPD_linux() {
     ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/lib/libldap*.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libldap*)"
 
     # Add LD_LIBRARY_PATH in envvars scripts
-    cat <<EOT >> $WD/ApacheHTTPD/staging/linux/apache/bin/envvars
+    cat <<EOT >> $WD/PEM-HTTPD/staging/linux/apache/bin/envvars
 export PYTHONHOME=@@LP_PYTHON_HOME@@
 export PYTHONPATH=\$PYTHONHOME
 LD_LIBRARY_PATH=@@INSTALL_DIR@@/apache/lib:\$PYTHONPATH/lib:\$LD_LIBRARY_PATH
@@ -143,19 +137,19 @@ EOT
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
 
     # Remove existing symbols directory in output directory
-    if [ -e $WD/output/symbols/linux/ApacheHTTPD ];
+    if [ -e $WD/output/symbols/linux/PEM-HTTPD ];
     then
         echo "Removing existing $WD/output/symbols/linux/replication directory"
-        rm -rf $WD/output/symbols/linux/ApacheHTTPD  || _die "Couldn't remove the existing $WD/output/symbols/linux/ApacheHTTPD directory."
+        rm -rf $WD/output/symbols/linux/PEM-HTTPD  || _die "Couldn't remove the existing $WD/output/symbols/linux/PEM-HTTPD directory."
     fi
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
-    mv $WD/ApacheHTTPD/staging/linux/symbols $WD/output/symbols/linux/ApacheHTTPD || _die "Failed to move $WD/ApacheHTTPD/staging/linux/symbols to $WD/output/symbols/linux/ApacheHTTPD directory"
+    mv $WD/PEM-HTTPD/staging/linux/symbols $WD/output/symbols/linux/PEM-HTTPD || _die "Failed to move $WD/PEM-HTTPD/staging/linux/symbols to $WD/output/symbols/linux/PEM-HTTPD directory"
 
     cd $WD
 
-    echo "END BUILD ApacheHTTPD Linux"
+    echo "END BUILD PEM-HTTPD Linux"
 }
 
 
@@ -164,15 +158,15 @@ EOT
 # PG Build
 ################################################################################
 
-_postprocess_ApacheHTTPD_linux() {
-    echo "BEGIN POST ApacheHTTPD Linux"
+_postprocess_PEM-HTTPD_linux() {
+    echo "BEGIN POST PEM-HTTPD Linux"
 
-    PG_STAGING=$PG_PATH_LINUX/ApacheHTTPD/staging/linux
+    PG_STAGING=$PG_PATH_LINUX/PEM-HTTPD/staging/linux
 
     #Configure the files in apache
-    filelist=`grep -rslI "$PG_STAGING" "$WD/ApacheHTTPD/staging/linux" | grep -v Binary`
+    filelist=`grep -rslI "$PG_STAGING" "$WD/PEM-HTTPD/staging/linux" | grep -v Binary`
 
-    cd $WD/ApacheHTTPD/staging/linux
+    cd $WD/PEM-HTTPD/staging/linux
 
     for file in $filelist
     do
@@ -180,7 +174,7 @@ _postprocess_ApacheHTTPD_linux() {
     chmod ugo+x "$file"
     done
 
-    cd $WD/ApacheHTTPD
+    cd $WD/PEM-HTTPD
 
     pushd staging/linux
     generate_3rd_party_license "apache_httpd"
@@ -192,21 +186,21 @@ _postprocess_ApacheHTTPD_linux() {
     cp -pR staging/linux/apache/htdocs staging/linux/apache/www || _die "Failed to change Server Root"
     chmod 755 staging/linux/apache/www
 
-    mkdir -p staging/linux/installer/ApacheHTTPD || _die "Failed to create a directory for the install scripts"
+    mkdir -p staging/linux/installer/PEM-HTTPD || _die "Failed to create a directory for the install scripts"
     mkdir -p staging/linux/apache/www/images || _die "Failed to create a directory for the images"
     chmod 755 staging/linux/apache/www/images
 
-    cp scripts/linux/createshortcuts.sh staging/linux/installer/ApacheHTTPD/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
-    chmod ugo+x staging/linux/installer/ApacheHTTPD/createshortcuts.sh
+    cp scripts/linux/createshortcuts.sh staging/linux/installer/PEM-HTTPD/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
+    chmod ugo+x staging/linux/installer/PEM-HTTPD/createshortcuts.sh
 
-    cp scripts/linux/removeshortcuts.sh staging/linux/installer/ApacheHTTPD/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
-    chmod ugo+x staging/linux/installer/ApacheHTTPD/removeshortcuts.sh
+    cp scripts/linux/removeshortcuts.sh staging/linux/installer/PEM-HTTPD/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
+    chmod ugo+x staging/linux/installer/PEM-HTTPD/removeshortcuts.sh
 
-    cp scripts/linux/configureApacheHTTPD.sh staging/linux/installer/ApacheHTTPD/configureApacheHTTPD.sh || _die "Failed to copy the configure ApacheHTTPD script (scripts/linux/configureApacheHTTPD.sh)"
-    chmod ugo+x staging/linux/installer/ApacheHTTPD/configureApacheHTTPD.sh
+    cp scripts/linux/configurePEM-HTTPD.sh staging/linux/installer/PEM-HTTPD/configurePEM-HTTPD.sh || _die "Failed to copy the configure PEM-HTTPD script (scripts/linux/configurePEM-HTTPD.sh)"
+    chmod ugo+x staging/linux/installer/PEM-HTTPD/configurePEM-HTTPD.sh
 
-    cp scripts/linux/startupcfg.sh staging/linux/installer/ApacheHTTPD/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/linux/startupcfg.sh)"
-    chmod ugo+x staging/linux/installer/ApacheHTTPD/startupcfg.sh
+    cp scripts/linux/startupcfg.sh staging/linux/installer/PEM-HTTPD/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/linux/startupcfg.sh)"
+    chmod ugo+x staging/linux/installer/PEM-HTTPD/startupcfg.sh
 
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
     # Copy the launch scripts
@@ -245,7 +239,7 @@ _postprocess_ApacheHTTPD_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
     
     cd $WD
-    echo "END POST ApacheHTTPD Linux"
+    echo "END POST PEM-HTTPD Linux"
 }
 
 

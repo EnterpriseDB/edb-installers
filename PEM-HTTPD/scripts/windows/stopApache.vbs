@@ -8,6 +8,6 @@ strInstallDir= WScript.Arguments.Item(0)
 
 Set objShell = WScript.CreateObject("Shell.Application")
 
-strInstallFile  = strInstallDir & "\installer\ApacheHTTPD\start-apache.bat"
-objShell.ShellExecute strInstallFile, "", strInstallDir & "\installer\ApacheHTTPD", "open", 0
+strInstallFile  = strInstallDir & "\installer\PEM-HTTPD\stopApacheService.bat"
+objShell.ShellExecute strInstallFile, "", strInstallDir & "\installer\PEM-HTTPD", "open", 0
 WScript.Quit 0
