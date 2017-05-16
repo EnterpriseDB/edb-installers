@@ -196,8 +196,8 @@ _postprocess_PEM-HTTPD_linux() {
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/PEM-HTTPD/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux/installer/PEM-HTTPD/removeshortcuts.sh
 
-    cp scripts/linux/configurePEM-HTTPD.sh staging/linux/installer/PEM-HTTPD/configurePEM-HTTPD.sh || _die "Failed to copy the configure PEM-HTTPD script (scripts/linux/configurePEM-HTTPD.sh)"
-    chmod ugo+x staging/linux/installer/PEM-HTTPD/configurePEM-HTTPD.sh
+    cp scripts/linux/configureApacheHTTPD.sh staging/linux/installer/PEM-HTTPD/configureApacheHTTPD.sh || _die "Failed to copy the configureApacheHTTPD script (scripts/linux/configureApacheHTTPD.sh)"
+    chmod ugo+x staging/linux/installer/PEM-HTTPD/configureApacheHTTPD.sh
 
     cp scripts/linux/startupcfg.sh staging/linux/installer/PEM-HTTPD/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/linux/startupcfg.sh)"
     chmod ugo+x staging/linux/installer/PEM-HTTPD/startupcfg.sh
