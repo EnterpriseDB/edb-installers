@@ -102,3 +102,8 @@ servicename.already.exists.osx=A service (com.edb.launchd.${servicename}.plist) 
 pg.service.description=Provides relational database storage.
 cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
 acl.check.description=Check and give the read permissions on the complete data directory path for the service account.
+
+stackbuilder.desc=Stack Builder may be used to download and install additional tools, drivers and applications to complement your PostgreSQL installation
+dbserver.desc=PostgreSQL database server
+pgadmin.desc=pgAdmin 4 is a rewrite of the popular pgAdmin3 management tool for the PostgreSQL database
+commandlinetools.desc=Command line tools

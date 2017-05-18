@@ -522,6 +522,70 @@ EOT
     find . -name "tests" -type d | xargs rm -rf
     cd $WD/server/staging/windows/pgAdmin\ 4/venv/Lib
     find . \( -name test -o -name tests \) -type d | xargs rm -rf
+
+    #Restructuring staging
+    echo "Restructuring staging as per components"
+    mkdir -p $PGSERVER_STAGING_WINDOWS || _die "Couldn't create the staging directory $PGSERVER_STAGING_WINDOWS"
+    mkdir -p $PGADMIN_STAGING_WINDOWS || _die "Couldn't create the staging directory $PGADMIN_STAGING_WINDOWS"
+    mkdir -p $SB_STAGING_WINDOWS || _die "Couldn't create the staging directory $SB_STAGING_WINDOWS"
+    mkdir -p $CLT_STAGING_WINDOWS || _die "Couldn't create the staging directory $CLT_STAGING_WINDOWS"
+    chmod ugo+w $PGSERVER_STAGING_WINDOWS $PGADMIN_STAGING_WINDOWS $SB_STAGING_WINDOWS $CLT_STAGING_WINDOWS || _die "Couldn't set the permissions on the staging directory"
+
+    echo "Restructuring commandlinetools"
+    mkdir -p $CLT_STAGING_WINDOWS/bin || _die "Couldn't create the staging directory $CLT_STAGING_WINDOWS/bin"
+    mv $WD/server/staging/windows/lib   $CLT_STAGING_WINDOWS || _die "Failed to move lib"
+    mv $WD/server/staging/windows/bin/psql.exe $CLT_STAGING_WINDOWS/bin || _die "Failed to move psql.exe"
+    mv $WD/server/staging/windows/bin/libpq*   $CLT_STAGING_WINDOWS/bin || _die "Failed to move bin/libpq"
+    mv $WD/server/staging/windows/bin/pg_basebackup.exe  $CLT_STAGING_WINDOWS/bin || _die "Failed to move pg_basebackup"
+    mv $WD/server/staging/windows/bin/pg_dump* $CLT_STAGING_WINDOWS/bin || _die "Failed to move pg_dump and pg_dumpall"
+    mv $WD/server/staging/windows/bin/pg_restore.exe $CLT_STAGING_WINDOWS/bin || _die "Failed to move pg_restore.exe"
+    mv $WD/server/staging/windows/bin/createdb.exe   $CLT_STAGING_WINDOWS/bin || _die "Failed to move createdb.exe"
+    mv $WD/server/staging/windows/bin/clusterdb.exe  $CLT_STAGING_WINDOWS/bin || _die "Failed to move clusterdb.exe"
+    mv $WD/server/staging/windows/bin/createuser.exe $CLT_STAGING_WINDOWS/bin || _die "Failed to move createuser"
+    mv $WD/server/staging/windows/bin/dropdb.exe     $CLT_STAGING_WINDOWS/bin || _die "Failed to move dropdb.exe"
+    mv $WD/server/staging/windows/bin/dropuser.exe  $CLT_STAGING_WINDOWS/bin || _die "Failed to move dropuser.exe"
+    mv $WD/server/staging/windows/bin/pg_isready.exe $CLT_STAGING_WINDOWS/bin || _die "Failed to move pg_isready.exe"
+    mv $WD/server/staging/windows/bin/vacuumdb.exe     $CLT_STAGING_WINDOWS/bin || _die "Failed to move vacuumdb.exe"
+    mv $WD/server/staging/windows/bin/reindexdb.exe     $CLT_STAGING_WINDOWS/bin || _die "Failed to move reindexdb.exe"
+    mv $WD/server/staging/windows/bin/pgbench.exe     $CLT_STAGING_WINDOWS/bin || _die "Failed to move pgbench.exe"
+    mv $WD/server/staging/windows/bin/vacuumlo.exe     $CLT_STAGING_WINDOWS/bin || _die "Failed to move vacuumlo.exe"
+    mkdir -p $CLT_STAGING_WINDOWS/symbols || _die "Couldn't create the staging directory $CLT_STAGING_WINDOWS/symbols"
+    mv $WD/server/staging/windows/symbols/libpq*   $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/libpq"
+    mv $WD/server/staging/windows/symbols/pg_basebackup*   $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/pg_basebackup.pdb"
+    mv $WD/server/staging/windows/symbols/pg_dump*   $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/pg_dumo and pg_dumpall"
+    mv $WD/server/staging/windows/symbols/pg_restore*   $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/pg_restore"
+    mv $WD/server/staging/windows/symbols/createdb*   $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/createdb"
+    mv $WD/server/staging/windows/symbols/clusterdb*   $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/clusterdb"
+    mv $WD/server/staging/windows/symbols/createuser*   $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/createuser"
+    mv $WD/server/staging/windows/symbols/dropdb*   $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/dropdb"
+    mv $WD/server/staging/windows/symbols/dropuser*   $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/dropuser"
+    mv $WD/server/staging/windows/symbols/pg_isready* $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/pg_isready"
+    mv $WD/server/staging/windows/symbols/vacuumdb* $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/vacuumdb"
+    mv $WD/server/staging/windows/symbols/reindexdb* $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/reindexdb"
+    mv $WD/server/staging/windows/symbols/pgbench* $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/pgbench"
+    mv $WD/server/staging/windows/symbols/vacuumlo* $CLT_STAGING_WINDOWS/symbols || _die "Failed to move symbols/vacummlo"
+    mkdir -p $CLT_STAGING_WINDOWS/scripts/images || _die "Couldn't create the staging directory $CLT_STAGING_WINDOWS/scripts/images"
+    cp $WD/server/resources/pg-psql.ico  $CLT_STAGING_WINDOWS/scripts/images/ || _die "Failed to move scripts/images/pg-psql.ico"
+    cp $WD/server/scripts/windows/runpsql.bat  $CLT_STAGING_WINDOWS/scripts/ || _die "Failed to move runpsql.bat"
+
+    echo "Restructuring pgAdmin4"
+    mv $WD/server/staging/windows/pgAdmin\ 4/  $PGADMIN_STAGING_WINDOWS
+
+    echo "Restructuring Stackbuilder"
+    mkdir -p $SB_STAGING_WINDOWS/bin || _die "Couldn't create the staging directory $CLT_STAGING_WINDOWS/scripts/images"
+    mv $WD/server/staging/windows/bin/stackbuilder.exe $SB_STAGING_WINDOWS/bin || _die "Failed to move stackbuilder.exe"
+    mv $WD/server/staging/windows/StackBuilder $SB_STAGING_WINDOWS || _die "Failed to move stackbuilder.exe"
+
+    echo "Restructuring Server"
+    mv $WD/server/staging/windows/doc     $PGSERVER_STAGING_WINDOWS || _die "Failed to move documentation"
+    mv $WD/server/staging/windows/include $PGSERVER_STAGING_WINDOWS || _die "Failed to move include"
+    mv $WD/server/staging/windows/share   $PGSERVER_STAGING_WINDOWS || _die "Failed to move share"
+    mv $WD/server/staging/windows/bin   $PGSERVER_STAGING_WINDOWS || _die "Failed to move bin"
+    mv $WD/server/staging/windows/symbols   $PGSERVER_STAGING_WINDOWS || _die "Failed to move symbols"
+    cp -r $WD/server/staging/windows/installer   $PGSERVER_STAGING_WINDOWS || _die "Failed to move installer"
+    mv $WD/server/staging/windows/installer   $CLT_STAGING_WINDOWS || _die "Failed to move installer"
+    
+    touch $PGADMIN_STAGING_WINDOWS/pgAdmin\ 4/venv/Lib/site-packages/backports/__init__.py || _die "Failed to tocuh the __init__.py"  
      
     cd $WD
     echo "END BUILD Server Windows"
@@ -541,15 +605,15 @@ _postprocess_server_windows() {
     popd
 
     # Welcome doc
-    cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/windows/doc/" || _die "Failed to install the welcome document"
-    cp "$WD/server/resources/edblogo.png" "$WD/server/staging/windows/doc/" || _die "Failed to install the welcome logo"
+    cp "$WD/server/resources/installation-notes.html" "$PGSERVER_STAGING_WINDOWS/doc/" || _die "Failed to install the welcome document"
+    cp "$WD/server/resources/edblogo.png" "$PGSERVER_STAGING_WINDOWS/doc/" || _die "Failed to install the welcome logo"
 
     cp "$WD/scripts/runAsAdmin.vbs" "$WD/server/staging/windows" || _die "Failed to copy the runAsRoot script"
     _replace @@SERVER_SUFFIX@@ "x86" $WD/server/staging/windows/runAsAdmin.vbs || _die "Failed to replace the SERVER_SUFFIX setting in the runAsAdmin.vbs"
     #Creating a archive of the binaries
-    mkdir -p $WD/server/staging/windows/pgsql || _die "Failed to create the directory for binaries "
-    cd $WD/server/staging/windows
-    cp -R bin doc include lib pgAdmin* share StackBuilder symbols pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+    mkdir -p $PGSERVER_STAGING_WINDOWS/pgsql || _die "Failed to create the directory for binaries "
+    cd $PGSERVER_STAGING_WINDOWS
+    cp -pR $PGSERVER_STAGING_WINDOWS/bin $PGSERVER_STAGING_WINDOWS/doc $PGSERVER_STAGING_WINDOWS/include $CLT_STAGING_WINDOWS/lib $PGADMIN_STAGING_WINDOWS/pgAdmin* $PGSERVER_STAGING_WINDOWS/share $SB_STAGING_WINDOWS/ pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
 
     zip -rq postgresql-$PG_PACKAGE_VERSION-windows-binaries.zip pgsql || _die "Failed to archive the postgresql binaries"
     mv postgresql-$PG_PACKAGE_VERSION-windows-binaries.zip $WD/output/ || _die "Failed to move the archive to output folder"
@@ -559,21 +623,21 @@ _postprocess_server_windows() {
     cd $WD/server
 
     # Setup the installer scripts. 
-    mkdir -p staging/windows/installer/server || _die "Failed to create a directory for the install scripts"
-    cp scripts/windows/prerun_checks.vbs staging/windows/installer/prerun_checks.vbs || _die "Failed to copy the prerun_checks.vbs script ($WD/scripts/windows/prerun_checks.vbs)"
-    cp scripts/windows/initcluster.vbs staging/windows/installer/server/initcluster.vbs || _die "Failed to copy the loadmodules script (scripts/windows/initcluster.vbs)"
-    cp scripts/windows/startupcfg.vbs staging/windows/installer/server/startupcfg.vbs || _die "Failed to copy the startupcfg script (scripts/windows/startupcfg.vbs)"
-    cp scripts/windows/createshortcuts.vbs staging/windows/installer/server/createshortcuts.vbs || _die "Failed to copy the createshortcuts script (scripts/windows/createshortcuts.vbs)"
-    cp scripts/windows/startserver.vbs staging/windows/installer/server/startserver.vbs || _die "Failed to copy the startserver script (scripts/windows/startserver.vbs)"
-    cp scripts/windows/loadmodules.vbs staging/windows/installer/server/loadmodules.vbs || _die "Failed to copy the loadmodules script (scripts/windows/loadmodules.vbs)"
+    mkdir -p $PGSERVER_STAGING_WINDOWS/installer/server || _die "Failed to create a directory for the install scripts"
+    cp scripts/windows/prerun_checks.vbs $PGSERVER_STAGING_WINDOWS/installer/prerun_checks.vbs || _die "Failed to copy the prerun_checks.vbs script ($WD/scripts/windows/prerun_checks.vbs)"
+    cp scripts/windows/initcluster.vbs $PGSERVER_STAGING_WINDOWS/installer/server/initcluster.vbs || _die "Failed to copy the loadmodules script (scripts/windows/initcluster.vbs)"
+    cp scripts/windows/startupcfg.vbs $PGSERVER_STAGING_WINDOWS/installer/server/startupcfg.vbs || _die "Failed to copy the startupcfg script (scripts/windows/startupcfg.vbs)"
+    cp scripts/windows/createshortcuts.vbs $PGSERVER_STAGING_WINDOWS/installer/server/createshortcuts.vbs || _die "Failed to copy the createshortcuts script (scripts/windows/createshortcuts.vbs)"
+    cp scripts/windows/startserver.vbs $PGSERVER_STAGING_WINDOWS/installer/server/startserver.vbs || _die "Failed to copy the startserver script (scripts/windows/startserver.vbs)"
+    cp scripts/windows/loadmodules.vbs $PGSERVER_STAGING_WINDOWS/installer/server/loadmodules.vbs || _die "Failed to copy the loadmodules script (scripts/windows/loadmodules.vbs)"
     
     # Copy in the menu pick images and XDG items
-    mkdir -p staging/windows/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/*.ico staging/windows/scripts/images || _die "Failed to copy the menu pick images (resources/*.ico)"
+    mkdir -p $PGSERVER_STAGING_WINDOWS/scripts/images || _die "Failed to create a directory for the menu pick images"
+    cp resources/*.ico $PGSERVER_STAGING_WINDOWS/scripts/images || _die "Failed to copy the menu pick images (resources/*.ico)"
     
     # Copy the launch scripts
-    cp scripts/windows/serverctl.vbs staging/windows/scripts/serverctl.vbs || _die "Failed to copy the serverctl script (scripts/windows/serverctl.vbs)"
-    cp scripts/windows/runpsql.bat staging/windows/scripts/runpsql.bat || _die "Failed to copy the runpsql script (scripts/windows/runpsql.bat)"
+    cp scripts/windows/serverctl.vbs $PGSERVER_STAGING_WINDOWS/scripts/serverctl.vbs || _die "Failed to copy the serverctl script (scripts/windows/serverctl.vbs)"
+    cp scripts/windows/runpsql.bat $PGSERVER_STAGING_WINDOWS/scripts/runpsql.bat || _die "Failed to copy the runpsql script (scripts/windows/runpsql.bat)"
     
     PG_DATETIME_SETTING_WINDOWS="64-bit integers"
 

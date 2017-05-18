@@ -72,6 +72,14 @@ PGADMIN_PYTHON_LINUX=/usr/local
 PG_TCL_LINUX=/opt/local/edb/languagepack-10/Tcl-8.6
 PG_XULRUNNER_SDK_LINUX=/usr/lib/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX=/usr/lib/xulrunner-1.9.2
+PGSERVER_STAGING=$PWD/server/staging/linux/server
+REMOTE_PGSERVER_STAGING=$PG_PATH_LINUX/server/staging/linux/server
+PGADMIN_STAGING=$PWD/server/staging/linux/pgadmin4
+REMOTE_PGADMIN_STAGING=$PG_PATH_LINUX/server/staging/linux/pgadmin4
+SB_STAGING=$PWD/server/staging/linux/stackbuilder
+REMOTE_SB_STAGING=$PG_PATH_LINUX/server/staging/linux/stackbuilder
+CLT_STAGING=$PWD/server/staging/linux/commandlinetools
+REMOTE_CLT_STAGING=$PG_PATH_LINUX/server/staging/linux/commandlinetools
 
 PG_SSH_LINUX_X64=buildfarm@bf10-linux-x64.ox.uk.enterprisedb.com
 PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller.auto
@@ -90,6 +98,14 @@ PGADMIN_PYTHON_LINUX_X64=/usr/local
 PG_TCL_LINUX_X64=/opt/local/edb/languagepack-10/Tcl-8.6
 PG_XULRUNNER_SDK_LINUX_X64=/usr/lib64/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
+PGSERVER_STAGING_X64=$PWD/server/staging/linux-x64/server
+REMOTE_PGSERVER_STAGING_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64/server
+PGADMIN_STAGING_X64=$PWD/server/staging/linux-x64/pgadmin4
+REMOTE_PGADMIN_STAGING_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64/pgadmin4
+SB_STAGING_X64=$PWD/server/staging/linux-x64/stackbuilder
+REMOTE_SB_STAGING_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64/stackbuilder
+CLT_STAGING_X64=$PWD/server/staging/linux-x64/commandlinetools
+REMOTE_CLT_STAGING_X64=$PG_PATH_LINUX_X64/server/staging/linux-x64/commandlinetools
 
 PG_SSH_WINDOWS=buildfarm@bf10-windows.ox.uk.enterprisedb.com
 PG_SSH_SIGN_WINDOWS=buildfarm@bf5-windows.ox.uk.enterprisedb.com
@@ -127,6 +143,10 @@ PG_MINGW_QTPATH_WINDOWS="D:\\\\pgBuild32\\\\Qt5.8.0\\\\5.8\\\\mingw53_32"
 PG_MINGW_QMAKE_WINDOWS="$PG_MINGW_QTPATH_WINDOWS\\\\bin\\\\qmake.exe"
 PG_MINGW_MAKE_WINDOWS="D:\\\\pgBuild32\\\\Qt5.8.0\\\\Tools\\\\mingw530_32\\\\bin\\\\mingw32-make"
 PG_MINGW_QTTOOLS_WINDOWS="D:\\\\pgBuild32\\\\Qt5.8.0\\\\Tools\\\\mingw530_32"
+PGSERVER_STAGING_WINDOWS=$PWD/server/staging/windows/server
+PGADMIN_STAGING_WINDOWS=$PWD/server/staging/windows/pgadmin4
+SB_STAGING_WINDOWS=$PWD/server/staging/windows/stackbuilder
+CLT_STAGING_WINDOWS=$PWD/server/staging/windows/commandlinetools
 
 
 PG_SSH_WINDOWS_X64=buildfarm@bf10-windows-x64.ox.uk.enterprisedb.com
@@ -152,6 +172,10 @@ PG_MINGW_QTPATH_WINDOWS_X64="D:\\\\pgBuild64\\\\Qt5.8.0\\\\5.8\\\\mingw53_32"
 PG_MINGW_QMAKE_WINDOWS_X64="$PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\qmake.exe"
 PG_MINGW_MAKE_WINDOWS_X64="D:\\\\pgBuild64\\\\Qt5.8.0\\\\Tools\\\\mingw530_32\\\\bin\\\\mingw32-make"
 PG_MINGW_QTTOOLS_WINDOWS_X64="D:\\\\pgBuild64\\\\Qt5.8.0\\\\Tools\\\\mingw530_32"
+PGSERVER_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/server
+PGADMIN_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/pgadmin4
+SB_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/stackbuilder
+CLT_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/commandlinetools
 
 
 PG_SSH_SOLARIS_X64=buildfarm@bf3-solaris-x64.pn.in.enterprisedb.com

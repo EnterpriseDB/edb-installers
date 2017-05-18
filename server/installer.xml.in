@@ -659,6 +659,7 @@ EOF
           </actionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
+	    <isTrue  value="${component(server).selected}"/> 
           </ruleList>
         </actionGroup>
 
@@ -679,6 +680,7 @@ EOF
                             <condition>readable</condition>
                             <path>${PostgreSqlIni}</path>
                         </fileTest>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </iniFileGet>
                 <setInstallerVariable>
@@ -879,6 +881,7 @@ EOF
                     <value>windows</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(default).selected}"/>
             </ruleList>
         </actionGroup>
 
@@ -959,6 +962,7 @@ EOF
                     <value>windows</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(default).selected}"/>
             </ruleList>
         </actionGroup>
 
@@ -969,6 +973,7 @@ EOF
             <value>0</value>
             <ruleList>
                 <compareText logic="equals" text="${iDisableStackBuilder}"  value="" />
+		<isTrue  value="${component(stackbuilder).selected}"/>
             </ruleList>
         </setInstallerVariable>
 
@@ -1165,6 +1170,7 @@ EOF
                             <value>windows</value>
                         </compareText>
                         <isFalse value="${extract_mode}"/>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </throwError>
 
@@ -1196,6 +1202,7 @@ EOF
                             <value>windows</value>
                         </compareText>
                         <isFalse value="${extract_mode}"/>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </throwError>
 
@@ -1265,6 +1272,7 @@ EOF
                           <pattern>^([a-zA-Z]{1})([0-9a-zA-Z_\.\-]{4,48})([0-9a-zA-Z]{1})$</pattern>
                       </regExMatch>
                       <compareText text="${platform_name}" logic="does_not_contain" value="solaris" />
+			<isTrue  value="${component(server).selected}"/>
                   </ruleList>
                 </throwError>
 
@@ -1278,6 +1286,7 @@ EOF
                           <pattern>^([a-zA-Z]{1})([0-9a-zA-Z_\-]{4,48})([0-9a-zA-Z]{1})$</pattern>
                       </regExMatch>
                       <compareText text="${platform_name}" logic="contains" value="solaris" />
+			<isTrue  value="${component(server).selected}"/>
                   </ruleList>
                 </throwError>
 
@@ -1302,6 +1311,7 @@ EOF
                     </actionList>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </actionGroup>
 
@@ -1313,6 +1323,7 @@ EOF
                         <compareText logic="contains" text="${platform_name}" value="linux"/>
                         <fileExists path="/etc/init.d/${servicename}"/>
                         <isTrue value="${is_sysvinit}"/>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </throwError>
                 <throwError>
@@ -1322,6 +1333,7 @@ EOF
                         <compareText logic="contains" text="${platform_name}" value="linux"/>
                         <fileExists path="/usr/lib/systemd/system/${servicename}.service"/>
                         <isTrue value="${is_init_systemd}"/>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </throwError>
 
@@ -1333,6 +1345,7 @@ EOF
                     <ruleList>
                         <compareText logic="contains" text="${platform_name}" value="osx"/>
                         <fileExists path="/Library/LaunchDaemons/com.edb.launchd.${servicename}.plist"/>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </throwError>
 
@@ -1344,6 +1357,7 @@ EOF
                     <abortOnError>0</abortOnError>
                     <ruleList>
                         <compareText logic="contains" text="${platform_name}" value="solaris"/>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>   
                 <throwError>
@@ -1352,6 +1366,7 @@ EOF
                     <ruleList>
                         <compareText logic="contains" text="${platform_name}" value="solaris"/>
                         <stringTest text="${program_stderr}" type="empty"/>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </throwError>
 
@@ -1447,8 +1462,8 @@ EOF
 	<unpackFile>
 	    <component>default</component>
 	    <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
-	    <folder>programfileswindows</folder>
-	    <origin>installer/prerun_checks.vbs</origin>
+	    <folder>defaultwindows</folder>
+	    <origin>prerun_checks.vbs</origin>
 	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
 	     <ruleList>
                 <compareText>
@@ -1462,8 +1477,8 @@ EOF
 	<unpackFile>
 	    <component>default</component>
 	    <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
-	    <folder>programfileslinux</folder>
-	    <origin>installer/server/prerun_checks.sh</origin>
+	    <folder>defaultlinux</folder>
+	    <origin>prerun_checks.sh</origin>
 	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
 	     <ruleList>
                 <compareText>
@@ -1477,8 +1492,8 @@ EOF
 	<unpackFile>
 	    <component>default</component>
 	    <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
-	    <folder>programfileslinux-x64</folder>
-	    <origin>installer/server/prerun_checks.sh</origin>
+	    <folder>defaultlinux-x64</folder>
+	    <origin>prerun_checks.sh</origin>
 	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
 	     <ruleList>
                 <compareText>
@@ -1492,8 +1507,8 @@ EOF
 	<unpackFile>
 	    <component>default</component>
 	    <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
-	    <folder>programfilesmacosx</folder>
-	    <origin>installer/server/prerun_checks.sh</origin>
+	    <folder>defaultmacosx</folder>
+	    <origin>prerun_checks.sh</origin>
 	    <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
 	     <ruleList>
                 <compareText>
@@ -1508,7 +1523,7 @@ EOF
         <component>default</component>
         <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
         <folder>programfilessolaris-x64</folder>
-        <origin>installer/server/prerun_checks.sh</origin>
+        <origin>server/installer/prerun_checks.sh</origin>
         <ruleList>
             <compareText>
                 <logic>equals</logic>
@@ -1522,7 +1537,7 @@ EOF
         <component>default</component>
         <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
         <folder>programfilessolaris-sparc</folder>
-        <origin>installer/server/prerun_checks.sh</origin>
+        <origin>server/installer/prerun_checks.sh</origin>
         <ruleList>
             <compareText>
                 <logic>equals</logic>
@@ -1573,12 +1588,13 @@ EOF
 	    </actionList>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(default).selected}"/>
             </ruleList>
         </actionGroup>
 
         <!-- Getlocales script -->
         <unpackFile>
-            <component>default</component>
+            <component>server</component>
             <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
             <folder>programfilesmacosx</folder>
             <origin>installer/server/getlocales</origin>
@@ -1592,7 +1608,7 @@ EOF
             </ruleList>
         </unpackFile>
        <unpackFile>
-            <component>default</component>
+            <component>server</component>
             <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
             <folder>programfileslinux</folder>
             <origin>installer/server/getlocales</origin>
@@ -1606,7 +1622,7 @@ EOF
             </ruleList>
         </unpackFile>
         <unpackFile>
-            <component>default</component>
+            <component>server</component>
             <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
             <folder>programfileslinux-x64</folder>
             <origin>installer/server/getlocales</origin>
@@ -1620,7 +1636,7 @@ EOF
             </ruleList>
        </unpackFile>
        <unpackFile>
-            <component>default</component>
+            <component>server</component>
             <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
             <folder>programfileslinux-ppc64</folder>
             <origin>installer/server/getlocales</origin>
@@ -1634,7 +1650,7 @@ EOF
             </ruleList>
         </unpackFile>
        <unpackFile>
-            <component>default</component>
+            <component>server</component>
             <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales.exe</destination>
             <folder>programfileswindows</folder>
             <origin>installer/server/getlocales.exe</origin>
@@ -1648,7 +1664,7 @@ EOF
             </ruleList>
         </unpackFile>
         <unpackFile>
-            <component>default</component>
+            <component>server</component>
             <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
             <folder>programfilessolaris-x64</folder>
             <origin>installer/server/getlocales</origin>
@@ -1662,7 +1678,7 @@ EOF
             </ruleList>
        </unpackFile>
        <unpackFile>
-            <component>default</component>
+            <component>server</component>
             <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
             <folder>programfilessolaris-sparc</folder>
             <origin>installer/server/getlocales</origin>
@@ -1681,17 +1697,17 @@ EOF
         <actionGroup>
             <actionList>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/bin/pg_controldata</destination>
                     <folder>programfilesmacosx</folder>
                     <origin>bin/pg_controldata</origin>
                 </unpackFile>
-                <unpackFile>
-                    <component>default</component>
+                <!--<unpackFile>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/lib/libxml2.2.dylib</destination>
                     <folder>programfilesmacosx</folder>
                     <origin>lib/libxml2.2.dylib</origin>
-                </unpackFile>
+                </unpackFile> -->
             </actionList>
             <ruleList>
                 <compareText>
@@ -1700,29 +1716,24 @@ EOF
                     <value>osx</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </actionGroup>
 
         <actionGroup>
             <actionList>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
                     <folder>programfileslinux</folder>
                     <origin>bin/pg_controldata</origin>
                 </unpackFile>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
                     <folder>programfileslinux</folder>
                     <origin>installer/server/runpgcontroldata.sh</origin>
                 </unpackFile>
-                <unpackDirectory>
-                    <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/</destination>
-                    <folder>programfileslinux</folder>
-                    <origin>lib</origin>
-                </unpackDirectory>
             </actionList>
             <ruleList>
                 <compareText>
@@ -1731,29 +1742,24 @@ EOF
                     <value>linux</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </actionGroup>
 
         <actionGroup>
             <actionList>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
                     <folder>programfileslinux-x64</folder>
                     <origin>bin/pg_controldata</origin>
                 </unpackFile>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
                     <folder>programfileslinux-x64</folder>
                     <origin>installer/server/runpgcontroldata.sh</origin>
                 </unpackFile>
-                <unpackDirectory>
-                    <component>default</component>
-                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/</destination>
-                    <folder>programfileslinux-x64</folder>
-                    <origin>lib</origin>
-                </unpackDirectory>
             </actionList>
             <ruleList>
                 <compareText>
@@ -1762,25 +1768,26 @@ EOF
                     <value>linux-x64</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </actionGroup>
 
         <actionGroup>
             <actionList>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
                     <folder>programfileslinux-ppc64</folder>
                     <origin>bin/pg_controldata</origin>
                 </unpackFile>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
                     <folder>programfileslinux-ppc64</folder>
                     <origin>installer/server/runpgcontroldata.sh</origin>
                 </unpackFile>
                 <unpackDirectory>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/</destination>
                     <folder>programfileslinux-ppc64</folder>
                     <origin>lib</origin>
@@ -1793,25 +1800,26 @@ EOF
                     <value>linux-ppc</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </actionGroup>
 
         <actionGroup>
             <actionList>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
                     <folder>programfilessolaris-x64</folder>
                     <origin>bin/pg_controldata</origin>
                 </unpackFile>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
                     <folder>programfilessolaris-x64</folder>
                     <origin>installer/server/runpgcontroldata.sh</origin>
                 </unpackFile>
                 <unpackDirectory>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/</destination>
                     <folder>programfilessolaris-x64</folder>
                     <origin>lib</origin>
@@ -1824,25 +1832,26 @@ EOF
                     <value>solaris-intel</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </actionGroup>
 
         <actionGroup>
             <actionList>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
                     <folder>programfilessolaris-sparc</folder>
                     <origin>bin/pg_controldata</origin>
                 </unpackFile>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
                     <folder>programfilessolaris-sparc</folder>
                     <origin>installer/server/runpgcontroldata.sh</origin>
                 </unpackFile>
                 <unpackDirectory>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}/postgresql_installer_${random_number}/</destination>
                     <folder>programfilessolaris-sparc</folder>
                     <origin>lib</origin>
@@ -1855,6 +1864,7 @@ EOF
                     <value>solaris-sparc</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </actionGroup>
 
@@ -1862,26 +1872,26 @@ EOF
         <actionGroup>
             <actionList>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}\postgresql_installer_${random_number}\pg_controldata.exe</destination>
                     <folder>programfileswindows</folder>
                     <origin>bin/pg_controldata.exe</origin>
                 </unpackFile>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}\postgresql_installer_${random_number}\libintl-8.dll</destination>
                     <folder>programfileswindows</folder>
                     <origin>bin/libintl-8.dll</origin>
                 </unpackFile>
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}\postgresql_installer_${random_number}\libiconv-2.dll</destination>
                     <folder>programfileswindows</folder>
                     <origin>bin/libiconv-2.dll</origin>
                 </unpackFile>
                 <!-- Validate user binary -->
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}\postgresql_installer_${random_number}\validateuser.exe</destination>
                     <folder>programfileswindows</folder>
                     <origin>installer/server/validateuser.exe</origin>
@@ -1889,7 +1899,7 @@ EOF
 
                 <!-- Create user binary -->
                 <unpackFile>
-                    <component>default</component>
+                    <component>server</component>
                     <destination>${system_temp_directory}\postgresql_installer_${random_number}\createuser.exe</destination>
                     <folder>programfileswindows</folder>
                     <origin>installer/server/createuser.exe</origin>
@@ -1904,32 +1914,32 @@ EOF
                 </setInstallerVariable>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\${vcredist_executable}</destination>
-                    <folder>programfileswindows</folder>
-                    <origin>installer/${vcredist_executable}</origin>
-                    <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x86.exe</destination>
+                    <folder>defaultwindows</folder>
+                    <origin>vcredist_x86.exe</origin>
+                    <!--<customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>-->
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x86.exe</destination>
-                    <folder>programfileswindows</folder>
-                    <origin>installer/vcredist_x86.exe</origin>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x64.exe</destination>
+                    <folder>defaultwindows-x64</folder>
+                    <origin>vcredist_x64.exe</origin>
                     <ruleList>
                         <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
                     </ruleList>
-                    <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
+                    <!--<customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>-->
                 </unpackFile>
                 <actionGroup>
                     <actionList>
                         <runProgram>
-                            <program>${system_temp_directory}\postgresql_installer_${random_number}\${vcredist_executable}</program>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x86.exe</program>
                             <programArguments>/passive /norestart</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
                         <!-- RM # 40893 add vcredist_86.exe on windows-x64 staging installer directroy -->
                         <runProgram>
-                            <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x86.exe</program>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x64.exe</program>
                             <programArguments>/passive /norestart</programArguments>
                                 <ruleList>
                                     <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
@@ -2019,6 +2029,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>osx</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -2027,18 +2038,15 @@ EOF
                     <programArguments>${system_temp_directory}/postgresql_installer_${random_number} "${datadir}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
-                        <compareText>
-                            <logic>contains</logic>
-                            <text>${platform_name}</text>
-                            <value>solaris</value>
-                        </compareText>
-                        <compareText>
-                            <logic>contains</logic>
-                            <text>${platform_name}</text>
-                            <value>linux</value>
-                        </compareText>
+                        <ruleGroup>
+                           <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                           <ruleList>  
+                               <compareText logic="contains" text="${platform_name}" value="linux"/>
+                               <compareText logic="contains" text="${platform_name}" value="solaris"/>
+                           </ruleList>
+                        </ruleGroup>
+                        <isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -2053,6 +2061,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -2123,6 +2132,7 @@ EOF
                     <path>${datadir}</path>
                     <condition>is_not_empty</condition>
                 </fileTest>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </actionGroup>
 
@@ -2208,6 +2218,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -2370,6 +2381,7 @@ EOF
             <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
             <isFalse value="${IsUpgrade}"/>
             <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(server).selected}"/>
           </ruleList>
         </actionGroup>
     </preInstallationActionList>
@@ -2392,6 +2404,7 @@ EOF
                     <value>osx</value>
                 </compareText>
                <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </runProgram>
         <runProgram>
@@ -2406,6 +2419,7 @@ EOF
                     <value>osx</value>
                 </compareText>
                <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </runProgram>
 
@@ -2420,6 +2434,7 @@ EOF
                     <value>linux</value>
                 </compareText>
                <isFalse value="${extract_mode}"/>
+               <isTrue  value="${component(server).selected}"/>
             </ruleList>
         </linuxServiceAction>
      
@@ -2495,6 +2510,7 @@ EOF
 		    <showMessageOnError>0</showMessageOnError>
                     <ruleList>
                         <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
 		</runProgram>
 
@@ -2562,6 +2578,7 @@ EOF
 		    <value>unattended</value>
 		</compareText>
 		<isFalse value="${extract_mode}"/>
+                <isTrue  value="${component(server).selected}"/>
 	    </ruleList>
 	</actionGroup>
 
@@ -2669,6 +2686,7 @@ EOF
 		    <value>unattended</value>
 		</compareText>
 		<isFalse value="${extract_mode}"/>
+                 <isTrue  value="${component(server).selected}"/>
 	    </ruleList>
 	</actionGroup>
     
@@ -2679,6 +2697,7 @@ EOF
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
                <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </stopWindowsService>
 
@@ -2688,6 +2707,7 @@ EOF
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
                <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </deleteWindowsService>
 
@@ -2714,6 +2734,7 @@ EOF
                     <value>solaris</value>
                 </compareText>
                <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </actionGroup>
 
@@ -2721,7 +2742,6 @@ EOF
              In case of upgrade,
              Delete the dependent libraries from the existing installation
              The current installer will put only the required version of these libraries
-         -->
 
         <actionGroup>
             <actionList>
@@ -2762,8 +2782,10 @@ EOF
                     <value>linux</value>
                 </compareText>
                <isFalse value="${extract_mode}"/>
+               <isTrue  value="${component(server).selected}"/>
             </ruleList>
         </actionGroup>
+         -->
 
         <setInstallerVariable name="branding" value="" persist="1">
             <ruleList>
@@ -2776,14 +2798,16 @@ EOF
             </ruleList>
         </setInstallerVariable>
 
+        <!-- comment the code for beta1
         <deleteFile>
             <path>${installdir}/pgAdmin 4/web/*</path>
             <progressText>Removing web folder</progressText>
             <excludeFiles>*/config_local.py</excludeFiles>
             <ruleList>
                 <fileExists path="${installdir}/pgAdmin 4/web"/>
+                <isTrue  value="${component(pgAdmin).selected}"/>
             </ruleList>
-        </deleteFile>
+        </deleteFile> -->
     </readyToInstallActionList>
 
     <!-- Postinstallation actions -->
@@ -2819,6 +2843,7 @@ EOF
             <ruleList>
                 <compareText logic="does_not_equal" text="${brandingVer}" value=""/>
                 <isFalse value="${extract_mode}"/>
+                <isTrue  value="${component(server).selected}"/>
             </ruleList>
         </actionGroup>
 
@@ -2842,6 +2867,7 @@ EOF
                 <compareText logic="does_not_equal" text="${brandingVer}" value=""/>
                 <compareText logic="does_not_equal" text="${disableStackBuilder}" value="${iDisableStackBuilder}"/>
                 <isFalse value="${extract_mode}"/>
+                <isTrue  value="${component(stackbuilder).selected}"/>
             </ruleList>
         </actionGroup>
 
@@ -2880,6 +2906,7 @@ EOF
 	           <ruleList>
 	               <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
 	               <compareText logic="does_not_equal" text="${languagepack_installdir}" value=""/>
+                       <isTrue  value="${component(server).selected}"/>
 	           </ruleList>
 	        </substitute>
 
@@ -2971,6 +2998,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+                        <isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -3019,6 +3047,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>osx</value>
                         </compareText>
+                         <isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -3095,6 +3124,7 @@ EOF
                                     <text>${platform_name}</text>
                                     <value>windows</value>
                                 </compareText>
+				 <isTrue  value="${component(server).selected}"/>
                             </ruleList>
                         </runProgram>
 
@@ -3110,6 +3140,7 @@ EOF
                                     <text>${platform_name}</text>
                                     <value>windows</value>
                                 </compareText>
+				 <isTrue  value="${component(server).selected}"/>
                             </ruleList>
                         </runProgram>
 
@@ -3163,6 +3194,7 @@ EOF
                             <logic>equals</logic>
                             <value2>0</value2>
                         </compareValues>
+                        <isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </actionGroup>
 
@@ -3180,6 +3212,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>linux</value>
                         </compareText>
+			 <isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -3188,19 +3221,13 @@ EOF
                     <programArguments>${product_version} "${serviceaccount}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
                     <progressText>${msg(progress.text.configuring.startup)}</progressText>
                     <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
-                        <compareText>
-                            <logic>contains</logic>
-                            <text>solaris</text>
-                            <value>${platform_name}</value>
-                        </compareText>
                         <compareText>
                             <logic>contains</logic>
                             <text>osx</text>
                             <value>${platform_name}</value>
                         </compareText>
+			 <isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -3216,6 +3243,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -3239,6 +3267,7 @@ EOF
                             <text>127</text>
                             <value>${program_exit_code}</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </throwError>
                 <throwError>
@@ -3249,6 +3278,7 @@ EOF
                             <text>1</text>
                             <value>${program_exit_code}</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </throwError>
                 <showWarning>
@@ -3259,6 +3289,7 @@ EOF
                             <text>2</text>
                             <value>${program_exit_code}</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </showWarning>
 
@@ -3281,9 +3312,73 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			 <isTrue  value="${component(server).selected}"/>
+			 <isTrue  value="${component(pgAdmin).selected}"/>
+			 <isTrue  value="${component(stackbuilder).selected}"/>
+                    </ruleList>
+                </runProgram>
+                <runProgram>
+                    <program>${installdir}/installer/server/createshortcuts_server.sh</program>
+                    <programArguments>${product_version} "${serviceaccount}" "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${servicename}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${create_shortcuts}</text>
+                            <value>1</value>
+                        </compareText>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+			 <isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
+                <runProgram>
+                    <program>${installdir}/installer/server/createshortcuts_pgadmin.sh</program>
+                    <programArguments>${product_version} "${branding}" "${installdir}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${create_shortcuts}</text>
+                            <value>1</value>
+                        </compareText>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+			 <isTrue  value="${component(pgAdmin).selected}"/>
+                    </ruleList>
+                </runProgram>
+
+                <runProgram>
+                    <program>${installdir}/installer/server/createshortcuts_sb.sh</program>
+                    <programArguments>${product_version} "${branding}" "${installdir}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${create_shortcuts}</text>
+                            <value>1</value>
+                        </compareText>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+			 <isTrue  value="${component(stackbuilder).selected}"/>
+                    </ruleList>
+                </runProgram>
                 <!-- we aren't require to pass ${serviceaccount} to createshortcuts in windows -->
                 <runProgram>
                     <program>cscript</program>
@@ -3302,6 +3397,9 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
+			 <isTrue  value="${component(pgAdmin).selected}"/>
+			 <isTrue  value="${component(stackbuilder).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -3365,6 +3463,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>linux</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </linuxServiceAction>
 
@@ -3380,6 +3479,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -3395,6 +3495,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>solaris</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -3473,6 +3574,10 @@ EOF
 		    	<showMessageOnError>1</showMessageOnError>
 		    	<customErrorMessage>${msg(error.could.not.load.modules)}</customErrorMessage>
 		    	<workingDirectory>${installdir}/bin</workingDirectory>
+		        <ruleList>
+				<isTrue  value="${component(server).selected}"/>
+			</ruleList>
+		
 		    </runProgram>
 		    </actionList>
 
@@ -3483,6 +3588,7 @@ EOF
                             <logic>equals</logic>
                             <value2>0</value2>
                         </compareValues>
+			 <isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </actionGroup>
 
@@ -3532,6 +3638,7 @@ EOF
                             <text>${datadir}</text>
                             <type>not_empty</type>
                         </stringTest>
+			<isTrue  value="${component(server).selected}"/>
                      </ruleList>
                 </registrySet>
                 <registrySet>
@@ -3543,6 +3650,7 @@ EOF
                             <text>${datadir}</text>
                             <type>not_empty</type>
                         </stringTest>
+			<isTrue  value="${component(server).selected}"/>
                      </ruleList>
                 </registrySet>
 
@@ -3577,6 +3685,7 @@ EOF
                             <text>${serverport}</text>
                             <type>not_empty</type>
                         </stringTest>
+			<isTrue  value="${component(server).selected}"/>
                      </ruleList>
                 </registrySet>
 
@@ -3597,6 +3706,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
@@ -3609,6 +3719,9 @@ EOF
                 <readFile>
                     <path>${datadir}/postgresql.conf</path>
                     <name>serverconfig</name>
+		   <ruleList>
+			<isTrue  value="${component(server).selected}"/>
+		   </ruleList>
                 </readFile>
                 <setInstallerVariableFromRegEx>
                     <name>actuallocale</name>
@@ -3628,12 +3741,16 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
                     <name>Locale</name>
                     <value>${actuallocale}</value>
+		    <ruleList>
+			<isTrue  value="${component(server).selected}"/>
+		    </ruleList>
                 </registrySet>
 
                 <!-- Superuser -->
@@ -3653,6 +3770,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
@@ -3664,6 +3782,7 @@ EOF
                             <text>${superaccount}</text>
                             <type>not_empty</type>
                         </stringTest>
+			<isTrue  value="${component(server).selected}"/>
                      </ruleList>
                 </registrySet>
 
@@ -3683,6 +3802,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
@@ -3700,6 +3820,7 @@ EOF
                             <logic>contains</logic>
                             <value>\</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </registrySet>
                 <!-- if serviceaccount does not contain domain name, then append .\ before writing it to registry -->
@@ -3718,6 +3839,7 @@ EOF
                             <logic>does_not_contain</logic>
                             <value>\</value>
                         </compareText>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </registrySet>
 
@@ -3726,11 +3848,17 @@ EOF
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Service Account</name>
                     <value>${serviceaccount}</value>
+		    <ruleList>
+			<isTrue  value="${component(server).selected}"/>
+		   </ruleList>
                 </registrySet>
                 <registrySet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Super User</name>
                     <value>${superaccount}</value>
+		    <ruleList>
+			<isTrue  value="${component(server).selected}"/>
+		   </ruleList>
                 </registrySet>
 
 
@@ -3749,12 +3877,16 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			<isTrue  value="${component(default).selected}"/>
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
                     <name>Display Name</name>
                     <value>${branding}</value>
+			<ruleList>
+				<isTrue  value="${component(server).selected}"/>
+			</ruleList>
                 </registrySet>
 
                 <!-- Branding info -->
@@ -3772,12 +3904,16 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+			<isTrue  value="${component(default).selected}"/>
                     </ruleList>
                 </iniFileSet>
                 <registrySet>
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Branding</name>
                     <value>${branding}</value>
+			<ruleList>
+				<isTrue  value="${component(default).selected}"/>
+			</ruleList>
                 </registrySet>
 
                 <!-- Disable StackBuilder -->
@@ -3797,6 +3933,9 @@ EOF
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>DisableStackBuilder</name>
                     <value>${disableStackBuilder}</value>
+			<ruleList>
+				<isTrue  value="${component(default).selected}"/>
+			</ruleList>
                 </registrySet>
 
                 <!-- The Windows product code, used to link to the installation -->
@@ -3804,6 +3943,9 @@ EOF
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
                     <name>Product Code</name>
                     <value>postgresql${service_suffix}-${product_version}</value>
+			<ruleList>
+				<isTrue  value="${component(default).selected}"/>
+			</ruleList>
                 </registrySet>
 
                 <!-- Write a environment variable scripts -->
@@ -3842,6 +3984,7 @@ export MANPATH=$MANPATH:${installdir}/share/man
                     </actionList>
                     <ruleList>
                        <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </actionGroup>
 
@@ -3870,6 +4013,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     </actionList>
                     <ruleList>
                        <compareText text="${platform_name}" logic="equals" value="windows" />
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </actionGroup>
 
@@ -3898,6 +4042,7 @@ REM The script sets environment variables helpful for PostgreSQL
         <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\postgresql${service_suffix}-${product_version}" name="Description" value="${msg(pg.service.description)}" >
             <ruleList>
                 <isFalse value="${extract_mode}"/>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </registrySet>
 
@@ -3917,6 +4062,7 @@ REM The script sets environment variables helpful for PostgreSQL
           </actionList>
           <ruleList>
             <compareText text="${platform_name}" logic="equals" value="windows" />
+            <isTrue  value="${component(pgAdmin).selected}"/>
           </ruleList>
         </actionGroup>
 
@@ -3935,6 +4081,7 @@ REM The script sets environment variables helpful for PostgreSQL
           </actionList>
           <ruleList>
             <compareText text="${platform_name}" logic="contains" value="Linux" />
+            <isTrue  value="${component(pgAdmin).selected}"/>
           </ruleList>
         </actionGroup>
 
@@ -3953,6 +4100,7 @@ REM The script sets environment variables helpful for PostgreSQL
           </actionList>
           <ruleList>
             <compareText text="${platform_name}" logic="equals" value="osx" />
+            <isTrue  value="${component(pgAdmin).selected}"/>
           </ruleList>
         </actionGroup>
 
@@ -3991,6 +4139,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 <isFalse value="${extract_mode}"/>
 		<compareText logic="equals" text="${installer_ui}" value="gui" />
 		<isTrue value="${showLaunchStackBuilderOption}" />
+		<isTrue  value="${component(stackbuilder).selected}"/>
             </ruleList>
         </runProgram>
 
@@ -4013,6 +4162,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 <isFalse value="${extract_mode}"/>
 		<compareText logic="equals" text="${installer_ui}" value="gui" />
 		<isTrue value="${showLaunchStackBuilderOption}" />
+                <isTrue  value="${component(stackbuilder).selected}"/>
             </ruleList>
         </runProgram>
 
@@ -4029,6 +4179,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 <isFalse value="${extract_mode}"/>
 		<compareText logic="equals" text="${installer_ui}" value="gui" />
 		<isTrue value="${showLaunchStackBuilderOption}" />
+		<isTrue  value="${component(stackbuilder).selected}"/>
             </ruleList>
         </runProgram>
 
@@ -4066,7 +4217,11 @@ REM The script sets environment variables helpful for PostgreSQL
         </actionGroup>
 
         <!-- Determine the linux init system -->
-        <determineLinuxInitSystem/>
+        <determineLinuxInitSystem>
+		<ruleList>
+			<isTrue  value="${component(server).selected}"/>
+		</ruleList>
+        </determineLinuxInitSystem>
 
         <!-- LINUX: Stop the server -->
         <linuxServiceAction
@@ -4078,6 +4233,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </linuxServiceAction>
 
@@ -4086,6 +4242,9 @@ REM The script sets environment variables helpful for PostgreSQL
             <serviceName>${servicename}</serviceName>
             <abortOnError>0</abortOnError>
             <showMessageOnError>1</showMessageOnError>
+	    <ruleList>
+			<isTrue  value="${component(server).selected}"/>
+	    </ruleList>
         </stopWindowsService>
 
         <!-- Solaris: Stop the server -->
@@ -4100,6 +4259,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     <text>${platform_name}</text>
                     <value>solaris</value>
                 </compareText>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </runProgram>
         <runProgram>
@@ -4113,6 +4273,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     <text>${platform_name}</text>
                     <value>solaris</value>
                 </compareText>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </runProgram>
 
@@ -4148,6 +4309,9 @@ REM The script sets environment variables helpful for PostgreSQL
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
+			<isTrue  value="${component(server).selected}"/>
+			 <isTrue  value="${component(pgAdmin).selected}"/>
+			 <isTrue  value="${component(stackbuilder).selected}"/>
             </ruleList>
         </runProgram>
 
@@ -4298,6 +4462,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     <text>${platform_name}</text>
                     <value>osx</value>
                 </compareText>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </actionGroup>
 
@@ -4312,6 +4477,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     <showMessageOnError>0</showMessageOnError>
                     <ruleList>
                         <isTrue value="${is_init_sysvinit}"/>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -4320,11 +4486,13 @@ REM The script sets environment variables helpful for PostgreSQL
                     <path>/etc/init.d/${servicename}</path>
                     <ruleList>
                         <isFalse value="${is_init_systemd}"/>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </deleteFile>
                 <deleteFile path="/usr/lib/systemd/system/${servicename}.service">
                     <ruleList>
                         <isTrue value="${is_init_systemd}"/>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </deleteFile>
 
@@ -4336,6 +4504,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     <showMessageOnError>0</showMessageOnError>
                     <ruleList>
                         <isTrue value="${is_init_upstart}"/>
+			<isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </runProgram>
 
@@ -4344,6 +4513,9 @@ REM The script sets environment variables helpful for PostgreSQL
                     <path>/etc/ld.so.conf.d/postgresql-${product_version}.conf</path>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
+			<ruleList>
+				<isTrue  value="${component(server).selected}"/>
+			</ruleList>
                 </deleteFile>
                 <substitute>
                     <substitutionList>
@@ -4363,6 +4535,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </actionGroup>
 
@@ -4370,19 +4543,31 @@ REM The script sets environment variables helpful for PostgreSQL
         <deleteWindowsService>
             <serviceName>${servicename}</serviceName>
             <abortOnError>0</abortOnError>
+		<ruleList>
+			<isTrue  value="${component(server).selected}"/>
+		</ruleList>
         </deleteWindowsService>
 
         <!-- WINDOWS: Unregister the event message DLL -->
         <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
+		<ruleList>
+			<isTrue  value="${component(server).selected}"/>
+		</ruleList>
         </registryDelete>
 
         <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+		<ruleList>
+			<isTrue  value="${component(default).selected}"/>
+		</ruleList>
         </registryDelete>
 
         <registryDelete>
             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
+		<ruleList>
+			<isTrue  value="${component(server).selected}"/>
+		</ruleList>
         </registryDelete>
 
         <!-- Removing the environment variable script -->
@@ -4390,6 +4575,7 @@ REM The script sets environment variables helpful for PostgreSQL
             <path>${installdir}/pg_env.sh</path>
             <ruleList>
                  <fileExists path="${installdir}/pg_env.sh" />
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </deleteFile>
 
@@ -4397,17 +4583,20 @@ REM The script sets environment variables helpful for PostgreSQL
             <path>${installdir}\pg_env.bat</path>
             <ruleList>
                  <fileExists path="${installdir}\pg_env.bat" />
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </deleteFile>
 
         <deleteFile path="/lib/svc/method/${servicename}" >
             <ruleList>
                  <compareText text="${platform_name}" logic="contains" value="solaris" />
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </deleteFile>
         <deleteFile path="/var/svc/manifest/application/database/${servicename}.xml" >
             <ruleList>
                  <compareText text="${platform_name}" logic="contains" value="solaris" />
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </deleteFile>
 
@@ -4435,6 +4624,7 @@ REM The script sets environment variables helpful for PostgreSQL
             <text>${msg(info.datadirectory.user.kept)}</text>
             <ruleList>
                 <compareText text="${serviceaccount}" logic="does_not_equal" value="NT AUTHORITY\NetworkService" />
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </showWarning>
         <showWarning>
@@ -4442,16 +4632,144 @@ REM The script sets environment variables helpful for PostgreSQL
             <ruleList>
                 <compareText text="${platform_name}" logic="equals" value="windows" />
                 <compareText text="${serviceaccount}" logic="equals" value="NT AUTHORITY\NetworkService" />
+		<isTrue  value="${component(server).selected}"/>
             </ruleList>
         </showWarning>
     </postUninstallationActionList>
 
     <!-- Components. Most components will be separate packages, so expect just one entry here most of the time -->
+    <allowComponentSelection>1</allowComponentSelection>
+    <allowAddRemoveComponents>1</allowAddRemoveComponents>
     <componentList>
         <component>
             <name>default</name>
             <description>Default Component</description>
+            <canBeEdited>0</canBeEdited>
+            <selected>1</selected>
+            <show>0</show>
+	    <folderList>
+                <!-- LINUX: files for default component -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/installer/server</destination>
+                    <name>defaultlinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/server/installer/prerun_checks.sh</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/server/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </folder>
+                <!-- LINUX-X64: files for default component -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/installer/server</destination>
+                    <name>defaultlinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/server/installer/prerun_checks.sh</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/server/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/server/scripts</destination>
+                    <name>defaultlinux-x64_2</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/server/scripts/xdg</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- MacOSX: files for default component -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/installer/server</destination>
+                    <name>defaultmacosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/server/installer/prerun_checks.sh</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/server/scripts</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- Win: files for default component -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/installer</destination>
+                    <name>defaultwindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/server/installer/prerun_checks.vbs</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/server/installer/vcredist_x86.exe</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/installer</destination>
+                    <name>defaultwindows-x64</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/server/installer/vcredist_x64.exe</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                    <shouldPackRuleList>
+                      <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                    </shouldPackRuleList>
+                </folder>
+              </folderList>
+
+        <componentSelectionValidationActionList>
+          <throwError>
+            <text>You should select at least one component</text>
+            <ruleList>
+                <componentTest name="pgAdmin" logic="not_selected"/>
+                <componentTest name="server" logic="not_selected"/>
+                <componentTest name="commandlinetools" logic="not_selected"/>
+                <componentTest name="stackbuilder" logic="not_selected"/>
+            </ruleList>
+        </throwError>
+          <actionGroup>
+            <actionList>
+              <setInstallerVariable name="component(commandlinetools).selected" value="true"/>
+            </actionList>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+            <ruleList>
+                <componentTest name="pgAdmin" logic="selected"/>
+                <componentTest name="server" logic="selected"/>
+            </ruleList>
+          </actionGroup>
+        </componentSelectionValidationActionList>
+            
+        </component>
+        <component>
+            <name>server</name>
+            <description>PostgreSQL Server</description>
             <canBeEdited>1</canBeEdited>
+            <detailedDescription>${msg(dbserver.desc)}</detailedDescription>
             <selected>1</selected>
             <show>1</show>
             <folderList>
@@ -4464,34 +4782,28 @@ REM The script sets environment variables helpful for PostgreSQL
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux/bin</origin>
+                            <origin>staging/linux/server/bin</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux/doc</origin>
+                            <origin>staging/linux/server/doc</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux/include</origin>
+                            <origin>staging/linux/server/include</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux/installer</origin>
+                            <origin>staging/linux/server/installer</origin>
+                        </distributionDirectory>
+<!--                        <distributionDirectory>
+                            <origin>staging/linux/server/lib</origin>
+                        </distributionDirectory> -->
+                        <distributionDirectory>
+                            <origin>staging/linux/server/scripts</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux/lib</origin>
+                            <origin>staging/linux/server/share</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux/pgAdmin 4</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux/scripts</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux/stackbuilder</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux/share</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux/etc</origin>
+                            <origin>staging/linux/server/etc</origin>
                         </distributionDirectory>
                         <distributionFile>
                             <origin>../resources/license.txt</origin>
@@ -4517,34 +4829,25 @@ REM The script sets environment variables helpful for PostgreSQL
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/bin</origin>
+                            <origin>staging/linux-x64/server/bin</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/doc</origin>
+                            <origin>staging/linux-x64/server/doc</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/include</origin>
+                            <origin>staging/linux-x64/server/include</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/installer</origin>
+                            <origin>staging/linux-x64/server/installer</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/lib</origin>
+                            <origin>staging/linux-x64/server/scripts</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/pgAdmin 4</origin>
+                            <origin>staging/linux-x64/server/share</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/scripts</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/stackbuilder</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/share</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/etc</origin>
+                            <origin>staging/linux-x64/server/etc</origin>
                         </distributionDirectory>
                         <distributionFile>
                             <origin>../resources/license.txt</origin>
@@ -4578,13 +4881,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/linux-ppc64/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/linux-ppc64/pgAdmin 4</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
                             <origin>staging/linux-ppc64/scripts</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux-ppc64/stackbuilder</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux-ppc64/share</origin>
@@ -4606,31 +4903,22 @@ REM The script sets environment variables helpful for PostgreSQL
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/osx/bin</origin>
+                            <origin>staging/osx/server/bin</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/osx/doc</origin>
+                            <origin>staging/osx/server/doc</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/osx/include</origin>
+                            <origin>staging/osx/server/include</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/osx/installer</origin>
+                            <origin>staging/osx/server/installer</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/osx/lib</origin>
+                            <origin>staging/osx/server/scripts</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/osx/pgAdmin 4.app</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/osx/scripts</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/osx/stackbuilder.app</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/osx/share</origin>
+                            <origin>staging/osx/server/share</origin>
                         </distributionDirectory>
                         <distributionFile>
                             <origin>../resources/license.txt</origin>
@@ -4649,34 +4937,25 @@ REM The script sets environment variables helpful for PostgreSQL
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/bin</origin>
+                            <origin>staging/@@WINDIR@@/server/bin</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/doc</origin>
+                            <origin>staging/@@WINDIR@@/server/doc</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/include</origin>
+                            <origin>staging/@@WINDIR@@/server/include</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/installer</origin>
+                            <origin>staging/@@WINDIR@@/server/installer</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/lib</origin>
+                            <origin>staging/@@WINDIR@@/server/scripts</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/pgAdmin 4</origin>
+                            <origin>staging/@@WINDIR@@/server/share</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/scripts</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/share</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/StackBuilder</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/symbols</origin>
+                            <origin>staging/@@WINDIR@@/server/symbols</origin>
                         </distributionDirectory>
                         <distributionFile>
                             <origin>../resources/license.txt</origin>
@@ -4710,13 +4989,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/solaris-x64/lib</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/solaris-x64/pgAdmin 4</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
                             <origin>staging/solaris-x64/scripts</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/solaris-x64/stackbuilder</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/solaris-x64/share</origin>
@@ -4751,9 +5024,6 @@ REM The script sets environment variables helpful for PostgreSQL
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/solaris-sparc/lib</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/solaris-sparc/pgAdmin 4</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/solaris-sparc/scripts</origin>
@@ -4816,6 +5086,237 @@ REM The script sets environment variables helpful for PostgreSQL
                             </ruleList>
                         </startMenuLinkShortcut>
 
+
+                        <!-- TODO: Rest of the docs -->
+
+                    </startMenuShortcutList>
+                </startMenuFolder>
+
+                <!-- Reload config -->
+                <startMenuShortcut>
+                    <name>Reload Configuration</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${create_shortcuts}" />
+                    </ruleList>
+                </startMenuShortcut>
+
+            </startMenuShortcutList>
+
+        </component>
+        <component>
+         <name>pgAdmin</name>
+         <description>pgAdmin 4</description>
+         <canBeEdited>1</canBeEdited>
+         <detailedDescription>${msg(pgadmin.desc)}</detailedDescription>
+         <selected>1</selected>
+            <folderList>
+
+                <!-- LINUX: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/pgadmin4/pgAdmin 4</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </folder>
+                <folder>
+                    <description>Script Files</description>
+                    <destination>${installdir}</destination>
+                    <name>scriptfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/pgadmin4/scripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/pgadmin4/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/server/scripts</destination>
+                    <name>scriptfileslinux_2</name>
+                    <platforms>linux4</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/pgadmin4/scripts/xdg</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </folder>
+
+                <!-- LINUX_X64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/pgadmin4/pgAdmin 4</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Script Files</description>
+                    <destination>${installdir}</destination>
+                    <name>scriptfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/pgadmin4/scripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/pgadmin4/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/server/scripts</destination>
+                    <name>scriptfileslinux-x64_2</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/pgadmin4/scripts/xdg</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
+                <!-- LINUX_PPC64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/pgAdmin 4</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux-ppc64/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+
+                <!-- MAC: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesmacosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/pgadmin4/pgAdmin 4.app</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/osx/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+	
+                <!-- WIN: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin 4</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/@@WINDIR@@/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+		</folder>
+
+                <!-- SOLARIS_X64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/pgAdmin 4</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/solaris-x64/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+
+                <!-- SOLARIS_SPARC: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/pgAdmin 4</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/solaris-sparc/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+
+          </folderList>
+
+            <!-- WIN: Start Menu -->
+            <startMenuShortcutList>
+
+                <startMenuFolder>
+                    <name>Documentation</name>
+                    <platforms>windows</platforms>
+                    <startMenuShortcutList>
+
                         <!-- pgAdmin -->
                         <startMenuLinkShortcut>
                             <name>pgAdmin documentation</name>
@@ -4842,23 +5343,462 @@ REM The script sets environment variables helpful for PostgreSQL
                     </ruleList>
                 </startMenuShortcut>
 
-                <!-- Stackbuilder -->
+                <!-- Reload config -->
                 <startMenuShortcut>
-                    <name>Application Stack Builder</name>
+                    <name>Reload Configuration</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\bin\stackbuilder.exe</windowsExec>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
                     <ruleList>
                         <isTrue value="${create_shortcuts}" />
-                        <isFalse value="${disableStackBuilder}" />
                     </ruleList>
                 </startMenuShortcut>
 
-                <!-- psql -->
+            </startMenuShortcutList>
+
+        </component>
+        <component>
+         <name>stackbuilder</name>
+         <description>Stackbuilder</description>
+         <canBeEdited>1</canBeEdited>
+         <detailedDescription>${msg(stackbuilder.desc)}</detailedDescription>
+         <selected>1</selected>
+            <folderList>
+
+                <!-- LINUX: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/stackbuilder/scripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/stackbuilder/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/stackbuilder</destination>
+                    <name>programfileslinux_2</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/stackbuilder/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/stackbuilder/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/stackbuilder/share</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </folder>
+
+                <!-- LINUX_X64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/stackbuilder/scripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/stackbuilder/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/stackbuilder</destination>
+                    <name>programfileslinux-x64_2</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/stackbuilder/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/stackbuilder/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/stackbuilder/share</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
+                <!-- LINUX_PPC64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/pgAdmin 4</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux-ppc64/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+
+                <!-- MAC: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesmacosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/stackbuilder/stackbuilder.app</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/stackbuilder/lib</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/osx/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+	
+                <!-- WIN: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/stackbuilder/StackBuilder</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/stackbuilder/bin</origin>
+                        </distributionDirectory>
+
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/@@WINDIR@@/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+		</folder>
+
+                <!-- SOLARIS_X64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/pgAdmin 4</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/solaris-x64/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+
+                <!-- SOLARIS_SPARC: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/pgAdmin 4</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/solaris-sparc/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+
+          </folderList>
+
+            <!-- WIN: Start Menu -->
+            <startMenuShortcutList>
+
+                <startMenuFolder>
+                    <name>Documentation</name>
+                    <platforms>windows</platforms>
+                    <startMenuShortcutList>
+
+                        <!-- pgAdmin -->
+                        <startMenuLinkShortcut>
+                            <name>pgAdmin documentation</name>
+                            <runInTerminal>0</runInTerminal>
+                            <url>file://${installdir}/pgAdmin 4/docs/en_US/html/index.html</url>
+                            <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                            <ruleList>
+                                <isTrue value="${create_shortcuts}" />
+                            </ruleList>
+                        </startMenuLinkShortcut>
+
+                        <!-- TODO: Rest of the docs -->
+
+                    </startMenuShortcutList>
+                </startMenuFolder>
+
+                <!-- pgAdmin -->
                 <startMenuShortcut>
-                    <name>SQL Shell (psql)</name>
+                    <name>pgAdmin 4</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\scripts\runpsql.bat</windowsExec>
-                    <windowsIcon>${installdir}\scripts\images\pg-psql.ico</windowsIcon>
+                    <windowsExec>${installdir}\pgAdmin 4\bin\pgAdmin4.exe</windowsExec>
+                    <ruleList>
+                        <isTrue value="${create_shortcuts}" />
+                    </ruleList>
+                </startMenuShortcut>
+
+                <!-- Reload config -->
+                <startMenuShortcut>
+                    <name>Reload Configuration</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
+                    <windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${create_shortcuts}" />
+                    </ruleList>
+                </startMenuShortcut>
+
+            </startMenuShortcutList>
+
+        </component>
+        <component>
+         <name>commandlinetools</name>
+         <description>Command Line Tools</description>
+         <canBeEdited>1</canBeEdited>
+         <detailedDescription>${msg(commandlinetools.desc)}</detailedDescription>
+         <selected>1</selected>
+            <folderList>
+
+                <!-- LINUX: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinuxclt</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/commandlinetools/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/commandlinetools/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/commandlinetools/share</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/commandlinetools/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </folder>
+
+                <!-- LINUX_X64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-x64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/commandlinetools/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/commandlinetools/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/commandlinetools/share</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/commandlinetools/installer</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+
+                <!-- LINUX_PPC64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileslinux-ppc64</name>
+                    <platforms>linux-ppc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-ppc64/pgAdmin 4</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux-ppc64/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+
+                <!-- MAC: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilesmacosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/commandlinetools/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/commandlinetools/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/commandlinetools/share</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/osx/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+	
+                <!-- WIN: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfileswindows</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/commandlinetools/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/commandlinetools/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/commandlinetools/installer</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/commandlinetools/scripts</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/@@WINDIR@@/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+		</folder>
+
+                <!-- SOLARIS_X64: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilessolaris-x64</name>
+                    <platforms>solaris-intel</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-x64/pgAdmin 4</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/solaris-x64/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+
+                <!-- SOLARIS_SPARC: Program files -->
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>programfilessolaris-sparc</name>
+                    <platforms>solaris-sparc</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/solaris-sparc/pgAdmin 4</origin>
+                        </distributionDirectory>
+                        <distributionFile>
+                            <origin>../resources/license.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/solaris-sparc/server_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+
+          </folderList>
+
+            <!-- WIN: Start Menu -->
+            <startMenuShortcutList>
+
+                <startMenuFolder>
+                    <name>Documentation</name>
+                    <platforms>windows</platforms>
+                    <startMenuShortcutList>
+
+                        <!-- pgAdmin -->
+                        <startMenuLinkShortcut>
+                            <name>pgAdmin documentation</name>
+                            <runInTerminal>0</runInTerminal>
+                            <url>file://${installdir}/pgAdmin 4/docs/en_US/html/index.html</url>
+                            <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                            <ruleList>
+                                <isTrue value="${create_shortcuts}" />
+                            </ruleList>
+                        </startMenuLinkShortcut>
+
+                        <!-- TODO: Rest of the docs -->
+
+                    </startMenuShortcutList>
+                </startMenuFolder>
+
+                <!-- pgAdmin -->
+                <startMenuShortcut>
+                    <name>pgAdmin 4</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}\pgAdmin 4\bin\pgAdmin4.exe</windowsExec>
                     <ruleList>
                         <isTrue value="${create_shortcuts}" />
                     </ruleList>
@@ -5546,10 +6486,14 @@ REM The script sets environment variables helpful for PostgreSQL
                              <condition>not_exists</condition>
                              <path>${datadir}/postgresql.conf</path>
                          </fileTest>
+			<isTrue  value="${component(server).selected}"/>
                      </ruleList>
                 </actionGroup>
 
             </postShowPageActionList>
+            <ruleList>
+		<isTrue  value="${component(server).selected}"/>
+            </ruleList>
 
         </directoryParameter>
 
@@ -5584,6 +6528,7 @@ REM The script sets environment variables helpful for PostgreSQL
             <ruleList>
                 <isTrue value="${IsUpgrade}"/>
                 <isFalse value="${extract_mode}"/>
+                <isTrue  value="${component(server).selected}"/> 
             </ruleList>
 
         </labelParameter>
@@ -5939,6 +6884,8 @@ REM The script sets environment variables helpful for PostgreSQL
                             <value>windows</value>
                         </compareText>
 			<isFalse value="${extract_mode}"/>
+                        <isTrue  value="${component(server).selected}"/>
+                        
                     </ruleList>
                 </actionGroup>
             </validationActionList>
@@ -5958,6 +6905,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     </ruleList>
                 </ruleGroup>
                 <isFalse value="${extract_mode}"/>
+                <isTrue  value="${component(server).selected}"/>
             </ruleList>
         </passwordParameter>
 
@@ -6020,6 +6968,7 @@ REM The script sets environment variables helpful for PostgreSQL
             <ruleList>
                 <isFalse value="${IsUpgrade}"/>
                 <isFalse value="${extract_mode}"/>
+                <isTrue  value="${component(server).selected}"/> 
             </ruleList>
         </stringParameter>
 
@@ -6051,6 +7000,7 @@ REM The script sets environment variables helpful for PostgreSQL
             <ruleList>
                 <isFalse value="${IsUpgrade}"/>
                 <isFalse value="${extract_mode}"/>
+                <isTrue  value="${component(server).selected}"/> 
             </ruleList>
         </parameterGroup>
     </parameterList>

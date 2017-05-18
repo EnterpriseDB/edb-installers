@@ -397,6 +397,14 @@ EOT-PGADMIN
     # Copy the regress source to the regression setup 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/src/test/; cp -pR regress /buildfarm/src/test/" || _die "Failed to Copy regress to the regression directory"
 
+    ssh $PG_SSH_OSX "mkdir -p $REMOTE_SB_STAGING_OSX/lib" || _die "Failed to create mkdir $REMOTE_SB_STAGING_OSX/lib"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_macu_adv-*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_macu_core-*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu-*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_net-*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_xml-*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcurl*dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libcurl"
+
     cd $WD
     # Copy the staging to controller to build the installers
     ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create archive of the server staging"
@@ -410,6 +418,60 @@ EOT-PGADMIN
 
     # Copy the required Python executables
     scp $PG_SSH_OSX:$PGADMIN_PYTHON_OSX/Python $WD/server/staging/osx/pgAdmin\ 4.app/Contents/Resources/venv/.Python
+
+    #Restructuring staging
+    echo "Restructuring staging as per components"
+    mkdir -p $CLT_STAGING_OSX/bin || _die "Failed to create the $CLT_STAGING_OSX/bin directory"
+    mkdir -p $CLT_STAGING_OSX/lib || _die "Failed to create the $CLT_STAGING_OSX/lib directory"
+    mkdir -p $CLT_STAGING_OSX/share/man/man1 || _die "Failed to create the $CLT_STAGING_OSX/share/man/man1 directory"
+    mkdir -p $PGADMIN_STAGING_OSX || _die "Failed to create the $PGADMIN_STAGING_OSX "
+    mkdir -p $SB_STAGING_OSX || _die "Failed to create the $SB_STAGING_OSX "
+
+    echo "Creating Commandlinetools"
+    mv $WD/server/staging/osx/lib  $CLT_STAGING_OSX || _die "Failed to move $PGSERVER_STAGING_OSX/lib"
+    mv $WD/server/staging/osx/bin/psql*  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/bin/psql"
+    mv $WD/server/staging/osx/bin/pg_basebackup  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/bin/pg_basebackup"
+    mv $WD/server/staging/osx/bin/pg_dump  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/bin/pg_dump"
+    mv $WD/server/staging/osx/bin/pg_dumpall  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/bin/pg_dumpall"
+    mv $WD/server/staging/osx/bin/pg_restore  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/pg_restore"
+    mv $WD/server/staging/osx/bin/createdb  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/createdb"
+    mv $WD/server/staging/osx/bin/clusterdb $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/clusterdb"
+    mv $WD/server/staging/osx/bin/createuser  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/createuser"
+    mv $WD/server/staging/osx/bin/dropuser  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/dropuser"
+    mv $WD/server/staging/osx/bin/dropdb  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/dropdb"
+    mv $WD/server/staging/osx/bin/pg_isready  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/pg_isready"
+    mv $WD/server/staging/osx/bin/vacuumdb  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/vacuumdb"
+    mv $WD/server/staging/osx/bin/reindexdb  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/reindexdb"
+    mv $WD/server/staging/osx/bin/pgbench  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/pgbench"
+    mv $WD/server/staging/osx/bin/vacuumlo  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/vacuumlo"
+    mv $WD/server/staging/osx/share/man/man1/pg_basebackup.1 $CLT_STAGING_OSX/share/man/man1
+    mv $WD/server/staging/osx/share/man/man1/pg_dump.1 $CLT_STAGING_OSX/share/man/man1
+    mv $WD/server/staging/osx/share/man/man1/pg_restore.1 $CLT_STAGING_OSX/share/man/man1
+    mv $WD/server/staging/osx/share/man/man1/createdb.1 $CLT_STAGING_OSX/share/man/man1
+    mv $WD/server/staging/osx/share/man/man1/clusterdb.1 $CLT_STAGING_OSX/share/man/man1
+    mv $WD/server/staging/osx/share/man/man1/createuser.1 $CLT_STAGING_OSX/share/man/man1
+    mv $WD/server/staging/osx/share/man/man1/dropdb.1 $CLT_STAGING_OSX/share/man/man1
+    mv $WD/server/staging/osx/share/man/man1/dropuser.1 $CLT_STAGING_OSX/share/man/man1
+    mv $WD/server/staging/osx/share/man/man1/pg_isready.1 $CLT_STAGING_OSX/share/man/man1
+    mv $WD/server/staging/osx/share/man/man1/vacuumdb.1 $CLT_STAGING_OSX/share/man/man1
+    mv $WD/server/staging/osx/share/man/man1/reindexdb.1 $CLT_STAGING_OSX/share/man/man1
+    mv $WD/server/staging/osx/share/man/man1/pgbench.1 $CLT_STAGING_OSX/share/man/man1
+    mv $WD/server/staging/osx/share/man/man1/vacuumlo.1 $CLT_STAGING_OSX/share/man/man1
+
+    echo "Restructuring pgAdmin4"
+    mv $WD/server/staging/osx/pgAdmin\ 4.app/  $PGADMIN_STAGING_OSX
+
+    echo "Restructuring Stackbuilder"
+    mv $WD/server/staging/osx/stackbuilder.app $SB_STAGING_OSX || _die "Failed to move stackbuilder"
+
+    echo "Restructuring Server"
+    mv $WD/server/staging/osx/doc     $PGSERVER_STAGING_OSX || _die "Failed to move documentation"
+    mv $WD/server/staging/osx/include $PGSERVER_STAGING_OSX || _die "Failed to move include"
+    mv $WD/server/staging/osx/share   $PGSERVER_STAGING_OSX || _die "Failed to move share"
+    mv $WD/server/staging/osx/bin   $PGSERVER_STAGING_OSX || _die "Failed to move bin"
+    touch $PGADMIN_STAGING_OSX/pgAdmin\ 4.app/Contents/Resources/venv/lib/python/site-packages/backports/__init__.py || _die "Failed to touch the __init__.py"
+
+
     echo "END BUILD Server OSX"
 }
 
@@ -433,13 +495,14 @@ _postprocess_server_osx() {
     popd
 
     # Welcome doc
-    cp "$WD/server/resources/installation-notes.html" "$WD/server/staging/osx/doc/" || _die "Failed to install the welcome document"
-    cp "$WD/server/resources/edblogo.png" "$WD/server/staging/osx/doc/" || _die "Failed to install the welcome logo"
+    mkdir -p $PGSERVER_STAGING_OSX/doc/ || _die "Failed to install the document"
+    cp "$WD/server/resources/installation-notes.html" "$PGSERVER_STAGING_OSX/doc/" || _die "Failed to install the welcome document"
+    cp "$WD/server/resources/edblogo.png" "$PGSERVER_STAGING_OSX/doc/" || _die "Failed to install the welcome logo"
 
     #Creating a archive of the binaries
-    mkdir -p $WD/server/staging/osx/pgsql || _die "Failed to create the directory for binaries "
-    cd $WD/server/staging/osx
-    cp -pR bin doc include lib pgAdmin*.app share stackbuilder.app pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+    mkdir -p $PGSERVER_STAGING_OSX/pgsql || _die "Failed to create the directory for binaries "
+    cd $PGSERVER_STAGING_OSX
+    cp -pR $PGSERVER_STAGING_OSX/bin $PGSERVER_STAGING_OSX/doc $PGSERVER_STAGING_OSX/include $CLT_STAGING_OSX/lib $PGADMIN_STAGING_OSX $PGSERVER_STAGING_OSX/share $SB_STAGING_OSX pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
     zip -rq postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip pgsql || _die "Failed to archive the postgresql binaries"
     mv postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip $WD/output/ || _die "Failed to move the archive to output folder"
 
@@ -448,43 +511,41 @@ _postprocess_server_osx() {
     cd $WD/server
 
     # Setup the installer scripts.
-    mkdir -p staging/osx/installer/server || _die "Failed to create a directory for the install scripts"
-    cp $WD/server/scripts/osx/getlocales/getlocales.osx $WD/server/staging/osx/installer/server/getlocales || _die "Failed to copy getlocales utility in the staging directory"
-    chmod ugo+x staging/osx/installer/server/getlocales
-    cp $WD/server/scripts/osx/prerun_checks.sh $WD/server/staging/osx/installer/server/prerun_checks.sh || _die "Failed to copy the prerun_checks.sh script"
-    chmod ugo+x $WD/server/staging/osx/installer/server/prerun_checks.sh
+    mkdir -p $PGSERVER_STAGING_OSX/installer/server || _die "Failed to create a directory for the install scripts"
+    cp $WD/server/scripts/osx/getlocales/getlocales.osx $PGSERVER_STAGING_OSX/installer/server/getlocales || _die "Failed to copy getlocales utility in the staging directory"
+    chmod ugo+x $PGSERVER_STAGING_OSX/installer/server/getlocales
+    cp $WD/server/scripts/osx/prerun_checks.sh $PGSERVER_STAGING_OSX/installer/prerun_checks.sh || _die "Failed to copy the prerun_checks.sh script"
+    chmod ugo+x $PGSERVER_STAGING_OSX/installer/prerun_checks.sh
 
-    cp scripts/osx/createuser.sh staging/osx/installer/server/createuser.sh || _die "Failed to copy the createuser script (scripts/osx/createuser.sh)"
-    chmod ugo+x staging/osx/installer/server/createuser.sh
-    cp scripts/osx/initcluster.sh staging/osx/installer/server/initcluster.sh || _die "Failed to copy the initcluster script (scripts/osx/initcluster.sh)"
-    chmod ugo+x staging/osx/installer/server/initcluster.sh
-    cp scripts/osx/createshortcuts.sh staging/osx/installer/server/createshortcuts.sh || _die "Failed to copy the createuser script (scripts/osx/createshortcuts.sh)"
-    chmod ugo+x staging/osx/installer/server/createshortcuts.sh
-    cp scripts/osx/startupcfg.sh staging/osx/installer/server/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/osx/startupcfg.sh)"
-    chmod ugo+x staging/osx/installer/server/startupcfg.sh
-    cp scripts/osx/loadmodules.sh staging/osx/installer/server/loadmodules.sh || _die "Failed to copy the loadmodules script (scripts/osx/loadmodules.sh)"
-    chmod ugo+x staging/osx/installer/server/loadmodules.sh
+    cp scripts/osx/createuser.sh $PGSERVER_STAGING_OSX/installer/server/createuser.sh || _die "Failed to copy the createuser script (scripts/osx/createuser.sh)"
+    chmod ugo+x $PGSERVER_STAGING_OSX/installer/server/createuser.sh
+    cp scripts/osx/initcluster.sh $PGSERVER_STAGING_OSX/installer/server/initcluster.sh || _die "Failed to copy the initcluster script (scripts/osx/initcluster.sh)"
+    chmod ugo+x $PGSERVER_STAGING_OSX/installer/server/initcluster.sh
+    cp scripts/osx/createshortcuts.sh $PGSERVER_STAGING_OSX/installer/server/createshortcuts.sh || _die "Failed to copy the createuser script (scripts/osx/createshortcuts.sh)"
+    chmod ugo+x $PGSERVER_STAGING_OSX/installer/server/createshortcuts.sh
+    cp scripts/osx/startupcfg.sh $PGSERVER_STAGING_OSX/installer/server/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/osx/startupcfg.sh)"
+    chmod ugo+x $PGSERVER_STAGING_OSX/installer/server/startupcfg.sh
+    cp scripts/osx/loadmodules.sh $PGSERVER_STAGING_OSX/installer/server/loadmodules.sh || _die "Failed to copy the loadmodules script (scripts/osx/loadmodules.sh)"
+    chmod ugo+x $PGSERVER_STAGING_OSX/installer/server/loadmodules.sh
 
     # Copy in the menu pick images
-    mkdir -p staging/osx/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/*.icns staging/osx/scripts/images || _die "Failed to copy the menu pick image (resources/*.icns)"
+    mkdir -p $PGSERVER_STAGING_OSX/scripts/images || _die "Failed to create a directory for the menu pick images"
+    cp resources/*.icns $PGSERVER_STAGING_OSX/scripts/images || _die "Failed to copy the menu pick image (resources/*.icns)"
 
     # Copy the launch scripts
-    cp scripts/osx/runpsql.sh staging/osx/scripts/runpsql.sh || _die "Failed to copy the runpsql script (scripts/osx/runpsql.sh)"
-    chmod ugo+x staging/osx/scripts/runpsql.sh
+    cp scripts/osx/runpsql.sh $PGSERVER_STAGING_OSX/scripts/runpsql.sh || _die "Failed to copy the runpsql script (scripts/osx/runpsql.sh)"
+    chmod ugo+x $PGSERVER_STAGING_OSX/scripts/runpsql.sh
 
     # Hack up the scripts, and compile them into the staging directory
-    cp scripts/osx/doc-installationnotes.applescript.in staging/osx/scripts/doc-installationnotes.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-installationnotes.applescript.in)"
-    cp scripts/osx/doc-postgresql.applescript.in staging/osx/scripts/doc-postgresql.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-postgresql.applescript.in)"
-    cp scripts/osx/doc-postgresql-releasenotes.applescript.in staging/osx/scripts/doc-postgresql-releasenotes.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-postgresql-releasenotes.applescript.in)"
-    cp scripts/osx/doc-pgadmin.applescript.in staging/osx/scripts/doc-pgadmin.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-pgadmin.applescript.in)"
-#    cp scripts/osx/doc-pljava.applescript.in staging/osx/scripts/doc-pljava.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-pljava.applescript.in)"
-#    cp scripts/osx/doc-pljava-readme.applescript.in staging/osx/scripts/doc-pljava-readme.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-pljava-readme.applescript.in)"
+    cp scripts/osx/doc-installationnotes.applescript.in $PGSERVER_STAGING_OSX/scripts/doc-installationnotes.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-installationnotes.applescript.in)"
+    cp scripts/osx/doc-postgresql.applescript.in $PGSERVER_STAGING_OSX/scripts/doc-postgresql.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-postgresql.applescript.in)"
+    cp scripts/osx/doc-postgresql-releasenotes.applescript.in $PGSERVER_STAGING_OSX/scripts/doc-postgresql-releasenotes.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-postgresql-releasenotes.applescript.in)"
+    cp scripts/osx/doc-pgadmin.applescript.in $PGSERVER_STAGING_OSX/scripts/doc-pgadmin.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-pgadmin.applescript.in)"
 
-    cp scripts/osx/psql.applescript.in staging/osx/scripts/psql.applescript || _die "Failed to to the menu pick script (scripts/osx/psql.applescript.in)"
-    cp scripts/osx/reload.applescript.in staging/osx/scripts/reload.applescript || _die "Failed to to the menu pick script (scripts/osx/reload.applescript.in)"
-    cp scripts/osx/pgadmin.applescript.in staging/osx/scripts/pgadmin.applescript || _die "Failed to to the menu pick script (scripts/osx/pgadmin.applescript.in)"
-    cp scripts/osx/stackbuilder.applescript.in staging/osx/scripts/stackbuilder.applescript || _die "Failed to to the menu pick script (scripts/osx/stackbuilder.applescript.in)"
+    cp scripts/osx/psql.applescript.in $PGSERVER_STAGING_OSX/scripts/psql.applescript || _die "Failed to to the menu pick script (scripts/osx/psql.applescript.in)"
+    cp scripts/osx/reload.applescript.in $PGSERVER_STAGING_OSX/scripts/reload.applescript || _die "Failed to to the menu pick script (scripts/osx/reload.applescript.in)"
+    cp scripts/osx/pgadmin.applescript.in $PGSERVER_STAGING_OSX/scripts/pgadmin.applescript || _die "Failed to to the menu pick script (scripts/osx/pgadmin.applescript.in)"
+    cp scripts/osx/stackbuilder.applescript.in $PGSERVER_STAGING_OSX/scripts/stackbuilder.applescript || _die "Failed to to the menu pick script (scripts/osx/stackbuilder.applescript.in)"
 
     PG_DATETIME_SETTING_OSX="64-bit integers"
     
