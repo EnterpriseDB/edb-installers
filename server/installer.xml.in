@@ -4670,6 +4670,24 @@ REM The script sets environment variables helpful for PostgreSQL
                         </compareText>
                     </ruleList>
                 </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/scripts</destination>
+                    <name>defaultlinux_2</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/server/scripts/xdg</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </folder>
                 <!-- LINUX-X64: files for default component -->
                 <folder>
                     <description>Program Files</description>
@@ -4687,7 +4705,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}/server/scripts</destination>
+                    <destination>${installdir}/scripts</destination>
                     <name>defaultlinux-x64_2</name>
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
@@ -5793,6 +5811,17 @@ REM The script sets environment variables helpful for PostgreSQL
 
                     </startMenuShortcutList>
                 </startMenuFolder>
+
+		<!-- psql -->
+                <startMenuShortcut>
+                    <name>SQL Shell (psql)</name>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}\scripts\runpsql.bat</windowsExec>
+                    <windowsIcon>${installdir}\scripts\images\pg-psql.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${create_shortcuts}" />
+                    </ruleList>
+                </startMenuShortcut>
 
                 <!-- pgAdmin -->
                 <startMenuShortcut>

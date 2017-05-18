@@ -580,7 +580,7 @@ _postprocess_server_linux() {
     cp $WD/server/scripts/linux/getlocales/getlocales.linux $PGSERVER_STAGING/installer/server/getlocales || _die "Failed to copy getlocales utility in the staging directory"
     chmod ugo+x $PGSERVER_STAGING/installer/server/getlocales
     cp $WD/server/scripts/linux/prerun_checks.sh $PGSERVER_STAGING/installer/prerun_checks.sh || _die "Failed to copy the prerun_checks.sh script"
-    chmod ugo+x $PGSERVER_STAGING/installer/server/prerun_checks.sh
+    chmod ugo+x $PGSERVER_STAGING/installer/prerun_checks.sh
     cp scripts/linux/runpgcontroldata.sh $PGSERVER_STAGING/installer/server/runpgcontroldata.sh || _die "Failed to copy the runpgcontroldata script (scripts/linux/runpgcontroldata.sh)"
     chmod ugo+x $PGSERVER_STAGING/installer/server/runpgcontroldata.sh
     cp scripts/linux/createuser.sh $PGSERVER_STAGING/installer/server/createuser.sh || _die "Failed to copy the createuser script (scripts/linux/createuser.sh)"
@@ -675,6 +675,8 @@ _postprocess_server_linux() {
     chmod ugo+x $PGSERVER_STAGING/scripts/serverctl.sh
     cp scripts/linux/runpsql.sh $PGSERVER_STAGING/scripts/runpsql.sh || _die "Failed to copy the runpsql script (scripts/linux/runpsql.sh)"
     chmod ugo+x $PGSERVER_STAGING/scripts/runpsql.sh
+    cp scripts/linux/launchbrowser.sh $PGSERVER_STAGING/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
+    chmod ugo+x $PGSERVER_STAGING/scripts/launchbrowser.sh
     cp scripts/linux/launchbrowser.sh $PGADMIN_STAGING/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
     chmod ugo+x $PGSERVER_STAGING/scripts/launchbrowser.sh
     cp scripts/linux/launchpgadmin.sh $PGADMIN_STAGING/scripts/launchpgadmin.sh || _die "Failed to copy the launchpgadmin script (scripts/linux/launchpgadmin.sh)"

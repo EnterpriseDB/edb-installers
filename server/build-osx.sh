@@ -404,6 +404,11 @@ EOT-PGADMIN
     ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_net-*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libuuid"
     ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_xml-*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libuuid"
     ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcurl*dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libcurl"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libz*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libz"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libssl*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libssl"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcrypto*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libcrypto"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libjpeg*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libjpeg"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libpng16*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libpng16"
 
     cd $WD
     # Copy the staging to controller to build the installers

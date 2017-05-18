@@ -640,6 +640,7 @@ EOT
    echo "Restructuring Stackbuilder"
    mkdir -p $SB_STAGING_WINDOWS_X64/bin || _die "Couldn't create the staging directory $CLT_STAGING_WINDOWS_X64/scripts/images"
    mv $WD/server/staging/windows-x64/bin/stackbuilder.exe $SB_STAGING_WINDOWS_X64/bin || _die "Failed to move stackbuilder.exe"
+   cp  $WD/server/staging/windows-x64/bin/*.dll $SB_STAGING_WINDOWS_X64/bin || _die "Failed to move dlls"
    mv $WD/server/staging/windows-x64/StackBuilder $SB_STAGING_WINDOWS_X64/ || _die "Failed to move stackbuilder.exe"
 
    echo "Restructuring Server"

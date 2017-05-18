@@ -682,6 +682,8 @@ _postprocess_server_linux_x64() {
     chmod ugo+x $PGSERVER_STAGING_X64/scripts/serverctl.sh
     cp scripts/linux/runpsql.sh $PGSERVER_STAGING_X64/scripts/runpsql.sh || _die "Failed to copy the runpsql script (scripts/linux/runpsql.sh)"
     chmod ugo+x $PGSERVER_STAGING_X64/scripts/runpsql.sh
+    cp scripts/linux/launchbrowser.sh $PGSERVER_STAGING_X64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
+    chmod ugo+x $PGADMIN_STAGING_X64/scripts/launchbrowser.sh
     cp scripts/linux/launchbrowser.sh $PGADMIN_STAGING_X64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
     chmod ugo+x $PGADMIN_STAGING_X64/scripts/launchbrowser.sh
     cp scripts/linux/launchpgadmin.sh $PGADMIN_STAGING_X64/scripts/launchpgadmin.sh || _die "Failed to copy the launchpgadmin script (scripts/linux/launchpgadmin.sh)"
