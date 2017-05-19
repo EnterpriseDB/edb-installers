@@ -215,6 +215,14 @@ PG_LANGUAGEPACK_OSX=/Library/edb/languagepack-10
 PG_QTFRAMEWORK_OSX=/Library/Frameworks
 PG_QMAKE_OSX=/opt/local/Qt5.8.0/5.8/clang_64/bin/qmake
 PG_QMAKE_OSX_UM=/Developer/Tools/Qt/qmake
+PGSERVER_STAGING_OSX=$PWD/server/staging/osx/server
+REMOTE_PGSERVER_STAGING_OSX=$PG_PATH_OSX/server/staging/osx/server
+PGADMIN_STAGING_OSX=$PWD/server/staging/osx/pgadmin4
+REMOTE_PGADMIN_STAGING_OSX=$PG_PATH_OSX/server/staging/osx/pgadmin4
+SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
+REMOTE_SB_STAGING_OSX=$PG_PATH_OSX/server/staging/osx/stackbuilder
+CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
+REMOTE_CLT_STAGING_OSX=$PG_PATH_OSX/server/staging/osx/commandlinetools
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the
