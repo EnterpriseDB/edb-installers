@@ -244,7 +244,7 @@ EOF
       </ruleList>
     </setInstallerVariable>
     <setInstallerVariable name="python_path" value=""/>
-    <setInstallerVariable name="pemversion" value="0"/>
+    <setInstallerVariable name="pemversion" value="6"/>
     <setInstallerVariable name="lppython_loc" value=""/>
   </initializationActionList>
   <!-- Preinstallation actions -->
