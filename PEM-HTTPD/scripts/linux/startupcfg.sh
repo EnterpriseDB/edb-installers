@@ -27,11 +27,13 @@ _warn() {
 
 determine_services_path() {
         echo "==>> Checking systemd services path..."
-        echo "Running: /usr/bin/pkg-config --variable=systemdsystemunitdir systemd"
-        SYSTEMD_SERVICES_PATH=`/usr/bin/pkg-config --variable=systemdsystemunitdir systemd`
+        if [ -f /usr/bin/pkg-config ]; then
+           echo "Running: /usr/bin/pkg-config --variable=systemdsystemunitdir systemd"
+           SYSTEMD_SERVICES_PATH=`/usr/bin/pkg-config --variable=systemdsystemunitdir systemd`
+        fi
 
         if [ -z $SYSTEMD_SERVICES_PATH ]; then
-            SYSTEMD_SERVICES_PATH=/usr/lib/systemd/system
+            SYSTEMD_SERVICES_PATH=/lib/systemd/system
         fi
         echo "SYSTEMD_SERVICES_PATH:$SYSTEMD_SERVICES_PATH"
 }
