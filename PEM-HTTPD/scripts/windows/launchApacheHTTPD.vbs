@@ -6,9 +6,9 @@ Set WSHShell=CreateObject("WScript.Shell")
 
 strArch = WshShell.RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\PROCESSOR_ARCHITECTURE")
 If strArch = "x86" Then
-   strRegKey = "HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD\"
+   strRegKey = "HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM-HTTPD\"
 Else
-   strRegKey = "HKEY_LOCAL_MACHINE\SOFTWARE\wow6432node\EnterpriseDB\ApacheHTTPD\"
+   strRegKey = "HKEY_LOCAL_MACHINE\SOFTWARE\wow6432node\EnterpriseDB\PEM-HTTPD\"
 End If
 
 strApachePort = WSHShell.RegRead(strRegKey & "APACHE_HPORT")

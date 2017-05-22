@@ -11,5 +11,5 @@ REM SET PYTHONPATH="@@LP_PYTHON_HOME@@"
 REM SET PATH="@@LP_PYTHON_HOME@@";%PATH%
 SET PATH="@@APACHE_HOME@@\bin";%PATH%
 
-"@@APACHE_HOME@@\bin\httpd.exe" -k start -n "PEMHTTPD"
+"@@APACHE_HOME@@\bin\httpd.exe" -k start -n "PEM HTTPD"
 

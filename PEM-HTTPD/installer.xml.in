@@ -1284,7 +1284,7 @@ include conf\addons\*.conf
       </text>
     </addTextToFile>
         <registrySet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEMHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM-HTTPD</key>
           <name>MODWSGI_ENABLE</name>
           <value>1</value>
         </registrySet>
@@ -1637,17 +1637,17 @@ include conf\addons\*.conf
       <actionList>
         <!-- Set the Apache Home and Apache Port(default 8080) to registry. -->
         <registrySet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEMHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM-HTTPD</key>
           <name>APACHE_HOME</name>
           <value>${installdir}\apache</value>
         </registrySet>
         <registrySet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEMHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM-HTTPD</key>
           <name>APACHE_HPORT</name>
           <value>${port}</value>
         </registrySet>
         <registrySet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEMHTTPD</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\PEM-HTTPD</key>
           <name>Branding</name>
           <value>${branding}</value>
         </registrySet>
