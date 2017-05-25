@@ -54,16 +54,16 @@ _fixup_file() {
 
 # Create the icon resources
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-postgresql.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-apachehttpd.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-launchApacheHTTPD.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-pemhttpd.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 "$INSTALLDIR/scripts/images/pg-launchPEMHTTPD.png"
 
 # Fixup the scripts
 chmod ugo+x "$INSTALLDIR/installer/PEM-HTTPD/"*.sh
-_fixup_file "$INSTALLDIR/scripts/launchApacheHTTPD.sh"
-chmod ugo+x "$INSTALLDIR/scripts/launchApacheHTTPD.sh"
+_fixup_file "$INSTALLDIR/scripts/launchPEMHTTPD.sh"
+chmod ugo+x "$INSTALLDIR/scripts/launchPEMHTTPD.sh"
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
-_fixup_file "$INSTALLDIR/scripts/xdg/pg-launchApacheHTTPD.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-launchPEMHTTPD.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql.directory"
 
 # Copy the primary desktop file to the branded version. We don't do this if
@@ -77,8 +77,8 @@ fi
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
          "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
-         "$INSTALLDIR/scripts/xdg/pg-apachehttpd.directory" \
-    "$INSTALLDIR/scripts/xdg/pg-launchApacheHTTPD.desktop" || _warn "Failed to create the ApacheHTTPD menu"
+         "$INSTALLDIR/scripts/xdg/pg-pemhttpd.directory" \
+    "$INSTALLDIR/scripts/xdg/pg-launchPEMHTTPD.desktop" || _warn "Failed to create the PEMHTTPD menu"
 
 #Ubuntu 10.04 and greater require menu cache update
 

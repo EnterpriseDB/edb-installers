@@ -177,7 +177,7 @@ _postprocess_PEM-HTTPD_linux() {
     cd $WD/PEM-HTTPD
 
     pushd staging/linux
-    generate_3rd_party_license "apache_httpd"
+    generate_3rd_party_license "pem_httpd"
     popd
 
     # Setup the installer scripts.
@@ -196,16 +196,16 @@ _postprocess_PEM-HTTPD_linux() {
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/PEM-HTTPD/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux/installer/PEM-HTTPD/removeshortcuts.sh
 
-    cp scripts/linux/configureApacheHTTPD.sh staging/linux/installer/PEM-HTTPD/configureApacheHTTPD.sh || _die "Failed to copy the configureApacheHTTPD script (scripts/linux/configureApacheHTTPD.sh)"
-    chmod ugo+x staging/linux/installer/PEM-HTTPD/configureApacheHTTPD.sh
+    cp scripts/linux/configurePEMHTTPD.sh staging/linux/installer/PEM-HTTPD/configurePEMHTTPD.sh || _die "Failed to copy the configureApacheHTTPD script (scripts/linux/configurePEMHTTPD.sh)"
+    chmod ugo+x staging/linux/installer/PEM-HTTPD/configurePEMHTTPD.sh
 
     cp scripts/linux/startupcfg.sh staging/linux/installer/PEM-HTTPD/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/linux/startupcfg.sh)"
     chmod ugo+x staging/linux/installer/PEM-HTTPD/startupcfg.sh
 
     mkdir -p staging/linux/scripts || _die "Failed to create a directory for the launch scripts"
     # Copy the launch scripts
-    cp scripts/linux/launchApacheHTTPD.sh staging/linux/scripts/launchApacheHTTPD.sh || _die "Failed to copy the launchApacheHTTPD script (scripts/linux/launchApacheHTTPD.sh)"
-    chmod ugo+x staging/linux/scripts/launchApacheHTTPD.sh
+    cp scripts/linux/launchPEMHTTPD.sh staging/linux/scripts/launchPEMHTTPD.sh || _die "Failed to copy the launchApacheHTTPD script (scripts/linux/launchPEMHTTPD.sh)"
+    chmod ugo+x staging/linux/scripts/launchPEMHTTPD.sh
 
     cp scripts/linux/launchbrowser.sh staging/linux/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
     chmod ugo+x staging/linux/scripts/launchbrowser.sh
@@ -221,8 +221,8 @@ _postprocess_PEM-HTTPD_linux() {
 
     mkdir -p staging/linux/scripts/xdg || _die "Failed to create a directory for the menu pick items"
     cp resources/xdg/pg-postgresql.directory staging/linux/scripts/xdg/pg-postgresql.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/pg-apachehttpd.directory staging/linux/scripts/xdg/pg-apachehttpd.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/pg-launchApacheHTTPD.desktop staging/linux/scripts/xdg/pg-launchApacheHTTPD.desktop || _die "Failed to copy a menu pick desktop"
+    cp resources/xdg/pg-pemhttpd.directory staging/linux/scripts/xdg/pg-pemhttpd.directory || _die "Failed to copy a menu pick directory"
+    cp resources/xdg/pg-launchPEMHTTPD.desktop staging/linux/scripts/xdg/pg-launchPEMHTTPD.desktop || _die "Failed to copy a menu pick desktop"
 
     cp resources/index.html staging/linux/apache/www || _die "Failed to copy index.html"
     _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/linux/apache/www/index.html"

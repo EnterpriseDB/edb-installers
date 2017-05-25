@@ -49,19 +49,19 @@ _replace() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system   \
-    "$INSTALLDIR/scripts/xdg/pg-apachehttpd.directory" \
-    "$INSTALLDIR/scripts/xdg/pg-launchApacheHTTPD.desktop" || _warn "Failed to remove the ApacheHTTPD menu"
+    "$INSTALLDIR/scripts/xdg/pg-pemhttpd.directory" \
+    "$INSTALLDIR/scripts/xdg/pg-launchPEMHTTPD.desktop" || _warn "Failed to remove the PEMHTTPD menu"
 
       
 # Remove the icon resources
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-apachehttpd.png"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-launchApacheHTTPD.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-pemhttpd.png"
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 "$INSTALLDIR/scripts/images/pg-launchPEMHTTPD.png"
 
 # Only remove the directory file if it's branded
 if [ $BRANDED -ne 0 ];
 then
     rm "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory"
-    rm "$INSTALLDIR/scripts/xdg/pg-apachehttpd.directory" 
+    rm "$INSTALLDIR/scripts/xdg/pg-pemhttpd.directory" 
 fi
 
 xdg_dir_name=menus
@@ -78,7 +78,7 @@ done
 xdg_global_dir="$xdg_global_dir/applications-merged"
 
 # Hack up the XDG menu files to make sure everything really does go.
-_replace "<Filename>pg-launchApacheHTTPD.desktop</Filename>" "" "$xdg_global_dir/pg-apachehttpd.menu"
+_replace "<Filename>pg-launchPEMHTTPD.desktop</Filename>" "" "$xdg_global_dir/pg-pemhttpd.menu"
 
 #Ubuntu 10.04 and greater require menu cache update
 

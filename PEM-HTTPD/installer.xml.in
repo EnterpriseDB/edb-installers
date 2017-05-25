@@ -20,7 +20,7 @@
   <height>400</height>
 
   <!-- Misc options -->
-  <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+  <installerFilename>pem-httpd-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
   <compressionAlgorithm>lzma</compressionAlgorithm>
   <enableRollback>0</enableRollback>
   <requireInstallationByRootUser>1</requireInstallationByRootUser>
@@ -1176,7 +1176,7 @@ EOF
     <!-- Configuring Scripts to set the installation path in Apache -->
     <runProgram>
       <customErrorMessage>${msg(error.configure.pemhttpd)}</customErrorMessage>
-      <program>${installdir}/installer/PEM-HTTPD/configureApacheHTTPD.sh</program>
+      <program>${installdir}/installer/PEM-HTTPD/configurePEMHTTPD.sh</program>
       <programArguments>"${installdir}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
       <workingDirectory>${installdir}/installer/PEM-HTTPD</workingDirectory>
       <ruleList>
@@ -2081,7 +2081,7 @@ include conf\addons\*.conf
             <distributionDirectory>
               <origin>staging/windows/scripts</origin>
             </distributionDirectory>
-	    <distributionFile origin="staging/windows/apache_httpd_3rd_party_licenses.txt"/>
+	    <distributionFile origin="staging/windows/pem_httpd_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
         <folder>
@@ -2111,7 +2111,7 @@ include conf\addons\*.conf
             <distributionDirectory>
               <origin>staging/linux/scripts</origin>
             </distributionDirectory>
-	    <distributionFile origin="staging/linux/apache_httpd_3rd_party_licenses.txt"/>
+	    <distributionFile origin="staging/linux/pem_httpd_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
         <folder>
@@ -2141,7 +2141,7 @@ include conf\addons\*.conf
             <distributionDirectory>
               <origin>staging/linux-x64/scripts</origin>
             </distributionDirectory>
-	    <distributionFile origin="staging/linux-x64/apache_httpd_3rd_party_licenses.txt"/>
+	    <distributionFile origin="staging/linux-x64/pem_httpd_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
         <folder>
@@ -2171,7 +2171,7 @@ include conf\addons\*.conf
             <distributionDirectory>
               <origin>staging/osx/scripts</origin>
             </distributionDirectory>
-	    <distributionFile origin="staging/osx/apache_httpd_3rd_party_licenses.txt"/>
+	    <distributionFile origin="staging/osx/pem_httpd_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
         <folder>

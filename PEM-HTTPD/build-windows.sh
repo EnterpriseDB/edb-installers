@@ -193,7 +193,7 @@ _postprocess_PEM-HTTPD_windows() {
     cd $WD/PEM-HTTPD/staging/windows
 
     pushd $WD/PEM-HTTPD/staging/windows
-    generate_3rd_party_license "apache_httpd"
+    generate_3rd_party_license "pem_httpd"
     popd
 
     for file in $filelist
@@ -234,7 +234,7 @@ _postprocess_PEM-HTTPD_windows() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
 	# Sign the installer
-	win32_sign "pemhttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_PEMHTTPD-windows.exe"
+	win32_sign "pem-httpd-$PG_VERSION_APACHE-$PG_BUILDNUM_PEMHTTPD-windows.exe"
 	
      cd $WD
     echo "END POST PEM-HTTPD Windows"

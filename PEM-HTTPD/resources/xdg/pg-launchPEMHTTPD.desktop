@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=PEMHTTPD
+Exec="INSTALL_DIR/scripts/launchPEMHTTPD.sh"
+Icon=pg-launchPEMHTTPD.png
+Terminal=false
+Type=Application
