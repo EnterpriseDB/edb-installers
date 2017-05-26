@@ -158,7 +158,7 @@ EOF
   <initializationActionList>
       <setInstallerVariable name="project.parameter(lppython_loc).ask" value="0" />
 
-      <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PEMHTTPD" />	
+      <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_PEMHTTPD" />
       <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
       <throwError>
         <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -271,7 +271,7 @@ EOF
 
     <!-- Check for SELinux -->
     <actionGroup>
-      <actionList> 
+      <actionList>
         <setInstallerVariableFromScriptOutput>
           <name>selinux</name>
           <exec>${executablePath}</exec>
@@ -283,15 +283,15 @@ EOF
               <logic>does_not_equal</logic>
               <text>${selinux}</text>
               <value>Disabled</value>
-            </compareText> 
+            </compareText>
             <compareText>
               <logic>does_not_equal</logic>
               <text>${selinux}</text>
               <value/>
             </compareText>
           </ruleList>
-        </showWarning> 
-      </actionList> 
+        </showWarning>
+      </actionList>
       <ruleList>
         <compareText>
           <logic>does_not_equal</logic>
@@ -305,7 +305,7 @@ EOF
         </compareText>
       </ruleList>
     </actionGroup>
-     
+
     <!-- Creates the ini file if not exits -->
     <touchFile path="/etc/postgres-reg.ini">
       <ruleList>
@@ -462,7 +462,7 @@ EOF
       </ruleList>
     </actionGroup>
 
-    <!-- Set Python path 
+    <!-- Set Python path
          case: when LP python is provided on command line, irrespective of PEM is not installed or not -->
     <actionGroup>
       <actionList>
@@ -659,7 +659,7 @@ EOF
           <text>${apache_home}</text>
           <value/>
         </compareText>
-      </ruleList>    
+      </ruleList>
     </actionGroup>
 
     <!-- If there appears to be an existing installation, with no Branding value. -->
@@ -700,7 +700,7 @@ EOF
     <setInstallerVariable>
       <name>branding</name>
       <persist>0</persist>
-      <value>Postgres Plus Add-ons</value>
+      <value>Postgres Enterprise Manager</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -712,7 +712,7 @@ EOF
     <logMessage>
       <text>Using branding: ${branding}</text>
     </logMessage>
-    <!-- Getting the Version Installed minus the buildnum --> 
+    <!-- Getting the Version Installed minus the buildnum -->
     <setInstallerVariableFromRegEx>
         <name>pemhttpdVersionInstalled</name>
         <text>${pemhttpdVersion}</text>
@@ -728,7 +728,7 @@ EOF
    </setInstallerVariableFromRegEx>
 
     <actionGroup>
-      <actionList> 
+      <actionList>
          <!-- Unpacking the Script file to temporary directory -->
          <unpackFile>
            <component>PEMHTTPD</component>
@@ -742,7 +742,7 @@ EOF
             <programArguments>/q /norestart</programArguments>
             <workingDirectory>${system_temp_directory}</workingDirectory>
             <showMessageOnError>0</showMessageOnError>
-            <abortOnError>0</abortOnError>	
+            <abortOnError>0</abortOnError>
          </runProgram>
          <throwError>
             <text>${msg(error.installing.runtimes)}</text>
@@ -758,7 +758,7 @@ EOF
                   <value>${program_exit_code}</value>
                </compareText>
             </ruleList>
-         </throwError>	
+         </throwError>
       </actionList>
       <ruleList>
          <compareText>
@@ -845,7 +845,7 @@ EOF
     </actionGroup>
     <!-- Set the actual port value to previously installed apache port, if exist, in order
          to ignore the CLI option specified -->
-    <setInstallerVariable name="port" value="${apacheport}" > 
+    <setInstallerVariable name="port" value="${apacheport}" >
       <ruleList>
          <compareText logic="does_not_equal" text="${apacheport}" value="" />
       </ruleList>
@@ -963,7 +963,7 @@ EOF
             <logic>equals</logic>
             <text>${installer_ui}</text>
             <value>unattended</value>
-          </compareText>	 
+          </compareText>
       </ruleList>
     </actionGroup>
     <actionGroup>
@@ -1071,9 +1071,9 @@ EOF
               <pattern>REM SET</pattern>
               <value>SET</value>
             </substitution>
-            <substitution>    
+            <substitution>
               <pattern>@@LP_PYTHON_HOME@@</pattern>
-              <value>${python_home}</value>               
+              <value>${python_home}</value>
             </substitution>
          </substitutionList>
          <ruleList>
@@ -1111,7 +1111,7 @@ EOF
             </substitution>
             <substitution>
               <pattern>@@LP_PYTHON_HOME@@</pattern>
-              <value>${python_home}</value>               
+              <value>${python_home}</value>
             </substitution>
          </substitutionList>
          <ruleList>
@@ -1131,8 +1131,8 @@ EOF
             </substitution>
             <substitution>
               <pattern>@@LP_PYTHON_HOME@@</pattern>
-              <value>${python_home}</value>               
-            </substitution> 
+              <value>${python_home}</value>
+            </substitution>
          </substitutionList>
          <ruleList>
             <compareText>
@@ -1334,15 +1334,15 @@ include conf\addons\*.conf
              <fileTest>
                  <path>${installdir}/apache/conf/addons/application_secure.conf</path>
                  <condition>not_exists</condition>
-             </fileTest>         
+             </fileTest>
              <compareText>
                   <logic>does_not_equal</logic>
                   <text>${platform_name}</text>
                   <value>windows</value>
-             </compareText> 
+             </compareText>
         </ruleList>
-     </actionGroup>    
- 
+     </actionGroup>
+
     <!-- WIN: Adding a application secure conf which prohibit directory listings of applications under www context -->
     <actionGroup>
         <actionList>
@@ -1368,7 +1368,7 @@ include conf\addons\*.conf
              <fileTest>
                  <path>${installdir}\apache\conf\addons\application_secure.conf</path>
                  <condition>not_exists</condition>
-             </fileTest>         
+             </fileTest>
              <compareText>
                   <logic>equals</logic>
                   <text>${platform_name}</text>
@@ -1427,8 +1427,8 @@ include conf\addons\*.conf
         <ruleList>
             <fileExists path="${installdir}/apache/conf/addons/httpd-ssl-httpd.conf" />
         </ruleList>
-    </actionGroup> 
-    
+    </actionGroup>
+
     <!-- Install PEM-HTTPD as a service -->
     <runProgram>
       <customErrorMessage>${msg(error.service.pemhttpd)}</customErrorMessage>
@@ -1498,7 +1498,7 @@ include conf\addons\*.conf
 	<linuxServiceAction
           name="PEMHTTPD" action="start" systemdBooted="${is_init_systemd}"
           customErrorMessage="${msg(error.start.apache)}" ruleEvaluationLogic="or">
-          <ruleList>    
+          <ruleList>
 	    <compareText>
                 <logic>equals</logic>
                 <text>${selinux}</text>
@@ -1508,8 +1508,8 @@ include conf\addons\*.conf
                 <logic>equals</logic>
                 <text>${selinux}</text>
                 <value/>
-             </compareText>    
-          </ruleList>       
+             </compareText>
+          </ruleList>
         </linuxServiceAction>
       </actionList>
       <ruleList>
@@ -1528,7 +1528,7 @@ include conf\addons\*.conf
           <programArguments>"${installdir}" "${branding}" "${system_temp_directory}/${product_shortname}_${random_number}"</programArguments>
           <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
           <workingDirectory>${installdir}/installer/PEM-HTTPD</workingDirectory>
-          <abortOnError>0</abortOnError>  
+          <abortOnError>0</abortOnError>
         </runProgram>
       </actionList>
       <ruleList>
@@ -1595,7 +1595,7 @@ include conf\addons\*.conf
         </compareText>
       </ruleList>
     </actionGroup>
-    
+
      <!-- MAC: Install Apache as Service (in upgrade) for older installations -->
     <actionGroup>
       <actionList>
@@ -1617,7 +1617,7 @@ include conf\addons\*.conf
         </fileExists>
       </ruleList>
     </actionGroup>
-    
+
     <!-- MAC: Remove the startup item from older installations -->
     <deleteFile>
       <path>/Library/StartupItems/PEMHTTPD</path>
@@ -1700,7 +1700,7 @@ include conf\addons\*.conf
                 <value/>
             </compareText>
         </ruleList>
-    </actionGroup> 
+    </actionGroup>
 
       <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
             <ruleList>
@@ -1760,7 +1760,7 @@ include conf\addons\*.conf
                <text>${platform_name}</text>
                <value>osx</value>
            </compareText>
-        </ruleList> 
+        </ruleList>
     </runProgram>
     <!-- Linux | Mac actionList -->
     <actionGroup>
@@ -1794,7 +1794,7 @@ include conf\addons\*.conf
                   <text>${platform_name}</text>
                   <value>windows</value>
               </compareText>
-          </ruleList> 
+          </ruleList>
         </runProgram>
         <!-- Unset values in the ini file -->
         <iniFileSet>
@@ -1988,7 +1988,7 @@ include conf\addons\*.conf
 	    <fileExists path="${installdir}/apache/conf/addons/application_secure.conf" />
 	</ruleList>
     </deleteFile>
-    
+
     <!-- Remove the addons directory -->
     <deleteFile path="${installdir}/apache/conf/addons" >
 	<ruleList>
