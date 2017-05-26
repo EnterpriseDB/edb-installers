@@ -259,7 +259,7 @@ echo "Creating $remote_location on the builds server" >> autobuild.log
 ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
 
 echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-rsync -avh --del --exclude={pem*,sqlprof*,build-pvt*,server.img,php_edbpem*} output/ buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
+rsync -avh --del --include=pem-httpd* --exclude={pem*,sqlprof*,build-pvt*,server.img} output/ buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
 
 # Create PEM directory and try to upload the PEM installers only when skippvpkg is not defined
 if [ "$SKIPPVTPACKAGES" == "" ]
@@ -267,7 +267,7 @@ then
 	echo "Creating $pem_remote_location on the builds server" >> autobuild.log
 	ssh buildfarm@builds.enterprisedb.com mkdir -p $pem_remote_location >> autobuild.log 2>&1
 	echo "Uploading pem installers to $pem_remote_location on the builds server" >> autobuild.log
-	rsync -avh --del output/{pem*,sqlprof*,build-pvt*,php_edbpem*} buildfarm@builds.enterprisedb.com:$pem_remote_location/ >> autobuild.log 2>&1
+	rsync -avh --del output/{pem*,sqlprof*,build-pvt*,server.img} --exclude=pem-httpd* buildfarm@builds.enterprisedb.com:$pem_remote_location/ >> autobuild.log 2>&1
 fi
 
 echo "#######################################################################" >> autobuild.log
