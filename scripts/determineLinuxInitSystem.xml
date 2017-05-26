@@ -107,7 +107,13 @@ fi&#10;
 
 if [ $? -eq 0 ]; then&#10;
 	SYSTEMD_INSTALLED=1&#10;
-	/bin/systemd-notify --booted&#10;
+        if [ -f /usr/bin/pkg-config ]&#10;
+        then&#10;
+          SYSTEMD_PATH=`/usr/bin/pkg-config --variable=prefix systemd`&#10;
+        else&#10;
+          SYSTEMD_PATH=&#10;
+        fi&#10;
+	$SYSTEMD_PATH/bin/systemd-notify --booted&#10;
 	if [ $? -eq 0 ]; then&#10;
 		SYSTEMD_BOOTED=1&#10;
 		echo 2;&#10;
