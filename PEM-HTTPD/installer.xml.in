@@ -1068,8 +1068,8 @@ EOF
       <files>${installdir}/installer/PEM-HTTPD/install-apache.bat</files>
          <substitutionList>
             <substitution>
-              <pattern>REM</pattern>
-              <value></value>
+              <pattern>REM SET</pattern>
+              <value>SET</value>
             </substitution>
             <substitution>    
               <pattern>@@LP_PYTHON_HOME@@</pattern>
@@ -1106,8 +1106,8 @@ EOF
       <files>${installdir}/installer/PEM-HTTPD/start-apache.bat</files>
          <substitutionList>
             <substitution>
-              <pattern>REM</pattern>
-              <value></value>
+              <pattern>REM SET</pattern>
+              <value>SET</value>
             </substitution>
             <substitution>
               <pattern>@@LP_PYTHON_HOME@@</pattern>
