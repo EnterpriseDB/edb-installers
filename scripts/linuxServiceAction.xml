@@ -116,9 +116,69 @@ ${program_stderr}&#10;
                 </runProgram>
               </actionList>
               <elseActionList>
+            <if>
+              <conditionRuleList>
+                <fileTest condition="exists" path="/usr/lib/systemd/system/${name}.service"/>
+                <fileTest condition="is_file" path="/usr/lib/systemd/system/${name}.service"/>
+                <isTrue value="${systemdBooted}"/>
+              </conditionRuleList>
+              <actionList>
+
+                <!-- Found the server script no need to try the Sys V Init script now -->
+                <setInstallerVariable name="trySysVInit" value="false"/>
+                <setInstallerVariable name="systemd_script_found" value="true"/>
+
+                <logMessage text="&#10;
+## Found /usr/lib/systemd/system/${name}.service...&#10;
+## Running /usr/bin/systemctl ${action} &quot;${name}.service&quot;"/>
+
+                <!-- Execute the service action (systemd) -->
+                <runProgram program="/usr/bin/systemctl"
+                  programArguments="${action} &quot;${name}.service&quot;"
+                  abortOnError="0" showMessageOnError="0"
+                  progressText="${progressText}">
+                  <onErrorActionList>
+                    <!-- Service failed to run action, we shouldn't try the sysvinit
+                         script now -->
+                    <setInstallerVariable name="installer_exit_code" value="${program_exit_code}"/>
+                    <setInstallerVariable name="${serviceExitCode}" value="${program_exit_code}"/>
+                    <setInstallerVariable name="${serviceStderr}" value="${program_stderr}"/>
+                    <setInstallerVariable name="${serviceStdout}" value="${program_stdout}"/>
+                <logMessage text="&#10;
+## Error found:&#10;
+Exit Code: ${program_exit_code}&#10;
+Program Output:&#10;
+${program_stdout}&#10;
+Program Error:&#10;
+${program_stderr}&#10;
+"/>
+
+                    <setInstallerVariable name="customErrorMessage" value="${msg(error.run.linux.service.failed)}">
+                      <ruleList>
+                        <compareText text="${customErrorMessage}" value=""/>
+                      </ruleList>
+                    </setInstallerVariable>
+
+                    <throwError text="${customErrorMessage}" abortOnError="${abortOnError}">
+                      <ruleList>
+                        <isTrue value="${showMessageOnError}"/>
+                      </ruleList>
+                    </throwError>
+
+                    <exit exitCode="${installer_exit_code}">
+                      <ruleList>
+                        <isTrue value="${abortOnError}"/>
+                      </ruleList>
+                    </exit>
+                  </onErrorActionList>
+                </runProgram>
+              </actionList>
+              <elseActionList>
                 <!-- Forcefully use sysvinit script to start linux, when
                      systemdBooted is false -->
                 <setInstallerVariable name="trySysVInit" value="true"/>
+              </elseActionList>
+            </if>
               </elseActionList>
             </if>
 
