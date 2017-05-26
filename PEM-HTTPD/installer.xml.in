@@ -1833,6 +1833,12 @@ include conf\addons\*.conf
           <key>Branding</key>
           <value/>
         </iniFileSet>
+        <iniFileSet>
+          <file>/etc/postgres-reg.ini</file>
+          <section>PEM-HTTPD</section>
+          <key>MODWSGI_ENABLE</key>
+          <value/>
+        </iniFileSet>
       </actionList>
       <ruleList>
         <compareText>
