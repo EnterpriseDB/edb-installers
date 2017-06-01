@@ -37,6 +37,13 @@ _prep_server_linux() {
     # Grab a copy of the stackbuilder source tree
     cp -pR stackbuilder stackbuilder.linux || _die "Failed to copy the source code (source/stackbuilder)"	
 	
+    # Remove any existing staging_cache directory that might exist, and create a clean one
+    if [ -e $WD/server/staging_cache/linux ];
+    then
+      echo "Removing existing staging_cache directory"
+      rm -rf $WD/server/staging_cache/linux || _die "Couldn't remove the existing staging_cache directory"
+    fi
+
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/linux ];
     then
@@ -44,10 +51,11 @@ _prep_server_linux() {
       rm -rf $WD/server/staging/linux || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/server/staging/linux)"
-    mkdir -p $WD/server/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/server/staging/linux || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging_cache directory ($WD/server/staging_cache/linux)"
+    mkdir -p $WD/server/staging_cache/linux || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/server/staging_cache/linux || _die "Couldn't set the permissions on the staging directory"
 
+    echo "Creating staging directory ($WD/server/staging/linux)"
     mkdir -p $PGSERVER_STAGING || _die "Couldn't create the staging directory $PGSERVER_STAGING"
     mkdir -p $PGADMIN_STAGING || _die "Couldn't create the staging directory $PGADMIN_STAGING"
     mkdir -p $SB_STAGING || _die "Couldn't create the staging directory $SB_STAGING"
@@ -160,10 +168,11 @@ _build_server_linux() {
     # First build PostgreSQL
 
     #PG_STAGING=$PG_PATH_LINUX/server/staging/linux
+    PG_STAGING=$PG_PATH_LINUX/server/staging_cache/linux
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/; PYTHON=$PG_PYTHON_LINUX/bin/python3 TCLSH=$PG_TCL_LINUX/bin/tclsh TCL_CONFIG_SH=$PG_TCL_LINUX/lib/tclConfig.sh PERL=$PG_PERL_LINUX/bin/perl CFLAGS='-O2 -DMAP_HUGETLB=0x40000' ./configure --enable-debug --with-libs=/opt/local/Current/lib --with-includes=/opt/local/Current/include:/opt/local/Current/include/libxml2 --prefix=$REMOTE_PGSERVER_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX/lib --with-pam --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$REMOTE_PGSERVER_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi LD_LIBRARY_PATH=/opt/local/Current/lib"  || _die "Failed to configure postgres"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/; PYTHON=$PG_PYTHON_LINUX/bin/python3 TCLSH=$PG_TCL_LINUX/bin/tclsh TCL_CONFIG_SH=$PG_TCL_LINUX/lib/tclConfig.sh PERL=$PG_PERL_LINUX/bin/perl CFLAGS='-O2 -DMAP_HUGETLB=0x40000' ./configure --enable-debug --with-libs=/opt/local/Current/lib --with-includes=/opt/local/Current/include:/opt/local/Current/include/libxml2 --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-tclconfig=$PG_TCL_LINUX/lib --with-pam --enable-thread-safety --with-libxml --with-ossp-uuid --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi LD_LIBRARY_PATH=/opt/local/Current/lib"  || _die "Failed to configure postgres"
 
     echo "Building postgres"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux; LD_LIBRARY_PATH=/opt/local/Current/lib  make -j4 shared_libpython=yes" || _die "Failed to build postgres" 
@@ -176,11 +185,11 @@ _build_server_linux() {
     echo "Building debugger module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; export LD_LIBRARY_PATH=/opt/local/Current/lib:\$LD_LIBRARY_PATH; make" || _die "Failed to build the debugger module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
-	if [ ! -e $PGSERVER_STAGING/doc ];
+	if [ ! -e $WD/server/staging_cache/linux/doc ];
 	then
-	    mkdir -p $PGSERVER_STAGING/doc || _die "Failed to create the doc directory"
+	    mkdir -p $WD/server/staging_cache/linux/doc || _die "Failed to create the doc directory"
 	fi
-    cp "$WD/server/source/postgres.linux/contrib/pldebugger/README.pldebugger" $PGSERVER_STAGING/doc || _die "Failed to copy the debugger README into the staging directory"
+    cp "$WD/server/source/postgres.linux/contrib/pldebugger/README.pldebugger" $WD/server/staging_cache/linux/doc || _die "Failed to copy the debugger README into the staging directory"
 
     echo "Building uuid-ossp module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/uuid-ossp; export LD_LIBRARY_PATH=/opt/local/Current/lib:\$LD_LIBRARY_PATH; make" || _die "Failed to build the uuid-ossp module"
@@ -188,75 +197,75 @@ _build_server_linux() {
 
  
     # Install the PostgreSQL docs
-    mkdir -p $PGSERVER_STAGING/doc/postgresql/html || _die "Failed to create the doc directory"
-    cd $PGSERVER_STAGING/doc/postgresql/html || _die "Failed to change to the doc directory"
+    mkdir -p $WD/server/staging_cache/linux/doc/postgresql/html || _die "Failed to create the doc directory"
+    cd $WD/server/staging_cache/linux/doc/postgresql/html || _die "Failed to change to the doc directory"
     cp -pR $WD/server/source/postgres.linux/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
 
     # Install the PostgreSQL man pages
-    mkdir -p $PGSERVER_STAGING/share/man || _die "Failed to create the man directory"
-    cd $PGSERVER_STAGING/share/man || _die "Failed to change to the man directory"
+    mkdir -p $WD/server/staging_cache/linux/share/man || _die "Failed to create the man directory"
+    cd $WD/server/staging_cache/linux/share/man || _die "Failed to change to the man directory"
     cp -pR $WD/server/source/postgres.linux/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (linux)"
     cp -pR $WD/server/source/postgres.linux/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (linux)"
     cp -pR $WD/server/source/postgres.linux/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux)"
 
     # Copy the third party headers
-    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/openssl $REMOTE_PGSERVER_STAGING/include" || _die "Failed to copy the required header"
-    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/libxml2 $REMOTE_PGSERVER_STAGING/include" || _die "Failed to copy the required header"
-    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/libxslt $REMOTE_PGSERVER_STAGING/include" || _die "Failed to copy the required header"
-    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/sasl $REMOTE_PGSERVER_STAGING/include" || _die "Failed to copy the required header"
-    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/krb5 $REMOTE_PGSERVER_STAGING/include" || _die "Failed to copy the required header"
-    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/gssapi $REMOTE_PGSERVER_STAGING/include" || _die "Failed to copy the required header"
-    ssh $PG_SSH_LINUX "cp /opt/local/Current/include/iconv.h $REMOTE_PGSERVER_STAGING/include" || _die "Failed to copy the required header"
-    ssh $PG_SSH_LINUX "cp /opt/local/Current/include/zlib.h $REMOTE_PGSERVER_STAGING/include" || _die "Failed to copy the required header"
-    ssh $PG_SSH_LINUX "cp /opt/local/Current/include/krb5.h $REMOTE_PGSERVER_STAGING/include" || _die "Failed to copy the required header"
-    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/ncurses $REMOTE_PGSERVER_STAGING/include" || _die "Failed to copy the required header"
-    ssh $PG_SSH_LINUX "cp /opt/local/Current/include/gssapi.h $REMOTE_PGSERVER_STAGING/include" || _die "Failed to copy the required header"
-    ssh $PG_SSH_LINUX "cp /opt/local/Current/include/ldap*.h $REMOTE_PGSERVER_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/openssl $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/libxml2 $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/libxslt $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/sasl $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/krb5 $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/gssapi $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp /opt/local/Current/include/iconv.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp /opt/local/Current/include/zlib.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp /opt/local/Current/include/krb5.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/ncurses $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp /opt/local/Current/include/gssapi.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp /opt/local/Current/include/ldap*.h $PG_STAGING/include" || _die "Failed to copy the required header"
 
     # Copy in the dependency libraries
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libssl.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libcrypto.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libedit.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libz.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libkrb5.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libkrb5support* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libk5crypto* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libcom* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libgssapi* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libncurses.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libuuid.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libxml2.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libxslt.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libiconv.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/liblber-2.4.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library(lber)"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libsasl2.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library(sasl)"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libldap-2.4.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library(ldap)"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libldap_r-2.4.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library(ldap_r)"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libcurl.so* $REMOTE_PGSERVER_STAGING/lib" || _die "Failed to copy the dependency library(libcurl)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libssl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libcrypto.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libedit.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libz.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libkrb5.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libkrb5support* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libk5crypto* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libcom* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libgssapi* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libncurses.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libuuid.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libxml2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libxslt.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libiconv.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/liblber-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(lber)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libsasl2.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(sasl)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libldap-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libldap_r-2.4.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(ldap_r)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libcurl.so* $PG_STAGING/lib" || _die "Failed to copy the dependency library(libcurl)"
 
     # Process Dependent libs
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libssl"  
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libcrypto"  
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libedit"  
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libz"
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libkrb5.so"  
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libkrb5support"  
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libk5crypto"  
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libcom"  
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libgssapi"  
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libncurses"  
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libxml2"
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/lib/postgresql" "$REMOTE_PGSERVER_STAGING/lib" "libxslt.so"
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/lib/postgresql" "$REMOTE_PGSERVER_STAGING/lib" "libuuid.so"
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libiconv"
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "liblber-2.4"
-    #_process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libsasl2"
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libldap-2.4"
-    _process_dependent_libs_linux "$REMOTE_PGSERVER_STAGING/bin" "$REMOTE_PGSERVER_STAGING/lib" "libldap_r-2.4"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libssl"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libcrypto"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libedit"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libz"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libkrb5.so"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libkrb5support"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libk5crypto"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libcom"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libgssapi"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libncurses"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libxml2"
+    _process_dependent_libs_linux "$PG_STAGING/lib/postgresql" "$PG_STAGING/lib" "libxslt.so"
+    _process_dependent_libs_linux "$PG_STAGING/lib/postgresql" "$PG_STAGING/lib" "libuuid.so"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libiconv"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "liblber-2.4"
+    #_process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libsasl2"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap-2.4"
+    _process_dependent_libs_linux "$PG_STAGING/bin" "$PG_STAGING/lib" "libldap_r-2.4"
 
     # Copying psql to psql.bin and the creating a caller script psql
     # which will set the LD_PRELOAD to libreadline if found on the system.
-    cd $PGSERVER_STAGING/bin
+    cd $WD/server/staging_cache/linux/bin
     mv psql psql.bin
     cat <<EOT > psql
 #!/bin/bash
@@ -294,7 +303,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     # In PG10, the version numbering scheme got changed and adopted a single digit major version (10) instead of two which is not supported by psycopg2
     # and requires a two digit version. Hence, use 9.6 installation to build pgAdmin
     PATH=/opt/local/pg96-linux:\$PATH
-    LD_LIBRARY_PATH=$REMOTE_PGSERVER_STAGING/lib:\$LD_LIBRARY_PATH
+    LD_LIBRARY_PATH=$PG_STAGING/lib:\$LD_LIBRARY_PATH
     # Set PYTHON_VERSION variable required for pgadmin build
     PYTHON_HOME=$PGADMIN_PYTHON_LINUX
     export LD_LIBRARY_PATH=\$PYTHON_HOME/lib:\$LD_LIBRARY_PATH
@@ -377,67 +386,67 @@ EOT-PGADMIN
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on Linux"
 
     # Prepare Staging
-    ssh $PG_SSH_LINUX "cd $REMOTE_PGADMIN_STAGING; mkdir \"pgAdmin 4\"; cd \"pgAdmin 4\"; mkdir -p bin lib docs/en_US translations" || _die "Failed to create pgadmin staging directories"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/runtime; cp pgAdmin4 qt.conf \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/bin\"" || _die "Failed to copy pgAdmin4 binary to staging"
-    ssh $PG_SSH_LINUX "cp -r $PG_PATH_LINUX/server/source/pgadmin.linux/linux-build/venv \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/\"" || _die "Failed to copy venv to staging"
-    ssh $PG_SSH_LINUX "cp -r $PG_PATH_LINUX/server/source/pgadmin.linux/docs/en_US/_build/html \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/docs/en_US\"" || _die "Failed to copy pgAdmin4 docs to staging"
-    ssh $PG_SSH_LINUX "cp -r $PG_PATH_LINUX/server/source/pgadmin.linux/linux-build/web \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/\"" || _die "Failed to copy pgAdmin4 web to staging"
-    ssh $PG_SSH_LINUX "mkdir -p \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/plugins/platforms\"" || _die "Failed to create plugins directory"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING; mkdir \"pgAdmin 4\"; cd \"pgAdmin 4\"; mkdir -p bin lib docs/en_US translations" || _die "Failed to create pgadmin staging directories"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/pgadmin.linux/runtime; cp pgAdmin4 qt.conf \"$PG_STAGING/pgAdmin 4/bin\"" || _die "Failed to copy pgAdmin4 binary to staging"
+    ssh $PG_SSH_LINUX "cp -r $PG_PATH_LINUX/server/source/pgadmin.linux/linux-build/venv \"$PG_STAGING/pgAdmin 4/\"" || _die "Failed to copy venv to staging"
+    ssh $PG_SSH_LINUX "cp -r $PG_PATH_LINUX/server/source/pgadmin.linux/docs/en_US/_build/html \"$PG_STAGING/pgAdmin 4/docs/en_US\"" || _die "Failed to copy pgAdmin4 docs to staging"
+    ssh $PG_SSH_LINUX "cp -r $PG_PATH_LINUX/server/source/pgadmin.linux/linux-build/web \"$PG_STAGING/pgAdmin 4/\"" || _die "Failed to copy pgAdmin4 web to staging"
+    ssh $PG_SSH_LINUX "mkdir -p \"$PG_STAGING/pgAdmin 4/plugins/platforms\"" || _die "Failed to create plugins directory"
 
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/plugins/platforms/libqxcb.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/plugins/platforms\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/plugins/xcbglintegrations \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/plugins/\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/plugins/bearer \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/plugins/\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/plugins/qtwebengine \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/plugins/\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/plugins/platforms/libqxcb.so* \"$PG_STAGING/pgAdmin 4/plugins/platforms\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/plugins/xcbglintegrations \"$PG_STAGING/pgAdmin 4/plugins/\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/plugins/bearer \"$PG_STAGING/pgAdmin 4/plugins/\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/plugins/qtwebengine \"$PG_STAGING/pgAdmin 4/plugins/\"" || _die "Failed to copy qt dependent libs to staging"
 
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5XcbQpa.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5DBus.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Widgets.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5WebEngine.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5WebEngineWidgets.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Gui.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Network.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Core.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5PrintSupport.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5OpenGL.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Sql.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libicui18n.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libicuuc.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libicudata.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5WebEngineCore.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Quick.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5WebChannel.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Qml.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Positioning.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Core.so* \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/translations/qtwebengine_locales \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/translations/\""|| _die "Failed to copy qt dependent translations to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/icu*.dat \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/bin/\""|| _die "Failed to copy qt dependent resources to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/qtwebengine*.pak \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/bin/\""|| _die "Failed to copy qt dependent resources to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/libexec/QtWebEngineProcess \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/bin/\""|| _die "Failed to copy qt dependent resources to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5XcbQpa.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5DBus.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Widgets.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5WebEngine.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5WebEngineWidgets.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Gui.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Network.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Core.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5PrintSupport.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5OpenGL.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Sql.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libicui18n.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libicuuc.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libicudata.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5WebEngineCore.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Quick.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5WebChannel.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Qml.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Positioning.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Core.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/translations/qtwebengine_locales \"$PG_STAGING/pgAdmin 4/translations/\""|| _die "Failed to copy qt dependent translations to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/icu*.dat \"$PG_STAGING/pgAdmin 4/bin/\""|| _die "Failed to copy qt dependent resources to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/qtwebengine*.pak \"$PG_STAGING/pgAdmin 4/bin/\""|| _die "Failed to copy qt dependent resources to staging"
+    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/libexec/QtWebEngineProcess \"$PG_STAGING/pgAdmin 4/bin/\""|| _die "Failed to copy qt dependent resources to staging"
 
     # Remove the unwanted stuff from staging
-    ssh $PG_SSH_LINUX "cd \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/venv\"; find . \( -name \"*.pyc\" -o -name \"*.pyo\" \) -delete" || _die "Failed to remove unwanted files from pgadmin staging"
-    ssh $PG_SSH_LINUX "cd \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/web\"; find . \( -name \"*.pyc\" -o -name \"*.pyo\" \) -delete" || _die "Failed to remove unwanted files from pgadmin staging"
-    ssh $PG_SSH_LINUX "cd \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/venv/bin\"; find . ! -name python -delete" || _die "Failed to remove unwanted files from pgadmin staging"
-    ssh $PG_SSH_LINUX "cd \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/venv/bin\"; rm -rf .Python include"
+    ssh $PG_SSH_LINUX "cd \"$PG_STAGING/pgAdmin 4/venv\"; find . \( -name \"*.pyc\" -o -name \"*.pyo\" \) -delete" || _die "Failed to remove unwanted files from pgadmin staging"
+    ssh $PG_SSH_LINUX "cd \"$PG_STAGING/pgAdmin 4/web\"; find . \( -name \"*.pyc\" -o -name \"*.pyo\" \) -delete" || _die "Failed to remove unwanted files from pgadmin staging"
+    ssh $PG_SSH_LINUX "cd \"$PG_STAGING/pgAdmin 4/venv/bin\"; find . ! -name python -delete" || _die "Failed to remove unwanted files from pgadmin staging"
+    ssh $PG_SSH_LINUX "cd \"$PG_STAGING/pgAdmin 4/venv/bin\"; rm -rf .Python include"
 
     echo "Changing the rpath for the pgAdmin"
-    ssh $PG_SSH_LINUX "cd \"$REMOTE_PGADMIN_STAGING/pgAdmin 4/bin\"; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib:\\\${ORIGIN}/../venv/lib\" \$f; done"
+    ssh $PG_SSH_LINUX "cd \"$PG_STAGING/pgAdmin 4/bin\"; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib:\\\${ORIGIN}/../venv/lib\" \$f; done"
 
     echo "Changing the rpath for the PostgreSQL executables and libraries"
-    ssh $PG_SSH_LINUX "cd $REMOTE_PGSERVER_STAGING/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
-    ssh $PG_SSH_LINUX "cd $REMOTE_PGSERVER_STAGING/lib; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}\" \$f; done"
-    ssh $PG_SSH_LINUX "cd $REMOTE_PGSERVER_STAGING/lib/postgresql; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/..\" \$f; done"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/lib; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}\" \$f; done"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/lib/postgresql; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/..\" \$f; done"
 
     #Fix permission in the staging/linux/lib
-    ssh $PG_SSH_LINUX "cd $REMOTE_PGSERVER_STAGING/lib; chmod a+r *"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/lib; chmod a+r *"
     
     #Fix permission in the staging/linux/share
-    ssh $PG_SSH_LINUX "cd $REMOTE_PGSERVER_STAGING/share/postgresql/timezone; chmod -R a+r *"
+    ssh $PG_SSH_LINUX "cd $PG_STAGING/share/postgresql/timezone; chmod -R a+r *"
  
     # Stackbuilder
     # Configure
     echo "Configuring the StackBuilder source tree"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D CURL_ROOT:PATH=/opt/local/Current -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_INSTALL_PREFIX:PATH=$REMOTE_SB_STAGING ."
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; cmake -D CMAKE_BUILD_TYPE:STRING=Release -D CURL_ROOT:PATH=/opt/local/Current -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_INSTALL_PREFIX:PATH=$PG_STAGING/stackbuilder ."
 
     # Build the app
     echo "Building & installing StackBuilder"
@@ -445,50 +454,48 @@ EOT-PGADMIN
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/stackbuilder.linux/; make install" || _die "Failed to install StackBuilder"
 
     # Copy in the various libraries
-    ssh $PG_SSH_LINUX "mkdir -p $REMOTE_SB_STAGING/share/certs" || _die "Failed to create the certs directory"
-    ssh $PG_SSH_LINUX "cp /opt/local/Current/certs/ca-bundle.crt $REMOTE_SB_STAGING/share/certs" || _die "Failed to copy the certs directory"
-    ssh $PG_SSH_LINUX "mkdir -p $REMOTE_SB_STAGING/lib" || _die "Failed to create the lib directory"
+    ssh $PG_SSH_LINUX "mkdir -p $PG_STAGING/stackbuilder/share/certs" || _die "Failed to create the certs directory"
+    ssh $PG_SSH_LINUX "cp /opt/local/Current/certs/ca-bundle.crt $PG_STAGING/stackbuilder/share/certs" || _die "Failed to copy the certs directory"
+    ssh $PG_SSH_LINUX "mkdir -p $PG_STAGING/stackbuilder/lib" || _die "Failed to create the lib directory"
 
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_adv-2.8.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_aui-2.8.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_core-2.8.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_html-2.8.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_ogl-2.8.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_qa-2.8.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_richtext-2.8.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_stc-2.8.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_xrc-2.8.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu-2.8.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu_net-2.8.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu_xml-2.8.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_adv-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_aui-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_core-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_html-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_ogl-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_qa-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_richtext-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_stc-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_gtk2u_xrc-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu_net-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libwx_baseu_xml-2.8.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
 
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libexpat.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libpng12.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libtiff.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libjpeg.so* $REMOTE_SB_STAGING/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libexpat.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libpng12.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libtiff.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libjpeg.so* $PG_STAGING/stackbuilder/lib" || _die "Failed to copy the dependency library"
 
-    _process_dependent_libs_linux "$REMOTE_SB_STAGING/bin" "$REMOTE_SB_STAGING/lib" "libwx_gtk2u_adv-2.8"  
-    _process_dependent_libs_linux "$REMOTE_SB_STAGING/bin" "$REMOTE_SB_STAGING/lib" "libwx_gtk2u_aui-2.8"  
-    _process_dependent_libs_linux "$REMOTE_SB_STAGING/bin" "$REMOTE_SB_STAGING/lib" "libwx_gtk2u_core-2.8"  
-    _process_dependent_libs_linux "$REMOTE_SB_STAGING/bin" "$REMOTE_SB_STAGING/lib" "libwx_gtk2u_html-2.8"
-    _process_dependent_libs_linux "$REMOTE_SB_STAGING/bin" "$REMOTE_SB_STAGING/lib" "libwx_gtk2u_ogl-2.8"  
-    _process_dependent_libs_linux "$REMOTE_SB_STAGING/bin" "$REMOTE_SB_STAGING/lib" "libwx_gtk2u_qa-2.8.so"  
-    _process_dependent_libs_linux "$REMOTE_SB_STAGING/bin" "$REMOTE_SB_STAGING/lib" "libwx_gtk2u_richtext-2.8"  
-    _process_dependent_libs_linux "$REMOTE_SB_STAGING/bin" "$REMOTE_SB_STAGING/lib" "libwx_gtk2u_stc-2.8"  
-    _process_dependent_libs_linux "$REMOTE_SB_STAGING/bin" "$REMOTE_SB_STAGING/lib" "libwx_gtk2u_xrc-2.8"  
-    _process_dependent_libs_linux "$REMOTE_SB_STAGING/bin" "$REMOTE_SB_STAGING/lib" "libwx_baseu-2.8"  
-    _process_dependent_libs_linux "$REMOTE_SB_STAGING/bin" "$REMOTE_SB_STAGING/lib" "libwx_baseu_net-2.8"
-    _process_dependent_libs_linux "$REMOTE_SB_STAGING/bin" "$REMOTE_SB_STAGING/lib" "libwx_baseu_xml-2.8"  
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_adv-2.8"
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_aui-2.8"
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_core-2.8"
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_html-2.8"
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_ogl-2.8"
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_qa-2.8.so"
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_richtext-2.8"
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_stc-2.8"
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_gtk2u_xrc-2.8"
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_baseu-2.8"
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_baseu_net-2.8"
+    _process_dependent_libs_linux "$PG_STAGING/stackbuilder/bin" "$PG_STAGING/stackbuilder/lib" "libwx_baseu_xml-2.8"
 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/scripts/linux/getlocales/; gcc -o getlocales.linux -O0 getlocales.c" || _die "Failed to build getlocales utility"
 
     # Generate debug symbols
-    mv $PGADMIN_STAGING/pgAdmin\ 4/ $PGADMIN_STAGING/pgAdmin4
-    cd $PGSERVER_STAGING
+    mv $WD/server/staging_cache/linux/pgAdmin\ 4/ $WD/server/staging_cache/linux/pgAdmin4
+    cd $WD/server/staging_cache/linux
 
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $REMOTE_PGSERVER_STAGING" || _die "Failed to execute $REMOTE_PGSERVER_STAGING create_debug_symbols.sh"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $REMOTE_PGADMIN_STAGING" || _die "Failed to execute $REMOTE_PGADMIN_STAGING create_debug_symbols.sh"
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $REMOTE_SB_STAGING" || _die "Failed to execute $REMOTE_SB_STAGING create_debug_symbols.sh"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute $PG_STAGING create_debug_symbols.sh"
 
     # Remove existing symbols directory in output directory
     if [ -e $WD/output/symbols/linux/server ];
@@ -499,11 +506,20 @@ EOT-PGADMIN
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
-    mv $PGSERVER_STAGING/symbols $WD/output/symbols/linux/server || _die "Failed to move $PGSERVER_STAGING/symbols to $WD/output/symbols/linux/server"
-    mv $PGADMIN_STAGING/pgAdmin4 $PGADMIN_STAGING/pgAdmin\ 4/
+    mv $WD/server/staging_cache/linux/symbols $WD/output/symbols/linux/server || _die "Failed to move $PGSERVER_STAGING/symbols to $WD/output/symbols/linux/server"
+    mv $WD/server/staging_cache/linux/pgAdmin4 $WD/server/staging_cache/linux/pgAdmin\ 4/
 
-    #create Commandlinetools
-    echo "Creating Commandlinetools"
+    echo "Preparing restructured staging for pgAdmin"
+    cp -r "$WD/server/staging_cache/linux/pgAdmin 4" $PGADMIN_STAGING/ || _die "Failed to copy $WD/server/staging_cache/linux/pgAdmin\ 4"
+
+    echo "Preparing restructured staging for server"
+    cp -r $WD/server/staging_cache/linux/bin $PGSERVER_STAGING  || _die "Failed to copy $WD/server/staging_cache/linux/bin"
+    cp -r $WD/server/staging_cache/linux/lib $PGSERVER_STAGING  || _die "Failed to copy $WD/server/staging_cache/linux/lib"
+    cp -r $WD/server/staging_cache/linux/include $PGSERVER_STAGING || _die "Failed to copy $WD/server/staging_cache/linux/include"
+    cp -r $WD/server/staging_cache/linux/doc $PGSERVER_STAGING || _die "Failed to copy $WD/server/staging_cache/linux/doc"
+    cp -r $WD/server/staging_cache/linux/share $PGSERVER_STAGING || _die "Failed to copy $WD/server/staging_cache/linux/share"
+
+    echo "Preparing restructured staging for Command Line Tools"
     mkdir -p $CLT_STAGING/bin || _die "Failed to create the $CLT_STAGING/bin directory"
     mkdir -p $CLT_STAGING/lib || _die "Failed to create the $CLT_STAGING/lib directory"
     mkdir -p $CLT_STAGING/share/man/man1 || _die "Failed to create the $CLT_STAGING/share/man/man1 directory"
@@ -524,6 +540,7 @@ EOT-PGADMIN
     mv $PGSERVER_STAGING/bin/reindexdb  $CLT_STAGING/bin/ || _die "Failed to move $PGSERVER_STAGING/server/bin/reindexdb"
     mv $PGSERVER_STAGING/bin/pgbench  $CLT_STAGING/bin/ || _die "Failed to move $PGSERVER_STAGING/server/bin/pgbench"
     mv $PGSERVER_STAGING/bin/vacuumlo  $CLT_STAGING/bin/ || _die "Failed to move $PGSERVER_STAGING/server/bin/vacuumlo"
+
     mv $PGSERVER_STAGING/share/man/man1/pg_basebackup.1 $CLT_STAGING/share/man/man1
     mv $PGSERVER_STAGING/share/man/man1/pg_dump.1 $CLT_STAGING/share/man/man1
     mv $PGSERVER_STAGING/share/man/man1/pg_restore.1 $CLT_STAGING/share/man/man1
@@ -538,10 +555,14 @@ EOT-PGADMIN
     mv $PGSERVER_STAGING/share/man/man1/pgbench.1 $CLT_STAGING/share/man/man1
     mv $PGSERVER_STAGING/share/man/man1/vacuumlo.1 $CLT_STAGING/share/man/man1
 
-    #Restructure stackbuilder lib
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libiconv.so*  $REMOTE_SB_STAGING/lib/"  ||  _die "Failed to copy /opt/local/Current/lib/libiconv.so*"
+    echo "Preparing restructured staging for stackbuilder"
+    cp $WD/server/staging_cache/linux/lib/libiconv.so* $WD/server/staging_cache/linux/stackbuilder/lib/ || _die "Failed to copy $WD/server/staging_cache/linux/lib/libiconv.so*"
+    cp -r $WD/server/staging_cache/linux/stackbuilder/bin $SB_STAGING/ || _die "Failed to copy $WD/server/staging_cache/linux/stackbuilder/bin"
+    cp -r $WD/server/staging_cache/linux/stackbuilder/lib $SB_STAGING/ || _die "Failed to copy $WD/server/staging_cache/linux/stackbuilder/lib"
+    cp -r $WD/server/staging_cache/linux/stackbuilder/share $SB_STAGING/ ||  _die "Failed to copy $WD/server/staging_cache/linux/stackbuilder/share"
 
-    touch $PGADMIN_STAGING/pgAdmin\ 4/venv/lib/python2.7/site-packages/backports/__init__.py || _die "Failed to tocuh the __init__.py"
+    touch $WD/server/staging_cache/linux/pgAdmin\ 4/venv/lib/python2.7/site-packages/backports/__init__.py || _die "Failed to tocuh the __init__.py"
+
     cd $WD
     echo "END BUILD Server Linux"
 }
@@ -556,22 +577,25 @@ _postprocess_server_linux() {
 
     cd $WD/server
 
-    pushd staging/linux
+    pushd staging_cache/linux
     generate_3rd_party_license "server"
     popd
 
     # Welcome doc
-    cp "$WD/server/resources/installation-notes.html" "$PGSERVER_STAGING/doc/" || _die "Failed to install the welcome document"
-    cp "$WD/server/resources/edblogo.png" "$PGSERVER_STAGING/doc/" || _die "Failed to install the welcome logo"
+    cp "$WD/server/resources/installation-notes.html" "$WD/server/staging_cache/linux/doc/" || _die "Failed to install the welcome document"
+    cp "$WD/server/resources/edblogo.png" "$WD/server/staging_cache/linux/doc/" || _die "Failed to install the welcome logo"
 
     #Creating a archive of the binaries
-    mkdir -p $PGSERVER_STAGING/pgsql || _die "Failed to create the directory for binaries "
-    cd $PGSERVER_STAGING
-    cp -pR $PGSERVER_STAGING/bin $PGSERVER_STAGING/doc $PGSERVER_STAGING/include $CLT_STAGING/lib $PGADMIN_STAGING/pgAdmin* $PGSERVER_STAGING/share $SB_STAGING/ pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+    mkdir -p $WD/server/staging_cache/linux/pgsql || _die "Failed to create the directory for binaries "
+    cd $WD/server/staging_cache/linux
+    cp -pR bin doc include lib pgAdmin* stackbuilder share pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
     tar -czf postgresql-$PG_PACKAGE_VERSION-linux-binaries.tar.gz pgsql || _die "Failed to archive the postgresql binaries"
     mv postgresql-$PG_PACKAGE_VERSION-linux-binaries.tar.gz $WD/output/ || _die "Failed to move the archive to output folder"
 
     rm -rf pgsql || _die "Failed to remove the binaries directory" 
+
+    # Complete the staging and prepare the installer
+    cp $WD/server/staging_cache/linux/server_3rd_party_licenses.txt $PGSERVER_STAGING/../
 
     cd $WD/server
 

@@ -4972,9 +4972,6 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/server/share</origin>
                         </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/server/symbols</origin>
-                        </distributionDirectory>
                         <distributionFile>
                             <origin>../resources/license.txt</origin>
                         </distributionFile>
@@ -5513,7 +5510,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/stackbuilder/StackBuilder</origin>
+                            <origin>staging/@@WINDIR@@/stackbuilder/share</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/stackbuilder/bin</origin>
@@ -5644,6 +5641,9 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/linux/commandlinetools/installer</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux/commandlinetools/scripts</origin>
+                        </distributionDirectory>
                     </distributionFileList>
                     <ruleList>
                         <compareText>
@@ -5672,6 +5672,9 @@ REM The script sets environment variables helpful for PostgreSQL
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/linux-x64/commandlinetools/installer</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/commandlinetools/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
