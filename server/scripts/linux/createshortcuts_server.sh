@@ -18,7 +18,7 @@ BRANDING=$5
 INSTALLDIR=$6
 DATADIR=$7
 SERVICENAME=$8
-TEMPDIR=$9
+TEMPDIR=${9}
 
 # Exit code
 WARN=0
@@ -41,6 +41,7 @@ else
     DOC_BRANDING_STR=$BRANDING_STR"_documentation"
     BRANDED=1
 fi
+
 
 # Error handlers
 _die() {
@@ -83,9 +84,16 @@ fi
 
 if [ -f "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" ];
 then
-   "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
+   # Remove the menu shortcuts
+   "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system --noupdate \
           "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
-          "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION.desktop"
+          "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION.directory" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION.desktop" \
+
+   "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
+          "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" 
 
     rm "$INSTALLDIR/scripts/xdg/"pg-*-$VERSION.directory
     rm "$INSTALLDIR/scripts/xdg/"pg-*-$VERSION.desktop
@@ -107,11 +115,22 @@ done
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/scripts/serverctl.sh"
 _fixup_file "$INSTALLDIR/scripts/launchsvrctl.sh"
+
+#This files are related to commandlinetools which is required
+_fixup_file "$INSTALLDIR/scripts/launchpsql.sh"
+_fixup_file "$INSTALLDIR/scripts/runpsql.sh"
+
+#This file are related to pgadmin which is required
+_fixup_file "$INSTALLDIR/scripts/launchbrowser.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION_STR.directory"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION_STR.desktop"
 
 # Copy the primary desktop file to the branded version. We don't do this if
 # the installation is not branded, to retain backwards compatibility.
@@ -124,7 +143,15 @@ fi
 # Create the menu shortcuts - first the top level, then the documentation menu.
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
       "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
-	  "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION_STR.desktop" || _warn "Failed to create the top level menu"
+	  "$INSTALLDIR/scripts/xdg/pg-reload-$VERSION_STR.desktop"  || _warn "Failed to create the top level menu"
+
+
+"$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system \
+      "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
+      "$INSTALLDIR/scripts/xdg/pg-$DOC_BRANDING_STR.directory" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-installationnotes-$VERSION_STR.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-$VERSION_STR.desktop" \
+          "$INSTALLDIR/scripts/xdg/pg-doc-postgresql-releasenotes-$VERSION_STR.desktop" || _warn "Failed to create the documentation menu"
 
 #Ubuntu 10.04 and greater require menu cache update
 

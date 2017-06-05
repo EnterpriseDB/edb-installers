@@ -2014,6 +2014,7 @@ EOF
                             <path>${datadir}/global/pg_control</path>
                             <condition>not_exists</condition>
                         </fileTest>
+                         <isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </throwError>
 
@@ -2168,6 +2169,7 @@ EOF
                     <path>${datadir}</path>
                     <condition>is_not_empty</condition>
                 </fileTest>
+                 <isTrue  value="${component(server).selected}"/>
             </ruleList>
         </actionGroup>
 
@@ -3379,6 +3381,26 @@ EOF
 			 <isTrue  value="${component(stackbuilder).selected}"/>
                     </ruleList>
                 </runProgram>
+                <runProgram>
+                    <program>${installdir}/installer/server/createshortcuts_clt.sh</program>
+                    <programArguments>${product_version} "${branding}" "${installdir}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${create_shortcuts}</text>
+                            <value>1</value>
+                        </compareText>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+			 <isTrue  value="${component(commandlinetools).selected}"/>
+                    </ruleList>
+                </runProgram> 
                 <!-- we aren't require to pass ${serviceaccount} to createshortcuts in windows -->
                 <runProgram>
                     <program>cscript</program>
@@ -4143,8 +4165,8 @@ REM The script sets environment variables helpful for PostgreSQL
             </ruleList>
         </runProgram>
 
+        <!-- Linux: Run stackbuilder -->
         <runProgram>
-            <!-- Linux: Run stackbuilder -->
             <program>${installdir}/scripts/launchstackbuilder.sh</program>
             <progressText>${msg(progress.text.run.stackbuilder)}</progressText>
             <abortOnError>0</abortOnError>
@@ -4314,7 +4336,6 @@ REM The script sets environment variables helpful for PostgreSQL
 			 <isTrue  value="${component(stackbuilder).selected}"/>
             </ruleList>
         </runProgram>
-
         <!-- Solaris: Remove menu shortcuts -->
         <runProgram>
             <program>${installdir}/installer/server/removeshortcuts.sh</program>
@@ -4672,12 +4693,30 @@ REM The script sets environment variables helpful for PostgreSQL
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}/scripts</destination>
+                    <destination>${installdir}/scripts/xdg</destination>
+                    <name>defaultlinux_1</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux/server/scripts/xdg/pg-postgresql-PG_VERSION_STR.directory</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/scripts/images</destination>
                     <name>defaultlinux_2</name>
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux/server/scripts/xdg</origin>
+                            <origin>staging/linux/server/scripts/images/pg-postgresql-PG_VERSION_STR.png</origin>
                         </distributionDirectory>
                     </distributionFileList>
                     <ruleList>
@@ -4702,17 +4741,50 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/linux-x64/server/scripts</origin>
                         </distributionDirectory>
                     </distributionFileList>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+
                 </folder>
                 <folder>
                     <description>Program Files</description>
-                    <destination>${installdir}/scripts</destination>
-                    <name>defaultlinux-x64_2</name>
-                    <platforms>linux-x64</platforms>
+                    <destination>${installdir}/scripts/xdg</destination>
+                    <name>defaultlinux-x64_1</name>
+                    <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/linux-x64/server/scripts/xdg</origin>
+                            <origin>staging/linux-x64/server/scripts/xdg/pg-postgresql-PG_VERSION_STR.directory</origin>
                         </distributionDirectory>
                     </distributionFileList>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/scripts/images</destination>
+                    <name>defaultlinux-x64_2</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/linux-x64/server/scripts/images/pg-postgresql-PG_VERSION_STR.png</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux-x64</value>
+                        </compareText>
+                    </ruleList>
                 </folder>
                 <!-- MacOSX: files for default component -->
                 <folder>
@@ -4972,6 +5044,9 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/server/share</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/server/symbols</origin>
+                        </distributionDirectory>
                         <distributionFile>
                             <origin>../resources/license.txt</origin>
                         </distributionFile>
@@ -5120,6 +5195,29 @@ REM The script sets environment variables helpful for PostgreSQL
                 </startMenuShortcut>
 
             </startMenuShortcutList>
+            <preUninstallationActionList>
+                 <createTempDir dirPrefix="postgresql_installer">
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="linux"/>
+                    </ruleList>
+                 </createTempDir>
+
+                 <actionGroup>
+                     <actionList>
+                         <runProgram>
+                             <program>${installdir}/installer/server/removeshortcuts_server.sh</program>
+                             <programArguments>"${installdir}" ${product_version} "${branding}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+                         </runProgram>
+                      </actionList>
+	              <ruleList>
+	                  <compareText>
+	                      <logic>contains</logic>
+	                      <text>${platform_name}</text>
+	                      <value>linux</value>
+	                  </compareText>
+	              </ruleList>
+	         </actionGroup>
+	     </preUninstallationActionList>
 
         </component>
         <component>
@@ -5358,20 +5456,30 @@ REM The script sets environment variables helpful for PostgreSQL
                     </ruleList>
                 </startMenuShortcut>
 
-                <!-- Reload config -->
-                <startMenuShortcut>
-                    <name>Reload Configuration</name>
-                    <runInTerminal>0</runInTerminal>
-                    <windowsExec>cscript.exe</windowsExec>
-                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
-                </startMenuShortcut>
-
             </startMenuShortcutList>
+            <preUninstallationActionList>
+                 <createTempDir dirPrefix="postgresql_installer">
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="linux"/>
+                    </ruleList>
+                 </createTempDir>
 
+                 <actionGroup>
+                     <actionList>
+                         <runProgram>
+                             <program>${installdir}/installer/server/removeshortcuts_pgadmin.sh</program>
+                             <programArguments>"${installdir}" ${product_version} "${branding}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+                         </runProgram>
+                      </actionList>
+	              <ruleList>
+	                  <compareText>
+	                      <logic>contains</logic>
+	                      <text>${platform_name}</text>
+	                      <value>linux</value>
+	                  </compareText>
+	              </ruleList>
+	         </actionGroup>
+	     </preUninstallationActionList>
         </component>
         <component>
          <name>stackbuilder</name>
@@ -5510,7 +5618,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/stackbuilder/share</origin>
+                            <origin>staging/@@WINDIR@@/stackbuilder/StackBuilder</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/stackbuilder/bin</origin>
@@ -5613,6 +5721,29 @@ REM The script sets environment variables helpful for PostgreSQL
 
             </startMenuShortcutList>
 
+            <preUninstallationActionList>
+                 <createTempDir dirPrefix="postgresql_installer">
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="linux"/>
+                    </ruleList>
+                 </createTempDir>
+
+                 <actionGroup>
+                     <actionList>
+                         <runProgram>
+                             <program>${installdir}/installer/server/removeshortcuts_sb.sh</program>
+                             <programArguments>"${installdir}" ${product_version} "${branding}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+                         </runProgram>
+                      </actionList>
+	              <ruleList>
+	                  <compareText>
+	                      <logic>contains</logic>
+	                      <text>${platform_name}</text>
+	                      <value>linux</value>
+	                  </compareText>
+	              </ruleList>
+	         </actionGroup>
+	     </preUninstallationActionList>
         </component>
         <component>
          <name>commandlinetools</name>
@@ -5714,6 +5845,9 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/osx/commandlinetools/share</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/commandlinetools/scripts</origin>
+                        </distributionDirectory>
                         <distributionFile>
                             <origin>../resources/license.txt</origin>
                         </distributionFile>
@@ -5814,42 +5948,31 @@ REM The script sets environment variables helpful for PostgreSQL
 
                     </startMenuShortcutList>
                 </startMenuFolder>
-
-		<!-- psql -->
-                <startMenuShortcut>
-                    <name>SQL Shell (psql)</name>
-                    <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\scripts\runpsql.bat</windowsExec>
-                    <windowsIcon>${installdir}\scripts\images\pg-psql.ico</windowsIcon>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
-                </startMenuShortcut>
-
-                <!-- pgAdmin -->
-                <startMenuShortcut>
-                    <name>pgAdmin 4</name>
-                    <runInTerminal>0</runInTerminal>
-                    <windowsExec>${installdir}\pgAdmin 4\bin\pgAdmin4.exe</windowsExec>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
-                </startMenuShortcut>
-
-                <!-- Reload config -->
-                <startMenuShortcut>
-                    <name>Reload Configuration</name>
-                    <runInTerminal>0</runInTerminal>
-                    <windowsExec>cscript.exe</windowsExec>
-                    <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
-                    <windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
-                </startMenuShortcut>
-
             </startMenuShortcutList>
 
+            <preUninstallationActionList>
+                 <createTempDir dirPrefix="postgresql_installer">
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="linux"/>
+                    </ruleList>
+                 </createTempDir>
+
+                 <actionGroup>
+                     <actionList>
+                         <runProgram>
+                             <program>${installdir}/installer/server/removeshortcuts_clt.sh</program>
+                             <programArguments>"${installdir}" ${product_version} "${branding}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+                         </runProgram>
+                      </actionList>
+	              <ruleList>
+	                  <compareText>
+	                      <logic>contains</logic>
+	                      <text>${platform_name}</text>
+	                      <value>linux</value>
+	                  </compareText>
+	              </ruleList>
+	         </actionGroup>
+	     </preUninstallationActionList>
         </component>
     </componentList>
 
@@ -6103,6 +6226,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     <type>not_empty</type>
                 </stringTest>
                 <isFalse value="${extract_mode}"/>
+                 <isTrue  value="${component(server).selected}"/>
             </ruleList>
         </labelParameter>
 
@@ -6161,6 +6285,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+                         <isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </actionGroup>
 
@@ -6187,6 +6312,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+                         <isTrue  value="${component(server).selected}"/>
                     </ruleList>
                 </actionGroup>
 
@@ -6364,6 +6490,7 @@ REM The script sets environment variables helpful for PostgreSQL
                                     <path>${datadir}/global/pg_control</path>
                                     <condition>not_exists</condition>
                                 </fileTest>
+                                 <isTrue  value="${component(server).selected}"/>
                             </ruleList>
                         </actionGroup>
 
@@ -6379,6 +6506,7 @@ REM The script sets environment variables helpful for PostgreSQL
                                     <text>${platform_name}</text>
                                     <value>osx</value>
                                 </compareText>
+                                 <isTrue  value="${component(server).selected}"/>
                             </ruleList>
                         </runProgram>
 
@@ -6554,6 +6682,9 @@ REM The script sets environment variables helpful for PostgreSQL
                             <substitution>\1</substitution>
                         </setInstallerVariableFromRegEx>
                     </actionList>
+		    <ruleList>
+		        <isTrue  value="${component(server).selected}"/>
+		    </ruleList>
                 </actionGroup>
             </preShowPageActionList>
 

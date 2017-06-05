@@ -96,13 +96,20 @@ _fixup_file "$INSTALLDIR/scripts/launchstackbuilder.sh"
 _fixup_file "$INSTALLDIR/scripts/runstackbuilder.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
+# Copy the primary desktop file to the branded version. We don't do this if
+# the installation is not branded, to retain backwards compatibility.
+#if [ $BRANDED -ne 0 ];
+#then
+#    cp "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory" "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory"
+#fi
+
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop"
+_fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory"
 
-"$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system --noupdate \
+"$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system  \
   "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
     "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop" || _warn "Failed to create the top level menu for stack-builder"
-
 #Ubuntu 10.04 and greater require menu cache update
 
 if [ -f /usr/share/gnome-menus/update-gnome-menus-cache ];

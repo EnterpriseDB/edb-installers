@@ -510,7 +510,8 @@ EOT-PGADMIN
     mv $WD/server/staging_cache/linux/pgAdmin4 $WD/server/staging_cache/linux/pgAdmin\ 4/
 
     echo "Preparing restructured staging for pgAdmin"
-    cp -r "$WD/server/staging_cache/linux/pgAdmin 4" $PGADMIN_STAGING/ || _die "Failed to copy $WD/server/staging_cache/linux/pgAdmin\ 4"
+#PARESH    cp -r "$WD/server/staging_cache/linux/pgAdmin 4" $PGADMIN_STAGING/ || _die "Failed to copy $WD/server/staging_cache/linux/pgAdmin\ 4"
+    cp -r "$WD/server/staging_cache/linux/pgAdmin 4" $PGADMIN_STAGING/
 
     echo "Preparing restructured staging for server"
     cp -r $WD/server/staging_cache/linux/bin $PGSERVER_STAGING  || _die "Failed to copy $WD/server/staging_cache/linux/bin"
@@ -625,12 +626,26 @@ _postprocess_server_linux() {
     chmod ugo+x $PGSERVER_STAGING/installer/server/loadmodules.sh
     cp scripts/linux/config_libs.sh $PGSERVER_STAGING/installer/server/config_libs.sh || _die "Failed to copy the cleanlib script (scripts/linux/test.sh)"
     chmod ugo+x $PGSERVER_STAGING/installer/server/config_libs.sh
+    cp scripts/linux/removeshortcuts_server.sh $PGSERVER_STAGING/installer/server/removeshortcuts_server.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts_server.sh)"
+    chmod ugo+x $PGSERVER_STAGING/installer/server/removeshortcuts_server.sh
 
 
     mkdir -p $SB_STAGING/installer/server || _die "Failed to create a directory for the install scripts"
     mkdir -p $PGADMIN_STAGING/installer/server || _die "Failed to create a directory for the install scripts"
+    cp scripts/linux/createshortcuts_pgadmin.sh $PGADMIN_STAGING/installer/server/createshortcuts_pgadmin.sh || _die "Failed to copy the createshortcuts script createshortcuts_pgadmin.sh)"
+    chmod ugo+x $PGADMIN_STAGING/installer/server/createshortcuts_pgadmin.sh
+    cp scripts/linux/removeshortcuts_pgadmin.sh $PGADMIN_STAGING/installer/server/removeshortcuts_pgadmin.sh || _die "Failed to copy the createshortcuts script createshortcuts_pgadmin.sh)"
+    chmod ugo+x $SB_STAGING/installer/server/removeshortcuts_pgadmin.sh
     cp scripts/linux/createshortcuts_sb.sh $SB_STAGING/installer/server/createshortcuts_sb.sh || _die "Failed to copy the createshortcuts script createshortcuts_sb.sh)"
     chmod ugo+x $SB_STAGING/installer/server/createshortcuts_sb.sh
+    cp scripts/linux/removeshortcuts_sb.sh $SB_STAGING/installer/server/removeshortcuts_sb.sh || _die "Failed to copy the createshortcuts script removeshortcuts_sb.sh)"
+    chmod ugo+x $SB_STAGING/installer/server/removeshortcuts_sb.sh
+
+    mkdir -p $CLT_STAGING/installer/server || _die "Failed to create a directory for the install scripts"
+    cp scripts/linux/createshortcuts_clt.sh $CLT_STAGING/installer/server/createshortcuts_clt.sh || _die "Failed to copy the createshortcuts script createshortcuts_clt.sh)"
+    chmod ugo+x $CLT_STAGING/installer/server/createshortcuts_clt.sh
+    cp scripts/linux/removeshortcuts_clt.sh $CLT_STAGING/installer/server/removeshortcuts_clt.sh || _die "Failed to copy the createshortcuts script removeshortcuts_clt.sh)"
+    chmod ugo+x $CLT_STAGING/installer/server/removeshortcuts_clt.sh
 
     cp scripts/linux/createshortcuts_pgadmin.sh $PGADMIN_STAGING/installer/server/createshortcuts_pgadmin.sh || _die "Failed to copy the createshortcuts createshortcuts_pgadmin.sh)"
     chmod ugo+x $PGADMIN_STAGING/installer/server/createshortcuts_pgadmin.sh
@@ -662,12 +677,15 @@ _postprocess_server_linux() {
 
     cp resources/pg-help.png $PGSERVER_STAGING/scripts/images/pg-help-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
     cp resources/pg-postgresql.png $PGSERVER_STAGING/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
-    cp resources/pg-psql.png $PGSERVER_STAGING/scripts/images/pg-psql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
+    cp resources/pg-postgresql.png $CLT_STAGING/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
     cp resources/pg-psql.png $CLT_STAGING/scripts/images/pg-psql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
     cp resources/pg-reload.png $PGSERVER_STAGING/scripts/images/pg-reload-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
 
     cp resources/pg-pgadmin.png $PGADMIN_STAGING/scripts/images/pg-pgadmin-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
+    cp resources/pg-postgresql.png $PGADMIN_STAGING/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
+    cp resources/pg-help.png $PGADMIN_STAGING/scripts/images/pg-help-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
     cp resources/pg-stackbuilder.png $SB_STAGING/scripts/images/pg-stackbuilder-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
+    cp resources/pg-postgresql.png $SB_STAGING/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
 
     mkdir -p $PGSERVER_STAGING/scripts/xdg || _die "Failed to create a directory $PGSERVER_STAGING/scripts/xdg for the menu pick images"
     mkdir -p $PGADMIN_STAGING/scripts/xdg || _die "Failed to create a directory $PGADMIN_STAGING/scripts/xdg for the menu pick images"
@@ -675,7 +693,6 @@ _postprocess_server_linux() {
     mkdir -p $CLT_STAGING/scripts/xdg || _die "Failed to create a directory $CLT_STAGING/scripts/xdg for the menu pick images"
 
     cp resources/xdg/pg-postgresql.directory $PGSERVER_STAGING/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
-    cp resources/xdg/pg-postgresql.directory $CLT_STAGING/scripts/xdg/pg-postgresql-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-documentation.directory $PGSERVER_STAGING/scripts/xdg/pg-documentation-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
     cp resources/xdg/pg-documentation.directory $CLT_STAGING/scripts/xdg/pg-documentation-$PG_VERSION_STR.directory || _die "Failed to copy a menu pick directory"
 
@@ -683,22 +700,22 @@ _postprocess_server_linux() {
     cp resources/xdg/pg-doc-postgresql-releasenotes.desktop $PGSERVER_STAGING/scripts/xdg/pg-doc-postgresql-releasenotes-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-doc-postgresql.desktop $PGSERVER_STAGING/scripts/xdg/pg-doc-postgresql-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-pgadmin.desktop $PGADMIN_STAGING/scripts/xdg/pg-pgadmin-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-psql.desktop $PGSERVER_STAGING/scripts/xdg/pg-psql-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-psql.desktop $CLT_STAGING/scripts/xdg/pg-psql-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
-    cp resources/xdg/pg-reload.desktop $PGSERVER_STAGING/scripts/xdg/pg-reload-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
+#    cp resources/xdg/pg-psql.desktop $PGSERVER_STAGING/scripts/xdg/pg-psql-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick" #PARESH
+    cp resources/xdg/pg-psql.desktop $CLT_STAGING/scripts/xdg/pg-psql-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick" #PARESH
+    cp resources/xdg/pg-reload.desktop $PGSERVER_STAGING/scripts/xdg/pg-reload-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick" #PARESH
 
     cp resources/xdg/pg-doc-pgadmin.desktop $PGADMIN_STAGING/scripts/xdg/pg-doc-pgadmin-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
     cp resources/xdg/pg-stackbuilder.desktop $SB_STAGING/scripts/xdg/pg-stackbuilder-$PG_VERSION_STR.desktop || _die "Failed to copy a menu pick"
 
     # Copy the launch scripts
-    cp scripts/linux/launchpsql.sh $PGSERVER_STAGING/scripts/launchpsql.sh || _die "Failed to copy the launchpsql script (scripts/linux/launchpsql.sh)"
-    chmod ugo+x $PGSERVER_STAGING/scripts/launchpsql.sh
+    cp scripts/linux/launchpsql.sh $CLT_STAGING/scripts/launchpsql.sh || _die "Failed to copy the launchpsql script (scripts/linux/launchpsql.sh)"
+    chmod ugo+x $CLT_STAGING/scripts/launchpsql.sh
     cp scripts/linux/launchsvrctl.sh $PGSERVER_STAGING/scripts/launchsvrctl.sh || _die "Failed to copy the launchsvrctl script (scripts/linux/launchsvrctl.sh)"
     chmod ugo+x $PGSERVER_STAGING/scripts/launchsvrctl.sh
     cp scripts/linux/serverctl.sh $PGSERVER_STAGING/scripts/serverctl.sh || _die "Failed to copy the serverctl script (scripts/linux/serverctl.sh)"
     chmod ugo+x $PGSERVER_STAGING/scripts/serverctl.sh
-    cp scripts/linux/runpsql.sh $PGSERVER_STAGING/scripts/runpsql.sh || _die "Failed to copy the runpsql script (scripts/linux/runpsql.sh)"
-    chmod ugo+x $PGSERVER_STAGING/scripts/runpsql.sh
+    cp scripts/linux/runpsql.sh $CLT_STAGING/scripts/runpsql.sh || _die "Failed to copy the runpsql script (scripts/linux/runpsql.sh)"
+    chmod ugo+x $CLT_STAGING/scripts/runpsql.sh
     cp scripts/linux/launchbrowser.sh $PGSERVER_STAGING/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
     chmod ugo+x $PGSERVER_STAGING/scripts/launchbrowser.sh
     cp scripts/linux/launchbrowser.sh $PGADMIN_STAGING/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
@@ -720,6 +737,7 @@ _postprocess_server_linux() {
     _replace @@PG_DATETIME_SETTING_LINUX@@ "$PG_DATETIME_SETTING_LINUX" installer-linux.xml || _die "Failed to replace the date-time setting in the installer.xml"     
     _replace @@WIN64MODE@@ "0" installer-linux.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
     _replace @@SERVICE_SUFFIX@@ "" installer-linux.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+    _replace PG_VERSION_STR "$PG_VERSION_STR" installer-linux.xml 
 
     # Copy plLanguages.config
     mkdir -p $PGSERVER_STAGING/etc/sysconfig || _die "Failed to create etc/sysconfig directory"

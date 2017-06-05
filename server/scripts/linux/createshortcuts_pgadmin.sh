@@ -6,14 +6,14 @@
 # Check the command line
 if [ $# -ne 4 ];
 then
-    echo "Usage: $0 <Major.Minor version> <Branding> <Install dir> <Temp dir>"
+    echo "Usage: $0 <Major.Minor version>  <Branding> <Install dir> <Temp dir>"
     exit 127
 fi
 
 VERSION=$1
 BRANDING=$2
 INSTALLDIR=$3
-TEMPDIR=$4
+TEMPDIR=${4}
 
 # Exit code
 WARN=0
@@ -78,11 +78,15 @@ then
           "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
           "$INSTALLDIR/scripts/xdg/pg-documentation-$VERSION.directory" \
           "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION.desktop"
+#          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-$VERSION.desktop" \
+#          "$INSTALLDIR/scripts/xdg/pg-doc-pljava-readme-$VERSION.desktop" 
 
    "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
           "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
           "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION.desktop"
 
+    rm "$INSTALLDIR/scripts/xdg/"pg-*-$VERSION.directory
+    rm "$INSTALLDIR/scripts/xdg/"pg-*-$VERSION.desktop
 fi
 
 if [ "x$DevServer" = "x1" ];
