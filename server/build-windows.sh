@@ -523,6 +523,8 @@ EOT
     cd $WD/server/staging/windows/pgAdmin\ 4/venv/Lib
     find . \( -name test -o -name tests \) -type d | xargs rm -rf
 
+    touch $WD/server/staging/windows/pgAdmin\ 4/venv/Lib/site-packages/backports/__init__.py || _die "Failed to touch the __init__.py"
+
     cd $WD
     echo "END BUILD Server Windows"
 }

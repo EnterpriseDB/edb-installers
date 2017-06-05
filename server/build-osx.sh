@@ -394,6 +394,8 @@ EOT-PGADMIN
     # Copy the required Python executables
     scp $PG_SSH_OSX:$PGADMIN_PYTHON_OSX/Python $WD/server/staging/osx/pgAdmin\ 4.app/Contents/Resources/venv/.Python
     echo "END BUILD Server OSX"
+
+    touch $WD/server/staging/osx/pgAdmin\ 4.app/Contents/Resources/venv/lib/python/site-packages/backports/__init__.py || _die "Failed to touch the __init__.py"
 }
 
 

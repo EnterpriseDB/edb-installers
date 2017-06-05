@@ -492,6 +492,9 @@ EOT-PGADMIN
     mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
     mv $WD/server/staging/linux-x64/symbols $WD/output/symbols/linux-x64/server || _die "Failed to move $WD/server/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/server directory"
     mv $WD/server/staging/linux-x64/pgAdmin4 $WD/server/staging/linux-x64/pgAdmin\ 4/
+
+    touch $WD/server/staging/linux-x64/pgAdmin\ 4/venv/lib/python2.7/site-packages/backports/__init__.py || _die "Failed to tocuh the __init__.py"
+
     cd $WD
     echo "END BUILD Server Linux-x64"
 }

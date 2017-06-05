@@ -494,6 +494,8 @@ EOT-PGADMIN
     mv $WD/server/staging/linux/symbols $WD/output/symbols/linux/server || _die "Failed to move $WD/server/staging/linux/symbols to $WD/output/symbols/linux/server directory"
     mv $WD/server/staging/linux/pgAdmin4  $WD/server/staging/linux/pgAdmin\ 4/
 
+    touch $WD/server/staging/linux/pgAdmin\ 4/venv/lib/python2.7/site-packages/backports/__init__.py || _die "Failed to tocuh the __init__.py"
+
     cd $WD
     echo "END BUILD Server Linux"
 }
