@@ -106,4 +106,4 @@ acl.check.description=Check and give the read permissions on the complete data d
 stackbuilder.desc=Stack Builder may be used to download and install additional tools, drivers and applications to complement your PostgreSQL installation
 dbserver.desc=PostgreSQL database server
 pgadmin.desc=pgAdmin 4 is a rewrite of the popular pgAdmin3 management tool for the PostgreSQL database
-commandlinetools.desc=Command line tools
+commandlinetools.desc=This option installs command line tools and client libraries such as libpq, psql, EDB*Loader, ecpg, pg_basebackup, pg_dump, pg_restore, pg_bench and more. It is a required installation option when choosing PostgreSQL Database Server or pgAdmin 4.
