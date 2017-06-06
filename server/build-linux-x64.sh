@@ -578,9 +578,21 @@ _postprocess_server_linux_x64() {
 
     cd $WD/server
 
-    pushd staging_cache/linux-x64
-    generate_3rd_party_license "server"
+    #generate commandlinetools license file
+    pushd $CLT_STAGING_X64
+        generate_3rd_party_license "commandlinetools"
     popd
+
+    #generate pgAdmin4 license file
+    pushd $PGADMIN_STAGING_X64
+        generate_3rd_party_license "pgAdmin"
+    popd
+
+    #generate StackBuilder license file
+    pushd $SB_STAGING_X64
+        generate_3rd_party_license "StackBuilder"
+    popd
+
 
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging_cache/linux-x64/doc/" || _die "Failed to install the welcome document"
@@ -596,7 +608,9 @@ _postprocess_server_linux_x64() {
     rm -rf pgsql || _die "Failed to remove the binaries directory" 
 
     # Complete the staging and prepare the installer
-    cp $WD/server/staging_cache/linux-x64/server_3rd_party_licenses.txt $PGSERVER_STAGING_X64/../
+    #cp $WD/server/staging_cache/linux-x64/server_3rd_party_licenses.txt $PGSERVER_STAGING_X64/../
+    cp $WD/resources/license.txt $PGSERVER_STAGING_X64/server_license.txt
+    cp $WD/server/source/pgadmin.linux-x64/LICENSE $PGADMIN_STAGING_X64/pgAdmin_license.txt
 
     cd $WD/server
 

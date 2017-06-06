@@ -4762,7 +4762,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     </distributionFileList>
                     <ruleList>
                         <compareText>
-                            <logic>contains</logic>
+                            <logic>equals</logic>
                             <text>${platform_name}</text>
                             <value>linux-x64</value>
                         </compareText>
@@ -4896,10 +4896,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/linux/server/etc</origin>
                         </distributionDirectory>
                         <distributionFile>
-                            <origin>../resources/license.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux/server_3rd_party_licenses.txt</origin>
+                            <origin>staging/linux/server/server_license.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                     <ruleList>
@@ -4940,10 +4937,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/linux-x64/server/etc</origin>
                         </distributionDirectory>
                         <distributionFile>
-                            <origin>../resources/license.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/linux-x64/server_3rd_party_licenses.txt</origin>
+                            <origin>staging/linux-x64/server/server_license.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -5011,10 +5005,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/osx/server/share</origin>
                         </distributionDirectory>
                         <distributionFile>
-                            <origin>../resources/license.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/osx/server_3rd_party_licenses.txt</origin>
+                            <origin>staging/osx/server/server_license.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -5044,14 +5035,8 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/server/share</origin>
                         </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/server/symbols</origin>
-                        </distributionDirectory>
                         <distributionFile>
-                            <origin>../resources/license.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/@@WINDIR@@/server_3rd_party_licenses.txt</origin>
+                            <origin>staging/@@WINDIR@@/server/server_license.txt</origin>
                         </distributionFile>
                     </distributionFileList>
 		</folder>
@@ -5238,6 +5223,12 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/linux/pgadmin4/pgAdmin 4</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>staging/linux/pgadmin4/pgAdmin_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux/pgadmin4/pgAdmin_license.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
                     <ruleList>
                         <compareText>
@@ -5297,6 +5288,12 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/linux-x64/pgadmin4/pgAdmin 4</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>staging/linux-x64/pgadmin4/pgAdmin_3rd_party_licenses.txt</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>staging/linux-x64/pgadmin4/pgAdmin_license.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -5355,10 +5352,10 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/osx/pgadmin4/pgAdmin 4.app</origin>
                         </distributionDirectory>
                         <distributionFile>
-                            <origin>../resources/license.txt</origin>
+                            <origin>staging/osx/pgadmin4/pgAdmin_3rd_party_licenses.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/osx/server_3rd_party_licenses.txt</origin>
+                            <origin>staging/osx/pgadmin4/pgAdmin_license.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -5374,10 +5371,10 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin 4</origin>
                         </distributionDirectory>
                         <distributionFile>
-                            <origin>../resources/license.txt</origin>
+                            <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin_3rd_party_licenses.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>staging/@@WINDIR@@/server_3rd_party_licenses.txt</origin>
+                            <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin_license.txt</origin>
                         </distributionFile>
                     </distributionFileList>
 		</folder>
@@ -5502,6 +5499,9 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/linux/stackbuilder/installer</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>staging/linux/stackbuilder/StackBuilder_3rd_party_licenses.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
                     <ruleList>
                         <compareText>
@@ -5549,6 +5549,9 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/linux-x64/stackbuilder/installer</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>staging/linux-x64/stackbuilder/StackBuilder_3rd_party_licenses.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -5602,10 +5605,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/osx/stackbuilder/lib</origin>
                         </distributionDirectory>
                         <distributionFile>
-                            <origin>../resources/license.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/osx/server_3rd_party_licenses.txt</origin>
+                            <origin>staging/osx/stackbuilder/StackBuilder_3rd_party_licenses.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -5618,17 +5618,13 @@ REM The script sets environment variables helpful for PostgreSQL
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/stackbuilder/StackBuilder</origin>
+                            <origin>staging/@@WINDIR@@/stackbuilder/share</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/stackbuilder/bin</origin>
                         </distributionDirectory>
-
                         <distributionFile>
-                            <origin>../resources/license.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/@@WINDIR@@/server_3rd_party_licenses.txt</origin>
+                            <origin>staging/@@WINDIR@@/stackbuilder/StackBuilder_3rd_party_licenses.txt</origin>
                         </distributionFile>
                     </distributionFileList>
 		</folder>
@@ -5775,6 +5771,9 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/linux/commandlinetools/scripts</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>staging/linux/commandlinetools/commandlinetools_3rd_party_licenses.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
                     <ruleList>
                         <compareText>
@@ -5807,6 +5806,9 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/linux-x64/commandlinetools/scripts</origin>
                         </distributionDirectory>
+                        <distributionFile>
+                            <origin>staging/linux-x64/commandlinetools/commandlinetools_3rd_party_licenses.txt</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
 
@@ -5849,10 +5851,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/osx/commandlinetools/scripts</origin>
                         </distributionDirectory>
                         <distributionFile>
-                            <origin>../resources/license.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/osx/server_3rd_party_licenses.txt</origin>
+                            <origin>staging/osx/commandlinetools/commandlinetools_3rd_party_licenses.txt</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -5877,10 +5876,7 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/@@WINDIR@@/commandlinetools/scripts</origin>
                         </distributionDirectory>
                         <distributionFile>
-                            <origin>../resources/license.txt</origin>
-                        </distributionFile>
-                        <distributionFile>
-                            <origin>staging/@@WINDIR@@/server_3rd_party_licenses.txt</origin>
+                            <origin>staging/@@WINDIR@@/commandlinetools/commandlinetools_3rd_party_licenses.txt</origin>
                         </distributionFile>
                     </distributionFileList>
 		</folder>

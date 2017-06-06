@@ -660,8 +660,19 @@ _postprocess_server_windows_x64() {
 
     cd $WD/server
 
-    pushd staging/windows-x64
-    generate_3rd_party_license "server"
+    #generate commandlinetools license file
+    pushd $CLT_STAGING_WINDOWS_X64
+        generate_3rd_party_license "commandlinetools"
+    popd
+
+    #generate pgAdmin4 license file
+    pushd $PGADMIN_STAGING_WINDOWS_X64
+        generate_3rd_party_license "pgAdmin"
+    popd
+
+    #generate StackBuilder license file
+    pushd $SB_STAGING_WINDOWS_X64
+        generate_3rd_party_license "StackBuilder"
     popd
 
     # Welcome doc
@@ -684,6 +695,8 @@ _postprocess_server_windows_x64() {
 
     #Updating the docs in restructured staging
     cp -r $WD/server/staging_cache/windows-x64/doc $PGSERVER_STAGING_WINDOWS_X64 || _die "Failed to copy documentation"
+    cp $WD/resources/license.txt $PGSERVER_STAGING_WINDOWS_X64/server_license.txt
+    cp $WD/server/source/pgadmin.windows-x64/LICENSE $PGADMIN_STAGING_WINDOWS_X64/pgAdmin_license.txt
 
     cd $WD/server
 

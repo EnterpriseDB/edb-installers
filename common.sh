@@ -214,7 +214,7 @@ generate_3rd_party_license()
     export ListpgAdminFiles="$WD/list_pgadmin_files.sh"
     export blnIsWindows=false
     export LibListDir="3rd_party_libraries_list"
-    export CurrentPlatform="${PWD##*/}" # Current directory name actually
+    export CurrentPlatform=`echo ${PWD%/*} | xargs basename`
     export Lib_List_File="$WD/output/$LibListDir/${ComponentName}_${CurrentPlatform}_libs.txt"
     export ComponentFile="$PWD/${ComponentName}_3rd_party_licenses.txt"
     export LicenseTypePath="$WD/resources/3rd_party_license_types"
@@ -236,7 +236,7 @@ generate_3rd_party_license()
         ListGeneratorScriptFile="$ListGeneratorScriptFileOSX"
     fi
 
-    if [[ $ComponentName != "server" ]];
+    if [[ $ComponentName != "server" || $ComponentName != "commandlinetools" ]];
     then
         LIBPQPattern=xyz${LIBPQPattern}abc
     fi

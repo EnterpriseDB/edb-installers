@@ -509,9 +509,21 @@ _postprocess_server_osx() {
 
     cd $WD/server
 
-    pushd staging_cache/osx
-    generate_3rd_party_license "server"
+    #generate commandlinetools license file
+    pushd $CLT_STAGING_OSX
+        generate_3rd_party_license "commandlinetools"
     popd
+
+    #generate pgAdmin4 license file
+    pushd $PGADMIN_STAGING_OSX
+        generate_3rd_party_license "pgAdmin"
+    popd
+
+    #generate StackBuilder license file
+    pushd $SB_STAGING_OSX
+        generate_3rd_party_license "StackBuilder"
+    popd
+
 
     # Welcome doc
     mkdir -p $WD/server/staging_cache/osx/doc/ || _die "Failed to install the document"
@@ -528,7 +540,9 @@ _postprocess_server_osx() {
     rm -rf pgsql || _die "Failed to remove the binaries directory"
 
     # Complete the staging and prepare the installer
-    cp $WD/server/staging_cache/osx/server_3rd_party_licenses.txt $PGSERVER_STAGING_OSX/../
+    #cp $WD/server/staging_cache/osx/server_3rd_party_licenses.txt $PGSERVER_STAGING_OSX/../
+    cp $WD/resources/license.txt $PGSERVER_STAGING_OSX/server_license.txt
+    cp $WD/server/source/pgadmin.osx/LICENSE $PGADMIN_STAGING_OSX/pgAdmin_license.txt
 
     cd $WD/server
 

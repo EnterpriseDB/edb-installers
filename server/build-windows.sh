@@ -592,9 +592,21 @@ _postprocess_server_windows() {
 
     cd $WD/server
  
-    pushd staging_cache/windows
-    generate_3rd_party_license "server"
+    #generate commandlinetools license file
+    pushd $CLT_STAGING_WINDOWS
+        generate_3rd_party_license "commandlinetools"
     popd
+
+    #generate pgAdmin4 license file
+    pushd $PGADMIN_STAGING_WINDOWS
+        generate_3rd_party_license "pgAdmin"
+    popd
+
+    #generate StackBuilder license file
+    pushd $SB_STAGING_WINDOWS
+        generate_3rd_party_license "StackBuilder"
+    popd
+
 
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging_cache/windows/doc/" || _die "Failed to install the welcome document"
@@ -615,7 +627,9 @@ _postprocess_server_windows() {
     #Updating the docs in restructured staging
     cp -r $WD/server/staging_cache/windows/doc $PGSERVER_STAGING_WINDOWS || _die "Failed to copy documentation"
 
-    cp $WD/server/staging_cache/windows/server_3rd_party_licenses.txt $PGSERVER_STAGING_WINDOWS/..
+    #cp $WD/server/staging_cache/windows/server_3rd_party_licenses.txt $PGSERVER_STAGING_WINDOWS/..
+    cp $WD/resources/license.txt $PGSERVER_STAGING_WINDOWS/server_license.txt
+    cp $WD/server/source/pgadmin.windows/LICENSE $PGADMIN_STAGING_WINDOWS/pgAdmin_license.txt
     cd $WD/server
 
     # Setup the installer scripts. 
