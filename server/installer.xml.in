@@ -5483,7 +5483,7 @@ REM The script sets environment variables helpful for PostgreSQL
         </component>
         <component>
          <name>stackbuilder</name>
-         <description>Stackbuilder</description>
+         <description>Stack Builder</description>
          <canBeEdited>1</canBeEdited>
          <detailedDescription>${msg(stackbuilder.desc)}</detailedDescription>
          <selected>1</selected>
