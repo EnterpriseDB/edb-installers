@@ -63,6 +63,13 @@ _prep_server_osx() {
     cp -pR stackbuilder stackbuilder.osx || _die "Failed to copy the source code (source/stackbuilder)"
     tar -jcvf stackbuilder.tar.bz2 stackbuilder.osx || _die "Failed to create the archive (source/stackbuilder.tar.bz2)"
 
+    # Remove any existing staging_cache directory that might exist, and create a clean one
+    if [ -e $WD/server/staging_cache/osx ];
+    then
+      echo "Removing existing staging_cache directory"
+      rm -rf $WD/server/staging_cache/osx || _die "Couldn't remove the existing staging_cache directory"
+    fi
+
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/osx ];
     then
@@ -73,8 +80,14 @@ _prep_server_osx() {
     echo "Cleaning the files in remote server directory"
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/*" || _die "Falied to clean the server directory on Mac OS X VM"
 
-    echo "Creating staging directory ($WD/server/staging/osx)"
-    mkdir -p $WD/server/staging/osx || _die "Couldn't create the staging directory"
+    echo "Creating staging_cache directory ($WD/server/staging/osx)"
+    mkdir -p $WD/server/staging_cache/osx || _die "Couldn't create the staging_cache directory"
+
+    echo "Creating staging directory ($WD/server/staging/linux-x64)"
+    mkdir -p $PGSERVER_STAGING_OSX || _die "Couldn't create the staging directory $PGSERVER_STAGING_OSX"
+    mkdir -p $PGADMIN_STAGING_OSX || _die "Couldn't create the staging directory $PGADMIN_STAGING_OSX"
+    mkdir -p $SB_STAGING_OSX || _die "Couldn't create the staging directory $SB_STAGING_OSX"
+    mkdir -p $CLT_STAGING_OSX || _die "Couldn't create the staging directory $CLT_STAGING_OSX"
 
     if [ -f $WD/server/scripts/osx/getlocales/getlocales.osx ]; then
       rm -f $WD/server/scripts/osx/getlocales/getlocales.osx
@@ -113,7 +126,7 @@ _build_server_osx() {
     echo "*******************************************************"
 
     # First, build the server
-    PG_STAGING=$PG_PATH_OSX/server/staging/osx
+    PG_STAGING=$PG_PATH_OSX/server/staging_cache/osx
 
     cd $WD/server/source/postgres.osx
 
@@ -168,24 +181,24 @@ EOT
     echo "Building pldebugger module"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64' make -j4" || _die "Failed to build the debugger module"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
-    if [ ! -e $WD/server/staging/osx/doc ];
+    if [ ! -e $WD/server/staging_cache/osx/doc ];
     then
-        mkdir -p $WD/server/staging/osx/doc || _die "Failed to create the doc directory"
+        mkdir -p $WD/server/staging_cache/osx/doc || _die "Failed to create the doc directory"
     fi
-    cp $WD/server/source/postgres.osx/contrib/pldebugger/README.pldebugger $WD/server/staging/osx/doc || _die "Failed to copy the debugger README into the staging directory"
+    cp $WD/server/source/postgres.osx/contrib/pldebugger/README.pldebugger $WD/server/staging_cache/osx/doc || _die "Failed to copy the debugger README into the staging_cache directory"
 
     echo "Building uuid-ossp module"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64' make -j4" || _die "Failed to build the uuid-ossp module" 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
 
     # Install the PostgreSQL docs
-    mkdir -p $WD/server/staging/osx/doc/postgresql/html || _die "Failed to create the doc directory"
-    cd $WD/server/staging/osx/doc/postgresql/html || _die "Failed to change to the doc directory"
+    mkdir -p $WD/server/staging_cache/osx/doc/postgresql/html || _die "Failed to create the doc directory"
+    cd $WD/server/staging_cache/osx/doc/postgresql/html || _die "Failed to change to the doc directory"
     cp -pR $WD/server/source/postgres.osx/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
 
     # Install the PostgreSQL man pages
-    mkdir -p $WD/server/staging/osx/share/man || _die "Failed to create the man directory"
-    cd $WD/server/staging/osx/share/man || _die "Failed to change to the man directory"
+    mkdir -p $WD/server/staging_cache/osx/share/man || _die "Failed to create the man directory"
+    cd $WD/server/staging_cache/osx/share/man || _die "Failed to change to the man directory"
     cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (osx)"
     cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (osx)"
     cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (osx)"
@@ -290,7 +303,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
 
     cd $PG_PATH_OSX/server/resources/
     # run complete-bundle to copy the dependent libraries and frameworks and fix the rpaths
-    PGDIR=$PG_PATH_OSX/server/staging/osx QTDIR="`dirname $PG_QMAKE_OSX`/.." sh ./complete-bundle.sh "\$BUILDROOT/$APP_BUNDLE_NAME" || _die "complete-bundle.sh failed"
+    PGDIR=$PG_PATH_OSX/server/staging_cache/osx QTDIR="`dirname $PG_QMAKE_OSX`/.." sh ./complete-bundle.sh "\$BUILDROOT/$APP_BUNDLE_NAME" || _die "complete-bundle.sh failed"
 
     # copy the web directory to the bundle as it is required by runtime
     cp -r $PG_PATH_OSX/server/source/pgadmin.osx/web "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/"
@@ -314,7 +327,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     find . \( -name "*.pyc" -o -name "*.pyo" \) -delete
     
     # Copy the app bundle into place
-    cp -pR "\$BUILDROOT/$APP_BUNDLE_NAME" $PG_PATH_OSX/server/staging/osx || _die "Failed to copy pgAdmin into the staging directory"
+    cp -pR "\$BUILDROOT/$APP_BUNDLE_NAME" $PG_PATH_OSX/server/staging_cache/osx || _die "Failed to copy pgAdmin into the staging_cache directory"
 EOT-PGADMIN
 
     cd $WD
@@ -323,7 +336,7 @@ EOT-PGADMIN
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on OSX"
 
     #Fix permission in the staging/osx/share
-    ssh $PG_SSH_OSX "chmod -R a+r $PG_PATH_OSX/server/staging/osx/share/postgresql/timezone/*"
+    ssh $PG_SSH_OSX "chmod -R a+r $PG_PATH_OSX/server/staging_cache/osx/share/postgresql/timezone/*"
 
     # Stackbuilder
     #cd $WD/server/source/stackbuilder.osx
@@ -336,7 +349,7 @@ EOT-PGADMIN
     ssh $PG_SSH_OSX "cp /opt/local/Current/certs/ca-bundle.crt $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs/ " || _die "Failed to copy certs bundle"
 
     # Copy the StackBuilder app bundle into place
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; cp -pR stackbuilder.app $PG_PATH_OSX/server/staging/osx" || _die "Failed to copy StackBuilder into the staging directory"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; cp -pR stackbuilder.app $PG_PATH_OSX/server/staging_cache/osx" || _die "Failed to copy StackBuilder into the staging_cache directory"
 
     # Copy the third party headers
     ssh $PG_SSH_OSX "cp -r /opt/local/Current/include/openssl $PG_STAGING/include" || _die "Failed to copy the required header"
@@ -368,7 +381,7 @@ EOT-PGADMIN
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_base_carbonu_xml-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
 
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
-    ssh $PG_SSH_OSX "cp -f $PG_PATH_OSX/server/staging/osx/lib/postgresql/plperl.so $PG_PATH_OSX/server/staging/osx/"
+    ssh $PG_SSH_OSX "cp -f $PG_PATH_OSX/server/staging_cache/osx/lib/postgresql/plperl.so $PG_PATH_OSX/server/staging_cache/osx/"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     echo "Rewrite shared library references"
@@ -384,10 +397,10 @@ EOT-PGADMIN
     ssh $PG_SSH_OSX "cd $PG_STAGING; install_name_tool -id libpq.5.dylib \"$APP_BUNDLE_NAME/Contents/Frameworks/libpq.5.dylib\""
 
     # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
-     ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging/osx/plperl.so $PG_PATH_OSX/server/staging/osx/lib/postgresql/plperl.so"
+     ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging_cache/osx/plperl.so $PG_PATH_OSX/server/staging_cache/osx/lib/postgresql/plperl.so"
 
     # Changing loader path of plpython3.so
-     ssh $PG_SSH_OSX "install_name_tool -change libpython$PG_VERSION_PYTHON\m.dylib $PG_PYTHON_OSX/lib/libpython$PG_VERSION_PYTHON\m.dylib $PG_PATH_OSX/server/staging/osx/lib/postgresql/plpython3.so"
+     ssh $PG_SSH_OSX "install_name_tool -change libpython$PG_VERSION_PYTHON\m.dylib $PG_PYTHON_OSX/lib/libpython$PG_VERSION_PYTHON\m.dylib $PG_PATH_OSX/server/staging_cache/osx/lib/postgresql/plpython3.so"
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/scripts/osx/getlocales; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -o getlocales.osx -O0 getlocales.c"  || _die "Failed to build getlocales utility"
 
@@ -397,85 +410,86 @@ EOT-PGADMIN
     # Copy the regress source to the regression setup 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/src/test/; cp -pR regress /buildfarm/src/test/" || _die "Failed to Copy regress to the regression directory"
 
-    ssh $PG_SSH_OSX "mkdir -p $REMOTE_SB_STAGING_OSX/lib" || _die "Failed to create mkdir $REMOTE_SB_STAGING_OSX/lib"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_macu_adv-*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_macu_core-*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu-*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_net-*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_xml-*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcurl*dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libcurl"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libz*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libz"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libssl*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libssl"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcrypto*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libcrypto"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libjpeg*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libjpeg"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libpng16*.dylib $REMOTE_SB_STAGING_OSX/lib/" || _die "Failed to copy the latest libpng16"
+    ssh $PG_SSH_OSX "mkdir -p $PG_STAGING/stackbuilder/lib" || _die "Failed to create $PG_STAGING/stackbuilder/lib"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_macu_adv-*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_macu_core-*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu-*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_net-*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_xml-*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcurl*dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libcurl"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libz*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libz"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libssl*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libssl"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcrypto*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libcrypto"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libjpeg*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libjpeg"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libpng16*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libpng16"
 
     cd $WD
     # Copy the staging to controller to build the installers
-    ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create archive of the server staging"
-    scp $PG_SSH_OSX:$PG_STAGING/server-staging.tar.bz2 $WD/server/staging/osx || _die "Failed to scp server staging"
+    ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create archive of the server staging_cache"
+    scp $PG_SSH_OSX:$PG_STAGING/server-staging.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to scp server staging_cache"
     scp $PG_SSH_OSX:$PG_PATH_OSX/server/scripts/osx/getlocales/getlocales.osx $WD/server/scripts/osx/getlocales/ || _die "Failed to scp getlocales.osx"
 
     # Extract the staging archive
-    cd $WD/server/staging/osx
+    cd $WD/server/staging_cache/osx
     tar -jxvf server-staging.tar.bz2 || _die "Failed to extract the server staging archive"
     rm -f server-staging.tar.bz2
 
     # Copy the required Python executables
-    scp $PG_SSH_OSX:$PGADMIN_PYTHON_OSX/Python $WD/server/staging/osx/pgAdmin\ 4.app/Contents/Resources/venv/.Python
+    scp $PG_SSH_OSX:$PGADMIN_PYTHON_OSX/Python $WD/server/staging_cache/osx/pgAdmin\ 4.app/Contents/Resources/venv/.Python
 
-    #Restructuring staging
-    echo "Restructuring staging as per components"
+    # ensure that there's an __init__.py file present in the backports module directory
+    touch $WD/server/staging_cache/osx/pgAdmin\ 4.app/Contents/Resources/venv/lib/python/site-packages/backports/__init__.py || _die "Failed to touch the __init__.py"
+
+    echo "Preparing restructured staging for server"
+    cp -r $WD/server/staging_cache/osx/bin $PGSERVER_STAGING_OSX  || _die "Failed to copy $WD/server/staging_cache/osx/bin"
+    cp -r $WD/server/staging_cache/osx/lib $PGSERVER_STAGING_OSX  || _die "Failed to copy $WD/server/staging_cache/osx/lib"
+    cp -r $WD/server/staging_cache/osx/include $PGSERVER_STAGING_OSX || _die "Failed to copy $WD/server/staging_cache/osx/include"
+    cp -r $WD/server/staging_cache/osx/doc $PGSERVER_STAGING_OSX || _die "Failed to copy $WD/server/staging_cache/osx/doc"
+    cp -r $WD/server/staging_cache/osx/share $PGSERVER_STAGING_OSX || _die "Failed to copy $WD/server/staging_cache/osx/share"
+
+    echo "Preparing restructured staging for Command Line Tools"
     mkdir -p $CLT_STAGING_OSX/bin || _die "Failed to create the $CLT_STAGING_OSX/bin directory"
     mkdir -p $CLT_STAGING_OSX/lib || _die "Failed to create the $CLT_STAGING_OSX/lib directory"
     mkdir -p $CLT_STAGING_OSX/share/man/man1 || _die "Failed to create the $CLT_STAGING_OSX/share/man/man1 directory"
-    mkdir -p $PGADMIN_STAGING_OSX || _die "Failed to create the $PGADMIN_STAGING_OSX "
-    mkdir -p $SB_STAGING_OSX || _die "Failed to create the $SB_STAGING_OSX "
 
-    echo "Creating Commandlinetools"
-    mv $WD/server/staging/osx/lib  $CLT_STAGING_OSX || _die "Failed to move $PGSERVER_STAGING_OSX/lib"
-    mv $WD/server/staging/osx/bin/psql*  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/bin/psql"
-    mv $WD/server/staging/osx/bin/pg_basebackup  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/bin/pg_basebackup"
-    mv $WD/server/staging/osx/bin/pg_dump  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/bin/pg_dump"
-    mv $WD/server/staging/osx/bin/pg_dumpall  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/bin/pg_dumpall"
-    mv $WD/server/staging/osx/bin/pg_restore  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/pg_restore"
-    mv $WD/server/staging/osx/bin/createdb  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/createdb"
-    mv $WD/server/staging/osx/bin/clusterdb $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/clusterdb"
-    mv $WD/server/staging/osx/bin/createuser  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/createuser"
-    mv $WD/server/staging/osx/bin/dropuser  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/dropuser"
-    mv $WD/server/staging/osx/bin/dropdb  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/dropdb"
-    mv $WD/server/staging/osx/bin/pg_isready  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/pg_isready"
-    mv $WD/server/staging/osx/bin/vacuumdb  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/vacuumdb"
-    mv $WD/server/staging/osx/bin/reindexdb  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/reindexdb"
-    mv $WD/server/staging/osx/bin/pgbench  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/pgbench"
-    mv $WD/server/staging/osx/bin/vacuumlo  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/vacuumlo"
-    mv $WD/server/staging/osx/share/man/man1/pg_basebackup.1 $CLT_STAGING_OSX/share/man/man1
-    mv $WD/server/staging/osx/share/man/man1/pg_dump.1 $CLT_STAGING_OSX/share/man/man1
-    mv $WD/server/staging/osx/share/man/man1/pg_restore.1 $CLT_STAGING_OSX/share/man/man1
-    mv $WD/server/staging/osx/share/man/man1/createdb.1 $CLT_STAGING_OSX/share/man/man1
-    mv $WD/server/staging/osx/share/man/man1/clusterdb.1 $CLT_STAGING_OSX/share/man/man1
-    mv $WD/server/staging/osx/share/man/man1/createuser.1 $CLT_STAGING_OSX/share/man/man1
-    mv $WD/server/staging/osx/share/man/man1/dropdb.1 $CLT_STAGING_OSX/share/man/man1
-    mv $WD/server/staging/osx/share/man/man1/dropuser.1 $CLT_STAGING_OSX/share/man/man1
-    mv $WD/server/staging/osx/share/man/man1/pg_isready.1 $CLT_STAGING_OSX/share/man/man1
-    mv $WD/server/staging/osx/share/man/man1/vacuumdb.1 $CLT_STAGING_OSX/share/man/man1
-    mv $WD/server/staging/osx/share/man/man1/reindexdb.1 $CLT_STAGING_OSX/share/man/man1
-    mv $WD/server/staging/osx/share/man/man1/pgbench.1 $CLT_STAGING_OSX/share/man/man1
-    mv $WD/server/staging/osx/share/man/man1/vacuumlo.1 $CLT_STAGING_OSX/share/man/man1
+    mv $PGSERVER_STAGING_OSX/lib  $CLT_STAGING_OSX || _die "Failed to move $PGSERVER_STAGING_OSX/lib"
+    mv $PGSERVER_STAGING_OSX/bin/psql*  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/bin/psql"
+    mv $PGSERVER_STAGING_OSX/bin/pg_basebackup  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/bin/pg_basebackup"
+    mv $PGSERVER_STAGING_OSX/bin/pg_dump  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/bin/pg_dump"
+    mv $PGSERVER_STAGING_OSX/bin/pg_dumpall  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/bin/pg_dumpall"
+    mv $PGSERVER_STAGING_OSX/bin/pg_restore  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/pg_restore"
+    mv $PGSERVER_STAGING_OSX/bin/createdb  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/createdb"
+    mv $PGSERVER_STAGING_OSX/bin/clusterdb $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/clusterdb"
+    mv $PGSERVER_STAGING_OSX/bin/createuser  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/createuser"
+    mv $PGSERVER_STAGING_OSX/bin/dropuser  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/dropuser"
+    mv $PGSERVER_STAGING_OSX/bin/dropdb  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/dropdb"
+    mv $PGSERVER_STAGING_OSX/bin/pg_isready  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/pg_isready"
+    mv $PGSERVER_STAGING_OSX/bin/vacuumdb  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/vacuumdb"
+    mv $PGSERVER_STAGING_OSX/bin/reindexdb  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/reindexdb"
+    mv $PGSERVER_STAGING_OSX/bin/pgbench  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/pgbench"
+    mv $PGSERVER_STAGING_OSX/bin/vacuumlo  $CLT_STAGING_OSX/bin/ || _die "Failed to move $PGSERVER_STAGING_OSX/server/bin/vacuumlo"
 
-    echo "Restructuring pgAdmin4"
-    mv $WD/server/staging/osx/pgAdmin\ 4.app/  $PGADMIN_STAGING_OSX
+    mv $PGSERVER_STAGING_OSX/share/man/man1/pg_basebackup.1 $CLT_STAGING_OSX/share/man/man1
+    mv $PGSERVER_STAGING_OSX/share/man/man1/pg_dump.1 $CLT_STAGING_OSX/share/man/man1
+    mv $PGSERVER_STAGING_OSX/share/man/man1/pg_restore.1 $CLT_STAGING_OSX/share/man/man1
+    mv $PGSERVER_STAGING_OSX/share/man/man1/createdb.1 $CLT_STAGING_OSX/share/man/man1
+    mv $PGSERVER_STAGING_OSX/share/man/man1/clusterdb.1 $CLT_STAGING_OSX/share/man/man1
+    mv $PGSERVER_STAGING_OSX/share/man/man1/createuser.1 $CLT_STAGING_OSX/share/man/man1
+    mv $PGSERVER_STAGING_OSX/share/man/man1/dropdb.1 $CLT_STAGING_OSX/share/man/man1
+    mv $PGSERVER_STAGING_OSX/share/man/man1/dropuser.1 $CLT_STAGING_OSX/share/man/man1
+    mv $PGSERVER_STAGING_OSX/share/man/man1/pg_isready.1 $CLT_STAGING_OSX/share/man/man1
+    mv $PGSERVER_STAGING_OSX/share/man/man1/vacuumdb.1 $CLT_STAGING_OSX/share/man/man1
+    mv $PGSERVER_STAGING_OSX/share/man/man1/reindexdb.1 $CLT_STAGING_OSX/share/man/man1
+    mv $PGSERVER_STAGING_OSX/share/man/man1/pgbench.1 $CLT_STAGING_OSX/share/man/man1
+    mv $PGSERVER_STAGING_OSX/share/man/man1/vacuumlo.1 $CLT_STAGING_OSX/share/man/man1
 
-    echo "Restructuring Stackbuilder"
-    mv $WD/server/staging/osx/stackbuilder.app $SB_STAGING_OSX || _die "Failed to move stackbuilder"
+    echo "Preparing restructured staging_cache for pgAdmin"
+    cp -pR $WD/server/staging_cache/osx/pgAdmin\ 4.app/  $PGADMIN_STAGING_OSX
 
-    echo "Restructuring Server"
-    mv $WD/server/staging/osx/doc     $PGSERVER_STAGING_OSX || _die "Failed to move documentation"
-    mv $WD/server/staging/osx/include $PGSERVER_STAGING_OSX || _die "Failed to move include"
-    mv $WD/server/staging/osx/share   $PGSERVER_STAGING_OSX || _die "Failed to move share"
-    mv $WD/server/staging/osx/bin   $PGSERVER_STAGING_OSX || _die "Failed to move bin"
-    touch $PGADMIN_STAGING_OSX/pgAdmin\ 4.app/Contents/Resources/venv/lib/python/site-packages/backports/__init__.py || _die "Failed to touch the __init__.py"
-
+    echo "Preparing restructured staging_cache for stackbuilder"
+    mv $WD/server/staging_cache/osx/stackbuilder.app $WD/server/staging_cache/osx/stackbuilder/ || _die "Failed to move stackbuilder.app"
+    cp -pR $WD/server/staging_cache/osx/stackbuilder/stackbuilder.app $SB_STAGING_OSX || _die "Failed to copy stackbuilder.app"
+    cp -pR $WD/server/staging_cache/osx/stackbuilder/lib $SB_STAGING_OSX || _die "Failed to copy stackbuilder lib"
 
     echo "END BUILD Server OSX"
 }
@@ -495,23 +509,26 @@ _postprocess_server_osx() {
 
     cd $WD/server
 
-    pushd staging/osx
+    pushd staging_cache/osx
     generate_3rd_party_license "server"
     popd
 
     # Welcome doc
-    mkdir -p $PGSERVER_STAGING_OSX/doc/ || _die "Failed to install the document"
-    cp "$WD/server/resources/installation-notes.html" "$PGSERVER_STAGING_OSX/doc/" || _die "Failed to install the welcome document"
-    cp "$WD/server/resources/edblogo.png" "$PGSERVER_STAGING_OSX/doc/" || _die "Failed to install the welcome logo"
+    mkdir -p $WD/server/staging_cache/osx/doc/ || _die "Failed to install the document"
+    cp "$WD/server/resources/installation-notes.html" "$WD/server/staging_cache/osx/doc/" || _die "Failed to install the welcome document"
+    cp "$WD/server/resources/edblogo.png" "$WD/server/staging_cache/osx/doc/" || _die "Failed to install the welcome logo"
 
     #Creating a archive of the binaries
-    mkdir -p $PGSERVER_STAGING_OSX/pgsql || _die "Failed to create the directory for binaries "
-    cd $PGSERVER_STAGING_OSX
-    cp -pR $PGSERVER_STAGING_OSX/bin $PGSERVER_STAGING_OSX/doc $PGSERVER_STAGING_OSX/include $CLT_STAGING_OSX/lib $PGADMIN_STAGING_OSX $PGSERVER_STAGING_OSX/share $SB_STAGING_OSX pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+    mkdir -p $WD/server/staging_cache/osx/pgsql || _die "Failed to create the directory for binaries "
+    cd $WD/server/staging_cache/osx
+    cp -pR bin doc include lib pgAdmin* share stackbuilder pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
     zip -rq postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip pgsql || _die "Failed to archive the postgresql binaries"
     mv postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip $WD/output/ || _die "Failed to move the archive to output folder"
 
     rm -rf pgsql || _die "Failed to remove the binaries directory"
+
+    # Complete the staging and prepare the installer
+    cp $WD/server/staging_cache/osx/server_3rd_party_licenses.txt $PGSERVER_STAGING_OSX/../
 
     cd $WD/server
 
