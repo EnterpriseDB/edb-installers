@@ -3332,9 +3332,9 @@ EOF
                             <value>1</value>
                         </compareText>
                         <compareText>
-                            <logic>contains</logic>
+                            <logic>does_not_equal</logic>
                             <text>${platform_name}</text>
-                            <value>linux</value>
+                            <value>windows</value>
                         </compareText>
 			 <isTrue  value="${component(server).selected}"/>
                     </ruleList>
@@ -3353,9 +3353,9 @@ EOF
                             <value>1</value>
                         </compareText>
                         <compareText>
-                            <logic>contains</logic>
+                            <logic>does_not_equal</logic>
                             <text>${platform_name}</text>
-                            <value>linux</value>
+                            <value>windows</value>
                         </compareText>
 			 <isTrue  value="${component(pgAdmin).selected}"/>
                     </ruleList>
@@ -3374,9 +3374,9 @@ EOF
                             <value>1</value>
                         </compareText>
                         <compareText>
-                            <logic>contains</logic>
+                            <logic>does_not_equal</logic>
                             <text>${platform_name}</text>
-                            <value>linux</value>
+                            <value>windows</value>
                         </compareText>
 			 <isTrue  value="${component(stackbuilder).selected}"/>
                     </ruleList>
@@ -3394,9 +3394,9 @@ EOF
                             <value>1</value>
                         </compareText>
                         <compareText>
-                            <logic>contains</logic>
+                            <logic>does_not_equal</logic>
                             <text>${platform_name}</text>
-                            <value>linux</value>
+                            <value>windows</value>
                         </compareText>
 			 <isTrue  value="${component(commandlinetools).selected}"/>
                     </ruleList>
@@ -4313,6 +4313,9 @@ REM The script sets environment variables helpful for PostgreSQL
                     <text>${platform_name}</text>
                     <value>osx</value>
                 </compareText>
+                <isTrue  value="${component(server).selected}"/>
+                <isTrue  value="${component(pgAdmin).selected}"/>
+                <isTrue  value="${component(stackbuilder).selected}"/>
             </ruleList>
         </deleteFile>
 
@@ -4796,6 +4799,14 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/osx/server/installer/prerun_checks.sh</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
+                    <name>defaultmacosx_scripts</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/osx/server/scripts</origin>
                         </distributionDirectory>
@@ -5203,6 +5214,21 @@ REM The script sets environment variables helpful for PostgreSQL
 	                  </compareText>
 	              </ruleList>
 	         </actionGroup>
+                <!-- MAC: Remove menu shortcuts -->
+                <actionGroup>
+                  <actionList>
+                    <deleteFile path="/Applications/${branding}/Reload Configuration.app" />
+                    <deleteFile path="/Applications/${branding}/Documentation/PostgreSQL*" />
+                    <deleteFile path="/Applications/${branding}/Documentation/Installation notes.app" />
+                  </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                  </actionGroup>
 	     </preUninstallationActionList>
 
         </component>
@@ -5352,6 +5378,9 @@ REM The script sets environment variables helpful for PostgreSQL
                         <distributionDirectory>
                             <origin>staging/osx/pgadmin4/pgAdmin 4.app</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/pgadmin4/installer</origin>
+                        </distributionDirectory>
                         <distributionFile>
                             <origin>staging/osx/pgadmin4/pgAdmin_3rd_party_licenses.txt</origin>
                         </distributionFile>
@@ -5477,6 +5506,20 @@ REM The script sets environment variables helpful for PostgreSQL
 	                  </compareText>
 	              </ruleList>
 	         </actionGroup>
+                <!-- MAC: Remove menu shortcuts -->
+                <actionGroup>
+                  <actionList>
+                    <deleteFile path="/Applications/${branding}/pgAdmin 4.app"/>
+                    <deleteFile path="/Applications/${branding}/Documentation/pgAdmin*"/>
+                  </actionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                  </actionGroup>
 	     </preUninstallationActionList>
         </component>
         <component>
@@ -5604,6 +5647,12 @@ REM The script sets environment variables helpful for PostgreSQL
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/osx/stackbuilder/lib</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/stackbuilder/scripts</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/stackbuilder/installer</origin>
                         </distributionDirectory>
                         <distributionFile>
                             <origin>staging/osx/stackbuilder/StackBuilder_3rd_party_licenses.txt</origin>
@@ -5740,6 +5789,17 @@ REM The script sets environment variables helpful for PostgreSQL
 	                  </compareText>
 	              </ruleList>
 	         </actionGroup>
+                <!-- MAC: Remove menu shortcuts -->
+                <deleteFile>
+                    <path>/Applications/${branding}/Application Stack Builder.app</path>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </deleteFile>
 	     </preUninstallationActionList>
         </component>
         <component>
@@ -5847,6 +5907,9 @@ REM The script sets environment variables helpful for PostgreSQL
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/osx/commandlinetools/share</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/osx/commandlinetools/installer</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/osx/commandlinetools/scripts</origin>
@@ -5969,6 +6032,17 @@ REM The script sets environment variables helpful for PostgreSQL
 	                  </compareText>
 	              </ruleList>
 	         </actionGroup>
+                <!-- MAC: Remove menu shortcuts -->
+                <deleteFile>
+                    <path>/Applications/${branding}/SQL Shell (psql).app</path>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </deleteFile>
 	     </preUninstallationActionList>
         </component>
     </componentList>

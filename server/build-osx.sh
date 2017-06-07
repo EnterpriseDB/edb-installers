@@ -483,10 +483,10 @@ EOT-PGADMIN
     mv $PGSERVER_STAGING_OSX/share/man/man1/pgbench.1 $CLT_STAGING_OSX/share/man/man1
     mv $PGSERVER_STAGING_OSX/share/man/man1/vacuumlo.1 $CLT_STAGING_OSX/share/man/man1
 
-    echo "Preparing restructured staging_cache for pgAdmin"
+    echo "Preparing restructured staging for pgAdmin"
     cp -pR $WD/server/staging_cache/osx/pgAdmin\ 4.app/  $PGADMIN_STAGING_OSX
 
-    echo "Preparing restructured staging_cache for stackbuilder"
+    echo "Preparing restructured staging for stackbuilder"
     mv $WD/server/staging_cache/osx/stackbuilder.app $WD/server/staging_cache/osx/stackbuilder/ || _die "Failed to move stackbuilder.app"
     cp -pR $WD/server/staging_cache/osx/stackbuilder/stackbuilder.app $SB_STAGING_OSX || _die "Failed to copy stackbuilder.app"
     cp -pR $WD/server/staging_cache/osx/stackbuilder/lib $SB_STAGING_OSX || _die "Failed to copy stackbuilder lib"
@@ -558,19 +558,41 @@ _postprocess_server_osx() {
     cp scripts/osx/initcluster.sh $PGSERVER_STAGING_OSX/installer/server/initcluster.sh || _die "Failed to copy the initcluster script (scripts/osx/initcluster.sh)"
     chmod ugo+x $PGSERVER_STAGING_OSX/installer/server/initcluster.sh
     cp scripts/osx/createshortcuts.sh $PGSERVER_STAGING_OSX/installer/server/createshortcuts.sh || _die "Failed to copy the createuser script (scripts/osx/createshortcuts.sh)"
-    chmod ugo+x $PGSERVER_STAGING_OSX/installer/server/createshortcuts.sh
+    cp scripts/osx/createshortcuts_server.sh $PGSERVER_STAGING_OSX/installer/server/createshortcuts_server.sh || _die "Failed to copy the createuser script (scripts/osx/createshortcuts_server.sh)"
+    chmod ugo+x $PGSERVER_STAGING_OSX/installer/server/createshortcuts*.sh
     cp scripts/osx/startupcfg.sh $PGSERVER_STAGING_OSX/installer/server/startupcfg.sh || _die "Failed to copy the startupcfg script (scripts/osx/startupcfg.sh)"
     chmod ugo+x $PGSERVER_STAGING_OSX/installer/server/startupcfg.sh
     cp scripts/osx/loadmodules.sh $PGSERVER_STAGING_OSX/installer/server/loadmodules.sh || _die "Failed to copy the loadmodules script (scripts/osx/loadmodules.sh)"
     chmod ugo+x $PGSERVER_STAGING_OSX/installer/server/loadmodules.sh
 
+    cp scripts/osx/createshortcuts_server.sh $PGSERVER_STAGING_OSX/installer/server/createshortcuts_server.sh || _die "Failed to copy the createuser script (scripts/osx/createshortcuts_server.sh)"
+    chmod ugo+x $PGSERVER_STAGING_OSX/installer/server/createshortcuts*.sh
+
+    mkdir -p $SB_STAGING_OSX/installer/server || _die "Failed to create a directory for the install scripts"
+    cp scripts/osx/createshortcuts_sb.sh $SB_STAGING_OSX/installer/server/createshortcuts_sb.sh || _die "Failed to copy the createuser script (scripts/osx/createshortcuts_sb.sh)"
+    chmod ugo+x $SB_STAGING_OSX/installer/server/createshortcuts_sb.sh
+
+    mkdir -p $PGADMIN_STAGING_OSX/installer/server || _die "Failed to create a directory for the install scripts"
+    cp scripts/osx/createshortcuts_pgadmin.sh $PGADMIN_STAGING_OSX/installer/server/createshortcuts_pgadmin.sh || _die "Failed to copy the createuser script (scripts/osx/createshortcuts_pgadmin.sh)"
+    chmod ugo+x $PGADMIN_STAGING_OSX/installer/server/createshortcuts_pgadmin.sh
+
+    mkdir -p $CLT_STAGING_OSX/installer/server || _die "Failed to create a directory for the install scripts"
+    cp scripts/osx/createshortcuts_clt.sh $CLT_STAGING_OSX/installer/server/createshortcuts_clt.sh || _die "Failed to copy the createuser script (scripts/osx/createshortcuts_clt.sh)"
+    chmod ugo+x $CLT_STAGING_OSX/installer/server/createshortcuts_clt.sh
+
     # Copy in the menu pick images
-    mkdir -p $PGSERVER_STAGING_OSX/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/*.icns $PGSERVER_STAGING_OSX/scripts/images || _die "Failed to copy the menu pick image (resources/*.icns)"
+    mkdir -p $PGSERVER_STAGING_OSX/scripts/images || _die "Failed to create a directory $PGSERVER_STAGING_OSX/scripts/images for the menu pick images"
+    mkdir -p $SB_STAGING_OSX/scripts/images || _die "Failed to create a directory $SB_STAGING_OSX/scripts/images for the menu pick images"
+    mkdir -p $CLT_STAGING_OSX/scripts/images || _die "Failed to create a directory $CLT_STAGING_OSX/scripts/images for the menu pick images"
+
+    cp resources/pg-help.icns $PGSERVER_STAGING_OSX/scripts/images/ || _die "Failed to copy a menu pick image"
+    cp resources/pg-reload.icns $PGSERVER_STAGING_OSX/scripts/images/|| _die "Failed to copy a menu pick image"
+    cp resources/pg-stackbuilder.icns $SB_STAGING_OSX/scripts/images/|| _die "Failed to copy a menu pick image"
+    cp resources/pg-psql.icns $CLT_STAGING_OSX/scripts/images/|| _die "Failed to copy a menu pick image"
 
     # Copy the launch scripts
-    cp scripts/osx/runpsql.sh $PGSERVER_STAGING_OSX/scripts/runpsql.sh || _die "Failed to copy the runpsql script (scripts/osx/runpsql.sh)"
-    chmod ugo+x $PGSERVER_STAGING_OSX/scripts/runpsql.sh
+    cp scripts/osx/runpsql.sh $CLT_STAGING_OSX/scripts/runpsql.sh || _die "Failed to copy the runpsql script (scripts/osx/runpsql.sh)"
+    chmod ugo+x $CLT_STAGING_OSX/scripts/runpsql.sh
 
     # Hack up the scripts, and compile them into the staging directory
     cp scripts/osx/doc-installationnotes.applescript.in $PGSERVER_STAGING_OSX/scripts/doc-installationnotes.applescript || _die "Failed to to the menu pick script (scripts/osx/doc-installationnotes.applescript.in)"
