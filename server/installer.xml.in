@@ -4845,6 +4845,7 @@ REM The script sets environment variables helpful for PostgreSQL
           <actionGroup>
             <actionList>
               <setInstallerVariable name="component(commandlinetools).selected" value="true"/>
+              <showInfo text="${msg(warning.commandlinetools.not.selected)}" />
             </actionList>
             <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
