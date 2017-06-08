@@ -422,6 +422,8 @@ EOT-PGADMIN
     ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcrypto*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libcrypto"
     ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libjpeg*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libjpeg"
     ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libpng16*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libpng16"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libiconv*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libiconv"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libexpat*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libexpat"
 
     cd $WD
     # Copy the staging to controller to build the installers

@@ -23,15 +23,6 @@ TEMPDIR=$9
 # Exit code
 WARN=0
 
-# Make sure correct value is passed for DISABLE_STACKBUILDER
-DISABLE_STACKBUILDER=`echo $DISABLE_STACKBUILDER | tr '[A-Z]' '[a-z]'`
-if [ "x$DISABLE_STACKBUILDER" = "x1" -o "x$DISABLE_STACKBUILDER" = "xtrue" -o "x$DISABLE_STACKBUILDER" = "xon" ];
-then
-    DISABLE_STACKBUILDER=1
-else
-    DISABLE_STACKBUILDER=0
-fi
-
 # Error handlers
 _die() {
     echo $1
@@ -72,7 +63,6 @@ _fixup_file() {
 }
 
 # Fixup the scripts
-_fixup_file "$INSTALLDIR/scripts/runpsql.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Create the menu 
@@ -84,17 +74,7 @@ mkdir -p "$FOLDER/Documentation" || _die "Failed to create the menu directory ($
 _compile_script "$INSTALLDIR/scripts/doc-installationnotes.applescript" "$FOLDER/Documentation/Installation notes.app" "$INSTALLDIR/scripts/images/pg-help.icns"
 _compile_script "$INSTALLDIR/scripts/doc-postgresql.applescript" "$FOLDER/Documentation/PostgreSQL documentation.app" "$INSTALLDIR/scripts/images/pg-help.icns"
 _compile_script "$INSTALLDIR/scripts/doc-postgresql-releasenotes.applescript" "$FOLDER/Documentation/PostgreSQL release notes.app" "$INSTALLDIR/scripts/images/pg-help.icns"
-_compile_script "$INSTALLDIR/scripts/doc-pgadmin.applescript" "$FOLDER/Documentation/pgAdmin documentation.app" "$INSTALLDIR/scripts/images/pg-help.icns"
-# _compile_script "$INSTALLDIR/scripts/doc-pljava.applescript" "$FOLDER/Documentation/PL Java users guide.app" "$INSTALLDIR/scripts/images/pg-help.icns"
-# _compile_script "$INSTALLDIR/scripts/doc-pljava-readme.applescript" "$FOLDER/Documentation/PL Java README.app" "$INSTALLDIR/scripts/images/pg-help.icns"
-_compile_script "$INSTALLDIR/scripts/psql.applescript" "$FOLDER/SQL Shell (psql).app" "$INSTALLDIR/scripts/images/pg-psql.icns"
 _compile_script "$INSTALLDIR/scripts/reload.applescript" "$FOLDER/Reload Configuration.app" "$INSTALLDIR/scripts/images/pg-reload.icns"
-_compile_script "$INSTALLDIR/scripts/pgadmin.applescript" "$FOLDER/pgAdmin 4.app" "$INSTALLDIR/pgAdmin 4.app/Contents/Resources/pgAdmin4.icns"
-
-# Do not create stack-builder shortcut, if DISABLE_STACKBUILDER is equal to 1
-if [ $DISABLE_STACKBUILDER -eq 0 ]; then
-    _compile_script "$INSTALLDIR/scripts/stackbuilder.applescript" "$FOLDER/Application Stack Builder.app" "$INSTALLDIR/scripts/images/pg-stackbuilder.icns"
-fi
 
 echo "$0 ran to completion"
 exit 0
