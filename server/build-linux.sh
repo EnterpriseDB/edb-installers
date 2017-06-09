@@ -509,6 +509,8 @@ EOT-PGADMIN
     mv $WD/server/staging_cache/linux/symbols $WD/output/symbols/linux/server || _die "Failed to move $PGSERVER_STAGING/symbols to $WD/output/symbols/linux/server"
     mv $WD/server/staging_cache/linux/pgAdmin4 $WD/server/staging_cache/linux/pgAdmin\ 4/
 
+    touch $WD/server/staging_cache/linux/pgAdmin\ 4/venv/lib/python2.7/site-packages/backports/__init__.py || _die "Failed to tocuh the __init__.py"
+
     echo "Preparing restructured staging for pgAdmin"
 #PARESH    cp -r "$WD/server/staging_cache/linux/pgAdmin 4" $PGADMIN_STAGING/ || _die "Failed to copy $WD/server/staging_cache/linux/pgAdmin\ 4"
     cp -r "$WD/server/staging_cache/linux/pgAdmin 4" $PGADMIN_STAGING/
@@ -561,8 +563,6 @@ EOT-PGADMIN
     cp -r $WD/server/staging_cache/linux/stackbuilder/bin $SB_STAGING/ || _die "Failed to copy $WD/server/staging_cache/linux/stackbuilder/bin"
     cp -r $WD/server/staging_cache/linux/stackbuilder/lib $SB_STAGING/ || _die "Failed to copy $WD/server/staging_cache/linux/stackbuilder/lib"
     cp -r $WD/server/staging_cache/linux/stackbuilder/share $SB_STAGING/ ||  _die "Failed to copy $WD/server/staging_cache/linux/stackbuilder/share"
-
-    touch $WD/server/staging_cache/linux/pgAdmin\ 4/venv/lib/python2.7/site-packages/backports/__init__.py || _die "Failed to tocuh the __init__.py"
 
     cd $WD
     echo "END BUILD Server Linux"
