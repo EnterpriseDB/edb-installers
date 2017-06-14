@@ -14,6 +14,8 @@ VERSION=$1
 BRANDING=$2
 INSTALLDIR=$3
 TEMPDIR=$4
+USERNAME=postgres
+PORT=5432
 
 # Exit code
 WARN=0
@@ -58,6 +60,8 @@ _fixup_file() {
     _replace PG_MAJOR_VERSION $VERSION $1
     _replace PG_INSTALLDIR "$INSTALLDIR" $1
     _replace PG_BRANDING "$BRANDING" $1
+    _replace PG_USERNAME $USERNAME $1
+    _replace PG_PORT $PORT $1
 }
 
 # We need to remove any old shortcuts created by the Beta/RC installers, as they 
