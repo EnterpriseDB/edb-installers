@@ -560,6 +560,10 @@ EOT-PGADMIN
 
     echo "Preparing restructured staging for stackbuilder"
     cp $WD/server/staging_cache/linux/lib/libiconv.so* $WD/server/staging_cache/linux/stackbuilder/lib/ || _die "Failed to copy $WD/server/staging_cache/linux/lib/libiconv.so*"
+    cp $WD/server/staging_cache/linux/lib/libcurl.so* $WD/server/staging_cache/linux/stackbuilder/lib/ || _die "Failed to copy $WD/server/staging_cache/linux/lib/libcurl.so*"
+    cp $WD/server/staging_cache/linux/lib/libssl.so* $WD/server/staging_cache/linux/stackbuilder/lib/ || _die "Failed to copy $WD/server/staging_cache/linux/lib/libssl.so*"
+    cp $WD/server/staging_cache/linux/lib/libcrypto.so* $WD/server/staging_cache/linux/stackbuilder/lib/ || _die "Failed to copy $WD/server/staging_cache/linux/lib/libcrypto.so*"
+
     cp -r $WD/server/staging_cache/linux/stackbuilder/bin $SB_STAGING/ || _die "Failed to copy $WD/server/staging_cache/linux/stackbuilder/bin"
     cp -r $WD/server/staging_cache/linux/stackbuilder/lib $SB_STAGING/ || _die "Failed to copy $WD/server/staging_cache/linux/stackbuilder/lib"
     cp -r $WD/server/staging_cache/linux/stackbuilder/share $SB_STAGING/ ||  _die "Failed to copy $WD/server/staging_cache/linux/stackbuilder/share"
