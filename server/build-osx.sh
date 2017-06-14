@@ -526,11 +526,9 @@ _postprocess_server_osx() {
         generate_3rd_party_license "StackBuilder"
     popd
 
-
     # Welcome doc
-    mkdir -p $WD/server/staging_cache/osx/doc/ || _die "Failed to install the document"
-    cp "$WD/server/resources/installation-notes.html" "$WD/server/staging_cache/osx/doc/" || _die "Failed to install the welcome document"
-    cp "$WD/server/resources/edblogo.png" "$WD/server/staging_cache/osx/doc/" || _die "Failed to install the welcome logo"
+    cp "$WD/server/resources/installation-notes.html" "$PGSERVER_STAGING_OSX/doc/" || _die "Failed to install the welcome document"
+    cp "$WD/server/resources/edblogo.png" "$PGSERVER_STAGING_OSX/doc/" || _die "Failed to install the welcome logo"
 
     #Creating a archive of the binaries
     mkdir -p $WD/server/staging_cache/osx/pgsql || _die "Failed to create the directory for binaries "
