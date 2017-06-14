@@ -63,6 +63,7 @@ _fixup_file() {
 }
 
 # Fixup the scripts
+_fixup_file "$INSTALLDIR/scripts/runpsql.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Create the menu 
