@@ -875,7 +875,7 @@ EOF
 
         <componentSelectionValidationActionList>
           <throwError>
-            <text>You should select at least one component</text>
+            <text>${msg(no.component.selected.error)}</text>
             <ruleList>
                 <componentTest name="pgAdmin" logic="not_selected"/>
                 <componentTest name="server" logic="not_selected"/>
@@ -883,17 +883,6 @@ EOF
                 <componentTest name="stackbuilder" logic="not_selected"/>
             </ruleList>
         </throwError>
-          <actionGroup>
-            <actionList>
-              <setInstallerVariable name="component(commandlinetools).selected" value="true"/>
-              <showInfo text="${msg(warning.commandlinetools.not.selected)}" />
-            </actionList>
-            <ruleEvaluationLogic>or</ruleEvaluationLogic>
-            <ruleList>
-                <componentTest name="pgAdmin" logic="selected"/>
-                <componentTest name="server" logic="selected"/>
-            </ruleList>
-          </actionGroup>
         </componentSelectionValidationActionList>
 
         </component>
@@ -1158,6 +1147,14 @@ EOF
                 </folder>
 
           </folderList>
+          <componentSelectionValidationActionList>
+              <throwError>
+                  <text>${msg(commandlinetools.not.selected.server.error)}</text>
+                  <ruleList>
+                      <componentTest name="commandlinetools" logic="not_selected"/>
+                  </ruleList>
+              </throwError>
+          </componentSelectionValidationActionList>
 
             <!-- WIN: Start Menu -->
             <startMenuShortcutList>
@@ -5031,6 +5028,14 @@ REM The script sets environment variables helpful for PostgreSQL
                 </folder>
 
           </folderList>
+          <componentSelectionValidationActionList>
+              <throwError>
+                  <text>${msg(commandlinetools.not.selected.pgadmin.error)}</text>
+                  <ruleList>
+                      <componentTest name="commandlinetools" logic="not_selected"/>
+                  </ruleList>
+              </throwError>
+          </componentSelectionValidationActionList>
 
             <!-- WIN: Start Menu -->
             <startMenuShortcutList>
