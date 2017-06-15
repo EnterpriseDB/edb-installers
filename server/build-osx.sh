@@ -410,20 +410,20 @@ EOT-PGADMIN
     # Copy the regress source to the regression setup 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/src/test/; cp -pR regress /buildfarm/src/test/" || _die "Failed to Copy regress to the regression directory"
 
-    ssh $PG_SSH_OSX "mkdir -p $PG_STAGING/stackbuilder/lib" || _die "Failed to create $PG_STAGING/stackbuilder/lib"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_macu_adv-*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_macu_core-*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu-*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_net-*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_xml-*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcurl*dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libcurl"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libz*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libz"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libssl*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libssl"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcrypto*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libcrypto"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libjpeg*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libjpeg"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libpng16*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libpng16"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libiconv*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libiconv"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libexpat*.dylib $PG_STAGING/stackbuilder/lib/" || _die "Failed to copy the latest libexpat"
+    ssh $PG_SSH_OSX "mkdir -p $PG_STAGING/stackbuilder/Frameworks" || _die "Failed to create $PG_STAGING/stackbuilder/Frameworks"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_macu_adv-*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_macu_core-*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu-*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_net-*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_xml-*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcurl*dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libcurl"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libz*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libz"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libssl*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libssl"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcrypto*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libcrypto"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libjpeg*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libjpeg"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libpng16*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libpng16"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libiconv*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libiconv"
+    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libexpat*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libexpat"
 
     cd $WD
     # Copy the staging to controller to build the installers
@@ -491,8 +491,14 @@ EOT-PGADMIN
     echo "Preparing restructured staging for stackbuilder"
     mv $WD/server/staging_cache/osx/stackbuilder.app $WD/server/staging_cache/osx/stackbuilder/ || _die "Failed to move stackbuilder.app"
     cp -pR $WD/server/staging_cache/osx/stackbuilder/stackbuilder.app $SB_STAGING_OSX || _die "Failed to copy stackbuilder.app"
-    cp -pR $WD/server/staging_cache/osx/stackbuilder/lib $SB_STAGING_OSX || _die "Failed to copy stackbuilder lib"
 
+    mkdir -p $SB_STAGING_OSX/stackbuilder.app/Contents/Frameworks || _die "Failed to create Frameworks directory"
+    cp -pR $WD/server/staging_cache/osx/stackbuilder/Frameworks $SB_STAGING_OSX/stackbuilder.app/Contents/ || _die "Failed to copy stackbuilder Frameworks"
+    # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
+    echo "Rewrite shared library references"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; set -x; source settings.sh; source common.sh; cd $PG_STAGING; \
+    _rewrite_so_refs $PG_STAGING stackbuilder.app/Contents/Frameworks  @loader_path/..;
+    _rewrite_so_refs $PG_STAGING stackbuilder.app/Contents/MacOS @loader_path/../../.."
     echo "END BUILD Server OSX"
 }
 

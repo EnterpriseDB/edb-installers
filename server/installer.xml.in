@@ -5317,9 +5317,6 @@ REM The script sets environment variables helpful for PostgreSQL
                             <origin>staging/osx/stackbuilder/stackbuilder.app</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/osx/stackbuilder/lib</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
                             <origin>staging/osx/stackbuilder/scripts</origin>
                         </distributionDirectory>
                         <distributionDirectory>
