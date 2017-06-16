@@ -3727,6 +3727,14 @@ EOF
 
     <!-- Postinstallation actions -->
     <postInstallationActionList>
+        <!-- WINDOWS :: This files belongs to command line tools, so server should not remove this files -->
+        <removeFilesFromUninstaller>
+            <files>${installdir}/scripts/images/pg-psql.ico;${installdir}/scripts/runpsql.bat</files>
+        </removeFilesFromUninstaller>
+        <removeFilesFromUninstaller>
+            <files>${installdir}/bin/ssleay32.dll;${installdir}/bin/libeay32.dll;${installdir}/bin/libiconv-2.dll;${installdir}/bin/libintl-8.dll</files>
+        </removeFilesFromUninstaller>
+
         <createTempDir dirPrefix="postgresql_installer"/>
         <!-- Make the service-name persistent to make it available during uninstallation -->
         <setInstallerVariable>
@@ -4183,6 +4191,26 @@ EOF
                     </ruleList>
                 </showWarning>
 
+                <!-- we aren't require to pass ${serviceaccount} to createshortcuts in windows -->
+                <runProgram>
+                    <program>cscript</program>
+                    <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts_server.vbs" ${product_version} "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
+                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${create_shortcuts}</text>
+                            <value>1</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
                 <runProgram>
                     <program>${installdir}/installer/server/createshortcuts_server.sh</program>
                     <programArguments>${product_version} "${serviceaccount}" "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${servicename}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
@@ -5650,10 +5678,9 @@ REM The script sets environment variables helpful for PostgreSQL
             </startMenuShortcutList>
             <postInstallationActionList>
                 <createTempDir dirPrefix="postgresql_installer"/>
-                <!-- we aren't require to pass ${serviceaccount} to createshortcuts in windows -->
                 <runProgram>
                     <program>cscript</program>
-                    <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts.vbs" ${product_version} "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
+                    <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts_clt.vbs" "${branding}" "${installdir}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>

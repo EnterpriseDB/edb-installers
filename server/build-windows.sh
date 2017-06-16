@@ -567,6 +567,10 @@ EOT
     mkdir -p $CLT_STAGING_WINDOWS/scripts/images || _die "Couldn't create the staging directory $CLT_STAGING_WINDOWS/scripts/images"
     cp $WD/server/resources/pg-psql.ico  $CLT_STAGING_WINDOWS/scripts/images/ || _die "Failed to move scripts/images/pg-psql.ico"
     cp $WD/server/scripts/windows/runpsql.bat  $CLT_STAGING_WINDOWS/scripts/ || _die "Failed to move runpsql.bat"
+    cp $PGSERVER_STAGING_WINDOWS/bin/ssleay32.dll $CLT_STAGING_WINDOWS/bin || _die "Failed to move ssleay32.dll"
+    cp $PGSERVER_STAGING_WINDOWS/bin/libeay32.dll $CLT_STAGING_WINDOWS/bin || _die "Failed to move libeay32.dll"
+    cp $PGSERVER_STAGING_WINDOWS/bin/libiconv-2.dll $CLT_STAGING_WINDOWS/bin || _die "Failed to move libiconv-2.dll"
+    cp $PGSERVER_STAGING_WINDOWS/bin/libintl-8.dll $CLT_STAGING_WINDOWS/bin || _die "Failed to move libintl-8.dll"
 
     echo "Restructuring pgAdmin4"
     cp -r $WD/server/staging_cache/windows/pgAdmin\ 4/  $PGADMIN_STAGING_WINDOWS || _die "Failed to copy pgAdmin\ 4/ directory to staging directory $PGADMIN_STAGING_WINDOWS"
@@ -637,13 +641,15 @@ _postprocess_server_windows() {
     cp scripts/windows/prerun_checks.vbs $PGSERVER_STAGING_WINDOWS/installer/prerun_checks.vbs || _die "Failed to copy the prerun_checks.vbs script ($WD/scripts/windows/prerun_checks.vbs)"
     cp scripts/windows/initcluster.vbs $PGSERVER_STAGING_WINDOWS/installer/server/initcluster.vbs || _die "Failed to copy the loadmodules script (scripts/windows/initcluster.vbs)"
     cp scripts/windows/startupcfg.vbs $PGSERVER_STAGING_WINDOWS/installer/server/startupcfg.vbs || _die "Failed to copy the startupcfg script (scripts/windows/startupcfg.vbs)"
-    cp scripts/windows/createshortcuts.vbs $PGSERVER_STAGING_WINDOWS/installer/server/createshortcuts.vbs || _die "Failed to copy the createshortcuts script (scripts/windows/createshortcuts.vbs)"
+    cp scripts/windows/createshortcuts_server.vbs $PGSERVER_STAGING_WINDOWS/installer/server/createshortcuts_server.vbs || _die "Failed to copy the createshortcuts script (scripts/windows/createshortcuts_server.vbs)"
+    cp scripts/windows/createshortcuts_clt.vbs $CLT_STAGING_WINDOWS/installer/server/createshortcuts_clt.vbs || _die "Failed to copy the createshortcuts script (scripts/windows/createshortcuts_clt.vbs)"
     cp scripts/windows/startserver.vbs $PGSERVER_STAGING_WINDOWS/installer/server/startserver.vbs || _die "Failed to copy the startserver script (scripts/windows/startserver.vbs)"
     cp scripts/windows/loadmodules.vbs $PGSERVER_STAGING_WINDOWS/installer/server/loadmodules.vbs || _die "Failed to copy the loadmodules script (scripts/windows/loadmodules.vbs)"
     
     # Copy in the menu pick images and XDG items
     mkdir -p $PGSERVER_STAGING_WINDOWS/scripts/images || _die "Failed to create a directory for the menu pick images"
-    cp resources/*.ico $PGSERVER_STAGING_WINDOWS/scripts/images || _die "Failed to copy the menu pick images (resources/*.ico)"
+    cp resources/pg-help.ico $PGSERVER_STAGING_WINDOWS/scripts/images || _die "Failed to copy the menu pick images (resources/pg-help.ico)"
+    cp resources/pg-reload.ico $PGSERVER_STAGING_WINDOWS/scripts/images || _die "Failed to copy the menu pick images (resources/pg-reload.ico)"
     
     # Copy the launch scripts
     cp scripts/windows/serverctl.vbs $PGSERVER_STAGING_WINDOWS/scripts/serverctl.vbs || _die "Failed to copy the serverctl script (scripts/windows/serverctl.vbs)"
