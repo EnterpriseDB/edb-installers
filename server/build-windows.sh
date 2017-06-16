@@ -578,7 +578,8 @@ EOT
     echo "Restructuring Stackbuilder"
     mkdir -p $SB_STAGING_WINDOWS/bin || _die "Couldn't create the staging directory $CLT_STAGING_WINDOWS/scripts/images"
     mv $PGSERVER_STAGING_WINDOWS/bin/stackbuilder.exe $SB_STAGING_WINDOWS/bin || _die "Failed to move stackbuilder.exe"
-    cp $WD/server/staging_cache/windows/bin/*.dll $SB_STAGING_WINDOWS/bin || _die "Failed to move dlls"
+    mv $PGSERVER_STAGING_WINDOWS/bin/wx*.dll $SB_STAGING_WINDOWS/bin || _die "Failed to move wx*dlls"
+    mv $PGSERVER_STAGING_WINDOWS/bin/libcurl.dll $SB_STAGING_WINDOWS/bin || _die "Failed to move libcurl.dll"
     cp -r $WD/server/staging_cache/windows/StackBuilder/share $SB_STAGING_WINDOWS/ ||  _die "Failed to copy $WD/server/staging_cache/windows/stackbuilder/share"
 
     touch $PGADMIN_STAGING_WINDOWS/pgAdmin\ 4/venv/Lib/site-packages/backports/__init__.py || _die "Failed to tocuh the __init__.py"  
