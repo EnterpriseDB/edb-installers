@@ -873,18 +873,33 @@ EOF
                 </folder>
               </folderList>
 
-        <componentSelectionValidationActionList>
-          <throwError>
-            <text>${msg(no.component.selected.error)}</text>
-            <ruleList>
-                <componentTest name="pgAdmin" logic="not_selected"/>
-                <componentTest name="server" logic="not_selected"/>
-                <componentTest name="commandlinetools" logic="not_selected"/>
-                <componentTest name="stackbuilder" logic="not_selected"/>
-            </ruleList>
-        </throwError>
-        </componentSelectionValidationActionList>
-
+              <componentSelectionValidationActionList>
+                <actionGroup>
+                  <actionList>
+                    <throwError>
+                      <text>"${msg(no.component.selected.error)}"</text>
+                      <ruleList>
+                        <componentTest name="pgAdmin" logic="not_selected"/>
+                        <componentTest name="server" logic="not_selected"/>
+                        <componentTest name="commandlinetools" logic="not_selected"/>
+                        <componentTest name="stackbuilder" logic="not_selected"/>
+                      </ruleList>
+                    </throwError>
+                  </actionList>
+                  <ruleList>
+                    <isFalse value="${server_installation_done}"/>
+                    <isFalse value="${pgAdmin_installation_done}"/>
+                    <isFalse value="${stackbuilder_installation_done}"/>
+                    <isFalse value="${commandlinetools_installation_done}"/>
+                  </ruleList>
+                </actionGroup>
+              </componentSelectionValidationActionList>
+              <initializationActionList>
+                <setInstallerVariable name="server_installation_done" value="0" persist="1"/>
+                <setInstallerVariable name="pgAdmin_installation_done" value="0" persist="1"/>
+                <setInstallerVariable name="stackbuilder_installation_done" value="0" persist="1"/>
+                <setInstallerVariable name="commandlinetools_installation_done" value="0" persist="1"/>
+              </initializationActionList>
         </component>
         <component>
             <name>server</name>
@@ -4837,6 +4852,7 @@ REM The script sets environment variables helpful for PostgreSQL
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
         </deleteFile>
+       <setInstallerVariable name="server_installation_done" value="1" persist="1"/>
     </postInstallationActionList>
 
         </component>
@@ -5187,6 +5203,7 @@ REM The script sets environment variables helpful for PostgreSQL
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
         </deleteFile>
+        <setInstallerVariable name="pgAdmin_installation_done" value="1" persist="1"/>
     </postInstallationActionList>
             <preUninstallationActionList>
                  <createTempDir dirPrefix="postgresql_installer"/>
@@ -5448,6 +5465,7 @@ REM The script sets environment variables helpful for PostgreSQL
                         </compareText>
                     </ruleList>
                 </runProgram>
+                <setInstallerVariable name="stackbuilder_installation_done" value="1" persist="1"/>
             </postInstallationActionList>
 
             <preUninstallationActionList>
@@ -5716,6 +5734,7 @@ REM The script sets environment variables helpful for PostgreSQL
                         </compareText>
                     </ruleList>
                 </runProgram>
+                <setInstallerVariable name="commandlinetools_installation_done" value="1" persist="1"/>
             </postInstallationActionList>
 
             <preUninstallationActionList>
