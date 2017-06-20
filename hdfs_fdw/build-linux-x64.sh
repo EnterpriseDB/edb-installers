@@ -43,23 +43,24 @@ _build_hdfs_fdw_linux_x64() {
     # build hdfs_fdw
     PG_STAGING_HDFS_FDW=$PG_PATH_LINUX_X64/hdfs_fdw/staging/linux-x64
 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64/libhive; export PGDIR=$PG_PGHOME_LINUX_X64; export THRIFT_HOME=/opt/local/Current/thrift; export BOOST_HOME=/opt/local/Current/boost; make" || _die "Failed to build libhive"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64/libhive; export PGDIR=$PG_PGHOME_LINUX_X64; export THRIFT_HOME=/opt/local/Current/thrift; export BOOST_HOME=/opt/local/Current/boost; make install" || _die "Failed to install libhive"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64; export LD_LIBRARY_PATH=/opt/local/Current/thrift/lib:$LD_LIBRARY_PATH; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; export THRIFT_HOME=/opt/local/Current/thrift; make USE_PGXS=1" || _die "Failed to build hdfs_fdw"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; make USE_PGXS=1 install" || _die "Failed to install hdfs_fdw"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64/libhive; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; export JDK_INCLUDE=$PG_JAVA_HOME_LINUX_X64/include; export JVM_LIB=$PG_JAVA_HOME_LINUX_X64/jre/lib/amd64/server; make" || _die "Failed to build libhive"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64/libhive; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; export JDK_INCLUDE=$PG_JAVA_HOME_LINUX_X64/include; export JVM_LIB=$PG_JAVA_HOME_LINUX_X64/jre/lib/amd64/server; export INSTALL_DIR=$PG_PGHOME_LINUX_X64;  make install" || _die "Failed to install libhive"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; export JDK_INCLUDE=$PG_JAVA_HOME_LINUX_X64/include; export JVM_LIB=$PG_JAVA_HOME_LINUX_X64/jre/lib/amd64/server; make USE_PGXS=1" || _die "Failed to build hdfs_fdw"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; export JDK_INCLUDE=$PG_JAVA_HOME_LINUX_X64/include; export JVM_LIB=$PG_JAVA_HOME_LINUX_X64/jre/lib/amd64/server; make USE_PGXS=1 install" || _die "Failed to install hdfs_fdw"
 
-    # Copy in the dependency libraries
+   ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64/libhive/jdbc; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; export JDK_INCLUDE=$PG_JAVA_HOME_LINUX_X64/include; export JVM_LIB=$PG_JAVA_HOME_LINUX_X64/jre/lib/amd64/server; javac MsgBuf.java" || _die "Failed to do javac MsgBuf.java"
+
+   ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64/libhive/jdbc; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; export JDK_INCLUDE=$PG_JAVA_HOME_LINUX_X64/include; export JVM_LIB=$PG_JAVA_HOME_LINUX_X64/jre/lib/amd64/server; javac HiveJdbcClient.java" || _die "Failed to do javac HiveJdbcClient.java"
+
+   ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64/libhive/jdbc; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; export JDK_INCLUDE=$PG_JAVA_HOME_LINUX_X64/include; export JVM_LIB=$PG_JAVA_HOME_LINUX_X64/jre/lib/amd64/server; jar cf HiveJdbcClient-1.0.jar *.class" || _die "Failed to do jar cf HiveJdbcClient-1.0.jar *.class"
+
     mkdir -p $WD/hdfs_fdw/staging/linux-x64/lib/postgresql
-    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/thrift/lib/libthrift*.so* $PG_STAGING_HDFS_FDW/lib/postgresql/ && cd $PG_STAGING_HDFS_FDW/lib/postgresql/ && rm -f libthrift*nb*" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/thrift/lib/libfb303.so $PG_STAGING_HDFS_FDW/lib/postgresql/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/boost/lib/libboost_system*.so* $PG_STAGING_HDFS_FDW/lib/postgresql/" || _die "Failed to copy the dependency library"
-    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/boost/lib/libboost_filesystem*.so* $PG_STAGING_HDFS_FDW/lib/postgresql/" || _die "Failed to copy the dependency library"
-
-    # Move the .so and the extension files from server staging to hdfs_fdw staging
     mkdir -p $WD/hdfs_fdw/staging/linux-x64/share/postgresql/extension
+    # Move the .so and the extension files from server staging to hdfs_fdw staging
     ssh $PG_SSH_LINUX_X64 "mv $PG_PGHOME_LINUX_X64/lib/postgresql/hdfs_fdw.so $PG_STAGING_HDFS_FDW/lib/postgresql/" || _die "Failed to move hdfs_fdw .so to staging directory"
-    ssh $PG_SSH_LINUX_X64 "mv $PG_PGHOME_LINUX_X64/lib/libhive.so $PG_STAGING_HDFS_FDW/lib/postgresql/" || _die "Failed to move libhive .so to staging directory"
+    ssh $PG_SSH_LINUX_X64 "mv $PG_PGHOME_LINUX_X64/libhive.so $PG_STAGING_HDFS_FDW/lib/postgresql/" || _die "Failed to move libhive .so to staging directory"
     ssh $PG_SSH_LINUX_X64 "mv $PG_PGHOME_LINUX_X64/share/postgresql/extension/hdfs_fdw* $PG_STAGING_HDFS_FDW/share/postgresql/extension/" || _die "Failed to move extension files to staging directory"
+    ssh $PG_SSH_LINUX_X64 "mv $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64/libhive/jdbc/HiveJdbcClient-1.0.jar $PG_STAGING_HDFS_FDW/lib/postgresql/" || _die "Failed to move extension files to staging directory"
 
     echo "Changing the rpath"
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING_HDFS_FDW/lib/postgresql/; chrpath --replace \"\\\${ORIGIN}\" hdfs_fdw.so"
