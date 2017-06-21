@@ -29,15 +29,15 @@ _prep_MigrationToolKit_osx() {
     cp $WD/tarballs/edb-jdbc17.jar migrationtoolkit.osx/lib/ || _die "Failed to copy the edb-jdbc driver"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/MigrationToolKit/staging/osx ];
+    if [ -e $WD/MigrationToolKit/staging/osx.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/MigrationToolKit/staging/osx || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/MigrationToolKit/staging/osx.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/MigrationToolKit/staging/osx)"
-    mkdir -p $WD/MigrationToolKit/staging/osx || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/MigrationToolKit/staging/osx || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/MigrationToolKit/staging/osx.build)"
+    mkdir -p $WD/MigrationToolKit/staging/osx.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/MigrationToolKit/staging/osx.build || _die "Couldn't set the permissions on the staging directory"
    
     echo "END PREP MigrationToolKit OSX"
 }
@@ -52,7 +52,7 @@ _build_MigrationToolKit_osx() {
     echo "BEGIN BUILD MigrationToolKit OSX"
 
     # build migrationtoolkit    
-    PG_STAGING=$PG_PATH_OSX/MigrationToolKit/staging/osx
+    PG_STAGING=$PG_PATH_OSX/MigrationToolKit/staging/osx.build
     PG_MW_SOURCE=$PG_PATH_OSX/MigrationToolKit/source/migrationtoolkit.osx
 
     echo "Building migrationtoolkit"
@@ -60,8 +60,15 @@ _build_MigrationToolKit_osx() {
     ssh $PG_SSH_OSX "cd $PG_MW_SOURCE; $PG_ANT_HOME_OSX/bin/ant install-pg" || _die "Couldn't build the migrationtoolkit"
 
      # Copying the MigrationToolKit binary to staging directory
-    ssh $PG_SSH_OSX "cd $PG_MW_SOURCE; mkdir $PG_STAGING/MigrationToolkit" || _die "Couldn't create the migrationtoolkit staging directory (MigrationToolKit/staging/osx/MigrationToolkit)"
-    ssh $PG_SSH_OSX "cd $PG_MW_SOURCE; cp -R install/* $PG_STAGING/MigrationToolkit" || _die "Couldn't copy the binaries to the migrationtoolkit staging directory (MigrationToolKit/staging/osx/MigrationToolkit)"
+    ssh $PG_SSH_OSX "cd $PG_MW_SOURCE; mkdir $PG_STAGING/MigrationToolkit" || _die "Couldn't create the migrationtoolkit staging directory (MigrationToolKit/staging/osx.build/MigrationToolkit)"
+    ssh $PG_SSH_OSX "cd $PG_MW_SOURCE; cp -R install/* $PG_STAGING/MigrationToolkit" || _die "Couldn't copy the binaries to the migrationtoolkit staging directory (MigrationToolKit/staging/osx.build/MigrationToolkit)"
+
+    echo "Removing last successful staging directory ($PG_PATH_OSX/MigrationToolKit/staging/osx)"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/MigrationToolKit/staging/osx" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/MigrationToolKit/staging/osx" || _die "Couldn't create the last successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; cp -rp MigrationToolKit/staging/osx.build/* MigrationToolKit/staging/osx" || _die "Couldn't copy the existing staging directory"
 
     echo "END BUILD MigrationToolKit OSX"
 }

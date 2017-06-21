@@ -12,7 +12,7 @@ _prep_MigrationToolKit_linux_x64() {
     # Enter the source directory and cleanup if required
     cd $WD/MigrationToolKit/source
 
-    if [ -e migrationToolKit.linux-x64 ];
+    if [ -e migrationtoolkit.linux-x64 ];
     then
       echo "Removing existing migrationtoolkit.linux-x64 source directory"
       rm -rf migrationtoolkit.linux-x64  || _die "Couldn't remove the existing migrationtoolkit.linux-x64 source directory (source/migrationtoolkit.linux-x64)"
@@ -29,15 +29,15 @@ _prep_MigrationToolKit_linux_x64() {
     cp $WD/tarballs/edb-jdbc14.jar migrationtoolkit.linux-x64/lib/ || _die "Failed to copy the edb-jdbc driver"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/MigrationToolKit/staging/linux-x64 ];
+    if [ -e $WD/MigrationToolKit/staging/linux-x64.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/MigrationToolKit/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/MigrationToolKit/staging/linux-x64.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/MigrationToolKit/staging/linux-x64)"
-    mkdir -p $WD/MigrationToolKit/staging/linux-x64 || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/MigrationToolKit/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/MigrationToolKit/staging/linux-x64.build)"
+    mkdir -p $WD/MigrationToolKit/staging/linux-x64.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/MigrationToolKit/staging/linux-x64.build || _die "Couldn't set the permissions on the staging directory"
     
     echo "END PREP MigrationToolKit Linux-x64"
 }
@@ -52,15 +52,23 @@ _build_MigrationToolKit_linux_x64() {
     echo "BEGIN BUILD MigrationToolKit Linux-x64"
 
     # build migrationtoolkit    
-    PG_STAGING=$PG_PATH_LINUX_X64/MigrationToolKit/staging/linux-x64    
+    PG_STAGING=$PG_PATH_LINUX_X64/MigrationToolKit/staging/linux-x64.build
 
     echo "Building migrationtoolkit"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationToolKit/source/migrationtoolkit.linux-x64; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 $PG_ANT_HOME_LINUX_X64/bin/ant clean" || _die "Couldn't build the migrationtoolkit"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationToolKit/source/migrationtoolkit.linux-x64; JAVA_HOME=$PG_JAVA_HOME_LINUX_X64 $PG_ANT_HOME_LINUX_X64/bin/ant install-pg" || _die "Couldn't build the migrationtoolkit"
   
     # Copying the MigrationToolKit binary to staging directory
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationToolKit/source/migrationtoolkit.linux-x64; mkdir $PG_STAGING/MigrationToolkit" || _die "Couldn't create the migrationtoolkit staging directory (MigrationToolKit/staging/linux-x64/MigrationToolKit)"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationToolKit/source/migrationtoolkit.linux-x64; cp -R install/* $PG_STAGING/MigrationToolkit" || _die "Couldn't copy the binaries to the migrationtoolkit staging directory (MigrationToolKit/staging/linux-x64/MigrationToolKit)"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationToolKit/source/migrationtoolkit.linux-x64; mkdir $PG_STAGING/MigrationToolkit" || _die "Couldn't create the migrationtoolkit staging directory (MigrationToolKit/staging/linux-x64.build/MigrationToolKit)"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/MigrationToolKit/source/migrationtoolkit.linux-x64; cp -R install/* $PG_STAGING/MigrationToolkit" || _die "Couldn't copy the binaries to the migrationtoolkit staging directory (MigrationToolKit/staging/linux-x64.build/MigrationToolKit)"
+
+    echo "Removing last successful staging directory ($WD/MigrationToolKit/staging/linux-x64)"
+    rm -rf $WD/MigrationToolKit/staging/linux-x64 || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/MigrationToolKit/staging/linux-x64 || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/MigrationToolKit/staging/linux-x64 || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/MigrationToolKit/staging/linux-x64.build/* $WD/MigrationToolKit/staging/linux-x64 || _die "Couldn't copy the existing staging directory"
 
     echo "END BUILD MigrationToolKit Linux-x64"
 }

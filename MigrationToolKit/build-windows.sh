@@ -111,17 +111,27 @@ EOT
 
     echo "Building migrationtoolkit"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c mw-build.bat" || _die "Couldn't build the migrationtoolkit"
-  
+
+    echo "Removing last successful staging directory ($PG_PATH_WINDOWS/migrationtoolkit.output)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST migrationtoolkit.output rd /S /Q migrationtoolkit.output" || _die "Couldn't remove the $PG_PATH_WINDOWS\\migrationtoolkit.output directory on Windows VM"
+    ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\migrationtoolkit.output" || _die "Couldn't create the last successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c xcopy /E /Q /Y migrationtoolkit.windows\\\\install\\\\* migrationtoolkit.output\\\\" || _die "Couldn't copy the existing staging directory"
+
+    mkdir -p $WD/MigrationToolKit/staging/windows/MigrationToolkit
     # Zip up the installed code, copy it back here, and unpack.
     echo "Copying built tree to host"
-    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationtoolkit.windows/dist.zip $WD/MigrationToolKit/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationtoolkit.windows/dist.zip)"
-    unzip $WD/MigrationToolKit/staging/windows/dist.zip -d $WD/MigrationToolKit/staging/windows/ || _die "Failed to unpack the built source tree ($WD/staging/windows/dist.zip)"
-    rm $WD/MigrationToolKit/staging/windows/dist.zip
-    mv $WD/MigrationToolKit/staging/windows/install $WD/MigrationToolKit/staging/windows/MigrationToolkit || _die "Failed to rename the dist folder"
-    
-    echo "END BUILD MigrationToolKit Windows"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST \"migrationtoolkit.output.zip\" del /q migrationtoolkit.output.zip" || _die "Failed to remove the source tree on the windows build host (migrationtoolkit.output.zip)"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\migrationtoolkit.output; cmd /c zip -r ..\\\\migrationtoolkit.output.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationtoolkit.output)"
+    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationtoolkit.output.zip $WD/MigrationToolKit/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationtoolkit.output.zip)"
+    unzip $WD/MigrationToolKit/staging/windows/migrationtoolkit.output.zip -d $WD/MigrationToolKit/staging/windows/MigrationToolkit || _die "Failed to unpack the built source tree ($WD/staging/windows/migrationtoolkit.output.zip)"
+    rm -f $WD/MigrationToolKit/staging/windows/migrationtoolkit.output.zip
+    ##mv $WD/MigrationToolKit/staging/windows/install $WD/MigrationToolKit/staging/windows/MigrationToolkit || _die "Failed to rename the dist folder"
+
+     echo "END BUILD MigrationToolKit Windows"
 }
-    
+
 
 
 ################################################################################
@@ -131,6 +141,25 @@ EOT
 _postprocess_MigrationToolKit_windows() {
 
     echo "BEGIN POST MigrationToolKit Windows"
+
+    # Remove any existing staging directory that might exist, and create a clean one
+    if [ -e $WD/MigrationToolKit/staging/windows ];
+    then
+      echo "Removing existing staging directory"
+      rm -rf $WD/MigrationToolKit/staging/windows || _die "Couldn't remove the existing staging directory"
+    fi
+    echo "Creating staging directory ($WD/MigrationToolKit/staging/windows)"
+    mkdir -p $WD/MigrationToolKit/staging/windows || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/MigrationToolKit/staging/windows || _die "Couldn't set the permissions on the staging directory"
+
+    # Zip up the installed code, copy it back here, and unpack.
+    echo "Copying built tree to host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST \"migrationtoolkit.output.zip\" del /q migrationtoolkit.output.zip" || _die "Failed to remove the source tree on the windows build host (migrationtoolkit.output.zip)"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\migrationtoolkit.output; cmd /c zip -r ..\\\\migrationtoolkit.output.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationtoolkit.output)"
+    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationtoolkit.output.zip $WD/MigrationToolKit/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/migrationtoolkit.output.zip)"
+    unzip $WD/MigrationToolKit/staging/windows/migrationtoolkit.output.zip -d $WD/MigrationToolKit/staging/windows/ || _die "Failed to unpack the built source tree ($WD/staging/windows/migrationtoolkit.output.zip)"
+    rm $WD/MigrationToolKit/staging/windows/migrationtoolkit.output.zip
+    mv $WD/MigrationToolKit/staging/windows/install $WD/MigrationToolKit/staging/windows/MigrationToolkit || _die "Failed to rename the dist folder"
 
     cd $WD/MigrationToolKit
 
