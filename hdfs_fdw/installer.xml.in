@@ -651,7 +651,6 @@ EOF
             <distributionDirectory>
               <origin>staging/linux-x64/share</origin>
             </distributionDirectory>
-            <distributionFile origin="staging/linux-x64/hdfs_fdw_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
       </folderList>
