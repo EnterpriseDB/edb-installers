@@ -37,8 +37,8 @@
   <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
   <!-- Images -->
   <disableSplashScreen>1</disableSplashScreen>
-  <leftImage>../resources/pg-side-new.png</leftImage>
-  <splashImage>../resources/pg-splash-new.png</splashImage>
+  <leftImage>../resources/pg-side.png</leftImage>
+  <splashImage>../resources/pg-splash.png</splashImage>
   <!-- i18n files for the UI -->
   <customLanguageFileList>
     <language>
