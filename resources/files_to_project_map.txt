@@ -67,7 +67,6 @@ project_pytz	pytz
 project_setuptools	setuptools
 project_simplejson	simplejson
 project_six	six
-project_hive    libhive
 project_snowballstemmer	snowballstemmer
 project_sphinx	Sphinx doctools.js hoverIntent.js jquery.js searchtools.js sidebar.js websupport.js
 project_sphinx_rtd_theme	sphinx-rtd-theme
