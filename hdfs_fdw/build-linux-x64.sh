@@ -87,10 +87,6 @@ _postprocess_hdfs_fdw_linux_x64() {
 
     cd $WD/hdfs_fdw
 
-    pushd staging/linux-x64
-    generate_3rd_party_license "hdfs_fdw"
-    popd
-
     #Mark all files except bin folder as 644 (rw-r--r--)
     find ./staging/linux-x64 -type f -not -regex '.*/bin/*.*' -exec chmod 644 {} \;
     #Mark all files under bin as 755
