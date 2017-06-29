@@ -94,7 +94,7 @@ _build_psqlODBC_osx() {
     for ARCH in \${ARCHS}
     do
       echo "Configuring psqlODBC sources for \${ARCH}"
-      CFLAGS="$PG_ARCH_OSX_CFLAGS -arch \${ARCH}" LDFLAGS="-lssl"  PATH="$PG_PGHOME_OSX/bin:$PATH" sh -x ./configure --disable-dependency-tracking --with-iodbc --with-libpq=$PG_PATH_OSX/server/staging/osx --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for intel"
+      CFLAGS="$PG_ARCH_OSX_CFLAGS -arch \${ARCH}" LDFLAGS="-lssl"  PATH="$PG_PGHOME_OSX/bin:$PATH" sh -x ./configure --disable-dependency-tracking --with-iodbc --with-libpq=$PG_PGHOME_OSX --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for intel"
       ARCH_FLAGS="\${ARCH_FLAGS} -arch \${ARCH}"
       for configFile in \${CONFIG_FILES}
       do
@@ -105,7 +105,7 @@ _build_psqlODBC_osx() {
     done
 
     echo "Configuring psqlODBC sources for Universal"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS \${ARCH_FLAGS}" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --with-libpq=$PG_PATH_OSX/server/staging/osx --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for Universal"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS \${ARCH_FLAGS}" LDFLAGS="-lssl" PATH="$PG_PGHOME_OSX/bin:$PATH" ./configure --disable-dependency-tracking --with-iodbc --with-libpq=$PG_PGHOME_OSX --prefix="$PG_STAGING" || _die "Could not configuring psqlODBC sources for Universal"
 
     # Create a replacement config.h's that will pull in the appropriate architecture-specific one:
     for configFile in \${CONFIG_FILES}
