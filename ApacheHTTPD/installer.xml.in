@@ -1216,12 +1216,22 @@ EOF
     </actionGroup>
 
     <!-- LIN | MAC: Adding text for mod_wsgi config in apache -->
+    <actionGroup>
+      <actionList>
     <addTextToFile>
       <file>${installdir}/apache/conf/httpd.conf</file>
       <text>
 LoadModule wsgi_module ${installdir}/apache/modules/mod_wsgi.so
 include conf/addons/*.conf
       </text>
+    </addTextToFile>
+    <iniFileSet>
+      <file>/etc/postgres-reg.ini</file>
+      <section>ApacheHTTPD</section>
+      <key>MODWSGI_ENABLE</key>
+      <value>1</value>
+    </iniFileSet>
+    </actionList>
       <ruleList>
         <compareText>
           <logic>does_not_equal</logic>
@@ -1230,14 +1240,24 @@ include conf/addons/*.conf
         </compareText>
         <compareText logic="does_not_equal" text="${python_path}" value=""/>
       </ruleList>
-    </addTextToFile>
+    </actionGroup>
+
     <!-- WIN: Adding text for mod_wsgi config in apache -->
+    <actionGroup>
+      <actionList>
     <addTextToFile>
       <file>${installdir}\apache\conf\httpd.conf</file>
       <text>
 LoadModule wsgi_module "${installdir}\apache\modules\${MOD_WSGI_MODULE}"
 include conf\addons\*.conf
       </text>
+    </addTextToFile>
+        <registrySet>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD</key>
+          <name>MODWSGI_ENABLE</name>
+          <value>1</value>
+        </registrySet>
+      </actionList>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -1246,7 +1266,7 @@ include conf\addons\*.conf
         </compareText>
         <compareText logic="does_not_equal" text="${python_path}" value=""/>
       </ruleList>
-    </addTextToFile>
+    </actionGroup>
 
     <!-- Creating a addons directory for additional conf files -->
     <createDirectory path="${installdir}/apache/conf/addons" >
