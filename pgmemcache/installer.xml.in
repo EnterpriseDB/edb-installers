@@ -369,10 +369,6 @@
                                     <condition>not_exists</condition>
                                 </fileTest>
                                 <fileTest>
-                                    <path>${installdir}/bin/createlang</path>
-                                    <condition>not_exists</condition>
-                                </fileTest>
-                                <fileTest>
                                     <path>${installdir}/bin/pg_config</path>
                                     <condition>not_exists</condition>
                                 </fileTest>
@@ -412,10 +408,6 @@
                                 </fileTest>
                                 <fileTest>
                                     <path>${installdir}\bin\createdb.exe</path>
-                                    <condition>not_exists</condition>
-                                </fileTest>
-                                <fileTest>
-                                    <path>${installdir}\bin\createlang.exe</path>
                                     <condition>not_exists</condition>
                                 </fileTest>
                                 <fileTest>
@@ -909,10 +901,6 @@
                                     <condition>not_exists</condition>
                                 </fileTest>
                                 <fileTest>
-                                    <path>${installdir}/bin/createlang</path>
-                                    <condition>not_exists</condition>
-                                </fileTest>
-                                <fileTest>
                                     <path>${installdir}/bin/pg_config</path>
                                     <condition>not_exists</condition>
                                 </fileTest>
@@ -947,10 +935,6 @@
                                 </fileTest>
                                 <fileTest>
                                     <path>${installdir}\bin\createdb.exe</path>
-                                    <condition>not_exists</condition>
-                                </fileTest>
-                                <fileTest>
-                                    <path>${installdir}\bin\createlang.exe</path>
                                     <condition>not_exists</condition>
                                 </fileTest>
                                 <fileTest>
