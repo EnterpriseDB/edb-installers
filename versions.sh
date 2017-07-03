@@ -70,6 +70,8 @@ PG_VERSION_LANGUAGEPACK=$PG_MAJOR_VERSION
 
 # Tags for source checkout
 PG_TAG_HDFS_FDW=''
+# Target JRE version
+TARGET_JRE_VERSION=1.7
 
 # Miscellaneous options
 

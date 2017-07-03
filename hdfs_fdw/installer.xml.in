@@ -39,38 +39,28 @@
   <disableSplashScreen>1</disableSplashScreen>
   <leftImage>../resources/pg-side.png</leftImage>
   <splashImage>../resources/pg-splash.png</splashImage>
+    <!-- Languages allowed? -->
+    <!-- <allowLanguageSelection>1</allowLanguageSelection> -->
+    <allowedLanguages>en es fr</allowedLanguages>
+    <defaultLanguage>auto</defaultLanguage>
   <!-- i18n files for the UI -->
-  <customLanguageFileList>
-    <language>
-      <code>en</code>
-      <encoding>iso8859-1</encoding>
-      <file>i18n/en.lng</file>
-    </language>
-    <language>
-      <code>en</code>
-      <encoding>iso8859-1</encoding>
-      <file>i18n/jp.lng</file>
-    </language>
-    <language>
-      <code>en</code>
-      <encoding>iso8859-1</encoding>
-      <file>i18n/zh_cn.lng</file>
-    </language>
-    <language>
-      <code>en</code>
-      <encoding>iso8859-1</encoding>
-      <file>i18n/zh_TW.lng</file>
-    </language>
-    <language>
-      <code>en</code>
-      <encoding>iso8859-1</encoding>
-      <file>i18n/ko.lng</file>
-    </language>
-  </customLanguageFileList>
-  <allowedLanguages>en ja zh_CN zh_TW ko</allowedLanguages>
-  <defaultLanguage>auto</defaultLanguage>
-  <!-- Languages allowed? -->
-  <allowLanguageSelection>1</allowLanguageSelection>
+    <customLanguageFileList>
+        <language>
+            <code>en</code>
+            <encoding>iso8859-1</encoding>
+            <file>i18n/en.lng</file>
+        </language>
+        <language>
+            <code>es</code>
+            <encoding>iso8859-1</encoding>
+            <file>i18n/es.lng</file>
+        </language>
+        <language>
+            <code>fr</code>
+            <encoding>iso8859-1</encoding>
+            <file>i18n/fr.lng</file>
+        </language>
+    </customLanguageFileList>
   <!-- Custom functions -->
   <functionDefinitionList>
     <actionDefinition name="createTempDir">
@@ -185,6 +175,7 @@ EOF
   <initializationActionList>
     <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
     <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_HDFS_FDW"/>
+    <setInstallerVariable name="project.parameter(jrehome).ask" value="0"/>
     <!--<setInstallerVariable name="installerTitle" persist="1" value="Data Adapter for Hadoop"/> -->
     <setInstallerVariable name="installerTitle" persist="1" value="EDB Postgres Data Adapter for Hadoop"/>
     <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
@@ -356,6 +347,58 @@ EOF
             </compareText>
           </ruleList>
         </actionGroup>
+
+        <!-- Check existing JREs -->
+        <actionGroup>
+          <actionList>
+            <!-- Check if the valid jrehome switch is supplied -->
+            <throwError customErrorMessage="${msg(jre.invalid.error)}" text="Unknown Error">
+              <ruleList>
+                <compareText text="${jrehome}" logic="does_not_equal" value="" />
+                <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+                <fileTest path="${jrehome}/bin/java" condition="not_exists" />
+              </ruleList>
+            </throwError>
+            <throwError customErrorMessage="${msg(jre.invalid.error.windows)}" text="Unknown Error">
+              <ruleList>
+                <compareText text="${jrehome}" logic="does_not_equal" value="" />
+                <compareText text="${platform_name}" logic="equals" value="windows" />
+                <fileTest path="${jrehome}\bin\java.exe" condition="not_exists" />
+              </ruleList>
+            </throwError>
+
+            <!-- Detecting Java, Abort if not found -->
+            <setInstallerVariable name="target_jre_version" value="TARGET_JRE_VERSION" persist="1"/>
+            <autodetectJava promptUser="0" abortOnError="1" showMessageOnError="1" customErrorMessage="${msg(java.error)}">
+              <validVersionList>
+                <validVersion maxVersion="" minVersion="${target_jre_version}" requireJDK="0" />
+              </validVersionList>
+              <ruleList>
+                <compareText text="${jrehome}" logic="equals" value="" />
+              </ruleList>
+            </autodetectJava>
+
+            <setInstallerVariable name="java_executable" value="${jrehome}/bin/java" >
+              <ruleList>
+                <compareText text="${jrehome}" logic="does_not_equal" value="" />
+                <compareText text="${platform_name}" logic="contains" value="linux" />
+                <fileExists path="${jrehome}/bin/java" />
+              </ruleList>
+            </setInstallerVariable>
+            <setInstallerVariable name="java_executable" value="${jrehome}\bin\java.exe" >
+              <ruleList>
+                <compareText text="${jrehome}" logic="does_not_equal" value="" />
+                <compareText text="${platform_name}" logic="equals" value="windows" />
+                <fileExists path="${jrehome}\bin\java.exe" />
+              </ruleList>
+            </setInstallerVariable>
+
+          </actionList>
+            <ruleList>
+              <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
         <!-- LIN : Exit the installation if the installdir is not valid (Unattended mode) -->
         <actionGroup>
           <actionList>
@@ -660,6 +703,7 @@ EOF
     <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
     <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
+    <stringParameter name="jrehome" cliOptionName="jrehome" default="" ask="1" cliOptionShow="1"/>
     <!-- Install Directory -->
     <directoryParameter>
       <name>installdir</name>
