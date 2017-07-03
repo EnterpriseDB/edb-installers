@@ -21,3 +21,6 @@ cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory
 fdw.desc=EDB Postgres Data Adapter for Hadoop
 error.old.installdir=The installation directory of fdw-II ${productVersion} must be different than of already installed fdw-II ${old_fdw_version}.
 fdw.major.version.error=fdw-II Server Extensions ${productVersion} cannot coexist with fdw-II Server Extensions for another major version.
+jre.invalid.error=Invalid --jrehome specified.\n\nCould not find '${jrehome}/bin/java'.
+jre.invalid.error.windows=Invalid --jrehome specified.\n\nCould not find '${jrehome}\bin\java.exe'.
+java.error=Java ${target_jre_version} is not installed on your system.\nPlease ensure it is installed and in the system PATH before re-running the installer.

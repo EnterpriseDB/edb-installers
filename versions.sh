@@ -66,6 +66,9 @@ PG_MINOR_VERSION_TCL=17
 PG_VERSION_NCURSES=5.9
 PG_VERSION_LANGUAGEPACK=$PG_MAJOR_VERSION
 
+# Target JRE version
+TARGET_JRE_VERSION=1.7
+
 # Miscellaneous options
 
 # PostgreSQL jdbc jar version used by PostGIS
