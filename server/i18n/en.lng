@@ -109,4 +109,4 @@ pgadmin.desc=pgAdmin 4 is a rewrite of the popular pgAdmin3 management tool for 
 commandlinetools.desc=This option installs command line tools and client libraries such as libpq, psql, EDB*Loader, ecpg, pg_basebackup, pg_dump, pg_restore, pg_bench and more. It is a required installation option when choosing PostgreSQL Database Server or pgAdmin 4.
 commandlinetools.not.selected.server.error=Command Line Tools package is required by database server.
 commandlinetools.not.selected.pgadmin.error=Command Line Tools package is required by pgAdmin4.
-no.component.selected.error=You should select at least one component
+no.component.selected.error=You have to select at least one component.

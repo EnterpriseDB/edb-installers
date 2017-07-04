@@ -546,6 +546,10 @@ EOF
                 </compareText>
             </ruleList>
         </actionGroup>
+        <setInstallerVariable name="server_installation_done" value="0" persist="1"/>
+        <setInstallerVariable name="pgAdmin_installation_done" value="0" persist="1"/>
+        <setInstallerVariable name="stackbuilder_installation_done" value="0" persist="1"/>
+        <setInstallerVariable name="commandlinetools_installation_done" value="0" persist="1"/>
 
     </initializationActionList>
 
@@ -690,6 +694,45 @@ EOF
         </runProgram>
 
     </finalPageActionList>
+    <preInstallationActionList>
+        <actionGroup>
+          <actionList>
+            <throwError>
+              <text>${msg(no.component.selected.error)}</text>
+              <ruleList>
+                <componentTest name="pgAdmin" logic="not_selected"/>
+                <componentTest name="server" logic="not_selected"/>
+                <componentTest name="commandlinetools" logic="not_selected"/>
+                <componentTest name="stackbuilder" logic="not_selected"/>
+              </ruleList>
+            </throwError>
+          </actionList>
+          <ruleList>
+            <isFalse value="${server_installation_done}"/>
+            <isFalse value="${pgAdmin_installation_done}"/>
+            <isFalse value="${stackbuilder_installation_done}"/>
+            <isFalse value="${commandlinetools_installation_done}"/>
+            <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
+          </ruleList>
+        </actionGroup>
+      <!-- Throw error if server/pgAdmin are selected and commandlinetools is not selected in unattended mode -->
+      <throwError text="${msg(commandlinetools.not.selected.server.error)}">
+        <ruleList>
+          <isTrue value="${component(server).selected}"/>
+          <componentTest name="commandlinetools" logic="not_selected"/>
+          <!-- following check means mode equals unattended -->
+          <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
+        </ruleList>
+      </throwError>
+      <throwError text="${msg(commandlinetools.not.selected.pgadmin.error)}">
+        <ruleList>
+          <isTrue value="${component(pgAdmin).selected}"/>
+          <componentTest name="commandlinetools" logic="not_selected"/>
+          <!-- following check means mode equals unattended -->
+          <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
+        </ruleList>
+      </throwError>
+      </preInstallationActionList>
 
     <!-- Components. Most components will be separate packages, so expect just one entry here most of the time -->
     <allowComponentSelection>1</allowComponentSelection>
@@ -877,7 +920,7 @@ EOF
                 <actionGroup>
                   <actionList>
                     <throwError>
-                      <text>"${msg(no.component.selected.error)}"</text>
+                      <text>${msg(no.component.selected.error)}</text>
                       <ruleList>
                         <componentTest name="pgAdmin" logic="not_selected"/>
                         <componentTest name="server" logic="not_selected"/>
@@ -894,12 +937,6 @@ EOF
                   </ruleList>
                 </actionGroup>
               </componentSelectionValidationActionList>
-              <initializationActionList>
-                <setInstallerVariable name="server_installation_done" value="0" persist="1"/>
-                <setInstallerVariable name="pgAdmin_installation_done" value="0" persist="1"/>
-                <setInstallerVariable name="stackbuilder_installation_done" value="0" persist="1"/>
-                <setInstallerVariable name="commandlinetools_installation_done" value="0" persist="1"/>
-              </initializationActionList>
         </component>
         <component>
             <name>server</name>
@@ -5738,6 +5775,38 @@ REM The script sets environment variables helpful for PostgreSQL
             </postInstallationActionList>
 
             <preUninstallationActionList>
+                <!-- Throw error if server/pgAdmin are selected and commandlinetools is not selected in unattended mode -->
+                <actionGroup>
+                  <actionList>
+                    <actionGroup>
+                      <actionList>
+                        <consoleWrite text="&#xA; ${msg(commandlinetools.not.selected.server.error)} &#xA;"/>
+                        <logMessage text="${msg(commandlinetools.not.selected.server.error)}"/>
+                        <exit/>
+                      </actionList>
+                      <ruleList>
+                        <componentTest name="server" logic="selected"/>
+                        <stringTest text="${is_server_installed}" type="not_empty"/>
+                      </ruleList>
+                    </actionGroup>
+                    <actionGroup>
+                      <actionList>
+                        <consoleWrite text="&#xA; ${msg(commandlinetools.not.selected.pgadmin.error)} &#xA;"/>
+                        <logMessage text="${msg(commandlinetools.not.selected.pgadmin.error)}"/>
+                        <exit/>
+                      </actionList>
+                      <ruleList>
+                        <componentTest name="pgadmin4" logic="selected"/>
+                        <stringTest text="${is_pgadmin_installed}" type="not_empty"/>
+                      </ruleList>
+                    </actionGroup>
+                  </actionList>
+                  <ruleList>
+                    <!-- following check means mode equals unattended -->
+                    <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
+                  </ruleList>
+                </actionGroup>
+
                  <createTempDir dirPrefix="postgresql_installer"/>
                  <actionGroup>
                      <actionList>
