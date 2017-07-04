@@ -600,6 +600,7 @@ _postprocess_server_linux() {
 
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging_cache/linux/doc/" || _die "Failed to install the welcome document"
+    cp "$WD/server/resources/installation-notes.html" "$PGSERVER_STAGING/doc/" || _die "Failed to install the welcome document"
     cp "$WD/server/resources/edblogo.png" "$WD/server/staging_cache/linux/doc/" || _die "Failed to install the welcome logo"
 
     #Creating a archive of the binaries
