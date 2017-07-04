@@ -87,14 +87,11 @@ _postprocess_hdfs_fdw_linux_x64() {
 
     cd $WD/hdfs_fdw
 
-    #Mark all files except bin folder as 644 (rw-r--r--)
-    find ./staging/linux-x64 -type f -not -regex '.*/bin/*.*' -exec chmod 644 {} \;
-    #Mark all files under bin as 755
-    find ./staging/linux-x64 -type f -regex '.*/bin/*.*' -exec chmod 755 {} \;
-    #Mark all directories with 755(rwxr-xr-x)
-    find ./staging/linux-x64 -type d -exec chmod 755 {} \;
-    #Mark all sh with 755 (rwxr-xr-x)
-    find ./staging/linux-x64 -name \*.sh -exec chmod 755 {} \;
+    mv staging/README.md staging/linux-x64/hdfs_fdw_README.md || _die "Failed to rename README.md in staging directory"
+    mv staging/INSTALL staging/linux-x64/hdfs_fdw_INSTALL || _die "Failed to rename README.md in staging directory"
+
+    # Set permissions to all files and folders in staging
+    _set_permissions linux-x64
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
