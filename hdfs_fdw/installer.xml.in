@@ -672,13 +672,13 @@ EOF
         <!-- README -->
         <folder description="Licenses Program Files" destination="${installdir}" name="readmeprogramfiles" platforms="all">
           <distributionFileList>
-            <distributionFile origin="staging/README.md"/>
+            <distributionFile origin="staging/linux-x64/hdfs_fdw_README.md"/>
           </distributionFileList>
         </folder>
         <!-- INSTALL -->
         <folder description="Licenses Program Files" destination="${installdir}" name="installprogramfiles" platforms="all">
           <distributionFileList>
-            <distributionFile origin="staging/INSTALL"/>
+            <distributionFile origin="staging/linux-x64/hdfs_fdw_INSTALL"/>
           </distributionFileList>
         </folder>
         <!-- LIN-X64: Program files -->
