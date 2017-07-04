@@ -696,7 +696,7 @@ _postprocess_server_linux_x64() {
     mkdir -p $SB_STAGING_X64/scripts/images || _die "Failed to create a directory $SB_STAGING_X64/scripts/images for the menu pick images"
     mkdir -p $CLT_STAGING_X64/scripts/images || _die "Failed to create a directory $CLT_STAGING_X64/scripts/images for the menu pick images"
     
-    cp resources/pg-help.png $PGSERVER_STAGING_X64/scripts/images/pg-help-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
+    cp resources/pg-help.png $CLT_STAGING_X64/scripts/images/pg-help-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
     cp resources/pg-postgresql.png $PGSERVER_STAGING_X64/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy amenu pick image"
     cp resources/pg-postgresql.png $CLT_STAGING_X64/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy amenu pick image"
     cp resources/pg-psql.png $CLT_STAGING_X64/scripts/images/pg-psql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
@@ -704,7 +704,6 @@ _postprocess_server_linux_x64() {
 
     cp resources/pg-pgadmin.png $PGADMIN_STAGING_X64/scripts/images/pg-pgadmin-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
     cp resources/pg-postgresql.png $PGADMIN_STAGING_X64/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
-    cp resources/pg-help.png $PGADMIN_STAGING_X64/scripts/images/pg-help-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
     cp resources/pg-postgresql.png $PGADMIN_STAGING_X64/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy amenu pick image"
     cp resources/pg-stackbuilder.png $SB_STAGING_X64/scripts/images/pg-stackbuilder-$PG_VERSION_STR.png || _die "Failed to copy a menu pick image"
     cp resources/pg-postgresql.png $SB_STAGING_X64/scripts/images/pg-postgresql-$PG_VERSION_STR.png || _die "Failed to copy amenu pick image"
@@ -743,10 +742,8 @@ _postprocess_server_linux_x64() {
     cp scripts/linux/runpsql.sh $CLT_STAGING_X64/scripts/runpsql.sh || _die "Failed to copy the runpsql script (scripts/linux/runpsql.sh)"
     chmod ugo+x $CLT_STAGING_X64/scripts/runpsql.sh
 
-    cp scripts/linux/launchbrowser.sh $PGSERVER_STAGING_X64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
-    chmod ugo+x $PGSERVER_STAGING_X64/scripts/launchbrowser.sh
-    cp scripts/linux/launchbrowser.sh $PGADMIN_STAGING_X64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
-    chmod ugo+x $PGADMIN_STAGING_X64/scripts/launchbrowser.sh
+    cp scripts/linux/launchbrowser.sh $CLT_STAGING_X64/scripts/launchbrowser.sh || _die "Failed to copy the launchbrowser script (scripts/linux/launchbrowser.sh)"
+    chmod ugo+x $CLT_STAGING_X64/scripts/launchbrowser.sh
     cp scripts/linux/launchpgadmin.sh $PGADMIN_STAGING_X64/scripts/launchpgadmin.sh || _die "Failed to copy the launchpgadmin script (scripts/linux/launchpgadmin.sh)"
     chmod ugo+x $PGADMIN_STAGING_X64/scripts/launchpgadmin.sh
     cp scripts/linux/launchstackbuilder.sh $SB_STAGING_X64/scripts/launchstackbuilder.sh || _die "Failed to copy the launchstackbuilder script (scripts/linux/launchstackbuilder.sh)"

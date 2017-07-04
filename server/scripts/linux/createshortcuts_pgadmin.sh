@@ -103,7 +103,6 @@ do
 done
 
 # Fixup the scripts
-_fixup_file "$INSTALLDIR/scripts/launchbrowser.sh"
 _fixup_file "$INSTALLDIR/scripts/launchpgadmin.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 

@@ -120,8 +120,6 @@ _fixup_file "$INSTALLDIR/scripts/launchsvrctl.sh"
 _fixup_file "$INSTALLDIR/scripts/launchpsql.sh"
 _fixup_file "$INSTALLDIR/scripts/runpsql.sh"
 
-#This file are related to pgadmin which is required
-_fixup_file "$INSTALLDIR/scripts/launchbrowser.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)

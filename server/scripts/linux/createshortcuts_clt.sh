@@ -97,6 +97,8 @@ done
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/scripts/launchpsql.sh"
 _fixup_file "$INSTALLDIR/scripts/runpsql.sh"
+#This file are related to pgadmin and server common file which is required for html
+_fixup_file "$INSTALLDIR/scripts/launchbrowser.sh"
 chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Copy the primary desktop file to the branded version. We don't do this if

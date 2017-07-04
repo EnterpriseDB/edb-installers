@@ -67,7 +67,6 @@ _warn() {
  
 # Remove the icon resources
 cd "$INSTALLDIR/scripts/images"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 pg-help-$VERSION_STR.png
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 pg-reload-$VERSION_STR.png
 
 # Only remove the directory file if it's branded
