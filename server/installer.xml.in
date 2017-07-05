@@ -551,6 +551,23 @@ EOF
         <setInstallerVariable name="stackbuilder_installation_done" value="0" persist="1"/>
         <setInstallerVariable name="commandlinetools_installation_done" value="0" persist="1"/>
 
+        <setInstallerVariable name="slash" persist="1" value="\">
+        <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+        </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="slash" persist="1" value="/">
+        <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+        </ruleList>
+        </setInstallerVariable>
+        <!-- Set variable for upgrade screen test -->
+        <setInstallerVariable name="test_filename" value="postgres"/>
+        <setInstallerVariable name="test_filename" value="postgres.exe">
+        <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+        </ruleList>
+        </setInstallerVariable>
     </initializationActionList>
 
 
@@ -733,6 +750,40 @@ EOF
         </ruleList>
       </throwError>
       </preInstallationActionList>
+
+      <postInstallationActionList>
+      <!-- Set server binary path in pgAdmin config_distro.py -->
+      <actionGroup>
+        <actionList>
+          <setInstallerVariable name="server_install_path" value="${installdir}${slash}bin">
+          <ruleList>
+            <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
+          </ruleList>
+          </setInstallerVariable>
+          <setInstallerVariableFromRegEx name="server_install_path" text="${installdir}${slash}bin" pattern="\\" substitution="\\\\">
+          <ruleList>
+            <compareText text="${platform_name}" logic="equals" value="windows"/>
+          </ruleList>
+          </setInstallerVariableFromRegEx>
+          <readFile path="${installdir}${slash}pgAdmin 4${slash}web${slash}config_distro.py" name="config_distro_content"/>
+          <addTextToFile file="${installdir}${slash}pgAdmin 4${slash}web${slash}config_distro.py" insertAt="end">
+            <text>DEFAULT_BINARY_PATHS = {
+    "pg":   "${server_install_path}",
+    "ppas": ""
+}
+            </text>
+            <ruleList>
+              <compareText text="${config_distro_content}" logic="does_not_contain" value="DEFAULT_BINARY_PATHS"/>
+            </ruleList>
+          </addTextToFile>
+        </actionList>
+        <ruleList>
+          <fileExists path="${installdir}${slash}pgAdmin 4${slash}web${slash}config_distro.py"/>
+          <fileExists path="${installdir}${slash}bin${slash}${test_filename}"/>
+          <isFalse value="${extract_mode}"/>
+        </ruleList>
+      </actionGroup>
+      </postInstallationActionList>
 
     <!-- Components. Most components will be separate packages, so expect just one entry here most of the time -->
     <allowComponentSelection>1</allowComponentSelection>
@@ -6090,6 +6141,10 @@ REM The script sets environment variables helpful for PostgreSQL
                     <text>${iBaseDirectory}</text>
                     <type>not_empty</type>
                 </stringTest>
+                <fileTest>
+                    <condition>exists</condition>
+                    <path>${iBaseDirectory}/bin/${test_filename}</path>
+                </fileTest>
                 <isFalse value="${extract_mode}"/>
                  <isTrue  value="${component(server).selected}"/>
             </ruleList>
