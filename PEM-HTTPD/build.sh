@@ -12,7 +12,8 @@ fi
 # Linux
 if [ $PG_ARCH_LINUX = 1 ];
 then
-    source $WD/PEM-HTTPD/build-linux.sh
+    echo "Disable Linux 32 build"
+    #source $WD/PEM-HTTPD/build-linux.sh
 fi
 
 # Linux x64
@@ -92,7 +93,8 @@ _prep_PEM-HTTPD() {
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _prep_PEM-HTTPD_linux || exit 1
+        echo "Disable Linux 32 build"
+        #_prep_PEM-HTTPD_linux || exit 1
     fi
 
     # Linux x64
@@ -125,7 +127,8 @@ _build_PEM-HTTPD() {
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _build_PEM-HTTPD_linux || exit 1
+        echo "Disable Linux 32 build"
+        #_build_PEM-HTTPD_linux || exit 1
     fi
 
     # Linux x64
@@ -172,7 +175,8 @@ _postprocess_PEM-HTTPD() {
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_PEM-HTTPD_linux || exit 1
+        echo "Disable Linux 32 build"
+        #_postprocess_PEM-HTTPD_linux || exit 1
     fi
 
     # Linux x64
