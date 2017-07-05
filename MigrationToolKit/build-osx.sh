@@ -25,7 +25,7 @@ _prep_MigrationToolKit_osx() {
     # Grab a copy of the migrationtoolkit source tree
     cp -R EDB-MTK/* migrationtoolkit.osx || _die "Failed to copy the source code (source/migrationtoolkit-$PG_VERSION_MIGRATIONTOOLKIT)"
 
-    cp pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_VERSION_PGJDBC.jdbc4.jar migrationtoolkit.osx/lib/ || _die "Failed to copy the pg-jdbc driver"
+    cp pgJDBC-$PG_VERSION_PGJDBC/postgresql-$PG_VERSION_PGJDBC.jre7.jar migrationtoolkit.osx/lib/ || _die "Failed to copy the pg-jdbc driver"
     cp $WD/tarballs/edb-jdbc17.jar migrationtoolkit.osx/lib/ || _die "Failed to copy the edb-jdbc driver"
 
     # Remove any existing staging directory that might exist, and create a clean one

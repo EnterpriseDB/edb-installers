@@ -47,7 +47,11 @@ _prep_updatemonitor_osx() {
     chmod ugo+w $WD/UpdateMonitor/staging/osx || _die "Couldn't set the permissions on the staging directory"
 
     # Remove existing source and staging directories
-    ssh $PG_SSH_OSX "if [ -d $PG_PATH_OSX/UpdateMonitor ]; then rm -rf $PG_PATH_OSX/UpdateMonitor/*; fi" || _die "Couldn't remove the existing files on OS X build server"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/UpdateMonitor/source" || _die "Falied to clean the UpdateMonitor/source directory on Mac OS X VM"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/UpdateMonitor/scripts" || _die "Falied to clean the UpdateMonitor/scripts directory on Mac OS X VM"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/UpdateMonitor/*.bz2" || _die "Falied to clean the UpdateMonitor/*.bz2 files on Mac OS X VM"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/UpdateMonitor/*.sh" || _die "Falied to clean the UpdateMonitor/*.sh scripts on Mac OS X VM"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/UpdateMonitor/staging/osx.build" || _die "Falied to clean the UpdateMonitor/staging/osx.build directory on Mac OS X VM"
 
     echo "Copy the sources to the build VM"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/UpdateMonitor/source" || _die "Failed to create the source dircetory on the build VM"
@@ -134,36 +138,34 @@ EOT
 
     cd $PG_PATH_OSX/UpdateMonitor/source
     echo "Copy the UpdateMonitor app bundle into place"
-    mkdir -p $PG_PATH_OSX/UpdateMonitor/staging/osx/
-    cp -R $PG_PATH_OSX/UpdateMonitor/source/updatemonitor.osx/UpdateMonitor.app $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor.app || _die "Failed to copy UpdateMonitor into the staging directory"
+    mkdir -p $PG_PATH_OSX/UpdateMonitor/staging/osx.build/
+    cp -R $PG_PATH_OSX/UpdateMonitor/source/updatemonitor.osx/UpdateMonitor.app $PG_PATH_OSX/UpdateMonitor/staging/osx.build/UpdateMonitor.app || _die "Failed to copy UpdateMonitor into the staging directory"
 
-    mkdir -p $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/bin
-    mkdir -p $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
+    mkdir -p $PG_PATH_OSX/UpdateMonitor/staging/osx.build/UpdateMonitor/instscripts/bin
+    mkdir -p $PG_PATH_OSX/UpdateMonitor/staging/osx.build/UpdateMonitor/instscripts/lib
     
-    cp $PG_PATH_OSX/UpdateMonitor/source/GetLatestPGInstalled.osx/GetLatestPGInstalled $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/bin
-    cp /opt/local/Current/lib/libwx_base_carbonud-2.8.0.dylib $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
-    cp -pR /opt/local/Current/lib/libiconv*.dylib $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
-    cp -pR /opt/local/Current/lib/libz*.dylib $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts/lib
+    cp $PG_PATH_OSX/UpdateMonitor/source/GetLatestPGInstalled.osx/GetLatestPGInstalled $PG_PATH_OSX/UpdateMonitor/staging/osx.build/UpdateMonitor/instscripts/bin
+    cp /opt/local/Current/lib/libwx_base_carbonud-2.8.0.dylib $PG_PATH_OSX/UpdateMonitor/staging/osx.build/UpdateMonitor/instscripts/lib
+    cp -pR /opt/local/Current/lib/libiconv*.dylib $PG_PATH_OSX/UpdateMonitor/staging/osx.build/UpdateMonitor/instscripts/lib
+    cp -pR /opt/local/Current/lib/libz*.dylib $PG_PATH_OSX/UpdateMonitor/staging/osx.build/UpdateMonitor/instscripts/lib
 
-     _rewrite_so_refs $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts bin @loader_path/..
-     _rewrite_so_refs $PG_PATH_OSX/UpdateMonitor/staging/osx/UpdateMonitor/instscripts lib @loader_path/..
+     _rewrite_so_refs $PG_PATH_OSX/UpdateMonitor/staging/osx.build/UpdateMonitor/instscripts bin @loader_path/..
+     _rewrite_so_refs $PG_PATH_OSX/UpdateMonitor/staging/osx.build/UpdateMonitor/instscripts lib @loader_path/..
 EOT-UPDATEMONITOR
     
     cd $WD
     scp UpdateMonitor/build-updatemonitor.sh $PG_SSH_OSX:$PG_PATH_OSX/UpdateMonitor
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/UpdateMonitor; sh ./build-updatemonitor.sh" || _die "Failed to build UpdateMonitor on OSX"
 
-    # Copy the staging to controller to build the installers
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/UpdateMonitor/staging/osx; tar -jcvf updatemonitor-staging.tar.bz2 *" || _die "Failed to create archive of the updatemonitor staging"
-    scp $PG_SSH_OSX:$PG_PATH_OSX/UpdateMonitor/staging/osx/updatemonitor-staging.tar.bz2 $WD/UpdateMonitor/staging/osx || _die "Failed to scp updatemonitor staging"
+    echo "Removing last successful staging directory ($PG_PATH_OSX/UpdateMonitor/staging/osx)"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/UpdateMonitor/staging/osx" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/UpdateMonitor/staging/osx" || _die "Couldn't create the last successful staging directory"
 
-    # Extract the staging archive
-    cd $WD/UpdateMonitor/staging/osx
-    tar -jxvf updatemonitor-staging.tar.bz2 || _die "Failed to extract the updatemonitor staging archive"
-    rm -f updatemonitor-staging.tar.bz2
- 
-    cp $WD/UpdateMonitor/resources/licence.txt $WD/UpdateMonitor/staging/osx/updatemonitor_license.txt || _die "Unable to copy updatemonitor_license.txt"
-    chmod 444 $WD/UpdateMonitor/staging/osx/updatemonitor_license.txt || _die "Unable to change permissions for license file."
+    echo "Copying the complete build to the successful staging directory"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; cp -PR UpdateMonitor/staging/osx.build/* UpdateMonitor/staging/osx" || _die "Couldn't copy the existing staging directory"
+
+    ssh $PG_SSH_OSX "echo PG_VERSION_UPDATE_MONITOR=$PG_VERSION_UPDATE_MONITOR > $PG_PATH_OSX/UpdateMonitor/staging/osx/versions-osx.sh" || _die "Failed to write UpdateMonitor version number into versions-osx.sh"
+    ssh $PG_SSH_OSX "echo PG_BUILDNUM_UPDATE_MONITOR=$PG_BUILDNUM_UPDATE_MONITOR >> $PG_PATH_OSX/UpdateMonitor/staging/osx/versions-osx.sh" || _die "Failed to write UpdateMonitor build number into versions-osx.sh"
 
     echo "END BUILD updatemonitor OSX"
 }
@@ -179,6 +181,41 @@ _postprocess_updatemonitor_osx() {
     echo "********************************************"
     echo "* Post-processing - UpdateMonitor (osx) *"
     echo "********************************************"
+
+    # Remove any existing staging directory that might exist, and create a clean one
+    if [ -e $WD/UpdateMonitor/staging/osx ];
+    then
+      echo "Removing existing staging directory"
+      rm -rf $WD/UpdateMonitor/staging/osx || _die "Couldn't remove the existing staging directory"
+    fi
+    echo "Creating staging directory ($WD/UpdateMonitor/staging/osx)"
+    mkdir -p $WD/UpdateMonitor/staging/osx || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/UpdateMonitor/staging/osx || _die "Couldn't set the permissions on the staging directory"
+
+    _registration_plus_postprocess "$WD/UpdateMonitor/staging"  "UpdateMonitor" "iUMVersion" "/etc/postgres-reg.ini" "UpdateMonitor" "UpdateMonitor" "UpdateMonitor" "$PG_VERSION_UPDATE_MONITOR"
+
+    # Copy the staging to controller to build the installers
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/UpdateMonitor/staging/osx; rm -f updatemonitor-staging.tar.bz2" || _die "Failed to remove archive of the UpdateMonitor staging"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/UpdateMonitor/staging/osx; tar -jcvf updatemonitor-staging.tar.bz2 *" || _die "Failed to create archive of the updatemonitor staging"
+    scp $PG_SSH_OSX:$PG_PATH_OSX/UpdateMonitor/staging/osx/updatemonitor-staging.tar.bz2 $WD/UpdateMonitor/staging/osx || _die "Failed to scp updatemonitor staging"
+
+    # Extract the staging archive
+    cd $WD/UpdateMonitor/staging/osx
+    tar -jxvf updatemonitor-staging.tar.bz2 || _die "Failed to extract the updatemonitor staging archive"
+    rm -f updatemonitor-staging.tar.bz2
+
+    cp $WD/UpdateMonitor/resources/licence.txt $WD/UpdateMonitor/staging/osx/updatemonitor_license.txt || _die "Unable to copy updatemonitor_license.txt"
+    chmod 444 $WD/UpdateMonitor/staging/osx/updatemonitor_license.txt || _die "Unable to change permissions for license file."
+
+    source $WD/UpdateMonitor/staging/osx/versions-osx.sh
+    PG_BUILD_UPDATE_MONITOR=$(expr $PG_BUILD_UPDATE_MONITOR + $SKIPBUILD)
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_UPDATE_MONITOR -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
 
     cd $WD/UpdateMonitor
     pushd staging/osx
@@ -219,12 +256,15 @@ _postprocess_updatemonitor_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer (UpdateMonitor)"
 
+    # Rename the installer
+    mv $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app
+
     # Using own scripts for extract-only mode
-    cp -f $WD/scripts/risePrivileges $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app/Contents/MacOS/UpdateMonitor
-    chmod a+x $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app/Contents/MacOS/UpdateMonitor
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ UpdateMonitor $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app/Contents/MacOS/installbuilder.sh
-    chmod a+x $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app/Contents/MacOS/installbuilder.sh
+    cp -f $WD/scripts/risePrivileges $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app/Contents/MacOS/UpdateMonitor
+    chmod a+x $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app/Contents/MacOS/UpdateMonitor
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ UpdateMonitor $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
+    chmod a+x $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
 
     # Zip up the output
     cd $WD/output
@@ -233,17 +273,17 @@ _postprocess_updatemonitor_osx() {
     scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
     
     # Scp the app bundle to the signing machine for signing
-    tar -jcvf edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app.tar.bz2 edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app
+    tar -jcvf edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app.tar.bz2 edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf update*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
-    scp edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/
-    rm -fr edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app*
+    scp edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/
+    rm -fr edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app*
 
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app; mv edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx-signed.app  edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app; mv edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx-signed.app  edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
 
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.zip edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.app/" || _die "Failed to zip the installer bundle"
-    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.zip edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.app/" || _die "Failed to zip the installer bundle"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
    
     cd $WD
  

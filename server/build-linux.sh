@@ -40,15 +40,15 @@ _prep_server_linux() {
     cp -pR stackbuilder stackbuilder.linux || _die "Failed to copy the source code (source/stackbuilder)"	
 	
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/server/staging/linux ];
+    if [ -e $WD/server/staging/linux.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/server/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/server/staging/linux.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/server/staging/linux)"
-    mkdir -p $WD/server/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/server/staging/linux || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/server/staging/linux.build)"
+    mkdir -p $WD/server/staging/linux.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/server/staging/linux.build || _die "Couldn't set the permissions on the staging directory"
 
     if [ -f $WD/server/scripts/linux/getlocales/getlocales.linux ]; then
       rm -f $WD/server/scripts/linux/getlocales/getlocales.linux
@@ -156,7 +156,7 @@ set -x
 
     # First build PostgreSQL
 
-    PG_STAGING=$PG_PATH_LINUX/server/staging/linux
+    PG_STAGING=$PG_PATH_LINUX/server/staging/linux.build
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
@@ -173,24 +173,24 @@ set -x
     echo "Building debugger module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; export LD_LIBRARY_PATH=/opt/local/Current/lib:\$LD_LIBRARY_PATH; make" || _die "Failed to build the debugger module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
-	if [ ! -e $WD/server/staging/linux/doc ];
+	if [ ! -e $WD/server/staging/linux.build/doc ];
 	then
-	    mkdir -p $WD/server/staging/linux/doc || _die "Failed to create the doc directory"
+	    mkdir -p $WD/server/staging/linux.build/doc || _die "Failed to create the doc directory"
 	fi
-    cp "$WD/server/source/postgres.linux/contrib/pldebugger/README.pldebugger" $WD/server/staging/linux/doc || _die "Failed to copy the debugger README into the staging directory"
+    cp "$WD/server/source/postgres.linux/contrib/pldebugger/README.pldebugger" $WD/server/staging/linux.build/doc || _die "Failed to copy the debugger README into the staging directory"
 
     echo "Building uuid-ossp module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/uuid-ossp; export LD_LIBRARY_PATH=/opt/local/Current/lib:\$LD_LIBRARY_PATH; make" || _die "Failed to build the uuid-ossp module"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/source/postgres.linux/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
  
     # Install the PostgreSQL docs
-    mkdir -p $WD/server/staging/linux/doc/postgresql/html || _die "Failed to create the doc directory"
-    cd $WD/server/staging/linux/doc/postgresql/html || _die "Failed to change to the doc directory"
+    mkdir -p $WD/server/staging/linux.build/doc/postgresql/html || _die "Failed to create the doc directory"
+    cd $WD/server/staging/linux.build/doc/postgresql/html || _die "Failed to change to the doc directory"
     cp -pR $WD/server/source/postgres.linux/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
 
     # Install the PostgreSQL man pages
-    mkdir -p $WD/server/staging/linux/share/man || _die "Failed to create the man directory"
-    cd $WD/server/staging/linux/share/man || _die "Failed to change to the man directory"
+    mkdir -p $WD/server/staging/linux.build/share/man || _die "Failed to create the man directory"
+    cd $WD/server/staging/linux.build/share/man || _die "Failed to change to the man directory"
     cp -pR $WD/server/source/postgres.linux/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (linux)"
     cp -pR $WD/server/source/postgres.linux/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (linux)"
     cp -pR $WD/server/source/postgres.linux/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux)"
@@ -252,7 +252,7 @@ set -x
 
     # Copying psql to psql.bin and the creating a caller script psql
     # which will set the LD_PRELOAD to libreadline if found on the system.
-    cd $WD/server/staging/linux/bin
+    cd $WD/server/staging/linux.build/bin
     mv psql psql.bin
     cat <<EOT > psql
 #!/bin/bash
@@ -422,10 +422,10 @@ EOT-PGADMIN
     ssh $PG_SSH_LINUX "cd $PG_STAGING/lib; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}\" \$f; done"
     ssh $PG_SSH_LINUX "cd $PG_STAGING/lib/postgresql; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/..\" \$f; done"
 
-    #Fix permission in the staging/linux/lib
+    #Fix permission in the staging/linux.build/lib
     ssh $PG_SSH_LINUX "cd $PG_STAGING/lib; chmod a+r *"
     
-    #Fix permission in the staging/linux/share
+    #Fix permission in the staging/linux.build/share
     ssh $PG_SSH_LINUX "cd $PG_STAGING/share/postgresql/timezone; chmod -R a+r *"
  
     # Stackbuilder
@@ -477,7 +477,7 @@ EOT-PGADMIN
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/server/scripts/linux/getlocales/; gcc -o getlocales.linux -O0 getlocales.c" || _die "Failed to build getlocales utility"
 
     # Generate debug symbols
-    mv $WD/server/staging/linux/pgAdmin\ 4/ $WD/server/staging/linux/pgAdmin4
+    mv $WD/server/staging/linux.build/pgAdmin\ 4/ $WD/server/staging/linux.build/pgAdmin4
     cd $PG_STAGING
 
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
@@ -491,10 +491,19 @@ EOT-PGADMIN
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
-    mv $WD/server/staging/linux/symbols $WD/output/symbols/linux/server || _die "Failed to move $WD/server/staging/linux/symbols to $WD/output/symbols/linux/server directory"
-    mv $WD/server/staging/linux/pgAdmin4  $WD/server/staging/linux/pgAdmin\ 4/
+    mv $WD/server/staging/linux.build/symbols $WD/output/symbols/linux/server || _die "Failed to move $WD/server/staging/linux.build/symbols to $WD/output/symbols/linux/server directory"
+    mv $WD/server/staging/linux.build/pgAdmin4  $WD/server/staging/linux.build/pgAdmin\ 4/
+    touch $WD/server/staging/linux.build/pgAdmin\ 4/venv/lib/python2.7/site-packages/backports/__init__.py || _die "Failed to tocuh the __init__.py"
+    echo "Removing last successful staging directory ($WD/server/staging/linux)"
+    rm -rf $WD/server/staging/linux || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/server/staging/linux || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/server/staging/linux || _die "Couldn't set the permissions on the successful staging directory"
 
-    touch $WD/server/staging/linux/pgAdmin\ 4/venv/lib/python2.7/site-packages/backports/__init__.py || _die "Failed to tocuh the __init__.py"
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/server/staging/linux.build/* $WD/server/staging/linux || _die "Couldn't copy the existing staging directory"
+    echo "PG_MAJOR_VERSION=$PG_MAJOR_VERSION" > $WD/server/staging/linux/versions-linux.sh
+    echo "PG_MINOR_VERSION=$PG_MINOR_VERSION" >> $WD/server/staging/linux/versions-linux.sh
+    echo "PG_PACKAGE_VERSION=$PG_PACKAGE_VERSION" >> $WD/server/staging/linux/versions-linux.sh
 
     cd $WD
     echo "END BUILD Server Linux"
@@ -507,6 +516,9 @@ EOT-PGADMIN
 
 _postprocess_server_linux() {
     echo "BEGIN POST Server Linux"
+
+    source $WD/server/staging/linux/versions-linux.sh
+    PG_BUILD_SERVER=$(expr $PG_BUILD_SERVER + $SKIPBUILD)
 
     cd $WD/server
 
@@ -636,9 +648,16 @@ _postprocess_server_linux() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-linux.xml linux || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_SERVER -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
 	
-	# Rename the installer
-	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-linux.run || _die "Failed to rename the installer"
+    # Rename the installer
+    mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}linux.run
 
     cd $WD
     echo "END POST Server Linux"

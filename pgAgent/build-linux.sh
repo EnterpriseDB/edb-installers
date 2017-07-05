@@ -27,14 +27,14 @@ _prep_pgAgent_linux() {
     cp -R pgAgent-$PG_VERSION_PGAGENT-Source pgAgent.linux || _die "Failed to copy the source code (source/pgAgent-$PG_VERSION_PGAGENT-Source)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pgAgent/staging/linux ];
+    if [ -e $WD/pgAgent/staging/linux.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/pgAgent/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/pgAgent/staging/linux.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/pgAgent/staging/linux)"
-    mkdir -p $WD/pgAgent/staging/linux || _die "Couldn't create the staging directory"
+    echo "Creating staging directory ($WD/pgAgent/staging/linux.build)"
+    mkdir -p $WD/pgAgent/staging/linux.build || _die "Couldn't create the staging directory"
     
     echo "END PREP pgAgent Linux"
 
@@ -54,7 +54,7 @@ _build_pgAgent_linux() {
 
     cd $WD/pgAgent
 
-    PG_STAGING=$PG_PATH_LINUX/pgAgent/staging/linux
+    PG_STAGING=$PG_PATH_LINUX/pgAgent/staging/linux.build
     SOURCE_DIR=$PG_PATH_LINUX/pgAgent/source/pgAgent.linux
 
     echo "Building pgAgent sources"
@@ -102,7 +102,17 @@ _build_pgAgent_linux() {
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
-    mv $WD/pgAgent/staging/linux/symbols $WD/output/symbols/linux/pgAgent || _die "Failed to move $WD/pgAgent/staging/linux/symbols to $WD/output/symbols/linux/pgAgent directory"
+    mv $WD/pgAgent/staging/linux.build/symbols $WD/output/symbols/linux/pgAgent || _die "Failed to move $WD/pgAgent/staging/linux.build/symbols to $WD/output/symbols/linux/pgAgent directory"
+
+    echo "Removing last successful staging directory ($WD/pgAgent/staging/linux)"
+    rm -rf $WD/pgAgent/staging/linux || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/pgAgent/staging/linux || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/pgAgent/staging/linux || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/pgAgent/staging/linux.build/* $WD/pgAgent/staging/linux || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_PGAGENT=$PG_VERSION_PGAGENT" > $WD/pgAgent/staging/linux/versions-linux.sh
+    echo "PG_BUILDNUM_PGAGENT=$PG_BUILDNUM_PGAGENT" >> $WD/pgAgent/staging/linux/versions-linux.sh
 
     echo "END BUILD pgAgent Linux"
 }
@@ -119,6 +129,9 @@ _postprocess_pgAgent_linux() {
     echo "#######################################"
     echo "# pgAgent : LINUX : Post Process      #"
     echo "#######################################"
+
+    source $WD/pgAgent/staging/linux/versions-linux.sh
+    PG_BUILD_PGAGENT=$(expr $PG_BUILD_PGAGENT + $SKIPBUILD)
 
     # Setup the installer scripts.
     mkdir -p $WD/pgAgent/staging/linux/installer/pgAgent || _die "Failed to create a directory for the install scripts"
@@ -138,6 +151,19 @@ _postprocess_pgAgent_linux() {
      
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
+
+    # Build the installer
+    "$EDB_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_PGAGENT -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux.run $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}linux.run
 
     cd $WD
 

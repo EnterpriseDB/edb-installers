@@ -6,7 +6,7 @@
 ################################################################################
 
 _prep_updatemonitor_windows() {
-    
+
     echo "BEGIN PREP updatemonitor Windows"     
  
     echo "****************************************"
@@ -76,7 +76,7 @@ _prep_updatemonitor_windows() {
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST GetLatestPGInstalled.zip del /Q GetLatestPGInstalled.zip" || _die"Couldn't remove the $PG_PATH_WINDOWS\\UpdateMonitor.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST updatemonitor.windows rd /S /Q updatemonitor.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\updatemonitor.windows directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST GetLatestPGInstalled.windows rd /S /Q GetLatestPGInstalled.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\GetLatestPGInstalled.windows directory on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST updatemonitor.staging rd /S /Q updatemonitor.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS\\UpdateMonitor.staging directory on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST updatemonitor.staging.build rd /S /Q updatemonitor.staging.build" || _die "Couldn't remove the $PG_PATH_WINDOWS\\UpdateMonitor.staging directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST build-um.bat del /Q build-um.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\build-um.bat on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST um_output.zip del /Q um_output.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\um_output.zipon Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST vc-build.bat del /Q vc-build.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\vc-build.bat on Windows VM"
@@ -86,7 +86,7 @@ _prep_updatemonitor_windows() {
     scp GetLatestPGInstalled.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the UpdateMonitor archieve to Windows VM (GetLatestPGInstalled.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip updatemonitor.zip" || _die "Couldn't extract UpdateMonitor archieve on Windows VM (updatemonitor.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip GetLatestPGInstalled.zip" || _die "Couldn't extract GetLatestPGInstalled archieve on Windows VM (GetLatestPGInstalled.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir -p updatemonitor.staging" || _die "Couldn't create updatemonitor.staging directory on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir -p updatemonitor.staging.build" || _die "Couldn't create updatemonitor.staging.build directory on Windows VM"
     
     echo "END PREP updatemonitor Windows"
 }
@@ -104,7 +104,7 @@ _build_updatemonitor_windows() {
     echo "**************************************"
 
     # build UpdateMonitor
-    PG_STAGING=$PG_PATH_WINDOWS\\\\updatemonitor.staging
+    PG_STAGING=$PG_PATH_WINDOWS\\\\updatemonitor.staging.build
 
     cd $WD/UpdateMonitor/source/updatemonitor.windows
 
@@ -154,16 +154,16 @@ ECHO ***************************************
 cd "%SOURCE_PATH%\updatemonitor.windows"
 "%QMAKE%" UpdateManager.pro || SET ERRMSG=ERROR: Couldn't configure the UpdateMonitor on Windows && GOTO EXIT_WITH_ERROR
 nmake -f Makefile.Release || SET ERRMSG=ERROR: Couldn't build the UpdateManager && GOTO EXIT_WITH_ERROR
-mkdir %SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\bin 
-mkdir %SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\instscripts\bin 
-copy release\UpdManager.exe %SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\bin\ || SET ERRMSG=ERROR: Couldn't copy the UpdateMonitor binary to staging directory && GOTO EXIT_WITH_ERROR
-copy %SOURCE_PATH%\GetLatestPGInstalled.windows\release\GetLatestPGInstalled.exe %SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\instscripts\bin\ || SET ERRMSG=ERROR: Couldn't copy the UpdateMonitor binary to staging directory && GOTO EXIT_WITH_ERROR
-copy "$PG_WXWIN_WINDOWS\lib\vc_dll\wxbase28u_vc_custom.dll" %SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\instscripts\bin\ || SET ERRMSG=ERROR: Couldn't copy dependent library (wxbase28u_vc_custom.dll) && GOTO EXIT_WITH_ERROR
+mkdir %SOURCE_PATH%\updatemonitor.staging.build\UpdateMonitor\bin
+mkdir %SOURCE_PATH%\updatemonitor.staging.build\UpdateMonitor\instscripts\bin
+copy release\UpdManager.exe %SOURCE_PATH%\updatemonitor.staging.build\UpdateMonitor\bin\ || SET ERRMSG=ERROR: Couldn't copy the UpdateMonitor binary to staging directory && GOTO EXIT_WITH_ERROR
+copy %SOURCE_PATH%\GetLatestPGInstalled.windows\release\GetLatestPGInstalled.exe %SOURCE_PATH%\updatemonitor.staging.build\UpdateMonitor\instscripts\bin\ || SET ERRMSG=ERROR: Couldn't copy the UpdateMonitor binary to staging directory && GOTO EXIT_WITH_ERROR
+copy "$PG_WXWIN_WINDOWS\lib\vc_dll\wxbase28u_vc_custom.dll" %SOURCE_PATH%\updatemonitor.staging.build\UpdateMonitor\instscripts\bin\ || SET ERRMSG=ERROR: Couldn't copy dependent library (wxbase28u_vc_custom.dll) && GOTO EXIT_WITH_ERROR
 
 ECHO *******************************************************************************************
 ECHO * Collecting dependent libraries and Archieving all binaries in one file (um_output.zip) *
 ECHO *******************************************************************************************
-cd "%SOURCE_PATH%\updatemonitor.staging\UpdateMonitor\bin"
+cd "%SOURCE_PATH%\updatemonitor.staging.build\UpdateMonitor\bin"
 echo Copying Qt5Core dll
 copy "%QT_PATH%\bin\Qt5Core.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Core.dll) && GOTO EXIT_WITH_ERROR
 echo Copying Qt5Network dll
@@ -178,8 +178,8 @@ copy "%QT_PATH%\bin\libEGL.dll" . || SET ERRMSG=ERROR: Couldn't copy dependent l
 xcopy /f %QT_PATH%\plugins\platforms\qwindows.dll .\plugins\platforms\ /s /i || SET ERRMSG=ERROR: Couldn't copy dependent library (qwindows.dll) && GOTO EXIT_WITH_ERROR
 copy "$PG_PGBUILD_WINDOWS\vcredist\vcredist_x86.exe" . || SET ERRMSG=ERROR: Couldn't copy dependent library (Qt5Xml.dll) && GOTO EXIT_WITH_ERROR
 
-cd "%SOURCE_PATH%\updatemonitor.staging"
-zip -r ..\um_output.zip * || SET ERRMSG=ERROR: Couldn't archieve the UpdateMonitor binaries && GOTO EXIT_WITH_ERROR
+REM cd "%SOURCE_PATH%\updatemonitor.staging.build"
+REM zip -r ..\um_output.zip * || SET ERRMSG=ERROR: Couldn't archieve the UpdateMonitor binaries && GOTO EXIT_WITH_ERROR
 
 ECHO Completed Successfully.
 exit 0
@@ -196,25 +196,17 @@ Libraries=./plugins
 EOT
     scp build-um.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy build-um.bat in staging directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-um.bat" || _die "Error building UpdateMonitor binaries on Windows VM"
-    # Remove output archieve, if exists
-    if [ -f um_output.zip ];
-    then
-        rm -f um_output.zip
-    fi
 
-    cd $WD/UpdateMonitor/staging/windows
-    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/um_output.zip .
+    echo "Removing last successful staging directory ($PG_PATH_WINDOWS\\\\updatemonitor.staging)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST updatemonitor.staging rd /S /Q updatemonitor.staging" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\updatemonitor.staging" || _die "Couldn't create the last successful staging directory"
 
-    unzip um_output.zip
-    rm -f um_output.zip
-    
-    cp $WD/UpdateMonitor/source/updatemonitor.windows/qt.conf $WD/UpdateMonitor/staging/windows/UpdateMonitor/bin
-    
-    win32_sign "UpdManager.exe" "$WD/UpdateMonitor/staging/windows/UpdateMonitor/bin"
+    echo "Copying the complete build to the successful staging directory"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c xcopy /E /Q /Y updatemonitor.staging.build\\\\* updatemonitor.staging\\\\" || _die "Couldn't copy the existing staging directory"
 
-    cp $WD/UpdateMonitor/resources/licence.txt $WD/UpdateMonitor/staging/windows/updatemonitor_license.txt || _die "Unable to copy updatemonitor_license.txt"
-    chmod 444 $WD/UpdateMonitor/staging/windows/updatemonitor_license.txt || _die "Unable to change permissions for license file."
-    
+    ssh $PG_SSH_WINDOWS "cmd /c echo PG_VERSION_UPDATE_MONITOR=$PG_VERSION_UPDATE_MONITOR > $PG_PATH_WINDOWS\\\\updatemonitor.staging/versions-windows.sh" || _die "Failed to write updatemonitor version number into versions-windows.sh"
+    ssh $PG_SSH_WINDOWS "cmd /c echo PG_BUILDNUM_UPDATE_MONITOR=$PG_BUILDNUM_UPDATE_MONITOR >> $PG_PATH_WINDOWS\\\\updatemonitor.staging/versions-windows.sh" || _die "Failed to write updatemonitor build number into versions-windows.sh"
+
     echo "END BUILD updtemonitor Windows"
 }
 
@@ -226,7 +218,50 @@ EOT
 _postprocess_updatemonitor_windows() {
     
     echo "BEGIN POST updatemonitor Windows"
- 
+
+    # Remove any existing staging directory that might exist, and create a clean one
+    if [ -e $WD/UpdateMonitor/staging/windows ];
+    then
+      echo "Removing existing staging directory"
+      rm -rf $WD/UpdateMonitor/staging/windows || _die "Couldn't remove the existing staging directory"
+    fi
+    echo "Creating staging directory ($WD/UpdateMonitor/staging/windows)"
+    mkdir -p $WD/UpdateMonitor/staging/windows || _die "Couldn't create the staging directory"
+    mkdir -p $WD/UpdateMonitor/staging/windows/share || _die "Couldn't create the staging/share directory"
+    chmod ugo+w $WD/UpdateMonitor/staging/windows || _die "Couldn't set the permissions on the staging directory"
+
+    _registration_plus_postprocess "$WD/UpdateMonitor/staging"  "UpdateMonitor" "iUMVersion" "/etc/postgres-reg.ini" "UpdateMonitor" "UpdateMonitor" "UpdateMonitor" "$PG_VERSION_UPDATE_MONITOR"
+
+    cd $WD/UpdateMonitor/staging/windows
+    echo "Copying built tree to Windows host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST um_output.zip del /S /Q um_output.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\um_output.zip on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\updatemonitor.staging; cmd /c zip -r um_output.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$OUTPUT_DIR)"
+    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\updatemonitor.staging\\\\um_output.zip $WD/UpdateMonitor/staging/windows/um_output.zip || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\um_output.zip)"
+    unzip -o $WD/UpdateMonitor/staging/windows/um_output.zip -d $WD/UpdateMonitor/staging/windows || _die "Failed to unpack the built source tree ($WD/UpdateMonitor/staging/windows/um_output.zip)"
+    rm -f $WD/UpdateMonitor/staging/windows/um_output.zip
+
+##    # Remove output archieve, if exists
+##    if [ -f um_output.zip ];
+##    then
+##        rm -f um_output.zip
+##    fi
+##
+##    cd $WD/UpdateMonitor/staging/windows
+##    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/um_output.zip .
+##
+##    unzip um_output.zip
+##    rm -f um_output.zip
+
+    dos2unix $WD/UpdateMonitor/staging/windows/versions-windows.sh || _die "Failed to convert format of versions-windows.sh from dos to unix"
+    source $WD/UpdateMonitor/staging/windows/versions-windows.sh
+    PG_BUILD_UPDATE_MONITOR=$(expr $PG_BUILD_UPDATE_MONITOR + $SKIPBUILD)
+
+    cp $WD/UpdateMonitor/source/updatemonitor.windows/qt.conf $WD/UpdateMonitor/staging/windows/UpdateMonitor/bin
+
+    win32_sign "UpdManager.exe" "$WD/UpdateMonitor/staging/windows/UpdateMonitor/bin"
+
+    cp $WD/UpdateMonitor/resources/licence.txt $WD/UpdateMonitor/staging/windows/updatemonitor_license.txt || _die "Unable to copy updatemonitor_license.txt"
+    chmod 444 $WD/UpdateMonitor/staging/windows/updatemonitor_license.txt || _die "Unable to change permissions for license file."
     cd $WD/UpdateMonitor
 
     pushd staging/windows
@@ -247,9 +282,19 @@ _postprocess_updatemonitor_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-win.xml windows || _die "Failed to build the installer"
 
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_UPDATE_MONITOR -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-windows.exe $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}windows.exe || _die "Failed to rename the installer"
+
     # Sign the installer
-    win32_sign "edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-windows.exe"
-	
+    win32_sign "edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}windows.exe"
+
     cd $WD
     
     echo "END POST updatemonitor Windows"

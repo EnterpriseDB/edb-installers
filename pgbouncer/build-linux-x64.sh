@@ -28,21 +28,21 @@ _prep_pgbouncer_linux_x64() {
     cp -R pgbouncer-$PG_VERSION_PGBOUNCER/* pgbouncer.linux-x64 || _die "Failed to copy the source code (source/pgbouncer-$PG_VERSION_PGBOUNCER)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pgbouncer/staging/linux-x64 ];
+    if [ -e $WD/pgbouncer/staging/linux-x64.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/pgbouncer/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/pgbouncer/staging/linux-x64.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/pgbouncer/staging/linux-x64)"
-    mkdir -p $WD/pgbouncer/staging/linux-x64 || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/pgbouncer/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/pgbouncer/staging/linux-x64.build)"
+    mkdir -p $WD/pgbouncer/staging/linux-x64.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/pgbouncer/staging/linux-x64.build || _die "Couldn't set the permissions on the staging directory"
     
-    echo "Creating staging doc directory ($WD/pgbouncer/staging/linux-x64/pgbouncer/doc)"
-    mkdir -p $WD/pgbouncer/staging/linux-x64/pgbouncer/doc || _die "Couldn't create the staging doc directory"
-    chmod 755 $WD/pgbouncer/staging/linux-x64/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
+    echo "Creating staging doc directory ($WD/pgbouncer/staging/linux-x64.build/pgbouncer/doc)"
+    mkdir -p $WD/pgbouncer/staging/linux-x64.build/pgbouncer/doc || _die "Couldn't create the staging doc directory"
+    chmod 755 $WD/pgbouncer/staging/linux-x64.build/pgbouncer/doc || _die "Couldn't set the permissions on the staging doc directory"
     echo "Copying README.pgbouncer to staging doc directory"
-    cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/linux-x64/pgbouncer/doc/README-pgbouncer.txt || _die "Couldn't copy README.pgbouncer to staging doc directory"
+    cp $WD/pgbouncer/resources/README.pgbouncer $WD/pgbouncer/staging/linux-x64.build/pgbouncer/doc/README-pgbouncer.txt || _die "Couldn't copy README.pgbouncer to staging doc directory"
     
     echo "END PREP pgbouncer Linux-x64"
 }
@@ -55,22 +55,22 @@ _build_pgbouncer_linux_x64() {
 
     echo "BEGIN BUILD pgbouncer Linux-x64"
 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; ./configure --enable-debug --prefix=$PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer --with-libevent=/opt/local/Current --with-openssl=/opt/local/Current" || _die "Failed to configure pgbouncer"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; ./configure --enable-debug --prefix=$PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/pgbouncer --with-libevent=/opt/local/Current --with-openssl=/opt/local/Current" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; make" || _die "Failed to build pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; make install" || _die "Failed to install pgbouncer"
-    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/share/" || _die "Failed to copy pgbouncer ini to share folder"
+    ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/pgbouncer/share/" || _die "Failed to copy pgbouncer ini to share folder"
 
 
-    mkdir -p $WD/pgbouncer/staging/linux-x64/instscripts || _die "Failed to create the instscripts directory"
-    mkdir -p $WD/pgbouncer/staging/linux-x64/pgbouncer/lib || _die "Failed to create the pgbouncer lib directory"
+    mkdir -p $WD/pgbouncer/staging/linux-x64.build/instscripts || _die "Failed to create the instscripts directory"
+    mkdir -p $WD/pgbouncer/staging/linux-x64.build/pgbouncer/lib || _die "Failed to create the pgbouncer lib directory"
 
-    ssh $PG_SSH_LINUX_X64 "cp -R /opt/local/Current/lib/libevent-* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
-    ssh $PG_SSH_LINUX_X64 "cp -R /opt/local/Current/lib/libssl.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/lib" || _die "Failed to copy libssl libs in pgbouncer lib folder"
-    ssh $PG_SSH_LINUX_X64 "cp -R /opt/local/Current/lib/libcrypto.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/lib" || _die "Failed to copy libcrypto libs in pgbouncer lib folder"
+    ssh $PG_SSH_LINUX_X64 "cp -R /opt/local/Current/lib/libevent-* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/pgbouncer/lib" || _die "Failed to copy libevent libs in pgbouncer lib folder"
+    ssh $PG_SSH_LINUX_X64 "cp -R /opt/local/Current/lib/libssl.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/pgbouncer/lib" || _die "Failed to copy libssl libs in pgbouncer lib folder"
+    ssh $PG_SSH_LINUX_X64 "cp -R /opt/local/Current/lib/libcrypto.so* $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/pgbouncer/lib" || _die "Failed to copy libcrypto libs in pgbouncer lib folder"
 
-    ssh $PG_SSH_LINUX_X64 "chmod o+rx $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer/lib/*" || _die "Failed to change permission of libevent libs in pgbouncer lib folder"
+    ssh $PG_SSH_LINUX_X64 "chmod o+rx $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/pgbouncer/lib/*" || _die "Failed to change permission of libevent libs in pgbouncer lib folder"
 
-    cd $WD/pgbouncer/staging/linux-x64/instscripts/
+    cd $WD/pgbouncer/staging/linux-x64.build/instscripts/
 
     cp -pR $WD/server/staging/linux-x64/bin/psql* . || _die "Failed to copy psql binary"
     cp -pR $WD/server/staging/linux-x64/lib/libpq.so* . || _die "Failed to copy libpq.so"
@@ -87,10 +87,10 @@ _build_pgbouncer_linux_x64() {
     cp -pR $WD/server/staging/linux-x64/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
     cp -pR $WD/server/staging/linux-x64/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
 
-    ssh $PG_SSH_LINUX_X64 "chmod 755 $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/instscripts/*" || _die "Failed to change permission of libraries"
+    ssh $PG_SSH_LINUX_X64 "chmod 755 $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/instscripts/*" || _die "Failed to change permission of libraries"
 
     # Generate debug symbols
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64/pgbouncer" || _die "Failed to execute create_debug_symbols.sh"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/pgbouncer" || _die "Failed to execute create_debug_symbols.sh"
 
     # Remove existing symbols directory in output directory
     if [ -e $WD/output/symbols/linux-x64/pgbouncer ];
@@ -101,7 +101,17 @@ _build_pgbouncer_linux_x64() {
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
-    mv $WD/pgbouncer/staging/linux-x64/pgbouncer/symbols $WD/output/symbols/linux-x64/pgbouncer || _die "Failed to move $WD/pgbouncer/staging/linux-x64/pgbouncer/symbols to $WD/output/symbols/linux-x64/pgbouncer directory"
+    mv $WD/pgbouncer/staging/linux-x64.build/pgbouncer/symbols $WD/output/symbols/linux-x64/pgbouncer || _die "Failed to move $WD/pgbouncer/staging/linux-x64.build/pgbouncer/symbols to $WD/output/symbols/linux-x64/pgbouncer directory"
+
+    echo "Removing last successful staging directory ($WD/pgbouncer/staging/linux-x64)"
+    rm -rf $WD/pgbouncer/staging/linux-x64 || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/pgbouncer/staging/linux-x64 || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/pgbouncer/staging/linux-x64 || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/pgbouncer/staging/linux-x64.build/* $WD/pgbouncer/staging/linux-x64 || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_PGBOUNCER=$PG_VERSION_PGBOUNCER" > $WD/pgbouncer/staging/linux-x64/versions-linux-x64.sh
+    echo "PG_BUILDNUM_PGBOUNCER=$PG_BUILDNUM_PGBOUNCER" >> $WD/pgbouncer/staging/linux-x64/versions-linux-x64.sh
 
     cd $WD
     
@@ -116,6 +126,9 @@ _build_pgbouncer_linux_x64() {
 _postprocess_pgbouncer_linux_x64() {
  
     echo "BEGIN POST pgbouncer Linux-x64"   
+
+    source $WD/pgbouncer/staging/linux-x64/versions-linux.sh
+    PG_BUILD_PGBOUNCER=$(expr $PG_BUILD_PGBOUNCER + $SKIPBUILD)
  
     cd $WD/pgbouncer
 
@@ -146,6 +159,16 @@ _postprocess_pgbouncer_linux_x64() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_PGBOUNCER -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-linux-x64.run $WD/output/pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}linux-x64.run
 
     cd $WD
    

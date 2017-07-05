@@ -47,11 +47,14 @@ then
 	    source $WD/${!C_PKG_INSTALLER_NAME}/build.sh
 	    if [ $SKIPBUILD = 0 ];
 	    then
-		_prep_${!C_PKG_INSTALLER_NAME} || exit 1
-	        _build_${!C_PKG_INSTALLER_NAME} || exit 1
+		(_prep_${!C_PKG_INSTALLER_NAME} && _build_${!C_PKG_INSTALLER_NAME})
+                if [ $? == 0 ]; then
+                    declare PVT_${PKG}_BUILD=1
+                fi
+
 	    fi
 
-	    _postprocess_${!C_PKG_INSTALLER_NAME} || exit 1
+	    (_postprocess_${!C_PKG_INSTALLER_NAME})
 	fi
     done
 fi

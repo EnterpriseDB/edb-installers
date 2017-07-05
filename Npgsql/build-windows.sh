@@ -49,7 +49,7 @@ _prep_Npgsql_windows() {
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Npgsql.zip del /S /Q Npgsql.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\Npgsql.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Npgsql.windows rd /S /Q Npgsql.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\Npgsql.windows directory on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Npgsql.staging rd /S /Q Npgsql.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS\\Npgsql.staging directory on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Npgsql.staging.build rd /S /Q Npgsql.staging.build" || _die "Couldn't remove the $PG_PATH_WINDOWS\\Npgsql.staging.build directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST npgsql-staging.zip del /S /Q npgsql-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\npgsql-staging.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST build-Npgsql.bat del /S /Q build-Npgsql.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\build-Npgsql.bat on Windows VM"
 
@@ -97,17 +97,18 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c $PG_PATH_WINDOWS\\\\build-Npgsql.bat Npgsql.sln Release $PLATFORM_TOOLSET" || _die "Failed to build npgsql on the windows build host"
 
     # We need to copy them to staging directory
-    ssh $PG_SSH_WINDOWS  "mkdir -p $PG_PATH_WINDOWS/Npgsql.staging/bin" || _die "Failed to create the bin directory"
-    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Npgsql.windows/src/Npgsql/bin/Release/* $PG_PATH_WINDOWS/Npgsql.staging/bin" || _die "Failed to copy Npgsql binary to staging directory"
+    ssh $PG_SSH_WINDOWS  "mkdir -p $PG_PATH_WINDOWS/Npgsql.staging.build/bin" || _die "Failed to create the bin directory"
+    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Npgsql.windows/src/Npgsql/bin/Release/* $PG_PATH_WINDOWS/Npgsql.staging.build/bin" || _die "Failed to copy Npgsql binary to staging directory"
 
-    # Zip up the installed code, copy it back here, and unpack.
-    echo "Copying npgsql built tree to Unix host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\Npgsql.staging; cmd /c zip -r ..\\\\npgsql-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/Npgsql.staging)"
-    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/npgsql-staging.zip $WD/Npgsql/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/npgsql-staging.zip)"
-    unzip $WD/Npgsql/staging/windows/npgsql-staging.zip -d $WD/Npgsql/staging/windows || _die "Failed to unpack the built source tree ($WD/staging/windows/npgsql-staging.zip)"
-    rm $WD/Npgsql/staging/windows/npgsql-staging.zip
+    echo "Removing last successful staging directory ($PG_PATH_WINDOWS\\\\Npgsql.staging)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Npgsql.staging rd /S /Q Npgsql.staging" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\Npgsql.staging" || _die "Couldn't create the last successful staging directory"
 
-    cp $WD/Npgsql/source/Npgsql.windows/LICENSE.txt $WD/Npgsql/staging/windows/ || _die "Unable to copy LICENSE.txt"
+    echo "Copying the complete build to the successful staging directory"
+ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c xcopy /E /Q /Y Npgsql.staging.build\\\\* Npgsql.staging\\\\" || _die "Couldn't copy the existing staging directory"
+
+    ssh $PG_SSH_WINDOWS "cmd /c echo PG_VERSION_NPGSQL=$PG_VERSION_NPGSQL > $PG_PATH_WINDOWS\\\\Npgsql.staging/versions-windows.sh" || _die "Failed to write pgAgent version number into versions-windows.sh"
+    ssh $PG_SSH_WINDOWS "cmd /c echo PG_BUILDNUM_NPGSQL=$PG_BUILDNUM_NPGSQL >> $PG_PATH_WINDOWS\\\\Npgsql.staging/versions-windows.sh" || _die "Failed to write pgAgent build number into versions-windows.sh"
 
     cd $WD
     
@@ -122,7 +123,31 @@ EOT
 _postprocess_Npgsql_windows() {
 
     echo "BEGIN POST Npgsql Windows"
+
+    # Remove any existing staging directory that might exist, and create a clean one
+    if [ -e $WD/Npgsql/staging/windows ];
+    then
+      echo "Removing existing staging directory"
+      rm -rf $WD/Npgsql/staging/windows || _die "Couldn't remove the existing staging directory"
+    fi
+    echo "Creating staging directory ($WD/Npgsql/staging/windows)"
+    mkdir -p $WD/Npgsql/staging/windows || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/Npgsql/staging/windows || _die "Couldn't set the permissions on the staging directory"
  
+    # Zip up the installed code, copy it back here, and unpack.
+    echo "Copying npgsql built tree to Unix host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST npgsql-staging.zip del /S /Q npgsql-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\npgsql-staging.zip on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\Npgsql.staging; cmd /c zip -r ..\\\\npgsql-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/Npgsql.staging)"
+    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/npgsql-staging.zip $WD/Npgsql/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/npgsql-staging.zip)"
+    unzip $WD/Npgsql/staging/windows/npgsql-staging.zip -d $WD/Npgsql/staging/windows || _die "Failed to unpack the built source tree ($WD/staging/windows/npgsql-staging.zip)"
+    rm $WD/Npgsql/staging/windows/npgsql-staging.zip
+
+    dos2unix $WD/Npgsql/staging/windows/versions-windows.sh || _die "Failed to convert format of versions-windows.sh from dos to unix"
+    source $WD/Npgsql/staging/windows/versions-windows.sh
+    PG_BUILD_NPGSQL=$(expr $PG_BUILD_NPGSQL + $SKIPBUILD)
+
+    cp $WD/Npgsql/source/Npgsql.windows/LICENSE.txt $WD/Npgsql/staging/windows/ || _die "Unable to copy LICENSE.txt"
+
     cd $WD/Npgsql
     
     # Copy in the menu pick images
@@ -132,8 +157,18 @@ _postprocess_Npgsql_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
+   # If build passed empty this variable
+   BUILD_FAILED="build_failed-"
+   if [ $PG_BUILD_NPGSQL -gt 0 ];
+   then
+       BUILD_FAILED=""
+   fi
+
+    # Rename the installer
+    mv $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-windows.exe $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}windows.exe
+
 	# Sign the installer
-	win32_sign "npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-windows.exe"
+	win32_sign "npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}windows.exe"
 
     cd $WD
 

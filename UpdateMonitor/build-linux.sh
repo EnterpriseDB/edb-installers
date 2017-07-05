@@ -35,15 +35,15 @@ _prep_updatemonitor_linux() {
     cp -R $WD/UpdateMonitor/resources/GetLatestPGInstalled GetLatestPGInstalled.linux
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/UpdateMonitor/staging/linux ];
+    if [ -e $WD/UpdateMonitor/staging/linux.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/UpdateMonitor/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/UpdateMonitor/staging/linux.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/UpdateMonitor/staging/linux)"
-    mkdir -p $WD/UpdateMonitor/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/UpdateMonitor/staging/linux || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/UpdateMonitor/staging/linux.build)"
+    mkdir -p $WD/UpdateMonitor/staging/linux.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/UpdateMonitor/staging/linux.build || _die "Couldn't set the permissions on the staging directory"
     
     echo "END PREP updatemonitor Linux"
 }
@@ -54,7 +54,7 @@ _prep_updatemonitor_linux() {
 
 _build_updatemonitor_linux() {
 
-    PG_STAGING=$PG_PATH_LINUX/UpdateMonitor/staging/linux
+    PG_STAGING=$PG_PATH_LINUX/UpdateMonitor/staging/linux.build
 
     echo "BEGIN BUILD updatemonitor Linux"
 
@@ -70,29 +70,29 @@ _build_updatemonitor_linux() {
     echo "Building & installing UpdateMonitor"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/UpdateMonitor/source/updatemonitor.linux; $PG_QT_LINUX_UM/bin/qmake UpdateManager.pro" || _die "Failed to configuring UpdateMonitor on linux"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/UpdateMonitor/source/updatemonitor.linux; LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH make" || _die "Failed to build UpdateMonitor on linux"
-    mkdir -p $WD/UpdateMonitor/staging/linux/UpdateMonitor/bin
-    mkdir -p $WD/UpdateMonitor/staging/linux/UpdateMonitor/lib
-    mkdir -p $WD/UpdateMonitor/staging/linux/UpdateMonitor/instscripts/bin
-    mkdir -p $WD/UpdateMonitor/staging/linux/UpdateMonitor/instscripts/lib
+    mkdir -p $WD/UpdateMonitor/staging/linux.build/UpdateMonitor/bin
+    mkdir -p $WD/UpdateMonitor/staging/linux.build/UpdateMonitor/lib
+    mkdir -p $WD/UpdateMonitor/staging/linux.build/UpdateMonitor/instscripts/bin
+    mkdir -p $WD/UpdateMonitor/staging/linux.build/UpdateMonitor/instscripts/lib
 	
     echo "Copying UpdateMonitor binary to staging directory"
-    cp $WD/UpdateMonitor/source/GetLatestPGInstalled.linux/GetLatestPGInstalled $WD/UpdateMonitor/staging/linux/UpdateMonitor/instscripts/bin
-    cp $WD/UpdateMonitor/source/updatemonitor.linux/UpdateManager $WD/UpdateMonitor/staging/linux/UpdateMonitor/bin
+    cp $WD/UpdateMonitor/source/GetLatestPGInstalled.linux/GetLatestPGInstalled $WD/UpdateMonitor/staging/linux.build/UpdateMonitor/instscripts/bin
+    cp $WD/UpdateMonitor/source/updatemonitor.linux/UpdateManager $WD/UpdateMonitor/staging/linux.build/UpdateMonitor/bin
 
     
     echo "Copying dependent libraries to staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp /opt/local/Current/lib/libwx_baseud-2.8.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/instscripts/lib" || _die "Failed to copy dependent library (libwx_baseud-2.8.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libiconv.so* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/instscripts/lib" || _die "Failed to copy dependent library (libiconv.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libpng12.so* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libpng12.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX_UM/lib/libQtXml.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX_UM/lib/libQtNetwork.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX_UM/lib/libQtCore.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (linux)"
-    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX_UM/lib/libQtGui.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (linux)"
-   ssh $PG_SSH_LINUX "chmod a+r $PG_PATH_LINUX/UpdateMonitor/staging/linux/UpdateMonitor/lib/*" || _die "Failed to set the read permissions on the lib directory"
+    ssh $PG_SSH_LINUX "cp /opt/local/Current/lib/libwx_baseud-2.8.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux.build/UpdateMonitor/instscripts/lib" || _die "Failed to copy dependent library (libwx_baseud-2.8.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libiconv.so* $PG_PATH_LINUX/UpdateMonitor/staging/linux.build/UpdateMonitor/instscripts/lib" || _die "Failed to copy dependent library (libiconv.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libpng12.so* $PG_PATH_LINUX/UpdateMonitor/staging/linux.build/UpdateMonitor/lib" || _die "Failed to copy dependent library (libpng12.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX_UM/lib/libQtXml.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux.build/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtXml.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX_UM/lib/libQtNetwork.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux.build/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtNetwork.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX_UM/lib/libQtCore.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux.build/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtCore.so) in staging directory (linux)"
+    ssh $PG_SSH_LINUX "cp $PG_QT_LINUX_UM/lib/libQtGui.so.* $PG_PATH_LINUX/UpdateMonitor/staging/linux.build/UpdateMonitor/lib" || _die "Failed to copy dependent library (libQtGui.so) in staging directory (linux)"
+   ssh $PG_SSH_LINUX "chmod a+r $PG_PATH_LINUX/UpdateMonitor/staging/linux.build/UpdateMonitor/lib/*" || _die "Failed to set the read permissions on the lib directory"
     cd $WD
    
-   cp $WD/UpdateMonitor/resources/licence.txt $WD/UpdateMonitor/staging/linux/updatemonitor_license.txt || _die "Unable to copy updatemonitor_license.txt"
-   chmod 444 $WD/UpdateMonitor/staging/linux/updatemonitor_license.txt || _die "Unable to change permissions for license file."
+   cp $WD/UpdateMonitor/resources/licence.txt $WD/UpdateMonitor/staging/linux.build/updatemonitor_license.txt || _die "Unable to copy updatemonitor_license.txt"
+   chmod 444 $WD/UpdateMonitor/staging/linux.build/updatemonitor_license.txt || _die "Unable to change permissions for license file."
    
    # Generate debug symbols
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
@@ -106,7 +106,17 @@ _build_updatemonitor_linux() {
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
-    mv $WD/UpdateMonitor/staging/linux/symbols $WD/output/symbols/linux/UpdateMonitor || _die "Failed to move $WD/UpdateMonitor/staging/linux/symbols to $WD/output/symbols/linux/UpdateMonitor directory"
+    mv $WD/UpdateMonitor/staging/linux.build/symbols $WD/output/symbols/linux/UpdateMonitor || _die "Failed to move $WD/UpdateMonitor/staging/linux.build/symbols to $WD/output/symbols/linux/UpdateMonitor directory"
+
+    echo "Removing last successful staging directory ($WD/UpdateMonitor/staging/linux)"
+    rm -rf $WD/UpdateMonitor/staging/linux || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/UpdateMonitor/staging/linux || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/UpdateMonitor/staging/linux || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/UpdateMonitor/staging/linux.build/* $WD/UpdateMonitor/staging/linux || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_UPDATE_MONITOR=$PG_VERSION_UPDATE_MONITOR" > $WD/UpdateMonitor/staging/linux/versions-linux.sh
+    echo "PG_BUILDNUM_UPDATE_MONITOR=$PG_BUILDNUM_UPDATE_MONITOR" >> $WD/UpdateMonitor/staging/linux/versions-linux.sh
 
    echo "END BUILD updatemonitor Linux"
 }
@@ -123,6 +133,9 @@ _postprocess_updatemonitor_linux() {
     echo "**********************************************"
     echo "* Post-processing - UpdateMonitor (linux) *"
     echo "**********************************************"
+
+    source $WD/UpdateMonitor/staging/linux/versions-linux.sh
+    PG_BUILD_UPDATE_MONITOR=$(expr $PG_BUILD_UPDATE_MONITOR + $SKIPBUILD)
 
     cd $WD/UpdateMonitor
     
@@ -144,6 +157,16 @@ _postprocess_updatemonitor_linux() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer for linux"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_UPDATE_MONITOR -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-linux.run $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}linux.run
 
     cd $WD
     

@@ -25,16 +25,16 @@ _prep_psqlODBC_linux() {
     cp -R psqlodbc-$PG_VERSION_PSQLODBC/* psqlODBC.linux || _die "Failed to copy the source code (source/psqlODBC-$PG_VERSION_PSQLODBC)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/psqlODBC/staging/linux ];
+    if [ -e $WD/psqlODBC/staging/linux.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/psqlODBC/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/psqlODBC/staging/linux.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/psqlODBC/staging/linux)"
-    mkdir -p $WD/psqlODBC/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/psqlODBC/staging/linux || _die "Couldn't set the permissions on the staging directory"
-    
+    echo "Creating staging directory ($WD/psqlODBC/staging/linux.build)"
+    mkdir -p $WD/psqlODBC/staging/linux.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/psqlODBC/staging/linux.build || _die "Couldn't set the permissions on the staging directory"
+
     echo "END PREP psqlODBC Linux"
 }
 
@@ -132,7 +132,7 @@ _build_psqlODBC_linux() {
 
     cd $WD/psqlODBC
 
-    PG_STAGING=$PG_PATH_LINUX/psqlODBC/staging/linux
+    PG_STAGING=$PG_PATH_LINUX/psqlODBC/staging/linux.build
     SOURCE_DIR=$PG_PATH_LINUX/psqlODBC/source/psqlODBC.linux
 
     echo "Configuring psqlODBC sources"
@@ -142,7 +142,7 @@ _build_psqlODBC_linux() {
     echo "Installing psqlODBC into the sources"
     ssh $PG_SSH_LINUX "cd $SOURCE_DIR; make install" || _die "Couldn't install the psqlODBC into statging directory"
 
-    cd $WD/psqlODBC/staging/linux/lib
+    cd $WD/psqlODBC/staging/linux.build/lib
 
     # Copy in the dependency libraries
     cp -pR $WD/server/staging/linux/lib/libpq.so* . || _die "Failed to copy libcrypto.so"
@@ -187,7 +187,17 @@ _build_psqlODBC_linux() {
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
-    mv $WD/psqlODBC/staging/linux/symbols $WD/output/symbols/linux/psqlODBC || _die "Failed to move $WD/psqlODBC/staging/linux/symbols to $WD/output/symbols/linux/psqlODBC directory"
+    mv $WD/psqlODBC/staging/linux.build/symbols $WD/output/symbols/linux/psqlODBC || _die "Failed to move $WD/psqlODBC/staging/linux.build/symbols to $WD/output/symbols/linux/psqlODBC directory"
+
+    echo "Removing last successful staging directory ($WD/psqlODBC/staging/linux)"
+    rm -rf $WD/psqlODBC/staging/linux || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/psqlODBC/staging/linux || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/psqlODBC/staging/linux || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/psqlODBC/staging/linux.build/* $WD/psqlODBC/staging/linux || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_PSQLODBC=$PG_VERSION_PSQLODBC" > $WD/psqlODBC/staging/linux/versions-linux.sh
+    echo "PG_BUILDNUM_PSQLODBC=$PG_BUILDNUM_PSQLODBC" >> $WD/psqlODBC/staging/linux/versions-linux.sh
 
     echo "END BUILD psqlODBC Linux"
 }
@@ -200,6 +210,9 @@ _build_psqlODBC_linux() {
 _postprocess_psqlODBC_linux() {
     
     echo "BEGIN POST psqlODBC Linux"    
+
+    source $WD/psqlODBC/staging/linux/versions-linux.sh
+    PG_BUILD_PSQLODBC=$(expr $PG_BUILD_PSQLODBC + $SKIPBUILD)
 
     cd $WD/psqlODBC
 
@@ -246,6 +259,16 @@ _postprocess_psqlODBC_linux() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_PSQLODBC -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-linux.run $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}linux.run
 
     cd $WD
 

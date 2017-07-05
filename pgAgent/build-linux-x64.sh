@@ -29,14 +29,14 @@ _prep_pgAgent_linux_x64() {
     cp -R pgAgent-$PG_VERSION_PGAGENT-Source/* pgAgent.linux-x64 || _die "Failed to copy the source code (source/pgAgent-$PG_VERSION_PGAGENT)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pgAgent/staging/linux-x64 ];
+    if [ -e $WD/pgAgent/staging/linux-x64.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/pgAgent/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/pgAgent/staging/linux-x64.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/pgAgent/staging/linux-x64)"
-    mkdir -p $WD/pgAgent/staging/linux-x64 || _die "Couldn't create the staging directory"
+    echo "Creating staging directory ($WD/pgAgent/staging/linux-x64.build)"
+    mkdir -p $WD/pgAgent/staging/linux-x64.build || _die "Couldn't create the staging directory"
     
     echo "END PREP pgAgent Linux-x64"
 
@@ -56,7 +56,7 @@ _build_pgAgent_linux_x64() {
 
     cd $WD/pgAgent
 
-    PG_STAGING=$PG_PATH_LINUX_X64/pgAgent/staging/linux-x64
+    PG_STAGING=$PG_PATH_LINUX_X64/pgAgent/staging/linux-x64.build
     SOURCE_DIR=$PG_PATH_LINUX_X64/pgAgent/source/pgAgent.linux-x64
 
     echo "Building pgAgent sources"
@@ -112,7 +112,17 @@ _build_pgAgent_linux_x64() {
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
-    mv $WD/pgAgent/staging/linux-x64/symbols $WD/output/symbols/linux-x64/pgAgent || _die "Failed to move $WD/pgAgent/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/pgAgent directory"
+    mv $WD/pgAgent/staging/linux-x64.build/symbols $WD/output/symbols/linux-x64/pgAgent || _die "Failed to move $WD/pgAgent/staging/linux-x64.build/symbols to $WD/output/symbols/linux-x64/pgAgent directory"
+
+    echo "Removing last successful staging directory ($WD/pgAgent/staging/linux-x64)"
+    rm -rf $WD/pgAgent/staging/linux-x64 || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/pgAgent/staging/linux-x64 || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/pgAgent/staging/linux-x64 || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/pgAgent/staging/linux-x64.build/* $WD/pgAgent/staging/linux-x64 || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_PGAGENT=$PG_VERSION_PGAGENT" > $WD/pgAgent/staging/linux-x64/versions-linux-x64.sh
+    echo "PG_BUILDNUM_PGAGENT=$PG_BUILDNUM_PGAGENT" >> $WD/pgAgent/staging/linux-x64/versions-linux-x64.sh
 
     echo "END BUILD pgAgent Linux-x64"
 }
@@ -129,6 +139,9 @@ _postprocess_pgAgent_linux_x64() {
     echo "###########################################"
     echo "# pgAgent : LINUX-X64 : Post Process      #"
     echo "###########################################"
+
+    source $WD/pgAgent/staging/linux-x64/versions-linux-x64.sh
+    PG_BUILD_PGAGENT=$(expr $PG_BUILD_PGAGENT + $SKIPBUILD)
 
     # Setup the installer scripts.
     mkdir -p $WD/pgAgent/staging/linux-x64/installer/pgAgent || _die "Failed to create a directory for the install scripts"
@@ -148,6 +161,16 @@ _postprocess_pgAgent_linux_x64() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_PGAGENT -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-linux-x64.run $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}linux-x64.run
 
     cd $WD
 
