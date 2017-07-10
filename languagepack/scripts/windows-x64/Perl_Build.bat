@@ -25,6 +25,7 @@ IF "%vPerlModule%"=="DBD" GOTO DBD
 IF "%vPerlModule%"=="CPANMINUS" GOTO CPANMINUS
 IF "%vPerlModule%"=="IPC" GOTO IPC
 IF "%vPerlModule%"=="WIN32PROCESS" GOTO WIN32PROCESS
+IF "%vPerlModule%"=="INSTALL" GOTO INSTALL
 GOTO END
 
 :PERL
@@ -47,7 +48,7 @@ GOTO END
 SET PATH=%vPerlInstallDir%\bin;%PATH%
 CD %vPerlInstallDir%\bin
 ECHO ....Starting to Install DBD::PG....
-cpan install DBD::Pg
+cpanm -f -n install DBD::Pg
 ECHO ....End Install DBD::PG....
 GOTO END
 
@@ -73,4 +74,12 @@ CD %vPerlInstallDir%\bin
 ECHO ....Starting to Install Win32::Process....
 cpan install Win32::Process
 ECHO ....End Install Win32::Process....
+GOTO END
+
+:INSTALL
+SET PATH=%vPerlInstallDir%\bin;%PATH%
+CD %vPerlInstallDir%\bin
+ECHO ....Starting to Uninstall install module...
+cpanm -f --uninstall install
+ECHO ....End Uninstall install module...
 :END
