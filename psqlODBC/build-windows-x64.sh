@@ -93,8 +93,8 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\psqlODBC.staging" || _die "Couldn't create the last successful staging directory"
 
     echo "Copying the complete build to the successful staging directory"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c xcopy /E /Q /Y psqlODBC.windows\\\\_Unicode_Release\\\\*.dll psqlODBC.staging" || _die "Couldn't copy the existing staging directory (Unicode Release)"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c xcopy /E /Q /Y psqlODBC.windows\\\\_ANSI_Release\\\\*.dll psqlODBC.staging" || _die "Couldn't copy the existing staging directory (ANSI Release)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c xcopy /E /Q /Y psqlODBC.windows-x64\\\\_Unicode_Release\\\\*.dll psqlODBC.staging" || _die "Couldn't copy the existing staging directory (Unicode Release)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c xcopy /E /Q /Y psqlODBC.windows-x64\\\\_ANSI_Release\\\\*.dll psqlODBC.staging" || _die "Couldn't copy the existing staging directory (ANSI Release)"
 
     ssh $PG_SSH_WINDOWS_X64 "cmd /c echo PG_VERSION_PSQLODBC=$PG_VERSION_PSQLODBC > $PG_PATH_WINDOWS_X64\\\\psqlODBC.staging/versions-windows-x64.sh" || _die "Failed to write psqlODBC version number into versions-windows-x64.sh"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c echo PG_BUILDNUM_PSQLODBC=$PG_BUILDNUM_PSQLODBC >> $PG_PATH_WINDOWS_X64\\\\psqlODBC.staging/versions-windows-x64.sh" || _die "Failed to write psqlODBC build number into versions-windows-x64.sh"

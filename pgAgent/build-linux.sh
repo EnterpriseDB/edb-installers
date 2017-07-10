@@ -152,9 +152,6 @@ _postprocess_pgAgent_linux() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 
-    # Build the installer
-    "$EDB_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
-
     # If build passed empty this variable
     BUILD_FAILED="build_failed-"
     if [ $PG_BUILD_PGAGENT -gt 0 ];

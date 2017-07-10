@@ -127,7 +127,7 @@ _postprocess_pgbouncer_linux_x64() {
  
     echo "BEGIN POST pgbouncer Linux-x64"   
 
-    source $WD/pgbouncer/staging/linux-x64/versions-linux.sh
+    source $WD/pgbouncer/staging/linux-x64/versions-linux-x64.sh
     PG_BUILD_PGBOUNCER=$(expr $PG_BUILD_PGBOUNCER + $SKIPBUILD)
  
     cd $WD/pgbouncer

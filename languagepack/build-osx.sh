@@ -328,7 +328,7 @@ _postprocess_languagepack_osx() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
     # Rename the installer
-    mv $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app || _die "Failed to rename the installer"
+    mv $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app
 
     # Using own scripts for extract-only mode
     cp -f $WD/risePrivileges $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app/Contents/MacOS/Language\ Pack

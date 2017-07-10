@@ -520,6 +520,8 @@ _postprocess_server_linux() {
     source $WD/server/staging/linux/versions-linux.sh
     PG_BUILD_SERVER=$(expr $PG_BUILD_SERVER + $SKIPBUILD)
 
+    _registration_plus_postprocess "$WD/sqlprotect/staging"  "SQL Protect" "sqlprotectVersion" "/etc/postgres-reg.ini" "sqlprotect-PG_$PG_MAJOR_VERSION" "sqlprotect-PG_$PG_MAJOR_VERSION" "SQL Protect" "$PG_VERSION_SQLPROTECT"
+
     cd $WD/server
 
     pushd staging/linux

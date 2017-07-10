@@ -553,8 +553,6 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mv $PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder\\\\bin\\\\stackbuilder.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to relocate the stackbuilder executable on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c rd $PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder\\\\bin" || _die "Failed to remove the stackbuilder bin directory on the build host"
 
-    touch $WD/server/staging/windows-x64/pgAdmin\ 4/venv/Lib/site-packages/backports/__init__.py || _die "Failed to touch the __init__.py"
-
     echo "Removing last successful staging directory ($PG_PATH_WINDOWS_X64\\\\output)"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST output rd /S /Q output" || _die "Couldn't remove the last successful staging directory directory"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\output" || _die "Couldn't create the last successful staging directory"
@@ -594,6 +592,8 @@ _postprocess_server_windows_x64() {
     rsync -av $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64/output.zip $WD/server/staging/windows-x64 || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output.zip)"
     unzip -o $WD/server/staging/windows-x64/output.zip -d $WD/server/staging/windows-x64/ || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/output.zip)"
     rm $WD/server/staging/windows-x64/output.zip
+
+    touch $WD/server/staging/windows-x64/pgAdmin\ 4/venv/Lib/site-packages/backports/__init__.py || _die "Failed to touch the __init__.py"
 
     dos2unix $WD/server/staging/windows-x64/versions-windows-x64.sh || _die "Failed to convert format of versions-windows-x64.sh from dos to unix"
     source $WD/server/staging/windows-x64/versions-windows-x64.sh

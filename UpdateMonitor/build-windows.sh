@@ -290,7 +290,7 @@ _postprocess_updatemonitor_windows() {
     fi
 
     # Rename the installer
-    mv $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-windows.exe $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}windows.exe || _die "Failed to rename the installer"
+    mv $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-windows.exe $WD/output/edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}windows.exe
 
     # Sign the installer
     win32_sign "edb-updatemonitor-$PG_VERSION_UPDATE_MONITOR-$PG_BUILDNUM_UPDATE_MONITOR-${BUILD_FAILED}windows.exe"
