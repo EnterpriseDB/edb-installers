@@ -74,8 +74,6 @@ _prep_server() {
 
     echo "Unpacking PostgreSQL source..."
     tar -jxvf ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL.tar.bz2
-    cd postgresql-$PG_TARBALL_POSTGRESQL
-    patch -p0 < /home/buildfarm/patches/Server_build_tcl86.patch
     cd $WD/server/source
 
     # pgAdmin
@@ -87,7 +85,6 @@ _prep_server() {
 
     echo "Unpacking pgAdmin source..."
     tar -zxvf ../../tarballs/pgadmin4-$PG_TARBALL_PGADMIN.tar.gz
-
 
     cd $WD/server/source
 

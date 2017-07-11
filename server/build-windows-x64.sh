@@ -263,6 +263,7 @@ our \$config = {
     xslt=>'$PG_PGBUILD_WINDOWS_X64',
     iconv=>'$PG_PGBUILD_WINDOWS_X64',
     zlib=>'$PG_PGBUILD_WINDOWS_X64',        # --with-zlib=<path>
+    icu=>'$PG_PGBUILD_WINDOWS_X64',        # --with-icu=<path>
     uuid=>'$PG_PGBUILD_WINDOWS_X64'       # --with-uuid-ossp
 };
 
@@ -420,6 +421,7 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib1.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libcurl.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\icu*.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
    
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\ssleay32.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libeay32.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
@@ -505,8 +507,8 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Quick.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Quick.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Sensors.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Sensors.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Widgets.dll \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Widgets.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libQt5WebKit.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebKit.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libQt5WebKitWidgets.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebKitWidgets.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5WebKit.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebKit.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5WebKitWidgets.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebKitWidgets.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libgcc_s_dw2-1.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libgcc_s_dw2-1.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libst*  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libstdc++-6.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libwinpthread-1.dll  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libwinpthread-1.dll"
