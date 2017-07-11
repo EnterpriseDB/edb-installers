@@ -601,6 +601,7 @@ _postprocess_server_linux_x64() {
     # Welcome doc
     cp "$WD/server/resources/installation-notes.html" "$WD/server/staging_cache/linux-x64/doc/" || _die "Failed to install the welcome document"
     cp "$WD/server/resources/installation-notes.html" "$PGSERVER_STAGING_X64/doc/" || _die "Failed to install the welcome document"
+    cp "$WD/server/resources/edblogo.png" "$PGSERVER_STAGING_X64/doc/" || _die "Failed to install the welcome logo"
     cp "$WD/server/resources/edblogo.png" "$WD/server/staging_cache/linux-x64/doc/" || _die "Failed to install the welcome logo"
     #Creating a archive of the binaries
     mkdir -p $WD/server/staging_cache/linux-x64/pgsql || _die "Failed to create the directory for binaries "
