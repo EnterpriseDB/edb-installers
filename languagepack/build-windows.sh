@@ -39,7 +39,7 @@ _prep_languagepack_windows() {
     cd $WD/languagepack/source/languagepack.$ARCH
     extract_file $WD/../tarballs/tcl8.6.6-src || _die "Failed to extract tcl/tk source (tcl-8.6.6-src.tar.gz)"
     extract_file $WD/../tarballs/tk8.6.6-src || _die "Failed to extract tcl/tk source (tk-8.6.6-src.tar.gz)"
-    extract_file $WD/../tarballs/perl-5.20.3 || _die "Failed to extract perl source (perl-5.20.3.tar.gz)"
+    extract_file $WD/../tarballs/perl-5.24.0 || _die "Failed to extract perl source (perl-5.24.0.tar.gz)"
     extract_file $WD/../tarballs/Python-3.4.6 || _die "Failed to extract python source (Python-3.4.6.tgz)"
     extract_file $WD/../tarballs/distribute-0.6.49 || _die "Failed to extract python source (distribute-0.6.49)"
 
@@ -48,9 +48,9 @@ _prep_languagepack_windows() {
     if [ "$ARCH" = "windows-x32" ];
     then
         # Perl related changes - x32
-        cd perl-5.20.3/win32
+        cd perl-5.24.0/win32
         sed -i "s/^INST_DRV\t= c:/INST_DRV\t= $PG_LANGUAGEPACK_INSTALL_DIR_WIN/g" Makefile
-        sed -i 's/^INST_TOP\t= $(INST_DRV)\\perl/INST_TOP\t= $(INST_DRV)\\Perl-5.20/g' Makefile
+        sed -i 's/^INST_TOP\t= $(INST_DRV)\\perl/INST_TOP\t= $(INST_DRV)\\Perl-5.24/g' Makefile
         sed -i 's/^CCTYPE\t\t= MSVC60/CCTYPE\t\t= MSVC120/g' Makefile
         sed -i 's/^#WIN64\t\t= undef/WIN64\t\t= undef/g' Makefile
         sed -i 's/^BUILDOPT\t= $(BUILDOPT) -DUSE_SITECUSTOMIZE/BUILDOPT\t= $(BUILDOPT) -D_USE_32BIT_TIME_T/g' Makefile
@@ -72,9 +72,9 @@ _prep_languagepack_windows() {
 
     else
         # Perl related changes - x64
-        cd perl-5.20.3/win32
+        cd perl-5.24.0/win32
         sed -i "s/^INST_DRV\t= c:/INST_DRV\t= $PG_LANGUAGEPACK_INSTALL_DIR_WIN/g" Makefile
-        sed -i 's/^INST_TOP\t= $(INST_DRV)\\perl/INST_TOP\t= $(INST_DRV)\\Perl-5.20/g' Makefile
+        sed -i 's/^INST_TOP\t= $(INST_DRV)\\perl/INST_TOP\t= $(INST_DRV)\\Perl-5.24/g' Makefile
         sed -i 's/^CCTYPE\t\t= MSVC60/CCTYPE\t\t= MSVC120/g' Makefile
         sed -i '/^BUILDOPT\t= $(BUILDOPTEXTRA)/a BUILDOPT\t= $(BUILDOPT) -DUSE_SITECUSTOMIZE' Makefile
         sed -i '/^DEFINES\t\t= $(DEFINES) -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE/s/^/#/g' Makefile
@@ -182,15 +182,15 @@ EOT
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-8.6; cmd /c Tcl_Tk_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\tcl8.6.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-8.6 $PG_PATH_WIN\\\\languagepack.$ARCH\\\\tk8.6.6"
 
     # Perl Build
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 $PG_PATH_WIN\\\\output PERL"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 $PG_PATH_WIN\\\\output DBI"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output PERL"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output DBI"
     # Install cpanm to exclude running test cases when installing IPC and DBD as one of test cases stucks
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 $PG_PATH_WIN\\\\output CPANMINUS"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 $PG_PATH_WIN\\\\output DBD"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 $PG_PATH_WIN\\\\output IPC"
-   ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 $PG_PATH_WIN\\\\output WIN32PROCESS"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output CPANMINUS"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output DBD"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output IPC"
+   ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output WIN32PROCESS"
     # install.pm gets installed as part of IPC installation. Uninstall it as postgres installation fails because of it.
-  ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 $PG_PATH_WIN\\\\output INSTALL"
+  ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.24.0 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.24 $PG_PATH_WIN\\\\output INSTALL"
 
     # Python Build
     cd $WD/languagepack/scripts/$ARCH
@@ -209,8 +209,8 @@ EOT
         scp liblzma.def $PG_SSH_WIN:$PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6\\\\externals\\\\xz-5.0.5\\\\bin_i486 || _die "Failed to copy liblzma.def to the windows build host"
     fi
 
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PATH_WIN\\\\output C:\\\\edb\\\\languagepack-10\\\\i386\\\\Perl-5.20 $PG_PGBUILD_WIN BUILD"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PATH_WIN\\\\output C:\\\\edb\\\\languagepack-10\\\\i386\\\\Perl-5.20 $PG_PGBUILD_WIN INSTALL"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PATH_WIN\\\\output C:\\\\edb\\\\languagepack-10\\\\i386\\\\Perl-5.24 $PG_PGBUILD_WIN BUILD"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PATH_WIN\\\\output C:\\\\edb\\\\languagepack-10\\\\i386\\\\Perl-5.24 $PG_PGBUILD_WIN INSTALL"
     ssh $PG_SSH_WIN "sed -i 's/import winrandom/from Crypto.Random.OSRNG import winrandom/' $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4\\\\Lib\\\\site-packages\\\\Crypto\\\\Random\\\\OSRNG\\\\nt.py"
 }
 
@@ -239,12 +239,12 @@ _postprocess_languagepack_windows() {
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS_X64
        PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_CYG_PATH}/x64"
     fi
-    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN; zip -r Tcl-8.6.zip Tcl-8.6; zip -r Perl-5.20.zip Perl-5.20; zip -r Python-3.4.zip Python-3.4" || _die "Failed to create Tcl-8.6.zip;Perl-5.20.zip;Python-3.4.zip on  windows buildhost"
+    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN; zip -r Tcl-8.6.zip Tcl-8.6; zip -r Perl-5.24.zip Perl-5.24; zip -r Python-3.4.zip Python-3.4" || _die "Failed to create Tcl-8.6.zip;Perl-5.24.zip;Python-3.4.zip on  windows buildhost"
     rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN/Tcl-8.6.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Tcl-8.6.zip"
-    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN/Perl-5.20.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Perl-5.20.zip"
+    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN/Perl-5.24.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Perl-5.24.zip"
     rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN/Python-3.4.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Python-3.4.zip"
 
-    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN; rm -f Tcl-8.6.zip Perl-5.20.zip Python-3.4.zip " || _die "Failed to remove  Tcl-8.6.zip;Perl-5.20.zip; Python-3.4.zip on  windows buildhost"
+    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN; rm -f Tcl-8.6.zip Perl-5.24.zip Python-3.4.zip " || _die "Failed to remove  Tcl-8.6.zip;Perl-5.24.zip; Python-3.4.zip on  windows buildhost"
     cd $WD/languagepack/staging/$ARCH/
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/languagepack/staging/$ARCH/Tcl-8.6 ];
@@ -253,10 +253,10 @@ _postprocess_languagepack_windows() {
        rm -rf $WD/languagepack/staging/$ARCH/Tcl-8.6 || _die "Failed to remove the Tcl-8.6 directory"
     fi
 
-    if [ -e $WD/languagepack/staging/$ARCH/Perl-5.20 ];
+    if [ -e $WD/languagepack/staging/$ARCH/Perl-5.24 ];
     then
-       echo "Removing existing staging Perl-5.20 directory"
-       rm -rf $WD/languagepack/staging/$ARCH/Perl-5.20 || _die "Failed to remove the Perl-5.20 directory"
+       echo "Removing existing staging Perl-5.24 directory"
+       rm -rf $WD/languagepack/staging/$ARCH/Perl-5.24 || _die "Failed to remove the Perl-5.24 directory"
     fi
 
     if [ -e $WD/languagepack/staging/$ARCH/Python-3.4 ];
@@ -266,9 +266,9 @@ _postprocess_languagepack_windows() {
     fi
 
     unzip Tcl-8.6.zip ||_die "Failed to unzip Tcl-8.6.zip"
-    unzip Perl-5.20.zip || _die "Failed to unzip Perl-5.20.zip"
+    unzip Perl-5.24.zip || _die "Failed to unzip Perl-5.24.zip"
     unzip Python-3.4.zip || _die "Failed to unzip Python-3.4.zip"
-    rm -f Tcl-8.6.zip Perl-5.20.zip Python-3.4.zip || _die "Failed to remove the Tcl-8.6.zip;Perl-5.20.zip;Python-3.4.zip"
+    rm -f Tcl-8.6.zip Perl-5.24.zip Python-3.4.zip || _die "Failed to remove the Tcl-8.6.zip;Perl-5.24.zip;Python-3.4.zip"
 
     mv $WD/languagepack/staging/$ARCH/Python-3.4/pip_packages_list.txt $WD/languagepack/staging/$ARCH || _die "Failed to move pip_packages_list.txt to $WD/languagepack/staging/$ARCH"
 
