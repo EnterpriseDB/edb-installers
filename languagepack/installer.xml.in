@@ -650,6 +650,13 @@ EOF
         <isFalse value="${extract_mode}"/>
       </ruleList>
      </actionGroup>
+
+     <deleteFile path="${installdir}/Perl-5.24" abortOnError="0" showMessageOnError="0">
+       <ruleList>
+         <compareText logic="does_not_equal" text="EDB_VERSION_PERL" value="5.24" />
+         <fileTest path="${installdir}/Perl-5.24" condition="exists"/>
+       </ruleList>
+     </deleteFile>
   </postInstallationActionList>
   <installationAbortedActionList>
     <deleteFile path="${system_temp_directory}/languagepack_${random_number}" abortOnError="0" showMessageOnError="0">
