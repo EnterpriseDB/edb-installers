@@ -600,6 +600,16 @@ EOT
    cd $WD/server/staging_cache/windows-x64/pgAdmin\ 4/venv/Lib
    find . \( -name test -o -name tests \) -type d | xargs rm -rf
 
+   cd $WD/server
+   # Copy debug symbols to output/symbols directory
+   if [ -e "$WD/output/symbols/windows-x64/server"];
+   then
+       echo "Removing the exsisting symbol directory"
+       rm -rf $WD/output/symbols/windows-x64/server || _die "Failed to clean the symbols directory"
+   fi
+   mkdir -p $WD/output/symbols/windows-x64/server || _die "Failed to create $WD/output/symbols/windows-x64 directory"
+   cp -r staging_cache/windows-x64/symbols/* $WD/output/symbols/windows-x64/server || _die "Failed to copy symbols to $WD/output/symbols/windows-x64/server directory"
+
    #Restructuring staging
    echo "Restructuring staging as per components"
    mkdir -p $PGSERVER_STAGING_WINDOWS_X64 || _die "Couldn't create the staging directory $PGSERVER_STAGING_WINDOWS_X64"

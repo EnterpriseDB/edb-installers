@@ -533,6 +533,16 @@ EOT
     cd $WD/server/staging_cache/windows/pgAdmin\ 4/venv/Lib
     find . \( -name test -o -name tests \) -type d | xargs rm -rf
 
+    cd $WD/server
+    # Copy debug symbols to output/symbols directory
+    if [ -e "$WD/output/symbols/windows/server" ];
+    then
+        echo "Removing the exsisting symbols directory"
+        rm -rf $WD/output/symbols/windows/server || _dile "Failed to clean the symbols directory"
+    fi
+    mkdir -p $WD/output/symbols/windows/server || _die "Failed to create $WD/output/symbols/windows directory"
+    cp -r staging_cache/windows/symbols/* $WD/output/symbols/windows/server || _die "Failed to copy symbols to $WD/output/symbols/windows/server directory"
+
     #Restructuring the staging
     echo "Restructuring staging as per components"
     mkdir -p $PGSERVER_STAGING_WINDOWS || _die "Couldn't create the staging directory $PGSERVER_STAGING_WINDOWS"
@@ -624,7 +634,7 @@ _postprocess_server_windows() {
     #Creating a archive of the binaries
     mkdir -p $WD/server/staging_cache/windows/pgsql || _die "Failed to create the directory for binaries "
     cd $WD/server/staging_cache/windows
-    cp -R bin doc include lib pgAdmin* share StackBuilder pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+    cp -R bin doc include lib pgAdmin* share StackBuilder symbols pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
 
     zip -rq postgresql-$PG_PACKAGE_VERSION-windows-binaries.zip pgsql || _die "Failed to archive the postgresql binaries"
     mv postgresql-$PG_PACKAGE_VERSION-windows-binaries.zip $WD/output/ || _die "Failed to move the archive to output folder"
