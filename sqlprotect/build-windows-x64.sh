@@ -174,7 +174,7 @@ _postprocess_sqlprotect_windows_x64() {
     mv $WD/output/edb-sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-windows-x64.exe $WD/output/edb-sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-${BUILD_FAILED}windows-x64.exe || _die "Failed to rename the installer"
 
     # Sign the installer
-    win32_sign "edb-sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-windows-x64.exe"
+    win32_sign "edb-sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-${BUILD_FAILED}windows-x64.exe"
 
     cd $WD
 

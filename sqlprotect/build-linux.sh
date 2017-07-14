@@ -100,6 +100,8 @@ _postprocess_sqlprotect_linux() {
     source $WD/sqlprotect/staging/linux/versions-linux.sh
     PG_BUILD_SQLPROTECT=$(expr $PG_BUILD_SQLPROTECT + $SKIPBUILD)
 
+    _registration_plus_postprocess "$WD/sqlprotect/staging"  "SQL Protect" "sqlprotectVersion" "/etc/postgres-reg.ini" "sqlprotect-PG_$PG_MAJOR_VERSION" "sqlprotect-PG_$PG_MAJOR_VERSION" "SQL Protect" "$PG_VERSION_SQLPROTECT"
+
     cd $WD/sqlprotect
 
     # Set permissions to all files and folders in staging
