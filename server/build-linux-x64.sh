@@ -38,15 +38,15 @@ _prep_server_linux_x64() {
     cp -pR stackbuilder stackbuilder.linux-x64 || _die "Failed to copy the source code (source/stackbuilder)"	
 	
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/server/staging/linux-x64 ];
+    if [ -e $WD/server/staging/linux-x64.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/server/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/server/staging/linux-x64.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/server/staging/linux-x64)"
-    mkdir -p $WD/server/staging/linux-x64 || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/server/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/server/staging/linux-x64.build)"
+    mkdir -p $WD/server/staging/linux-x64.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/server/staging/linux-x64.build || _die "Couldn't set the permissions on the staging directory"
 
     if [ -f $WD/server/scripts/linux/getlocales/getlocales.linux-x64 ]; then
       rm -f $WD/server/scripts/linux/getlocales/getlocales.linux-x64
@@ -153,7 +153,7 @@ _build_server_linux_x64() {
 
     # First build PostgreSQL
 
-    PG_STAGING=$PG_PATH_LINUX_X64/server/staging/linux-x64
+    PG_STAGING=$PG_PATH_LINUX_X64/server/staging/linux-x64.build
     
     # Configure the source tree
     echo "Configuring the postgres source tree"
@@ -170,24 +170,24 @@ _build_server_linux_x64() {
     echo "Building debugger module"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; export LD_LIBRARY_PATH=/opt/local/Current/lib; make" || _die "Failed to build the debugger module"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/pldebugger; LD_LIBRARY_PATH=/opt/local/Current/lib make install" || _die "Failed to install the debugger module"
-	if [ ! -e $WD/server/staging/linux-x64/doc ];
+	if [ ! -e $WD/server/staging/linux-x64.build/doc ];
 	then
-	    mkdir -p $WD/server/staging/linux-x64/doc || _die "Failed to create the doc directory"
+	    mkdir -p $WD/server/staging/linux-x64.build/doc || _die "Failed to create the doc directory"
 	fi
-    cp "$WD/server/source/postgres.linux-x64/contrib/pldebugger/README.pldebugger" $WD/server/staging/linux-x64/doc || _die "Failed to copy the debugger README into the staging directory"
+    cp "$WD/server/source/postgres.linux-x64/contrib/pldebugger/README.pldebugger" $WD/server/staging/linux-x64.build/doc || _die "Failed to copy the debugger README into the staging directory"
 
     echo "Building uuid-ossp module"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/uuid-ossp; export LD_LIBRARY_PATH=/opt/local/Current/lib; make" || _die "Failed to build the uuid-ossp module"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/postgres.linux-x64/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
 
     # Install the PostgreSQL docs
-    mkdir -p $WD/server/staging/linux-x64/doc/postgresql/html || _die "Failed to create the doc directory"
-    cd $WD/server/staging/linux-x64/doc/postgresql/html || _die "Failed to change to the doc directory"
+    mkdir -p $WD/server/staging/linux-x64.build/doc/postgresql/html || _die "Failed to create the doc directory"
+    cd $WD/server/staging/linux-x64.build/doc/postgresql/html || _die "Failed to change to the doc directory"
     cp -pR $WD/server/source/postgres.linux-x64/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
 
     # Install the PostgreSQL man pages
-    mkdir -p $WD/server/staging/linux-x64/share/man || _die "Failed to create the man directory"
-    cd $WD/server/staging/linux-x64/share/man || _die "Failed to change to the man directory"
+    mkdir -p $WD/server/staging/linux-x64.build/share/man || _die "Failed to create the man directory"
+    cd $WD/server/staging/linux-x64.build/share/man || _die "Failed to change to the man directory"
     cp -pR $WD/server/source/postgres.linux-x64/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
     cp -pR $WD/server/source/postgres.linux-x64/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
     cp -pR $WD/server/source/postgres.linux-x64/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (linux-x64)"
@@ -250,7 +250,7 @@ _build_server_linux_x64() {
 
     # Copying psql to psql.bin and the creating a caller script psql
     # which will set the LD_PRELOAD to libreadline if found on the system.
-    cd $WD/server/staging/linux-x64/bin
+    cd $WD/server/staging/linux-x64.build/bin
     mv psql psql.bin
     cat <<EOT > psql
 #!/bin/bash
@@ -288,7 +288,7 @@ EOT
 
     # Configure
     echo "Configuring the pgAdmin source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; LD_LIBRARY_PATH="/opt/local/Current/lib" CPPFLAGS="-I/opt/local/Current/include" LDFLAGS="-L/opt/local/Current/lib" ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX_X64/server/staging/linux-x64 --with-wx=/opt/local/Current --with-libxml2=/opt/local/Current --with-libxslt=/opt/local/Current --disable-debug --disable-static --with-sphinx-build=$PG_PYTHON_LINUX_X64/bin/sphinx-build" || _die "Failed to configure pgAdmin"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; LD_LIBRARY_PATH="/opt/local/Current/lib" CPPFLAGS="-I/opt/local/Current/include" LDFLAGS="-L/opt/local/Current/lib" ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX_X64/server/staging/linux-x64.build --with-wx=/opt/local/Current --with-libxml2=/opt/local/Current --with-libxslt=/opt/local/Current --disable-debug --disable-static --with-sphinx-build=$PG_PYTHON_LINUX_X64/bin/sphinx-build" || _die "Failed to configure pgAdmin"
 
     # Build the app
     echo "Building & installing pgAdmin"
@@ -319,7 +319,7 @@ EOT
     ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libfreetype.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libfontconfig.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
 
-    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PATH_LINUX_X64/server/staging/linux-x64/lib/libpq.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PATH_LINUX_X64/server/staging/linux-x64.build/lib/libpq.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
 
 
     _process_dependent_libs_linux_x64 "$PG_STAGING/pgAdmin3/bin" "$PG_STAGING/pgAdmin3/lib" "libwx_gtk2u_adv-2.8"
@@ -339,21 +339,21 @@ EOT
     echo "Changing the rpath for the pgAdmin binaries"
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/pgAdmin3/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
 
-    #Fix permission in the staging/linux-x64/pgAdmin3/lib
+    #Fix permission in the staging/linux-x64.build/pgAdmin3/lib
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/pgAdmin3/lib; chmod a+r *"
 
     # Copy the Postgres utilities
-    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PATH_LINUX_X64/server/staging/linux-x64/bin/pg_dump $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
-    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PATH_LINUX_X64/server/staging/linux-x64/bin/pg_dumpall $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
-    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PATH_LINUX_X64/server/staging/linux-x64/bin/pg_restore $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
-    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PATH_LINUX_X64/server/staging/linux-x64/bin/psql* $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PATH_LINUX_X64/server/staging/linux-x64.build/bin/pg_dump $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PATH_LINUX_X64/server/staging/linux-x64.build/bin/pg_dumpall $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PATH_LINUX_X64/server/staging/linux-x64.build/bin/pg_restore $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
+    ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PATH_LINUX_X64/server/staging/linux-x64.build/bin/psql* $PG_STAGING/pgAdmin3/bin" || _die "Failed to copy the utility program"
 
     echo "Changing the rpath for the PostgreSQL executables and libraries"
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/bin; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/lib; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}\" \$f; done"
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/lib/postgresql; for f in \`file * | grep ELF | cut -d : -f 1 \`; do  chrpath --replace \"\\\${ORIGIN}/..\" \$f; done"
 
-    #Fix permission in the staging/linux-x64/lib
+    #Fix permission in the staging/linux-x64.build/lib
     ssh $PG_SSH_LINUX_X64 "cd $PG_STAGING/lib; chmod a+r *"
 
     #Fix permission in the staging/linux/share
@@ -391,7 +391,18 @@ EOT
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
-    mv $WD/server/staging/linux-x64/symbols $WD/output/symbols/linux-x64/server || _die "Failed to move $WD/server/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/server directory"
+    mv $WD/server/staging/linux-x64.build/symbols $WD/output/symbols/linux-x64/server || _die "Failed to move $WD/server/staging/linux-x64.build/symbols to $WD/output/symbols/linux-x64/server directory"
+
+    echo "Removing last successful staging directory ($WD/server/staging/linux-x64)"
+    rm -rf $WD/server/staging/linux-x64 || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/server/staging/linux-x64 || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/server/staging/linux-x64 || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/server/staging/linux-x64.build/* $WD/server/staging/linux-x64 || _die "Couldn't copy the existing staging directory"
+    echo "PG_MAJOR_VERSION=$PG_MAJOR_VERSION" > $WD/server/staging/linux-x64/versions-linux-x64.sh
+    echo "PG_MINOR_VERSION=$PG_MINOR_VERSION" >> $WD/server/staging/linux-x64/versions-linux-x64.sh
+    echo "PG_PACKAGE_VERSION=$PG_PACKAGE_VERSION" >> $WD/server/staging/linux-x64/versions-linux-x64.sh
 
     cd $WD
     echo "END BUILD Server Linux-x64"
@@ -404,6 +415,9 @@ EOT
 
 _postprocess_server_linux_x64() {
     echo "BEGIN POST Server Linux-x64"
+
+    source $WD/server/staging/linux-x64/versions-linux-x64.sh
+    PG_BUILD_SERVER=$(expr $PG_BUILD_SERVER + $SKIPBUILD)
 
     cd $WD/server
 
@@ -545,8 +559,15 @@ y a menu pick image"
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-lin64.xml linux-x64 || _die "Failed to build the installer"
 
-	# Rename the installer
-	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.run || _die "Failed to rename the installer"
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_SERVER -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}linux-x64.run
 
     cd $WD
     echo "END POST Server Linux-x64"

@@ -64,7 +64,7 @@ _prep_server_windows_x64() {
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-x64.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-doc.bat"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q output"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q output.build"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q postgres.windows-x64"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q pgadmin.windows-x64"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q stackbuilder.windows-x64"
@@ -140,7 +140,7 @@ CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" x86
 @SET WXWIN=$PG_WXWIN_WINDOWS
 @SET INCLUDE=$PG_PGBUILD_WINDOWS\\include;%INCLUDE%
 @SET LIB=$PG_PGBUILD_WINDOWS\\lib;%LIB%
-@SET PGDIR=$PG_PATH_WINDOWS\\output
+@SET PGDIR=$PG_PATH_WINDOWS\\output.build
 @SET SPHINXBUILD=$PG_PYTHON_WINDOWS_X64\\Scripts\\sphinx-build.exe
 
 IF "%2" == "UPGRADE" GOTO upgrade
@@ -165,7 +165,7 @@ CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
 @SET WXWIN=$PG_WXWIN_WINDOWS_X64
 @SET INCLUDE=$PG_PGBUILD_WINDOWS_X64\\include;%INCLUDE%
 @SET LIB=$PG_PGBUILD_WINDOWS_X64\\lib;%LIB%
-@SET PGDIR=$PG_PATH_WINDOWS_X64\\output
+@SET PGDIR=$PG_PATH_WINDOWS_X64\\output.build
 @SET SPHINXBUILD=$PG_PYTHON_WINDOWS_X64\\Scripts\\sphinx-build.exe
 
 REM batch file splits single argument containing "=" sign into two
@@ -195,7 +195,7 @@ CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" x86
 @SET WXWIN=$PG_WXWIN_WINDOWS_X64
 @SET INCLUDE=$PG_PGBUILD_WINDOWS_X64\\include;%INCLUDE%
 @SET LIB=$PG_PGBUILD_WINDOWS_X64\\lib;%LIB%
-@SET PGDIR=$PG_PATH_WINDOWS_X64\\output
+@SET PGDIR=$PG_PATH_WINDOWS_X64\\output.build
 @SET SPHINXBUILD=$PG_PYTHON_WINDOWS_X64\\Scripts\\sphinx-build.exe
 
 REM batch file splits single argument containing "=" sign into two
@@ -353,10 +353,10 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\validateuser; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat validateuser.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build validateuser on the windows-x64 build host"
     
     # Move the resulting binaries into place
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\output\\\\installer\\\\server" || _die "Failed to create the server directory on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\createuser\\\\x64\\\\release\\\\createuser.exe $PG_PATH_WINDOWS_X64\\\\output\\\\installer\\\\server" || _die "Failed to copy the createuser proglet on the windows-x64 build host" 
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\getlocales\\\\x64\\\\release\\\\getlocales.exe $PG_PATH_WINDOWS_X64\\\\output\\\\installer\\\\server" || _die "Failed to copy the getlocales proglet on the windows-x64 build host" 
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\validateuser\\\\x64\\\\release\\\\validateuser.exe $PG_PATH_WINDOWS_X64\\\\output\\\\installer\\\\server" || _die "Failed to copy the validateuser proglet on the windows-x64 build host" 
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\output.build\\\\installer\\\\server" || _die "Failed to create the server directory on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\createuser\\\\x64\\\\release\\\\createuser.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\installer\\\\server" || _die "Failed to copy the createuser proglet on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\getlocales\\\\x64\\\\release\\\\getlocales.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\installer\\\\server" || _die "Failed to copy the getlocales proglet on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\validateuser\\\\x64\\\\release\\\\validateuser.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\installer\\\\server" || _die "Failed to copy the validateuser proglet on the windows-x64 build host"
     
     # Zip up the source directory and copy it to the build host, then unzip
     cd $WD/server/source/
@@ -375,13 +375,13 @@ EOT
  
     # Build the code and install into a temporary directory
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin:$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin; export M4=$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin/m4.exe; export VisualStudioVersion=12.0; ./build.bat RELEASE" || _die "Failed to build postgres on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin; ./install.bat $PG_PATH_WINDOWS_X64\\\\output" || _die "Failed to install postgres on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin; ./install.bat $PG_PATH_WINDOWS_X64\\\\output.build" || _die "Failed to install postgres on the windows-x64 build host"
     
     # Build the debugger plugins
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/contrib/pldebugger; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat pldebugger.proj" || _die "Failed to build the pldebugger plugin"
     
     # Copy the debugger plugins into place
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\contrib\\\\pldebugger\\\\plugin_debugger.dll $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy the debugger plugin on the windows-x64 build host"    
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\contrib\\\\pldebugger\\\\plugin_debugger.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy the debugger plugin on the windows-x64 build host"
     
     #####################
     # pgAdmin
@@ -413,30 +413,30 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/docs; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-doc.bat Docs.vcxproj All $PLATFORM_TOOLSET" || _die "Failed to build the docs on the build host"
         
     # Copy the application files into place
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\"" || _die "Failed to create a directory on the windows-x64 build host" || _die "Failed to create the studio directory on the build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\pgadmin\\\\Release\\\\pgAdmin3.exe $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a program file on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin III\"" || _die "Failed to create a directory on the windows-x64 build host" || _die "Failed to create the studio directory on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\pgadmin\\\\Release\\\\pgAdmin3.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a program file on the windows-x64 build host"
     
     # Docs
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\docs\\\\en_US\"" || _die "Failed to create a directory on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\docs\\\\en_US\\\\_build\\\\htmlhelp; cp -R *  \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\docs\\\\en_US\"" || _die "Failed to copy a help file on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin III\\\\docs\\\\en_US\"" || _die "Failed to create a directory on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\docs\\\\en_US\\\\_build\\\\htmlhelp; cp -R *  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin III\\\\docs\\\\en_US\"" || _die "Failed to copy a help file on the windows-x64 build host"
 
     # There's no particularly clean way to do this as we don't want all the files, and each language may or may not be completely transated :-(
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\docs\\\\en_US\\\\hints\"" || _die "Failed to create a directory on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\docs\\\\en_US\\\\hints\\\\*.html \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\docs\\\\en_US\\\\hints\"" || _die "Failed to copy a help file on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin III\\\\docs\\\\en_US\\\\hints\"" || _die "Failed to create a directory on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\docs\\\\en_US\\\\hints\\\\*.html \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin III\\\\docs\\\\en_US\\\\hints\"" || _die "Failed to copy a help file on the windows-x64 build host"
 
     # i18n
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\i18n\"" || _die "Failed to create a directory on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\i18n\\\\pg_settings.csv \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\i18n\"" || _die "Failed to copy an i18n file on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\i18n\\\\pgadmin3.lng \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\i18n\"" || _die "Failed to copy an i18n file on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin III\\\\i18n\"" || _die "Failed to create a directory on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\i18n\\\\pg_settings.csv \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin III\\\\i18n\"" || _die "Failed to copy an i18n file on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\i18n\\\\pgadmin3.lng \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin III\\\\i18n\"" || _die "Failed to copy an i18n file on the windows-x64 build host"
     
     for LANGCODE in `grep "PUB_TX " $WD/server/source/pgadmin.windows-x64/i18n/Makefile.am | cut -d = -f2`
     do
-       ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\i18n\\\\$LANGCODE\"" || _die "Failed to create a directory on the windows-x64 build host"
-        ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\i18n\\\\$LANGCODE\\\\*.mo \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\i18n\\\\$LANGCODE\"" || _die "Failed to copy an i18n file on the windows-x64 build host"    
-     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\pgadmin\\\\*.ini \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\\"" || _die "Failed to copy ini files on the windows-x64 build host"    
+       ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin III\\\\i18n\\\\$LANGCODE\"" || _die "Failed to create a directory on the windows-x64 build host"
+        ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\i18n\\\\$LANGCODE\\\\*.mo \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin III\\\\i18n\\\\$LANGCODE\"" || _die "Failed to copy an i18n file on the windows-x64 build host"
+     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\pgadmin\\\\*.ini \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin III\\\\\"" || _die "Failed to copy ini files on the windows-x64 build host"
     done
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\plugins.d\"" || _die "Failed to create a directory on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy  $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\plugins.d\\\\*.ini \"$PG_PATH_WINDOWS_X64\\\\output\\\\pgAdmin III\\\\plugins.d\"" || _die "Failed to copy ini files on the windows-x64 build host"    
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin III\\\\plugins.d\"" || _die "Failed to create a directory on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy  $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\plugins.d\\\\*.ini \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin III\\\\plugins.d\"" || _die "Failed to copy ini files on the windows-x64 build host"
     
     #####################
     # StackBuilder
@@ -448,94 +448,80 @@ EOT
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip -o stackbuilder-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (stackbuilder-win64.zip)"
   
     # Build the code
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"Visual Studio 12 Win64\" -D MS_VS_10=1 -D CURL_ROOT:PATH=$PG_PGBUILD_WINDOWS_X64 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS_X64 -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS_X64\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"Visual Studio 12 Win64\" -D MS_VS_10=1 -D CURL_ROOT:PATH=$PG_PGBUILD_WINDOWS_X64 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS_X64 -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS_X64\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat stackbuilder.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat INSTALL.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to install stackbuilder on the build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c mv $PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder\\\\bin\\\\stackbuilder.exe $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to relocate the stackbuilder executable on the build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c rd $PG_PATH_WINDOWS_X64\\\\output\\\\StackBuilder\\\\bin" || _die "Failed to remove the stackbuilder bin directory on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mv $PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder\\\\bin\\\\stackbuilder.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to relocate the stackbuilder executable on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c rd $PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder\\\\bin" || _die "Failed to remove the stackbuilder bin directory on the build host"
 
     # Copy the various support files into place
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vcredist_x64.exe $PG_PATH_WINDOWS_X64\\\\output\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\ssleay32.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libeay32.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libiconv-2.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-8.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib1.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libcurl.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vcredist_x64.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\ssleay32.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libeay32.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libiconv-2.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-8.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib1.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libcurl.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
    
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\ssleay32.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libeay32.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\VC\\\\libeay32MD.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\VC\\\\ssleay32MD.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\iconv.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libintl.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libxml2.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libxslt.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libcurl.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\ssleay32.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libeay32.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\VC\\\\libeay32MD.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\VC\\\\ssleay32MD.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\iconv.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libintl.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libxml2.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libxslt.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libcurl.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
 
     # Copy the third party headers except GPL license headers 
     mkdir $WD/server/staging/windows-x64/3rdinclude/
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/include/*.h  $WD/server/staging/windows-x64/3rdinclude/ || _die "Failed to copy the third party headers to $WD/server/staging/windows-x64/3rdinclude/ )"
     find $WD/server/staging/windows-x64/3rdinclude/ -name "*.h" -exec grep -rwl "GNU General Public License" {} \; -exec rm  {} \; || _die "Failed to remove the GPL license header files."
-    scp -r $WD/server/staging/windows-x64/3rdinclude/* $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64\\\\output\\\\include || _die "Failed to copy the third party headers to ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output/include)"
+    scp -r $WD/server/staging/windows-x64/3rdinclude/* $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64\\\\output.build\\\\include || _die "Failed to copy the third party headers to ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output.build/include)"
     rm -rf $WD/server/staging/windows-x64/3rdinclude || _die "Failed to remove the third party headers directory"
 
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\include\\\\openssl\"" || _die "Failed to create openssl directory"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\openssl\\\\*.h $PG_PATH_WINDOWS_X64\\\\output\\\\include\\\\openssl" || _die "Failed to copy third party headers on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\include\\\\libxml\"" || _die "Failed to create libxml directory"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\libxml\\\\*.h $PG_PATH_WINDOWS_X64\\\\output\\\\include\\\\libxml" || _die "Failed to copy third party headers on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output\\\\include\\\\libxslt\"" || _die "Failed to create libxslt directory"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\libxslt\\\\*.h $PG_PATH_WINDOWS_X64\\\\output\\\\include\\\\libxslt" || _die "Failed to copy third party headers on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\openssl\"" || _die "Failed to create openssl directory"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\openssl\\\\*.h $PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\openssl" || _die "Failed to copy third party headers on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\libxml\"" || _die "Failed to create libxml directory"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\libxml\\\\*.h $PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\libxml" || _die "Failed to copy third party headers on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\libxslt\"" || _die "Failed to create libxslt directory"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\libxslt\\\\*.h $PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\libxslt" || _die "Failed to copy third party headers on the windows-x64 build host"
 
     # Copy the wxWidgets libraries
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_net_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_xml_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_adv_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_aui_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_core_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_html_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_stc_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_xrc_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_net_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_xml_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_adv_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_aui_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_core_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_html_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_stc_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_xrc_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
 
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_net.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_xml.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_adv.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_aui.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_core.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_html.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_stc.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_xrc.lib $PG_PATH_WINDOWS_X64\\\\output\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_net.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_xml.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_adv.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_aui.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_core.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_html.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_stc.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_xrc.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
 
-    # Zip up the installed code, copy it back here, and unpack.
-    echo "Copying built tree to Unix host"
-    ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\output; zip -r ..\\\\output.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output)"
-    rsync -av $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64/output.zip $WD/server/staging/windows-x64 || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output.zip)"
-    unzip -o $WD/server/staging/windows-x64/output.zip -d $WD/server/staging/windows-x64/ || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/output.zip)"
-    rm $WD/server/staging/windows-x64/output.zip
+    echo "Removing last successful staging directory ($PG_PATH_WINDOWS_X64\\\\output)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST output rd /S /Q output" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\output" || _die "Couldn't create the last successful staging directory"
 
-    # fixes #35408. In 9.5, some modules were moved from contrib to src/test/modules. They are meant for server testing
-    # and should not be packaged for distribution. On Unix, the top level make does not build these, but on windows it does.
-    # Hence, removing the files of these modules from the staging
-    find $WD/server/staging/windows-x64/ -type f \( -name "test_parser*" -o -name "test_shm_mq*" -o -name "test_ddl_deparse*" \
-                                               -o -name "test_rls_hooks*" -o -name "worker_spi*" -o -name "dummy_seclabel*" \) -exec rm {} \;
+    echo "Copying the complete build to the successful staging directory"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c xcopy /E /Q /Y output.build\\\\* output\\\\" || _die "Couldn't copy the existing staging directory"
 
-	win32_sign "stackbuilder.exe" "$WD/server/staging/windows-x64/bin"
-    
-    # Install the PostgreSQL docs
-    mkdir -p $WD/server/staging/windows-x64/doc/postgresql/html || _die "Failed to create the doc directory"
-    cd $WD/server/staging/windows-x64/doc/postgresql/html || _die "Failed to change to the doc directory"
-    cp -R $WD/server/source/postgres.windows-x64/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
-    
-    # Copy in the plDebugger docs & SQL script
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/README.pldebugger $WD/server/staging/windows-x64/doc
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi*.sql $WD/server/staging/windows-x64/share/extension
-    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi.control $WD/server/staging/windows-x64/share/extension
-     
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c echo PG_MAJOR_VERSION=$PG_MAJOR_VERSION > $PG_PATH_WINDOWS_X64\\\\output/versions-windows-x64.sh" || _die "Failed to write server version number into versions-windows-x64.sh"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c echo PG_MINOR_VERSION=$PG_MINOR_VERSION >> $PG_PATH_WINDOWS_X64\\\\output/versions-windows-x64.sh" || _die "Failed to write server build number into versions-windows-x64.sh"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c echo PG_PACKAGE_VERSION=$PG_PACKAGE_VERSION >> $PG_PATH_WINDOWS_X64\\\\output/versions-windows-x64.sh" || _die "Failed to write server build number into versions-windows-x64.sh"
+
     cd $WD
     echo "END BUILD Server Windows-x64"
 }
@@ -547,6 +533,44 @@ EOT
 
 _postprocess_server_windows_x64() {
     echo "BEGIN POST Server Windows-x64"
+
+    # Remove any existing staging directory that might exist, and create a clean one
+    if [ -e $WD/server/staging/windows-x64 ];
+    then
+        echo "Removing existing staging directory"
+        rm -rf $WD/server/staging/windows-x64 || _die "Couldn't remove the existing staging directory"
+    fi
+    echo "Creating staging directory ($WD/server/staging/windows-x64)"
+    mkdir -p $WD/server/staging/windows-x64 || _die "Couldn't create the staging directory"
+
+    # Zip up the installed code, copy it back here, and unpack.
+    echo "Copying built tree to Unix host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST output.zip del /S /Q output.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\\output.zip on Windows VM"
+    ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\output; zip -r ..\\\\output.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output)"
+    rsync -av $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64/output.zip $WD/server/staging/windows-x64 || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output.zip)"
+    unzip -o $WD/server/staging/windows-x64/output.zip -d $WD/server/staging/windows-x64/ || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/output.zip)"
+    rm $WD/server/staging/windows-x64/output.zip
+
+    # fixes #35408. In 9.5, some modules were moved from contrib to src/test/modules. They are meant for server testing
+    # and should not be packaged for distribution. On Unix, the top level make does not build these, but on windows it does.
+    # Hence, removing the files of these modules from the staging
+    find $WD/server/staging/windows-x64/ -type f \( -name "test_parser*" -o -name "test_shm_mq*" -o -name "test_ddl_deparse*" \
+                                               -o -name "test_rls_hooks*" -o -name "worker_spi*" -o -name "dummy_seclabel*" \) -exec rm {} \;
+	win32_sign "stackbuilder.exe" "$WD/server/staging/windows-x64/bin"
+    
+    # Install the PostgreSQL docs
+    mkdir -p $WD/server/staging/windows-x64/doc/postgresql/html || _die "Failed to create the doc directory"
+    cd $WD/server/staging/windows-x64/doc/postgresql/html || _die "Failed to change to the doc directory"
+    cp -R $WD/server/source/postgres.windows-x64/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
+    
+    # Copy in the plDebugger docs & SQL script
+    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/README.pldebugger $WD/server/staging/windows-x64/doc
+    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi*.sql $WD/server/staging/windows-x64/share/extension
+    cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi.control $WD/server/staging/windows-x64/share/extension
+
+    dos2unix $WD/server/staging/windows-x64/versions-windows-x64.sh || _die "Failed to convert format of versions-windows-x64.sh from dos to unix"
+    source $WD/server/staging/windows-x64/versions-windows-x64.sh
+    PG_BUILD_SERVER=$(expr $PG_BUILD_SERVER + $SKIPBUILD)
 
     cd $WD/server
     
@@ -618,17 +642,24 @@ _postprocess_server_windows_x64() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-win64.xml windows || _die "Failed to build the installer"
-    
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_SERVER -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
     # Rename the installer
-    mv $WD/output/postgresql-$PG_MAJOR_VERSION-windows-installer.exe $WD/output/postgresql-$PG_PACKAGE_VERSION-windows-x64.exe || _die "Failed to rename the installer"
+    mv $WD/output/postgresql-$PG_MAJOR_VERSION-windows-installer.exe $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}windows-x64.exe || _die "Failed to rename the installer"
 
     # Sign the installer
-    win32_sign "postgresql-$PG_PACKAGE_VERSION-windows-x64.exe"
+    win32_sign "postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}windows-x64.exe"
 
     # Copy installer onto the build system
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q component_installers"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\component_installers" || _die "Failed to create the component_installers directory on the windows-x64 build host"
-    rsync -av $WD/output/postgresql-$PG_PACKAGE_VERSION-windows-x64.exe $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64/component_installers || _die "Unable to copy installers at windows-x64 build machine."
+    rsync -av $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}windows-x64.exe $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64/component_installers || _die "Unable to copy installers at windows-x64 build machine."
     
     cd $WD
     echo "END POST Server Windows-x64"

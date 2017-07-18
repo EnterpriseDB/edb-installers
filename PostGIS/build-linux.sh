@@ -26,15 +26,15 @@ _prep_PostGIS_linux() {
     cp -pR postgis-$PG_VERSION_POSTGIS/* postgis.linux || _die "Failed to copy the source code (source/postgis-$PG_VERSION_POSTGIS)"
    
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/PostGIS/staging/linux ];
+    if [ -e $WD/PostGIS/staging/linux.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/PostGIS/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/PostGIS/staging/linux.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/PostGIS/staging/linux)"
-    mkdir -p $WD/PostGIS/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/PostGIS/staging/linux || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/PostGIS/staging/linux.build)"
+    mkdir -p $WD/PostGIS/staging/linux.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/PostGIS/staging/linux.build || _die "Couldn't set the permissions on the staging directory"
 
     POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
 
@@ -47,7 +47,7 @@ _prep_PostGIS_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX; rm -f doc/postgresql/postgis/postgis.html doc/postgresql/postgis/README.postgis" || _die "Failed to remove documentation"
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX; rm -f share/man/man1/pgsql2shp.1 share/man/man1/shp2pgsql.1" || _die "Failed to remove man pages"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX; rm -f build-postgis-linux.sh" || _die "Failed to remove build-postgis-linux.sh script"
-    
+
     echo "END PREP PostGIS Linux"
 
 }
@@ -69,13 +69,13 @@ _build_PostGIS_linux() {
     BLD_REMOTE_PATH=$PG_PATH_LINUX
     PACKAGE_SOURCE=$WD/PostGIS/source
     PACKAGE_SOURCE_REMOTE=$BLD_REMOTE_PATH/PostGIS/source
-    PACKAGE_STAGING=$BLD_REMOTE_PATH/PostGIS/staging/$PLATFORM
+    PACKAGE_STAGING=$BLD_REMOTE_PATH/PostGIS/staging/${PLATFORM}.build
     PACKAGE_CACHING=$BLD_REMOTE_PATH/PostGIS/caching/$PLATFORM
 
     POSTGIS_SOURCE=$WD/PostGIS/source/postgis.$PLATFORM
     POSTGIS_SOURCE_REMOTE=$PACKAGE_SOURCE_REMOTE/postgis.$PLATFORM
-    POSTGIS_STAGING=$WD/PostGIS/staging/$PLATFORM
-    POSTGIS_STAGING_REMOTE=$BLD_REMOTE_PATH/PostGIS/staging/$PLATFORM
+    POSTGIS_STAGING=$WD/PostGIS/staging/${PLATFORM}.build
+    POSTGIS_STAGING_REMOTE=$BLD_REMOTE_PATH/PostGIS/staging/${PLATFORM}.build
 
     cd $PACKAGE_SOURCE
 
@@ -157,12 +157,12 @@ EOT
     scp build-postgis-$PLATFORM.sh $PLATFORM_SSH:$BLD_REMOTE_PATH || _die "Failed to copy build script on $PLATFORM VM"
     ssh $PLATFORM_SSH "cd $BLD_REMOTE_PATH; bash ./build-postgis-$PLATFORM.sh" || _die "Failed to execution of build script on $PLATFORM"
 
-    mkdir -p $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
-    cp -pR $WD/PostGIS/source/postgis.linux/doc/html/images $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
-    cp -pR $WD/PostGIS/source/postgis.linux/doc/html/postgis.html $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
-    cp -pR $WD/PostGIS/source/postgis.linux/java/jdbc/src/main/javadoc/overview.html $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
-    cp -pR $WD/PostGIS/source/postgis.linux/doc/postgis-$PG_VERSION_POSTGIS.pdf $WD/PostGIS/staging/linux/PostGIS/doc/postgis/
-    cp -pR $WD/PostGIS/source/postgis.linux/doc/man $WD/PostGIS/staging/linux/PostGIS/ 
+    mkdir -p $WD/PostGIS/staging/linux.build/PostGIS/doc/postgis/
+    cp -pR $WD/PostGIS/source/postgis.linux/doc/html/images $WD/PostGIS/staging/linux.build/PostGIS/doc/postgis/
+    cp -pR $WD/PostGIS/source/postgis.linux/doc/html/postgis.html $WD/PostGIS/staging/linux.build/PostGIS/doc/postgis/
+    cp -pR $WD/PostGIS/source/postgis.linux/java/jdbc/src/main/javadoc/overview.html $WD/PostGIS/staging/linux.build/PostGIS/doc/postgis/
+    cp -pR $WD/PostGIS/source/postgis.linux/doc/postgis-$PG_VERSION_POSTGIS.pdf $WD/PostGIS/staging/linux.build/PostGIS/doc/postgis/
+    cp -pR $WD/PostGIS/source/postgis.linux/doc/man $WD/PostGIS/staging/linux.build/PostGIS/
 
     # Generate debug symbols
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/resources; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PACKAGE_STAGING/PostGIS" || _die "Failed to execute create_debug_symbols.sh"
@@ -176,7 +176,18 @@ EOT
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
-    mv $WD/PostGIS/staging/linux/PostGIS/symbols $WD/output/symbols/linux/PostGIS || _die "Failed to move $WD/PostGIS/staging/linux/PostGIS/symbols to $WD/output/symbols/linux/PostGIS directory"
+    mv $WD/PostGIS/staging/linux.build/PostGIS/symbols $WD/output/symbols/linux/PostGIS || _die "Failed to move $WD/PostGIS/staging/linux.build/PostGIS/symbols to $WD/output/symbols/linux/PostGIS directory"
+
+    echo "Removing last successful staging directory ($WD/PostGIS/staging/linux)"
+    rm -rf $WD/PostGIS/staging/linux || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/PostGIS/staging/linux || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/PostGIS/staging/linux || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/PostGIS/staging/linux.build/* $WD/PostGIS/staging/linux || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_POSTGIS=$PG_VERSION_POSTGIS" > $WD/PostGIS/staging/linux/versions-linux.sh
+    echo "PG_VERSION_POSTGIS_JAVA=$PG_VERSION_POSTGIS_JAVA" >> $WD/PostGIS/staging/linux/versions-linux.sh
+    echo "PG_BUILDNUM_POSTGIS=$PG_BUILDNUM_POSTGIS" >> $WD/PostGIS/staging/linux/versions-linux.sh
 
     cd $WD/PostGIS
     
@@ -191,6 +202,9 @@ EOT
 _postprocess_PostGIS_linux() {
 
     echo "BEGIN POST PostGIS Linux"
+
+    source $WD/PostGIS/staging/linux/versions-linux.sh
+    PG_BUILD_POSTGIS=$(expr $PG_BUILD_POSTGIS + $SKIPBUILD)
 
     cd $WD/PostGIS
     mkdir -p staging/linux/installer/PostGIS || _die "Failed to create a directory for the install scripts"
@@ -240,6 +254,16 @@ _postprocess_PostGIS_linux() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_POSTGIS -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-linux.run $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}linux.run
 
     cd $WD
 

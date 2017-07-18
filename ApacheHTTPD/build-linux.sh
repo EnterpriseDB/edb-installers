@@ -29,15 +29,15 @@ _prep_ApacheHTTPD_linux() {
     cp -pR mod_wsgi-$PG_VERSION_WSGI/* apache.linux/mod_wsgi || _die "Failed to copy the source code (source/mod_wsgi-$PG_VERSION_WSGI)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/ApacheHTTPD/staging/linux ];
+    if [ -e $WD/ApacheHTTPD/staging/linux.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/ApacheHTTPD/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/ApacheHTTPD/staging/linux.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/ApacheHTTPD/staging/linux)"
-    mkdir -p $WD/ApacheHTTPD/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/ApacheHTTPD/staging/linux || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/ApacheHTTPD/staging/linux.build)"
+    mkdir -p $WD/ApacheHTTPD/staging/linux.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/ApacheHTTPD/staging/linux.build || _die "Couldn't set the permissions on the staging directory"
 
     echo "END PREP ApacheHTTPD Linux"
 }
@@ -58,7 +58,7 @@ _build_ApacheHTTPD_linux() {
 
     # build apache
 
-    PG_STAGING=$PG_PATH_LINUX/ApacheHTTPD/staging/linux
+    PG_STAGING=$PG_PATH_LINUX/ApacheHTTPD/staging/linux.build
 
     # Configure the source tree
     echo "Configuring the apache source tree"
@@ -78,7 +78,7 @@ _build_ApacheHTTPD_linux() {
 
 
     # Configure the httpd.conf file
-    cd $WD/ApacheHTTPD/staging/linux/apache/conf
+    cd $WD/ApacheHTTPD/staging/linux.build/apache/conf
     _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "httpd.conf"
     _replace "Listen 80" "Listen 0.0.0.0:@@PORT@@" "httpd.conf"
     _replace "htdocs" "www" "httpd.conf"
@@ -93,7 +93,7 @@ _build_ApacheHTTPD_linux() {
     echo "SSLProtocol All -SSLv2 -SSLv3" >> extra/httpd-ssl.conf
 
     # Configure the apachectl script file
-    cd $WD/ApacheHTTPD/staging/linux/apache/bin
+    cd $WD/ApacheHTTPD/staging/linux.build/apache/bin
     _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
     _replace "\$HTTPD -t" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
     _replace "\$HTTPD \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
@@ -102,7 +102,7 @@ _build_ApacheHTTPD_linux() {
 
 
     # Configure the apachectl script file
-    cd $WD/ApacheHTTPD/staging/linux/apache/bin
+    cd $WD/ApacheHTTPD/staging/linux.build/apache/bin
     ssh $PG_SSH_LINUX "chmod ugo+rx \"$PG_STAGING/apache/bin/apachectl\""
 
     # Copy in the dependency libraries (apache)
@@ -127,7 +127,7 @@ _build_ApacheHTTPD_linux() {
     ssh $PG_SSH_LINUX "cp -pR $PG_PGHOME_LINUX/lib/libldap*.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libldap*)"
 
     # Add LD_LIBRARY_PATH in envvars scripts
-    cat <<EOT >> $WD/ApacheHTTPD/staging/linux/apache/bin/envvars
+    cat <<EOT >> $WD/ApacheHTTPD/staging/linux.build/apache/bin/envvars
 export PYTHONHOME=@@LP_PYTHON_HOME@@
 export PYTHONPATH=\$PYTHONHOME
 LD_LIBRARY_PATH=@@INSTALL_DIR@@/apache/lib:\$PYTHONPATH/lib:\$LD_LIBRARY_PATH
@@ -151,7 +151,17 @@ EOT
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
-    mv $WD/ApacheHTTPD/staging/linux/symbols $WD/output/symbols/linux/ApacheHTTPD || _die "Failed to move $WD/ApacheHTTPD/staging/linux/symbols to $WD/output/symbols/linux/ApacheHTTPD directory"
+    mv $WD/ApacheHTTPD/staging/linux.build/symbols $WD/output/symbols/linux/ApacheHTTPD || _die "Failed to move $WD/ApacheHTTPD/staging/linux.build/symbols to $WD/output/symbols/linux/ApacheHTTPD directory"
+
+    echo "Removing last successful staging directory ($WD/ApacheHTTPD/staging/linux)"
+    rm -rf $WD/ApacheHTTPD/staging/linux || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/ApacheHTTPD/staging/linux || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/ApacheHTTPD/staging/linux || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/ApacheHTTPD/staging/linux.build/* $WD/ApacheHTTPD/staging/linux || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_APACHE=$PG_VERSION_APACHE" > $WD/ApacheHTTPD/staging/linux/versions-linux.sh
+    echo "PG_BUILDNUM_APACHEHTTPD=$PG_BUILDNUM_APACHEHTTPD" >> $WD/ApacheHTTPD/staging/linux/versions-linux.sh
 
     cd $WD
 
@@ -166,6 +176,9 @@ EOT
 
 _postprocess_ApacheHTTPD_linux() {
     echo "BEGIN POST ApacheHTTPD Linux"
+
+    source $WD/ApacheHTTPD/staging/linux/versions-linux.sh
+    PG_BUILD_APACHEHTTPD=$(expr $PG_BUILD_APACHEHTTPD + $SKIPBUILD)
 
     PG_STAGING=$PG_PATH_LINUX/ApacheHTTPD/staging/linux
 
@@ -243,6 +256,16 @@ _postprocess_ApacheHTTPD_linux() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_APACHEHTTPD -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-linux.run $WD/output/apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}linux.run
     
     cd $WD
     echo "END POST ApacheHTTPD Linux"

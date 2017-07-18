@@ -42,7 +42,11 @@ _prep_ApacheHTTPD_osx() {
     chmod 755 $WD/ApacheHTTPD/staging/osx || _die "Couldn't set the permissions on the staging directory"
 
     # Remove existing source and staging directories
-    ssh $PG_SSH_OSX "if [ -d $PG_PATH_OSX/ApacheHTTPD ]; then rm -rf $PG_PATH_OSX/ApacheHTTPD/*; fi" || _die "Couldn't remove the existing files on OS X build server"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/ApacheHTTPD/source" || _die "Falied to clean the server/source directory on Mac OS X VM"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/ApacheHTTPD/scripts" || _die "Falied to clean the server/scripts directory on Mac OS X VM"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/ApacheHTTPD/*.bz2" || _die "Falied to clean the server/*.bz2 files on Mac OS X VM"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/ApacheHTTPD/*.sh" || _die "Falied to clean the server/*.sh scripts on Mac OS X VM"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/ApacheHTTPD/staging/osx.build" || _die "Falied to clean the server directory on Mac OS X VM"
 
     echo "Copy the sources to the build VM"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/ApacheHTTPD/source" || _die "Failed to create the source dircetory on the build VM"
@@ -77,7 +81,7 @@ _build_ApacheHTTPD_osx() {
     export PATH
 
     # build apache
-    PG_STAGING=$PG_PATH_OSX/ApacheHTTPD/staging/osx
+    PG_STAGING=$PG_PATH_OSX/ApacheHTTPD/staging/osx.build
 
     cat <<EOT-APACHEHTTPD > build-apachehttpd.sh
     source ../settings.sh
@@ -198,14 +202,15 @@ EOT-APACHEHTTPD
     scp build-apachehttpd.sh $PG_SSH_OSX:$PG_PATH_OSX/ApacheHTTPD
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/ApacheHTTPD; sh ./build-apachehttpd.sh" || _die "Failed to build ApacheHTTPD on OSX"
 
-    # Copy the staging to controller to build the installers
-    ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf apachehttpd-staging.tar.bz2 *" || _die "Failed to create archive of the apachehttpd staging"
-    scp $PG_SSH_OSX:$PG_STAGING/apachehttpd-staging.tar.bz2 $WD/ApacheHTTPD/staging/osx || _die "Failed to scp apachehttpd staging"
+    echo "Removing last successful staging directory ($PG_PATH_OSX/ApacheHTTPD/staging/osx)"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/ApacheHTTPD/staging/osx" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/ApacheHTTPD/staging/osx" || _die "Couldn't create the last successful staging directory"
 
-    # Extract the staging archive
-    cd $WD/ApacheHTTPD/staging/osx
-    tar -jxvf apachehttpd-staging.tar.bz2 || _die "Failed to extract the apachehttpd staging archive"
-    rm -f apachehttpd-staging.tar.bz2
+    echo "Copying the complete build to the successful staging directory"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; cp -PR ApacheHTTPD/staging/osx.build/* ApacheHTTPD/staging/osx" || _die "Couldn't copy the existing staging directory"
+
+    ssh $PG_SSH_OSX "echo PG_VERSION_APACHE=$PG_VERSION_APACHE > $PG_PATH_OSX/ApacheHTTPD/staging/osx/versions-osx.sh" || _die "Failed to write ApacheHTTPD version number into versions-osx.sh"
+    ssh $PG_SSH_OSX "echo PG_BUILDNUM_APACHEHTTPD=$PG_BUILDNUM_APACHEHTTPD >> $PG_PATH_OSX/ApacheHTTPD/staging/osx/versions-osx.sh" || _die "Failed to write ApacheHTTPD build number into versions-osx.sh"
 
     echo "END BUILD ApacheHTTPD OSX"
 }
@@ -222,10 +227,40 @@ _postprocess_ApacheHTTPD_osx() {
     echo " Post Process : ApacheHTTPD (OSX)"
     echo "*******************************************************"
 
-    #PG_PATH_OSX=$WD
-
     PG_STAGING=$PG_PATH_OSX/ApacheHTTPD/staging/osx
     
+    # Remove any existing staging directory that might exist, and create a clean one
+    if [ -e $WD/ApacheHTTPD/staging/osx ];
+    then
+      echo "Removing existing staging directory"
+      rm -rf $WD/ApacheHTTPD/staging/osx || _die "Couldn't remove the existing staging directory"
+    fi
+    echo "Creating staging directory ($WD/ApacheHTTPD/staging/osx)"
+    mkdir -p $WD/ApacheHTTPD/staging/osx || _die "Couldn't create the staging directory"
+    chmod 755 $WD/ApacheHTTPD/staging/osx || _die "Couldn't set the permissions on the staging directory"
+
+    # Copy the staging to controller to build the installers
+    ssh $PG_SSH_OSX "cd $PG_STAGING; rm -f apachehttpd-staging.tar.bz2" || _die "Failed to remove archive of the server staging"
+    ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf apachehttpd-staging.tar.bz2 *" || _die "Failed to create archive of the apachehttpd staging"
+    scp $PG_SSH_OSX:$PG_STAGING/apachehttpd-staging.tar.bz2 $WD/ApacheHTTPD/staging/osx || _die "Failed to scp apachehttpd staging"
+
+    # Extract the staging archive
+    cd $WD/ApacheHTTPD/staging/osx
+    tar -jxvf apachehttpd-staging.tar.bz2 || _die "Failed to extract the apachehttpd staging archive"
+    rm -f apachehttpd-staging.tar.bz2
+
+    source $WD/ApacheHTTPD/staging/osx/versions-osx.sh
+    PG_BUILD_APACHEHTTPD=$(expr $PG_BUILD_APACHEHTTPD + $SKIPBUILD)
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_APACHEHTTPD -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    #PG_PATH_OSX=$WD
+
     #Configure the files in apache and httpd
     filelist=`grep -rslI "$PG_STAGING" "$WD/ApacheHTTPD/staging/osx" | grep -v Binary`
 
@@ -283,25 +318,25 @@ _postprocess_ApacheHTTPD_osx() {
       rm -f staging/osx/apache/conf/httpd.conf.bak
     fi
 
-    # Build the installer"
-    "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
+    # Rename the installer
+    mv $WD/output/apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app $WD/output/apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}osx.app
 
     # Zip up the output
     cd $WD/output
 
     # Scp the app bundle to the signing machine for signing
-    tar -jcvf apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app.tar.bz2 apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app || _die "Failed to create the archive."
+    tar -jcvf apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}osx.app.tar.bz2 apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}osx.app || _die "Failed to create the archive."
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf apache*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
-    scp apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/ || _die "Failed to copy the archive to sign server."
-    rm -fr apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app* || _die "Failed to clean the output directory."
+    scp apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}osx.app.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/ || _die "Failed to copy the archive to sign server."
+    rm -fr apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}osx.app* || _die "Failed to clean the output directory."
 
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app; mv apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx-signed.app apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}osx.app; mv apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}osx-signed.app apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
 
     # Archive the .app and copy back to controller
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.zip apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.app" || _die "Failed to zip the installer bundle"
-    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}osx.zip apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}osx.app" || _die "Failed to zip the installer bundle"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
     
     cd $WD
     echo "END POST ApacheHTTPD OSX"
