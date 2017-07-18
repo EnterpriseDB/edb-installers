@@ -40,15 +40,15 @@ _prep_ApachePhp_linux_x64() {
 
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/ApachePhp/staging/linux-x64 ];
+    if [ -e $WD/ApachePhp/staging/linux-x64.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/ApachePhp/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/ApachePhp/staging/linux-x64.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/ApachePhp/staging/linux-x64)"
-    mkdir -p $WD/ApachePhp/staging/linux-x64 || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/ApachePhp/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/ApachePhp/staging/linux-x64.build)"
+    mkdir -p $WD/ApachePhp/staging/linux-x64.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/ApachePhp/staging/linux-x64.build || _die "Couldn't set the permissions on the staging directory"
 
     echo "END PREP ApachePhp Linux-x64"
 }
@@ -63,7 +63,7 @@ _build_ApachePhp_linux_x64() {
 
     # build apache
 
-    PG_STAGING=$PG_PATH_LINUX_X64/ApachePhp/staging/linux-x64
+    PG_STAGING=$PG_PATH_LINUX_X64/ApachePhp/staging/linux-x64.build
 
     # Configure the source tree
     echo "Configuring the apache source tree"
@@ -75,7 +75,7 @@ _build_ApachePhp_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/ApachePhp/source/apache.linux-x64; make install" || _die "Failed to install apache"
 
     # Configure the httpd.conf file
-    cd $WD/ApachePhp/staging/linux-x64/apache/conf
+    cd $WD/ApachePhp/staging/linux-x64.build/apache/conf
     _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "httpd.conf"
     _replace "Listen 80" "Listen @@PORT@@" "httpd.conf"
     _replace "htdocs" "www" "httpd.conf"
@@ -87,7 +87,7 @@ _build_ApachePhp_linux_x64() {
 	mv /tmp/httpd.conf.tmp httpd.conf
 
     # Configure the apachectl script file
-    cd $WD/ApachePhp/staging/linux-x64/apache/bin
+    cd $WD/ApachePhp/staging/linux-x64.build/apache/bin
     _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
     _replace "\$HTTPD -t" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
     _replace "\$HTTPD \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
@@ -131,14 +131,14 @@ _build_ApachePhp_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libmbfl.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libmbfl)"
 
     # Add LD_LIBRARY_PATH in envvars scripts
-    cat <<EOT >> $WD/ApachePhp/staging/linux-x64/apache/bin/envvars
+    cat <<EOT >> $WD/ApachePhp/staging/linux-x64.build/apache/bin/envvars
 LD_LIBRARY_PATH=@@INSTALL_DIR@@/apache/lib:@@INSTALL_DIR@@/php/lib:\$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH
 EOT
     ssh $PG_SSH_LINUX_X64 "chmod ugo+rx \"$PG_STAGING/apache/bin/envvars\""
 
     # Configure the php script files
-    cd $WD/ApachePhp/staging/linux-x64/php
+    cd $WD/ApachePhp/staging/linux-x64.build/php
     _replace "--with-pgsql=$PG_PGHOME_LINUX_X64" "--with-pgsql" bin/php-config
     _replace "--with-pdo-pgsql=$PG_PGHOME_LINUX_X64" "--with-pdo-pgsql" bin/php-config
     _replace "--with-openssl=/opt/local/Current" "--with-openssl" bin/php-config
@@ -174,7 +174,18 @@ EOT
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
-    mv $WD/ApachePhp/staging/linux-x64/symbols $WD/output/symbols/linux-x64/ApachePhp || _die "Failed to move $WD/ApachePhp/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/ApachePhp directory"
+    mv $WD/ApachePhp/staging/linux-x64.build/symbols $WD/output/symbols/linux-x64/ApachePhp || _die "Failed to move $WD/ApachePhp/staging/linux-x64.build/symbols to $WD/output/symbols/linux-x64/ApachePhp directory"
+
+    echo "Removing last successful staging directory ($WD/ApachePhp/staging/linux-x64)"
+    rm -rf $WD/ApachePhp/staging/linux-x64 || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/ApachePhp/staging/linux-x64 || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/ApachePhp/staging/linux-x64 || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/ApachePhp/staging/linux-x64.build/* $WD/ApachePhp/staging/linux-x64 || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_APACHE=$PG_VERSION_APACHE" > $WD/ApachePhp/staging/linux-x64/versions-linux-x64.sh
+    echo "PG_VERSION_PHP=$PG_VERSION_PHP" >> $WD/ApachePhp/staging/linux-x64/versions-linux-x64.sh
+    echo "PG_BUILDNUM_APACHEPHP=$PG_BUILDNUM_APACHEPHP" >> $WD/ApachePhp/staging/linux-x64/versions-linux-x64.sh
 
     cd $WD
 
@@ -189,6 +200,9 @@ EOT
 
 _postprocess_ApachePhp_linux_x64() {
     echo "BEGIN POST ApachePhp Linux-x64"
+
+    source $WD/ApachePhp/staging/linux-x64/versions-linux-x64.sh
+    PG_BUILD_SERVER=$(expr $PG_BUILD_SERVER + $SKIPBUILD)
 
     PG_STAGING=$PG_PATH_LINUX_X64/ApachePhp/staging/linux-x64
 
@@ -271,6 +285,16 @@ _postprocess_ApachePhp_linux_x64() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_APACHEPHP -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-linux-x64.run $WD/output/apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-${BUILD_FAILED}linux-x64.run
 
     cd $WD
     echo "END POST ApachePhp Linux-x64"

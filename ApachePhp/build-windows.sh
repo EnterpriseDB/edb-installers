@@ -75,27 +75,27 @@ _prep_ApachePhp_windows() {
     echo "Creating staging directory ($WD/ApachePhp/staging/windows)"
     mkdir -p $WD/ApachePhp/staging/windows || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/ApachePhp/staging/windows || _die "Couldn't set the permissions on the staging directory"
-    
+
     #Remove existing staging directory on Windows VM
     echo "Removing existing directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache.zip del /S /Q apache.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache-staging.zip del /S /Q apache-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache-staging.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST build-apache.bat del /S /Q build-apache.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache-build.bat on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache.windows rd /S /Q apache.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache.windows directory on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache.staging rd /S /Q apache.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache.staging directory on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache.staging.build rd /S /Q apache.staging.build" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache.staging.build directory on Windows VM"
 
     # Remove existing staging directory on Windows VM
     echo "Removing existing source & staging directories on Winodws VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST php.zip del /S /Q php.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\\\php.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST php-staging.zip del /S /Q php-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\\\php-staging.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST php.windows rd /S /Q php.windows" || _die "Couldn't remove the source directory on Windows VM (php.windows)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST php.staging rd /S /Q php.staging" || _die "Couldn't remove the source directory on Windows VM (php.staging)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST php.staging.build rd /S /Q php.staging.build" || _die "Couldn't remove the source directory on Windows VM (php.staging.build)"
 
     # Copy sources on windows VM
     echo "Copying apache sources to Windows VM"
     scp apache.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the apache archieve to windows VM (apache.zip)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip apache.zip" || _die "Couldn't extract apache archieve on windows VM (apache.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir apache.staging; chmod -R a+wrx apache.staging" || _die "Couldn't give full rights to apache windows directory on windows VM (apache.windows)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir apache.staging.build; chmod -R a+wrx apache.staging.build" || _die "Couldn't give full rights to apache windows directory on windows VM (apache.windows)"
 
     echo "Copying php sources to Windows VM"
     scp php.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the php archieve to windows VM (php.zip)"
@@ -148,7 +148,7 @@ perl srclib\apr\build\fixwin32mak.pl
 
 REM Compiling Apache with Standard configuration
 nmake -f Makefile.win PORT=8080 NO_EXTERNAL_DEPS=1 _buildr || exit 1
-nmake -f Makefile.win PORT=8080 INSTDIR="%STAGING_DIR%\apache.staging" NO_EXTERNAL_DEPS=1 installr || exit 1
+nmake -f Makefile.win PORT=8080 INSTDIR="%STAGING_DIR%\apache.staging.build" NO_EXTERNAL_DEPS=1 installr || exit 1
 
 EOT
 
@@ -177,13 +177,13 @@ EOT
 @CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
 IF EXIST "$PG_PSDK_WINDOWS\SetEnv.Bat" @CALL "$PG_PSDK_WINDOWS\SetEnv.Bat"
 IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
-@SET INCLUDE=$PG_PATH_WINDOWS\apache.staging\include;%INCLUDE%
+@SET INCLUDE=$PG_PATH_WINDOWS\apache.staging.build\include;%INCLUDE%
 @SET LIB=%PGBUILD%\lib;%LIB%
 @SET PATH=%PGBUILD%\bin;%PATH%
 
 @cd $PG_PATH_WINDOWS
-@SET APACHE_STAGING=%CD%\apache.staging
-@SET PHP_STAGING=%CD%\php.staging
+@SET APACHE_STAGING=%CD%\apache.staging.build
+@SET PHP_STAGING=%CD%\php.staging.build
 @SET BISON_SIMPLE=%PGBUILD%\bin\bison.simple
 
 
@@ -216,19 +216,19 @@ IF EXIST "$PG_PSDK_WINDOWS\SetEnv.cmd" @CALL "$PG_PSDK_WINDOWS\SetEnv.cmd"
 @nmake install
 
 cd ..
-IF NOT EXIST php.staging/php.exe @GOTO installation-failed
+IF NOT EXIST php.staging.build/php.exe @GOTO installation-failed
 
-@COPY "%PGBUILD%\vcredist\vcredist_x86.exe" php.staging || echo Failed to copy VC redist && EXIT -1
-@COPY "%PGBUILD%\bin\ssleay32.dll" php.staging || echo Failed to copy OpenSSL\bin\ssleay32.dll && EXIT -1
-@COPY "%PGBUILD%\bin\libeay32.dll" php.staging || echo Failed to copy OpenSSL\bin\libeay32.dll && EXIT -1
+@COPY "%PGBUILD%\vcredist\vcredist_x86.exe" php.staging.build || echo Failed to copy VC redist && EXIT -1
+@COPY "%PGBUILD%\bin\ssleay32.dll" php.staging.build || echo Failed to copy OpenSSL\bin\ssleay32.dll && EXIT -1
+@COPY "%PGBUILD%\bin\libeay32.dll" php.staging.build || echo Failed to copy OpenSSL\bin\libeay32.dll && EXIT -1
 
-@COPY "%PGBUILD%\bin\intl.dll" php.staging || echo Failed to copy gettext\bin\intl.dll && EXIT -1
-@COPY "%PGBUILD%\bin\iconv.dll" php.staging || echo Failed to copy gettext\bin\libiconv.dll && EXIT -1
-@COPY "%PGBUILD%\bin\libxml2.dll" php.staging || echo Failed to copy libxml2\bin\libxml2.dll && EXIT -1
-@COPY "%PGBUILD%\bin\libxslt.dll" php.staging || echo Failed to copy libxslt\bin\libxslt.dll && EXIT -1
-@COPY "%PGBUILD%\bin\zlib1.dll" php.staging || echo Failed to copy zlib.dll && EXIT -1
-@COPY "%PGBUILD%\bin\mbfl.dll" php.staging || echo Failed to copy mbfl.dll && EXIT -1
-@COPY "%PG_HOME_PATH%\bin\libpq.dll" php.staging || echo Failed to copy libpq.dll && EXIT -1
+@COPY "%PGBUILD%\bin\intl.dll" php.staging.build || echo Failed to copy gettext\bin\intl.dll && EXIT -1
+@COPY "%PGBUILD%\bin\iconv.dll" php.staging.build || echo Failed to copy gettext\bin\libiconv.dll && EXIT -1
+@COPY "%PGBUILD%\bin\libxml2.dll" php.staging.build || echo Failed to copy libxml2\bin\libxml2.dll && EXIT -1
+@COPY "%PGBUILD%\bin\libxslt.dll" php.staging.build || echo Failed to copy libxslt\bin\libxslt.dll && EXIT -1
+@COPY "%PGBUILD%\bin\zlib1.dll" php.staging.build || echo Failed to copy zlib.dll && EXIT -1
+@COPY "%PGBUILD%\bin\mbfl.dll" php.staging.build || echo Failed to copy mbfl.dll && EXIT -1
+@COPY "%PG_HOME_PATH%\bin\libpq.dll" php.staging.build || echo Failed to copy libpq.dll && EXIT -1
 
 @GOTO end
 
@@ -265,16 +265,58 @@ IF NOT EXIST php.staging/php.exe @GOTO installation-failed
 EOT
     scp build-php.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-php.bat"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-recommended copy php.ini-recommended $PG_PATH_WINDOWS\\\\php.staging\\\\php.ini " || _die "Failed to copy php.ini"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-production copy php.ini-production $PG_PATH_WINDOWS\\\\php.staging\\\\php.ini " || _die "Failed to copy php.ini"
-    
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-recommended copy php.ini-recommended $PG_PATH_WINDOWS\\\\php.staging.build\\\\php.ini " || _die "Failed to copy php.ini"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/php.windows; cmd /c if EXIST php.ini-production copy php.ini-production $PG_PATH_WINDOWS\\\\php.staging.build\\\\php.ini " || _die "Failed to copy php.ini"
+
+    echo "Removing last successful staging directory ($PG_PATH_WINDOWS\\\\apache.staging)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache.staging rd /S /Q apache.staging" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\apache.staging" || _die "Couldn't create the last successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c xcopy /E /Q /Y apache.staging.build\\\\* apache.staging\\\\" || _die "Couldn't copy the existing staging directory"
+
+    ssh $PG_SSH_WINDOWS "cmd /c echo PG_VERSION_APACHE=$PG_VERSION_APACHE > $PG_PATH_WINDOWS\\\\apache.staging/versions-windows.sh" || _die "Failed to write server version number into versions-windows.sh"
+    ssh $PG_SSH_WINDOWS "cmd /c echo PG_VERSION_PHP=$PG_VERSION_PHP >> $PG_PATH_WINDOWS\\\\apache.staging/versions-windows.sh" || _die "Failed to write server build number into versions-windows.sh"
+    ssh $PG_SSH_WINDOWS "cmd /c echo PG_BUILDNUM_APACHEPHP=$PG_BUILDNUM_APACHEPHP >> $PG_PATH_WINDOWS\\\\apache.staging/versions-windows.sh" || _die "Failed to write server build number into versions-windows.sh"
+
+    echo "Removing last successful staging directory ($PG_PATH_WINDOWS\\\\php.staging)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST php.staging rd /S /Q php.staging" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\php.staging" || _die "Couldn't create the last successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c xcopy /E /Q /Y php.staging.build\\\\* php.staging\\\\" || _die "Couldn't copy the existing staging directory"
+
+    echo "END BUILD ApachePhp Windows"
+}
+
+
+
+################################################################################
+# ApachePhp Postprocess
+################################################################################
+
+_postprocess_ApachePhp_windows() {
+
+    echo "BEGIN POST ApachePhp Windows"
+
+    # Remove any existing staging directory that might exist, and create a clean one
+    if [ -e $WD/ApachePhp/staging/windows ]; then
+        echo "Removing existing staging directory"
+        rm -rf $WD/ApachePhp/staging/windows || _die "Couldn't remove the existing staging directory"
+    fi
+
+    echo "Creating staging directory ($WD/ApachePhp/staging/windows)"
+    mkdir -p $WD/ApachePhp/staging/windows || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/ApachePhp/staging/windows || _die "Couldn't set the permissions on the staging directory"
 
     # Zip up the installed code, copy it back here, and unpack.
     mkdir $WD/ApachePhp/staging/windows/apache || _die "Failed to create directory for apache"
     echo "Copying apache built tree to Unix host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache-staging.zip del /S /Q apache-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache-staging.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\apache.staging; cmd /c zip -r ..\\\\apache-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache.staging)"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache-staging.zip $WD/ApachePhp/staging/windows/apache || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache-staging.zip)"
     unzip $WD/ApachePhp/staging/windows/apache/apache-staging.zip -d $WD/ApachePhp/staging/windows/apache || _die "Failed to unpack the built source tree ($WD/staging/windows/apache-staging.zip)"
+    mv $WD/ApachePhp/staging/windows/apache/versions-windows.sh $WD/ApachePhp/staging/windows || _die "Failed to move versions-windows.sh"
     rm $WD/ApachePhp/staging/windows/apache/apache-staging.zip
 
     TEMP_PATH=`echo $PG_PATH_WINDOWS | sed -e 's:\\\\\\\\:/:g'`
@@ -288,22 +330,16 @@ EOT
 
     mkdir $WD/ApachePhp/staging/windows/php || _die "Failed to create directory for php"
     echo "Copying php built tree to Unix host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST php-staging.zip del /S /Q php-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\php-staging.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\php.staging; cmd /c zip -r ..\\\\php-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/php.staging)"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/php-staging.zip $WD/ApachePhp/staging/windows/php || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/php-staging.zip)"
     unzip $WD/ApachePhp/staging/windows/php/php-staging.zip -d $WD/ApachePhp/staging/windows/php || _die "Failed to unpack the built source tree ($WD/staging/windows/php-staging.zip)"
     rm $WD/ApachePhp/staging/windows/php/php-staging.zip
 
-    echo "END BUILD ApachePhp Windows"
-}
+    dos2unix $WD/ApachePhp/staging/windows/versions-windows.sh || _die "Failed to convert format of versions-windows.sh from dos to unix"
+    source $WD/ApachePhp/staging/windows/versions-windows.sh
+    PG_BUILD_APACHEPHP=$(expr $PG_BUILD_APACHEPHP + $SKIPBUILD)
 
-
-
-################################################################################
-# ApachePhp Postprocess
-################################################################################
-
-_postprocess_ApachePhp_windows() {
-    echo "BEGIN POST ApachePhp Windows"
     TEMP_PATH=`echo $PG_PATH_WINDOWS | sed -e 's:\\\\\\\\:/:g'`
 
     #Configure the files in apache and php
@@ -352,8 +388,18 @@ _postprocess_ApachePhp_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_APACHEPHP -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-windows.run $WD/output/apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-${BUILD_FAILED}windows.run
+
 	# Sign the installer
-	win32_sign "apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-windows.exe"
+	win32_sign "apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-${BUILD_FAILED}windows.exe"
 	
      cd $WD
     echo "END POST ApachePhp Windows"

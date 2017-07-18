@@ -40,15 +40,15 @@ _prep_ApachePhp_linux() {
 
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/ApachePhp/staging/linux ];
+    if [ -e $WD/ApachePhp/staging/linux.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/ApachePhp/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/ApachePhp/staging/linux.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/ApachePhp/staging/linux)"
-    mkdir -p $WD/ApachePhp/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/ApachePhp/staging/linux || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/ApachePhp/staging/linux.build)"
+    mkdir -p $WD/ApachePhp/staging/linux.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/ApachePhp/staging/linux.build || _die "Couldn't set the permissions on the staging directory"
 
     echo "END PREP ApachePhp Linux"
 }
@@ -63,7 +63,7 @@ _build_ApachePhp_linux() {
 
     # build apache
 
-    PG_STAGING=$PG_PATH_LINUX/ApachePhp/staging/linux
+    PG_STAGING=$PG_PATH_LINUX/ApachePhp/staging/linux.build
 
     # Configure the source tree
     echo "Configuring the apache source tree"
@@ -75,7 +75,7 @@ _build_ApachePhp_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/ApachePhp/source/apache.linux; make install" || _die "Failed to install apache"
 
     # Configure the httpd.conf file
-    cd $WD/ApachePhp/staging/linux/apache/conf
+    cd $WD/ApachePhp/staging/linux.build/apache/conf
     _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "httpd.conf"
     _replace "Listen 80" "Listen @@PORT@@" "httpd.conf"
     _replace "htdocs" "www" "httpd.conf"
@@ -87,7 +87,7 @@ _build_ApachePhp_linux() {
 	mv /tmp/httpd.conf.tmp httpd.conf
 
     # Configure the apachectl script file
-    cd $WD/ApachePhp/staging/linux/apache/bin
+    cd $WD/ApachePhp/staging/linux.build/apache/bin
     _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
     _replace "\$HTTPD -t" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
     _replace "\$HTTPD \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\"@@INSTALL_DIR@@/php/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
@@ -133,14 +133,14 @@ _build_ApachePhp_linux() {
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libmbfl.so* $PG_STAGING/php/lib" || _die "Failed to copy the dependency library (libmbfl)"
 
     # Add LD_LIBRARY_PATH in envvars scripts
-    cat <<EOT >> $WD/ApachePhp/staging/linux/apache/bin/envvars
+    cat <<EOT >> $WD/ApachePhp/staging/linux.build/apache/bin/envvars
 LD_LIBRARY_PATH=@@INSTALL_DIR@@/apache/lib:@@INSTALL_DIR@@/php/lib:\$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH
 EOT
     ssh $PG_SSH_LINUX "chmod ugo+rx \"$PG_STAGING/apache/bin/envvars\""
 
     # Configure the php script file
-    cd $WD/ApachePhp/staging/linux/php
+    cd $WD/ApachePhp/staging/linux.build/php
     _replace "--with-pgsql=$PG_PGHOME_LINUX" "--with-pgsql" bin/php-config
     _replace "--with-pdo-pgsql=$PG_PGHOME_LINUX" "--with-pdo-pgsql" bin/php-config
     _replace "--with-openssl=/opt/local/Current" "--with-openssl" bin/php-config
@@ -175,7 +175,18 @@ EOT
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
-    mv $WD/ApachePhp/staging/linux/symbols $WD/output/symbols/linux/ApachePhp || _die "Failed to move $WD/ApachePhp/staging/linux/symbols to $WD/output/symbols/linux/ApachePhp directory"
+    mv $WD/ApachePhp/staging/linux.build/symbols $WD/output/symbols/linux/ApachePhp || _die "Failed to move $WD/ApachePhp/staging/linux.build/symbols to $WD/output/symbols/linux/ApachePhp directory"
+
+    echo "Removing last successful staging directory ($WD/ApachePhp/staging/linux)"
+    rm -rf $WD/ApachePhp/staging/linux || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/ApachePhp/staging/linux || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/ApachePhp/staging/linux || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/ApachePhp/staging/linux.build/* $WD/ApachePhp/staging/linux || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_APACHE=$PG_VERSION_APACHE" > $WD/ApachePhp/staging/linux/versions-linux.sh
+    echo "PG_VERSION_PHP=$PG_VERSION_PHP" >> $WD/ApachePhp/staging/linux/versions-linux.sh
+    echo "PG_BUILDNUM_APACHEPHP=$PG_BUILDNUM_APACHEPHP" >> $WD/ApachePhp/staging/linux/versions-linux.sh
 
     cd $WD
 
@@ -190,6 +201,9 @@ EOT
 
 _postprocess_ApachePhp_linux() {
     echo "BEGIN POST ApachePhp Linux"
+
+    source $WD/ApachePhp/staging/linux/versions-linux.sh
+    PG_BUILD_APACHEPHP=$(expr $PG_BUILD_APACHEPHP + $SKIPBUILD)
 
     PG_STAGING=$PG_PATH_LINUX/ApachePhp/staging/linux
 
@@ -272,6 +286,16 @@ _postprocess_ApachePhp_linux() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_APACHEPHP -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-linux.run $WD/output/apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-${BUILD_FAILED}linux.run
     
     cd $WD
     echo "END POST ApachePhp Linux"

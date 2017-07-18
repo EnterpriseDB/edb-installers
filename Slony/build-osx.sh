@@ -30,18 +30,18 @@ _prep_Slony_osx() {
     cp -R slony1-$PG_VERSION_SLONY/* slony.osx || _die "Failed to copy the source code (source/slony1-$PG_VERSION_SLONY)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/Slony/staging/osx ];
+    if [ -e $WD/Slony/staging/osx.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/Slony/staging/osx || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/Slony/staging/osx.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/Slony/staging/osx)"
-    mkdir -p $WD/Slony/staging/osx || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/Slony/staging/osx || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/Slony/staging/osx.build)"
+    mkdir -p $WD/Slony/staging/osx.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/Slony/staging/osx.build || _die "Couldn't set the permissions on the staging directory"
     
     echo "Removing existing slony files from the PostgreSQL directory"
-    cd $WD/server/staging/osx
+    cd $WD/server/staging/osx.build
     rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.$PG_VERSION_SLONY.so || _die "Failed to remove slony binary files"
     rm -f share/postgresql/slony*.sql || _die "remove slony share files"
    
@@ -62,7 +62,7 @@ _build_Slony_osx() {
     echo "*******************************************************"
 
     # build slony
-    PG_STAGING=$PG_PATH_OSX/Slony/staging/osx
+    PG_STAGING=$PG_PATH_OSX/Slony/staging/osx.build
 cat <<EOT-SLONY > $WD/Slony/build-slony.sh
     source ../settings.sh
     source ../versions.sh
@@ -140,32 +140,42 @@ EOT
     # Slony installs it's files into postgresql directory
     # We need to copy them to staging directory
 
-    mkdir -p $PG_PATH_OSX/Slony/staging/osx/bin
+    mkdir -p $PG_PATH_OSX/Slony/staging/osx.build/bin
     cp $PG_PGHOME_OSX/bin/slon $PG_STAGING/bin || _die "Failed to copy slon binary to staging directory"
     cp $PG_PGHOME_OSX/bin/slonik $PG_STAGING/bin || _die "Failed to copy slonik binary to staging directory"
     cp $PG_PGHOME_OSX/bin/slony_logshipper $PG_STAGING/bin || _die "Failed to copy slony_logshipper binary to staging directory"
-    chmod +rx $PG_PATH_OSX/Slony/staging/osx/bin/*
+    chmod +rx $PG_PATH_OSX/Slony/staging/osx.build/bin/*
 
-    mkdir -p $PG_PATH_OSX/Slony/staging/osx/lib
+    mkdir -p $PG_PATH_OSX/Slony/staging/osx.build/lib
     cp $PG_PGHOME_OSX/lib/postgresql/slony1_funcs.$PG_VERSION_SLONY.so $PG_STAGING/lib || _die "Failed to copy slony_funcs.so to staging directory"
-    chmod +r $PG_PATH_OSX/Slony/staging/osx/lib/*
+    chmod +r $PG_PATH_OSX/Slony/staging/osx.build/lib/*
 
-    mkdir -p $PG_PATH_OSX/Slony/staging/osx/Slony
+    mkdir -p $PG_PATH_OSX/Slony/staging/osx.build/Slony
     cp $PG_PGHOME_OSX/share/postgresql/slony*.sql $PG_STAGING/Slony || _die "Failed to share files to staging directory"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
-    _rewrite_so_refs $PG_PATH_OSX/Slony/staging/osx lib @loader_path/..
-    _rewrite_so_refs $PG_PATH_OSX/Slony/staging/osx bin @loader_path/..
+    _rewrite_so_refs $PG_PATH_OSX/Slony/staging/osx.build lib @loader_path/..
+    _rewrite_so_refs $PG_PATH_OSX/Slony/staging/osx.build bin @loader_path/..
 
-    install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_PATH_OSX/Slony/staging/osx/bin/slon"
-    install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_PATH_OSX/Slony/staging/osx/bin/slonik"
-    install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_PATH_OSX/Slony/staging/osx/bin/slony_logshipper"
+    install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_PATH_OSX/Slony/staging/osx.build/bin/slon"
+    install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_PATH_OSX/Slony/staging/osx.build/bin/slonik"
+    install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "$PG_PATH_OSX/Slony/staging/osx.build/bin/slony_logshipper"
 EOT-SLONY
 
     cd $WD
     scp Slony/build-slony.sh $PG_SSH_OSX:$PG_PATH_OSX/Slony
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/Slony; sh ./build-slony.sh" || _die "Failed to build slony on OSX VM"
-    
+
+    echo "Removing last successful staging directory ($WD/Slony/staging/osx)"
+    rm -rf $WD/Slony/staging/osx || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/Slony/staging/osx || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/Slony/staging/osx || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/Slony/staging/osx.build/* $WD/Slony/staging/osx || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_SLONY=$PG_VERSION_SLONY" > $WD/Slony/staging/osx/versions-osx.sh
+    echo "PG_BUILDNUM_SLONY=$PG_BUILDNUM_SLONY" >> $WD/Slony/staging/osx/versions-osx.sh
+
     echo "END BUILD Slony OSX"
  }
 
@@ -180,6 +190,16 @@ _postprocess_Slony_osx() {
     echo "*******************************************************"
     echo " Post Process : Slony(OSX)"
     echo "*******************************************************"
+
+    source $WD/Slony/staging/osx/versions-osx.sh
+    PG_BUILD_SLONY=$(expr $PG_BUILD_SLONY + $SKIPBUILD)
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_SLONY -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
 
     cd $WD/Slony
 
@@ -219,23 +239,26 @@ _postprocess_Slony_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
+    # Rename the installer
+    mv $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}osx.app
+
     # Using own scripts for extract-only mode
-    cp -f $WD/scripts/risePrivileges $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/Contents/MacOS/Slony_I_PG$PG_CURRENT_VERSION
-    chmod a+x $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/Contents/MacOS/Slony_I_PG$PG_CURRENT_VERSION
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ Slony_I_PG$PG_CURRENT_VERSION $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
-    chmod a+x $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/Contents/MacOS/installbuilder.sh
+    cp -f $WD/scripts/risePrivileges $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}osx.app/Contents/MacOS/Slony_I_PG$PG_CURRENT_VERSION
+    chmod a+x $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}osx.app/Contents/MacOS/Slony_I_PG$PG_CURRENT_VERSION
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ Slony_I_PG$PG_CURRENT_VERSION $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
+    chmod a+x $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
 
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; rm -rf slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app; mv slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx-signed.app  slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; rm -rf slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}osx.app; mv slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}osx-signed.app  slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
 
     # Zip up the output
     cd $WD/output
 
     PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
-    zip -r slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.zip slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    zip -r slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}osx.zip slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
 

@@ -14,7 +14,7 @@ _prep_pgmemcache_osx() {
 
     PGMEM_PACKAGE_PATH=$WD/pgmemcache
     PGMEM_PLATFORM=osx
-    PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/$PGMEM_PLATFORM
+    PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/${PGMEM_PLATFORM}.build
     PGMEM_SOURCE=$PGMEM_PACKAGE_PATH/source
     
     # Remove any existing source directory that might exists, and create a clean one
@@ -57,9 +57,9 @@ cat <<PGMEMCACHE > $WD/pgmemcache/build-pgmemcache.sh
 
     PGMEM_PACKAGE_PATH=$PG_PATH_OSX/pgmemcache
     PGMEM_PLATFORM=osx
-    PGMEM_STAGING=$PG_PATH_OSX/pgmemcache/staging/\$PGMEM_PLATFORM
+    PGMEM_STAGING=$PG_PATH_OSX/pgmemcache/staging/\${PGMEM_PLATFORM}.build
     PGMEM_SOURCE=$PG_PATH_OSX/pgmemcache/source/pgmemcache.\$PGMEM_PLATFORM
-    PG_PATH=$PG_PATH_OSX/server/staging/\$PGMEM_PLATFORM
+    PG_PATH=$PG_PATH_OSX/server/staging/\${PGMEM_PLATFORM}
 
     cd \$PGMEM_SOURCE
     PATH=\$PG_PATH/bin:\$PATH make CFLAGS="$PG_ARCH_OSX_CFLAGS -I/opt/local/Current/include -arch x86_64 -arch i386" LDFLAGS="-L/opt/local/Current/lib -arch x86_64 -arch i386" || _die "Failed to build the pgmemcache for \$PGMEM_PLATFORM"
@@ -87,6 +87,16 @@ PGMEMCACHE
     scp pgmemcache/build-pgmemcache.sh $PG_SSH_OSX:$PG_PATH_OSX/pgmemcache
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/pgmemcache; sh ./build-pgmemcache.sh" || _die "Failed to build the pgmemcache on OSX VM"
 
+    echo "Removing last successful staging directory ($WD/pgmemcache/staging/osx)"
+    rm -rf $WD/pgmemcache/staging/osx || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/pgmemcache/staging/osx || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/pgmemcache/staging/osx || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/pgmemcache/staging/osx.build/* $WD/pgmemcache/staging/osx || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_PGMEMCACHE=$PG_VERSION_PGMEMCACHE" > $WD/pgmemcache/staging/osx/versions-osx.sh
+    echo "PG_BUILDNUM_PGMEMCACHE=$PG_BUILDNUM_PGMEMCACHE" >> $WD/pgmemcache/staging/osx/versions-osx.sh
+
     echo "END BUILD pgmemcache OSX"
 }
 
@@ -102,6 +112,16 @@ _postprocess_pgmemcache_osx() {
     echo "###################################"
     echo "# pgmemcache : OSX : Post Process #"
     echo "###################################"
+
+    source $WD/pgmemcache/staging/osx/versions-osx.sh
+    PG_BUILD_PGMEMCACHE=$(expr $PG_BUILD_PGMEMCACHE + $SKIPBUILD)
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_PGMEMCACHE -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
 
     PGMEM_PACKAGE_PATH=$WD/pgmemcache
     PGMEM_PLATFORM=osx
@@ -142,21 +162,24 @@ _postprocess_pgmemcache_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml $PGMEM_PLATFORM || _die "Failed to build the installer"
 
+    # Rename the installer
+    mv $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.app
+
     # Using own scripts for extract-only mode
-    cp -f $WD/scripts/risePrivileges $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/pgmemcache-pg$PG_CURRENT_VERSION
-    chmod a+x $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/pgmemcache-pg$PG_CURRENT_VERSION
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ pgmemcache-pg$PG_CURRENT_VERSION $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/installbuilder.sh
-    chmod a+rwx $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/Contents/MacOS/installbuilder.sh
+    cp -f $WD/scripts/risePrivileges $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.app/Contents/MacOS/pgmemcache-pg$PG_CURRENT_VERSION
+    chmod a+x $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.app/Contents/MacOS/pgmemcache-pg$PG_CURRENT_VERSION
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ pgmemcache-pg$PG_CURRENT_VERSION $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
+    chmod a+rwx $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
 
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; rm -rf pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app; mv pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx-signed.app  pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.app" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; rm -rf pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.app; mv pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx-signed.app  pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
 
     # Zip up the output
     cd $WD/output
-    zip -r pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.zip pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    zip -r pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.zip pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.app/ || _die "Failed to remove the unpacked installer bundle"
 
     cd $WD
 

@@ -62,14 +62,14 @@ _prep_server_osx() {
     cp -pR stackbuilder stackbuilder.osx || _die "Failed to copy the source code (source/stackbuilder)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/server/staging/osx ];
+    if [ -e $WD/server/staging/osx.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/server/staging/osx || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/server/staging/osx.build || _die "Couldn't remove the existing staging directory"
     fi
     
-    echo "Creating staging directory ($WD/server/staging/osx)"
-    mkdir -p $WD/server/staging/osx || _die "Couldn't create the staging directory"
+    echo "Creating staging directory ($WD/server/staging/osx.build)"
+    mkdir -p $WD/server/staging/osx.build || _die "Couldn't create the staging directory"
 
     if [ -f $WD/server/scripts/osx/getlocales/getlocales.osx ]; then
       rm -f $WD/server/scripts/osx/getlocales/getlocales.osx
@@ -92,7 +92,7 @@ _build_server_osx() {
 
     # First, build the server
 
-    PG_STAGING=$PG_PATH_OSX/server/staging/osx
+    PG_STAGING=$PG_PATH_OSX/server/staging/osx.build
 
     cd $WD/server/source/postgres.osx
 
@@ -144,24 +144,24 @@ EOT
     echo "Building pldebugger module"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64' make -j4" || _die "Failed to build the debugger module"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
-    if [ ! -e $WD/server/staging/osx/doc ];
+    if [ ! -e $WD/server/staging/osx.build/doc ];
     then
-        mkdir -p $WD/server/staging/osx/doc || _die "Failed to create the doc directory"
+        mkdir -p $WD/server/staging/osx.build/doc || _die "Failed to create the doc directory"
     fi
-    cp $WD/server/source/postgres.osx/contrib/pldebugger/README.pldebugger $WD/server/staging/osx/doc || _die "Failed to copy the debugger README into the staging directory"
+    cp $WD/server/source/postgres.osx/contrib/pldebugger/README.pldebugger $WD/server/staging/osx.build/doc || _die "Failed to copy the debugger README into the staging directory"
 
     echo "Building uuid-ossp module"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64' make -j4" || _die "Failed to build the uuid-ossp module" 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
 
     # Install the PostgreSQL docs
-    mkdir -p $WD/server/staging/osx/doc/postgresql/html || _die "Failed to create the doc directory"
-    cd $WD/server/staging/osx/doc/postgresql/html || _die "Failed to change to the doc directory"
+    mkdir -p $WD/server/staging/osx.build/doc/postgresql/html || _die "Failed to create the doc directory"
+    cd $WD/server/staging/osx.build/doc/postgresql/html || _die "Failed to change to the doc directory"
     cp -pR $WD/server/source/postgres.osx/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
 
     # Install the PostgreSQL man pages
-    mkdir -p $WD/server/staging/osx/share/man || _die "Failed to create the man directory"
-    cd $WD/server/staging/osx/share/man || _die "Failed to change to the man directory"
+    mkdir -p $WD/server/staging/osx.build/share/man || _die "Failed to create the man directory"
+    cd $WD/server/staging/osx.build/share/man || _die "Failed to change to the man directory"
     cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (osx)"
     cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (osx)"
     cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (osx)"
@@ -181,10 +181,10 @@ EOT
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/pgadmin.osx; make install" || _die "Failed to install pgAdmin"
 
     # Copy the app bundle into place
-    cp -pR pgAdmin3.app $WD/server/staging/osx || _die "Failed to copy pgAdmin into the staging directory"
+    cp -pR pgAdmin3.app $WD/server/staging/osx.build || _die "Failed to copy pgAdmin into the staging directory"
 
-    #Fix permission in the staging/osx/share
-    chmod -R a+r $WD/server/staging/osx/share/postgresql/timezone/*
+    #Fix permission in the staging/osx.build/share
+    chmod -R a+r $WD/server/staging/osx.build/share/postgresql/timezone/*
 
     # Stackbuilder
     cd $WD/server/source/stackbuilder.osx
@@ -199,7 +199,7 @@ EOT
     ssh $PG_SSH_OSX "cp /opt/local/Current/certs/ca-bundle.crt $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs/ " || _die "Failed to copy certs bundle"
 
     # Copy the StackBuilder app bundle into place
-    cp -pR stackbuilder.app $WD/server/staging/osx || _die "Failed to copy StackBuilder into the staging directory"
+    cp -pR stackbuilder.app $WD/server/staging/osx.build || _die "Failed to copy StackBuilder into the staging directory"
 
     # Copy the third party headers
     ssh $PG_SSH_OSX "cp -r /opt/local/Current/include/openssl $PG_STAGING/include" || _die "Failed to copy the required header"
@@ -208,7 +208,7 @@ EOT
     ssh $PG_SSH_OSX "cp /opt/local/Current/include/iconv.h $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_OSX "cp /opt/local/Current/include/zlib.h $PG_STAGING/include" || _die "Failed to copy the required header"
 
-    #cd $WD/server/staging/osx
+    #cd $WD/server/staging/osx.build
     # Copy libxml2 as System's libxml can be old.
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libxml2*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libxml2"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libxslt*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libxslt"
@@ -230,11 +230,11 @@ EOT
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_base_carbonu_net-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_base_carbonu_xml-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
 
-    # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
-    cp -f $WD/server/staging/osx/lib/postgresql/plperl.so $WD/server/staging/osx/
+    # Copying plperl to staging/osx.build directory as we would not like to update the _rewrite_so_refs for it.
+    cp -f $WD/server/staging/osx.build/lib/postgresql/plperl.so $WD/server/staging/osx.build/
 
     # Changing loader path of plpython3.so
-    ssh $PG_SSH_OSX "install_name_tool -change libpython$PG_VERSION_PYTHON\m.dylib $PG_PYTHON_OSX/lib/libpython$PG_VERSION_PYTHON\m.dylib $PG_PATH_OSX/server/staging/osx/lib/postgresql/plpython3.so"
+    ssh $PG_SSH_OSX "install_name_tool -change libpython$PG_VERSION_PYTHON\m.dylib $PG_PYTHON_OSX/lib/libpython$PG_VERSION_PYTHON\m.dylib $PG_PATH_OSX/server/staging/osx.build/lib/postgresql/plpython3.so"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source settings.sh; source common.sh; cd $PG_STAGING; _rewrite_so_refs $PG_STAGING bin @loader_path/..;\
@@ -242,8 +242,8 @@ EOT
         _rewrite_so_refs $PG_STAGING lib/postgresql/plugins @loader_path/../../..;\
         _rewrite_so_refs $PG_STAGING stackbuilder.app/Contents/MacOS @loader_path/../../.."
 
-    # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
-    mv -f $WD/server/staging/osx/plperl.so $WD/server/staging/osx/lib/postgresql/plperl.so
+    # Copying back plperl to staging/osx.build/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
+    mv -f $WD/server/staging/osx.build/plperl.so $WD/server/staging/osx.build/lib/postgresql/plperl.so
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/scripts/osx/getlocales; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -o getlocales.osx -O0 getlocales.c"  || _die "Failed to build getlocales utility"
 
@@ -252,6 +252,16 @@ EOT
 
     # Copy the regress source to the regression setup 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/src/test/; cp -pR regress /buildfarm/src/test/" || _die "Failed to Copy regress to the regression directory"
+    echo "Removing last successful staging directory ($WD/server/staging/osx)"
+    rm -rf $WD/server/staging/osx || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/server/staging/osx || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/server/staging/osx || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/server/staging/osx.build/* $WD/server/staging/osx || _die "Couldn't copy the existing staging directory"
+    echo "PG_MAJOR_VERSION=$PG_MAJOR_VERSION" > $WD/server/staging/osx/versions-osx.sh
+    echo "PG_MINOR_VERSION=$PG_MINOR_VERSION" >> $WD/server/staging/osx/versions-osx.sh
+    echo "PG_PACKAGE_VERSION=$PG_PACKAGE_VERSION" >> $WD/server/staging/osx/versions-osx.sh
 
     cd $WD
     echo "END BUILD Server OSX"
@@ -269,6 +279,16 @@ _postprocess_server_osx() {
     echo "*******************************************************"
     echo " Post Process : Server (OSX)"
     echo "*******************************************************"
+
+    source $WD/server/staging/osx/versions-osx.sh
+    PG_BUILD_SERVER=$(expr $PG_BUILD_SERVER + $SKIPBUILD)
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_SERVER -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
 
     cd $WD/server
 
@@ -381,7 +401,7 @@ _postprocess_server_osx() {
     chmod a+x $WD/output/postgresql-$PG_MAJOR_VERSION-osx-installer.app/Contents/MacOS/installbuilder.sh
 
     # Rename the installer
-    mv $WD/output/postgresql-$PG_MAJOR_VERSION-osx-installer.app $WD/output/postgresql-$PG_PACKAGE_VERSION-osx.app || _die "Failed to rename the installer"
+    mv $WD/output/postgresql-$PG_MAJOR_VERSION-osx-installer.app $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app || _die "Failed to rename the installer"
 
     # Now we need to turn this into a DMG file
     echo "Creating disk image"
@@ -391,18 +411,18 @@ _postprocess_server_osx() {
         rm -rf server.img
     fi
     mkdir server.img || _die "Failed to create DMG staging directory"
-    mv postgresql-$PG_PACKAGE_VERSION-osx.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
+    mv postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
     cp $WD/server/resources/README.osx server.img/README || _die "Failed to copy the installer README file into the DMG staging directory"
 
     # sign the .app, create the DMG
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' --output ./server.img server.img/postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output/server.img; rm -rf postgresql-$PG_PACKAGE_VERSION-osx.app; mv postgresql-$PG_PACKAGE_VERSION-osx-signed.app postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "could not move the signed app"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; hdiutil create -quiet -anyowners -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-osx.dmg'" || _die "Failed to create the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' --output ./server.img server.img/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output/server.img; rm -rf postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app; mv postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx-signed.app postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; hdiutil create -quiet -anyowners -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg'" || _die "Failed to create the disk image (postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg)"
 
     echo "Attach the  disk image, create zip and then detach the image"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; hdid postgresql-$PG_PACKAGE_VERSION-osx.dmg" || _die "Failed to open the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg in remote host.)"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; hdid postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg" || _die "Failed to open the disk image (postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg in remote host.)"
 
-    ssh $PG_SSH_OSX "cd '/Volumes/PostgreSQL $PG_PACKAGE_VERSION'; zip -r $PG_PATH_OSX/output/postgresql-$PG_PACKAGE_VERSION-osx.zip postgresql-$PG_PACKAGE_VERSION-osx.app" || _die "Failed to create the installer zip file (postgresql-$PG_PACKAGE_VERSION-osx.zip) in remote host."
+    ssh $PG_SSH_OSX "cd '/Volumes/PostgreSQL $PG_PACKAGE_VERSION'; zip -r $PG_PATH_OSX/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.zip postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app" || _die "Failed to create the installer zip file (postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.zip) in remote host."
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; sleep 2; echo 'Detaching /Volumes/PostgreSQL $PG_PACKAGE_VERSION...' ; hdiutil detach '/Volumes/PostgreSQL $PG_PACKAGE_VERSION'" || _die "Failed to detach the /Volumes/PostgreSQL $PG_PACKAGE_VERSION in remote host."
 

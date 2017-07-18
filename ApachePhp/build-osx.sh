@@ -50,15 +50,15 @@ _prep_ApachePhp_osx() {
     ln -s $PG_PGHOME_OSX/lib/libpq.5.dylib sapi/cli/libpq.5.dylib
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/ApachePhp/staging/osx ];
+    if [ -e $WD/ApachePhp/staging/osx.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/ApachePhp/staging/osx || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/ApachePhp/staging/osx.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/ApachePhp/staging/osx)"
-    mkdir -p $WD/ApachePhp/staging/osx || _die "Couldn't create the staging directory"
-    chmod 755 $WD/ApachePhp/staging/osx || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/ApachePhp/staging/osx.build)"
+    mkdir -p $WD/ApachePhp/staging/osx.build || _die "Couldn't create the staging directory"
+    chmod 755 $WD/ApachePhp/staging/osx.build || _die "Couldn't set the permissions on the staging directory"
    
     echo "END PREP ApachePhp OSX"
 }
@@ -80,7 +80,7 @@ _build_ApachePhp_osx() {
     export PATH
 
     # build apache
-    PG_STAGING=$PG_PATH_OSX/ApachePhp/staging/osx
+    PG_STAGING=$PG_PATH_OSX/ApachePhp/staging/osx.build
 
     cat <<EOT-APACHEPHP > build-apachephp.sh
     source ../settings.sh
@@ -313,6 +313,17 @@ EOT-APACHEPHP
     scp build-apachephp.sh $PG_SSH_OSX:$PG_PATH_OSX/ApachePhp
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/ApachePhp; sh ./build-apachephp.sh" || _die "Failed to build ApachePhp on OSX"
 
+    echo "Removing last successful staging directory ($WD/ApachePhp/staging/osx)"
+    rm -rf $WD/ApachePhp/staging/osx || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/ApachePhp/staging/osx || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/ApachePhp/staging/osx || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/ApachePhp/staging/osx.build/* $WD/ApachePhp/staging/osx || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_APACHE=$PG_VERSION_APACHE" > $WD/ApachePhp/staging/osx/versions-osx.sh
+    echo "PG_VERSION_PHP=$PG_VERSION_PHP" >> $WD/ApachePhp/staging/osx/versions-osx.sh
+    echo "PG_BUILDNUM_APACHEPHP=$PG_BUILDNUM_APACHEPHP" >> $WD/ApachePhp/staging/osx/versions-osx.sh
+
     echo "END BUILD ApachePhp OSX"
 }
 
@@ -327,6 +338,9 @@ _postprocess_ApachePhp_osx() {
     echo "*******************************************************"
     echo " Post Process : ApachePHP (OSX)"
     echo "*******************************************************"
+
+    source $WD/ApachePhp/staging/osx/versions-osx.sh
+    PG_BUILD_APACHEPHP=$(expr $PG_BUILD_APACHEPHP + $SKIPBUILD)
 
     #PG_PATH_OSX=$WD
 
@@ -397,15 +411,25 @@ _postprocess_ApachePhp_osx() {
     # Build the installer"
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_APACHEPHP -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-osx.app $WD/output/apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-${BUILD_FAILED}osx.app
+
     # Zip up the output
     cd $WD/output
 
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; rm -rf apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-osx.app; mv apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-osx-signed.app apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX/output; rm -rf apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-${BUILD_FAILED}osx.app; mv apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-${BUILD_FAILED}osx-signed.app apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
 
-    zip -r apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-osx.zip apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-osx.app/ || _die "Failed to zip the installer bundle"
-    rm -rf apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-osx.app/ || _die "Failed to remove the unpacked installer bundle"
+    zip -r apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-${BUILD_FAILED}osx.zip apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-${BUILD_FAILED}osx.app/ || _die "Failed to zip the installer bundle"
+    rm -rf apachephp-$PG_VERSION_APACHE-$PG_VERSION_PHP-$PG_BUILDNUM_APACHEPHP-${BUILD_FAILED}osx.app/ || _die "Failed to remove the unpacked installer bundle"
     
     cd $WD
     echo "END POST ApachePhp OSX"

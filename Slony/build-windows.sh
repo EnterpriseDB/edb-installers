@@ -51,7 +51,7 @@ _prep_Slony_windows() {
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Slony.zip del /S /Q Slony.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\Slony.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Slony.windows rd /S /Q Slony.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\Slony.windows directory on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Slony.staging rd /S /Q Slony.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS\\Slony.staging directory on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Slony.staging.build rd /S /Q Slony.staging.build" || _die "Couldn't remove the $PG_PATH_WINDOWS\\Slony.staging.build directory on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST slony-staging.zip del /S /Q slony-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\slony-staging.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST build-Slony.bat del /S /Q build-Slony.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\build-Slony.bat on Windows VM"
 
@@ -103,28 +103,31 @@ EOT
     
    # Slony installs it's files into postgresql directory
    # We need to copy them to staging directory
-   ssh $PG_SSH_WINDOWS  "mkdir -p $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to create the bin directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/slon/slon.exe $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slon binary to staging directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/slonik/slonik.exe $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary to staging directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PGBUILD_WINDOWS/bin/pthreadVC2.dll $PG_PATH_WINDOWS/Slony.staging/bin" || _die "Failed to copy slonik binary to staging directory"
+   ssh $PG_SSH_WINDOWS  "mkdir -p $PG_PATH_WINDOWS/Slony.staging.build/bin" || _die "Failed to create the bin directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/slon/slon.exe $PG_PATH_WINDOWS/Slony.staging.build/bin" || _die "Failed to copy slon binary to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/slonik/slonik.exe $PG_PATH_WINDOWS/Slony.staging.build/bin" || _die "Failed to copy slonik binary to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PGBUILD_WINDOWS/bin/pthreadVC2.dll $PG_PATH_WINDOWS/Slony.staging.build/bin" || _die "Failed to copy slonik binary to staging directory"
 
-   ssh $PG_SSH_WINDOWS "mkdir -p $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to create the bin directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.$PG_VERSION_SLONY.dll $PG_PATH_WINDOWS/Slony.staging/lib" || _die "Failed to copy slony_funcs.dll to staging directory"
+   ssh $PG_SSH_WINDOWS "mkdir -p $PG_PATH_WINDOWS/Slony.staging.build/lib" || _die "Failed to create the bin directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.$PG_VERSION_SLONY.dll $PG_PATH_WINDOWS/Slony.staging.build/lib" || _die "Failed to copy slony_funcs.dll to staging directory"
 
-   ssh $PG_SSH_WINDOWS "mkdir -p $PG_PATH_WINDOWS/Slony.staging/Slony" || _die "Failed to create the bin directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_base.sql $PG_PATH_WINDOWS/Slony.staging/Slony/slony1_base.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_base.v83.sql $PG_PATH_WINDOWS/Slony.staging/Slony/slony1_base.v83.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_base.v84.sql $PG_PATH_WINDOWS/Slony.staging/Slony/slony1_base.v84.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.sql $PG_PATH_WINDOWS/Slony.staging/Slony/slony1_funcs.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.v83.sql $PG_PATH_WINDOWS/Slony.staging/Slony/slony1_funcs.v83.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
-   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.v84.sql $PG_PATH_WINDOWS/Slony.staging/Slony/slony1_funcs.v84.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
+   ssh $PG_SSH_WINDOWS "mkdir -p $PG_PATH_WINDOWS/Slony.staging.build/Slony" || _die "Failed to create the bin directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_base.sql $PG_PATH_WINDOWS/Slony.staging.build/Slony/slony1_base.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_base.v83.sql $PG_PATH_WINDOWS/Slony.staging.build/Slony/slony1_base.v83.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_base.v84.sql $PG_PATH_WINDOWS/Slony.staging.build/Slony/slony1_base.v84.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.sql $PG_PATH_WINDOWS/Slony.staging.build/Slony/slony1_funcs.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.v83.sql $PG_PATH_WINDOWS/Slony.staging.build/Slony/slony1_funcs.v83.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
+   ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Slony.windows/src/backend/slony1_funcs.v84.sql $PG_PATH_WINDOWS/Slony.staging.build/Slony/slony1_funcs.v84.$PG_VERSION_SLONY.sql" || _die "Failed to share files to staging directory"
 
-   # Zip up the installed code, copy it back here, and unpack.
-   echo "Copying slony built tree to Unix host"
-   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\Slony.staging; cmd /c zip -r ..\\\\slony-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/Slony.staging)"
-   scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/slony-staging.zip $WD/Slony/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/slony-staging.zip)"
-   unzip $WD/Slony/staging/windows/slony-staging.zip -d $WD/Slony/staging/windows || _die "Failed to unpack the built source tree ($WD/staging/windows/slony-staging.zip)"
-   rm $WD/Slony/staging/windows/slony-staging.zip
+    echo "Removing last successful staging directory ($PG_PATH_WINDOWS/Slony.staging)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Slony.staging rd /S /Q Slony.staging" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\Slony.staging" || _die "Couldn't create the last successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c xcopy /E /Q /Y Slony.staging.build\\\\* Slony.staging\\\\" || _die "Couldn't copy the existing staging directory"
+
+    ssh $PG_SSH_WINDOWS "cmd /c echo PG_VERSION_SLONY=$PG_VERSION_SLONY > $PG_PATH_WINDOWS\\\\Slony.staging/versions-windows.sh" || _die "Failed to write replication version number into versions-windows.sh"
+    ssh $PG_SSH_WINDOWS "cmd /c echo PG_BUILDNUM_SLONY=$PG_BUILDNUM_SLONY >> $PG_PATH_WINDOWS\\\\Slony.staging/versions-windows.sh" || _die "Failed to write replication build number into versions-windows.sh"
 
    echo "END BUILD Slony Windows"
 }
@@ -138,6 +141,28 @@ EOT
 _postprocess_Slony_windows() {
 
     echo "BEGIN POST Slony Windows"
+
+    # Remove any existing staging directory that might exist, and create a clean one
+    if [ -e $WD/Slony/staging/windows ];
+    then
+      echo "Removing existing staging directory"
+      rm -rf $WD/Slony/staging/windows || _die "Couldn't remove the existing staging directory"
+    fi
+    echo "Creating staging directory ($WD/Slony/staging/windows)"
+    mkdir -p $WD/Slony/staging/windows || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/Slony/staging/windows || _die "Couldn't set the permissions on the staging directory"
+
+   # Zip up the installed code, copy it back here, and unpack.
+   echo "Copying slony built tree to Unix host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST slony-staging.zip del /S /Q slony-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\slony-staging.zip on Windows VM"
+   ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\Slony.staging; cmd /c zip -r ..\\\\slony-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/Slony.staging)"
+   scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/slony-staging.zip $WD/Slony/staging/windows || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/slony-staging.zip)"
+   unzip $WD/Slony/staging/windows/slony-staging.zip -d $WD/Slony/staging/windows || _die "Failed to unpack the built source tree ($WD/staging/windows/slony-staging.zip)"
+   rm $WD/Slony/staging/windows/slony-staging.zip
+
+    dos2unix $WD/Slony/staging/windows/versions-windows.sh || _die "Failed to convert format of versions-windows.sh from dos to unix"
+    source $WD/Slony/staging/windows/versions-windows.sh
+    PG_BUILD_SLONY=$(expr $PG_BUILD_SLONY + $SKIPBUILD)
 
     cd $WD/Slony
 
@@ -163,8 +188,18 @@ _postprocess_Slony_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-win.xml windows || _die "Failed to build the installer"
 
+   # If build passed empty this variable
+   BUILD_FAILED="build_failed-"
+   if [ $PG_BUILD_SLONY -gt 0 ];
+   then
+       BUILD_FAILED=""
+   fi
+
+    # Rename the installer
+    mv $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-windows.exe $WD/output/slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}windows.exe
+
 	# Sign the installer
-	win32_sign "slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-windows.exe"
+	win32_sign "slony-pg$PG_CURRENT_VERSION-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}windows.exe"
 	    
     cd $WD
 

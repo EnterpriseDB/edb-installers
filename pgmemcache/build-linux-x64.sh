@@ -14,7 +14,7 @@ _prep_pgmemcache_linux_x64() {
 
     PGMEM_PACKAGE_PATH=$WD/pgmemcache
     PGMEM_PLATFORM=linux-x64
-    PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/$PGMEM_PLATFORM
+    PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/${PGMEM_PLATFORM}.build
     PGMEM_SOURCE=$PGMEM_PACKAGE_PATH/source
 
     # Remove any existing source directory that might exists, and create a clean one
@@ -51,13 +51,13 @@ _build_pgmemcache_linux_x64() {
 
     PGMEM_PACKAGE_PATH=$WD/pgmemcache
     PGMEM_PLATFORM=linux-x64
-    PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/$PGMEM_PLATFORM
+    PGMEM_STAGING=$PGMEM_PACKAGE_PATH/staging/${PGMEM_PLATFORM}.build
     PGMEM_SOURCE=$PGMEM_PACKAGE_PATH/source/pgmemcache.$PGMEM_PLATFORM
     PG_PATH=$PG_PGHOME_LINUX_X64
     PVT_SSH=$PG_SSH_LINUX_X64
     PVT_REPO=$PG_PATH_LINUX_X64
     PGMEM_PACKAGE_VM_PATH=$PVT_REPO/pgmemcache/source/pgmemcache.$PGMEM_PLATFORM
-    PG_STAGING=$PG_PATH_LINUX_X64/pgmemcache/staging/linux-x64
+    PG_STAGING=$PG_PATH_LINUX_X64/pgmemcache/staging/linux-x64.build
 
     cd $PGMEM_SOURCE
     ssh $PVT_SSH "cd $PGMEM_PACKAGE_VM_PATH; LD_LIBRARY_PATH=$PG_PATH/lib PATH=$PG_PATH/bin:$PATH make CFLAGS=\" -I/opt/local/Current/include \" LDFLAGS=\" -L/opt/local/Current/lib -Wl,--rpath,$PGMEM_PACKAGE_VM_PATH/../lib\"" || _die "Failed to build the pgmemcache for $PGMEM_PLATFORM"
@@ -72,11 +72,11 @@ _build_pgmemcache_linux_x64() {
     mkdir -p $PGMEM_STAGING/lib || _die "Failed to create lib directory"
     mkdir -p $PGMEM_STAGING/share/extension || _die "Failed to create share directory"
 
-    ssh $PVT_SSH "cp -pR /opt/local/Current/lib/libmemcached.so* $PVT_REPO/pgmemcache/staging/linux-x64/lib/" || _die "Failed to copy the libmemcached binaries"
+    ssh $PVT_SSH "cp -pR /opt/local/Current/lib/libmemcached.so* $PVT_REPO/pgmemcache/staging/linux-x64.build/lib/" || _die "Failed to copy the libmemcached binaries"
     cp -pR $PGMEM_SOURCE/pgmemcache.so $PGMEM_STAGING/lib || _die "Failed to copy the pgmemcache binary"
     cp -pR $PGMEM_SOURCE/*.sql $PGMEM_STAGING/share/extension || _die "Failed to copy the share files for the pgmemcache"
     cp -pR $PGMEM_SOURCE/pgmemcache.control $PGMEM_STAGING/share/extension || _die "Failed to copy the control file for the pgmemcache"
-    ssh $PVT_SSH "cp -pR /opt/local/Current/include/* $PVT_REPO/pgmemcache/staging/linux-x64/include" || _die "Failed to copy the header files for the libmemcached"
+    ssh $PVT_SSH "cp -pR /opt/local/Current/include/* $PVT_REPO/pgmemcache/staging/linux-x64.build/include" || _die "Failed to copy the header files for the libmemcached"
 
     chmod a+rx $PGMEM_STAGING/lib/* || _die "Failed to set permissions"
     chmod a+r $PGMEM_STAGING/share/extension/* || _die "Failed to set permissions"
@@ -93,7 +93,17 @@ _build_pgmemcache_linux_x64() {
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
-    mv $WD/pgmemcache/staging/linux-x64/symbols $WD/output/symbols/linux-x64/pgmemcache || _die "Failed to move $WD/pgmemcache/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/pgmemcache directory"
+    mv $WD/pgmemcache/staging/linux-x64.build/symbols $WD/output/symbols/linux-x64/pgmemcache || _die "Failed to move $WD/pgmemcache/staging/linux-x64.build/symbols to $WD/output/symbols/linux-x64/pgmemcache directory"
+
+    echo "Removing last successful staging directory ($WD/pgmemcache/staging/linux-x64)"
+    rm -rf $WD/pgmemcache/staging/linux-x64 || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/pgmemcache/staging/linux-x64 || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/pgmemcache/staging/linux-x64 || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/pgmemcache/staging/linux-x64.build/* $WD/pgmemcache/staging/linux-x64 || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_PGMEMCACHE=$PG_VERSION_PGMEMCACHE" > $WD/pgmemcache/staging/linux-x64/versions-linux-x64.sh
+    echo "PG_BUILDNUM_PGMEMCACHE=$PG_BUILDNUM_PGMEMCACHE" >> $WD/pgmemcache/staging/linux-x64/versions-linux-x64.sh
 
     echo "END BUILD pgmemcache Linux-x64"
 }
@@ -110,6 +120,9 @@ _postprocess_pgmemcache_linux_x64() {
     echo "#########################################"
     echo "# pgmemcache : LINUX-X64 : Post Process #"
     echo "#########################################"
+
+    source $WD/pgmemcache/staging/linux-x64/versions-linux-x64.sh
+    PG_BUILD_PGMEMCACHE=$(expr $PG_BUILD_PGMEMCACHE + $SKIPBUILD)
 
     PGMEM_PACKAGE_PATH=$WD/pgmemcache
     PGMEM_PLATFORM=linux-x64
@@ -130,6 +143,16 @@ _postprocess_pgmemcache_linux_x64() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml ${PGMEM_PLATFORM} || _die "Failed to build the installer (${PGMEM_PLATFORM})"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_PGMEMCACHE -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-linux-x64.run $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}linux-x64.run
 
     cd $WD
 
