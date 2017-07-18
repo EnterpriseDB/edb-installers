@@ -44,12 +44,12 @@ _prep_server_linux() {
       rm -rf $WD/server/staging_cache/linux || _die "Couldn't remove the existing staging_cache directory"
     fi
 
-    # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/server/staging/linux ];
-    then
-      echo "Removing existing staging directory"
-      rm -rf $WD/server/staging/linux || _die "Couldn't remove the existing staging directory"
-    fi
+    ## Remove any existing staging directory that might exist, and create a clean one
+    #if [ -e $WD/server/staging/linux ];
+    #then
+    #  echo "Removing existing staging directory"
+    #  rm -rf $WD/server/staging/linux || _die "Couldn't remove the existing staging directory"
+    #fi
 
     echo "Creating staging_cache directory ($WD/server/staging_cache/linux)"
     mkdir -p $WD/server/staging_cache/linux || _die "Couldn't create the staging directory"
@@ -516,6 +516,21 @@ EOT-PGADMIN
 #PARESH    cp -r "$WD/server/staging_cache/linux/pgAdmin 4" $PGADMIN_STAGING/ || _die "Failed to copy $WD/server/staging_cache/linux/pgAdmin\ 4"
     cp -r "$WD/server/staging_cache/linux/pgAdmin 4" $PGADMIN_STAGING/
 
+    echo "Removing last successful staging directory ($WD/server/staging/linux)"
+    rm -rf $WD/server/staging/linux || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/server/staging/linux || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/server/staging/linux || _die "Couldn't set the permissions on the successful staging directory"
+    mkdir -p $PGSERVER_STAGING || _die "Couldn't create the staging directory $PGSERVER_STAGING"
+    mkdir -p $PGADMIN_STAGING || _die "Couldn't create the staging directory $PGADMIN_STAGING"
+    mkdir -p $SB_STAGING || _die "Couldn't create the staging directory $SB_STAGING"
+    mkdir -p $CLT_STAGING || _die "Couldn't create the staging directory $CLT_STAGING"
+    chmod ugo+w $PGSERVER_STAGING $PGADMIN_STAGING $SB_STAGING $CLT_STAGING || _die "Couldn't set the permissions on the staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    echo "PG_MAJOR_VERSION=$PG_MAJOR_VERSION" > $WD/server/staging/linux/versions-linux.sh
+    echo "PG_MINOR_VERSION=$PG_MINOR_VERSION" >> $WD/server/staging/linux/versions-linux.sh
+    echo "PG_PACKAGE_VERSION=$PG_PACKAGE_VERSION" >> $WD/server/staging/linux/versions-linux.sh
+
     echo "Preparing restructured staging for server"
     cp -r $WD/server/staging_cache/linux/bin $PGSERVER_STAGING  || _die "Failed to copy $WD/server/staging_cache/linux/bin"
     cp -r $WD/server/staging_cache/linux/lib $PGSERVER_STAGING  || _die "Failed to copy $WD/server/staging_cache/linux/lib"
@@ -580,6 +595,9 @@ EOT-PGADMIN
 
 _postprocess_server_linux() {
     echo "BEGIN POST Server Linux"
+
+    source $WD/server/staging/linux/versions-linux.sh
+    PG_BUILD_SERVER=$(expr $PG_BUILD_SERVER + $SKIPBUILD)
 
     cd $WD/server
 
@@ -771,9 +789,16 @@ _postprocess_server_linux() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-linux.xml linux || _die "Failed to build the installer"
-	
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_SERVER -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
 	# Rename the installer
-	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-linux.run || _die "Failed to rename the installer"
+	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}linux.run || _die "Failed to rename the installer"
 
     cd $WD
     echo "END POST Server Linux"

@@ -25,15 +25,15 @@ _prep_psqlODBC_linux_x64() {
     cp -R psqlodbc-$PG_VERSION_PSQLODBC/* psqlODBC.linux-x64 || _die "Failed to copy the source code (source/psqlODBC-$PG_VERSION_PSQLODBC)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/psqlODBC/staging/linux-x64 ];
+    if [ -e $WD/psqlODBC/staging/linux-x64.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/psqlODBC/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/psqlODBC/staging/linux-x64.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/psqlODBC/staging/linux-x64)"
-    mkdir -p $WD/psqlODBC/staging/linux-x64 || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/psqlODBC/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/psqlODBC/staging/linux-x64.build)"
+    mkdir -p $WD/psqlODBC/staging/linux-x64.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/psqlODBC/staging/linux-x64.build || _die "Couldn't set the permissions on the staging directory"
     
     echo "END PREP psqlODBC Linux-x64"
 }
@@ -134,9 +134,8 @@ _build_psqlODBC_linux_x64() {
 
     cd $WD/psqlODBC
 
-    PG_STAGING=$PG_PATH_LINUX_X64/psqlODBC/staging/linux-x64
+    PG_STAGING=$PG_PATH_LINUX_X64/psqlODBC/staging/linux-x64.build
     SOURCE_DIR=$PG_PATH_LINUX_X64/psqlODBC/source/psqlODBC.linux-x64
-    PG_STAGING_CACHE=$WD/server/staging_cache/linux-x64
 
     echo "Configuring psqlODBC sources"
     ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; export LD_LIBRARY_PATH=/opt/local/Current/lib:$PG_PGHOME_LINUX_X64/lib:\$LD_LIBRARY_PATH; export PATH=/opt/local/Current/bin:$PG_PGHOME_LINUX_X64/bin:\$PATH; CFLAGS=\"-I/opt/local/Current/include\" LDFLAGS=\"-L/opt/local/Current/lib\" ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
@@ -145,21 +144,21 @@ _build_psqlODBC_linux_x64() {
     echo "Installing psqlODBC into the sources"
     ssh $PG_SSH_LINUX_X64 "cd $SOURCE_DIR; make install" || _die "Couldn't install the psqlODBC into statging directory" 
 
-    cd $WD/psqlODBC/staging/linux-x64/lib
+    cd $WD/psqlODBC/staging/linux-x64.build/lib
 
     # Copy in the dependency libraries
-    cp -pR $PG_STAGING_CACHE/lib/libpq.so* . || _die "Failed to copy libcrypto.so"
-    cp -pR $PG_STAGING_CACHE/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
-    cp -pR $PG_STAGING_CACHE/lib/libssl.so* . || _die "Failed to copy libssl.so"
-    cp -pR $PG_STAGING_CACHE/lib/libedit.so* . || _die "Failed to copy libedit.so"
-    cp -pR $PG_STAGING_CACHE/lib/libldap*.so* . || _die "Failed to copy libldap.so"
-    cp -pR $PG_STAGING_CACHE/lib/liblber*.so* . || _die "Failed to copy liblber.so"
-    cp -pR $PG_STAGING_CACHE/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
-    cp -pR $PG_STAGING_CACHE/lib/libkrb5.so* . || _die "Failed to copy libkrb5.so"
-    cp -pR $PG_STAGING_CACHE/lib/libkrb5support*.so* . || _die "Failed to copy libkrb5support.so"
-    cp -pR $PG_STAGING_CACHE/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
-    cp -pR $PG_STAGING_CACHE/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
-    cp -pR $PG_STAGING_CACHE/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libpq.so* . || _die "Failed to copy libcrypto.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libssl.so* . || _die "Failed to copy libssl.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libedit.so* . || _die "Failed to copy libedit.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libldap*.so* . || _die "Failed to copy libldap.so"
+    cp -pR $WD/server/staging/linux-x64/lib/liblber*.so* . || _die "Failed to copy liblber.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libkrb5.so* . || _die "Failed to copy libkrb5.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libkrb5support*.so* . || _die "Failed to copy libkrb5support.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
+    cp -pR $WD/server/staging/linux-x64/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
     ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libodbcinst.so* $PG_STAGING/lib" || _die "Failed to copy libodbcinst.so"
     ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libodbc.so* $PG_STAGING/lib" || _die "Failed to copy libodbc.so"
 
@@ -190,7 +189,17 @@ _build_psqlODBC_linux_x64() {
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
-    mv $WD/psqlODBC/staging/linux-x64/symbols $WD/output/symbols/linux-x64/psqlODBC || _die "Failed to move $WD/psqlODBC/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/psqlODBC directory"
+    mv $WD/psqlODBC/staging/linux-x64.build/symbols $WD/output/symbols/linux-x64/psqlODBC || _die "Failed to move $WD/psqlODBC/staging/linux-x64.build/symbols to $WD/output/symbols/linux-x64/psqlODBC directory"
+
+    echo "Removing last successful staging directory ($WD/psqlODBC/staging/linux-x64)"
+    rm -rf $WD/psqlODBC/staging/linux-x64 || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/psqlODBC/staging/linux-x64 || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/psqlODBC/staging/linux-x64 || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/psqlODBC/staging/linux-x64.build/* $WD/psqlODBC/staging/linux-x64 || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_PSQLODBC=$PG_VERSION_PSQLODBC" > $WD/psqlODBC/staging/linux-x64/versions-linux-x64.sh
+    echo "PG_BUILDNUM_PSQLODBC=$PG_BUILDNUM_PSQLODBC" >> $WD/psqlODBC/staging/linux-x64/versions-linux-x64.sh
 
     echo "END BUILD psqlODBC Linux-x64"
 }
@@ -203,6 +212,9 @@ _build_psqlODBC_linux_x64() {
 _postprocess_psqlODBC_linux_x64() {
     
     echo "BEGIN POST psqlODBC Linux-x64"    
+
+    source $WD/psqlODBC/staging/linux-x64/versions-linux-x64.sh
+    PG_BUILD_PSQLODBC=$(expr $PG_BUILD_PSQLODBC + $SKIPBUILD)
 
     cd $WD/psqlODBC
  
@@ -249,6 +261,16 @@ _postprocess_psqlODBC_linux_x64() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_PSQLODBC -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-linux-x64.run $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}linux-x64.run
 
     cd $WD
 

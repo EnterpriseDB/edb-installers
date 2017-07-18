@@ -49,7 +49,7 @@ _prep_psqlODBC_windows_x64() {
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST psqlODBC.zip del /S /Q psqlODBC.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\\psqlODBC.zip on Windows VM"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST build-psqlODBC.bat del /S /Q build-psqlODBC.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\\build-psqlODBC.bat on Windows VM"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST psqlODBC.windows-x64 rd /S /Q psqlODBC.windows-x64" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\\psqlODBC.windows-x64 directory on Windows VM"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST psqlODBC.staging rd /S /Q psqlODBC.staging" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\\psqlODBC.staging directory on Windows VM"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST psqlODBC.staging.build rd /S /Q psqlODBC.staging.build" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\\psqlODBC.staging.build directory on Windows VM"
 
     # Copy sources on windows-x64 VM
     echo "Copying psqlODBC sources to Windows VM"
@@ -88,25 +88,51 @@ EOT
     scp build-psqlODBC.bat $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c build-psqlODBC.bat" || _die "Failed to build psqlODBC"
 
-    # Zip up the installed code, copy it back here, and unpack.
+    echo "Removing last successful staging directory ($PG_PATH_WINDOWS_X64\\\\psqlODBC.staging)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST psqlODBC.staging rd /S /Q psqlODBC.staging" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\psqlODBC.staging" || _die "Couldn't create the last successful staging directory"
 
-    PSQLODBC_MAJOR_VERSION=`echo $PG_VERSION_PSQLODBC | cut -f1,2 -d "." | sed -e 's:\.::g'`
+    echo "Copying the complete build to the successful staging directory"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c xcopy /E /Q /Y psqlODBC.windows-x64\\\\_Unicode_Release\\\\*.dll psqlODBC.staging" || _die "Couldn't copy the existing staging directory (Unicode Release)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c xcopy /E /Q /Y psqlODBC.windows-x64\\\\_ANSI_Release\\\\*.dll psqlODBC.staging" || _die "Couldn't copy the existing staging directory (ANSI Release)"
 
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c echo PG_VERSION_PSQLODBC=$PG_VERSION_PSQLODBC > $PG_PATH_WINDOWS_X64\\\\psqlODBC.staging/versions-windows-x64.sh" || _die "Failed to write psqlODBC version number into versions-windows-x64.sh"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c echo PG_BUILDNUM_PSQLODBC=$PG_BUILDNUM_PSQLODBC >> $PG_PATH_WINDOWS_X64\\\\psqlODBC.staging/versions-windows-x64.sh" || _die "Failed to write psqlODBC build number into versions-windows-x64.sh"
+
+}
+
+
+################################################################################
+# PG Build
+################################################################################
+
+_postprocess_psqlODBC_windows_x64() {
+
+    if [ -e $WD/psqlODBC/staging/windows-x64 ];
+    then
+      echo "Removing existing staging directory"
+      rm -rf $WD/psqlODBC/staging/windows-x64 || _die "Couldn't remove the existing staging directory"
+    fi
+    echo "Creating staging directory ($WD/psqlODBC/staging/windows-x64)"
+    mkdir -p $WD/psqlODBC/staging/windows-x64 || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/psqlODBC/staging/windows-x64 || _die "Couldn't set the permissions on the staging directory"
     mkdir -p $WD/psqlODBC/staging/windows-x64/bin  || _die "Failed to create directory for psqlODBC"
     mkdir -p $WD/psqlODBC/staging/windows-x64/etc  || _die "Failed to create etc directory for psqlODBC"
-    echo "Copying psqlODBC built tree to Unix host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\psqlODBC.windows-x64\\\\_ANSI_Release; zip -r ..\\\\..\\\\psqlODBC-windows-x64.zip *.dll" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC.windows-x64)"
-    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip)"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST psqlODBC-windows-x64.zip del /S /Q psqlODBC-windows-x64.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\\psqlODBC-windows-x64.zip on Windows VM"
-    unzip -o $WD/psqlODBC/staging/windows-x64/bin/psqlODBC-windows-x64.zip -d $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/psqlODBC-windows-x64.zip)"
-    rm $WD/psqlODBC/staging/windows-x64/bin/psqlODBC-windows-x64.zip
+
+    # Zip up the installed code, copy it back here, and unpack.
+    PSQLODBC_MAJOR_VERSION=`echo $PG_VERSION_PSQLODBC | cut -f1,2 -d "." | sed -e 's:\.::g'`
 
     echo "Copying psqlODBC built tree to Unix host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\psqlODBC.windows-x64\\\\_Unicode_Release; zip -r ..\\\\..\\\\psqlODBC-windows-x64.zip *.dll" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC.windows-x64)"
-    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-windows-x64.zip)"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST psqlODBC-windows-x64.zip del /S /Q psqlODBC-windows-x64.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\\psqlODBC-windows-x64.zip on Windows VM"
-    unzip -o $WD/psqlODBC/staging/windows-x64/bin/psqlODBC-windows-x64.zip -d $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/psqlODBC-windows-x64.zip)"
-    rm $WD/psqlODBC/staging/windows-x64/bin/psqlODBC-windows-x64.zip
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST psqlODBC-staging.zip del /S /Q psqlODBC-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\\psqlODBC-staging.zip on Windows VM"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\psqlODBC.staging; cmd /c zip -r ..\\\\psqlODBC-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC.staging)"
+    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-staging.zip $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/psqlODBC-staging.zip)"
+    unzip -o $WD/psqlODBC/staging/windows-x64/bin/psqlODBC-staging.zip -d $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/bin/psqlODBC-staging.zip)"
+    rm $WD/psqlODBC/staging/windows-x64/bin/psqlODBC-staging.zip
+    mv $WD/psqlODBC/staging/windows-x64/bin/versions-windows-x64.sh $WD/psqlODBC/staging/windows-x64 || _die "Failed to move versions-windows-x64.sh"
+
+    dos2unix $WD/psqlODBC/staging/windows-x64/versions-windows-x64.sh || _die "Failed to convert format of versions-windows-x64.sh from dos to unix"
+    source $WD/psqlODBC/staging/windows-x64/versions-windows-x64.sh
+    PG_BUILD_PSQLODBC=$(expr $PG_BUILD_PSQLODBC + $SKIPBUILD)
 
     scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output/lib/libpq.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/ssleay32.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dependent dll" 
@@ -117,15 +143,6 @@ EOT
 
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/ssl/openssl.cnf $WD/psqlODBC/staging/windows-x64/etc || _die "Failed to copy the openssl.cnf"
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/vcredist/vcredist_x64.exe $WD/psqlODBC/staging/windows-x64/ || _die "Failed to copy the vcredist"
-
-}
-
-
-################################################################################
-# PG Build
-################################################################################
-
-_postprocess_psqlODBC_windows_x64() {
 
     cd $WD/psqlODBC
     
@@ -147,8 +164,18 @@ _postprocess_psqlODBC_windows_x64() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-win64.xml windows || _die "Failed to build the installer"
 
+   # If build passed empty this variable
+   BUILD_FAILED="build_failed-"
+   if [ $PG_BUILD_PSQLODBC -gt 0 ];
+   then
+       BUILD_FAILED=""
+   fi
+
+    # Rename the installer
+    mv $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-windows-x64.exe $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}windows-x64.exe
+
     # Sign the installer
-    win32_sign "psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-windows-x64.exe"
+    win32_sign "psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}windows-x64.exe"
 	
     cd $WD
 

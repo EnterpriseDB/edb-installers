@@ -29,15 +29,15 @@ _prep_pgJDBC_osx() {
     cp -R pgJDBC-$PG_VERSION_PGJDBC/* pgJDBC.osx || _die "Failed to copy the source code (source/pgJDBC-$PG_VERSION_PGJDBC)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pgJDBC/staging/osx ];
+    if [ -e $WD/pgJDBC/staging/osx.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/pgJDBC/staging/osx || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/pgJDBC/staging/osx.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/pgJDBC/staging/osx)"
-    mkdir -p $WD/pgJDBC/staging/osx || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/pgJDBC/staging/osx || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/pgJDBC/staging/osx.build)"
+    mkdir -p $WD/pgJDBC/staging/osx.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/pgJDBC/staging/osx.build || _die "Couldn't set the permissions on the staging directory"
 
     echo "END PREP pgJDBC OSX"
 }
@@ -53,7 +53,17 @@ _build_pgJDBC_osx() {
     echo "*******************************************************"
     echo " Build : pgJDBC (OSX)"
     echo "*******************************************************"
-    cp -R $WD/pgJDBC/source/pgJDBC.osx/* $WD/pgJDBC/staging/osx || _die "Failed to copy the pgJDBC Source into the staging directory"
+    cp -R $WD/pgJDBC/source/pgJDBC.osx/* $WD/pgJDBC/staging/osx.build || _die "Failed to copy the pgJDBC Source into the staging directory"
+
+    echo "Removing last successful staging directory ($WD/pgJDBC/staging/osx)"
+    rm -rf $WD/pgJDBC/staging/osx || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/pgJDBC/staging/osx || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/pgJDBC/staging/osx || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/pgJDBC/staging/osx.build/* $WD/pgJDBC/staging/osx || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_PGJDBC=$PG_VERSION_PGJDBC" > $WD/pgJDBC/staging/osx/versions-osx.sh
+    echo "PG_BUILDNUM_PGJDBC=$PG_BUILDNUM_PGJDBC" >> $WD/pgJDBC/staging/osx/versions-osx.sh
 
     cd $WD
 
@@ -72,6 +82,16 @@ _postprocess_pgJDBC_osx() {
     echo "*******************************************************"
     echo " Post Process : pgJDBC (OSX)"
     echo "*******************************************************"
+
+    source $WD/pgJDBC/staging/osx/versions-osx.sh
+    PG_BUILD_PGJDBC=$(expr $PG_BUILD_PGJDBC + $SKIPBUILD)
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_PGJDBC -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
 
     cd $WD/pgJDBC
 
@@ -110,12 +130,15 @@ _postprocess_pgJDBC_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
+    # Rename the installer
+    mv $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app
+
     # Using own scripts for extract-only mode
-    cp -f $WD/scripts/risePrivileges $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/Contents/MacOS/pgJDBC
-    chmod a+x $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/Contents/MacOS/pgJDBC
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ pgJDBC $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
-    chmod a+x $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app/Contents/MacOS/installbuilder.sh
+    cp -f $WD/scripts/risePrivileges $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app/Contents/MacOS/pgJDBC
+    chmod a+x $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app/Contents/MacOS/pgJDBC
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ pgJDBC $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace the Project Name placeholder in the one click installer in the installbuilder.sh script"
+    chmod a+x $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
 
     cd $WD/output
     
@@ -123,18 +146,18 @@ _postprocess_pgJDBC_osx() {
     scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
 
     # Scp the app bundle to the signing machine for signing
-    tar -jcvf pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app.tar.bz2 pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app || _die "Failed to create the archive."
+    tar -jcvf pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app.tar.bz2 pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app || _die "Failed to create the archive."
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf pgjdbc*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
-    scp pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app.tar.bz2  $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/ || _die "Failed to copy the archive to sign server."
-    rm -fr pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app* || _die "Failed to clean the output directory."
+    scp pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app.tar.bz2  $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/ || _die "Failed to copy the archive to sign server."
+    rm -fr pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app* || _die "Failed to clean the output directory."
 
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app; mv pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx-signed.app  pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app; mv pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx-signed.app  pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
 
     # Archive the .app and copy back to controller
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.zip pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.app" || _die "Failed to zip the installer bundle"
-    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.zip pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.app" || _die "Failed to zip the installer bundle"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
 
     cd $WD
 

@@ -26,20 +26,20 @@ _prep_Slony_linux() {
     cp -R slony1-$PG_VERSION_SLONY/* slony.linux || _die "Failed to copy the source code (source/slony1-$PG_VERSION_SLONY)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/Slony/staging/linux ];
+    if [ -e $WD/Slony/staging/linux.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/Slony/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/Slony/staging/linux.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/Slony/staging/linux)"
-    mkdir -p $WD/Slony/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/Slony/staging/linux || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/Slony/staging/linux.build)"
+    mkdir -p $WD/Slony/staging/linux.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/Slony/staging/linux.build || _die "Couldn't set the permissions on the staging directory"
 
     echo "Removing existing slony files from the PostgreSQL directory"
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX; rm -f bin/slon bin/slonik bin/slony_logshipper lib/postgresql/slony_funcs.$PG_VERSION_SLONY.so"  || _die "Failed to remove slony binary files"
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX; rm -f share/postgresql/slony*.sql"  || _die "remove slony share files"
-    
+
     echo "END PREP Slony Linux"
 
 }
@@ -54,7 +54,7 @@ _build_Slony_linux() {
     echo "BEGIN BUILD Slony Linux"
 
     # build slony
-    PG_STAGING=$PG_PATH_LINUX/Slony/staging/linux
+    PG_STAGING=$PG_PATH_LINUX/Slony/staging/linux.build
 
     echo "Configuring the slony source tree"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/Slony/source/slony.linux/; LD_LIBRARY_PATH=$PG_PGHOME_LINUX/lib ./configure --enable-debug --with-pgconfigdir=$PG_PGHOME_LINUX/bin --with-pgport=yes"  || _die "Failed to configure slony"
@@ -67,38 +67,21 @@ _build_Slony_linux() {
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX/bin; for f in slon slonik slony_logshipper ; do  chrpath --replace \"\\\${ORIGIN}/../lib\" \$f; done"
     ssh $PG_SSH_LINUX "cd $PG_PGHOME_LINUX/lib/postgresql; chrpath --replace \"\\\${ORIGIN}/../../lib\" slony1_funcs.$PG_VERSION_SLONY.so"
 
-    cd $WD
-
-    echo "END BUILD Slony Linux"  
-
-}
-
-
-################################################################################
-# PG Build
-################################################################################
-
-_postprocess_Slony_linux() {
-
-    echo "BEGIN POST Slony Linux"
-
-    PG_STAGING=$PG_PATH_LINUX/Slony/staging/linux
-
     cd $WD/Slony
 
     # Slony installs it's files into postgresql directory
     # We need to copy them to staging directory
-    mkdir -p $WD/Slony/staging/linux/bin
+    mkdir -p $WD/Slony/staging/linux.build/bin
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/bin/slon $PG_STAGING/bin" || _die "Failed to copy slon binary to staging directory"
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/bin/slonik $PG_STAGING/bin" || _die "Failed to copy slonik binary to staging directory"
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/bin/slony_logshipper $PG_STAGING/bin" || _die "Failed to copy slony_logshipper binary to staging directory"
-    chmod +rx $WD/Slony/staging/linux/bin/*
+    chmod +rx $WD/Slony/staging/linux.build/bin/*
 
-    mkdir -p $WD/Slony/staging/linux/lib
+    mkdir -p $WD/Slony/staging/linux.build/lib
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/lib/postgresql/slony1_funcs.$PG_VERSION_SLONY.so $PG_STAGING/lib" || _die "Failed to copy slony_funs.so to staging directory"
-    chmod +r $WD/Slony/staging/linux/lib/*
+    chmod +r $WD/Slony/staging/linux.build/lib/*
 
-    mkdir -p $WD/Slony/staging/linux/Slony
+    mkdir -p $WD/Slony/staging/linux.build/Slony
     ssh $PG_SSH_LINUX "cp $PG_PGHOME_LINUX/share/postgresql/slony*.sql $PG_STAGING/Slony" || _die "Failed to share files to staging directory"
 
     # Generate debug symbols
@@ -113,7 +96,39 @@ _postprocess_Slony_linux() {
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux || _die "Failed to create $WD/output/symbols/linux directory"
-    mv $WD/Slony/staging/linux/symbols $WD/output/symbols/linux/Slony || _die "Failed to move $WD/Slony/staging/linux/symbols to $WD/output/symbols/linux/Slony directory"
+    mv $WD/Slony/staging/linux.build/symbols $WD/output/symbols/linux/Slony || _die "Failed to move $WD/Slony/staging/linux.build/symbols to $WD/output/symbols/linux/Slony directory"
+
+    echo "Removing last successful staging directory ($WD/Slony/staging/linux)"
+    rm -rf $WD/Slony/staging/linux || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/Slony/staging/linux || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/Slony/staging/linux || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/Slony/staging/linux.build/* $WD/Slony/staging/linux || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_SLONY=$PG_VERSION_SLONY" > $WD/Slony/staging/linux/versions-linux.sh
+    echo "PG_BUILDNUM_SLONY=$PG_BUILDNUM_SLONY" >> $WD/Slony/staging/linux/versions-linux.sh
+
+    cd $WD
+
+    echo "END BUILD Slony Linux"
+
+}
+
+
+################################################################################
+# PG Build
+################################################################################
+
+_postprocess_Slony_linux() {
+
+    echo "BEGIN POST Slony Linux"
+
+    source $WD/Slony/staging/linux/versions-linux.sh
+    PG_BUILD_SLONY=$(expr $PG_BUILD_SLONY + $SKIPBUILD)
+
+    PG_STAGING=$PG_PATH_LINUX/Slony/staging/linux
+
+    cd $WD/Slony
 
     mkdir -p staging/linux/installer/Slony || _die "Failed to create a directory for the install scripts"
 
@@ -156,6 +171,16 @@ _postprocess_Slony_linux() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_SLONY -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/slony-pg96-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-linux.run $WD/output/slony-pg96-$PG_VERSION_SLONY-$PG_BUILDNUM_SLONY-${BUILD_FAILED}linux.run
 
     cd $WD
     

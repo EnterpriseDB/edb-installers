@@ -25,15 +25,15 @@ _prep_pgJDBC_linux_x64() {
     cp -R pgJDBC-$PG_VERSION_PGJDBC/* pgJDBC.linux-x64 || _die "Failed to copy the source code (source/pgJDBC-$PG_VERSION_PGJDBC)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pgJDBC/staging/linux-x64 ];
+    if [ -e $WD/pgJDBC/staging/linux-x64.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/pgJDBC/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/pgJDBC/staging/linux-x64.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/pgJDBC/staging/linux-x64)"
-    mkdir -p $WD/pgJDBC/staging/linux-x64 || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/pgJDBC/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/pgJDBC/staging/linux-x64.build)"
+    mkdir -p $WD/pgJDBC/staging/linux-x64.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/pgJDBC/staging/linux-x64.build || _die "Couldn't set the permissions on the staging directory"
     
     echo "END PREP pgJDBC Linux-x64"
 
@@ -46,6 +46,18 @@ _prep_pgJDBC_linux_x64() {
 _build_pgJDBC_linux_x64() {
     
     echo "BEGIN BUILD pgJDBC Linux-x64"
+
+    cp -R $WD/pgJDBC/source/pgJDBC.linux-x64/* $WD/pgJDBC/staging/linux-x64.build || _die "Failed to copy the pgJDBC Source into the staging directory"
+
+    echo "Removing last successful staging directory ($WD/pgJDBC/staging/linux-x64)"
+    rm -rf $WD/pgJDBC/staging/linux-x64 || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/pgJDBC/staging/linux-x64 || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/pgJDBC/staging/linux-x64 || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/pgJDBC/staging/linux-x64.build/* $WD/pgJDBC/staging/linux-x64 || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_PGJDBC=$PG_VERSION_PGJDBC" > $WD/pgJDBC/staging/linux-x64/versions-linux-x64.sh
+    echo "PG_BUILDNUM_PGJDBC=$PG_BUILDNUM_PGJDBC" >> $WD/pgJDBC/staging/linux-x64/versions-linux-x64.sh
 
     cd $WD
   
@@ -61,7 +73,8 @@ _postprocess_pgJDBC_linux_x64() {
     
     echo "BEGIN POST pgJDBC Linux-x64"
 
-    cp -R $WD/pgJDBC/source/pgJDBC.linux-x64/* $WD/pgJDBC/staging/linux-x64 || _die "Failed to copy the pgJDBC Source into the staging directory"
+    source $WD/pgJDBC/staging/linux-x64/versions-linux-x64.sh
+    PG_BUILD_PGJDBC=$(expr $PG_BUILD_PGJDBC + $SKIPBUILD)
 
     cd $WD/pgJDBC
 
@@ -97,6 +110,16 @@ _postprocess_pgJDBC_linux_x64() {
      
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_PGJDBC -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-linux-x64.run $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}linux-x64.run
 
     cd $WD
 

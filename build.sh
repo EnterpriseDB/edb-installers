@@ -162,13 +162,15 @@ then
     cd $WD
     source ./server/build.sh
 
+    PG_BUILD_SERVER=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_server || exit 1
-        _build_server || exit 1
+        (_prep_server && _build_server)
+        if [ $? == 0 ]; then
+            PG_BUILD_SERVER=1
+        fi
     fi
-
-    _postprocess_server || exit 1
+    (_postprocess_server)
 fi
 
 # Package: LanguagePack
@@ -177,12 +179,15 @@ then
     cd $WD
     source ./languagepack/build.sh
 
+    PG_BUILD_LANGUAGEPACK=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_languagepack || exit 1
-        _build_languagepack || exit 1
+        (_prep_languagepack && _build_languagepack)
+        if [ $? == 0 ]; then
+            PG_BUILD_LANGUAGEPACK=1
+        fi
     fi
-    _postprocess_languagepack || exit 1
+    (_postprocess_languagepack)
 fi
 
 # Package: ApachePhp
@@ -192,29 +197,33 @@ then
     cd $WD
     source ./ApachePhp/build.sh
 
+    PG_BUILD_APACHEPHP=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_ApachePhp || exit 1
-        _build_ApachePhp || exit 1
+        (_prep_ApachePhp && _build_ApachePhp)
+        if [ $? == 0 ]; then
+            PG_BUILD_APACHEPHP=1
+        fi
     fi
-
-    _postprocess_ApachePhp || exit 1
+    (_postprocess_ApachePhp)
 fi
 
-# Package: ApacheHTTPD
-if [ $PG_PACKAGE_APACHEHTTPD = 1 ];
+# Package: PEM-HTTPD
+if [ $PG_PACKAGE_PEMHTTPD = 1 ];
 then
-    echo "### Package: ApacheHTTPD"
+    echo "### Package: PEM-HTTPD"
     cd $WD
-    source ./ApacheHTTPD/build.sh
+    source ./PEM-HTTPD/build.sh
 
+    PG_BUILD_PEMHTTPD=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_ApacheHTTPD || exit 1
-        _build_ApacheHTTPD || exit 1
+        (_prep_PEM-HTTPD && _build_PEM-HTTPD)
+        if [ $? == 0 ]; then
+           PG_BUILD_PEMHTTPD=1
+        fi
     fi
-
-    _postprocess_ApacheHTTPD || exit 1
+    (_postprocess_PEM-HTTPD)
 fi
 
 # Package: phppgadmin
@@ -224,13 +233,15 @@ then
     cd $WD
     source ./phpPgAdmin/build.sh
 
+    PG_BUILD_PHPPGADMIN=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_phpPgAdmin || exit 1
-        _build_phpPgAdmin || exit 1
+        (_prep_phpPgAdmin && _build_phpPgAdmin)
+        if [ $? == 0 ]; then
+           PG_BUILD_PHPPGADMIN=1
+        fi
     fi
-
-    _postprocess_phpPgAdmin || exit 1
+    (_postprocess_phpPgAdmin)
 fi
 
 # Package: pgJDBC
@@ -240,13 +251,15 @@ then
     cd $WD
     source ./pgJDBC/build.sh
 
+    PG_BUILD_PGJDBC=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_pgJDBC || exit 1
-        _build_pgJDBC || exit 1
+        (_prep_pgJDBC && _build_pgJDBC)
+        if [ $? == 0 ]; then
+           PG_BUILD_PGJDBC=1
+        fi
     fi
-
-    _postprocess_pgJDBC || exit 1
+    (_postprocess_pgJDBC)
 fi
 
 # Package: psqlODBC
@@ -256,13 +269,15 @@ then
     cd $WD
     source ./psqlODBC/build.sh
 
+    PG_BUILD_PSQLODBC=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_psqlODBC || exit 1
-        _build_psqlODBC || exit 1
+        (_prep_psqlODBC && _build_psqlODBC)
+        if [ $? == 0 ]; then
+           PG_BUILD_PSQLODBC=1
+        fi
     fi
-
-    _postprocess_psqlODBC || exit 1
+    (_postprocess_psqlODBC)
 fi
 
 # Package: PostGIS
@@ -272,13 +287,15 @@ then
     cd $WD
     source ./PostGIS/build.sh
 
+    PG_BUILD_POSTGIS=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_PostGIS || exit 1
-        _build_PostGIS || exit 1
+        (_prep_PostGIS && _build_PostGIS)
+        if [ $? == 0 ]; then
+           PG_BUILD_POSTGIS=1
+        fi
     fi
-
-    _postprocess_PostGIS || exit 1
+    (_postprocess_PostGIS)
 fi
 
 # Package: Slony
@@ -288,12 +305,15 @@ then
     cd $WD
     source ./Slony/build.sh
 
+    PG_BUILD_SLONY=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_Slony || exit 1
-        _build_Slony || exit 1
+        (_prep_Slony && _build_Slony)
+        if [ $? == 0 ]; then
+           PG_BUILD_SLONY=1
+        fi
     fi
-    _postprocess_Slony || exit 1
+    (_postprocess_Slony)
 fi
 
 # Package: Npgsql
@@ -303,12 +323,15 @@ then
     cd $WD
     source ./Npgsql/build.sh
 
+    PG_BUILD_NPGSQL=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_Npgsql || exit 1
-        _build_Npgsql || exit 1
+        (_prep_Npgsql && _build_Npgsql)
+        if [ $? == 0 ]; then
+           PG_BUILD_NPGSQL=1
+        fi
     fi
-    _postprocess_Npgsql || exit 1
+    (_postprocess_Npgsql)
 fi
 
 # Package: pgAgent
@@ -318,12 +341,15 @@ then
     cd $WD
     source ./pgAgent/build.sh
 
+    PG_BUILD_PGAGENT=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_pgAgent || exit 1
-        _build_pgAgent || exit 1
+        (_prep_pgAgent && _build_pgAgent)
+        if [ $? == 0 ]; then
+           PG_BUILD_PGAGENT=1
+        fi
     fi
-    _postprocess_pgAgent || exit 1
+    (_postprocess_pgAgent)
 fi
 
 # Package: pgmemcache
@@ -333,12 +359,15 @@ then
     cd $WD
     source ./pgmemcache/build.sh
 
+    PG_BUILD_PGMEMCACHE=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_pgmemcache || exit 1
-        _build_pgmemcache || exit 1
+        (_prep_pgmemcache && _build_pgmemcache)
+        if [ $? == 0 ]; then
+           PG_BUILD_PGMEMCACHE=1
+        fi
     fi
-    _postprocess_pgmemcache || exit 1
+    (_postprocess_pgmemcache)
 fi
 
 # Package: pgbouncer
@@ -348,12 +377,15 @@ then
     cd $WD
     source ./pgbouncer/build.sh
 
+    PG_BUILD_PGBOUNCER=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_pgbouncer || exit 1
-        _build_pgbouncer || exit 1
+        (_prep_pgbouncer && _build_pgbouncer)
+        if [ $? == 0 ]; then
+           PG_BUILD_PGBOUNCER=1
+        fi
     fi
-    _postprocess_pgbouncer || exit 1
+    (_postprocess_pgbouncer)
 fi
 
 #Package: MigrationToolKit
@@ -361,12 +393,16 @@ if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 ];
 then
     cd $WD
     source ./MigrationToolKit/build.sh
+
+    PG_BUILD_MIGRATIONTOOLKIT=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_MigrationToolKit || exit 1
-        _build_MigrationToolKit || exit 1
+        (_prep_MigrationToolKit && _build_MigrationToolKit)
+        if [ $? == 0 ]; then
+           PG_BUILD_MIGRATIONTOOLKIT=1
+        fi
     fi
-        _postprocess_MigrationToolKit || exit 1
+    (_postprocess_MigrationToolKit)
 fi
 
 # Package: SQLPROTECT
@@ -375,13 +411,15 @@ then
     cd $WD
     source ./sqlprotect/build.sh
 
+    PG_BUILD_SQLPROTECT=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_sqlprotect || exit 1
-        _build_sqlprotect || exit 1
+        (_prep_sqlprotect && _build_sqlprotect)
+        if [ $? == 0 ]; then
+           PG_BUILD_SQLPROTECT=1
+        fi
     fi
-
-    _postprocess_sqlprotect || exit 1
+    (_postprocess_sqlprotect)
 fi
 
 # Package: UPDATE_MONITOR
@@ -390,13 +428,15 @@ then
     cd $WD
     source ./UpdateMonitor/build.sh
 
+    PG_BUILD_UPDATE_MONITOR=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_updatemonitor || exit 1
-        _build_updatemonitor || exit 1
+        (_prep_updatemonitor && _build_updatemonitor)
+        if [ $? == 0 ]; then
+           PG_BUILD_UPDATE_MONITOR=1
+        fi
     fi
-
-    _postprocess_updatemonitor || exit 1
+    (_postprocess_updatemonitor)
 fi
 
 # Package: hdfs_fdw
@@ -405,12 +445,15 @@ then
     cd $WD
     source ./hdfs_fdw/build.sh
 
+    PG_BUILD_HDFS_FDW=0
     if [ $SKIPBUILD = 0 ];
     then
-        _prep_hdfs_fdw || exit 1
-        _build_hdfs_fdw || exit 1
+        (_prep_hdfs_fdw && _build_hdfs_fdw)
+        if [ $? == 0 ]; then
+          PG_BUILD_HDFS_FDW=1
+        fi
     fi
-    _postprocess_hdfs_fdw || exit 1
+    (_postprocess_hdfs_fdw)
 fi
 
 # Check for private builds
@@ -422,7 +465,6 @@ then
         source $WD/pvt_build.sh > "${PVT_BUILD_LOG}" 2>&1
     fi
 fi
-
 
 # Archive the symbols
 _archive_symbols

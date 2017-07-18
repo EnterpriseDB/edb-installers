@@ -44,12 +44,12 @@ _prep_server_linux_x64() {
       rm -rf $WD/server/staging_cache/linux-x64 || _die "Couldn't remove the existing staging_cache directory"
     fi
 
-    # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/server/staging/linux-x64 ];
-    then
-      echo "Removing existing staging directory"
-      rm -rf $WD/server/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
-    fi
+    ## Remove any existing staging directory that might exist, and create a clean one
+    #if [ -e $WD/server/staging/linux-x64 ];
+    #then
+    #  echo "Removing existing staging directory"
+    #  rm -rf $WD/server/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
+    #fi
 
     echo "Creating staging_cache directory ($WD/server/staging_cache/linux-x64)"
     mkdir -p $WD/server/staging_cache/linux-x64 || _die "Couldn't create the staging directory"
@@ -511,6 +511,22 @@ EOT-PGADMIN
     mv $WD/server/staging_cache/linux-x64/pgAdmin4  $WD/server/staging_cache/linux-x64/pgAdmin\ 4/
 
     touch $WD/server/staging_cache/linux-x64/pgAdmin\ 4/venv/lib/python2.7/site-packages/backports/__init__.py || _die "Failed to tocuh the __init__.py"
+
+    echo "Removing last successful staging directory ($WD/server/staging/linux-x64)"
+    rm -rf $WD/server/staging/linux-x64 || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/server/staging/linux-x64 || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/server/staging/linux-x64 || _die "Couldn't set the permissions on the successful staging directory"
+    mkdir -p $PGSERVER_STAGING_X64 || _die "Couldn't create the staging directory $PGSERVER_STAGING_X64"
+    mkdir -p $PGADMIN_STAGING_X64 || _die "Couldn't create the staging directory $PGADMIN_STAGING_X64"
+    mkdir -p $SB_STAGING_X64 || _die "Couldn't create the staging directory $SB_STAGING_X64"
+    mkdir -p $CLT_STAGING_X64 || _die "Couldn't create the staging directory $CLT_STAGING_X64"
+    chmod ugo+w $PGSERVER_STAGING_X64 $PGADMIN_STAGING_X64 $SB_STAGING_X64 $CLT_STAGING_X64 || _die "Couldn't set the permissions on the staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    echo "PG_MAJOR_VERSION=$PG_MAJOR_VERSION" > $WD/server/staging/linux-x64/versions-linux-x64.sh
+    echo "PG_MINOR_VERSION=$PG_MINOR_VERSION" >> $WD/server/staging/linux-x64/versions-linux-x64.sh
+    echo "PG_PACKAGE_VERSION=$PG_PACKAGE_VERSION" >> $WD/server/staging/linux-x64/versions-linux-x64.sh
+
     echo "Preparing restructured staging for pgAdmin"
     cp -r "$WD/server/staging_cache/linux-x64/pgAdmin 4" $PGADMIN_STAGING_X64/ || _die "Failed to copy $WD/server/staging_cache/linux/pgAdmin\ 4"
 
@@ -580,6 +596,9 @@ EOT-PGADMIN
 
 _postprocess_server_linux_x64() {
     echo "BEGIN POST Server Linux-x64"
+
+    source $WD/server/staging/linux-x64/versions-linux-x64.sh
+    PG_BUILD_SERVER=$(expr $PG_BUILD_SERVER + $SKIPBUILD)
 
     cd $WD/server
 
@@ -781,8 +800,15 @@ _postprocess_server_linux_x64() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-lin64.xml linux-x64 || _die "Failed to build the installer"
 
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_SERVER -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
 	# Rename the installer
-	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-linux-x64.run || _die "Failed to rename the installer"
+	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}linux-x64.run || _die "Failed to rename the installer"
 
     cd $WD
     echo "END POST Server Linux-x64"

@@ -68,7 +68,7 @@ _prep_pgAgent_windows() {
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.zip del /S /Q pgAgent.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST vc-build.bat del /S /Q vc-build.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\vc-build.bat on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.windows rd /S /Q pgAgent.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.windows directory on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.output rd /S /Q pgAgent.output" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.output directory on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.output.build rd /S /Q pgAgent.output.build" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgAgent.output.build directory on Windows VM"
 
     # Copy sources on windows VM
     echo "Copying pgAgent sources to Windows VM"
@@ -92,7 +92,7 @@ _build_pgAgent_windows() {
 
     cd $WD/pgAgent
     SOURCE_DIR=$PG_PATH_WINDOWS/pgAgent.windows
-    OUTPUT_DIR=$PG_PATH_WINDOWS\\\\pgAgent.output
+    OUTPUT_DIR=$PG_PATH_WINDOWS\\\\pgAgent.output.build
     STAGING_DIR=$WD/pgAgent/staging/windows
 
     cat <<EOT > "vc-build.bat"
@@ -138,23 +138,15 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $SOURCE_DIR; cmd /c copy CreatePGPassconfForUser\\\\release\\\\CreatePGPassconfForUser.exe $OUTPUT_DIR" || _die "Failed to copy a program file on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy /Y $PG_PGBUILD_WINDOWS\\\\vcredist\\\\vcredist_x86.exe $OUTPUT_DIR" || _die "Failed to copy the VC++ runtimes on the windows build host"
  
-    cd $WD/pgAgent/staging/windows
-    echo "Copying built tree to Windows host"
-    ssh $PG_SSH_WINDOWS "cd $OUTPUT_DIR; cmd /c zip -r pgagent_output.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$OUTPUT_DIR)"
-    scp $PG_SSH_WINDOWS:$OUTPUT_DIR\\\\pgagent_output.zip $WD/pgAgent/staging/windows/pgagent_output.zip || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$OUTPUT_DIR/pgagent_output.zip)"
-    unzip -o $WD/pgAgent/staging/windows/pgagent_output.zip -d $WD/pgAgent/staging/windows || _die "Failed to unpack the built source tree ($WD/pgAgent/staging/windows/pgagent_output.zip)"
-    rm -f $WD/pgAgent/staging/windows/pgagent_output.zip
+    echo "Removing last successful staging directory ($PG_PATH_WINDOWS\\\\pgAgent.output)"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgAgent.output rd /S /Q pgAgent.output" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\pgAgent.output" || _die "Couldn't create the last successful staging directory"
 
-    mkdir -p $WD/pgAgent/staging/windows/bin
+    echo "Copying the complete build to the successful staging directory"
+ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c xcopy /E /Q /Y pgAgent.output.build\\\\* pgAgent.output\\\\" || _die "Couldn't copy the existing staging directory"
 
-    echo "Copying dependent libraries from the windows VM to staging directory"
-    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/bin/psql.exe $STAGING_DIR/bin || _die "Failed to copy psql.exe"
-    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/bin/libpq.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libpq.dll)"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/ssleay32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (ssleay32.dll)"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS//bin/libeay32.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libeay32.dll)"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libiconv-2.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libiconv-2.dll)"
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libintl-8.dll $STAGING_DIR/bin || _die "Failed to copy the dependent dll (libintl-8.dll)"
-    scp $PG_SSH_WINDOWS:$PG_WXWIN_WINDOWS/lib/vc_dll/wxbase28u_vc_custom.dll $STAGING_DIR/bin || _die "Failed to copy a dependency DLL on the windows build host (wxbase28u_vc_custom.dll)"
+    ssh $PG_SSH_WINDOWS "cmd /c echo PG_VERSION_PGAGENT=$PG_VERSION_PGAGENT > $PG_PATH_WINDOWS\\\\pgAgent.output/versions-windows.sh" || _die "Failed to write pgAgent version number into versions-windows.sh"
+    ssh $PG_SSH_WINDOWS "cmd /c echo PG_BUILDNUM_PGAGENT=$PG_BUILDNUM_PGAGENT >> $PG_PATH_WINDOWS\\\\pgAgent.output/versions-windows.sh" || _die "Failed to write pgAgent build number into versions-windows.sh"
     
     echo "END BUILD pgAgent Windows"
 }
@@ -172,6 +164,38 @@ _postprocess_pgAgent_windows() {
     echo "# pgAgent : WIN : Post Process      #"
     echo "#####################################"
 
+    # Remove any existing staging directory that might exist, and create a clean one
+    if [ -e $WD/pgAgent/staging/windows ];
+    then
+      echo "Removing existing staging directory"
+      rm -rf $WD/pgAgent/staging/windows || _die "Couldn't remove the existing staging directory"
+    fi
+    echo "Creating staging directory ($WD/pgAgent/staging/windows)"
+    mkdir -p $WD/pgAgent/staging/windows || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/pgAgent/staging/windows || _die "Couldn't set the permissions on the staging directory"
+
+    cd $WD/pgAgent/staging/windows
+    echo "Copying built tree to Windows host"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST pgagent_output.zip del /S /Q pgagent_output.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\pgagent_output.zip on Windows VM"
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\pgAgent.output; cmd /c zip -r pgagent_output.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\pgAgent.output)"
+    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\pgAgent.output\\\\pgagent_output.zip $WD/pgAgent/staging/windows/pgagent_output.zip || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS\\\\pgAgent.output/pgagent_output.zip)"
+    unzip -o $WD/pgAgent/staging/windows/pgagent_output.zip -d $WD/pgAgent/staging/windows || _die "Failed to unpack the built source tree ($WD/pgAgent/staging/windows/pgagent_output.zip)"
+    rm -f $WD/pgAgent/staging/windows/pgagent_output.zip
+
+    dos2unix $WD/pgAgent/staging/windows/versions-windows.sh || _die "Failed to convert format of versions-windows.sh from dos to unix"
+    source $WD/pgAgent/staging/windows/versions-windows.sh
+    PG_BUILD_PGAGENT=$(expr $PG_BUILD_PGAGENT + $SKIPBUILD)
+
+    mkdir -p $WD/pgAgent/staging/windows/bin
+
+    echo "Copying dependent libraries from the windows VM to staging directory"
+    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/bin/psql.exe $WD/pgAgent/staging/windows/bin || _die "Failed to copy psql.exe"
+    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/bin/libpq.dll $WD/pgAgent/staging/windows/bin || _die "Failed to copy the dependent dll (libpq.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/ssleay32.dll $WD/pgAgent/staging/windows/bin || _die "Failed to copy the dependent dll (ssleay32.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS//bin/libeay32.dll $WD/pgAgent/staging/windows/bin || _die "Failed to copy the dependent dll (libeay32.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libiconv-2.dll $WD/pgAgent/staging/windows/bin || _die "Failed to copy the dependent dll (libiconv-2.dll)"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libintl-8.dll $WD/pgAgent/staging/windows/bin || _die "Failed to copy the dependent dll (libintl-8.dll)"
+    scp $PG_SSH_WINDOWS:$PG_WXWIN_WINDOWS/lib/vc_dll/wxbase28u_vc_custom.dll $WD/pgAgent/staging/windows/bin || _die "Failed to copy a dependency DLL on the windows build host (wxbase28u_vc_custom.dll)"
     # Setup the installer scripts
     mkdir -p $WD/pgAgent/staging/windows/installer/pgAgent || _die "Failed to create a directory for the install scripts"
     cp -f $WD/pgAgent/staging/windows/validateuser.exe $WD/pgAgent/staging/windows/installer/pgAgent/ || _die "Failed to copy validateuser.exe (staging/windows/validateuser.exe)"
@@ -190,8 +214,18 @@ _postprocess_pgAgent_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
+   # If build passed empty this variable
+   BUILD_FAILED="build_failed-"
+   if [ $PG_BUILD_PGAGENT -gt 0 ];
+   then
+       BUILD_FAILED=""
+   fi
+
+    # Rename the installer
+    mv $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-windows.exe $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}windows.exe
+
 	# Sign the installer
-	win32_sign "pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-windows.exe"
+	win32_sign "pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}windows.exe"
 	
     cd $WD
 

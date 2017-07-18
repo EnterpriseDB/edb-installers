@@ -25,16 +25,16 @@ _prep_pgJDBC_linux() {
     cp -R pgJDBC-$PG_VERSION_PGJDBC/* pgJDBC.linux || _die "Failed to copy the source code (source/pgJDBC-$PG_VERSION_PGJDBC)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/pgJDBC/staging/linux ];
+    if [ -e $WD/pgJDBC/staging/linux.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/pgJDBC/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/pgJDBC/staging/linux.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/pgJDBC/staging/linux)"
-    mkdir -p $WD/pgJDBC/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/pgJDBC/staging/linux || _die "Couldn't set the permissions on the staging directory"
-    
+    echo "Creating staging directory ($WD/pgJDBC/staging/linux.build)"
+    mkdir -p $WD/pgJDBC/staging/linux.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/pgJDBC/staging/linux.build || _die "Couldn't set the permissions on the staging directory"
+
     echo "END PREP pgJDBC Linux"
 
 }
@@ -47,7 +47,19 @@ _build_pgJDBC_linux() {
     
     echo "BEGIN BUILD pgJDBC Linux"
 
+    cp -R $WD/pgJDBC/source/pgJDBC.linux/* $WD/pgJDBC/staging/linux.build || _die "Failed to copy the pgJDBC Source into the staging directory"
+
     cd $WD
+
+    echo "Removing last successful staging directory ($WD/pgJDBC/staging/linux)"
+    rm -rf $WD/pgJDBC/staging/linux || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/pgJDBC/staging/linux || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/pgJDBC/staging/linux || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/pgJDBC/staging/linux.build/* $WD/pgJDBC/staging/linux || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_PGJDBC=$PG_VERSION_PGJDBC" > $WD/pgJDBC/staging/linux/versions-linux.sh
+    echo "PG_BUILDNUM_PGJDBC=$PG_BUILDNUM_PGJDBC" >> $WD/pgJDBC/staging/linux/versions-linux.sh
 
     echo "END BUILD pgJDBC Linux"
 }
@@ -60,8 +72,9 @@ _build_pgJDBC_linux() {
 _postprocess_pgJDBC_linux() {
 
     echo "BEGIN POST pgJDBC Linux"
- 
-    cp -R $WD/pgJDBC/source/pgJDBC.linux/* $WD/pgJDBC/staging/linux || _die "Failed to copy the pgJDBC Source into the staging directory"
+
+    source $WD/pgJDBC/staging/linux/versions-linux.sh
+    PG_BUILD_PGJDBC=$(expr $PG_BUILD_PGJDBC + $SKIPBUILD)
 
     cd $WD/pgJDBC
 
@@ -99,6 +112,16 @@ _postprocess_pgJDBC_linux() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
 
     cd $WD
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_PGJDBC -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-linux.run $WD/output/pgjdbc-$PG_VERSION_PGJDBC-$PG_BUILDNUM_PGJDBC-${BUILD_FAILED}linux.run
 
     echo "END POST pgJDBC Linux"
 }
