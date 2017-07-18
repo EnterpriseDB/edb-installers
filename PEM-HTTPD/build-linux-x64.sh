@@ -28,15 +28,15 @@ _prep_PEM-HTTPD_linux_x64() {
     cp -pR mod_wsgi-$PG_VERSION_WSGI/* apache.linux-x64/mod_wsgi || _die "Failed to copy the source code (source/mod_wsgi-$PG_VERSION_WSGI)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/PEM-HTTPD/staging/linux-x64 ];
+    if [ -e $WD/PEM-HTTPD/staging/linux-x64.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/PEM-HTTPD/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/PEM-HTTPD/staging/linux-x64.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/PEM-HTTPD/staging/linux-x64)"
-    mkdir -p $WD/PEM-HTTPD/staging/linux-x64 || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/PEM-HTTPD/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/PEM-HTTPD/staging/linux-x64.build)"
+    mkdir -p $WD/PEM-HTTPD/staging/linux-x64.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/PEM-HTTPD/staging/linux-x64.build || _die "Couldn't set the permissions on the staging directory"
 
     echo "END PREP PEM-HTTPD Linux-x64"
 }
@@ -51,7 +51,7 @@ _build_PEM-HTTPD_linux_x64() {
 
     # build apache
 
-    PG_STAGING=$PG_PATH_LINUX_X64/PEM-HTTPD/staging/linux-x64
+    PG_STAGING=$PG_PATH_LINUX_X64/PEM-HTTPD/staging/linux-x64.build
 
     # Configure the source tree
     echo "Configuring the apache source tree"
@@ -70,7 +70,7 @@ _build_PEM-HTTPD_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/PEM-HTTPD/source/apache.linux-x64/mod_wsgi; make install" || _die "Failed to install mod_wsgi"
 
     # Configure the httpd.conf file
-    cd $WD/PEM-HTTPD/staging/linux-x64/apache/conf
+    cd $WD/PEM-HTTPD/staging/linux-x64.build/apache/conf
     _replace "$PG_STAGING/apache" "@@INSTALL_DIR@@" "httpd.conf"
     _replace "Listen 80" "Listen 0.0.0.0:@@PORT@@" "httpd.conf"
     _replace "htdocs" "www" "httpd.conf"
@@ -85,7 +85,7 @@ _build_PEM-HTTPD_linux_x64() {
     echo "SSLProtocol All -SSLv2 -SSLv3" >> extra/httpd-ssl.conf
 
     # Configure the apachectl script file
-    cd $WD/PEM-HTTPD/staging/linux-x64/apache/bin
+    cd $WD/PEM-HTTPD/staging/linux-x64.build/apache/bin
     _replace "\$HTTPD -k \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -k \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
     _replace "\$HTTPD -t" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" -t -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
     _replace "\$HTTPD \$ARGV" "LD_LIBRARY_PATH=\"@@INSTALL_DIR@@/apache/lib\":\$LD_LIBRARY_PATH \"\$HTTPD\" \$ARGV -f '@@INSTALL_DIR@@/apache/conf/httpd.conf'" "apachectl"
@@ -112,7 +112,7 @@ _build_PEM-HTTPD_linux_x64() {
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PGHOME_LINUX_X64/lib/libldap*.so* $PG_STAGING/apache/lib" || _die "Failed to copy the dependency library (libldap*)"
 
     # Add LD_LIBRARY_PATH in envvars scripts
-    cat <<EOT >> $WD/PEM-HTTPD/staging/linux-x64/apache/bin/envvars
+    cat <<EOT >> $WD/PEM-HTTPD/staging/linux-x64.build/apache/bin/envvars
 export PYTHONHOME=@@LP_PYTHON_HOME@@
 export PYTHONPATH=\$PYTHONHOME
 LD_LIBRARY_PATH=@@INSTALL_DIR@@/apache/lib:\$PYTHONPATH/lib:@@INSTALL_DIR@@/httpd/lib:\$LD_LIBRARY_PATH
@@ -137,8 +137,17 @@ EOT
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
-    mv $WD/PEM-HTTPD/staging/linux-x64/symbols $WD/output/symbols/linux-x64/PEM-HTTPD || _die "Failed to move $WD/PEM-HTTPD/staging/linux-x64/symbols to $WD/output/symbols/linux-x64/PEM-HTTPD directory"
+    mv $WD/PEM-HTTPD/staging/linux-x64.build/symbols $WD/output/symbols/linux-x64/PEM-HTTPD || _die "Failed to move $WD/PEM-HTTPD/staging/linux-x64.build/symbols to $WD/output/symbols/linux-x64/PEM-HTTPD directory"
 
+    echo "Removing last successful staging directory ($WD/PEM-HTTPD/staging/linux-x64)"
+    rm -rf $WD/PEM-HTTPD/staging/linux-x64 || _die "Couldn't remove the last successful staging directory"
+    mkdir -p $WD/PEM-HTTPD/staging/linux-x64 || _die "Couldn't create the last successful staging directory"
+    chmod ugo+w $WD/PEM-HTTPD/staging/linux-x64 || _die "Couldn't set the permissions on the successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    cp -rp $WD/PEM-HTTPD/staging/linux-x64.build/* $WD/PEM-HTTPD/staging/linux-x64 || _die "Couldn't copy the existing staging directory"
+    echo "PG_VERSION_APACHE=$PG_VERSION_APACHE" > $WD/PEM-HTTPD/staging/linux-x64/versions-linux-x64.sh
+    echo "PG_BUILDNUM_PEMHTTPD=$PG_BUILDNUM_PEMHTTPD" >> $WD/PEM-HTTPD/staging/linux-x64/versions-linux-x64.sh
     cd $WD
 
     echo "END BUILD PEM-HTTPD Linux-x64"
@@ -152,6 +161,9 @@ EOT
 
 _postprocess_PEM-HTTPD_linux_x64() {
     echo "BEGIN POST PEM-HTTPD Linux-x64"
+
+    source $WD/PEM-HTTPD/staging/linux-x64/versions-linux-x64.sh
+    PG_BUILD_PEMHTTPD=$(expr $PG_BUILD_PEMHTTPD + $SKIPBUILD)
 
     PG_STAGING=$PG_PATH_LINUX_X64/PEM-HTTPD/staging/linux-x64
 
@@ -229,6 +241,16 @@ _postprocess_PEM-HTTPD_linux_x64() {
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_PEMHTTPD -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/pem-httpd-$PG_VERSION_APACHE-$PG_BUILDNUM_PEMHTTPD-linux-x64.run $WD/output/pem-httpd-$PG_VERSION_APACHE-$PG_BUILDNUM_PEMHTTPD-${BUILD_FAILED}linux-x64.run
 
     cd $WD
     echo "END POST PEM-HTTPD Linux-x64"
