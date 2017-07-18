@@ -45,6 +45,7 @@ then
 	    cp -R $WD/pvt_packages/${!C_PKG_NAME}/${!C_PKG_INSTALLER_DIR}/* $WD/${!C_PKG_INSTALLER_NAME}/ || _die "Failed to copy the installer source"
 	    #Start the build
 	    source $WD/${!C_PKG_INSTALLER_NAME}/build.sh
+        declare PVT_${PKG}_BUILD=0
 	    if [ $SKIPBUILD = 0 ];
 	    then
 		(_prep_${!C_PKG_INSTALLER_NAME} && _build_${!C_PKG_INSTALLER_NAME})
