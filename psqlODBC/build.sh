@@ -61,7 +61,7 @@ _prep_psqlODBC() {
     fi
 
     echo "Unpacking psqlODBC source..."
-    extract_file  ../../tarballs/psqlodbc-$PG_VERSION_PSQLODBC || exit 1 
+    extract_file  ../../tarballs/psqlodbc-$PG_VERSION_PSQLODBC  
     
     # Per-platform prep
     cd $WD
@@ -69,38 +69,38 @@ _prep_psqlODBC() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_psqlODBC_osx || exit 1
+        _prep_psqlODBC_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _prep_psqlODBC_linux || exit 1
+        _prep_psqlODBC_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_psqlODBC_linux_x64 || exit 1
+        _prep_psqlODBC_linux_x64 
     fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-        #_prep_psqlODBC_linux_ppc64 || exit 1
+        #_prep_psqlODBC_linux_ppc64 
         echo "Linux-PPC64 build pre-process is not part of build framework yet."
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_psqlODBC_windows || exit 1
+        _prep_psqlODBC_windows 
     fi
 
     # Windows-x64
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
-        _prep_psqlODBC_windows_x64 || exit 1
+        _prep_psqlODBC_windows_x64 
     fi
     
 }
@@ -114,38 +114,38 @@ _build_psqlODBC() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_psqlODBC_osx || exit 1
+        _build_psqlODBC_osx 
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _build_psqlODBC_linux || exit 1
+        _build_psqlODBC_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _build_psqlODBC_linux_x64 || exit 1
+        _build_psqlODBC_linux_x64 
     fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-        #_build_psqlODBC_linux_ppc64 || exit 1
+        #_build_psqlODBC_linux_ppc64 
         echo "Linux-PPC64 build process is not part of build framework yet."
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_psqlODBC_windows || exit 1
+        _build_psqlODBC_windows 
     fi
 
     # Windows-x64
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
-        _build_psqlODBC_windows_x64 || exit 1
+        _build_psqlODBC_windows_x64 
     fi
 }
 
@@ -176,36 +176,36 @@ _postprocess_psqlODBC() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_psqlODBC_osx || exit 1
+        _postprocess_psqlODBC_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_psqlODBC_linux || exit 1
+        _postprocess_psqlODBC_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_psqlODBC_linux_x64 || exit 1
+        _postprocess_psqlODBC_linux_x64 
     fi
     
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-        _postprocess_psqlODBC_linux_ppc64 || exit 1
+        _postprocess_psqlODBC_linux_ppc64 
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _postprocess_psqlODBC_windows || exit 1
+        _postprocess_psqlODBC_windows 
     fi
     
     # Windows-x64
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
-        _postprocess_psqlODBC_windows_x64 || exit 1
+        _postprocess_psqlODBC_windows_x64 
     fi
 }

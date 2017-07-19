@@ -55,7 +55,7 @@ _prep_pgJDBC() {
     fi
 
     echo "Unpacking pgJDBC source..."
-    extract_file ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC || exit 1
+    extract_file ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC 
 
     # Per-platform prep
     cd $WD
@@ -63,31 +63,31 @@ _prep_pgJDBC() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_pgJDBC_osx || exit 1
+        _prep_pgJDBC_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _prep_pgJDBC_linux || exit 1
+        _prep_pgJDBC_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_pgJDBC_linux_x64 || exit 1
+        _prep_pgJDBC_linux_x64 
     fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-        _prep_pgJDBC_linux_ppc64 || exit 1
+        _prep_pgJDBC_linux_ppc64 
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_pgJDBC_windows || exit 1
+        _prep_pgJDBC_windows 
     fi
     
 }
@@ -101,31 +101,31 @@ _build_pgJDBC() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_pgJDBC_osx || exit 1
+        _build_pgJDBC_osx 
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _build_pgJDBC_linux || exit 1
+        _build_pgJDBC_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       _build_pgJDBC_linux_x64 || exit 1
+       _build_pgJDBC_linux_x64 
     fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-       _build_pgJDBC_linux_ppc64 || exit 1
+       _build_pgJDBC_linux_ppc64 
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_pgJDBC_windows || exit 1
+        _build_pgJDBC_windows 
     fi
 }
 
@@ -153,30 +153,30 @@ _postprocess_pgJDBC() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_pgJDBC_osx || exit 1
+        _postprocess_pgJDBC_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_pgJDBC_linux || exit 1
+        _postprocess_pgJDBC_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_pgJDBC_linux_x64 || exit 1
+        _postprocess_pgJDBC_linux_x64 
     fi
     
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-        _postprocess_pgJDBC_linux_ppc64 || exit 1
+        _postprocess_pgJDBC_linux_ppc64 
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-       _postprocess_pgJDBC_windows || exit 1
+       _postprocess_pgJDBC_windows 
     fi
 }

@@ -50,7 +50,7 @@ _prep_Npgsql() {
     echo "Unpacking Npgsql source..."
 
     cd $WD/Npgsql/source/
-    extract_file ../../../tarballs/npgsql-"${PG_VERSION_NPGSQL}" || exit 1
+    extract_file ../../../tarballs/npgsql-"${PG_VERSION_NPGSQL}" 
 
     #Commenting patch as new version 3.0.5 is already present in the source code.
     #Npgsql-3.0.4 patch against VS 2013.
@@ -63,31 +63,31 @@ _prep_Npgsql() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_Npgsql_osx || exit 1
+        _prep_Npgsql_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _prep_Npgsql_linux || exit 1
+        _prep_Npgsql_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_Npgsql_linux_x64 || exit 1
+        _prep_Npgsql_linux_x64 
     fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-        _prep_Npgsql_linux_ppc64 || exit 1
+        _prep_Npgsql_linux_ppc64 
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_Npgsql_windows || exit 1
+        _prep_Npgsql_windows 
     fi
     
 }
@@ -101,31 +101,31 @@ _build_Npgsql() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_Npgsql_osx || exit 1
+        _build_Npgsql_osx 
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _build_Npgsql_linux || exit 1
+        _build_Npgsql_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       _build_Npgsql_linux_x64 || exit 1
+       _build_Npgsql_linux_x64 
     fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-       _build_Npgsql_linux_ppc64 || exit 1
+       _build_Npgsql_linux_ppc64 
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_Npgsql_windows || exit 1
+        _build_Npgsql_windows 
     fi
 }
 
@@ -152,30 +152,30 @@ _postprocess_Npgsql() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_Npgsql_osx || exit 1
+        _postprocess_Npgsql_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_Npgsql_linux || exit 1
+        _postprocess_Npgsql_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_Npgsql_linux_x64 || exit 1
+        _postprocess_Npgsql_linux_x64 
     fi
     
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-        _postprocess_Npgsql_linux_ppc64 || exit 1
+        _postprocess_Npgsql_linux_ppc64 
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-       _postprocess_Npgsql_windows || exit 1
+       _postprocess_Npgsql_windows 
     fi
 }
