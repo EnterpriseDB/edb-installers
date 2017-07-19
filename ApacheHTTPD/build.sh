@@ -91,25 +91,25 @@ _prep_ApacheHTTPD() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_ApacheHTTPD_osx || exit 1
+        _prep_ApacheHTTPD_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _prep_ApacheHTTPD_linux || exit 1
+        _prep_ApacheHTTPD_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_ApacheHTTPD_linux_x64 || exit 1
+        _prep_ApacheHTTPD_linux_x64 
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_ApacheHTTPD_windows || exit 1
+        _prep_ApacheHTTPD_windows 
     fi
     
 }
@@ -123,25 +123,25 @@ _build_ApacheHTTPD() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_ApacheHTTPD_osx || exit 1
+        _build_ApacheHTTPD_osx 
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _build_ApacheHTTPD_linux || exit 1
+        _build_ApacheHTTPD_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _build_ApacheHTTPD_linux_x64 || exit 1
+        _build_ApacheHTTPD_linux_x64 
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_ApacheHTTPD_windows || exit 1
+        _build_ApacheHTTPD_windows 
     fi
 }
 
@@ -169,24 +169,24 @@ _postprocess_ApacheHTTPD() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_ApacheHTTPD_osx || exit 1
+        _postprocess_ApacheHTTPD_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_ApacheHTTPD_linux || exit 1
+        _postprocess_ApacheHTTPD_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_ApacheHTTPD_linux_x64 || exit 1
+        _postprocess_ApacheHTTPD_linux_x64 
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _postprocess_ApacheHTTPD_windows || exit 1
+        _postprocess_ApacheHTTPD_windows 
     fi
 }

@@ -44,31 +44,31 @@ _prep_sqlprotect() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_sqlprotect_osx || exit 1
+        _prep_sqlprotect_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _prep_sqlprotect_linux || exit 1
+        _prep_sqlprotect_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_sqlprotect_linux_x64 || exit 1
+        _prep_sqlprotect_linux_x64 
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_sqlprotect_windows || exit 1
+        _prep_sqlprotect_windows 
     fi
   
     # Windows x64
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
-        _prep_sqlprotect_windows_x64 || exit 1
+        _prep_sqlprotect_windows_x64 
     fi
 
 }
@@ -85,31 +85,31 @@ _build_sqlprotect() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_sqlprotect_osx || exit 1
+        _build_sqlprotect_osx 
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _build_sqlprotect_linux || exit 1
+        _build_sqlprotect_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _build_sqlprotect_linux_x64 || exit 1
+        _build_sqlprotect_linux_x64 
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_sqlprotect_windows || exit 1
+        _build_sqlprotect_windows 
     fi
 
     # Windows x64
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
-        _build_sqlprotect_windows_x64 || exit 1
+        _build_sqlprotect_windows_x64 
     fi
 
 }
@@ -142,31 +142,31 @@ _postprocess_sqlprotect() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_sqlprotect_osx || exit 1
+        _postprocess_sqlprotect_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_sqlprotect_linux || exit 1
+        _postprocess_sqlprotect_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_sqlprotect_linux_x64 || exit 1
+        _postprocess_sqlprotect_linux_x64 
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _postprocess_sqlprotect_windows || exit 1
+        _postprocess_sqlprotect_windows 
     fi
 
     # Windows x64
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
-        _postprocess_sqlprotect_windows_x64 || exit 1
+        _postprocess_sqlprotect_windows_x64 
     fi
 
 }
