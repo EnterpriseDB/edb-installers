@@ -512,9 +512,6 @@ EOT-PGADMIN
 
     touch $WD/server/staging_cache/linux/pgAdmin\ 4/venv/lib/python2.7/site-packages/backports/__init__.py || _die "Failed to tocuh the __init__.py"
 
-    echo "Preparing restructured staging for pgAdmin"
-#PARESH    cp -r "$WD/server/staging_cache/linux/pgAdmin 4" $PGADMIN_STAGING/ || _die "Failed to copy $WD/server/staging_cache/linux/pgAdmin\ 4"
-    cp -r "$WD/server/staging_cache/linux/pgAdmin 4" $PGADMIN_STAGING/
 
     echo "Removing last successful staging directory ($WD/server/staging/linux)"
     rm -rf $WD/server/staging/linux || _die "Couldn't remove the last successful staging directory"
@@ -530,6 +527,9 @@ EOT-PGADMIN
     echo "PG_MAJOR_VERSION=$PG_MAJOR_VERSION" > $WD/server/staging/linux/versions-linux.sh
     echo "PG_MINOR_VERSION=$PG_MINOR_VERSION" >> $WD/server/staging/linux/versions-linux.sh
     echo "PG_PACKAGE_VERSION=$PG_PACKAGE_VERSION" >> $WD/server/staging/linux/versions-linux.sh
+
+    echo "Preparing restructured staging for pgAdmin"
+    cp -r "$WD/server/staging_cache/linux/pgAdmin 4" $PGADMIN_STAGING/
 
     echo "Preparing restructured staging for server"
     cp -r $WD/server/staging_cache/linux/bin $PGSERVER_STAGING  || _die "Failed to copy $WD/server/staging_cache/linux/bin"

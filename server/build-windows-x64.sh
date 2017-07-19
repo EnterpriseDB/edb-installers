@@ -607,8 +607,8 @@ _postprocess_server_windows_x64() {
     unzip -o $WD/server/staging_cache/windows-x64/output.zip -d $WD/server/staging_cache/windows-x64/ || _die "Failed to unpack the built source tree ($WD/staging_cache/windows-x64/output.zip)"
     rm $WD/server/staging_cache/windows-x64/output.zip
 
-    dos2unix $WD/server/staging/windows-x64/versions-windows-x64.sh || _die "Failed to convert format of versions-windows-x64.sh from dos to unix"
-    source $WD/server/staging/windows-x64/versions-windows-x64.sh
+    dos2unix $WD/server/staging_cache/windows-x64/versions-windows-x64.sh || _die "Failed to convert format of versions-windows-x64.sh from dos to unix"
+    source $WD/server/staging_cache/windows-x64/versions-windows-x64.sh
     PG_BUILD_SERVER=$(expr $PG_BUILD_SERVER + $SKIPBUILD)
 
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/vcredist/vcredist_x86.exe $WD/server/staging_cache/windows-x64/installer || _die "Failed to copy the vcredist_x86.exe to windows-x64 staging_cache"
