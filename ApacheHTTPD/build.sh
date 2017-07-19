@@ -55,7 +55,7 @@ _prep_ApacheHTTPD() {
       rm -rf mod_wsgi-$PG_VERSION_WSGI  || _die "Couldn't remove the existing mod_wsgi-$PG_VERSION_WSGI source directory (source/mod_wsgi-$PG_VERSION_WSGI)"
     fi
 
-    extract_file ../../tarballs/mod_wsgi-$PG_VERSION_WSGI || exit 1
+    extract_file ../../tarballs/mod_wsgi-$PG_VERSION_WSGI 
 
     echo "Unpacking apache source..."
     if [ $PG_ARCH_WINDOWS = 1 ];
@@ -63,19 +63,19 @@ _prep_ApacheHTTPD() {
         if [ -e apache.windows ]; then
             rm -rf apache.windows || _die "Couldn't remove the existing apache.windows source directory (source/apache.windows)"
         fi
-        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-win32-src || exit 1
-        extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB || exit 1
-        extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL || exit 1
-        extract_file ../../tarballs/pcre-836-win32-binaries || exit 1
-	mv pcre-836-win32-binaries httpd-$PG_VERSION_APACHE/srclib/pcre || exit 1
+        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-win32-src 
+        extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB 
+        extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL 
+        extract_file ../../tarballs/pcre-836-win32-binaries 
+	mv pcre-836-win32-binaries httpd-$PG_VERSION_APACHE/srclib/pcre 
         mv httpd-$PG_VERSION_APACHE apache.windows || _die "Couldn't move httpd-$PG_VERSION_APACHE as apache.windows"
 
     fi
 
     if [[ $PG_ARCH_LINUX = 1 || $PG_ARCH_LINUX_X64 = 1 || $PG_ARCH_OSX = 1 ]];
     then
-        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE || exit 1
-        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-deps || exit 1
+        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE 
+        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-deps 
     fi
 
     # Per-platform prep
@@ -84,25 +84,25 @@ _prep_ApacheHTTPD() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_ApacheHTTPD_osx || exit 1
+        _prep_ApacheHTTPD_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _prep_ApacheHTTPD_linux || exit 1
+        _prep_ApacheHTTPD_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_ApacheHTTPD_linux_x64 || exit 1
+        _prep_ApacheHTTPD_linux_x64 
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_ApacheHTTPD_windows || exit 1
+        _prep_ApacheHTTPD_windows 
     fi
     
 }
@@ -116,25 +116,25 @@ _build_ApacheHTTPD() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_ApacheHTTPD_osx || exit 1
+        _build_ApacheHTTPD_osx 
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _build_ApacheHTTPD_linux || exit 1
+        _build_ApacheHTTPD_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _build_ApacheHTTPD_linux_x64 || exit 1
+        _build_ApacheHTTPD_linux_x64 
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_ApacheHTTPD_windows || exit 1
+        _build_ApacheHTTPD_windows 
     fi
 }
 
@@ -162,24 +162,24 @@ _postprocess_ApacheHTTPD() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_ApacheHTTPD_osx || exit 1
+        _postprocess_ApacheHTTPD_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_ApacheHTTPD_linux || exit 1
+        _postprocess_ApacheHTTPD_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_ApacheHTTPD_linux_x64 || exit 1
+        _postprocess_ApacheHTTPD_linux_x64 
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _postprocess_ApacheHTTPD_windows || exit 1
+        _postprocess_ApacheHTTPD_windows 
     fi
 }

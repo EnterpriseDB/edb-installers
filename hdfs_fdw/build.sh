@@ -83,20 +83,20 @@ _prep_hdfs_fdw() {
     if [ $PG_ARCH_OSX = 1 ];
     then
 	echo "OS X not supported"
-        #_prep_hdfs_fdw_osx || exit 1
+        #_prep_hdfs_fdw_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
 	echo "Linux 32bit not supported"
-        #_prep_hdfs_fdw_linux || exit 1
+        #_prep_hdfs_fdw_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_hdfs_fdw_linux_x64 || exit 1
+        _prep_hdfs_fdw_linux_x64 
     fi
 
     # Windows
@@ -109,7 +109,7 @@ _prep_hdfs_fdw() {
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
         echo "Yet to add support for Win64"
-       # _prep_hdfs_fdw_windows_x64 || exit 1
+       # _prep_hdfs_fdw_windows_x64 
     fi
 }
 
@@ -123,7 +123,7 @@ _build_hdfs_fdw() {
     if [ $PG_ARCH_OSX = 1 ];
     then
 	echo "OS X not supported"
-        #_build_hdfs_fdw_osx || exit 1
+        #_build_hdfs_fdw_osx 
     fi
 
     # Linux
@@ -135,7 +135,7 @@ _build_hdfs_fdw() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _build_hdfs_fdw_linux_x64 || exit 1
+        _build_hdfs_fdw_linux_x64 
     fi
 
     # Windows
@@ -148,7 +148,7 @@ _build_hdfs_fdw() {
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
         echo "Yet to add support for Win64"
-        #_build_hdfs_fdw_windows_x64 || exit 1
+        #_build_hdfs_fdw_windows_x64 
     fi
 }
 
@@ -199,7 +199,7 @@ _postprocess_hdfs_fdw() {
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_hdfs_fdw_linux_x64 || exit 1
+        _postprocess_hdfs_fdw_linux_x64 
     fi
 
     # Windows
@@ -212,6 +212,6 @@ _postprocess_hdfs_fdw() {
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
         echo "Yet to add support for Win64"
-        #_postprocess_hdfs_fdw_windows_x64 || exit 1
+        #_postprocess_hdfs_fdw_windows_x64 
     fi
 }

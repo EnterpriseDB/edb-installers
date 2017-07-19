@@ -55,7 +55,7 @@ _prep_pgAgent() {
     fi
 
     echo "Unpacking pgAgent source..."
-    extract_file  ../../tarballs/pgAgent-$PG_VERSION_PGAGENT-Source || exit 1
+    extract_file  ../../tarballs/pgAgent-$PG_VERSION_PGAGENT-Source 
     cd pgAgent-$PG_VERSION_PGAGENT-Source
     #patch -p1 < $WD/tarballs/pgAgent-Lion.patch # This is not required to build pgAgent3.3.0. Hence, commenting this.
     
@@ -65,32 +65,32 @@ _prep_pgAgent() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-       _prep_pgAgent_osx || exit 1
+       _prep_pgAgent_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _prep_pgAgent_linux || exit 1
+        _prep_pgAgent_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       _prep_pgAgent_linux_x64 || exit 1
+       _prep_pgAgent_linux_x64 
     fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-       #_prep_pgAgent_linux_ppc64 || exit 1
+       #_prep_pgAgent_linux_ppc64 
        echo "Linux-PPC64 build pre-process is not part of build framework yet."
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_pgAgent_windows || exit 1
+        _prep_pgAgent_windows 
     fi
     
 }
@@ -104,32 +104,32 @@ _build_pgAgent() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-       _build_pgAgent_osx || exit 1
+       _build_pgAgent_osx 
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _build_pgAgent_linux || exit 1
+        _build_pgAgent_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-      _build_pgAgent_linux_x64 || exit 1
+      _build_pgAgent_linux_x64 
     fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-      #_build_pgAgent_linux_ppc64 || exit 1
+      #_build_pgAgent_linux_ppc64 
       echo "Linux-PPC64 build process is not part of build framework yet."
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_pgAgent_windows || exit 1
+        _build_pgAgent_windows 
     fi
 }
 
@@ -158,30 +158,30 @@ _postprocess_pgAgent() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-       _postprocess_pgAgent_osx || exit 1
+       _postprocess_pgAgent_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_pgAgent_linux || exit 1
+        _postprocess_pgAgent_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-      _postprocess_pgAgent_linux_x64 || exit 1
+      _postprocess_pgAgent_linux_x64 
     fi
     
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-      _postprocess_pgAgent_linux_ppc64 || exit 1
+      _postprocess_pgAgent_linux_ppc64 
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _postprocess_pgAgent_windows || exit 1
+        _postprocess_pgAgent_windows 
     fi
 }
