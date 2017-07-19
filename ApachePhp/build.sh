@@ -87,25 +87,25 @@ _prep_ApachePhp() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_ApachePhp_osx || exit 1
+        _prep_ApachePhp_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _prep_ApachePhp_linux || exit 1
+        _prep_ApachePhp_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_ApachePhp_linux_x64 || exit 1
+        _prep_ApachePhp_linux_x64 
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_ApachePhp_windows || exit 1
+        _prep_ApachePhp_windows 
     fi
     
 }
@@ -119,25 +119,25 @@ _build_ApachePhp() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_ApachePhp_osx || exit 1
+        _build_ApachePhp_osx 
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _build_ApachePhp_linux || exit 1
+        _build_ApachePhp_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _build_ApachePhp_linux_x64 || exit 1
+        _build_ApachePhp_linux_x64 
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_ApachePhp_windows || exit 1
+        _build_ApachePhp_windows 
     fi
 }
 
@@ -169,24 +169,24 @@ _postprocess_ApachePhp() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_ApachePhp_osx || exit 1
+        _postprocess_ApachePhp_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_ApachePhp_linux || exit 1
+        _postprocess_ApachePhp_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_ApachePhp_linux_x64 || exit 1
+        _postprocess_ApachePhp_linux_x64 
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _postprocess_ApachePhp_windows || exit 1
+        _postprocess_ApachePhp_windows 
     fi
 }

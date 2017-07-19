@@ -68,32 +68,32 @@ _prep_pgmemcache() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_pgmemcache_osx || exit 1
+        _prep_pgmemcache_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _prep_pgmemcache_linux || exit 1
+        _prep_pgmemcache_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_pgmemcache_linux_x64 || exit 1
+        _prep_pgmemcache_linux_x64 
     fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-        #_prep_pgmemcache_linux_ppc64 || exit 1
+        #_prep_pgmemcache_linux_ppc64 
         echo "Linux-PPC64 build pre-process is not part of build framework yet."
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_prep_pgmemcache_windows || exit 1
+        #_prep_pgmemcache_windows 
         echo "Not Applicable"
     fi
     
@@ -108,32 +108,32 @@ _build_pgmemcache() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_pgmemcache_osx || exit 1
+        _build_pgmemcache_osx 
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _build_pgmemcache_linux || exit 1
+        _build_pgmemcache_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-       _build_pgmemcache_linux_x64 || exit 1
+       _build_pgmemcache_linux_x64 
     fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-       #_build_pgmemcache_linux_ppc64 || exit 1
+       #_build_pgmemcache_linux_ppc64 
        echo "Linux-PPC64 build process is not part of build framework yet."
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_build_pgmemcache_windows || exit 1
+        #_build_pgmemcache_windows 
         echo "Not Applicable"
     fi
 }
@@ -168,31 +168,31 @@ _postprocess_pgmemcache() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_pgmemcache_osx || exit 1
+        _postprocess_pgmemcache_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_pgmemcache_linux || exit 1
+        _postprocess_pgmemcache_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_pgmemcache_linux_x64 || exit 1
+        _postprocess_pgmemcache_linux_x64 
     fi
     
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-        _postprocess_pgmemcache_linux_ppc64 || exit 1
+        _postprocess_pgmemcache_linux_ppc64 
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-       #_postprocess_pgmemcache_windows || exit 1
+       #_postprocess_pgmemcache_windows 
 	   echo "Not Applicable"
     fi
 }

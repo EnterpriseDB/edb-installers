@@ -76,32 +76,32 @@ _prep_PostGIS() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_PostGIS_osx || exit 1
+        _prep_PostGIS_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _prep_PostGIS_linux || exit 1
+        _prep_PostGIS_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _prep_PostGIS_linux_x64 || exit 1
+        _prep_PostGIS_linux_x64 
     fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-        #_prep_PostGIS_linux_ppc64 || exit 1
+        #_prep_PostGIS_linux_ppc64 
         echo "Linux-PPC64 build pre-process is not part of build framework yet."
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_prep_PostGIS_windows || exit 1
+        #_prep_PostGIS_windows 
         echo "PostGIS:Disabled for now:windows"
     fi
     
@@ -116,32 +116,32 @@ _build_PostGIS() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_PostGIS_osx || exit 1
+        _build_PostGIS_osx 
     fi
 
     # Linux 
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _build_PostGIS_linux || exit 1
+        _build_PostGIS_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _build_PostGIS_linux_x64 || exit 1
+        _build_PostGIS_linux_x64 
     fi
 
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-        #_build_PostGIS_linux_ppc64 || exit 1
+        #_build_PostGIS_linux_ppc64 
         echo "Linux-PPC64 build process is not part of build framework yet."
     fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_build_PostGIS_windows || exit 1
+        #_build_PostGIS_windows 
         echo "PostGIS:Disabled for now:windows"
     fi
 }
@@ -180,31 +180,31 @@ _postprocess_PostGIS() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_PostGIS_osx || exit 1
+        _postprocess_PostGIS_osx 
     fi
 
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
-        _postprocess_PostGIS_linux || exit 1
+        _postprocess_PostGIS_linux 
     fi
 
     # Linux x64
     if [ $PG_ARCH_LINUX_X64 = 1 ];
     then
-        _postprocess_PostGIS_linux_x64 || exit 1
+        _postprocess_PostGIS_linux_x64 
     fi
     
     # Linux ppc64
     if [ $PG_ARCH_LINUX_PPC64 = 1 ];
     then
-        _postprocess_PostGIS_linux_ppc64 || exit 1
+        _postprocess_PostGIS_linux_ppc64 
     fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        #_postprocess_PostGIS_windows || exit 1
+        #_postprocess_PostGIS_windows 
         echo "PostGIS:Disabled for now:windows"
     fi
 }
