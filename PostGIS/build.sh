@@ -58,10 +58,10 @@ _prep_PostGIS() {
     fi
 
     echo "Unpacking postgis source..."
-    extract_file  ../../tarballs/postgis-$PG_VERSION_POSTGIS || exit 1
+    extract_file  ../../tarballs/postgis-$PG_VERSION_POSTGIS 
 
     echo "Extracting the postgis-java source..."
-    extract_file  ../../tarballs/postgis-java-$PG_VERSION_POSTGIS_JAVA || exit 1
+    extract_file  ../../tarballs/postgis-java-$PG_VERSION_POSTGIS_JAVA 
     mv postgis-java-$PG_VERSION_POSTGIS_JAVA  postgis-$PG_VERSION_POSTGIS/java/
 
     echo "Applying patches..." 
@@ -71,7 +71,7 @@ _prep_PostGIS() {
     cd $WD/PostGIS/source  
 
     echo "Extracting the postgresql jar file..."
-    extract_file  ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC || exit 1 
+    extract_file  ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC  
     mv pgJDBC-$PG_VERSION_PGJDBC/*.jar .
 
     # Per-platform prep

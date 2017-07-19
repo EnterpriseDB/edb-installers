@@ -56,7 +56,7 @@ _prep_pgmemcache() {
     cd $WD/pgmemcache/source
 
     echo "Unpacking pgmemcache source..."
-    extract_file ../../tarballs/pgmemcache_$PG_VERSION_PGMEMCACHE || exit 1
+    extract_file ../../tarballs/pgmemcache_$PG_VERSION_PGMEMCACHE 
 
     #cd $WD/pgmemcache/source/pgmemcache
     #patch -p1 < $WD/tarballs/pgmemcache-libmemcached-1.0.8.patch
