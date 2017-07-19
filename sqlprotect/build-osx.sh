@@ -83,6 +83,8 @@ _postprocess_sqlprotect_osx() {
     source $WD/sqlprotect/staging/osx/versions-osx.sh
     PG_BUILD_SQLPROTECT=$(expr $PG_BUILD_SQLPROTECT + $SKIPBUILD)
 
+    _registration_plus_postprocess "$WD/sqlprotect/staging"  "SQL Protect" "sqlprotectVersion" "/etc/postgres-reg.ini" "sqlprotect-PG_$PG_MAJOR_VERSION" "sqlprotect-PG_$PG_MAJOR_VERSION" "SQL Protect" "$PG_VERSION_SQLPROTECT"
+
     # If build passed empty this variable
     BUILD_FAILED="build_failed-"
     if [ $PG_BUILD_SQLPROTECT -gt 0 ];
