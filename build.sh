@@ -218,12 +218,12 @@ then
     PG_BUILD_APACHEHTTPD=0
     if [ $SKIPBUILD = 0 ];
     then
-        (_prep_APACHEHTTPD && _build_APACHEHTTPD)
+        (_prep_ApacheHTTPD && _build_ApacheHTTPD)
         if [ $? == 0 ]; then
            PG_BUILD_APACHEHTTPD=1
         fi
     fi
-    (_postprocess_APACHEHTTPD)
+    (_postprocess_ApacheHTTPD)
 fi
 
 # Package: phppgadmin

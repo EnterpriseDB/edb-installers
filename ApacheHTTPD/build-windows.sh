@@ -272,7 +272,7 @@ _postprocess_ApacheHTTPD_windows() {
     fi
 
     # Rename the installer
-    mv $WD/output/apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-windows.exe $WD/output/apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}windows.exe || _die "Failed to rename the installer"
+    mv $WD/output/apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-windows.exe $WD/output/apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}windows.exe
 
 	# Sign the installer
 	win32_sign "apachehttpd-$PG_VERSION_APACHE-$PG_BUILDNUM_APACHEHTTPD-${BUILD_FAILED}windows.exe"
