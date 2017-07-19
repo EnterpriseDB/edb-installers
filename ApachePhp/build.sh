@@ -56,19 +56,19 @@ _prep_ApachePhp() {
         if [ -e apache.windows ]; then
             rm -rf apache.windows || _die "Couldn't remove the existing apache.windows source directory (source/apache.windows)"
         fi
-        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-win32-src || exit 1
-        extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB || exit 1
-        extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL || exit 1
-        extract_file ../../tarballs/pcre-836-win32-binaries || exit 1
-	mv pcre-836-win32-binaries httpd-$PG_VERSION_APACHE/srclib/pcre || exit 1
+        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-win32-src 
+        extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB 
+        extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL 
+        extract_file ../../tarballs/pcre-836-win32-binaries 
+	mv pcre-836-win32-binaries httpd-$PG_VERSION_APACHE/srclib/pcre 
         mv httpd-$PG_VERSION_APACHE apache.windows || _die "Couldn't move httpd-$PG_VERSION_APACHE as apache.windows"
 
     fi
 
     if [[ $PG_ARCH_LINUX = 1 || $PG_ARCH_LINUX_X64 = 1 || $PG_ARCH_OSX = 1 ]];
     then
-        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE || exit 1
-        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-deps || exit 1
+        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE 
+        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-deps 
     fi
 
     # php
@@ -79,7 +79,7 @@ _prep_ApachePhp() {
     fi
 
     echo "Unpacking php source..."
-    extract_file ../../tarballs/php-$PG_VERSION_PHP || exit 1
+    extract_file ../../tarballs/php-$PG_VERSION_PHP 
     
     # Per-platform prep
     cd $WD

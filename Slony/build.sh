@@ -62,7 +62,7 @@ _prep_Slony() {
     fi
 
     echo "Unpacking SLONY source..."
-    extract_file  $WD/tarballs/slony1-$PG_VERSION_SLONY || exit 1
+    extract_file  $WD/tarballs/slony1-$PG_VERSION_SLONY 
 
     #Slony1-2.2.3 patch against PG9.4
     cd slony1-$PG_VERSION_SLONY
