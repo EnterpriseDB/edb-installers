@@ -192,7 +192,7 @@ _postprocess_PEM-HTTPD_windows() {
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\apache.staging; cmd /c zip -r ..\\\\apache-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache.staging)"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache-staging.zip $WD/PEM-HTTPD/staging/windows/apache || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache-staging.zip)"
     unzip $WD/PEM-HTTPD/staging/windows/apache/apache-staging.zip -d $WD/PEM-HTTPD/staging/windows/apache || _die "Failed to unpack the built source tree ($WD/staging/windows/apache-staging.zip)"
-    mv $WD/ApacheHTTPD/staging/windows/apache/versions-windows.sh $WD/ApacheHTTPD/staging/windows || _die "Failed to move versions-windows.sh"
+    mv $WD/PEM-HTTPD/staging/windows/apache/versions-windows.sh $WD/PEM-HTTPD/staging/windows || _die "Failed to move versions-windows.sh"
     rm $WD/PEM-HTTPD/staging/windows/apache/apache-staging.zip
 
     TEMP_PATH=`echo $PG_PATH_WINDOWS | sed -e 's:\\\\\\\\:/:g'`
