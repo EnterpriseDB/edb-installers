@@ -5,7 +5,8 @@
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ]; 
 then
-    source $WD/ApacheHTTPD/build-osx.sh
+    echo "Disable Mac OS X build"
+    #source $WD/ApacheHTTPD/build-osx.sh
 fi
 
 # Linux
@@ -91,7 +92,8 @@ _prep_ApacheHTTPD() {
     # Mac OS X
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _prep_ApacheHTTPD_osx 
+        echo "Disable Mac OS X build"
+        #_prep_ApacheHTTPD_osx
     fi
 
     # Linux
@@ -123,7 +125,8 @@ _build_ApacheHTTPD() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _build_ApacheHTTPD_osx 
+        echo "Disable Mac OS X build"
+        #_build_ApacheHTTPD_osx
     fi
 
     # Linux 
@@ -169,7 +172,8 @@ _postprocess_ApacheHTTPD() {
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
-        _postprocess_ApacheHTTPD_osx 
+        echo "Disable Mac OS X build"
+        #_postprocess_ApacheHTTPD_osx
     fi
 
     # Linux
