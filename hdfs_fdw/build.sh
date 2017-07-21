@@ -2,6 +2,8 @@
 
 # Read the various build scripts
 
+PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
+
 # Mac OS X
 if [ $PG_ARCH_OSX = 1 ];
 then
@@ -179,8 +181,6 @@ _postprocess_hdfs_fdw() {
         rm installer.xml
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (hdfs_fdw/installer.xml.in)"
-
-    PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
 
     _replace PG_VERSION_HDFS_FDW $PG_VERSION_HDFS_FDW installer.xml || _die "Failed to set the version in the installer project file (hdfs_fdw/installer.xml)"
     _replace PG_BUILDNUM_HDFS_FDW $PG_BUILDNUM_HDFS_FDW installer.xml || _die "Failed to set the version in the installer project file (hdfs_fdw/installer.xml)"
