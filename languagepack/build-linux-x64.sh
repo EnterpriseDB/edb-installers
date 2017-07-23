@@ -58,6 +58,18 @@ _prep_languagepack_linux_x64() {
 _build_languagepack_linux_x64() {
 
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/languagepack/source/languagepack.linux-x64; export SSL_INST=/opt/local/Current; ./languagepack.sh -n ${PG_VERSION_NCURSES} -p ${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON} -d ${PG_VERSION_DIST_PYTHON} -t ${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL} -P ${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} -v $PG_VERSION_LANGUAGEPACK -b /opt/local/pg-languagepack -i $PG_LANGUAGEPACK_INSTALL_DIR_LINUX -e" || _die "Failed to build languagepack"
+
+    echo "Removing last successful staging directory ($PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging)"
+    ssh $PG_SSH_LINUX_X64 "rm -rf $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_LINUX_X64 "mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging" || _die "Couldn't create the last successful staging directory"
+    ssh $PG_SSH_LINUX_X64 "chmod ugo+w $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging" || _die "Couldn't set the permission on the last successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    ssh $PG_SSH_LINUX_X64 "cp -rp $PG_LANGUAGEPACK_INSTALL_DIR_LINUX/* $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging" || _die "Couldn't copy the existing staging directory"
+
+    ssh $PG_SSH_LINUX_X64 "echo PG_VERSION_LANGUAGEPACK=$PG_VERSION_LANGUAGEPACK > $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging/versions-linux-x64.sh" || _die "Failed to write languagepack version number into versions-linux-x64.sh"
+    ssh $PG_SSH_LINUX_X64 "echo PG_BUILDNUM_LANGUAGEPACK=$PG_BUILDNUM_LANGUAGEPACK >> $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging/versions-linux-x64.sh" || _die "Failed to write languagepack build number into versions-linux-x64.sh"
+
 }
 
 
@@ -66,11 +78,24 @@ _build_languagepack_linux_x64() {
 ################################################################################
 
 _postprocess_languagepack_linux_x64() {
+
+    # Remove any existing staging/install directory that might exist, and create a clean one
+    if [ -e $WD/languagepack/staging/linux-x64 ];
+    then
+      echo "Removing existing staging directory"
+      rm -rf $WD/languagepack/staging/linux-x64 || _die "Couldn't remove the existing staging directory"
+    fi
+    echo "Creating staging/install directory ($WD/languagepack/staging/linux-x64)"
+    mkdir -p $WD/languagepack/staging/linux-x64 || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/languagepack/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
  
     cd $WD/languagepack
     
     echo "Copying files to staging directory from install directory"
-    ssh $PG_SSH_LINUX_X64 "mv $PG_LANGUAGEPACK_INSTALL_DIR_LINUX/* $PG_PATH_LINUX_X64/languagepack/staging/linux-x64 && rm -rf $PG_LANGUAGEPACK_INSTALL_DIR_LINUX" || _die "Failed to copy the languagepack Source into the staging directory"
+    ssh $PG_SSH_LINUX_X64 "cp -rp $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging/* $PG_PATH_LINUX_X64/languagepack/staging/linux-x64" || _die "Failed to copy the languagepack Source into the staging directory"
+
+    source $WD/languagepack/staging/linux-x64/versions-linux-x64.sh
+    PG_BUILD_LANGUAGEPACK=$(expr $PG_BUILD_LANGUAGEPACK + $SKIPBUILD)
 
     mv $WD/languagepack/staging/linux-x64/Python-3.3/pip_packages_list.txt $WD/languagepack/staging/linux-x64 || _die "Failed to move pip_packages_list.txt to $WD/languagepack/staging/linux-x64" 
 
@@ -80,6 +105,16 @@ _postprocess_languagepack_linux_x64() {
     
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux-x64 || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_LANGUAGEPACK -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-linux-x64.run $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}linux-x64.run || _die "Failed to rename the installer"
 
     cd $WD
 }
