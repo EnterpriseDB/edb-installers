@@ -185,6 +185,17 @@ EOT
 
     # Python Build
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.3; set VisualStudioVersion=12.0; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.3.4 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.3 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-8.5 $PG_PATH_WIN\\\\languagepack.$ARCH\\\\xz-5.0.3 $PG_PGBUILD_WIN $PPAS_BUILD_PATH"
+
+    echo "Removing last successful staging directory ($PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging)"
+    ssh $PG_SSH_WIN "cmd /c if EXIST $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging rd /S /Q $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_WIN "cmd /c mkdir $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging" || _die "Couldn't create the last successful staging directory"
+
+    echo "Copying the complete build to the successful staging directory"
+    ssh $PG_SSH_WIN "cmd /c xcopy /E /Q /Y $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\* $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging\\\\" || _die "Couldn't copy the existing staging directory"
+
+    ssh $PG_SSH_WIN "cmd /c echo PG_VERSION_LANGUAGEPACK=$PG_VERSION_LANGUAGEPACK >  $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/versions-${ARCH}.sh" || _die "Failed to write languagepack version number into versions-windows.sh"
+    ssh $PG_SSH_WIN "cmd /c echo PG_BUILDNUM_LANGUAGEPACK=$PG_BUILDNUM_LANGUAGEPACK >> $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/versions-${ARCH}.sh" || _die "Failed to write languagepack build number into versions-windows.sh"
+
 }
 
 
@@ -212,36 +223,36 @@ _postprocess_languagepack_windows() {
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS_X64
        PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_CYG_PATH}/x64"
     fi
-    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN; zip -r Tcl-8.5.zip Tcl-8.5; zip -r Perl-5.20.zip Perl-5.20; zip -r Python-3.3.zip Python-3.3" || _die "Failed to create Tcl-8.5.zip;Perl-5.20.zip;Python-3.3zip on  windows buildhost"
-    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN/Tcl-8.5.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Tcl-8.5.zip"
-    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN/Perl-5.20.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Perl-5.20.zip"
-    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN/Python-3.3.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Python-3.3.zip"
 
-    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN; rm -f Tcl-8.5.zip Perl-5.20.zip Python-3.3.zip " || _die "Failed to remove  Tcl-8.5.zip;Perl-5.20.zip; Python-3.3.zip on  windows buildhost"
+    # Remove any existing staging/install directory that might exist, and create a clean one
+    echo "Removing existing install directory"
+    if [ -e $WD/languagepack/staging/$ARCH ];
+    then
+      echo "Removing existing staging directory"
+      rm -rf $WD/languagepack/staging/$ARCH || _die "Couldn't remove the existing staging directory"
+    fi
+    echo "Creating staging directory ($WD/languagepack/staging/$ARCH)"
+    mkdir -p $WD/languagepack/staging/$ARCH || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/languagepack/staging/$ARCH || _die "Couldn't set the permissions on the staging directory"
+
+    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging; zip -r Tcl-8.5.zip Tcl-8.5; zip -r Perl-5.20.zip Perl-5.20; zip -r Python-3.3.zip Python-3.3" || _die "Failed to create Tcl-8.5.zip;Perl-5.20.zip;Python-3.3zip on  windows buildhost"
+
+    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/Tcl-8.5.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Tcl-8.5.zip"
+    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/Perl-5.20.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Perl-5.20.zip"
+    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/Python-3.3.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Python-3.3.zip"
+    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/versions-${ARCH}.sh  $WD/languagepack/staging/$ARCH || _die "Failed to copy versions-${ARCH}.sh"
+
+    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging; rm -f Tcl-8.5.zip Perl-5.20.zip Python-3.3.zip " || _die "Failed to remove  Tcl-8.5.zip;Perl-5.20.zip; Python-3.3.zip on  windows buildhost"
+
     cd $WD/languagepack/staging/$ARCH/
-    # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/languagepack/staging/$ARCH/Tcl-8.5 ];
-    then
-       echo "Removing existing staging Tcl-8.5 directory"
-       rm -rf $WD/languagepack/staging/$ARCH/Tcl-8.5 || _die "Failed to remove the Tcl-8.5 directory"
-    fi
-
-    if [ -e $WD/languagepack/staging/$ARCH/Perl-5.20 ];
-    then
-       echo "Removing existing staging Perl-5.20 directory"
-       rm -rf $WD/languagepack/staging/$ARCH/Perl-5.20 || _die "Failed to remove the Perl-5.20 directory"
-    fi
-
-    if [ $WD/languagepack/staging/$ARCH/Python-3.3 ];
-    then
-       echo "Removing existing staging Python-3.3 directory"
-       rm -rf $WD/languagepack/staging/$ARCH/Python-3.3 || _die "Failed to remove the Python-3.3 directory"
-    fi
-
     unzip Tcl-8.5.zip ||_die " ailed to unzip Tcl-8.5.zip"
     unzip Perl-5.20.zip || _die "Failed to unzip Perl-5.20.zip"
     unzip Python-3.3.zip || _die "Failed to unzip Python-3.3.zip"
     rm -f Tcl-8.5.zip Perl-5.20.zip Python-3.3.zip || _die "Failed to remove the Tcl-8.5.zip;Perl-5.20.zip;Python-3.3.zip"
+
+    dos2unix $WD/languagepack/staging/$ARCH/versions-${ARCH}.sh || _die "Failed to convert format of versions-${ARCH}.sh from dos to unix"
+    source $WD/languagepack/staging/$ARCH/versions-${ARCH}.sh
+    PG_BUILD_LANGUAGEPACK=$(expr $PG_BUILD_LANGUAGEPACK + $SKIPBUILD)
 
     mv $WD/languagepack/staging/$ARCH/Python-3.3/pip_packages_list.txt $WD/languagepack/staging/$ARCH || _die "Failed to move pip_packages_list.txt to $WD/languagepack/staging/$ARCH"
 
@@ -273,8 +284,18 @@ _postprocess_languagepack_windows() {
         "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
     fi
 
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_LANGUAGEPACK -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-$OS.exe $WD/output/edb_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}${OS}.exe
+
     if [ $SIGNING -eq 1 ]; then
-        win32_sign "*_languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-$OS.exe"
+        win32_sign "*-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}${OS}.exe"
     fi
 
     mv $WD/languagepack/staging/windows $WD/languagepack/staging/$ARCH || _die "Failed to rename windows staging directory to $ARCH"
