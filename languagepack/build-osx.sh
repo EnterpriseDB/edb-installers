@@ -241,8 +241,8 @@ _build_languagepack_osx() {
     #cp -pR \$PERL_INSTALL_PATH \$PG_PATH_OSX/languagepack/staging/osx
     #cp -pR \$TCL_TK_INSTALL_PATH \$PG_PATH_OSX/languagepack/staging/osx
 
-    cd \$install_path
-    tar -jcvf LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 *
+    #cd \$install_path
+    #tar -jcvf LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 *
 
 EOT-LANGUAGEPACK
 
@@ -250,12 +250,16 @@ EOT-LANGUAGEPACK
     scp languagepack/build-languagepack.sh $PG_SSH_OSX:$PG_PATH_OSX/languagepack
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/languagepack; sh ./build-languagepack.sh" || _die "Failed to build the languagepack on OSX VM"
 
-    # Copy the staging to controller to build the installers
-    scp $PG_SSH_OSX:$PG_LANGUAGEPACK_OSX/LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 $WD/languagepack/staging/osx || _die "Failed to copy the binaries to controller"
+    echo "Removing last successful staging directory ($PG_LANGUAGEPACK_OSX.staging)"
+    ssh $PG_SSH_OSX "rm -rf $PG_LANGUAGEPACK_OSX.staging" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_OSX "mkdir -p $PG_LANGUAGEPACK_OSX.staging" || _die "Couldn't create the last successful staging directory"
+    ssh $PG_SSH_OSX "chmod ugo+w $PG_LANGUAGEPACK_OSX.staging" || _die "Couldn't set the permission on the last successful staging directory"
 
-    cd languagepack/staging/osx
-    tar -jxvf LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 || _die "Failed to extract the staging binary archive on controller"
-    rm -f LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2
+    echo "Copying the complete build to the successful staging directory"
+    ssh $PG_SSH_OSX "cp -rp $PG_LANGUAGEPACK_OSX/* $PG_LANGUAGEPACK_OSX.staging" || _die "Couldn't copy the existing staging directory"
+
+    ssh $PG_SSH_OSX "echo PG_VERSION_LANGUAGEPACK=$PG_VERSION_LANGUAGEPACK > $PG_LANGUAGEPACK_OSX.staging/versions-osx.sh" || _die "Failed to write languagepack version number into versions-osx.sh"
+    ssh $PG_SSH_OSX "echo PG_BUILDNUM_LANGUAGEPACK=$PG_BUILDNUM_LANGUAGEPACK >> $PG_LANGUAGEPACK_OSX.staging/versions-osx.sh" || _die "Failed to write languagepack build number into versions-osx.sh"
 
     echo "END BUILD LanguagePack OSX" 
 
@@ -269,6 +273,35 @@ EOT-LANGUAGEPACK
 _postprocess_languagepack_osx() {
 
     echo "BEGIN POST LanguagePack OSX"
+
+    # Remove any existing staging directory that might exist, and create a clean one
+    if [ -e $WD/languagepack/staging/osx ];
+    then
+      echo "Removing existing staging directory"
+      rm -rf $WD/languagepack/staging/osx || _die "Couldn't remove the existing staging directory"
+    fi
+    echo "Creating staging directory ($WD/languagepack/staging/osx)"
+    mkdir -p $WD/languagepack/staging/osx || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/languagepack/staging/osx || _die "Couldn't set the permissions on the staging directory"
+
+    # Copy the staging to controller to build the installers
+    ssh $PG_SSH_OSX "cd $PG_LANGUAGEPACK_OSX.staging; rm -f LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2"
+    ssh $PG_SSH_OSX "cd $PG_LANGUAGEPACK_OSX.staging; tar -jcvf LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 *" || _die "Failed to create an archive of languagepack build"
+    scp $PG_SSH_OSX:$PG_LANGUAGEPACK_OSX.staging/LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 $WD/languagepack/staging/osx || _die "Failed to copy the binaries to controller"
+
+    cd $WD/languagepack/staging/osx
+    tar -jxvf LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 || _die "Failed to extract the staging binary archive on controller"
+    rm -f LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2
+
+    source $WD/languagepack/staging/osx/versions-osx.sh
+    PG_BUILD_LANGUAGEPACK=$(expr $PG_BUILD_LANGUAGEPACK + $SKIPBUILD)
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_LANGUAGEPACK -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
 
     cd $WD/languagepack
 
@@ -295,12 +328,15 @@ _postprocess_languagepack_osx() {
     echo "Building the installer with the root privileges not required"
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
+    # Rename the installer
+    mv $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app
+
     # Using own scripts for extract-only mode
-    cp -f $WD/risePrivileges $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/Language\ Pack
-    chmod a+x $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/Language\ Pack
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ Language\ Pack $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with Language\ Pack ($WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/installbuilder.sh)"
-    chmod a+x $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app/Contents/MacOS/installbuilder.sh
+    cp -f $WD/risePrivileges $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app/Contents/MacOS/Language\ Pack
+    chmod a+x $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app/Contents/MacOS/Language\ Pack
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ Language\ Pack $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with Language\ Pack ($WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh)"
+    chmod a+x $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
 
     # Now we need to turn this into a DMG file
     echo "Creating disk image"
@@ -310,7 +346,7 @@ _postprocess_languagepack_osx() {
         rm -rf lp.img
     fi
     mkdir lp.img || _die "Failed to create DMG staging directory"
-    mv edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app lp.img || _die "Failed to copy the installer bundle into the DMG staging directory"
+    mv edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app lp.img || _die "Failed to copy the installer bundle into the DMG staging directory"
 
     # Scp the app bundle to the signing machine for signing
     tar -jcvf lp.img.tar.bz2 lp.img || _die "Failed to create the archive."
@@ -322,9 +358,9 @@ _postprocess_languagepack_osx() {
     scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
 
     # Sign the .app, create the DMG
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output/; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf lp.img.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' --output ./lp.img lp.img/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output/; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf lp.img.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' --output ./lp.img lp.img/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
 
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output/lp.img; rm -rf edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app; mv edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx-signed.app  edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output/lp.img; rm -rf edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app; mv edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx-signed.app  edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
 
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; tar -jcvf lp.img.tar.bz2 lp.img" || _die "Failed to create lp.img on $PG_SSH_OSX_SIGN"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/lp.img.tar.bz2 $WD/output || _die "Failed to copy lp.img.tar.bz2 to $WD/output."
@@ -332,16 +368,16 @@ _postprocess_languagepack_osx() {
     scp lp.img.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/output ||  _die "Failed to copy lp.img.tar.bz2 to $PG_PATH_OSX/output."
     rm -rf lp.img* || _die "Failed to remove lp.img.tar.bz2 from output directory."
 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; tar -jxvf lp.img.tar.bz2; hdiutil create -quiet -anyowners -srcfolder lp.img -format UDZO -volname 'EDB-LanguagePack $PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK' -ov 'edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.dmg'" || _die "Failed to create the disk image (edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.dmg)"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; tar -jxvf lp.img.tar.bz2; hdiutil create -quiet -anyowners -srcfolder lp.img -format UDZO -volname 'EDB-LanguagePack $PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK' -ov 'edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg'" || _die "Failed to create the disk image (edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg)"
 
     echo "Attach the  disk image, create zip and then detach the image"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; hdid edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.dmg" || _die "Failed to open the disk image (edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.dmg in remote host)"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; hdid edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg" || _die "Failed to open the disk image (edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg in remote host)"
 
-    ssh $PG_SSH_OSX "cd '/Volumes/EDB-LanguagePack $PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK'; zip -r $PG_PATH_OSX/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.zip edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app" || _die "Failed to create the installer zip file (edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.zip) in remote host."
+    ssh $PG_SSH_OSX "cd '/Volumes/EDB-LanguagePack $PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK'; zip -r $PG_PATH_OSX/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.zip edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app" || _die "Failed to create the installer zip file (edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.zip) in remote host."
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; sleep 2; echo 'Detaching /Volumes/edb-LanguagePack $PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK...' ; hdiutil detach '/Volumes/edb-LanguagePack $PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK'" || _die "Failed to detach the /Volumes/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK in remote host."
 
-    scp $PG_SSH_OSX:$PG_PATH_OSX/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.* $WD/output || _die "Failed to copy installers to $WD/output."
+    scp $PG_SSH_OSX:$PG_PATH_OSX/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.* $WD/output || _die "Failed to copy installers to $WD/output."
 
     # Delete the old installer from regression setup
     ssh $PG_SSH_OSX "cd /buildfarm/installers;rm -rf edb-languagepack-*.dmg" || _die "Failed to remove the installer from the regression intaller directory"
