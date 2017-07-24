@@ -658,14 +658,20 @@ _postprocess_server_osx() {
     # Set permissions to all files and folders in staging
     _set_permissions osx
 
-    if [ -f installer-osx.xml ]; then
-        rm -f installer-osx.xml
-    fi
-    cp installer.xml installer-osx.xml
+    for file in {installer,pgserver,pgadmin,stackbuilder,commandlinetools}
+    do
+        filename=${file}-osx.xml
+        if [ -f $filename ]; then
+           rm -f $filename
+        fi
 
-    _replace @@PG_DATETIME_SETTING_OSX@@ "$PG_DATETIME_SETTING_OSX" installer-osx.xml || _die "Failed to replace the date-time setting in the installer.xml"
-    _replace @@WIN64MODE@@ "0" installer-osx.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
-    _replace @@SERVICE_SUFFIX@@ "" installer-osx.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
+        cp ${file}.xml $filename || _die "Failed to copy the installer project file (server/$filename)"
+
+        _replace @@PG_DATETIME_SETTING_OSX@@ "$PG_DATETIME_SETTING_OSX" $filename || _die "Failed to replace the date-time setting in the $filename"
+        _replace @@WIN64MODE@@ "0" $filename || _die "Failed to replace the WIN64MODE setting in the $filename"
+        _replace @@SERVICE_SUFFIX@@ "" $filename || _die "Failed to replace the WIN64MODE setting in the $filename"
+        _replace @@PLATFORM@@ "osx" $filename
+    done
 
     if [ -f installer_1.xml ]; then
       rm -f installer_1.xml

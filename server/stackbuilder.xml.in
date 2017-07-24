@@ -1,0 +1,251 @@
+<component>
+    <name>stackbuilder</name>
+    <description>Stack Builder</description>
+    <canBeEdited>1</canBeEdited>
+    <detailedDescription>${msg(stackbuilder.desc)}</detailedDescription>
+    <selected>1</selected>
+    <folderList>
+        <!-- LINUX: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileslinux</name>
+            <platforms>linux</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux/stackbuilder/scripts</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/stackbuilder/installer</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/linux/stackbuilder/StackBuilder_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+            </ruleList>
+        </folder>
+        <folder>
+        <description>Program Files</description>
+            <destination>${installdir}/stackbuilder</destination>
+            <name>programfileslinux_2</name>
+            <platforms>linux</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux/stackbuilder/bin</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/stackbuilder/lib</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/stackbuilder/share</origin>
+                </distributionDirectory>
+            </distributionFileList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+            </ruleList>
+        </folder>
+        <!-- LINUX_X64: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileslinux-x64</name>
+            <platforms>linux-x64</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/stackbuilder/scripts</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/stackbuilder/installer</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/linux-x64/stackbuilder/StackBuilder_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}/stackbuilder</destination>
+            <name>programfileslinux-x64_2</name>
+            <platforms>linux-x64</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/stackbuilder/bin</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/stackbuilder/lib</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/stackbuilder/share</origin>
+                </distributionDirectory>
+            </distributionFileList>
+        </folder>
+        <!-- LINUX_PPC64: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileslinux-ppc64</name>
+            <platforms>linux-ppc</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux-ppc64/stackbuilder</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>../resources/license.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/linux-ppc64/server_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- MAC: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfilesmacosx</name>
+            <platforms>osx</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/osx/stackbuilder/stackbuilder.app</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/osx/stackbuilder/scripts</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/osx/stackbuilder/installer</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/osx/stackbuilder/StackBuilder_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- WIN: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileswindows</name>
+            <platforms>windows</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/stackbuilder/share</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/stackbuilder/bin</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/@@WINDIR@@/stackbuilder/StackBuilder_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- SOLARIS_X64: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfilessolaris-x64</name>
+            <platforms>solaris-intel</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/solaris-x64/stackbuilder</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>../resources/license.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/solaris-x64/server_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- SOLARIS_SPARC: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfilessolaris-sparc</name>
+            <platforms>solaris-sparc</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/solaris-sparc/stackbuilder</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>../resources/license.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/solaris-sparc/server_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+    </folderList>
+
+    <!-- WIN: Start Menu -->
+    <startMenuShortcutList>
+        <startMenuShortcut>
+            <name>Application Stack Builder</name>
+            <runInTerminal>0</runInTerminal>
+            <windowsExec>${installdir}\bin\stackbuilder.exe</windowsExec>
+            <ruleList>
+                <isTrue value="${create_shortcuts}" />
+            </ruleList>
+        </startMenuShortcut>
+    </startMenuShortcutList>
+    <postInstallationActionList>
+        <createTempDir dirPrefix="postgresql_installer"/>
+        <runProgram>
+            <program>${installdir}/installer/server/createshortcuts_sb.sh</program>
+            <programArguments>${product_version} "${branding}" "${installdir}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+            <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${create_shortcuts}</text>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+        <setInstallerVariable name="stackbuilder_installation_done" value="1" persist="1"/>
+    </postInstallationActionList>
+
+    <preUninstallationActionList>
+        <createTempDir dirPrefix="postgresql_installer"/>
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}/installer/server/removeshortcuts_sb.sh</program>
+                    <programArguments>"${installdir}" ${product_version} "${branding}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+                 </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- MAC: Remove menu shortcuts -->
+        <deleteFile>
+            <path>/Applications/${branding}/Application Stack Builder.app</path>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </deleteFile>
+    </preUninstallationActionList>
+</component>

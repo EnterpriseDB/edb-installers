@@ -1,0 +1,3889 @@
+<component>
+    <name>server</name>
+    <description>PostgreSQL Server</description>
+    <canBeEdited>1</canBeEdited>
+    <detailedDescription>${msg(dbserver.desc)}</detailedDescription>
+    <selected>1</selected>
+    <show>1</show>
+    <folderList>
+        <!-- LINUX: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileslinux</name>
+            <platforms>linux</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux/server/bin</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/server/doc</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/server/include</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/server/installer</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/server/scripts</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/server/share</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/server/etc</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/linux/server/server_license.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+            </ruleList>
+        </folder>
+        <!-- LINUX_X64: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileslinux-x64</name>
+            <platforms>linux-x64</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/server/bin</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/server/doc</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/server/include</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/server/installer</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/server/scripts</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/server/share</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/server/etc</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/linux-x64/server/server_license.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- LINUX_PPC64: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileslinux-ppc64</name>
+            <platforms>linux-ppc</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux-ppc64/bin</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-ppc64/doc</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-ppc64/include</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-ppc64/installer</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-ppc64/lib</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-ppc64/scripts</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-ppc64/share</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>../resources/license.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/linux-ppc64/server_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- MAC: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfilesmacosx</name>
+            <platforms>osx</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/osx/server/bin</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/osx/server/doc</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/osx/server/include</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/osx/server/installer</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/osx/server/scripts</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/osx/server/share</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/osx/server/server_license.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- WIN: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileswindows</name>
+            <platforms>windows</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/server/bin</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/server/doc</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/server/include</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/server/installer</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/server/scripts</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/server/share</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/@@WINDIR@@/server/server_license.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- SOLARIS_X64: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfilessolaris-x64</name>
+            <platforms>solaris-intel</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/solaris-x64/bin</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/solaris-x64/doc</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/solaris-x64/include</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/solaris-x64/installer</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/solaris-x64/lib</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/solaris-x64/scripts</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/solaris-x64/share</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>../resources/license.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/solaris-x64/server_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- SOLARIS_SPARC: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfilessolaris-sparc</name>
+            <platforms>solaris-sparc</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/solaris-sparc/bin</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/solaris-sparc/doc</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/solaris-sparc/include</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/solaris-sparc/installer</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/solaris-sparc/lib</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/solaris-sparc/scripts</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/solaris-sparc/stackbuilder</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/solaris-sparc/share</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>../resources/license.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/solaris-sparc/server_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+    </folderList>
+    <componentSelectionValidationActionList>
+        <throwError>
+            <text>${msg(commandlinetools.not.selected.server.error)}</text>
+            <ruleList>
+                <componentTest name="commandlinetools" logic="not_selected"/>
+            </ruleList>
+        </throwError>
+    </componentSelectionValidationActionList>
+    <!-- WIN: Start Menu -->
+    <startMenuShortcutList>
+        <startMenuFolder>
+            <name>Documentation</name>
+            <platforms>windows</platforms>
+            <startMenuShortcutList>
+
+                <!-- Installation notes -->
+                <startMenuLinkShortcut>
+                    <name>Installation notes</name>
+                    <runInTerminal>0</runInTerminal>
+                    <url>file://${installdir}/doc/installation-notes.html</url>
+                    <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${create_shortcuts}" />
+                    </ruleList>
+                </startMenuLinkShortcut>
+
+                <!-- PostgreSQL -->
+                <startMenuLinkShortcut>
+                    <name>PostgreSQL documentation</name>
+                    <runInTerminal>0</runInTerminal>
+                    <url>file://${installdir}/doc/postgresql/html/index.html</url>
+                    <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${create_shortcuts}" />
+                    </ruleList>
+                </startMenuLinkShortcut>
+
+                <!-- PostgreSQL release notes -->
+                <startMenuLinkShortcut>
+                    <name>PostgreSQL release notes</name>
+                    <runInTerminal>0</runInTerminal>
+                    <url>file://${installdir}/doc/postgresql/html/release.html</url>
+                    <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${create_shortcuts}" />
+                    </ruleList>
+                </startMenuLinkShortcut>
+            </startMenuShortcutList>
+        </startMenuFolder>
+
+        <!-- Reload config -->
+        <startMenuShortcut>
+            <name>Reload Configuration</name>
+            <runInTerminal>0</runInTerminal>
+            <windowsExec>cscript.exe</windowsExec>
+            <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
+            <windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
+            <ruleList>
+                <isTrue value="${create_shortcuts}" />
+            </ruleList>
+        </startMenuShortcut>
+    </startMenuShortcutList>
+    <readyToInstallActionList>
+        <!-- Attempt to stop any existing server. We *always* do this, just in case    -->
+        <!-- the existing installation is broken and it doesn't look like an upgrade -->
+        <!-- MAC: Stop the server -->
+        <runProgram>
+            <program>su</program>
+            <programArguments>- ${serviceaccount} -c "\"${installdir}/bin/pg_ctl\" stop -m fast -w -D \"${datadir}\""</programArguments>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </runProgram>
+        <runProgram>
+            <program>launchctl</program>
+            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.${servicename}.plist</programArguments>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+            <compareText>
+                <logic>equals</logic>
+                <text>${platform_name}</text>
+                <value>osx</value>
+            </compareText>
+            <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </runProgram>
+
+        <!-- LINUX: Stop the server -->
+        <linuxServiceAction
+            name="${servicename}" action="stop" systemdBooted="${is_init_systemd}"
+            abortOnError="0" showMessageOnError="0">
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </linuxServiceAction>
+
+        <!-- Check user validation in case of unattended mode. It works after createuser. -->
+        <actionGroup>
+            <actionList>
+                <!-- seperate out domain name from ${serviceaccount} and assign it to ${servicedomain}-->
+                <setInstallerVariable>
+                    <name>servicedomain</name>
+                    <value>.</value>
+                </setInstallerVariable>
+                <setInstallerVariableFromRegEx>
+                    <name>servicedomain</name>
+                    <text>${serviceaccount}</text>
+                    <pattern>\\.*</pattern>
+                    <substitution></substitution>
+                    <ruleList>
+                        <compareText>
+                            <text>${serviceaccount}</text>
+                            <logic>contains</logic>
+                            <value>\</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+
+                <!--we need serviceaccount without domain details -->
+                <setInstallerVariable>
+                    <name>serviceaccount_wo_domain</name>
+                    <value>${serviceaccount}</value>
+                        <ruleList>
+                            <compareText>
+                                <text>${serviceaccount}</text>
+                                <logic>does_not_contain</logic>
+                                <value>\</value>
+                            </compareText>
+                        </ruleList>
+                </setInstallerVariable>
+
+                <setInstallerVariableFromRegEx>
+                    <name>serviceaccount_wo_domain</name>
+                    <text>${serviceaccount}</text>
+                    <pattern>^.*?\\</pattern>
+                    <substitution></substitution>
+                    <ruleList>
+                        <compareText>
+                            <text>${serviceaccount}</text>
+                            <logic>contains</logic>
+                            <value>\</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+
+                <!-- if servicepassword is not set, set it to superpassword -->
+                <setInstallerVariable>
+                    <name>servicepassword</name>
+                    <value>${superpassword}</value>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                        <ruleList>
+                            <compareText>
+                                <logic>equals</logic>
+                                <text>${servicepassword}</text>
+                                <value></value>
+                            </compareText>
+                        </ruleList>
+                </setInstallerVariable>
+
+                <runProgram>
+                    <program>${system_temp_directory}\postgresql_installer_${random_number}\createuser.exe</program>
+                    <!-- The dot at the beginning of the arguments is the domain -->
+                    <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                            <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+                    </ruleList>
+                </runProgram>
+                <throwError>
+                    <text>${msg(script.command.line.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>127</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(error.could.not.create.user)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>2224</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>2203</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>2245</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>0</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(config.superpassword.format.error.windows)}</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>2203</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>2245</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- On Windows we need to validate the password if the user account exists -->
+        <actionGroup>
+            <actionList>
+                <!-- seperate out domain name from ${serviceaccount} and assign it to ${servicedomain}-->
+                <setInstallerVariable>
+                    <name>servicedomain</name>
+                    <value>.</value>
+                </setInstallerVariable>
+
+                <setInstallerVariableFromRegEx>
+                    <name>servicedomain</name>
+                    <text>${serviceaccount}</text>
+                    <pattern>\\.*</pattern>
+                    <substitution></substitution>
+                    <ruleList>
+                        <compareText>
+                            <text>${serviceaccount}</text>
+                            <logic>contains</logic>
+                            <value>\</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+
+                <!--we need serviceaccount without domain details -->
+                <setInstallerVariable>
+                    <name>serviceaccount_wo_domain</name>
+                    <value>${serviceaccount}</value>
+                    <ruleList>
+                        <compareText>
+                            <text>${servieaccount}</text>
+                            <logic>does_not_contain</logic>
+                            <value>\</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariableFromRegEx>
+                    <name>serviceaccount_wo_domain</name>
+                    <text>${serviceaccount}</text>
+                    <pattern>^.*?\\</pattern>
+                    <substitution></substitution>
+                    <ruleList>
+                        <compareText>
+                            <text>${serviceaccount}</text>
+                            <logic>contains</logic>
+                            <value>\</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+
+                <!-- If not upgrading and servicepassword is not provided through command-line, set the servicepassword
+                to password, which user has entered on this page -->
+                <setInstallerVariable name="servicepassword" value="${superpassword}">
+                    <ruleList>
+                        <compareText logic="equals" text="${cliServicePassword}" value=""/>
+                        <isFalse value="${IsUpgrade}"/>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <runProgram>
+                    <program>${system_temp_directory}\postgresql_installer_${random_number}\validateuser.exe</program>
+                    <!-- The dot at the beginning of the arguments is the domain -->
+                    <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
+                    <abortOnError>1</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                    <ruleList>
+                        <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+                    </ruleList>
+                </runProgram>
+                <throwError>
+                    <text>${msg(script.command.line.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>127</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(config.superpassword.incorrect.windows)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>1</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+                </ruleList>
+        </actionGroup>
+
+        <!-- WINDOWS: Stop the server -->
+        <stopWindowsService>
+            <serviceName>${servicename}</serviceName>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </stopWindowsService>
+
+        <deleteWindowsService>
+            <serviceName>${servicename}</serviceName>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </deleteWindowsService>
+
+        <!-- Solaris: Stop the server -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>svcadm</program>
+                    <programArguments>-v disable svc:/application/database/${servicename}:default</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+                <runProgram>
+                    <program>svccfg</program>
+                    <programArguments>-v delete -f svc:/application/database/${servicename}:default</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <setInstallerVariable name="branding" value="" persist="1">
+            <ruleList>
+                <isTrue value="${extract_mode}"/>
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="create_shortcuts" value="0" persist="1">
+            <ruleList>
+                <isTrue value="${extract_mode}"/>
+            </ruleList>
+        </setInstallerVariable>
+
+    </readyToInstallActionList>
+    <!-- Preinstallation actions -->
+    <preInstallationActionList>
+        <createTempDir dirPrefix="postgresql_installer"/>
+        <actionGroup>
+            <actionList>
+                <createDirectory path="${system_temp_directory}/postgresql_installer_${random_number}/bin"/>
+                <createDirectory path="${system_temp_directory}/postgresql_installer_${random_number}/lib"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <!-- Do not create shortcuts, if extract mode is enabled -->
+                <setInstallerVariable name="create_shortcuts" value="0"/>
+                <!-- Do not create uninstaller in case of extract-only mode -->
+                <setInstallerVariable name="createUninstaller" value="0"/>
+                <setInstallerVariable name="iBranding" value=""/>
+                <componentSelection select="extractonly"/>
+            </actionList>
+            <ruleList>
+                <isTrue value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+        <setInstallerVariable name="branding" value="">
+            <ruleList>
+                <isFalse value="${create_shortcuts}"/>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- Set the service account value to NT AUTHORITY\NetworkService if platform is windows 
+        And if the service account value is not specified on the command line -->
+        <setInstallerVariable name="serviceaccount" value="NT AUTHORITY\NetworkService" >
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <text>${serviceaccount}</text>
+                    <logic>equals</logic>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- Set the service account value to postgres if platform is non-windows
+        And if the service account value is not specified on the command line -->
+        <setInstallerVariable name="serviceaccount" value="postgres" >
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>does_not_equal</logic>
+                    <value>windows</value>
+                </compareText>
+                <compareText>
+                    <text>${serviceaccount}</text>
+                    <logic>equals</logic>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <actionGroup>
+            <actionList>
+                <!-- Abort installation if not super-user and not running in extract-only mode-->
+                <throwError text="${msg(Installer.Warning.RootPrivileges)}">
+                    <ruleList>
+                        <isFalse value="${installer_is_root_install}"/>
+                    </ruleList>
+                </throwError>
+                <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\${project.fullName}"/>
+            </actionList>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- FB22939. Check if COMSPEC value is fine. Otherwise, initdb will fail.-->
+        <actionGroup>
+            <actionList>
+                <writeFile>
+                    <path>${system_temp_directory}/postgresql_installer_${random_number}/temp_check_comspec.bat</path>
+                    <text>@echo off
+                        "%COMSPEC%" /c echo "test ok"</text>
+                </writeFile>
+                <runProgram>
+                    <program>${system_temp_directory}/postgresql_installer_${random_number}/temp_check_comspec.bat</program>
+                    <programArguments></programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+                <deleteFile>
+                    <path>${system_temp_directory}/postgresql_installer_${random_number}/temp_check_comspec.bat</path>
+                </deleteFile>
+                <throwError text="${msg(error.comspec)}">
+                    <ruleList>
+                        <compareText text="${program_stdout}" value="test ok" logic="does_not_contain" />
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+
+        <setInstallerVariable name="iDataDirectory" value=""/>
+        <setInstallerVariable name="iBaseDirectory" value=""/>
+
+        <!-- !WIN: Get existing directories & branding -->
+        <actionGroup>
+            <actionList>
+            <!-- Get the existing data directory. -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>DataDirectory</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iDataDirectory</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iDataDirectory</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- Get the base installation path. Any previous package could have set this. -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>InstallationDirectory</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iBaseDirectory</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iBaseDirectory</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- Check whether menus were created, if its a re-install/upgrade -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>Shortcuts</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iShortcut</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+
+                <!-- Get the branding. -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>Branding</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iBranding</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iBranding</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- Get the servicename -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>ServiceID</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iServiceName</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iServiceName</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- Get the serviceaccount (OS User) -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>Serviceaccount</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iServiceAccount</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iServiceAccount</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- Get the superuser -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>Superuser</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iSuperuser</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iSuperuser</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- Get the version installed. We use this to figure out if we have a pre-branding installation -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>Version</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>brandingVer</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>brandingVer</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- Get the flag for Disabling StackBuilder -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>DisableStackBuilder</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iDisableStackBuilder</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- WIN: Get existing directories & branding -->
+        <actionGroup>
+            <actionList>
+                <!-- save the service-password in cliServicePassword variable to make sure -
+                     we'll use this password, while verifying/creating the user on windows -->
+                <setInstallerVariable name="cliServicePassword" value="${servicepassword}"/>
+                <!-- Get the existing data directory. -->
+                <registryGet>
+                    <name>Data Directory</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <variable>iDataDirectory</variable>
+                </registryGet>
+
+                <!-- Get the existing installation directory. -->
+                <registryGet>
+                    <name>Base Directory</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <variable>iBaseDirectory</variable>
+                </registryGet>
+
+                <!-- Get the ServiceName -->
+                <registryGet>
+                    <name>Service ID</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <variable>iServiceName</variable>
+                </registryGet>
+
+                <!-- Get the Serviceaccount (OS User) -->
+                <registryGet>
+                    <name>Service Account</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <variable>iServiceAccount</variable>
+                </registryGet>
+
+                <!-- Get the Superuser -->
+                <registryGet>
+                    <name>Super User</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <variable>iSuperuser</variable>
+                </registryGet>
+
+                <!-- Get the branding -->
+                <registryGet>
+                    <name>Branding</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <variable>iBranding</variable>
+                </registryGet>
+
+                <!-- Get the version installed. We use this to figure out if we have a pre-branding installation -->
+                <registryGet>
+                    <name>Version</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <variable>brandingVer</variable>
+                </registryGet>
+
+                <!-- Check whether menus were created, if its a re-install/upgrade -->
+                <registryGet>
+                    <name>Shortcuts</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <variable>iShortcut</variable>
+                </registryGet>
+
+                <registryGet>
+                    <name>DisableStackBuilder</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <variable>iDisableStackBuilder</variable>
+                </registryGet>
+
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Set create_shortcuts variable to 1 if it is blank -->
+        <setInstallerVariable>
+            <name>create_shortcuts</name>
+            <value>${iShortcut}</value>
+            <persist>1</persist>
+            <ruleList>
+                <compareText>
+                    <text>${iShortcut}</text>
+                    <logic>does_not_equal</logic>
+                    <value/>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- If there appears to be an existing installation, with no Branding value. -->
+        <!-- force the default value. Otherwise, set the branding to whatever we read, -->
+        <!-- or, set the default -->
+
+        <!-- In case of 32 bit installation on win64 append (x86) in the branding-->
+        <setInstallerVariable name="branding_suffix" value=""/>
+        <setInstallerVariable name="branding_suffix" value=" (x86)">
+            <ruleList>
+                <isTrue value="${win64_platform}"/>
+                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- In case of 32 bit installer being run on 64 bit machine, change display name to
+        have suffix x86 for example in case of add or remove programs menu --> 
+        <setInstallerVariable name="project.productDisplayName" value="${product_fullname} ${product_version} ${branding_suffix}"/>
+
+        <!-- Existing, old install (version, but no branding) -->
+        <setInstallerVariable>
+            <name>branding</name>
+            <persist>0</persist>
+            <value>PostgreSQL ${product_version}${branding_suffix}</value>
+            <ruleList>
+                <isTrue value="${create_shortcuts}"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${brandingVer}</text>
+                    <value></value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${iBranding}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- Existing install, with branding -->
+        <setInstallerVariable>
+            <name>branding</name>
+            <persist>0</persist>
+            <value>${iBranding}</value>
+            <ruleList>
+                <isTrue value="${create_shortcuts}"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${iBranding}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- New install, nothing set on the command line -->
+        <setInstallerVariable>
+            <name>branding</name>
+            <persist>0</persist>
+            <value>PostgreSQL ${product_version}${branding_suffix}</value>
+            <ruleList>
+                <isTrue value="${create_shortcuts}"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${branding}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- Set values for superaccount and seriveaccount based on previous installations if any -->
+
+        <!-- Existing install, with superaccount. Ignore command line. -->
+        <setInstallerVariable>
+            <name>superaccount</name>
+            <persist>0</persist>
+            <value>${iSuperuser}</value>
+            <ruleList>
+                <compareText text="${iSuperuser}" logic="does_not_equal" value="" />
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- new install, with nothing set on command line -->
+        <setInstallerVariable>
+            <name>superaccount</name>
+            <persist>0</persist>
+            <value>postgres</value>
+            <ruleList>
+                <compareText text="${superaccount}" logic="equals" value="" />
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- RM 36432. Fix the Base Directory value in the registry-->
+        <setInstallerVariableFromRegEx>
+            <name>iBaseDirectory</name>
+            <pattern>/</pattern>
+            <substitution>\</substitution>
+            <text>${iBaseDirectory}</text>
+            <ruleList>
+                <stringTest>
+                    <text>${iBaseDirectory}</text>
+                    <type>not_empty</type>
+                </stringTest>
+                <isFalse value="${extract_mode}"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariableFromRegEx>
+
+        <!-- Set installdir if an existing installation is found -->
+        <setInstallerVariable>
+            <name>installdir</name>
+            <value>${iBaseDirectory}</value>
+            <ruleList>
+                <stringTest>
+                    <text>${iBaseDirectory}</text>
+                    <type>not_empty</type>
+                </stringTest>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </setInstallerVariable> 
+
+        <!-- Set datadir if an existing installation is found -->
+        <setInstallerVariable>
+            <name>datadir</name>
+            <value>${iDataDirectory}</value>
+            <ruleList>
+                <stringTest>
+                    <text>${iDataDirectory}</text>
+                    <type>not_empty</type>
+                </stringTest>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </setInstallerVariable> 
+
+        <!-- Validate installdir & datadir in unattended mode -->
+        <actionGroup>
+            <actionList>
+                <throwError text="${msg(error.install.directory.invalid)}">
+                    <ruleList>
+                        <regExMatch>
+                            <text>${installdir}</text>
+                            <logic>does_not_match</logic>
+                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                        </regExMatch>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(error.install.directory.invalid.linux)}">
+                    <ruleList>
+                        <regExMatch>
+                            <text>${installdir}</text>
+                            <logic>matches</logic>
+                            <pattern>^/+(usr)?$</pattern>
+                        </regExMatch>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(error.data.directory.invalid)}">
+                    <ruleList>
+                        <regExMatch>
+                            <text>${datadir}</text>
+                            <logic>does_not_match</logic>
+                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                        </regExMatch>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <isFalse value="${extract_mode}"/>
+                    </ruleList>
+                </throwError>
+
+                <!-- WIN: Always check if the installation/data directory path looks valid -->
+                <throwError text="${msg(error.install.directory.invalid)}">
+                    <ruleList>
+                        <regExMatch>
+                            <text>${installdir}</text>
+                            <logic>does_not_match</logic>
+                            <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+                        </regExMatch>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(error.data.directory.invalid)}">
+                    <ruleList>
+                        <regExMatch>
+                            <text>${datadir}</text>
+                            <logic>does_not_match</logic>
+                            <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+                        </regExMatch>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                        <isFalse value="${extract_mode}"/>
+                    </ruleList>
+                </throwError>
+
+                <actionGroup>
+                    <actionList>
+                        <throwError text="${msg(error.install.directory.not.writable)}">
+                            <ruleList>
+                                <ruleGroup>
+                                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                                    <ruleList>
+                                        <fileTest path="${installdir}" condition="not_writable"/>
+                                        <fileTest path="${installdir}" condition="is_not_directory"/>
+                                    </ruleList>
+                                </ruleGroup>
+                                <fileTest path="${installdir}" condition="exists"/>
+                            </ruleList>
+                        </throwError>
+                        <createDirectory path="${installdir}"
+                                         abortOnError="1"
+                                         showMessageOnError="1"
+                                         customErrorMessage="${msg(error.install.directory.not.writable)}">
+                            <ruleList>
+                                <fileTest path="${installdir}" condition="not_exists"/>
+                            </ruleList>
+                        </createDirectory>
+                    </actionList>
+                    <ruleList>
+                        <isTrue value="${extract_mode}"/>
+                    </ruleList>
+                </actionGroup>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- SECTION: START: ServiceName -->
+        <determineLinuxInitSystem>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </determineLinuxInitSystem>
+
+        <actionGroup>
+            <actionList>
+                <!--
+                    1. Validate the service name
+
+                    Service name must match the following criteria:
+                    * Starts with any alphabet
+                    * Ends with alphanumeric character
+                    * atleast 6 characters long
+                    * Maximum length 50 characters
+                    * - (hyphen), . (dot), _ (underscore) are allowed characters
+                    i.e. postgresql-8.4, pg_8_4, pgsql-8.3.8_1
+                    -->
+
+                <!-- . (dot) is not valid for a servicename in solaris -->
+
+                <throwError>
+                    <customErrorMessage>${msg(servicename.not.valid)}</customErrorMessage>
+                    <text>Unknown Error</text>
+                    <ruleList>
+                        <regExMatch>
+                            <text>${servicename}</text>
+                            <logic>does_not_match</logic>
+                            <pattern>^([a-zA-Z]{1})([0-9a-zA-Z_\.\-]{4,48})([0-9a-zA-Z]{1})$</pattern>
+                        </regExMatch>
+                        <compareText text="${platform_name}" logic="does_not_contain" value="solaris" />
+                    </ruleList>
+                </throwError>
+
+                <throwError>
+                    <customErrorMessage>${msg(servicename.not.valid)}</customErrorMessage>
+                        <text>Unknown Error</text>
+                        <ruleList>
+                            <regExMatch>
+                                <text>${servicename}</text>
+                                <logic>does_not_match</logic>
+                                <pattern>^([a-zA-Z]{1})([0-9a-zA-Z_\-]{4,48})([0-9a-zA-Z]{1})$</pattern>
+                            </regExMatch>
+                            <compareText text="${platform_name}" logic="contains" value="solaris" />
+                        </ruleList>
+                </throwError>
+
+                <!--
+                    2. Check if service already exists with the same name
+                    -->
+                <!-- WIN -->
+                <actionGroup>
+                    <actionList>
+                        <getUniqueWindowsServiceName>
+                            <selectedServiceNameVariable>temp_service_name</selectedServiceNameVariable>
+                            <serviceName>${servicename}</serviceName>
+                        </getUniqueWindowsServiceName>
+                        <throwError>
+                            <customErrorMessage>${msg(servicename.already.exists.windows)}</customErrorMessage>
+                            <text>Duplicate Service Exists:${temp_service_name}</text>
+                            <ruleList>
+                                <compareText text="${servicename}" logic="does_not_equal" value="${temp_service_name}" />
+                            </ruleList>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- lin/lin-x64 -->
+                <throwError>
+                    <customErrorMessage>${msg(servicename.already.exists.linux)}</customErrorMessage>
+                    <text>duplicate service exists</text>
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="linux"/>
+                        <fileExists path="/etc/init.d/${servicename}"/>
+                        <isTrue value="${is_sysvinit}"/>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <customErrorMessage>${msg(servicename.already.exists.linux)}</customErrorMessage>
+                    <text>duplicate service exists</text>
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="linux"/>
+                        <fileExists path="/usr/lib/systemd/system/${servicename}.service"/>
+                        <isTrue value="${is_init_systemd}"/>
+                    </ruleList>
+                </throwError>
+
+                <!-- OSX -->
+                <throwError>
+                    <customErrorMessage>${msg(servicename.already.exists.osx)}</customErrorMessage>
+                    <text>Duplicate Service Exists</text>
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="osx"/>
+                        <fileExists path="/Library/LaunchDaemons/com.edb.launchd.${servicename}.plist"/>
+                    </ruleList>
+                </throwError>
+
+                <!-- solaris-x64 | solaris-sparc -->
+                <runProgram>
+                    <program>svcs</program>
+                    <programArguments>${servicename}</programArguments>
+                    <showMessageOnError>0</showMessageOnError>
+                    <abortOnError>0</abortOnError>
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="solaris"/>
+                    </ruleList>
+                </runProgram>
+                <throwError>
+                    <customErrorMessage>${msg(servicename.already.exists.solaris)}</customErrorMessage>
+                    <text>duplicate service exists</text>
+                    <ruleList>
+                        <compareText logic="contains" text="${platform_name}" value="solaris"/>
+                        <stringTest text="${program_stderr}" type="empty"/>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <!-- New installation and got the service-name through the command-line -->
+            <ruleList>
+                <compareText text="${servicename}" logic="does_not_equal" value="" />
+                <compareText text="${iServiceName}" logic="equals" value="" />
+                <compareText text="${brandingVer}" logic="equals" value="" />
+            </ruleList>
+        </actionGroup>
+
+        <!-- Existing install, with servicename. Ignore command line. -->
+        <setInstallerVariable>
+            <name>servicename</name>
+            <persist>1</persist>
+            <value>${iServiceName}</value>
+            <ruleList>
+                <compareText text="${iServiceName}" logic="does_not_equal" value="" />
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- Existing install, without servicename. Ignore command line. -->
+        <setInstallerVariable>
+            <name>servicename</name>
+            <persist>1</persist>
+            <value>postgresql${service_suffix}-PG_MAJOR_VERSION</value>
+            <ruleList>
+                <compareText text="${iServiceName}" logic="equals" value="" />
+                <compareText text="${brandingVer}" logic="does_not_equal" value="" />
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- New install, with nothing set on command line -->
+        <setInstallerVariable>
+            <name>servicename</name>
+            <persist>1</persist>
+            <value>postgresql${service_suffix}-PG_MAJOR_VERSION</value>
+            <ruleList>
+                <compareText text="${servicename}" logic="equals" value="" />
+            </ruleList>
+        </setInstallerVariable>
+
+        <setInstallerVariableFromRegEx>
+            <name>servicename</name>
+            <pattern>\.</pattern>
+            <substitution>_</substitution>
+            <text>${servicename}</text>
+            <ruleList>
+                <compareText text="${servicename}" logic="does_not_equal" value="" />
+                <compareText text="${platform_name}" logic="contains" value="solaris" />
+            </ruleList>
+        </setInstallerVariableFromRegEx> 
+
+        <setInstallerVariable name="servicename" value="${servicename}" persist="1" />
+
+        <!-- SECTION: END: ServiceName -->
+
+        <!-- Existing install, with serviceaccount. Ignore command line. -->
+        <setInstallerVariable>
+            <name>serviceaccount</name>
+            <persist>0</persist>
+            <value>${iServiceAccount}</value>
+            <ruleList>
+                <compareText text="${iServiceAccount}" logic="does_not_equal" value="" />
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- new install, with nothing set on command line -->
+        <setInstallerVariable>
+            <name>serviceaccount</name>
+            <persist>0</persist>
+            <value>postgres</value>
+            <ruleList>
+                <compareText text="${serviceaccount}" logic="equals" value="" />
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- Debugging -->
+        <logMessage>
+            <text>Existing base directory: ${iBaseDirectory}</text>
+        </logMessage>
+        <logMessage>
+            <text>Existing data directory: ${iDataDirectory}</text>
+        </logMessage>
+        <logMessage>
+            <text>Using branding: ${branding}</text>
+        </logMessage>
+        <logMessage text="Using Super User: ${superaccount} and Service Account: ${serviceaccount}" />
+        <logMessage text="Using Service Name: ${servicename}"/>
+
+        <!-- prerun_check script -->
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
+            <folder>defaultwindows</folder>
+            <origin>prerun_checks.vbs</origin>
+            <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
+            <folder>defaultlinux</folder>
+            <origin>prerun_checks.sh</origin>
+            <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
+            <folder>defaultlinux-x64</folder>
+            <origin>prerun_checks.sh</origin>
+            <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
+            <folder>defaultmacosx</folder>
+            <origin>prerun_checks.sh</origin>
+            <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
+            <folder>programfilessolaris-x64</folder>
+            <origin>server/installer/prerun_checks.sh</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-intel</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
+            <folder>programfilessolaris-sparc</folder>
+            <origin>server/installer/prerun_checks.sh</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-sparc</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                <program>cscript</program>
+                <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer_${random_number}\prerun_checks.vbs"</programArguments>
+                <abortOnError>0</abortOnError>
+                <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </runProgram>
+                <runProgram program="${system_temp_directory}/postgresql_installer_${random_number}/prerun_checks.sh">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </runProgram>
+                <throwError>
+                    <text>${msg(prerunscript.command.line.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>1</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(prerunscript.command.line.execute.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>2</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Getlocales script -->
+        <unpackFile>
+            <component>server</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
+            <folder>programfilesmacosx</folder>
+            <origin>installer/server/getlocales</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>server</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
+            <folder>programfileslinux</folder>
+            <origin>installer/server/getlocales</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>server</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
+            <folder>programfileslinux-x64</folder>
+            <origin>installer/server/getlocales</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>server</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
+            <folder>programfileslinux-ppc64</folder>
+            <origin>installer/server/getlocales</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-ppc</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>server</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales.exe</destination>
+            <folder>programfileswindows</folder>
+            <origin>installer/server/getlocales.exe</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>server</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
+            <folder>programfilessolaris-x64</folder>
+            <origin>installer/server/getlocales</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-intel</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>server</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
+            <folder>programfilessolaris-sparc</folder>
+            <origin>installer/server/getlocales</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-sparc</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+
+        <!-- pg_controldata (used to check existing clusters) -->
+        <actionGroup>
+            <actionList>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/bin/pg_controldata</destination>
+                    <folder>programfilesmacosx</folder>
+                    <origin>bin/pg_controldata</origin>
+                </unpackFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
+                    <folder>programfileslinux</folder>
+                    <origin>bin/pg_controldata</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
+                    <folder>programfileslinux</folder>
+                    <origin>installer/server/runpgcontroldata.sh</origin>
+                </unpackFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
+                    <folder>programfileslinux-x64</folder>
+                    <origin>bin/pg_controldata</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
+                    <folder>programfileslinux-x64</folder>
+                    <origin>installer/server/runpgcontroldata.sh</origin>
+                </unpackFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
+                    <folder>programfileslinux-ppc64</folder>
+                    <origin>bin/pg_controldata</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
+                    <folder>programfileslinux-ppc64</folder>
+                    <origin>installer/server/runpgcontroldata.sh</origin>
+                </unpackFile>
+                <unpackDirectory>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/</destination>
+                    <folder>programfileslinux-ppc64</folder>
+                    <origin>lib</origin>
+                </unpackDirectory>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-ppc</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
+                    <folder>programfilessolaris-x64</folder>
+                    <origin>bin/pg_controldata</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
+                    <folder>programfilessolaris-x64</folder>
+                    <origin>installer/server/runpgcontroldata.sh</origin>
+                </unpackFile>
+                <unpackDirectory>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/</destination>
+                    <folder>programfilessolaris-x64</folder>
+                    <origin>lib</origin>
+                </unpackDirectory>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-intel</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
+                    <folder>programfilessolaris-sparc</folder>
+                    <origin>bin/pg_controldata</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
+                    <folder>programfilessolaris-sparc</folder>
+                    <origin>installer/server/runpgcontroldata.sh</origin>
+                </unpackFile>
+                <unpackDirectory>
+                    <component>server</component>
+                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/</destination>
+                    <folder>programfilessolaris-sparc</folder>
+                    <origin>lib</origin>
+                </unpackDirectory>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-sparc</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\pg_controldata.exe</destination>
+                    <folder>programfileswindows</folder>
+                    <origin>bin/pg_controldata.exe</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\libintl-8.dll</destination>
+                    <folder>programfileswindows</folder>
+                    <origin>bin/libintl-8.dll</origin>
+                </unpackFile>
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\libiconv-2.dll</destination>
+                    <folder>programfileswindows</folder>
+                    <origin>bin/libiconv-2.dll</origin>
+                </unpackFile>
+                <!-- Validate user binary -->
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\validateuser.exe</destination>
+                    <folder>programfileswindows</folder>
+                    <origin>installer/server/validateuser.exe</origin>
+                </unpackFile>
+                <!-- Create user binary -->
+                <unpackFile>
+                    <component>server</component>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\createuser.exe</destination>
+                    <folder>programfileswindows</folder>
+                    <origin>installer/server/createuser.exe</origin>
+                </unpackFile>
+
+                <!-- We will also need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
+                <setInstallerVariable name="vcredist_executable" value="vcredist_x86.exe"/>
+                <setInstallerVariable name="vcredist_executable" value="vcredist_x64.exe">
+                    <ruleList>
+                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x86.exe</destination>
+                    <folder>defaultwindows</folder>
+                    <origin>vcredist_x86.exe</origin>
+                    <!--<customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>-->
+                </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x64.exe</destination>
+                    <folder>defaultwindows-x64</folder>
+                    <origin>vcredist_x64.exe</origin>
+                    <ruleList>
+                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                    </ruleList>
+                    <!--<customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>-->
+                </unpackFile>
+                <actionGroup>
+                    <actionList>
+                        <runProgram>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x86.exe</program>
+                            <programArguments>/passive /norestart</programArguments>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                        <!-- RM # 40893 add vcredist_86.exe on windows-x64 staging installer directroy -->
+                        <runProgram>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x64.exe</program>
+                            <programArguments>/passive /norestart</programArguments>
+                                <ruleList>
+                                    <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                                </ruleList>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                        <throwError>
+                            <text>${msg(script.command.line.error)}</text>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>127</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
+                        <throwError>
+                            <text>${msg(error.installing.runtimes)}</text>
+                            <ruleList>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>5100</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>3010</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>0</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
+                        <throwError text="${msg(error.runtimes.does.not.meet.requirements)}">
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>5100</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
+                    </actionList>
+                    <ruleList>
+                        <isTrue value="${install_runtimes}" />
+                    </ruleList>
+                </actionGroup>
+            </actionList>
+                <ruleList>
+                    <compareText>
+                        <logic>equals</logic>
+                        <text>${platform_name}</text>
+                        <value>windows</value>
+                    </compareText>
+                    <isFalse value="${extract_mode}"/>
+                </ruleList>
+        </actionGroup>
+
+        <!-- If we have an existing data directory location and it's not empty, check it looks sane -->
+        <actionGroup>
+            <actionList>
+                <!-- Do we have a pg_control file? -->
+                <throwError>
+                    <text>${msg(error.data.directory.registered.broken)}</text>
+                    <ruleList>
+                        <fileTest>
+                            <path>${datadir}/global/pg_control</path>
+                            <condition>not_exists</condition>
+                        </fileTest>
+                    </ruleList>
+                </throwError>
+
+                <!-- Do we have a valid catalog version? -->
+                <runProgram>
+                    <program>${system_temp_directory}/postgresql_installer_${random_number}/bin/pg_controldata</program>
+                    <programArguments>"${datadir}"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
+                <runProgram>
+                    <program>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</program>
+                    <programArguments>${system_temp_directory}/postgresql_installer_${random_number} "${datadir}"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <ruleGroup>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                            <ruleList>    
+                                <compareText logic="contains" text="${platform_name}" value="linux"/>
+                                <compareText logic="contains" text="${platform_name}" value="solaris"/>
+                            </ruleList>
+                        </ruleGroup>
+                    </ruleList>
+                </runProgram>
+
+                <runProgram>
+                    <program>${system_temp_directory}\postgresql_installer_${random_number}\pg_controldata.exe</program>
+                    <programArguments>"${datadir}"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
+                <setInstallerVariableFromRegEx>
+                    <name>CurrentCatalogVersion</name>
+                    <text>${program_stdout}</text>
+                    <pattern>^.*Catalog version number:\s+([\d]+).*$</pattern>
+                    <substitution>\1</substitution>
+                </setInstallerVariableFromRegEx>
+
+                <setInstallerVariableFromRegEx>
+                    <name>CurrentDateTimeSettings</name>
+                    <text>${program_stdout}</text>
+                    <pattern>^.*Date/time type storage:\s+([\d\w\-]+\s+[\w]+).*$</pattern>
+                    <substitution>\1</substitution>
+                </setInstallerVariableFromRegEx>
+
+                <setInstallerVariableFromRegEx name="CurrentPgControlVersion" text="${program_stdout}">
+                    <pattern>^.*pg_control version number:\s+([\d]+).*$</pattern>
+                    <substitution>\1</substitution>
+                </setInstallerVariableFromRegEx>
+
+                <logMessage>
+                    <text>Existing cluster catalog version: ${CurrentCatalogVersion}, installer catalog version: ${CatalogVersion}</text>
+                </logMessage>
+
+                <logMessage>
+                    <text>Existing cluster Date/time settings: ${CurrentDateTimeSettings}, installer Date/time settings: ${DateTimeSetting}</text>
+                </logMessage>
+
+                <logMessage text="Existing cluster pg_control version number: ${CurrentPgControlVersion}, installer pg_control version number: ${PgControlVersion}"/>
+
+                <throwError>
+                    <text>${msg(error.data.directory.incompatible)}</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText>
+                            <value>${CurrentCatalogVersion}</value>
+                            <logic>does_not_equal</logic>
+                            <text>${CatalogVersion}</text>
+                        </compareText>
+                        <compareText>
+                            <value>${CurrentPgControlVersion}</value>
+                            <logic>does_not_equal</logic>
+                            <text>${PgControlVersion}</text>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+
+                <throwError>
+                    <text>${msg(error.data.directory.incompatible.datetime)}</text>
+                    <ruleList>
+                        <compareText>
+                            <value>${CurrentDateTimeSettings}</value>
+                            <logic>does_not_equal</logic>
+                            <text>${DateTimeSetting}</text>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+                <fileExists>
+                    <path>${datadir}</path>
+                </fileExists>
+                <fileTest>
+                    <path>${datadir}</path>
+                    <condition>is_not_empty</condition>
+                </fileTest>
+            </ruleList>
+        </actionGroup>
+
+        <!-- So, is this an upgrade of an existing cluster? -->
+        <!-- At this point, if we have an existing data directory it either looks valid, or is empty -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable>
+                    <name>IsUpgrade</name>
+                    <value>1</value>
+                </setInstallerVariable>
+                <logMessage>
+                    <text>Switching to upgrade mode with cluster: ${datadir}</text>
+                </logMessage>
+
+                <!-- Read the port number from the config file -->
+                <readFile>
+                    <path>${datadir}/postgresql.conf</path>
+                    <name>serverconfig</name>
+                </readFile>
+                <setInstallerVariableFromRegEx>
+                    <name>serverport</name>
+                    <text>${serverconfig}</text>
+                    <pattern>^.*port\s*=\s*([\d]+)\s+.*$</pattern>
+                    <substitution>\1</substitution>
+                </setInstallerVariableFromRegEx>
+            </actionList>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+                <fileExists path="${datadir}" />
+                <fileTest>
+                    <path>${datadir}</path>
+                    <condition>is_not_empty</condition>
+                </fileTest>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Get the locales available -->
+        <actionGroup>
+            <actionList>
+                <addChoiceOptions>
+                    <name>locale</name>
+                    <optionList>
+                        <option>
+                            <value>DEFAULT</value>
+                            <text>[${msg(default.locale)}]</text>
+                        </option>
+                    </optionList>
+                </addChoiceOptions>
+                <addChoiceOptions>
+                    <name>locale</name>
+                    <optionList>
+                        <option>
+                            <value>C</value>
+                            <text>C</text>
+                        </option>
+                        <option>
+                            <value>POSIX</value>
+                            <text>POSIX</text>
+                        </option>
+                    </optionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </addChoiceOptions>
+
+                <runProgram program="${system_temp_directory}/postgresql_installer_${random_number}/getlocales">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </runProgram>
+
+                <runProgram>
+                    <program>${system_temp_directory}\postgresql_installer_${random_number}\getlocales.exe</program>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
+                <throwError>
+                    <text>${msg(script.command.line.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>127</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <addChoiceOptionsFromText>
+                    <name>locale</name>
+                    <text>${program_stdout}</text>
+                </addChoiceOptionsFromText>
+            </actionList>
+            <ruleList>
+                <isFalse value="${IsUpgrade}"/>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+        <throwError>
+            <text>${msg(locale.error)}</text>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${IsUpgrade}</text>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <text>${locale}</text>
+                    <value>C</value>
+                    <logic>does_not_equal</logic>
+                </compareText>
+                <compareText>
+                    <text>${locale}</text>
+                    <value>POSIX</value>
+                    <logic>does_not_equal</logic>
+                </compareText>
+                <compareText>
+                    <text>${locale}</text>
+                    <value>DEFAULT</value>
+                    <logic>does_not_equal</logic>
+                </compareText>
+                <compareText>
+                    <text>${locale}</text>
+                    <value/>
+                    <logic>does_not_equal</logic>
+                </compareText>
+                <compareText>
+                    <text>${program_stdout}</text>
+                    <value>${locale}</value>
+                    <logic>does_not_contain</logic>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </throwError>
+
+        <!-- Set the default locale if needed. -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable>
+                    <name>locale</name>
+                    <value>DEFAULT</value>
+                </setInstallerVariable>
+            </actionList>
+            <ruleList>
+                <stringTest>
+                    <text>${locale}</text>
+                    <type>empty</type>
+                </stringTest>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Convert the locale value to something the choiceParameter will like -->
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxUSxx</substitution>
+            <name>locale</name>
+            <pattern>_</pattern>
+        </setInstallerVariableFromRegEx>
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxDOTxx</substitution>
+            <name>locale</name>
+            <pattern>\.</pattern>
+        </setInstallerVariableFromRegEx>
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxDASHxx</substitution>
+            <name>locale</name>
+            <pattern>-</pattern>
+        </setInstallerVariableFromRegEx>
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxATxx</substitution>
+            <name>locale</name>
+            <pattern>@</pattern>
+        </setInstallerVariableFromRegEx>
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxSPxx</substitution>
+            <name>locale</name>
+            <pattern>\s</pattern>
+        </setInstallerVariableFromRegEx>
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxOBxx</substitution>
+            <name>locale</name>
+            <pattern>\(</pattern>
+        </setInstallerVariableFromRegEx>
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+        <substitution>xxCBxx</substitution>
+            <name>locale</name>
+            <pattern>\)</pattern>
+        </setInstallerVariableFromRegEx>
+        <setInstallerVariableFromRegEx>
+            <text>${locale}</text>
+            <substitution>xxCOMMAxx</substitution>
+            <name>locale</name>
+            <pattern>,</pattern>
+        </setInstallerVariableFromRegEx>
+
+        <!-- In fresh installation, check the server port value provided on the command line -->
+        <actionGroup>
+            <actionList>
+                <throwError>
+                    <text>${msg(config.port.invalid)}</text>
+                    <ruleList>
+                        <stringTest text="${serverport}" type="not_digit" />
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(config.port.invalid)}</text>
+                    <ruleList>
+                        <stringTest text="${serverport}" type="empty" />
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(config.port.invalid)}</text>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareValues logic="less" value1="${serverport}" value2="1024"/>
+                        <compareValues logic="greater" value1="${serverport}" value2="65535"/>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(config.port.in.use)}</text>
+                    <ruleList>
+                        <portTest port="${serverport}" condition="cannot_bind"/>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <!-- following check means mode equals unattended -->
+                <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
+                <isFalse value="${IsUpgrade}"/>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+    </preInstallationActionList>
+
+    <!-- Preuninstallation actions -->
+    <preUninstallationActionList>
+        <createTempDir dirPrefix="postgresql_installer"/>
+        <!-- Determine the linux init system -->
+        <determineLinuxInitSystem/>
+
+        <!-- LINUX: Stop the server -->
+        <linuxServiceAction
+            name="${servicename}" action="stop" systemdBooted="${is_init_systemd}"
+            abortOnError="0" showMessageOnError="0">
+            <ruleList>
+            <compareText>
+                <logic>contains</logic>
+                <text>${platform_name}</text>
+                <value>linux</value>
+            </compareText>
+            </ruleList>
+        </linuxServiceAction>
+
+        <!-- WINDOWS: Stop the server -->
+        <stopWindowsService>
+            <serviceName>${servicename}</serviceName>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+        </stopWindowsService>
+
+        <!-- Solaris: Stop the server -->
+        <runProgram>
+            <program>svcadm</program>
+            <programArguments>-v disable svc:/application/database/${servicename}:default</programArguments>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+        <runProgram>
+            <program>svccfg</program>
+            <programArguments>-v delete -f svc:/application/database/${servicename}:default</programArguments>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>1</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+        <!-- Remove shortcuts -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                        <program>${installdir}/installer/server/removeshortcuts_server.sh</program>
+                        <programArguments>"${installdir}" ${product_version} "${branding}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- MAC: Remove menu shortcuts -->
+        <actionGroup>
+            <actionList>
+                <deleteFile path="/Applications/${branding}/Reload Configuration.app" />
+                <deleteFile path="/Applications/${branding}/Documentation/PostgreSQL*" />
+                <deleteFile path="/Applications/${branding}/Documentation/Installation notes.app" />
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- Solaris: Remove menu shortcuts -->
+        <runProgram>
+            <program>${installdir}/installer/server/removeshortcuts.sh</program>
+            <programArguments>"${installdir}" ${product_version} "${branding}"</programArguments>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${create_shortcuts}</text>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris</value>
+                </compareText>
+                </ruleList>
+        </runProgram>
+
+        <actionGroup>
+            <actionList>
+                <!-- Version -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Version</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!-- Installation directory -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>InstallationDirectory</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!-- Description -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Description</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!-- ServiceID -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>ServiceID</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!-- Branding -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Branding</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!-- Propose StackBuilder at finish page -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>DisableStackBuilder</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!-- Superuser -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Superuser</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!-- DataDirectory -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>DataDirectory</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!-- Port -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Port</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!--Serviceaccount -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Serviceaccount</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!--Locale -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Locale</key>
+                    <value></value>
+                </iniFileSet>
+
+                <!--Shortcuts -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Shortcuts</key>
+                    <value></value>
+                </iniFileSet>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- MAC: Unload/Stop the Server LaunchDaemon -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>launchctl</program>
+                    <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.${servicename}.plist</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+                <deleteFile>
+                    <path>/Library/LaunchDaemons/com.edb.launchd.${servicename}.plist</path>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- LINUX: Remove the startup item -->
+        <actionGroup>
+            <actionList>
+                <!-- Attempt to remove any runlevel config with chkconfig -->
+                <runProgram>
+                    <program>/sbin/chkconfig</program>
+                    <programArguments>--del ${servicename}</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <isTrue value="${is_init_sysvinit}"/>
+                    </ruleList>
+                </runProgram>
+
+                <!-- Remove the startup script -->
+                <deleteFile>
+                    <path>/etc/init.d/${servicename}</path>
+                    <ruleList>
+                        <isFalse value="${is_init_systemd}"/>
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="/usr/lib/systemd/system/${servicename}.service">
+                    <ruleList>
+                        <isTrue value="${is_init_systemd}"/>
+                    </ruleList>
+                </deleteFile>
+
+                <!-- Attempt to remove any runlevel config with update-rc.d -->
+                <runProgram>
+                    <program>/usr/sbin/update-rc.d</program>
+                    <programArguments>-f ${servicename} remove</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <isTrue value="${is_init_upstart}"/>
+                    </ruleList>
+                </runProgram>
+
+                <!-- Delete the dynamic loader config -->
+                <deleteFile>
+                    <path>/etc/ld.so.conf.d/postgresql-${product_version}.conf</path>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </deleteFile>
+                <substitute>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>${installdir}/lib</pattern>
+                            <value></value>
+                        </substitution>
+                    </substitutionList>
+                    <type>exact</type>
+                    <files>/etc/ld.so.conf</files>
+                </substitute>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
+        <!-- WINDOWS: Remove the service -->
+        <deleteWindowsService>
+            <serviceName>${servicename}</serviceName>
+            <abortOnError>0</abortOnError>
+        </deleteWindowsService>
+
+        <!-- WINDOWS: Unregister the event message DLL -->
+        <registryDelete>
+            <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
+        </registryDelete>
+        <registryDelete>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+        </registryDelete>
+        <registryDelete>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
+        </registryDelete>
+
+        <!-- Removing the environment variable script -->
+        <deleteFile>
+            <path>${installdir}/pg_env.sh</path>
+            <ruleList>
+                <fileExists path="${installdir}/pg_env.sh" />
+            </ruleList>
+        </deleteFile>
+
+        <deleteFile>
+            <path>${installdir}\pg_env.bat</path>
+            <ruleList>
+                <fileExists path="${installdir}\pg_env.bat" />
+            </ruleList>
+        </deleteFile>
+
+        <deleteFile path="/lib/svc/method/${servicename}" >
+            <ruleList>
+                <compareText text="${platform_name}" logic="contains" value="solaris" />
+            </ruleList>
+        </deleteFile>
+        <deleteFile path="/var/svc/manifest/application/database/${servicename}.xml" >
+            <ruleList>
+                <compareText text="${platform_name}" logic="contains" value="solaris" />
+            </ruleList>
+        </deleteFile>
+
+    </preUninstallationActionList>
+
+    <!-- Postinstallation actions -->
+    <postInstallationActionList>
+        <!-- WINDOWS :: This files belongs to command line tools, so server should not remove this files -->
+        <removeFilesFromUninstaller>
+            <files>${installdir}/scripts/images/pg-psql.ico;${installdir}/scripts/runpsql.bat</files>
+        </removeFilesFromUninstaller>
+        <removeFilesFromUninstaller>
+            <files>${installdir}/bin/ssleay32.dll;${installdir}/bin/libeay32.dll;${installdir}/bin/libiconv-2.dll;${installdir}/bin/libintl-8.dll</files>
+        </removeFilesFromUninstaller>
+
+        <createTempDir dirPrefix="postgresql_installer"/>
+        <!-- Make the service-name persistent to make it available during uninstallation -->
+        <setInstallerVariable>
+            <name>servicename</name>
+            <value>${servicename}</value>
+            <persist>1</persist>
+        </setInstallerVariable>
+
+        <!-- In upgrade mode, remove the existing ldconfig setting - set during the previous installation -->
+        <actionGroup>
+            <actionList>
+                <logMessage text="Removing the existing ldconfig setting - set during the previous installation."/>
+                <deleteFile>
+                    <path>/etc/ld.so.conf.d/postgresql-${product_version}.conf</path>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </deleteFile>
+                <substitute>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>${installdir}/lib</pattern>
+                            <value></value>
+                        </substitution>
+                    </substitutionList>
+                    <type>exact</type>
+                    <files>/etc/ld.so.conf</files>
+                </substitute>
+            </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${brandingVer}" value=""/>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Ignore disable-stackbuilder option in case of re-installation/upgrade -->
+        <!--
+        In re-installation mode,
+        We need to make sure, we use the value of disable-stackbuilder from the registry/postgresql-reg.ini
+        file and ignore the value provided as argument.
+
+        Use the variable 'brandingVer' (VERSION) instead of disableStackBuilder to check the current
+        installation mode, because we may find blank string for DisableStackBuilder in the
+        registry/postgresql-reg.ini for the earlier released installers for the same PostgreSQL
+        version(8.4), while 'brandingVer' (VERSION) will never be blank in the re-installation mode.
+        -->
+
+        <!-- Do not perform any actions, if extract-only mode is enabled -->
+        <actionGroup>
+            <actionList>
+                <logMessage>
+                    <text>Running the post-installation/upgrade actions:</text>
+                </logMessage>
+
+                <setInstallerVariable name="languagepack_installdir" value="" />
+                <!-- Search for LanguagePack installers and replcae placeholders in plLanguages.config file -->
+                <iniFileGet file="${PostgreSqlIni}" key="InstallationDirectory" section="edb_languagepack_${product_version}" variable="languagepack_installdir">
+                    <ruleList>
+                        <fileTest condition="readable" path="${PostgreSqlIni}"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </iniFileGet>
+                <substitute>
+                    <files>${installdir}/etc/sysconfig/plLanguages.config</files>
+                    <substitutionList>
+                        <substitution>
+                            <pattern>PERL_INSTALL_PATH</pattern>
+                            <value>${languagepack_installdir}/Perl-PERL_PACKAGE_VERSION</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>PYTHON_INSTALL_PATH</pattern>
+                            <value>${languagepack_installdir}/Python-PYTHON_PACKAGE_VERSION</value>
+                        </substitution>
+                        <substitution>
+                            <pattern>TCL_INSTALL_PATH</pattern>
+                            <value>${languagepack_installdir}/Tcl-TCL_PACKAGE_VERSION</value>
+                        </substitution>
+                    </substitutionList>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <compareText logic="does_not_equal" text="${languagepack_installdir}" value=""/>
+                    </ruleList>
+                </substitute>
+
+                <!-- Log Installation directory -->
+                <logMessage>
+                    <text>Write the base directory to the ini file...</text>
+                </logMessage>
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>InstallationDirectory</key>
+                    <value>${installdir}</value>
+                    <ruleList>
+                        <stringTest>
+                            <text>${installdir}</text>
+                            <type>not_empty</type>
+                        </stringTest>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Base Directory</name>
+                    <value>${installdir}</value>
+                </registrySet>
+
+                <!-- Log version number -->
+                <logMessage>
+                    <text>Write the version number to the ini file...</text>
+                </logMessage>
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Version</key>
+                    <value>PG_PACKAGE_VERSION</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Version</name>
+                    <value>PG_PACKAGE_VERSION</value>
+                </registrySet>
+                <!-- Shortcuts created ? -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Shortcuts</key>
+                    <value>${create_shortcuts}</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Shortcuts</name>
+                    <value>${create_shortcuts}</value>
+                </registrySet>
+
+                <!-- Track if any errors occurred so we can hide the Run Stackbuilder option -->
+                <setInstallerVariable>
+                    <name>didError</name>
+                    <value>0</value>
+                </setInstallerVariable>
+
+                <!-- Create the service user account -->
+                <runProgram>
+                    <program>${installdir}/installer/server/createuser.sh</program>
+                    <programArguments>"${serviceaccount}" "${installdir}"</programArguments>
+                    <progressText>${msg(progress.text.creating.user)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
+                <setInstallerVariable>
+                    <name>didError</name>
+                    <value>1</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>0</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <throwError>
+                    <text>${msg(script.command.line.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>127</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(error.could.not.create.user)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>1</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+
+                <!-- Flush the directory services cache -->
+                <runProgram>
+                <program>dscacheutil</program>
+                <programArguments>-flushcache</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
+
+                <!-- Initialise the cluster if this is an installation -->
+                <actionGroup>
+                    <actionList>
+                        <!-- Convert the locale into something understandable -->
+                        <setInstallerVariableFromRegEx>
+                            <text>${locale}</text>
+                            <substitution>_</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxUSxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution>.</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxDOTxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution>-</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxDASHxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution>@</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxATxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution></substitution>
+                            <name>reallocale</name>
+                            <pattern>xxSPxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution>(</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxOBxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution>)</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxCBxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution>,</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxCOMMAxx</pattern>
+                        </setInstallerVariableFromRegEx>
+
+                        <!-- Initdb -->
+                        <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}">
+                            <ruleList>
+                                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                            </ruleList>
+                        </setEnvironmentVariable>
+
+                        <runProgram>
+                            <program>${installdir}/installer/server/initcluster.sh</program>
+                            <programArguments>"${serviceaccount}" "${superaccount}" "${installdir}" "${datadir}" ${serverport} ${reallocale}</programArguments>
+                            <progressText>${msg(progress.text.initialising.cluster)}</progressText>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>${platform_name}</text>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </runProgram>
+
+                        <runProgram>
+                            <program>cscript</program>
+                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} "${reallocale}" ${enable_aclcheck}</programArguments>
+                            <progressText>${msg(progress.text.initialising.cluster)}</progressText>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${platform_name}</text>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </runProgram>
+
+                        <setInstallerVariable>
+                            <name>didError</name>
+                            <value>1</value>
+                            <ruleList>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>0</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </setInstallerVariable>
+
+                        <throwError>
+                            <text>${msg(script.command.line.error)}</text>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>127</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
+                        <throwError>
+                            <text>${msg(error.could.not.initialise.cluster)}</text>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>1</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </throwError>
+                        <showWarning>
+                            <text>${msg(warning.during.cluster.initialisation)}</text>
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>2</text>
+                                    <value>${program_exit_code}</value>
+                                </compareText>
+                            </ruleList>
+                        </showWarning>
+                    </actionList>
+                    <!-- Only appropriate for installs -->
+                    <ruleList>
+                        <compareValues>
+                            <value1>${IsUpgrade}</value1>
+                            <logic>equals</logic>
+                            <value2>0</value2>
+                        </compareValues>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- At this point we always want to configure & start the server -->
+                <!-- Startup config -->
+                <runProgram>
+                    <program>${installdir}/installer/server/startupcfg.sh</program>
+                    <programArguments>${product_version} "${serviceaccount}" "${installdir}" "${datadir}" "${servicename}" "${linux_init_system}"</programArguments>
+                    <progressText>${msg(progress.text.configuring.startup)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
+                <runProgram>
+                    <program>${installdir}/installer/server/startupcfg.sh</program>
+                    <programArguments>${product_version} "${serviceaccount}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
+                    <progressText>${msg(progress.text.configuring.startup)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>osx</text>
+                            <value>${platform_name}</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
+                <runProgram>
+                    <program>cscript</program>
+                    <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword.password}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
+                    <progressText>${msg(progress.text.configuring.startup)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
+                <setInstallerVariable>
+                    <name>didError</name>
+                    <value>1</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>0</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <throwError>
+                    <text>${msg(script.command.line.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>127</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(error.could.not.configure.startup)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>1</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <showWarning>
+                    <text>${msg(warning.during.startup.configuration)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>2</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </showWarning>
+
+                <!-- we aren't require to pass ${serviceaccount} to createshortcuts in windows -->
+                <runProgram>
+                    <program>cscript</program>
+                    <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts_server.vbs" ${product_version} "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
+                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${create_shortcuts}</text>
+                            <value>1</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+                <runProgram>
+                    <program>${installdir}/installer/server/createshortcuts_server.sh</program>
+                    <programArguments>${product_version} "${serviceaccount}" "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${servicename}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${create_shortcuts}</text>
+                            <value>1</value>
+                        </compareText>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
+                <setInstallerVariable>
+                    <name>didError</name>
+                    <value>1</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>0</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <throwError>
+                    <text>${msg(script.command.line.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>127</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <showWarning>
+                    <text>${msg(warning.could.not.create.shortcuts)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>1</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </showWarning>
+
+                <!-- Replace \ with / on windows -->
+                <setInstallerVariableFromRegEx>
+                    <text>${installdir}</text>
+                    <substitution>/</substitution>
+                    <name>installdir_win</name>
+                    <pattern>\\</pattern>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariableFromRegEx>
+
+                <!--WIN: Adding configuration to the global config file -->
+
+                <!-- Startup -->
+                <linuxServiceAction
+                    name="${servicename}" action="start" systemdBooted="${is_init_systemd}"
+                    abortOnError="0" showMessageOnError="0">
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>linux</value>
+                        </compareText>
+                    </ruleList>
+                </linuxServiceAction>
+
+                <runProgram>
+                    <program>cscript</program>
+                    <programArguments>//NoLogo "${installdir}\installer\server\startserver.vbs" ${servicename}</programArguments>
+                    <progressText>${msg(progress.text.starting.server)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+
+                <runProgram>
+                    <program>svcadm</program>
+                    <programArguments>-v enable svc:/application/database/${servicename}:default</programArguments>
+                    <progressText>${msg(progress.text.starting.server)}</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>contains</logic>
+                            <text>${platform_name}</text>
+                            <value>solaris</value>
+                        </compareText>
+                    </ruleList>
+                </runProgram>
+                
+                <setInstallerVariable>
+                    <name>didError</name>
+                    <value>1</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>0</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </setInstallerVariable>
+                <throwError>
+                    <text>${msg(script.command.line.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>127</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(error.could.not.start.server)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>1</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+
+                <!-- If this is an installation, load the various database modules -->
+                <actionGroup>
+                    <actionList>
+                        <logMessage text="Installing the adminpack module in the postgres database..."/>
+                        <!-- Set variable psql_path -->
+                        <setInstallerVariable name="psql_path" value="${installdir}/bin/psql">
+                            <ruleList>
+                                <compareText>
+                                    <logic>does_not_equal</logic>
+                                    <text>${platform_name}</text>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </setInstallerVariable>
+                        <setInstallerVariable name="psql_path" value="${installdir}\bin\psql.exe">
+                            <ruleList>
+                                <compareText>
+                                    <logic>equals</logic>
+                                    <text>${platform_name}</text>
+                                    <value>windows</value>
+                                </compareText>
+                            </ruleList>
+                        </setInstallerVariable>
+                        <!-- Set Environment variable PGHOST, PGUSER, PGPASSWORD, PGPORT, PGDATABASE
+                        on all the platform & LD_LIBRARY_PATH on linux/linux-x64 -->
+                        <setEnvironmentVariable name="PGHOST" value="localhost"/>
+                        <setEnvironmentVariable name="PGUSER" value="${superaccount}"/>
+                        <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}"/>
+                        <setEnvironmentVariable name="PGPORT" value="${serverport}"/>
+                        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib">
+                            <ruleList>
+                                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                            </ruleList>
+                        </setEnvironmentVariable>
+                        <runProgram>
+                            <abortOnError>0</abortOnError>
+                            <program>${psql_path}</program>
+                            <programArguments>-c "CREATE EXTENSION adminpack" -d postgres</programArguments>
+                            <showMessageOnError>1</showMessageOnError>
+                            <customErrorMessage>${msg(error.could.not.load.modules)}</customErrorMessage>
+                            <workingDirectory>${installdir}/bin</workingDirectory>
+                        </runProgram>
+                    </actionList>
+                    <!-- Only appropriate for installs -->
+                    <ruleList>
+                        <compareValues>
+                            <value1>${IsUpgrade}</value1>
+                            <logic>equals</logic>
+                            <value2>0</value2>
+                        </compareValues>
+                    </ruleList>
+                </actionGroup>
+
+                <!-- Register the message formatting DLL on Windows -->
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
+                    <name>EventMessageFile</name>
+                    <value>${installdir}\lib\pgevent.dll</value>
+                </registrySet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
+                    <name>TypesSupported</name>
+                    <value>7</value>
+                    <type>REG_DWORD</type>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>1</showMessageOnError>
+                </registrySet>
+
+                <!-- Set these last - if we get this far, initdb must have succeeded -->
+                <!-- Data directory -->
+                <logMessage>
+                    <text>Write the data directory to the ini file...</text>
+                </logMessage>
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>DataDirectory</key>
+                    <value>${datadir}</value>
+                    <ruleList>
+                        <stringTest>
+                            <text>${datadir}</text>
+                            <type>not_empty</type>
+                        </stringTest>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Data Directory</name>
+                    <value>${datadir}</value>
+                    <ruleList>
+                        <stringTest>
+                            <text>${datadir}</text>
+                            <type>not_empty</type>
+                        </stringTest>
+                    </ruleList>
+                </registrySet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
+                    <name>Data Directory</name>
+                    <value>${datadir}</value>
+                    <ruleList>
+                        <stringTest>
+                            <text>${datadir}</text>
+                            <type>not_empty</type>
+                        </stringTest>
+                    </ruleList>
+                </registrySet>
+
+                <!-- Port -->
+                <logMessage>
+                    <text>Write the port number, service ID, locale and superuser to the ini file...</text>
+                </logMessage>
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Port</key>
+                    <value>${serverport}</value>
+                    <ruleList>
+                        <stringTest>
+                            <text>${serverport}</text>
+                            <type>not_empty</type>
+                        </stringTest>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
+                    <name>Port</name>
+                    <value>${serverport}</value>
+                    <type>REG_DWORD</type>
+                    <ruleList>
+                        <stringTest>
+                            <text>${serverport}</text>
+                            <type>not_empty</type>
+                        </stringTest>
+                    </ruleList>
+                </registrySet>
+
+                <logMessage text="Write ServiceID(${servicename}) to registry/ini..."/>
+                <!-- ServiceID -->
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>ServiceID</key>
+                    <value>${servicename}</value>
+                    <ruleList>
+                        <stringTest>
+                            <text>${serverport}</text> <!-- This is correct - only set the ServiceID if we know the port -->
+                            <type>not_empty</type>
+                        </stringTest>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Service ID</name>
+                    <value>${servicename}</value>
+                </registrySet>
+
+                <!-- Read the actual locale from the config file. We don't know what it was yet as the user may have chosen DEFAULT -->
+                <readFile>
+                    <path>${datadir}/postgresql.conf</path>
+                    <name>serverconfig</name>
+                </readFile>
+                <setInstallerVariableFromRegEx>
+                    <name>actuallocale</name>
+                    <text>${serverconfig}</text>
+                    <pattern>^.*lc_messages\s*=\s*'([^']+)'\s+.*$</pattern>
+                    <substitution>\1</substitution>
+                </setInstallerVariableFromRegEx>
+
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Locale</key>
+                    <value>${actuallocale}</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
+                    <name>Locale</name>
+                    <value>${actuallocale}</value>
+                </registrySet>
+
+                <!-- Superuser -->
+                <logMessage text="Write Superuser to ini file and windows registry..." />
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Superuser</key>
+                    <value>${superaccount}</value>
+                    <ruleList>
+                        <stringTest>
+                            <text>${superaccount}</text>
+                            <type>not_empty</type>
+                        </stringTest>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
+                    <name>Database Superuser</name>
+                    <value>${superaccount}</value>
+                    <ruleList>
+                        <stringTest>
+                            <text>${superaccount}</text>
+                            <type>not_empty</type>
+                        </stringTest>
+                    </ruleList>
+                </registrySet>
+
+                <logMessage text="Write Service Account to ini file and windows registry..." />
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Serviceaccount</key>
+                    <value>${serviceaccount}</value>
+                    <ruleList>
+                        <stringTest>
+                            <text>${serviceaccount}</text>
+                            <type>not_empty</type>
+                        </stringTest>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
+                    <name>Service Account</name>
+                    <value>${serviceaccount}</value>
+                    <ruleEvaluationLogic>and</ruleEvaluationLogic>
+                    <ruleList>
+                        <stringTest>
+                            <text>${serviceaccount}</text>
+                            <type>not_empty</type>
+                        </stringTest>
+                        <compareText>
+                            <text>${serviceaccount}</text>
+                            <logic>contains</logic>
+                            <value>\</value>
+                        </compareText>
+                    </ruleList>
+                </registrySet>
+                <!-- if serviceaccount does not contain domain name, then append .\ before writing it to registry -->
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
+                    <name>Service Account</name>
+                    <value>.\${serviceaccount}</value>
+                    <ruleEvaluationLogic>and</ruleEvaluationLogic>
+                    <ruleList>
+                        <stringTest>
+                            <text>${serviceaccount}</text>
+                            <type>not_empty</type>
+                        </stringTest>
+                        <compareText>
+                            <text>${serviceaccount}</text>
+                            <logic>does_not_contain</logic>
+                            <value>\</value>
+                        </compareText>
+                    </ruleList>
+                </registrySet>
+
+                <!-- the following enteries are required for update mode -->
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Service Account</name>
+                    <value>${serviceaccount}</value>
+                </registrySet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Super User</name>
+                    <value>${superaccount}</value>
+                </registrySet>
+
+
+                <!-- Log server description -->
+                <logMessage>
+                    <text>Write the server description to the ini file...</text>
+                </logMessage>
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Description</key>
+                    <value>${branding}</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
+                    <name>Display Name</name>
+                    <value>${branding}</value>
+                </registrySet>
+
+                <!-- Branding info -->
+                <logMessage>
+                    <text>Write the server branding to the ini file...</text>
+                </logMessage>
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Branding</key>
+                    <value>${branding}</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Branding</name>
+                    <value>${branding}</value>
+                </registrySet>
+
+                <!-- Disable StackBuilder -->
+                <logMessage>
+                    <text>Write the 'whether stack-builder is disabled or not' to the ini file...</text>
+                </logMessage>
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>DisableStackBuilder</key>
+                    <value>${disableStackBuilder}</value>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>DisableStackBuilder</name>
+                    <value>${disableStackBuilder}</value>
+                </registrySet>
+
+                <!-- The Windows product code, used to link to the installation -->
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
+                    <name>Product Code</name>
+                    <value>postgresql${service_suffix}-${product_version}</value>
+                </registrySet>
+
+                <!-- Write a environment variable scripts -->
+
+                <actionGroup>
+                    <actionList>
+                        <deleteFile path="${installdir}/pg_env.sh" >
+                            <ruleList>
+                                <fileTest path="${installdir}/pg_env.sh" condition="exists" />
+                            </ruleList>
+                        </deleteFile>
+
+                        <writeFile>
+                            <path>${installdir}/pg_env.sh</path>
+                            <text>#!/bin/sh
+# The script sets environment variables helpful for PostgreSQL
+
+export PATH=${installdir}/bin:$PATH
+export PGDATA=${datadir}
+export PGDATABASE=postgres
+export PGUSER=${superaccount}
+export PGPORT=${serverport}
+export PGLOCALEDIR=${installdir}/share/locale
+export MANPATH=$MANPATH:${installdir}/share/man
+
+                            </text>
+                        </writeFile>
+                        <changePermissions>
+                            <files>${installdir}/pg_env.sh</files>
+                            <permissions>755</permissions>
+                        </changePermissions>
+                        <changeOwnerAndGroup>
+                            <files>${installdir}/pg_env.sh</files>
+                            <group>daemon</group>
+                        </changeOwnerAndGroup>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+                    </ruleList>
+                </actionGroup>
+
+                <actionGroup>
+                    <actionList>
+                        <deleteFile path="${installdir}\pg_env.bat" >
+                            <ruleList>
+                                <fileTest path="${installdir}\pg_env.bat" condition="exists" />
+                            </ruleList>
+                        </deleteFile>
+
+                        <writeFile>
+                            <path>${installdir}\pg_env.bat</path>
+                            <text>@ECHO OFF
+REM The script sets environment variables helpful for PostgreSQL
+
+@SET PATH="${installdir}\bin";%PATH%
+@SET PGDATA=${datadir}
+@SET PGDATABASE=postgres
+@SET PGUSER=${superaccount}
+@SET PGPORT=${serverport}
+@SET PGLOCALEDIR=${installdir}\share\locale
+
+                            </text>
+                        </writeFile>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows" />
+                    </ruleList>
+                </actionGroup>
+
+                <!-- OSX: Hide the dockIcon for shortcut -->
+                <substitute>
+                    <files>/Applications/${branding}/Application Stack Builder.app/Contents/Info.plist</files>
+                    <substitutionList>
+                        <substitution pattern="&lt;/dict&gt;" value="        &lt;key&gt;LSUIElement&lt;/key&gt; &lt;string&gt;1&lt;/string&gt; &lt;/dict&gt;"/>
+                    </substitutionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="osx"/>
+                    </ruleList>
+                </substitute>
+
+                <!-- All done!! -->
+                <logMessage>
+                    <text>Finished running post-installation/upgrade tasks.</text>
+                </logMessage>
+            </actionList>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- Add description to the service -->
+        <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\postgresql${service_suffix}-${product_version}" name="Description" value="${msg(pg.service.description)}" >
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </registrySet>
+
+        <!-- Delete the temp scripts directory -->
+        <logMessage>
+            <text>Delete the temporary scripts directory...</text>
+        </logMessage>
+        <deleteFile>
+            <path>${system_temp_directory}/postgresql_installer_${random_number}</path>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+        </deleteFile>
+        <setInstallerVariable name="server_installation_done" value="1" persist="1"/>
+    </postInstallationActionList>
+</component>

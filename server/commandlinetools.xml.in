@@ -1,0 +1,290 @@
+<component>
+    <name>commandlinetools</name>
+    <description>Command Line Tools</description>
+    <canBeEdited>1</canBeEdited>
+    <detailedDescription>${msg(commandlinetools.desc)}</detailedDescription>
+    <selected>1</selected>
+    <folderList>
+        <!-- LINUX: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileslinuxclt</name>
+            <platforms>linux</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux/commandlinetools/lib</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/commandlinetools/bin</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/commandlinetools/share</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/commandlinetools/installer</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/commandlinetools/scripts</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/linux/commandlinetools/commandlinetools_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+            </ruleList>
+        </folder>
+        <!-- LINUX_X64: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileslinux-x64</name>
+            <platforms>linux-x64</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/commandlinetools/lib</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/commandlinetools/bin</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/commandlinetools/share</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/commandlinetools/installer</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/commandlinetools/scripts</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/linux-x64/commandlinetools/commandlinetools_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- LINUX_PPC64: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileslinux-ppc64</name>
+            <platforms>linux-ppc</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux-ppc64/pgAdmin 4</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>../resources/license.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/linux-ppc64/server_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- MAC: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfilesmacosx</name>
+            <platforms>osx</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/osx/commandlinetools/lib</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/osx/commandlinetools/bin</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/osx/commandlinetools/share</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/osx/commandlinetools/installer</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/osx/commandlinetools/scripts</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/osx/commandlinetools/commandlinetools_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- WIN: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileswindows</name>
+            <platforms>windows</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/commandlinetools/bin</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/commandlinetools/lib</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/commandlinetools/installer</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/commandlinetools/scripts</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/@@WINDIR@@/commandlinetools/commandlinetools_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- SOLARIS_X64: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfilessolaris-x64</name>
+            <platforms>solaris-intel</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/solaris-x64/pgAdmin 4</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>../resources/license.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/solaris-x64/server_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- SOLARIS_SPARC: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfilessolaris-sparc</name>
+            <platforms>solaris-sparc</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/solaris-sparc/pgAdmin 4</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>../resources/license.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/solaris-sparc/server_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+    </folderList>
+    <!-- WIN: Start Menu -->
+    <startMenuShortcutList>
+        <startMenuShortcut>
+            <name>SQL Shell (psql)</name>
+            <runInTerminal>0</runInTerminal>
+            <windowsExec>${installdir}\scripts\runpsql.bat</windowsExec>
+            <windowsIcon>${installdir}\scripts\images\pg-psql.ico</windowsIcon>
+            <ruleList>
+                <isTrue value="${create_shortcuts}" />
+            </ruleList>
+        </startMenuShortcut>
+    </startMenuShortcutList>
+    <postInstallationActionList>
+        <createTempDir dirPrefix="postgresql_installer"/>
+        <runProgram>
+            <program>cscript</program>
+            <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts_clt.vbs" "${branding}" "${installdir}"</programArguments>
+            <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${create_shortcuts}</text>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+        <runProgram>
+            <program>${installdir}/installer/server/createshortcuts_clt.sh</program>
+            <programArguments>${product_version} "${branding}" "${installdir}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+            <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${create_shortcuts}</text>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+            </ruleList>
+        </runProgram>
+        <setInstallerVariable name="commandlinetools_installation_done" value="1" persist="1"/>
+    </postInstallationActionList>
+
+    <preUninstallationActionList>
+        <!-- Throw error if server/pgAdmin are selected and commandlinetools is not selected in unattended mode -->
+        <actionGroup>
+            <actionList>
+                <actionGroup>
+                    <actionList>
+                        <consoleWrite text="&#xA; ${msg(commandlinetools.not.selected.server.error)} &#xA;"/>
+                        <logMessage text="${msg(commandlinetools.not.selected.server.error)}"/>
+                        <exit/>
+                    </actionList>
+                    <ruleList>
+                        <componentTest name="server" logic="selected"/>
+                        <stringTest text="${is_server_installed}" type="not_empty"/>
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                        <consoleWrite text="&#xA; ${msg(commandlinetools.not.selected.pgadmin.error)} &#xA;"/>
+                        <logMessage text="${msg(commandlinetools.not.selected.pgadmin.error)}"/>
+                        <exit/>
+                    </actionList>
+                    <ruleList>
+                        <componentTest name="pgadmin4" logic="selected"/>
+                        <stringTest text="${is_pgadmin_installed}" type="not_empty"/>
+                    </ruleList>
+                </actionGroup>
+            </actionList>
+            <ruleList>
+                <!-- following check means mode equals unattended -->
+                <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
+            </ruleList>
+        </actionGroup>
+        <createTempDir dirPrefix="postgresql_installer"/>
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${installdir}/installer/server/removeshortcuts_clt.sh</program>
+                    <programArguments>"${installdir}" ${product_version} "${branding}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>contains</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- MAC: Remove menu shortcuts -->
+        <deleteFile>
+            <path>/Applications/${branding}/SQL Shell (psql).app</path>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </deleteFile>
+    </preUninstallationActionList>
+</component>

@@ -695,20 +695,24 @@ _postprocess_server_windows() {
     
     PG_DATETIME_SETTING_WINDOWS="64-bit integers"
 
-    if [ -f installer-win.xml ]; then
-      rm -f installer-win.xml
-    fi
-    cp installer.xml installer-win.xml
+    for file in {installer,pgserver,pgadmin,stackbuilder,commandlinetools}
+    do
+        filename=${file}-windows.xml
+        if [ -f $filename ]; then
+           rm -f $filename
+        fi
 
-    _replace @@PG_DATETIME_SETTING_WINDOWS@@ "$PG_DATETIME_SETTING_WINDOWS" installer-win.xml || _die "Failed to replace the date-time setting in the installer.xml"
+        cp ${file}.xml $filename || _die "Failed to copy the installer project file (server/$filename)"
 
-    _replace @@WIN64MODE@@ "0" installer-win.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
-    _replace @@WINDIR@@ windows installer-win.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
-    _replace @@SERVICE_SUFFIX@@ "" installer-win.xml || _die "Failed to replace the SERVICE_SUFFIX setting in the installer.xml"
-
+        _replace @@PG_DATETIME_SETTING_WINDOWS@@ "$PG_DATETIME_SETTING_WINDOWS" $filename || _die "Failed to replace the date-time setting in the $filename"
+        _replace @@WIN64MODE@@ "0" $filename || _die "Failed to replace the WIN64MODE setting in the $filename"
+        _replace @@WINDIR@@ windows $filename || _die "Failed to replace the WINDIR setting in the $filename"
+        _replace @@SERVICE_SUFFIX@@ "" $filename || _die "Failed to replace the WIN64MODE setting in the $filename"
+        _replace @@PLATFORM@@ "windows" $filename
+    done
     
     # Build the installer
-    "$PG_INSTALLBUILDER_BIN" build installer-win.xml windows || _die "Failed to build the installer"
+    "$PG_INSTALLBUILDER_BIN" build installer-windows.xml windows || _die "Failed to build the installer"
 
     # If build passed empty this variable
     BUILD_FAILED="build_failed-"

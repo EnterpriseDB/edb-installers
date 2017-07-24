@@ -775,15 +775,22 @@ _postprocess_server_linux_x64() {
 
     PG_DATETIME_SETTING_LINUX_X64="64-bit integers"
 
-    if [ -f installer-lin64.xml ]; then
-        rm -f installer-lin64.xml
-    fi
-    cp installer.xml installer-lin64.xml
+    for file in {installer,pgserver,pgadmin,stackbuilder,commandlinetools}
+    do
+        filename=${file}-linux-x64.xml
+        if [ -f $filename ]; then
+           rm -f $filename
+        fi
 
-    _replace @@PG_DATETIME_SETTING_LINUX_X64@@ "$PG_DATETIME_SETTING_LINUX_X64" installer-lin64.xml || _die "Failed to replace the date-time setting in the installer.xml"
-    _replace @@WIN64MODE@@ "0" installer-lin64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
-    _replace @@SERVICE_SUFFIX@@ "" installer-lin64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
-    _replace PG_VERSION_STR "$PG_VERSION_STR" installer-lin64.xml
+        cp ${file}.xml $filename || _die "Failed to copy the installer project file (server/$filename)"
+
+        _replace @@PG_DATETIME_SETTING_LINUX_X64@@ "$PG_DATETIME_SETTING_LINUX_X64" $filename || _die "Failed to replace the date-time setting in the $filename"
+        _replace @@WIN64MODE@@ "0" $filename || _die "Failed to replace the WIN64MODE setting in the $filename"
+        _replace @@SERVICE_SUFFIX@@ "" $filename || _die "Failed to replace the WIN64MODE setting in the $filename"
+        _replace PG_VERSION_STR "$PG_VERSION_STR" $filename
+        _replace @@PLATFORM@@ "linux-x64" $filename
+   done
+
 
     # Copy plLanguages.config
     mkdir -p $PGSERVER_STAGING_X64/etc/sysconfig || _die "Failed to create etc/sysconfig directory"
@@ -798,7 +805,7 @@ _postprocess_server_linux_x64() {
     _set_permissions linux-x64
 
     # Build the installer
-    "$PG_INSTALLBUILDER_BIN" build installer-lin64.xml linux-x64 || _die "Failed to build the installer"
+    "$PG_INSTALLBUILDER_BIN" build installer-linux-x64.xml linux-x64 || _die "Failed to build the installer"
 
     # If build passed empty this variable
     BUILD_FAILED="build_failed-"

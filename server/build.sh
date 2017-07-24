@@ -282,21 +282,24 @@ _postprocess_server() {
     PG_CONTROL_VERSION=`cat source/postgresql-$PG_TARBALL_POSTGRESQL/src/include/catalog/pg_control.h |grep "#define PG_CONTROL_VERSION" | awk '{print $3}'`
 
     # Prepare the installer XML file
-    if [ -f installer.xml ];
-    then
-        rm installer.xml
-    fi
-    cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (server/installer.xml.in)"
-    _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the major version in the installer project file (server/installer.xml)"
-    _replace PG_MINOR_VERSION $PG_MINOR_VERSION installer.xml || _die "Failed to set the minor version in the installer project file (server/installer.xml)"
-    _replace PG_PACKAGE_VERSION $PG_PACKAGE_VERSION installer.xml || _die "Failed to set the package version in the installer project file (server/installer.xml)"
-    _replace PG_STAGING_DIR $WD/server/staging installer.xml || _die "Failed to set the staging directory in the installer project file (server/installer.xml)"
-    _replace PG_CATALOG_VERSION $PG_CATALOG_VERSION installer.xml || _die "Failed to set the catalog version number in the installer project file (server/installer.xml)"
-    _replace PG_CONTROL_VERSION $PG_CONTROL_VERSION installer.xml || _die "Failed to set the catalog version number in the installer project file (server/installer.xml)"
+    for file in {installer,pgserver,pgadmin,stackbuilder,commandlinetools}
+    do
+        filename=${file}.xml
+        if [ -f $filename ]; then
+           rm -f $filename
+        fi
 
-    _replace PERL_PACKAGE_VERSION $PG_VERSION_PERL installer.xml || _die "Failed to set the PERL version in server/installer.xml file."
-    _replace PYTHON_PACKAGE_VERSION $PG_VERSION_PYTHON installer.xml || _die "Failed to set the PYTHON version in server/installer.xml file."
-    _replace TCL_PACKAGE_VERSION $PG_VERSION_TCL installer.xml || _die "Failed to set the TCL version in server/installer.xml file."
+        cp ${filename}.in  $filename || _die "Failed to copy the installer project file (server/$filename)"
+        _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION $filename || _die "Failed to set the major version in server/$filename"
+        _replace PG_MINOR_VERSION $PG_MINOR_VERSION $filename || _die "Failed to set the minor version in server/$filename"
+        _replace PG_PACKAGE_VERSION $PG_PACKAGE_VERSION $filename || _die "Failed to set the package version in server/$filename"
+        _replace PG_STAGING_DIR $WD/server/staging $filename || _die "Failed to set the staging directory in server/$filename"
+        _replace PG_CATALOG_VERSION $PG_CATALOG_VERSION $filename || _die "Failed to set the catalog version number in server/$filename"
+        _replace PG_CONTROL_VERSION $PG_CONTROL_VERSION $filename || _die "Failed to set the catalog version number in server/$filename"
+        _replace PERL_PACKAGE_VERSION $PG_VERSION_PERL $filename || _die "Failed to set the PERL version in server/$filename"
+        _replace PYTHON_PACKAGE_VERSION $PG_VERSION_PYTHON $filename || _die "Failed to set the PYTHON version in server/$filename"
+        _replace TCL_PACKAGE_VERSION $PG_VERSION_TCL $filename || _die "Failed to set the TCL version in server/$filename"
+   done
    
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 

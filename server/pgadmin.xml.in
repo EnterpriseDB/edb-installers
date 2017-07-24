@@ -1,0 +1,369 @@
+<component>
+    <name>pgAdmin</name>
+    <description>pgAdmin 4</description>
+    <canBeEdited>1</canBeEdited>
+    <detailedDescription>${msg(pgadmin.desc)}</detailedDescription>
+    <selected>1</selected>
+    <folderList>
+        <!-- LINUX: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileslinux</name>
+            <platforms>linux</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux/pgadmin4/pgAdmin 4</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/linux/pgadmin4/pgAdmin_3rd_party_licenses.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/linux/pgadmin4/pgAdmin_license.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+            </ruleList>
+        </folder>
+        <folder>
+            <description>Script Files</description>
+            <destination>${installdir}</destination>
+            <name>scriptfileslinux</name>
+            <platforms>linux</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux/pgadmin4/scripts</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux/pgadmin4/installer</origin>
+                </distributionDirectory>
+            </distributionFileList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+            </ruleList>
+        </folder>
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}/server/scripts</destination>
+            <name>scriptfileslinux_2</name>
+            <platforms>linux4</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux/pgadmin4/scripts/xdg</origin>
+                </distributionDirectory>
+            </distributionFileList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+            </ruleList>
+        </folder>
+        <!-- LINUX_X64: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileslinux-x64</name>
+            <platforms>linux-x64</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/pgadmin4/pgAdmin 4</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/linux-x64/pgadmin4/pgAdmin_3rd_party_licenses.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/linux-x64/pgadmin4/pgAdmin_license.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <folder>
+            <description>Script Files</description>
+            <destination>${installdir}</destination>
+            <name>scriptfileslinux-x64</name>
+            <platforms>linux-x64</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/pgadmin4/scripts</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/pgadmin4/installer</origin>
+                </distributionDirectory>
+            </distributionFileList>
+        </folder>
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}/server/scripts</destination>
+            <name>scriptfileslinux-x64_2</name>
+            <platforms>linux-x64</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux-x64/pgadmin4/scripts/xdg</origin>
+                </distributionDirectory>
+            </distributionFileList>
+        </folder>
+        <!-- LINUX_PPC64: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileslinux-ppc64</name>
+            <platforms>linux-ppc</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/linux-ppc64/pgAdmin 4</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>../resources/license.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/linux-ppc64/server_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- MAC: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfilesmacosx</name>
+            <platforms>osx</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/osx/pgadmin4/pgAdmin 4.app</origin>
+                </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/osx/pgadmin4/installer</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/osx/pgadmin4/pgAdmin_3rd_party_licenses.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/osx/pgadmin4/pgAdmin_license.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- WIN: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileswindows</name>
+            <platforms>windows</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin 4</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin_3rd_party_licenses.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin_license.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+</folder>
+        <!-- SOLARIS_X64: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfilessolaris-x64</name>
+            <platforms>solaris-intel</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/solaris-x64/pgAdmin 4</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>../resources/license.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/solaris-x64/server_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+        <!-- SOLARIS_SPARC: Program files -->
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfilessolaris-sparc</name>
+            <platforms>solaris-sparc</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/solaris-sparc/pgAdmin 4</origin>
+                </distributionDirectory>
+                <distributionFile>
+                    <origin>../resources/license.txt</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/solaris-sparc/server_3rd_party_licenses.txt</origin>
+                </distributionFile>
+            </distributionFileList>
+        </folder>
+    </folderList>
+    <componentSelectionValidationActionList>
+        <throwError>
+            <text>${msg(commandlinetools.not.selected.pgadmin.error)}</text>
+            <ruleList>
+                <componentTest name="commandlinetools" logic="not_selected"/>
+            </ruleList>
+      </throwError>
+    </componentSelectionValidationActionList>
+
+    <!-- WIN: Start Menu -->
+    <startMenuShortcutList>
+        <startMenuFolder>
+            <name>Documentation</name>
+            <platforms>windows</platforms>
+            <startMenuShortcutList>
+                <!-- pgAdmin -->
+                <startMenuLinkShortcut>
+                    <name>pgAdmin documentation</name>
+                    <runInTerminal>0</runInTerminal>
+                    <url>file://${installdir}/pgAdmin 4/docs/en_US/html/index.html</url>
+                    <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                    <ruleList>
+                        <isTrue value="${create_shortcuts}" />
+                    </ruleList>
+                </startMenuLinkShortcut>
+            </startMenuShortcutList>
+        </startMenuFolder>
+        
+        <!-- pgAdmin -->
+        <startMenuShortcut>
+            <name>pgAdmin 4</name>
+            <runInTerminal>0</runInTerminal>
+            <windowsExec>${installdir}\pgAdmin 4\bin\pgAdmin4.exe</windowsExec>
+            <ruleList>
+                <isTrue value="${create_shortcuts}" />
+            </ruleList>
+        </startMenuShortcut>
+    </startMenuShortcutList>
+    <!-- Postinstallation actions -->
+    <postInstallationActionList>
+        <createTempDir dirPrefix="postgresql_installer"/>
+        <runProgram>
+            <program>${installdir}/installer/server/createshortcuts_pgadmin.sh</program>
+            <programArguments>${product_version} "${branding}" "${installdir}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+            <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+                <ruleList>
+                    <compareText>
+                        <logic>equals</logic>
+                        <text>${create_shortcuts}</text>
+                        <value>1</value>
+                    </compareText>
+                    <compareText>
+                        <logic>does_not_equal</logic>
+                        <text>${platform_name}</text>
+                        <value>windows</value>
+                    </compareText>
+                </ruleList>
+        </runProgram>
+
+        <!-- RM # 39338 Remove the webkit files-->
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${installdir}/pgAdmin 4/lib/Qt5WebEngine.dll" >
+                    <ruleList>
+                        <fileTest path="${installdir}/pgAdmin 4/lib/Qt5WebEngine.dll" condition="exists" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}/pgAdmin 4/lib/Qt5WebEngineWidgets.dll" >
+                    <ruleList>
+                        <fileTest path="${installdir}/pgAdmin 4/lib/Qt5WebEngineWidgets.dll" condition="exists" />
+                    </ruleList>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows" />
+            </ruleList>
+        </actionGroup>
+        
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${installdir}/pgAdmin 4/lib/libQt5WebKit.so*" >
+                    <ruleList>
+                        <fileTest path="${installdir}/pgAdmin 4/lib/libQt5WebKit.so*" condition="exists" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}/pgAdmin 4/lib/libQt5WebKitWidgets.so*" >
+                    <ruleList>
+                    <fileTest path="${installdir}/pgAdmin 4/lib/libQt5WebKitWidgets.so*" condition="exists" />
+                    </ruleList>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="contains" value="Linux" />
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebEngine.framework" >
+                    <ruleList>
+                        <fileTest path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebEngine.framework" condition="exists" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebEngineWidgets.framework" >
+                    <ruleList>
+                        <fileTest path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebEngineWidgets.framework" condition="exists" />
+                    </ruleList>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="osx" />
+            </ruleList>
+        </actionGroup>
+
+        <!-- Delete the temp scripts directory -->
+        <logMessage>
+            <text>Delete the temporary scripts directory...</text>
+        </logMessage>
+        <deleteFile>
+            <path>${system_temp_directory}/postgresql_installer_${random_number}</path>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+        </deleteFile>
+        <setInstallerVariable name="pgAdmin_installation_done" value="1" persist="1"/>
+    </postInstallationActionList>
+
+    <preUninstallationActionList>
+        <createTempDir dirPrefix="postgresql_installer"/>
+        <actionGroup>
+                <actionList>
+                    <runProgram>
+                        <program>${installdir}/installer/server/removeshortcuts_pgadmin.sh</program>
+                        <programArguments>"${installdir}" ${product_version} "${branding}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
+                    </runProgram>
+                </actionList>
+                <ruleList>
+                    <compareText>
+                        <logic>contains</logic>
+                        <text>${platform_name}</text>
+                        <value>linux</value>
+                    </compareText>
+                </ruleList>
+        </actionGroup>
+        <!-- MAC: Remove menu shortcuts -->
+        <actionGroup>
+            <actionList>
+                <deleteFile path="/Applications/${branding}/pgAdmin 4.app"/>
+                    <deleteFile path="/Applications/${branding}/Documentation/pgAdmin*"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                    </compareText>
+            </ruleList>
+        </actionGroup>
+    </preUninstallationActionList>
+</component>
