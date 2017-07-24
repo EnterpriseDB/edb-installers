@@ -169,7 +169,7 @@ _postprocess_sqlprotect_windows() {
     fi
 
     # Rename the installer
-    mv $WD/output/sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-windows.exe $WD/output/sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-${BUILD_FAILED}windows.exe || _die "Failed to rename the installer"
+    mv $WD/output/sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-windows.exe $WD/output/sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-${BUILD_FAILED}windows.exe
 
     # Sign the installer
     win32_sign "sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-${BUILD_FAILED}windows.exe"
