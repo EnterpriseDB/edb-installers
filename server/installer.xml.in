@@ -760,7 +760,7 @@ EOF
                         <compareText text="${platform_name}" logic="does_not_equal" value="osx"/>
                     </ruleList>
                 </setInstallerVariable>
-                <setInstallerVariable name="config_disto_file" value="${installdir}${slash}pgAdmin 4.app${slash}Contents${slash}Resources${slash}web{slash}config_distro.py">
+                <setInstallerVariable name="config_disto_file" value="${installdir}${slash}pgAdmin 4.app${slash}Contents${slash}Resources${slash}web${slash}config_distro.py">
                     <ruleList>
                         <compareText text="${platform_name}" logic="equals" value="osx"/>
                     </ruleList>
@@ -773,12 +773,12 @@ EOF
 }
                     </text>
                     <ruleList>
+                        <fileExists path="${config_disto_file}"/>
                         <compareText text="${config_distro_content}" logic="does_not_contain" value="DEFAULT_BINARY_PATHS"/>
                     </ruleList>
                 </addTextToFile>
             </actionList>
             <ruleList>
-                <fileExists path="${config_disto_file}"/>
                 <fileExists path="${installdir}${slash}bin${slash}${test_filename}"/>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
