@@ -88,7 +88,7 @@ _postprocess_languagepack_linux_x64() {
     chmod ugo+w $WD/languagepack/staging/linux-x64 || _die "Couldn't set the permissions on the staging directory"
 
     echo "Copying files to staging directory from install directory"
-    ssh $PG_SSH_LINUX_X64 "cp -rp $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging/* $PG_PATH_LINUX_X64/languagepack/staging/linux-x64" || _die "Failed to copy the languagepack Source into the staging directory"
+    ssh $PG_SSH_LINUX_X64 "cp -rp $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging/$PG_VERSION_LANGUAGEPACK/* $PG_PATH_LINUX_X64/languagepack/staging/linux-x64" || _die "Failed to copy the languagepack Source into the staging directory"
 
     source $WD/languagepack/staging/linux-x64/versions-linux-x64.sh
     PG_BUILD_LANGUAGEPACK=$(expr $PG_BUILD_LANGUAGEPACK + $SKIPBUILD)

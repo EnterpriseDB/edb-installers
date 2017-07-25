@@ -93,7 +93,7 @@ _postprocess_languagepack_linux() {
     PG_BUILD_LANGUAGEPACK=$(expr $PG_BUILD_LANGUAGEPACK + $SKIPBUILD)
 
     echo "Copying files to staging directory from install directory"
-    ssh $PG_SSH_LINUX "cp -rp $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging/* $PG_PATH_LINUX/languagepack/staging/linux" || _die "Failed to copy the built tree into the staging directory"
+    ssh $PG_SSH_LINUX "cp -rp $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging/$PG_VERSION_LANGUAGEPACK/* $PG_PATH_LINUX/languagepack/staging/linux" || _die "Failed to copy the built tree into the staging directory"
 
     cd $WD/languagepack
 
