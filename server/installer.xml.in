@@ -3995,20 +3995,30 @@ REM The script sets environment variables helpful for PostgreSQL
               <compareText text="${platform_name}" logic="equals" value="windows"/>
             </ruleList>
           </setInstallerVariableFromRegEx>
-          <readFile path="${installdir}${slash}pgAdmin 4${slash}web${slash}config_distro.py" name="config_distro_content"/>
-          <addTextToFile file="${installdir}${slash}pgAdmin 4${slash}web${slash}config_distro.py" insertAt="end">
+          <setInstallerVariable name="config_disto_file" value="${installdir}${slash}pgAdmin 4${slash}web${slash}config_distro.py">
+              <ruleList>
+                  <compareText text="${platform_name}" logic="does_not_equal" value="osx"/>
+              </ruleList>
+         </setInstallerVariable>
+         <setInstallerVariable name="config_disto_file" value="${installdir}${slash}pgAdmin 4.app${slash}Contents${slash}Resources${slash}web${slash}config_distro.py">
+             <ruleList>
+                 <compareText text="${platform_name}" logic="equals" value="osx"/>
+             </ruleList>
+         </setInstallerVariable>
+         <readFile path="${config_disto_file}" name="config_distro_content"/>
+         <addTextToFile file="${config_disto_file}" insertAt="end">
             <text>DEFAULT_BINARY_PATHS = {
     "pg":   "${server_install_path}",
     "ppas": ""
 }
           </text>
           <ruleList>
+              <fileExists path="${config_disto_file}"/>
               <compareText text="${config_distro_content}" logic="does_not_contain" value="DEFAULT_BINARY_PATHS"/>
            </ruleList>
           </addTextToFile>
         </actionList>
         <ruleList>
-          <fileExists path="${installdir}${slash}pgAdmin 4${slash}web${slash}config_distro.py"/>
           <fileExists path="${installdir}${slash}bin${slash}${test_filename}"/>
           <isFalse value="${extract_mode}"/>
         </ruleList>
