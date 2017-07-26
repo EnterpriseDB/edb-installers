@@ -355,31 +355,39 @@ EOT-PGADMIN
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libz*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libz"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libssl*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libssl"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libcrypto*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libcrypto"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libjpeg*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libjpeg"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libpng16*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libpng15"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libiconv*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libiconv"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libexpat*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libexpat"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libintl.*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libintl"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libcurl*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libcurl"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libicui18n*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libicui18n"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libicudata*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libicudata"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libicuuc*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libicuuc"
 
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_macu_adv-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_macu_core-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_base_carbonu-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_base_carbonu_net-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_base_carbonu_xml-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "mkdir -p $PG_STAGING/stackbuilder.app/Contents/Frameworks" || _die "Failed to create $PG_STAGING/stackbuilder/Frameworks"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_macu_adv-*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_macu_core-*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_base_carbonu-*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_base_carbonu_net-*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_base_carbonu_xml-*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libcurl*dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libcurl"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libz*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libz"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libssl*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libssl"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libcrypto*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libcrypto"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libjpeg*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libjpeg"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libpng16*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libpng16"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libiconv*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libiconv"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libexpat*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libexpat"
 
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
     ssh $PG_SSH_OSX "cp -f $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plperl.so $PG_PATH_OSX/server/staging_cache/osx.build/"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
+    echo "Rewrite shared library references for stackbuilder.app"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source settings.sh; source common.sh; cd $PG_STAGING; _rewrite_so_refs_for_framework $PG_STAGING/stackbuilder.app/Contents/MacOS"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source settings.sh; source common.sh; cd $PG_STAGING; _rewrite_so_refs_for_framework $PG_STAGING/stackbuilder.app/Contents/Frameworks"
+
+    # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     echo "Rewrite shared library references"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source settings.sh; source common.sh; cd $PG_STAGING; _rewrite_so_refs $PG_STAGING bin @loader_path/..;\
         _rewrite_so_refs $PG_STAGING lib @loader_path/..; _rewrite_so_refs $PG_STAGING lib/postgresql @loader_path/../..;\
-        _rewrite_so_refs $PG_STAGING lib/postgresql/plugins @loader_path/../../..;\
-        _rewrite_so_refs $PG_STAGING stackbuilder.app/Contents/MacOS @loader_path/../../.."
+        _rewrite_so_refs $PG_STAGING lib/postgresql/plugins @loader_path/../../.."
 
     echo "Some specific rewriting of shared library references"
     ssh $PG_SSH_OSX "cd $PG_STAGING; install_name_tool -change $PG_STAGING/lib/libpq.5.dylib @loader_path/../../../../../../Frameworks/libpq.5.dylib \"$APP_BUNDLE_NAME/Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg.so\""
@@ -400,21 +408,6 @@ EOT-PGADMIN
 
     # Copy the regress source to the regression setup 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/src/test/; cp -pR regress /buildfarm/src/test/" || _die "Failed to Copy regress to the regression directory"
-
-    ssh $PG_SSH_OSX "mkdir -p $PG_STAGING/stackbuilder/Frameworks" || _die "Failed to create $PG_STAGING/stackbuilder/Frameworks"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_macu_adv-*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_macu_core-*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu-*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_net-*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libwx_base_carbonu_xml-*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcurl*dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libcurl"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libz*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libz"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libssl*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libssl"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libcrypto*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libcrypto"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libjpeg*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libjpeg"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libpng16*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libpng16"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libiconv*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libiconv"
-    ssh $PG_SSH_OSX "cp -pR $PG_STAGING/lib/libexpat*.dylib $PG_STAGING/stackbuilder/Frameworks/" || _die "Failed to copy the latest libexpat"
 
     echo "Removing last successful staging directory ($PG_PATH_OSX/server/staging_cache/osx)"
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/staging_cache/osx" || _die "Couldn't remove the last successful staging_cache directory directory"
@@ -547,16 +540,10 @@ _postprocess_server_osx() {
     cp -pR $WD/server/staging_cache/osx/pgAdmin\ 4.app/  $PGADMIN_STAGING_OSX
 
     echo "Preparing restructured staging for stackbuilder"
+    mkdir -p $WD/server/staging_cache/osx/stackbuilder
     mv $WD/server/staging_cache/osx/stackbuilder.app $WD/server/staging_cache/osx/stackbuilder/ || _die "Failed to move stackbuilder.app"
     cp -pR $WD/server/staging_cache/osx/stackbuilder/stackbuilder.app $SB_STAGING_OSX || _die "Failed to copy stackbuilder.app"
 
-    mkdir -p $SB_STAGING_OSX/stackbuilder.app/Contents/Frameworks || _die "Failed to create Frameworks directory"
-    cp -pR $WD/server/staging_cache/osx/stackbuilder/Frameworks $SB_STAGING_OSX/stackbuilder.app/Contents/ || _die "Failed to copy stackbuilder Frameworks"
-    # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
-    echo "Rewrite shared library references"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; set -x; source settings.sh; source common.sh; cd $PG_STAGING; \
-    _rewrite_so_refs $PG_STAGING stackbuilder.app/Contents/Frameworks  @loader_path/..;
-    _rewrite_so_refs $PG_STAGING stackbuilder.app/Contents/MacOS @loader_path/../../.."
     cd $WD/server
 
     #generate commandlinetools license file

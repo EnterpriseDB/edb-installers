@@ -43,6 +43,55 @@ _replace() {
     mv /tmp/$$.tmp $3 || _die "Failed to move /tmp/$$.tmp to $3"
 }
 
+# Rewrite so references for app bundle on Mac
+#
+_rewrite_so_refs_for_framework() {
+    FILE_PATH=$1
+    LOADER_PATH="@loader_path/../Frameworks"
+
+    FLIST=`ls $FILE_PATH`
+
+    for FILE in $FLIST; do
+
+            IS_EXECUTABLE=`file $FILE_PATH/$FILE | grep -E "Mach-O executable|Mach-O 64-bit executable" | wc -l`
+            IS_SHAREDLIB=`file $FILE_PATH/$FILE | grep -E "(Mach-O\ 64-bit\ dynamically\ linked\ shared\ library|Mach-O\ dynamically\ linked\ shared\ library|Mach-O\ bundle|Mach-O 64-bit bundle)" | wc -l`
+
+               if [ $IS_EXECUTABLE -ne 0 -o $IS_SHAREDLIB -ne 0 ]; then
+
+                            if [ $IS_EXECUTABLE -ne 0 ]; then
+                                    echo "Post-processing executable: $FILE_PATH/$FILE"
+                            else
+                                    echo "Post-processing shared library: $FILE_PATH/$FILE"
+                            fi
+
+                            if [ $IS_SHAREDLIB -ne 0 ]; then
+                            # Change the library ID
+                            ID=`otool -D $FILE_PATH/$FILE | grep "/opt/local" | grep -v ":"`
+
+                                    for DLL in $ID; do
+                                            echo "    - rewriting ID: $DLL"
+                                            NEW_DLL=`echo $DLL | sed -e "s^/opt/local/20.*lib/^^g"`
+                                            echo "                to: $NEW_DLL"
+
+                                            install_name_tool -id "$NEW_DLL" "$FILE_PATH/$FILE"
+                                    done
+                            fi
+
+                            # Now change the referenced libraries
+                            DLIST=`otool -L $FILE_PATH/$FILE | grep "/opt/local" | grep -v ":" | awk '{ print $1 }'`
+
+                            for DLL in $DLIST; do
+                                    echo "    - rewriting ref: $DLL"
+
+                                    NEW_DLL=`echo $DLL | sed -e "s^/opt/local/20.*lib/^/^g"`
+                                    echo "                 to: $LOADER_PATH/$NEW_DLL"
+
+                                    install_name_tool -change "$DLL" "$LOADER_PATH/$NEW_DLL" "$FILE_PATH/$FILE"
+                            done
+		fi
+    done
+}
+
 # Rewrite so references on Mac - _rewrite_so_refs($base_path, $file_path, $loader_path)
 #
 # base_path - The base installation path (normally ($WD/staging/osx)
