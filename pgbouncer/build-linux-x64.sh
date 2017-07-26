@@ -55,6 +55,8 @@ _build_pgbouncer_linux_x64() {
 
     echo "BEGIN BUILD pgbouncer Linux-x64"
 
+    PG_STAGING_CACHE=$WD/server/staging_cache/linux-x64
+
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; ./configure --enable-debug --prefix=$PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/pgbouncer --with-libevent=/opt/local/Current --with-openssl=/opt/local/Current" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; make" || _die "Failed to build pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; make install" || _die "Failed to install pgbouncer"
@@ -72,20 +74,20 @@ _build_pgbouncer_linux_x64() {
 
     cd $WD/pgbouncer/staging/linux-x64.build/instscripts/
 
-    cp -pR $WD/server/staging/linux-x64/bin/psql* . || _die "Failed to copy psql binary"
-    cp -pR $WD/server/staging/linux-x64/lib/libpq.so* . || _die "Failed to copy libpq.so"
-    cp -pR $WD/server/staging/linux-x64/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
-    cp -pR $WD/server/staging/linux-x64/lib/libssl.so* . || _die "Failed to copy libssl.so"
-    cp -pR $WD/server/staging/linux-x64/lib/libedit.so* . || _die "Failed to copy libedit.so"
-    cp -pR $WD/server/staging/linux-x64/lib/libsasl*.so* . || _die "Failed to copy libsasl2.so.3"
-    cp -pR $WD/server/staging/linux-x64/lib/libldap*.so* . || _die "Failed to copy libldap.so"
-    cp -pR $WD/server/staging/linux-x64/lib/liblber*.so* . || _die "Failed to copy liblber.so"
-    cp -pR $WD/server/staging/linux-x64/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
-    cp -pR $WD/server/staging/linux-x64/lib/libkrb5.so* . || _die "Failed to copy libkrb5.so"
-    cp -pR $WD/server/staging/linux-x64/lib/libkrb5support*.so* . || _die "Failed to copy libkrb5support.so"
-    cp -pR $WD/server/staging/linux-x64/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
-    cp -pR $WD/server/staging/linux-x64/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
-    cp -pR $WD/server/staging/linux-x64/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
+    cp -pR $PG_STAGING_CACHE/bin/psql* . || _die "Failed to copy psql binary"
+    cp -pR $PG_STAGING_CACHE/lib/libpq.so* . || _die "Failed to copy libpq.so"
+    cp -pR $PG_STAGING_CACHE/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
+    cp -pR $PG_STAGING_CACHE/lib/libssl.so* . || _die "Failed to copy libssl.so"
+    cp -pR $PG_STAGING_CACHE/lib/libedit.so* . || _die "Failed to copy libedit.so"
+    cp -pR $PG_STAGING_CACHE/lib/libsasl*.so* . || _die "Failed to copy libsasl2.so.3"
+    cp -pR $PG_STAGING_CACHE/lib/libldap*.so* . || _die "Failed to copy libldap.so"
+    cp -pR $PG_STAGING_CACHE/lib/liblber*.so* . || _die "Failed to copy liblber.so"
+    cp -pR $PG_STAGING_CACHE/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
+    cp -pR $PG_STAGING_CACHE/lib/libkrb5.so* . || _die "Failed to copy libkrb5.so"
+    cp -pR $PG_STAGING_CACHE/lib/libkrb5support*.so* . || _die "Failed to copy libkrb5support.so"
+    cp -pR $PG_STAGING_CACHE/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
+    cp -pR $PG_STAGING_CACHE/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
+    cp -pR $PG_STAGING_CACHE/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
 
     ssh $PG_SSH_LINUX_X64 "chmod 755 $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/instscripts/*" || _die "Failed to change permission of libraries"
 

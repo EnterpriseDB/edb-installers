@@ -134,6 +134,7 @@ _build_psqlODBC_linux() {
 
     PG_STAGING=$PG_PATH_LINUX/psqlODBC/staging/linux.build
     SOURCE_DIR=$PG_PATH_LINUX/psqlODBC/source/psqlODBC.linux
+    PG_STAGING_CACHE=$WD/server/staging_cache/linux
 
     echo "Configuring psqlODBC sources"
     ssh $PG_SSH_LINUX "cd $SOURCE_DIR; export LD_LIBRARY_PATH=/opt/local/Current/lib:$PG_PGHOME_LINUX/lib:\$LD_LIBRARY_PATH; export PATH=/opt/local/Current/bin:$PG_PGHOME_LINUX/bin:\$PATH; CFLAGS=\"-I/opt/local/Current/include\" LDFLAGS=\"-L/opt/local/Current/lib\"  ./configure --prefix=$PG_STAGING " || _die "Couldn't configure the psqlODBC sources"
@@ -145,18 +146,18 @@ _build_psqlODBC_linux() {
     cd $WD/psqlODBC/staging/linux.build/lib
 
     # Copy in the dependency libraries
-    cp -pR $WD/server/staging/linux/lib/libpq.so* . || _die "Failed to copy libcrypto.so"
-    cp -pR $WD/server/staging/linux/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
-    cp -pR $WD/server/staging/linux/lib/libssl.so* . || _die "Failed to copy libssl.so"
-    cp -pR $WD/server/staging/linux/lib/libedit.so* . || _die "Failed to copy libedit.so"
-    cp -pR $WD/server/staging/linux/lib/libldap*.so* . || _die "Failed to copy libldap.so"
-    cp -pR $WD/server/staging/linux/lib/liblber*.so* . || _die "Failed to copy liblber.so"
-    cp -pR $WD/server/staging/linux/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
-    cp -pR $WD/server/staging/linux/lib/libkrb5.so* . || _die "Failed to copy libkrb5.so"
-    cp -pR $WD/server/staging/linux/lib/libkrb5support*.so* . || _die "Failed to copy libkrb5support.so"
-    cp -pR $WD/server/staging/linux/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
-    cp -pR $WD/server/staging/linux/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
-    cp -pR $WD/server/staging/linux/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
+    cp -pR $PG_STAGING_CACHE/lib/libpq.so* . || _die "Failed to copy libcrypto.so"
+    cp -pR $PG_STAGING_CACHE/lib/libcrypto.so* . || _die "Failed to copy libcrypto.so"
+    cp -pR $PG_STAGING_CACHE/lib/libssl.so* . || _die "Failed to copy libssl.so"
+    cp -pR $PG_STAGING_CACHE/lib/libedit.so* . || _die "Failed to copy libedit.so"
+    cp -pR $PG_STAGING_CACHE/lib/libldap*.so* . || _die "Failed to copy libldap.so"
+    cp -pR $PG_STAGING_CACHE/lib/liblber*.so* . || _die "Failed to copy liblber.so"
+    cp -pR $PG_STAGING_CACHE/lib/libgssapi_krb5*.so* . || _die "Failed to copy libgssapi_krb5.so"
+    cp -pR $PG_STAGING_CACHE/lib/libkrb5.so* . || _die "Failed to copy libkrb5.so"
+    cp -pR $PG_STAGING_CACHE/lib/libkrb5support*.so* . || _die "Failed to copy libkrb5support.so"
+    cp -pR $PG_STAGING_CACHE/lib/libk5crypto*.so* . || _die "Failed to copy libk5crypto.so"
+    cp -pR $PG_STAGING_CACHE/lib/libcom_err*.so* . || _die "Failed to copy libcom_err.so"
+    cp -pR $PG_STAGING_CACHE/lib/libncurses*.so* . || _die "Failed to copy libncurses.so"
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libodbcinst.so* $PG_STAGING/lib" || _die "Failed to copy libodbcinst.so"
     ssh $PG_SSH_LINUX "cp -pR /opt/local/Current/lib/libodbc.so* $PG_STAGING/lib" || _die "Failed to copy libodbc.so"
 

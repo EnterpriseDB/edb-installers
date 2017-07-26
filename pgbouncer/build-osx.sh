@@ -125,12 +125,12 @@ cat<<PGBOUNCER > $WD/pgbouncer/build-pgbouncer.sh
  
     mkdir -p $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts || _die "Failed to create the instscripts directory"
 
-    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libpq* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/ || _die "Failed to copy libpq in instscripts"
-    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libedit* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/ || _die "Failed to copy libedit in instscripts"
-    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libssl* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/ || _die "Failed to copy libssl in instscripts"
-    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libcrypto* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/ || _die "Failed to copy libcrypto in instscripts"
-    cp -pR $PG_PATH_OSX/server/staging/osx/lib/libxml2* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/ || _die "Failed to copy libxml2 in instscripts"
-    cp -pR $PG_PATH_OSX/server/staging/osx/bin/psql $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/ || _die "Failed to copy psql in instscripts"
+    cp -pR $PG_PGHOME_OSX/lib/libpq* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/ || _die "Failed to copy libpq in instscripts"
+    cp -pR $PG_PGHOME_OSX/lib/libedit* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/ || _die "Failed to copy libedit in instscripts"
+    cp -pR $PG_PGHOME_OSX/lib/libssl* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/ || _die "Failed to copy libssl in instscripts"
+    cp -pR $PG_PGHOME_OSX/lib/libcrypto* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/ || _die "Failed to copy libcrypto in instscripts"
+    cp -pR $PG_PGHOME_OSX/lib/libxml2* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/ || _die "Failed to copy libxml2 in instscripts"
+    cp -pR $PG_PGHOME_OSX/bin/psql $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/ || _die "Failed to copy psql in instscripts"
 
     # Change the referenced libraries
     OLD_DLL_LIST=\`otool -L \$PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/psql | grep @loader_path/../lib |  grep -v ":" | awk '{ print \$1 }' \`
@@ -208,7 +208,7 @@ _postprocess_pgbouncer_osx() {
     tar -jxvf pgbouncer-staging.tar.bz2 || _die "Failed to extract the pgbouncer staging archive"
     rm -f pgbouncer-staging.tar.bz2
 
-    source $WD/Slony/staging/osx/versions-osx.sh
+    source $WD/pgbouncer/staging/osx/versions-osx.sh
     PG_BUILD_PGBOUNCER=$(expr $PG_BUILD_PGBOUNCER + $SKIPBUILD)
 
     # If build passed empty this variable
