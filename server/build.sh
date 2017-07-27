@@ -267,6 +267,74 @@ _build_server() {
     fi
 }
 
+_prepare_server_xml() {
+    PLATFORM=$1
+    if [ ! -z $PLATFORM ]; then
+         PLATFORM_SUFFIX="-$PLATFORM"
+    else
+        echo "PLATFORM variable not defined"
+         PLATFORM_SUFFIX=""
+    fi
+
+    for file in {installer,pgserver,pgadmin,stackbuilder,commandlinetools}
+    do
+        filename=${file}${PLATFORM_SUFFIX}.xml
+        if [ -f $filename ]; then
+           rm -f $filename
+        fi
+
+        if [ ! -z $PLATFORM ]; then
+            cp ${file}.xml $filename || _die "Failed to copy the installer project file $filename"
+            _replace @@PLATFORM@@ "$PLATFORM" $filename || _die "Failed to replace PLATFORM in $filename"
+        else
+            cp ${file}.xml.in $filename || _die "Failed to copy the installer project file $filename"
+        fi
+
+        WIN64MODE="0"
+        SERVICESUFFIX=""
+
+        case $PLATFORM in
+            osx)
+                ;;
+
+            linux | linux-x64)
+                _replace PG_VERSION_STR "$PG_VERSION_STR" $filename || _die "Failed to replace PG_VERSION_STR in $filename"
+                ;;
+
+            windows | windows-x64)
+                if [[ "$PLATFORM" =~ "-x64" ]]; then
+                    WIN64MODE="1"
+                    SERVICESUFFIX="-x64"
+                fi
+                _replace @@WINDIR@@ $PLATFORM $filename || _die "Failed to replace WINDIR in $filename"
+                ;;
+
+            *)  #installer.xml which is in server/build.sh
+                # Get the catalog version number
+                pg_catlog_version_file="$WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/include/catalog/catversion.h"
+                PG_CATALOG_VERSION=`cat $pg_catlog_version_file |grep "#define CATALOG_VERSION_NO" | awk '{print $3}'`
+                pg_control_file="$WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/include/catalog/pg_control.h"
+                PG_CONTROL_VERSION=`cat $pg_control_file |grep "#define PG_CONTROL_VERSION" | awk '{print $3}'`
+                _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION $filename || _die "Failed to set major version in $filename"
+                _replace PG_MINOR_VERSION $PG_MINOR_VERSION $filename || _die "Failed to set minor version in $filename"
+                _replace PG_PACKAGE_VERSION $PG_PACKAGE_VERSION $filename || _die "Failed to set package version in $filename"
+                _replace PG_STAGING_DIR $WD/server/staging $filename || _die "Failed to set staging directory in $filename"
+                _replace PG_CATALOG_VERSION $PG_CATALOG_VERSION $filename || _die "Failed to set catalog version number in $filename"
+                _replace PG_CONTROL_VERSION $PG_CONTROL_VERSION $filename || _die "Failed to set catalog version number in $filename"
+                _replace PERL_PACKAGE_VERSION $PG_VERSION_PERL  $filename || _die "Failed to set PERL version in $filename"
+                _replace PYTHON_PACKAGE_VERSION $PG_VERSION_PYTHON $filename || _die "Failed to set PYTHON version in $filename"
+                _replace TCL_PACKAGE_VERSION $PG_VERSION_TCL $filename || _die "Failed to set TCL version in $filename"
+                ;;
+        esac
+
+        PG_DATETIME_SETTING="64-bit integers"
+        _replace @@PG_DATETIME_SETTING@@ "$PG_DATETIME_SETTING" $filename || _die "Failed to replace DATETIME in the $filename"
+        _replace @@WIN64MODE@@ "$WIN64MODE" $filename || _die "Failed to replace WIN64MODE in $filename"
+        _replace @@SERVICE_SUFFIX@@ "$SERVICESUFFIX" $filename || _die "Failed to replace SERVICE_SUFFIX in $filename"
+
+    done
+}
+
 ################################################################################
 # Postprocess server
 ################################################################################
@@ -282,24 +350,7 @@ _postprocess_server() {
     PG_CONTROL_VERSION=`cat source/postgresql-$PG_TARBALL_POSTGRESQL/src/include/catalog/pg_control.h |grep "#define PG_CONTROL_VERSION" | awk '{print $3}'`
 
     # Prepare the installer XML file
-    for file in {installer,pgserver,pgadmin,stackbuilder,commandlinetools}
-    do
-        filename=${file}.xml
-        if [ -f $filename ]; then
-           rm -f $filename
-        fi
-
-        cp ${filename}.in  $filename || _die "Failed to copy the installer project file (server/$filename)"
-        _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION $filename || _die "Failed to set the major version in server/$filename"
-        _replace PG_MINOR_VERSION $PG_MINOR_VERSION $filename || _die "Failed to set the minor version in server/$filename"
-        _replace PG_PACKAGE_VERSION $PG_PACKAGE_VERSION $filename || _die "Failed to set the package version in server/$filename"
-        _replace PG_STAGING_DIR $WD/server/staging $filename || _die "Failed to set the staging directory in server/$filename"
-        _replace PG_CATALOG_VERSION $PG_CATALOG_VERSION $filename || _die "Failed to set the catalog version number in server/$filename"
-        _replace PG_CONTROL_VERSION $PG_CONTROL_VERSION $filename || _die "Failed to set the catalog version number in server/$filename"
-        _replace PERL_PACKAGE_VERSION $PG_VERSION_PERL $filename || _die "Failed to set the PERL version in server/$filename"
-        _replace PYTHON_PACKAGE_VERSION $PG_VERSION_PYTHON $filename || _die "Failed to set the PYTHON version in server/$filename"
-        _replace TCL_PACKAGE_VERSION $PG_VERSION_TCL $filename || _die "Failed to set the TCL version in server/$filename"
-   done
+    _prepare_server_xml
    
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
@@ -349,3 +400,4 @@ _postprocess_server() {
         _postprocess_server_solaris_sparc 
     fi
 }
+

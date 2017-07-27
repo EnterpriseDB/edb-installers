@@ -773,24 +773,8 @@ _postprocess_server_linux_x64() {
     cp scripts/linux/runstackbuilder.sh $SB_STAGING_X64/scripts/runstackbuilder.sh || _die "Failed to copy the runstackbuilder script (scripts/linux/runstackbuilder.sh)"
     chmod ugo+x $SB_STAGING_X64/scripts/runstackbuilder.sh
 
-    PG_DATETIME_SETTING_LINUX_X64="64-bit integers"
-
-    for file in {installer,pgserver,pgadmin,stackbuilder,commandlinetools}
-    do
-        filename=${file}-linux-x64.xml
-        if [ -f $filename ]; then
-           rm -f $filename
-        fi
-
-        cp ${file}.xml $filename || _die "Failed to copy the installer project file (server/$filename)"
-
-        _replace @@PG_DATETIME_SETTING_LINUX_X64@@ "$PG_DATETIME_SETTING_LINUX_X64" $filename || _die "Failed to replace the date-time setting in the $filename"
-        _replace @@WIN64MODE@@ "0" $filename || _die "Failed to replace the WIN64MODE setting in the $filename"
-        _replace @@SERVICE_SUFFIX@@ "" $filename || _die "Failed to replace the WIN64MODE setting in the $filename"
-        _replace PG_VERSION_STR "$PG_VERSION_STR" $filename
-        _replace @@PLATFORM@@ "linux-x64" $filename
-   done
-
+    # Prepare the installer XML file
+    _prepare_server_xml "linux-x64"
 
     # Copy plLanguages.config
     mkdir -p $PGSERVER_STAGING_X64/etc/sysconfig || _die "Failed to create etc/sysconfig directory"

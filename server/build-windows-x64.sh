@@ -760,25 +760,9 @@ _postprocess_server_windows_x64() {
     # Copy the launch scripts
     cp scripts/windows/serverctl.vbs $PGSERVER_STAGING_WINDOWS_X64/scripts/serverctl.vbs || _die "Failed to copy the serverctl script (scripts/windows/serverctl.vbs)"
     cp scripts/windows/runpsql.bat $PGSERVER_STAGING_WINDOWS_X64/scripts/runpsql.bat || _die "Failed to copy the runpsql script (scripts/windows/runpsql.bat)"
-    
-    PG_DATETIME_SETTING_WINDOWS="64-bit integers"
 
-    for file in {installer,pgserver,pgadmin,stackbuilder,commandlinetools}
-    do
-        filename=${file}-windows-x64.xml
-        if [ -f $filename ]; then
-           rm -f $filename
-        fi
-
-        cp ${file}.xml $filename || _die "Failed to copy the installer project file (server/$filename)"
-
-        _replace @@PG_DATETIME_SETTING_WINDOWS@@ "$PG_DATETIME_SETTING_WINDOWS" $filename || _die "Failed to replace the date-time setting in the $filename"
-        _replace @@WIN64MODE@@ "1" $filename || _die "Failed to replace the WIN64MODE setting in the $filename"
-        _replace @@WINDIR@@ windows-x64 ${filename} || _die "Failed to replace the WINDIR setting in the ${filename}"
-        _replace @@SERVICE_SUFFIX@@ "-x64" $filename || _die "Failed to replace the SERVICE_SUFFIX setting in the ${filename}"
-        _replace @@PLATFORM@@ "windows-x64" $filename
-    done
-
+    # Prepare the installer XML file
+    _prepare_server_xml "windows-x64"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-windows-x64.xml windows || _die "Failed to build the installer"
