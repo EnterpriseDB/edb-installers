@@ -180,7 +180,7 @@ _postprocess_ApacheHTTPD_linux() {
     source $WD/ApacheHTTPD/staging/linux/versions-linux.sh
     PG_BUILD_APACHEHTTPD=$(expr $PG_BUILD_APACHEHTTPD + $SKIPBUILD)
 
-    PG_STAGING=$PG_PATH_LINUX/ApacheHTTPD/staging/linux
+    PG_STAGING=$PG_PATH_LINUX/ApacheHTTPD/staging/linux.build
 
     #Configure the files in apache
     filelist=`grep -rslI "$PG_STAGING" "$WD/ApacheHTTPD/staging/linux" | grep -v Binary`

@@ -173,7 +173,7 @@ _postprocess_ApacheHTTPD_linux_x64() {
     source $WD/ApacheHTTPD/staging/linux-x64/versions-linux-x64.sh
     PG_BUILD_APACHEHTTPD=$(expr $PG_BUILD_APACHEHTTPD + $SKIPBUILD)
 
-    PG_STAGING=$PG_PATH_LINUX_X64/ApacheHTTPD/staging/linux-x64
+    PG_STAGING=$PG_PATH_LINUX_X64/ApacheHTTPD/staging/linux-x64.build
 
     #Configure the files in apache and httpd
     filelist=`grep -rslI "$PG_STAGING" "$WD/ApacheHTTPD/staging/linux-x64" | grep -v Binary`
