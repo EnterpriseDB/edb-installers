@@ -10,7 +10,7 @@ then
     exit 127
 fi
 
-for shell in xterm konsole gnome-terminal
+for shell in xterm konsole gnome-terminal x-terminal-emulator
 do
     which $shell > /dev/null 2>&1
     if [ $? -eq 0 ];
