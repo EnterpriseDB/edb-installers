@@ -204,6 +204,7 @@ _postprocess_ApacheHTTPD_windows() {
 
     # Configure the httpd.conf file
     _replace "$TEMP_PATH/apache.staging" "@@INSTALL_DIR@@" "$WD/ApacheHTTPD/staging/windows/apache/conf/httpd.conf"
+    _replace "@@INSTALL_DIR@@.build" "@@INSTALL_DIR@@" "$WD/ApacheHTTPD/staging/windows/apache/conf/httpd.conf"
     _replace "Listen 8080" "Listen 0.0.0.0:@@PORT@@" "$WD/ApacheHTTPD/staging/windows/apache/conf/httpd.conf"
     _replace "htdocs" "www" "$WD/ApacheHTTPD/staging/windows/apache/conf/httpd.conf"
     _replace "#ServerName www.example.com:8080" "ServerName localhost:@@PORT@@" "$WD/ApacheHTTPD/staging/windows/apache/conf/httpd.conf"
