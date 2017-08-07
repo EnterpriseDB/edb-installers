@@ -199,6 +199,7 @@ _postprocess_PEM-HTTPD_windows() {
 
     # Configure the httpd.conf file
     _replace "$TEMP_PATH/apache.staging" "@@INSTALL_DIR@@" "$WD/PEM-HTTPD/staging/windows/apache/conf/httpd.conf"
+    _replace "@@INSTALL_DIR@@.build" "@@INSTALL_DIR@@" "$WD/PEM-HTTPD/staging/windows/apache/conf/httpd.conf"
     _replace "Listen 8080" "Listen 0.0.0.0:@@PORT@@" "$WD/PEM-HTTPD/staging/windows/apache/conf/httpd.conf"
     _replace "htdocs" "www" "$WD/PEM-HTTPD/staging/windows/apache/conf/httpd.conf"
     _replace "#ServerName www.example.com:8080" "ServerName localhost:@@PORT@@" "$WD/PEM-HTTPD/staging/windows/apache/conf/httpd.conf"
@@ -215,7 +216,6 @@ _postprocess_PEM-HTTPD_windows() {
 
     #Configure the files in apache and httpd
     filelist=`grep -rslI "$TEMP_PATH" "$WD/PEM-HTTPD/staging/windows/apache/conf" | grep -v Binary`
-
     cd $WD/PEM-HTTPD/staging/windows
 
     pushd $WD/PEM-HTTPD/staging/windows
