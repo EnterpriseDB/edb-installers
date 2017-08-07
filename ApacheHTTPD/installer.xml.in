@@ -124,6 +124,15 @@ EOF
             <compareText text="${platform_name}" value="linux"/>
         </ruleList>
     </setInstallerVariable>
+    <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0">
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
    </preBuildActionList>
   <preShowHelpActionList>
     <!-- LIN & WIN: Set the default installation directory -->
@@ -137,6 +146,18 @@ EOF
           <text>${platform_name}</text>
           <value>osx</value>
         </compareText>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="booleanAllowedTag" value="&#10;                                Allowed: yes no"/>
+    <setInstallerVariable name="project.parameter(extract_mode).value" value="${project.parameter(extract_mode).value}${booleanAllowedTag}"/>
+    <setInstallerVariable name="project.parameter(install_runtimes).value" value="${project.parameter(install_runtimes).value}${booleanAllowedTag}">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="project.parameter(enable_aclcheck).value" value="${project.parameter(enable_aclcheck).value}${booleanAllowedTag}">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
     </setInstallerVariable>
     <!-- MAC : Set the default installation directory -->
@@ -157,7 +178,7 @@ EOF
   <!-- Initialisation actions -->
   <initializationActionList>
       <setInstallerVariable name="project.parameter(lppython_loc).ask" value="0" />
-
+      <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
       <setInstallerVariable name="productVersion" persist="1" value="PG_VERSION_APACHEHTTPD" />	
       <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
       <throwError>
@@ -711,23 +732,26 @@ EOF
             <programArguments>/q /norestart</programArguments>
             <workingDirectory>${system_temp_directory}</workingDirectory>
             <showMessageOnError>0</showMessageOnError>
-            <abortOnError>0</abortOnError>	
+            <abortOnError>0</abortOnError>
+           <!-- <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage> -->
+          <ruleList>
+            <isTrue value="${install_runtimes}"/>
+          </ruleList>
          </runProgram>
-         <throwError>
-            <text>${msg(error.installing.runtimes)}</text>
-            <ruleList>
-               <compareText>
-                  <logic>does_not_equal</logic>
-                  <text>3010</text>
-                  <value>${program_exit_code}</value>
-               </compareText>
-               <compareText>
-                  <logic>does_not_equal</logic>
-                  <text>0</text>
-                  <value>${program_exit_code}</value>
-               </compareText>
-            </ruleList>
-         </throwError>	
+         <throwError text="${msg(error.installing.runtimes)}">
+	   <ruleList>
+	     <compareText logic="equals" text="${program_exit_code}" value="127"/>
+	   </ruleList>
+	 </throwError>
+	 <actionGroup>
+	   <actionList>
+	     <logMessage text="${msg(warning.reboot.machine)}"/>
+	     <setInstallerVariable name="rebootRequired" value="1"/>
+	   </actionList>
+	  <ruleList>
+	    <compareText logic="equals" text="${program_exit_code}" value="3010"/>
+	  </ruleList>
+        </actionGroup>
       </actionList>
       <ruleList>
          <compareText>
@@ -2176,6 +2200,24 @@ include conf\addons\*.conf
     <stringParameter name="pemversion" cliOptionName="pemversion" ask="0" cliOptionShow="0"/>
     <stringParameter name="lppython_loc" cliOptionName="lppython" default="" ask="1" cliOptionShow="1"
       description="LanguagePack Python installation path"/>
+    <booleanParameter>
+      <name>install_runtimes</name>
+      <description>${msg(install.runtimes.description)}</description>
+      <explanation/>
+      <value/>
+      <default>yes</default>
+      <ask>yes</ask>
+      <cliOptionName>install_runtimes</cliOptionName>
+      <cliOptionShow>1</cliOptionShow>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </booleanParameter>
     <parameterGroup>
       <!-- Apache Port -->
       <name>apacheport</name>

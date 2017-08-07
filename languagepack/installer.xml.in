@@ -145,6 +145,15 @@ EOF
         <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
       </ruleList>
     </setInstallerVariable>
+    <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0">
+      <ruleList>
+        <compareText>
+          <logic>does_not_equal</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+      </ruleList>
+    </setInstallerVariable>
     <!-- Change installer file name for Windows-x64 -->
     <setInstallerVariable name="project.installerFilename" value="edb_${product_shortname}-${product_version}-${platform_name}-${windowsArchitecture}.${platform_exec_suffix}">
       <ruleList>
@@ -163,6 +172,18 @@ EOF
         <compareText logic="contains" text="${platform_name}" value="linux"/>
         <compareText logic="contains" text="${platform_name}" value="solaris"/>
         <compareText logic="contains" text="${platform_name}" value="hpux"/>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="booleanAllowedTag" value="&#10;                                Allowed: yes no"/>
+    <setInstallerVariable name="project.parameter(extract_mode).value" value="${project.parameter(extract_mode).value}${booleanAllowedTag}"/>
+    <setInstallerVariable name="project.parameter(install_runtimes).value" value="${project.parameter(install_runtimes).value}${booleanAllowedTag}">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </setInstallerVariable>
+    <setInstallerVariable name="project.parameter(install_runtimes).value" value="${project.parameter(install_runtimes).value}${booleanAllowedTag}">
+      <ruleList>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
     </setInstallerVariable>
     <!-- WIN : Set the default installation directory for win64 -->
@@ -203,6 +224,7 @@ EOF
   <initializationActionList>
     <setInstallerVariable name="project.parameter(extract_mode).ask" value="0"/>
     <setInstallerVariable name="installer_registry_prefix" value="edb" persist="1"/>
+    <setInstallerVariable name="project.parameter(install_runtimes).ask" value="0"/>
     <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
     <throwError>
       <customErrorMessage>${msg(platform.not.match)}</customErrorMessage>
@@ -473,7 +495,6 @@ EOF
           <destination>${system_temp_directory}\languagepack_${random_number}\vcredist_x86.exe</destination>
           <folder>programfileswindows</folder>
           <origin>installer/languagepack/vcredist_x86.exe</origin>
-          <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
 	  <ruleList>
             <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
           </ruleList>
@@ -484,24 +505,16 @@ EOF
           <destination>${system_temp_directory}\languagepack_${random_number}\vcredist_x64.exe</destination>
           <folder>programfileswindows</folder>
           <origin>installer/languagepack/vcredist_x64.exe</origin>
-          <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
           <ruleList>
             <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
           </ruleList>
         </unpackFile>
 	
-        <unpackFile>
-          <component>default</component>
-          <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
-          <destination>${system_temp_directory}/languagepack_${random_number}/installruntimes.vbs</destination>
-          <folder>programfileswindows</folder>
-          <origin>installer/languagepack/installruntimes.vbs</origin>
-        </unpackFile>
         <runProgram>
-          <program>cscript</program>
-          <programArguments>//NoLogo "${system_temp_directory}\languagepack_${random_number}\installruntimes.vbs" "${system_temp_directory}\languagepack_${random_number}\vcredist_x86.exe"</programArguments>
-          <abortOnError>1</abortOnError>
-          <showMessageOnError>1</showMessageOnError>
+          <program>${system_temp_directory}\languagepack_${random_number}\vcredist_x86.exe</program>
+          <programArguments>/q /norestart</programArguments>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
           <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
 	  <ruleList>
             <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
@@ -509,18 +522,16 @@ EOF
         </runProgram>
 	
         <runProgram>
-          <program>cscript</program>
-          <programArguments>//NoLogo "${system_temp_directory}\languagepack_${random_number}\installruntimes.vbs" "${system_temp_directory}\languagepack_${random_number}\vcredist_x64.exe"</programArguments>
-          <abortOnError>1</abortOnError>
-          <showMessageOnError>1</showMessageOnError>
-          <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
+          <program>${system_temp_directory}\languagepack_${random_number}\vcredist_x64.exe</program>
+          <programArguments>/q  /norestart</programArguments>
+          <abortOnError>0</abortOnError>
+          <showMessageOnError>0</showMessageOnError>
           <ruleList>
             <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
           </ruleList>
         </runProgram>
-	
 	<throwError>
-          <text>${msg(script.command.line.error)}</text>
+          <text>${msg(error.installing.runtimes)}</text>
           <ruleList>
             <compareText>
               <logic>equals</logic>
@@ -529,6 +540,16 @@ EOF
             </compareText>
           </ruleList>
         </throwError>
+       <actionGroup>
+       <actionList>
+         <logMessage text="${msg(warning.reboot.machine)}"/>
+         <setInstallerVariable name="rebootRequired" value="1"/>
+       </actionList>
+       <ruleList>
+         <compareText logic="equals" text="${program_exit_code}" value="3010"/>
+       </ruleList>
+       </actionGroup>
+
       </actionList>
       <ruleList>
         <compareText>
@@ -881,7 +902,25 @@ EOF
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
-    </stringParameter>    
+    </stringParameter>
+    <booleanParameter>
+      <name>install_runtimes</name>
+      <description>${msg(install.runtimes.description)}</description>
+      <explanation/>
+      <value/>
+      <default>yes</default>
+      <ask>yes</ask>
+      <cliOptionName>install_runtimes</cliOptionName>
+      <cliOptionShow>1</cliOptionShow>
+      <ruleList>
+        <compareText>
+          <logic>equals</logic>
+          <text>${platform_name}</text>
+          <value>windows</value>
+        </compareText>
+        <isFalse value="${extract_mode}"/>
+      </ruleList>
+    </booleanParameter>
     <directoryParameter>
       <name>installdir</name>
       <description>Installer.Parameter.installdir.description</description>

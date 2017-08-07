@@ -190,12 +190,21 @@
     </setInstallerVariable>	
 
     <runProgram program="${system_temp_directory}\UserValidation\${vcredist_exe}"
-               programArguments="/q" workingDirectory="${system_temp_directory}\UserValidation"
+               programArguments="/q /norestart" workingDirectory="${system_temp_directory}\UserValidation"
                abortOnError="0" showMessageOnError="0">
 	<ruleList>
 	    <compareText text="${platform_name}" logic="equals" value="windows" />
 	</ruleList>
     </runProgram>
+    <actionGroup>
+       <actionList>
+         <logMessage text="${msg(warning.reboot.machine)}"/>
+         <setInstallerVariable name="rebootRequired" value="1"/>
+       </actionList>
+       <ruleList>
+         <compareText logic="equals" text="${program_exit_code}" value="3010"/>
+       </ruleList>
+       </actionGroup>
  
     <actionGroup>
       <actionList>
