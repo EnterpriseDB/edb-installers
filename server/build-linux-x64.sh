@@ -328,6 +328,9 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     fi
     SOURCEDIR=$PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64
     BUILDROOT=$PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/linux-build
+    # temp hack to use psycopg2 v2.7.1 as the latest version does not load on Linux and
+    # throws "ELF 64-bit LSB shared object, x86-64, version 1" error
+    sed -i 's/psycopg2>=2.7.1/psycopg2==2.7.1/g' \$SOURCEDIR/\requirements.txt
     test -d \$BUILDROOT || mkdir \$BUILDROOT
     cd \$BUILDROOT
     mkdir -p venv/lib
