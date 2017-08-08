@@ -327,10 +327,12 @@ _prepare_server_xml() {
                 ;;
         esac
 
-        PG_DATETIME_SETTING="64-bit integers"
-        _replace @@PG_DATETIME_SETTING@@ "$PG_DATETIME_SETTING" $filename || _die "Failed to replace DATETIME in the $filename"
-        _replace @@WIN64MODE@@ "$WIN64MODE" $filename || _die "Failed to replace WIN64MODE in $filename"
-        _replace @@SERVICE_SUFFIX@@ "$SERVICESUFFIX" $filename || _die "Failed to replace SERVICE_SUFFIX in $filename"
+        if [ ! -z $PLATFORM ]; then
+            PG_DATETIME_SETTING="64-bit integers"
+            _replace @@PG_DATETIME_SETTING@@ "$PG_DATETIME_SETTING" $filename || _die "Failed to replace DATETIME in the $filename"
+            _replace @@WIN64MODE@@ "$WIN64MODE" $filename || _die "Failed to replace WIN64MODE in $filename"
+            _replace @@SERVICE_SUFFIX@@ "$SERVICESUFFIX" $filename || _die "Failed to replace SERVICE_SUFFIX in $filename"
+        fi
 
     done
 }
