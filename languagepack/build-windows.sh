@@ -48,6 +48,7 @@ _prep_languagepack_windows() {
         sed -i "s/^INST_DRV\t= c:/INST_DRV\t= $PG_LANGUAGEPACK_INSTALL_DIR_WIN/g" Makefile
         sed -i 's/^INST_TOP\t= $(INST_DRV)\\perl/INST_TOP\t= $(INST_DRV)\\Perl-5.20/g' Makefile
         sed -i 's/^CCTYPE\t\t= MSVC60/CCTYPE\t\t= MSVC120/g' Makefile
+        sed -i 's/^#WIN64\t\t= undef/WIN64\t\t= undef/g' Makefile
         sed -i 's/^BUILDOPT\t= $(BUILDOPT) -DUSE_SITECUSTOMIZE/BUILDOPT\t= $(BUILDOPT) -D_USE_32BIT_TIME_T/g' Makefile
         sed -i '/^DEFINES\t\t= $(DEFINES) -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE/s/^/#/g' Makefile
 
