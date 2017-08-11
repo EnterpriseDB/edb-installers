@@ -2739,15 +2739,52 @@
         </deleteWindowsService>
 
         <!-- WINDOWS: Unregister the event message DLL -->
-        <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
-        </registryDelete>
-        <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
-        </registryDelete>
-        <registryDelete>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
-        </registryDelete>
+        <actionGroup>
+            <actionList>
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
+                </registryDelete>
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
+                </registryDelete>
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Base Directory</name>
+                </registryDelete>
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Branding</name>
+                </registryDelete>
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Data Directory</name>
+                </registryDelete>
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Service Account</name>
+                </registryDelete>
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Service ID</name>
+                </registryDelete>
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Shortcuts</name>
+                </registryDelete>
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Super User</name>
+                </registryDelete>
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Version</name>
+                </registryDelete>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
 
         <!-- Removing the environment variable script -->
         <deleteFile>
@@ -2774,7 +2811,15 @@
                 <compareText text="${platform_name}" logic="contains" value="solaris" />
             </ruleList>
         </deleteFile>
-
+        <createTimeStamp format="%Y-%m-%d(YYYY-MM-DD) - %H:%M:%S(HH:MM:SS)" variable="timestamp"/>
+        <addTextToFile file="${installdir}${slash}installation_summary.log" insertAt="end">
+            <text>
+===== Server uninstallation completed at: ${timestamp} =====
+            </text>
+            <ruleList>
+                <fileTest path="${installdir}${slash}installation_summary.log" condition="exists" />
+            </ruleList>
+        </addTextToFile>
     </preUninstallationActionList>
 
     <!-- Postinstallation actions -->
@@ -3752,25 +3797,6 @@
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Branding</name>
                     <value>${branding}</value>
-                </registrySet>
-
-                <!-- Disable StackBuilder -->
-                <logMessage>
-                    <text>Write the 'whether stack-builder is disabled or not' to the ini file...</text>
-                </logMessage>
-                <iniFileSet>
-                    <file>${PostgreSqlIni}</file>
-                    <section>PostgreSQL/${product_version}</section>
-                    <key>DisableStackBuilder</key>
-                    <value>${disableStackBuilder}</value>
-                    <ruleList>
-                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </iniFileSet>
-                <registrySet>
-                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
-                    <name>DisableStackBuilder</name>
-                    <value>${disableStackBuilder}</value>
                 </registrySet>
 
                 <!-- The Windows product code, used to link to the installation -->

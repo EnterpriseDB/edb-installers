@@ -286,5 +286,33 @@
                 </compareText>
             </ruleList>
         </deleteFile>
+
+        <iniFileSet>
+            <file>${PostgreSqlIni}</file>
+            <key>CLT_Version</key>
+            <section>PostgreSQL/${product_version}</section>
+            <value></value>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <fileTest path="${PostgreSqlIni}"/>
+            </ruleList>
+        </iniFileSet>
+        <registryDelete>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+            <name>CLT_Version</name>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </registryDelete>
+
+        <createTimeStamp format="%Y-%m-%d(YYYY-MM-DD) - %H:%M:%S(HH:MM:SS)" variable="timestamp"/>
+        <addTextToFile file="${installdir}${slash}installation_summary.log" insertAt="end">
+            <text>
+===== Command Line Tools uninstallation completed at: ${timestamp} =====
+            </text>
+            <ruleList>
+                <fileTest path="${installdir}${slash}installation_summary.log" condition="exists" />
+            </ruleList>
+        </addTextToFile>
     </preUninstallationActionList>
 </component>
