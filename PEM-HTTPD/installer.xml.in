@@ -374,14 +374,8 @@ EOF
     <!-- Linux: Check for the existence of ApacheHTTPD -->
     <actionGroup>
       <actionList>
-        <iniFileGet file="/etc/postgres-reg.ini" variable="apachehttpd_exist"
+        <iniFileGet file="/etc/postgres-reg.ini" variable="apachehttpd_installdir"
          section="ApacheHTTPD" key="InstallationDirectory"/>
-        <throwError>
-          <text>${msg(error.apachehttpd.exist)}</text>
-          <ruleList>
-            <compareText logic="does_not_equal" text="${apachehttpd_exist}" value=""/>
-          </ruleList>
-        </throwError>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -390,20 +384,65 @@ EOF
     <!-- Win: Check for the existence of ApacheHTTPD -->
     <actionGroup>
       <actionList>
-        <registryGet name="Location" variable="apachehttpd_exist"
+        <registryGet name="Location" variable="apachehttpd_installdir"
           key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\ApacheHTTPD"/>
-        <throwError>
-          <text>${msg(error.apachehttpd.exist)}</text>
+        </actionList>
+        <ruleList>
+          <compareText logic="equals" text="${platform_name}" value="windows"/>
+        </ruleList>
+    </actionGroup>
+    <actionGroup>
+      <actionList>
+        <setInstallerVariable name="apachehttpd_uninstall" value="${apachehttpd_installdir}/uninstall-apachehttpd"/>
+        <setInstallerVariable name="apachehttpd_uninstall" value="${apachehttpd_installdir}\uninstall-apachehttpd.exe">
+        <ruleList>
+          <compareText logic="equals" text="${platform_name}" value="windows"/>
+        </ruleList>
+        </setInstallerVariable>
+
+        <actionGroup>
+          <actionList>
+            <consoleWrite text="&#xA;Info: ${msg(upgrade.existing.apachehttpd.installation.description)}&#xA;"/>
+            <logMessage text="&#xA;Info: ${msg(upgrade.existing.apachehttpd.installation.description)}&#xA;"/>
+          </actionList>
           <ruleList>
-            <compareText logic="does_not_equal" text="${apachehttpd_exist}" value=""/>
+            <!-- following check means mode equals unattended -->
+            <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
           </ruleList>
-        </throwError>
+        </actionGroup>
+
+        <actionGroup>
+          <actionList>
+            <showQuestion>
+              <default>yes</default>
+              <text>${msg(uninstall.apachehttpd.warning.message)}</text>
+              <variable>response</variable>
+            </showQuestion>
+            <!-- Exit the installation if the user wants to quit -->
+            <exit exitCode="201">
+              <ruleList>
+                <compareText logic="equals" value="no" text="${response}"/>
+              </ruleList>
+            </exit>
+          </actionList>
+            <ruleList>
+              <compareText text="${installer_interactivity}" logic="equals" value="normal"/>
+            </ruleList>
+        </actionGroup>
+
+        <runProgram>
+          <program>${apachehttpd_uninstall}</program>
+	  <programArguments>--mode unattended</programArguments>
+	  <showMessageOnError>1</showMessageOnError>
+          <abortOnError>1</abortOnError>
+          <progressText>${uninstall.apachehttpd.message}</progressText>
+        </runProgram>
       </actionList>
       <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="windows"/>
+        <compareText logic="does_not_equal" text="${apachehttpd_installdir}" value=""/>
+        <isFalse value="${extract_mode}"/>
       </ruleList>
     </actionGroup>
-
 
     <!-- LIN: check for the LanguagePack installation and set the python path
          case: when PEM is installed and LP python is not provided on command line -->

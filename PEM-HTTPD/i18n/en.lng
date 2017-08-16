@@ -58,4 +58,8 @@ languagepack.not.installed=LanguagePack Python not found on the system. mod_wsgi
 
 pem.not.installed=PEM not installed on your system.
 
-error.apachehttpd.exist=An existing installation of EnterpriseDB ApacheHTTPD is found on the system. Please uninstall it before installing PEM-HTTPD.
+uninstall.apachehttpd.warning.message=An existing installation of EnterpriseDB ApacheHTTPD is found on the system. Please uninstall it before installing PEM-HTTPD.\n\nDo you want to uninstall EnterpriseDB ApacheHTTPD and install PEM-HTTPD ?
+
+upgrade.existing.apachehttpd.installation.description=An existing installation of EnterpriseDB ApacheHTTPD is found on the system. EnterpriseDB ApacheHTTPD will be uninstalled and PEM-HTTPD will get installed automatically.
+
+uninstall.apachehttpd.message=Uninstallating EnterpriseDB ApacheHTTPD
