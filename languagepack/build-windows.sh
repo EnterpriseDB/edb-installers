@@ -263,7 +263,6 @@ _postprocess_languagepack_windows() {
     popd
 
     mkdir -p $WD/languagepack/staging/$ARCH/installer/languagepack || _die "Failed to create a directory for the install scripts"
-    cp $WD/languagepack/scripts/$ARCH/installruntimes.vbs $WD/languagepack/staging/$ARCH/installer/languagepack/installruntimes.vbs || _die "Failed to copy the installruntimes script ($WD/scripts/windows/installruntimes.vbs)"
 
     if [ "$ARCH" = "windows-x64" ];
     then

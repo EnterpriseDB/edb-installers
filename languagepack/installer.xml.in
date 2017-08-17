@@ -181,11 +181,6 @@ EOF
         <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
     </setInstallerVariable>
-    <setInstallerVariable name="project.parameter(install_runtimes).value" value="${project.parameter(install_runtimes).value}${booleanAllowedTag}">
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="windows"/>
-      </ruleList>
-    </setInstallerVariable>
     <!-- WIN : Set the default installation directory for win64 -->
     <setInstallerVariable>
       <name>default_installdir</name>
@@ -541,13 +536,13 @@ EOF
           </ruleList>
         </throwError>
        <actionGroup>
-       <actionList>
-         <logMessage text="${msg(warning.reboot.machine)}"/>
-         <setInstallerVariable name="rebootRequired" value="1"/>
-       </actionList>
-       <ruleList>
-         <compareText logic="equals" text="${program_exit_code}" value="3010"/>
-       </ruleList>
+         <actionList>
+           <logMessage text="${msg(warning.reboot.machine)}"/>
+           <setInstallerVariable name="rebootRequired" value="1"/>
+         </actionList>
+         <ruleList>
+           <compareText logic="equals" text="${program_exit_code}" value="3010"/>
+         </ruleList>
        </actionGroup>
 
       </actionList>
@@ -558,6 +553,7 @@ EOF
           <value>windows</value>
         </compareText>
         <isFalse value="${extract_mode}"/>
+        <isTrue value="${install_runtimes}"/>
       </ruleList>
     </actionGroup>
   </preInstallationActionList>

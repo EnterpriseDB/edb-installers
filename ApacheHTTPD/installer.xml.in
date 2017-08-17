@@ -155,11 +155,6 @@ EOF
         <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
     </setInstallerVariable>
-    <setInstallerVariable name="project.parameter(enable_aclcheck).value" value="${project.parameter(enable_aclcheck).value}${booleanAllowedTag}">
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="windows"/>
-      </ruleList>
-    </setInstallerVariable>
     <!-- MAC : Set the default installation directory -->
     <setInstallerVariable>
       <name>default_installdir</name>
@@ -734,9 +729,6 @@ EOF
             <showMessageOnError>0</showMessageOnError>
             <abortOnError>0</abortOnError>
            <!-- <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage> -->
-          <ruleList>
-            <isTrue value="${install_runtimes}"/>
-          </ruleList>
          </runProgram>
          <throwError text="${msg(error.installing.runtimes)}">
 	   <ruleList>
@@ -759,6 +751,7 @@ EOF
             <text>${platform_name}</text>
             <value>windows</value>
          </compareText>
+         <isTrue value="${install_runtimes}"/>
       </ruleList>
     </actionGroup>
 
