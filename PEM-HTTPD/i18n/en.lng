@@ -63,3 +63,5 @@ uninstall.apachehttpd.warning.message=An existing installation of EnterpriseDB A
 upgrade.existing.apachehttpd.installation.description=An existing installation of EnterpriseDB ApacheHTTPD is found on the system. EnterpriseDB ApacheHTTPD will be uninstalled and PEM-HTTPD will get installed automatically.
 
 uninstall.apachehttpd.message=Uninstallating EnterpriseDB ApacheHTTPD
+install.runtimes.description=Specifies whether or not install the Microsoft Visual C++ runtimes before the installation proceeds.
+warning.reboot.machine=Please reboot the machine in order to complete the installation.

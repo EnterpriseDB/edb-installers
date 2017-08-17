@@ -22,3 +22,5 @@ error.32bit.installation.exists=A 32 bit installation of ${product_fullname} alr
 error.64bit.installation.exists=A 64 bit installation of ${product_fullname} already exists.\nPlease remove the 64 bit instalation before \nproceeding with the 32 bit install.
 error.installing.runtimes=An error occured executing the Microsoft VC++ runtime installer.
 script.command.line.error=The script was called with an invalid command line
+install.runtimes.description=Specifies whether or not install the Microsoft Visual C++ runtimes before the installation proceeds.
+warning.reboot.machine=Microsoft VC++ runtime installation returned with exit code 3010.\nPlease reboot the machine at the end of installation for the changes to take effect.
