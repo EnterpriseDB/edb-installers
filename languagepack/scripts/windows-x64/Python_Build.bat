@@ -135,7 +135,7 @@ python setup.py install
 
 ECHO Changing Directory to %vPythonInstallDir%\Scripts
 CD %vPythonInstallDir%\Scripts
-SET PATH=%vPythonInstallDir%\Scripts;D:\;%vPgBuildDir%\bin;%PATH%
+SET PATH=%vPythonInstallDir%\Scripts;%vPgBuildDir%\bin;%vPgBuildDir%\lib;%PATH%
 
 REM Sometimes pip is not able to download due to network issues.
 REM Hence we are tryings to hit pip URL for 5 time.

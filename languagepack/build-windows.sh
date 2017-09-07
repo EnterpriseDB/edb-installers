@@ -123,8 +123,8 @@ _prep_languagepack_windows() {
     
     echo "Copying languagepack sources to Windows VM"
     rsync -av languagepack.$ARCH.zip $PG_SSH_WIN:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the languagepack archive to windows VM (languagepack.$ARCH.zip)"
-    scp $WD/../PEM/requirements.txt $PG_SSH_WIN:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy PEM requirements.txt to windows VM (languagepack.$ARCH.zip)"
-	ssh $PG_SSH_WIN "cd $PG_PATH_WIN; cmd /c rd /S /Q languagepack.$ARCH; unzip languagepack.$ARCH.zip" || _die "Couldn't extract languagepack archive on windows VM (languagepack.$ARCH.zip)"
+    scp $WD/../PEM/requirements.txt $PG_SSH_WIN:$PG_CYGWIN_PATH_WINDOWS\\\\requirements.txt || _die "Couldn't copy PEM requirements.txt to windows VM (languagepack.$ARCH.zip)"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN; cmd /c rd /S /Q languagepack.$ARCH; unzip languagepack.$ARCH.zip" || _die "Couldn't extract languagepack archive on windows VM (languagepack.$ARCH.zip)"
 
     echo "END PREP languagepack Windows"
 }
@@ -144,6 +144,7 @@ _build_languagepack_windows() {
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS
        PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\i386"
        CYGWIN_HOME="C:\\\\cygwin32"
+       PG_PATH_PSYCOPG=$PG_BINARY_PATH
     else
        ARCH="windows-x64"
        PG_SSH_WIN=$PG_SSH_WINDOWS_X64
@@ -151,6 +152,7 @@ _build_languagepack_windows() {
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS_X64
        PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\x64"
        CYGWIN_HOME="C:\\\\cygwin64"
+       PG_PATH_PSYCOPG=$PG_BINARY_PATH_X64
     fi
 
     cd $WD/languagepack/scripts/$ARCH
@@ -209,8 +211,8 @@ EOT
         scp liblzma.def $PG_SSH_WIN:$PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6\\\\externals\\\\xz-5.0.5\\\\bin_i486 || _die "Failed to copy liblzma.def to the windows build host"
     fi
 
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PATH_WIN\\\\output C:\\\\edb\\\\languagepack-10\\\\i386\\\\Perl-5.24 $PG_PGBUILD_WIN BUILD"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PATH_WIN\\\\output C:\\\\edb\\\\languagepack-10\\\\i386\\\\Perl-5.24 $PG_PGBUILD_WIN INSTALL"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PATH_PSYCOPG C:\\\\edb\\\\languagepack-10\\\\i386\\\\Perl-5.24 $PG_PGBUILD_WIN BUILD"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.4.6 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PATH_PSYCOPG C:\\\\edb\\\\languagepack-10\\\\i386\\\\Perl-5.24 $PG_PGBUILD_WIN INSTALL"
     ssh $PG_SSH_WIN "sed -i 's/import winrandom/from Crypto.Random.OSRNG import winrandom/' $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.4\\\\Lib\\\\site-packages\\\\Crypto\\\\Random\\\\OSRNG\\\\nt.py"
 
     echo "Removing last successful staging directory ($PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging)"

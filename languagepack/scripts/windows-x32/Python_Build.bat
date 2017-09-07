@@ -132,7 +132,7 @@ python setup.py install
 
 ECHO Changing Directory to %vPythonInstallDir%\Scripts
 CD %vPythonInstallDir%\Scripts
-SET PATH=%vPythonInstallDir%\Scripts;D:\;%vPgBuildDir%\bin;%PATH%
+SET PATH=%vPythonInstallDir%\Scripts;%vPgBuildDir%\bin;%vPgBuildDir%\lib;%PATH%
 
 REM Sometimes pip is not able to download due to network issues.
 REM Hence we are tryings to hit pip URL for 5 time.
@@ -155,8 +155,8 @@ goto ERR_HANDLER
 CD %vPythonInstallDir%\Scripts
 SET LINK="/FORCE:MULTIPLE"
 
-pip install psycopg2==2.6.2 --global-option="build_ext"
-pip install Pillow==3.4.2 --global-option="build_ext" --global-option="--disable-zlib" --global-option="--disable-jpeg"
+REM pip install psycopg2==2.6.2 --global-option="build_ext"
+REM pip install Pillow==3.4.2 --global-option="build_ext" --global-option="--disable-zlib" --global-option="--disable-jpeg"
 
 ECHO pip install -r %vScriptsDir%\..\requirements.txt
 pip install -r %vScriptsDir%\..\requirements.txt
