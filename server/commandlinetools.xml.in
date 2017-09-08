@@ -233,6 +233,44 @@
             <actionList>
                 <actionGroup>
                     <actionList>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>PostgreSQL/${product_version}</section>
+                            <key>pgAdmin_Version</key>
+                            <variable>is_pgadmin_installed</variable>
+                        </iniFileGet>
+                        <iniFileGet>
+                            <file>/etc/postgres-reg.ini</file>
+                            <section>PostgreSQL/${product_version}</section>
+                            <key>DataDirectory</key>
+                            <variable>is_server_installed</variable>
+                        </iniFileGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <fileTest path="/etc/postgres-reg.ini" condition="exists"/>
+                    </ruleList>
+                </actionGroup>
+                <actionGroup>
+                    <actionList>
+                         <registryGet>
+                            <name>pgAdmin_Version</name>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                            <variable>is_pgadmin_installed</variable>
+                        </registryGet>
+                         <registryGet>
+                            <name>DataDirectory</name>
+                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                            <variable>is_server_installed</variable>
+                        </registryGet>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </actionGroup>
+
+                <actionGroup>
+                    <actionList>
                         <consoleWrite text="&#xA; ${msg(commandlinetools.not.selected.server.error)} &#xA;"/>
                         <logMessage text="${msg(commandlinetools.not.selected.server.error)}"/>
                         <exit/>
