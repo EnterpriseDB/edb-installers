@@ -368,7 +368,12 @@ EOF
 	    </ruleList>
 	</setInstallerVariable>
 
-
+        <setInstallerVariableFromRegEx>
+	    <name>PGLatestVersion</name>
+	    <pattern>([0-9][0-9]).?[\w]*$</pattern>
+	    <substitution>\1</substitution>
+	    <text>${PGLatestVersion}</text>
+	</setInstallerVariableFromRegEx>
 	<actionGroup>
 	    <actionList>
 		<setInstallerVariable name="pg_home" value="" />	
