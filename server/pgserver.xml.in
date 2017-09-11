@@ -2826,9 +2826,6 @@
     <postInstallationActionList>
         <!-- WINDOWS :: This files belongs to command line tools, so server should not remove this files -->
         <removeFilesFromUninstaller>
-            <files>${installdir}/scripts/images/pg-psql.ico;${installdir}/scripts/runpsql.bat</files>
-        </removeFilesFromUninstaller>
-        <removeFilesFromUninstaller>
             <files>${installdir}/bin/ssleay32.dll;${installdir}/bin/libeay32.dll;${installdir}/bin/libiconv-2.dll;${installdir}/bin/libintl-8.dll</files>
         </removeFilesFromUninstaller>
 

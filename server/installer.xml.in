@@ -604,6 +604,66 @@ EOF
 
     <!-- Post-uninstall actions -->
     <postUninstallationActionList>
+        <actionGroup>
+              <actionList>
+                  <iniFileGet>
+                      <file>${PostgreSqlIni}</file>
+                      <key>SB_Version</key>
+                      <section>PostgreSQL/${product_version}</section>
+                      <variable>sb_version</variable>
+                  </iniFileGet>
+                  <iniFileGet>
+                      <file>${PostgreSqlIni}</file>
+                      <key>pgAdmin_Version</key>
+                      <section>PostgreSQL/${product_version}</section>
+                      <variable>pgadmin_version</variable>
+                  </iniFileGet>
+                  <iniFileGet>
+                      <file>${PostgreSqlIni}</file>
+                      <key>CLT_Version</key>
+                      <section>PostgreSQL/${product_version}</section>
+                      <variable>clt_version</variable>
+                  </iniFileGet>
+                  <iniFileGet>
+                      <file>${PostgreSqlIni}</file>
+                      <key>DataDirectory</key>
+                      <section>PostgreSQL/${product_version}</section>
+                      <variable>server_data_dir</variable>
+                  </iniFileGet>
+              </actionList>
+              <ruleList>
+                  <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                  <fileTest path="${PostgreSqlIni}" condition="readable"/>
+              </ruleList>
+          </actionGroup>
+          <actionGroup>
+              <actionList>
+                  <registryGet>
+                      <name>SB_Version</name>
+                      <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                      <variable>sb_version</variable>
+                  </registryGet>
+                  <registryGet>
+                      <name>pgAdmin_Version</name>
+                      <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                      <variable>pgadmin_version</variable>
+                  </registryGet>
+                  <registryGet>
+                      <name>CLT_Version</name>
+                      <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                      <variable>clt_version</variable>
+                  </registryGet>
+                  <registryGet>
+                      <name>Data Directory</name>
+                      <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                      <variable>server_data_dir</variable>
+                  </registryGet>
+              </actionList>
+              <ruleList>
+                  <compareText logic="equals" text="${platform_name}" value="windows"/>
+              </ruleList>
+          </actionGroup>
+
         <createTempDir dirPrefix="postgresql_installer"/>
         <!-- Delete the temp scripts directory -->
         <deleteFile>
@@ -642,7 +702,6 @@ EOF
                 <compareText text="${pgadmin_version}" logic="equals" value=""/>
                 <compareText text="${clt_version}" logic="equals" value=""/>
                 <compareText text="${server_data_dir}" logic="equals" value=""/>
-                <fileTest path="${PostgreSqlIni}" condition="exists"/>
             </ruleList>
         </deleteFile>
         <actionGroup>
@@ -856,7 +915,7 @@ EOF
                         <setInstallerVariable name="component(commandlinetools).canBeEdited" value="0"/>
                     </actionList>
                     <ruleList>
-                        <compareText text="${CLT_Version}" logic="does_not_equal" value=""/>
+                        <compareText text="${clt_version}" logic="does_not_equal" value=""/>
                     </ruleList>
                 </actionGroup>
                 <actionGroup>
@@ -865,7 +924,7 @@ EOF
                         <setInstallerVariable name="component(pgAdmin).canBeEdited" value="0"/>
                     </actionList>
                     <ruleList>
-                        <compareText text="${pgAdmin_Version}" logic="does_not_equal" value=""/>
+                        <compareText text="${pgadmin_version}" logic="does_not_equal" value=""/>
                     </ruleList>
                 </actionGroup>
                 <actionGroup>
@@ -874,7 +933,7 @@ EOF
                         <setInstallerVariable name="component(stackbuilder).canBeEdited" value="0"/>
                     </actionList>
                     <ruleList>
-                        <compareText text="${SB_Version}" logic="does_not_equal" value=""/>
+                        <compareText text="${sb_version}" logic="does_not_equal" value=""/>
                     </ruleList>
                 </actionGroup>
             </actionList>
