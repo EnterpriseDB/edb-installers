@@ -59,6 +59,10 @@ _warn() {
 # Remove the icon resources
 cd "$INSTALLDIR/scripts/images"
 "$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 pg-stackbuilder-$VERSION_STR.png
+if [ ! -f pg-psql-$VERSION_STR.png ];
+then
+    "$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 pg-postgresql-$VERSION_STR.png
+fi
 
 # Only remove the directory file if it's branded
 if [ $BRANDED -ne 0 ];

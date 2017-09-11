@@ -89,10 +89,9 @@ fi
 
 # Create the icon resources
 cd "$INSTALLDIR/scripts/images"
-for i in `ls *.png`
-do
-	"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 $i
-done
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 pg-psql-$VERSION_STR.png
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 pg-help-$VERSION_STR.png
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 pg-postgresql-$VERSION_STR.png
 
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/scripts/launchpsql.sh"

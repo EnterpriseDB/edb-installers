@@ -71,6 +71,7 @@ _warn() {
 
 # Remove the menu shortcuts
 "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
+	  "$INSTALLDIR/scripts/xdg/pg-doc-pgadmin-$VERSION_STR.desktop" \
 	  "$INSTALLDIR/scripts/xdg/pg-pgadmin-$VERSION_STR.desktop" || _warn "Failed to remove the top level menu"
 	  
 # Remove the icon resources

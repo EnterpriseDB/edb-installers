@@ -86,10 +86,8 @@ fi
 
 # Create the icon resources
 cd "$INSTALLDIR/scripts/images"
-for i in `ls *.png`
-do
-	"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 $i
-done
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 pg-stackbuilder-$VERSION_STR.png
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 pg-postgresql-$VERSION_STR.png
 
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/scripts/launchstackbuilder.sh"
@@ -98,10 +96,10 @@ chmod ugo+x "$INSTALLDIR/scripts/"*.sh
 
 # Copy the primary desktop file to the branded version. We don't do this if
 # the installation is not branded, to retain backwards compatibility.
-#if [ $BRANDED -ne 0 ];
-#then
-#    cp "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory" "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory"
-#fi
+if [ $BRANDED -ne 0 ];
+then
+    cp "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory" "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory"
+fi
 
 # Fixup the XDG files (don't just loop in case we have old entries we no longer want)
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop"

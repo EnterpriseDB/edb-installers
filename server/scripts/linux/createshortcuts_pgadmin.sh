@@ -97,10 +97,7 @@ fi
 
 # Create the icon resources
 cd "$INSTALLDIR/scripts/images"
-for i in `ls *.png`
-do
-	"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 $i
-done
+"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 pg-pgadmin-$VERSION_STR.png
 
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/scripts/launchpgadmin.sh"

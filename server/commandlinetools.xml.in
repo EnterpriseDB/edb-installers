@@ -332,7 +332,7 @@
             <value></value>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                <fileTest path="${PostgreSqlIni}"/>
+                <fileTest path="${PostgreSqlIni}" condition="exists"/>
             </ruleList>
         </iniFileSet>
         <registryDelete>
