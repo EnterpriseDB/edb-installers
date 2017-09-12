@@ -1218,42 +1218,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}
                         </compareText>
                     </ruleList>
                 </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/scripts/xdg</destination>
-                    <name>defaultlinux-x64_1</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/server/scripts/xdg/pg-postgresql-PG_VERSION_STR.directory</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>linux-x64</value>
-                        </compareText>
-                    </ruleList>
-                </folder>
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/scripts/images</destination>
-                    <name>defaultlinux-x64_2</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/server/scripts/images/pg-postgresql-PG_VERSION_STR.png</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                    <ruleList>
-                        <compareText>
-                            <logic>contains</logic>
-                            <text>${platform_name}</text>
-                            <value>linux-x64</value>
-                        </compareText>
-                    </ruleList>
-                </folder>
                 <!-- MacOSX: files for default component -->
                 <folder>
                     <description>Program Files</description>
