@@ -494,6 +494,16 @@ EOF
             <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
           </ruleList>
         </unpackFile>
+
+        <unpackFile>
+          <component>default</component>
+          <destination>${system_temp_directory}\languagepack_${random_number}\vcredist_x86_2010.exe</destination>
+          <folder>programfileswindows</folder>
+          <origin>installer/languagepack/vcredist_x86_2010.exe</origin>
+          <ruleList>
+            <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
+          </ruleList>
+        </unpackFile>
 	
         <unpackFile>
           <component>default</component>
@@ -504,56 +514,85 @@ EOF
             <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
           </ruleList>
         </unpackFile>
-	
-        <runProgram>
-          <program>${system_temp_directory}\languagepack_${random_number}\vcredist_x86.exe</program>
-          <programArguments>/q /norestart</programArguments>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-          <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
-	  <ruleList>
+
+        <setInstallerVariable name="rebootRequired" value="0"/>
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="vcredist_filename" value="vcredist_x86_2010.exe"/>
+            <runProgram>
+              <program>${system_temp_directory}\languagepack_${random_number}\${vcredist_filename}</program>
+              <programArguments>/q /norestart</programArguments>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
+            </runProgram>
+            <throwError>
+              <text>${msg(error.installing.runtimes)}</text>
+              <ruleList>
+                <compareText logic="equals" text="127" value="${program_exit_code}"/>
+              </ruleList>
+            </throwError>
+            <actionGroup>
+              <actionList>
+                <logMessage text="${msg(warning.reboot.machine)}"/>
+                <setInstallerVariable name="rebootRequired" value="1"/>
+              </actionList>
+              <ruleList>
+                <compareText logic="equals" text="${program_exit_code}" value="3010"/>
+              </ruleList>
+            </actionGroup>
+          </actionList>
+          <ruleList>
             <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
           </ruleList>
-        </runProgram>
-	
-        <runProgram>
-          <program>${system_temp_directory}\languagepack_${random_number}\vcredist_x64.exe</program>
-          <programArguments>/q  /norestart</programArguments>
-          <abortOnError>0</abortOnError>
-          <showMessageOnError>0</showMessageOnError>
-          <ruleList>
-            <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
-          </ruleList>
-        </runProgram>
-	<throwError>
-          <text>${msg(error.installing.runtimes)}</text>
-          <ruleList>
-            <compareText>
-              <logic>equals</logic>
-              <text>127</text>
-              <value>${program_exit_code}</value>
-            </compareText>
-          </ruleList>
-        </throwError>
-       <actionGroup>
-         <actionList>
-           <logMessage text="${msg(warning.reboot.machine)}"/>
-           <setInstallerVariable name="rebootRequired" value="1"/>
-         </actionList>
-         <ruleList>
-           <compareText logic="equals" text="${program_exit_code}" value="3010"/>
-         </ruleList>
-       </actionGroup>
+        </actionGroup>
 
+        <actionGroup>
+          <actionList>
+            <setInstallerVariable name="vcredist_filename" value="vcredist_x86.exe"/>
+            <setInstallerVariable name="vcredist_filename" value="vcredist_x64.exe">
+              <ruleList>
+                <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
+              </ruleList>
+            </setInstallerVariable>
+
+            <runProgram>
+              <program>${system_temp_directory}\languagepack_${random_number}\${vcredist_filename}</program>
+              <programArguments>/q /norestart</programArguments>
+              <abortOnError>0</abortOnError>
+              <showMessageOnError>0</showMessageOnError>
+              <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
+            </runProgram>
+	
+	    <throwError>
+              <text>${msg(error.installing.runtimes)}</text>
+              <ruleList>
+                <compareText>
+                  <logic>equals</logic>
+                  <text>127</text>
+                  <value>${program_exit_code}</value>
+                </compareText>
+              </ruleList>
+            </throwError>
+            <actionGroup>
+              <actionList>
+                <logMessage text="${msg(warning.reboot.machine)}"/>
+                <setInstallerVariable name="rebootRequired" value="1"/>
+              </actionList>
+              <ruleList>
+                <compareText logic="equals" text="${program_exit_code}" value="3010"/>
+              </ruleList>
+            </actionGroup>
+
+          </actionList>
+          <ruleList>
+            <isTrue value="${install_runtimes}"/>
+          </ruleList>
+        </actionGroup>
       </actionList>
       <ruleList>
-        <compareText>
-          <logic>equals</logic>
-          <text>${platform_name}</text>
-          <value>windows</value>
-        </compareText>
-        <isFalse value="${extract_mode}"/>
-        <isTrue value="${install_runtimes}"/>
+	<isFalse value="${extract_mode}"/>
+        <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
     </actionGroup>
   </preInstallationActionList>
