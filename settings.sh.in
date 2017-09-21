@@ -72,6 +72,8 @@ PGADMIN_PYTHON_LINUX=$PG_PYTHON_LINUX
 PG_TCL_LINUX=/opt/local/EnterpriseDB/LanguagePack/9.6/Tcl-8.5
 PG_XULRUNNER_SDK_LINUX=/usr/lib/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX=/usr/lib/xulrunner-1.9.2
+PG_NODE_LINUX=/opt/local/Current/node-v6.11.0
+PG_YARN_LINUX=/opt/local/Current/yarn-v0.26.1
 
 PG_SSH_LINUX_X64=buildfarm@bf6-linux-x64.ox.uk.enterprisedb.com
 PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller.auto
@@ -90,6 +92,8 @@ PGADMIN_PYTHON_LINUX_X64=$PG_PYTHON_LINUX_X64
 PG_TCL_LINUX_X64=/opt/local/EnterpriseDB/LanguagePack/9.6/Tcl-8.5
 PG_XULRUNNER_SDK_LINUX_X64=/usr/lib64/xulrunner-sdk-1.9.2
 PG_XULRUNNER_RUNTIMES_LINUX_X64=/usr/lib64/xulrunner-1.9.2
+PG_NODE_LINUX_X64=/opt/local/Current/node-v6.11.0
+PG_YARN_LINUX_X64=/opt/local/Current/yarn-v0.26.1
 
 PG_SSH_WINDOWS=buildfarm@bf6-windows.ox.uk.enterprisedb.com
 PG_SSH_SIGN_WINDOWS=buildfarm@bf5-windows.ox.uk.enterprisedb.com
@@ -127,6 +131,9 @@ PG_MINGW_QTPATH_WINDOWS="D:\\\\pgBuild32\\\\Qt5.9.1\\\\5.9.1\\\\mingw53_32"
 PG_MINGW_QMAKE_WINDOWS="$PG_MINGW_QTPATH_WINDOWS\\\\bin\\\\qmake.exe"
 PG_MINGW_MAKE_WINDOWS="D:\\\\pgBuild32\\\\Qt5.9.1\\\\Tools\\\\mingw530_32\\\\bin\\\\mingw32-make"
 PG_MINGW_QTTOOLS_WINDOWS="D:\\\\pgBuild32\\\\Qt5.9.1\\\\Tools\\\\mingw530_32"
+PG_NODE_WINDOWS="C:\\\\pgBuild32\\\\node-v6.11.0-win-x86"
+PG_YARN_WINDOWS="C:\\\\pgBuild32\\\\yarn-v0.26.1"
+PG_GIT_WINDOWS="C:\\\\Git"
 
 PG_SSH_WINDOWS_X64=buildfarm@bf6-windows-x64.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS_X64=D:\\\\pginstaller.auto
@@ -153,6 +160,9 @@ PG_MINGW_QTPATH_WINDOWS_X64="D:\\\\pgBuild64\\\\Qt5.9.1\\\\5.9.1\\\\mingw53_32"
 PG_MINGW_QMAKE_WINDOWS_X64="$PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\qmake.exe"
 PG_MINGW_MAKE_WINDOWS_X64="D:\\\\pgBuild64\\\\Qt5.9.1\\\\Tools\\\\mingw530_32\\\\bin\\\\mingw32-make"
 PG_MINGW_QTTOOLS_WINDOWS_X64="D:\\\\pgBuild64\\\\Qt5.9.1\\\\Tools\\\\mingw530_32"
+PG_NODE_WINDOWS_X64="C:\\\\pgBuild64\\\node-v6.11.0-win-x64"
+PG_YARN_WINDOWS_X64="C:\\\\pgBuild64\\\\yarn-v0.26.1"
+PG_GIT_WINDOWS_X64="C:\\\\Git"
 
 PG_SSH_SOLARIS_X64=buildfarm@bf3-solaris-x64.pn.in.enterprisedb.com
 PG_PATH_SOLARIS_X64=/mnt/buildfarm/pginstaller_2.auto-repo
