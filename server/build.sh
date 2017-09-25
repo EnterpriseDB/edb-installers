@@ -131,10 +131,6 @@ _prep_server() {
     echo "Branch: `git branch | sed -n -e 's/^\* \(.*\)/\1/p'`"
     echo "Last commit:"
     git log -n 1
-    if [ -f $WD/tarballs/stackbuilder-https.patch ]; then
-        cd $WD/server/source/stackbuilder
-        patch -p1 < $WD/tarballs/stackbuilder-https.patch
-    fi
 
     # Per-platform prep
     cd $WD
