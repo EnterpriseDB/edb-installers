@@ -1,26 +1,66 @@
 #!/bin/sh
-# Check if certificate file is passed as argument or not which is optional
-CERTPATH=""
-usage() { echo "Usage: $0 [-c <ca-bundle certificate path> ]" 1>&2; exit 1; }
+# Copyright (c) 2012-2017, EnterpriseDB Corporation.  All rights reserved
 
-OPTS=`getopt -o c: --long ca-bundle: -n 'parse-options' -- "$@"`
+usage() {
+  echo "Usage: $0 [-h] [-m <str>] [-a <str>] [-d <str>] [-l <str>] [-c <str>]"
+  echo "-h, --help                  	show this help message"
+  echo "-m, --mirror-list <str>     	download the mirror list from the specified URL"
+  echo "-a, --application-list <str>	download the application list from the specified URL"
+  echo "-d, --download-counter <str>	use the download counter at the specified URL"
+  echo "-l, --language <str>        	use the specified language in the UI"
+  echo "-c, --ca-bundle <str>       	user certificate for https support from the specified URL"
+  exit 1;
+}
+
+COMMAND_LINE_ARGS=""
+MIRROR_LIST=""
+APPLICATION_LIST=""
+DOWNLOAD_COUNTER=""
+LANGUAGE=""
+CA_BUNDLE=""
+
+OPTS=$(getopt -n 'parse-options' -o "h:m:a:d:l:c:" --long "mirror-list:,application-list:,download-counter:,language:,ca-bundle:,help:" -- "$@")
 if [ $? != 0 ] ; then usage; fi
 eval set -- "$OPTS"
+
 while true; do
   case "$1" in
+    -h | --help )
+         usage;
+         ;;
+    -m | --mirror-list )
+         MIRROR_LIST="-m $2";
+         shift 2
+         ;;
+    -a | --application-list )
+         APPLICATION_LIST="-a $2";
+         shift 2
+         ;;
+    -d | --download-counter )
+         DOWNLOAD_COUNTER="-d $2"
+         shift 2
+         ;;
+    -l | --language )
+         LANGUAGE="-l $2"
+         shift 2
+         ;;
     -c | --ca-bundle )
-            if [ -f $2 ]; then
-                CERTPATH="-c $2";
-        else
-                echo "ca-bundle certificate file '$2' does not exist"
-                usage
-                exit 1;
-        fi
-        shift; shift;;
-
-    * ) break ;;
+         if [ -f $2 ]; then
+           CA_BUNDLE="-c $2" ;
+         else
+           echo "ca-bundle certificate file '$2' does not exist"
+           exit 1
+         fi
+         shift 2
+         ;;
+     --) shift; break ;;
+     *)
+           usage
+           break ;;
   esac
 done
+
+COMMAND_LINE_ARGS="$MIRROR_LIST $APPLICATION_LIST $DOWNLOAD_COUNTER $LANGUAGE $CA_BUNDLE"
 
 # PostgreSQL stackbuilder runner script for Linux
 # Dave Page, EnterpriseDB
@@ -52,13 +92,13 @@ then
 
     if [ $USE_SUDO = "1" ];
     then
-        sudo su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $CERTPATH"
+        sudo su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $COMMAND_LINE_ARGS"
     else
-        su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $CERTPATH"
+        su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $COMMAND_LINE_ARGS"
     fi
 
 else
-    LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $CERTPATH
+    LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $COMMAND_LINE_ARGS
 fi
 
 # Wait a while to display su or sudo invalid password error if any
