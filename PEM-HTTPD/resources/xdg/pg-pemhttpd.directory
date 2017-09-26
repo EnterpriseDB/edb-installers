@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Type=Directory
+Name=EnterpriseDB PEMHTTPD
+Comment=PEMHTTPD, packaged by EnterpriseDB
+Encoding=UTF-8
+Icon=pg-pemhttpd.png
