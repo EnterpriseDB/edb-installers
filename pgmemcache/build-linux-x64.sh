@@ -151,7 +151,7 @@ _postprocess_pgmemcache_linux_x64() {
     fi
 
     # Rename the installer
-    mv $WD/output/pgmemcache-pg96-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-linux-x64.run $WD/output/pgmemcache-pg96-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}linux-x64.run
+    mv $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-linux-x64.run $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}linux-x64.run
 
     cd $WD
 
