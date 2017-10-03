@@ -4035,7 +4035,147 @@ REM The script sets environment variables helpful for PostgreSQL
         <fileTest path="${system_temp_directory}/postgresql_installer_${random_number}" condition="exists"/>
       </ruleList>
     </deleteFile>
-    </installationAbortedActionList>
+
+        <actionGroup>
+            <actionList>
+                <actionGroup>
+                    <actionList>
+                        <!-- Version -->
+                        <iniFileSet>
+                            <file>${PostgreSqlIni}</file>
+                            <section>PostgreSQL/${product_version}</section>
+                            <key>Version</key>
+                            <value></value>
+                        </iniFileSet>
+
+                       <!-- Installation directory -->
+                       <iniFileSet>
+                           <file>${PostgreSqlIni}</file>
+                           <section>PostgreSQL/${product_version}</section>
+                           <key>InstallationDirectory</key>
+                           <value></value>
+                       </iniFileSet>
+
+                      <!-- Description -->
+                      <iniFileSet>
+                          <file>${PostgreSqlIni}</file>
+                          <section>PostgreSQL/${product_version}</section>
+                          <key>Description</key>
+                          <value></value>
+                      </iniFileSet>
+
+                      <!-- ServiceID -->
+                      <iniFileSet>
+                          <file>${PostgreSqlIni}</file>
+                          <section>PostgreSQL/${product_version}</section>
+                          <key>ServiceID</key>
+                          <value></value>
+                      </iniFileSet>
+
+                      <!-- Branding -->
+                      <iniFileSet>
+                          <file>${PostgreSqlIni}</file>
+                          <section>PostgreSQL/${product_version}</section>
+                          <key>Branding</key>
+                          <value></value>
+                      </iniFileSet>
+
+                     <!-- Propose StackBuilder at finish page -->
+                     <iniFileSet>
+                         <file>${PostgreSqlIni}</file>
+                         <section>PostgreSQL/${product_version}</section>
+                         <key>DisableStackBuilder</key>
+                         <value></value>
+                     </iniFileSet>
+
+                     <!-- Superuser -->
+                     <iniFileSet>
+                         <file>${PostgreSqlIni}</file>
+                         <section>PostgreSQL/${product_version}</section>
+                         <key>Superuser</key>
+                         <value></value>
+                     </iniFileSet>
+
+                    <!-- DataDirectory -->
+                    <iniFileSet>
+                        <file>${PostgreSqlIni}</file>
+                        <section>PostgreSQL/${product_version}</section>
+                        <key>DataDirectory</key>
+                        <value></value>
+                    </iniFileSet>
+
+                    <!-- Port -->
+                    <iniFileSet>
+                        <file>${PostgreSqlIni}</file>
+                        <section>PostgreSQL/${product_version}</section>
+                        <key>Port</key>
+                        <value></value>
+                    </iniFileSet>
+
+                    <!--Serviceaccount -->
+                    <iniFileSet>
+                        <file>${PostgreSqlIni}</file>
+                        <section>PostgreSQL/${product_version}</section>
+                        <key>Serviceaccount</key>
+                        <value></value>
+                    </iniFileSet>
+
+                   <!--Locale -->
+                   <iniFileSet>
+                       <file>${PostgreSqlIni}</file>
+                       <section>PostgreSQL/${product_version}</section>
+                       <key>Locale</key>
+                       <value></value>
+                   </iniFileSet>
+
+                  <!--Shortcuts -->
+                  <iniFileSet>
+                      <file>${PostgreSqlIni}</file>
+                      <section>PostgreSQL/${product_version}</section>
+                      <key>Shortcuts</key>
+                      <value></value>
+                  </iniFileSet>
+                </actionList>
+
+                <ruleList>
+                    <compareText>
+                      <logic>does_not_equal</logic>
+                      <text>${platform_name}</text>
+                      <value>windows</value>
+                      <fileTest condition="exists" path="${PostgreSqlIni}"/>
+                    </compareText>
+                </ruleList>
+             </actionGroup>
+             <actionGroup>
+                 <actionList>
+                 <!-- WINDOWS: Unregister the event message DLL -->
+                 <registryDelete>
+                     <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>
+                 </registryDelete>
+
+                 <registryDelete>
+                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                 </registryDelete>
+
+                <registryDelete>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
+                </registryDelete>
+              </actionList>
+              <ruleList>
+                  <compareText>
+                      <logic>equals</logic>
+                      <text>${platform_name}</text>
+                      <value>windows</value>
+                 </compareText>
+              </ruleList>
+            </actionGroup>
+         </actionList>
+         <ruleList>
+             <isFalse value="${IsUpgrade}"/>
+             <isFalse value="${extract_mode}"/>
+         </ruleList>
+       </actionGroup>
+     </installationAbortedActionList>
 
     <!-- Final page actions -->
     <finalPageActionList>
