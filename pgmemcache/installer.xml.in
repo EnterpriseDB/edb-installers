@@ -463,7 +463,7 @@
                         <setInstallerVariableFromRegEx>
                               <name>pg_version</name>
                               <text>${pg_version_str}</text>
-                              <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
+                              <pattern>^PostgreSQL ([0-9][0-9]).?[\w]*$</pattern>
                               <substitution>\1</substitution>
                               <ruleList>
                                  <compareText>
@@ -988,7 +988,7 @@
                 <setInstallerVariableFromRegEx>
                       <name>pg_version</name>
                       <text>${pg_version_str}</text>
-                      <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
+                      <pattern>^PostgreSQL ([0-9][0-9]).?[\w]*$</pattern>
                       <substitution>\1</substitution>
                       <ruleList>
                          <compareText>
