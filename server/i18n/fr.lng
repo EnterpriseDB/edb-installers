@@ -94,3 +94,6 @@ servicename.already.exists.linux=Un service (${servicename}) existe déjà dans le
 servicename.already.exists.windows=Un service (${servicename}) existe déjà.\nMerci d'indiquer un autre nom.
 servicename.already.exists.osx=Un service (com.edb.launchd.${servicename}.plist) existe déjà dans le répertoire '/Library/LaunchDaemons'.\nMerci d'indiquer un autre nom.
 pg.service.description=permet de conserver les bases de données relationnelles .
+commandlinetools.desc=This option installs command line tools and client libraries such as libpq, ecpg, pg_basebackup, pg_dump, pg_restore, pg_bench and more. The command line tools are a required option when installing the PostgreSQL Database Server or pgAdmin 4.
+pgadmin.desc=pgAdmin 4 is a graphical interface for managing and working with PostgreSQL databases and servers.
+preinstall.exp=The following settings will be used for the installation:
