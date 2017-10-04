@@ -4142,8 +4142,8 @@ REM The script sets environment variables helpful for PostgreSQL
                       <logic>does_not_equal</logic>
                       <text>${platform_name}</text>
                       <value>windows</value>
-                      <fileTest condition="exists" path="${PostgreSqlIni}"/>
                     </compareText>
+                    <fileTest condition="exists" path="${PostgreSqlIni}"/>
                 </ruleList>
              </actionGroup>
              <actionGroup>

@@ -265,6 +265,95 @@ EOF
   </initializationActionList>
   <!-- Preinstallation actions -->
   <preInstallationActionList>
+  <!-- Check what is the umask set for root user. If it is not correct, then throw error
+             We do this by checking the permission of the directory created by root.-->
+  <actionGroup>
+    <actionList>
+      <runProgram program="umask" programArguments="| cut -b4"/>
+      <setInstallerVariable name="umask_value" value="${program_stdout}" persist="1"/>
+      <logMessage text="Last umask bit=${umask_value}"/>
+      <!-- Throw error if umask last bit is not equals to 0 or 2 -->
+      <throwError text="${msg(error.umask.permissions)}">
+        <ruleList>
+          <ruleGroup negate="1">
+            <ruleList>
+              <ruleGroup ruleEvaluationLogic="or">
+                <ruleList>
+                  <compareText logic="equals" text="${umask_value}" value="0"/>
+                  <compareText logic="equals" text="${umask_value}" value="2"/>
+                </ruleList>
+              </ruleGroup>
+            </ruleList>
+          </ruleGroup>
+        </ruleList>
+      </throwError>
+    </actionList>
+    <ruleList>
+      <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+    </ruleList>
+  </actionGroup>
+
+  <!-- Abort installation if SELinux is enabled -->
+  <actionGroup>
+    <actionList>
+      <setInstallerVariable name="enforce_file" value="/sys/fs/selinux/enforce"/>
+      <setInstallerVariable name="enforce_file" value="/selinux/enforce">
+        <ruleList>
+          <fileExists path="/selinux/enforce"/>
+        </ruleList>
+      </setInstallerVariable>
+      <throwError>
+        <customErrorMessage>${msg(selinux.not.permissive)}</customErrorMessage>
+        <text>SELinux Error</text>
+        <ruleList>
+          <fileContentTest text="1" path="${enforce_file}" logic="contains"/>
+        </ruleList>
+      </throwError>
+    </actionList>
+    <ruleList>
+      <compareText logic="contains" text="${platform_name}" value="linux"/>
+      <isFalse value="${extract_mode}"/>
+    </ruleList>
+  </actionGroup>
+
+  <!-- Check if the install  directory specified has atleast read permissions for user enterprisedb/postgres (others group)-->
+  <actionGroup>
+    <actionList>
+      <unpackFile>
+        <component>PEMHTTPD</component>
+        <destination>${system_temp_directory}/checkDirPermissions.sh</destination>
+        <origin>installer/PEM-HTTPD/checkDirPermissions.sh</origin>
+        <folder>programfileslinux</folder>
+        <ruleList>
+          <compareText text="${platform_name}" logic="equals" value="linux"/>
+        </ruleList>
+      </unpackFile>
+      <unpackFile>
+        <component>PEMHTTPD</component>
+        <destination>${system_temp_directory}/checkDirPermissions.sh</destination>
+        <origin>installer/PEM-HTTPD/checkDirPermissions.sh</origin>
+        <folder>programfileslinux-x64</folder>
+        <ruleList>
+          <compareText text="${platform_name}" logic="equals" value="linux-x64"/>
+        </ruleList>
+      </unpackFile>
+      <setInstallerVariable name="directory_name" value="${default_installdir}"/>
+      <runProgram>
+        <program>${system_temp_directory}/checkDirPermissions.sh</program>
+        <programArguments>${directory_name}/</programArguments>
+      </runProgram>
+      <setInstallerVariable name="isPermissionDeniedOnDirectory" value="${program_stdout}"/>
+      <throwError text="${msg(error.directory.permissions.denied)}" abortOnError="1">
+        <ruleList>
+          <compareText text="${isPermissionDeniedOnDirectory}" logic="equals" value="100"/>
+        </ruleList>
+      </throwError>
+    </actionList>
+    <ruleList>
+      <compareText logic="does_not_contain" text="${platform_name}" value="windows"/>
+      <isFalse value="${extract_mode}"/>
+    </ruleList>
+  </actionGroup>
      <!-- Creating a temporary directory -->
      <createTempDir dirPrefix="${product_shortname}"/>
 

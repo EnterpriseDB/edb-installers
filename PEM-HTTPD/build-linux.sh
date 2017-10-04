@@ -193,6 +193,9 @@ _postprocess_PEM-HTTPD_linux() {
     cp scripts/linux/createshortcuts.sh staging/linux/installer/PEM-HTTPD/createshortcuts.sh || _die "Failed to copy the createshortcuts script (scripts/linux/createshortcuts.sh)"
     chmod ugo+x staging/linux/installer/PEM-HTTPD/createshortcuts.sh
 
+    cp $WD/scripts/common_scripts/linux/checkDirPermissions.sh staging/linux/installer/PEM-HTTPD/checkDirPermissions.sh || _die "Failed to copy the createshortcuts script (scripts/linux/checkDirPermissions.sh)"
+    chmod ugo+x staging/linux/installer/PEM-HTTPD/checkDirPermissions.sh
+
     cp scripts/linux/removeshortcuts.sh staging/linux/installer/PEM-HTTPD/removeshortcuts.sh || _die "Failed to copy the removeshortcuts script (scripts/linux/removeshortcuts.sh)"
     chmod ugo+x staging/linux/installer/PEM-HTTPD/removeshortcuts.sh
 
