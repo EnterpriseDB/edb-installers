@@ -26,6 +26,12 @@ error.uninstall.stop.apache=Error Stopping Apache
 
 error.start.apache=Error Starting Apache
 
+error.umask.permissions=umask on the system does not have the correct value. Please update the umask to 022 and restart installation.
+
+selinux.not.permissive=Please put SELinux in permissive mode and then run installer again. SELinux can be put in enforcing mode again after installation.
+
+error.directory.permissions.denied=Non-root users do not have the required access to ${directory_name} directory. Please check the permissions.
+
 apache.details.title=Apache Server Details
 
 apache.details.explanation=Please specify a port on which Apache will run
