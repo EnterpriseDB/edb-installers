@@ -1,10 +1,12 @@
 #!/bin/bash
 
-if [ -e $WD/pvt_settings.sh.REL-9_6 ]
+if [ -e $WD/pvt_settings.sh.REL-10 ]
 then
 
     # Source the private settings.    
-    source $WD/pvt_settings.sh.REL-9_6
+    source $WD/pvt_settings.sh.REL-10
+    source $WD/registration_plus/build.sh
+    _registration_plus_component_build
 
     # Create the pvt_packages directory. If not exist.
     if [ ! -e $WD/pvt_packages ];
@@ -45,10 +47,13 @@ then
 	    cp -R $WD/pvt_packages/${!C_PKG_NAME}/${!C_PKG_INSTALLER_DIR}/* $WD/${!C_PKG_INSTALLER_NAME}/ || _die "Failed to copy the installer source"
 	    #Start the build
 	    source $WD/${!C_PKG_INSTALLER_NAME}/build.sh
+            declare PVT_${PKG}_BUILD=0
 	    if [ $SKIPBUILD = 0 ];
 	    then
-		_prep_${!C_PKG_INSTALLER_NAME} || exit 1
-	        _build_${!C_PKG_INSTALLER_NAME} || exit 1
+                (_prep_${!C_PKG_INSTALLER_NAME} && _build_${!C_PKG_INSTALLER_NAME})
+		if [ $? == 0 ]; then
+		    declare PVT_${PKG}_BUILD=1
+		fi
 	    fi
 
 	    _postprocess_${!C_PKG_INSTALLER_NAME} || exit 1
