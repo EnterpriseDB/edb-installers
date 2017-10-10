@@ -77,6 +77,7 @@ PGSERVER_STAGING=$PWD/server/staging/linux/server
 PGADMIN_STAGING=$PWD/server/staging/linux/pgadmin4
 SB_STAGING=$PWD/server/staging/linux/stackbuilder
 CLT_STAGING=$PWD/server/staging/linux/commandlinetools
+PG_BINARY_PATH_LINUX=/opt/local/pg-languagepack/server
 
 PG_SSH_LINUX_X64=buildfarm@bf10-linux-x64.ox.uk.enterprisedb.com
 PG_PATH_LINUX_X64=/mnt/hgfs/pginstaller.auto
@@ -99,6 +100,7 @@ PGSERVER_STAGING_X64=$PWD/server/staging/linux-x64/server
 PGADMIN_STAGING_X64=$PWD/server/staging/linux-x64/pgadmin4
 SB_STAGING_X64=$PWD/server/staging/linux-x64/stackbuilder
 CLT_STAGING_X64=$PWD/server/staging/linux-x64/commandlinetools
+PG_BINARY_PATH_LINUX_X64=/opt/local/pg-languagepack/server
 
 PG_SSH_WINDOWS=buildfarm@bf10-windows.ox.uk.enterprisedb.com
 PG_SSH_SIGN_WINDOWS=buildfarm@bf5-windows.ox.uk.enterprisedb.com
