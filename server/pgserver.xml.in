@@ -2244,10 +2244,6 @@
                             <value>C</value>
                             <text>C</text>
                         </option>
-                        <option>
-                            <value>POSIX</value>
-                            <text>POSIX</text>
-                        </option>
                     </optionList>
                     <ruleList>
                         <compareText>
