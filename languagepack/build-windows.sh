@@ -41,7 +41,7 @@ _prep_languagepack_windows() {
     extract_file $WD/../tarballs/tk8.6.6-src || _die "Failed to extract tcl/tk source (tk-8.6.6-src.tar.gz)"
     extract_file $WD/../tarballs/perl-5.24.0 || _die "Failed to extract perl source (perl-5.24.0.tar.gz)"
     extract_file $WD/../tarballs/Python-3.4.6 || _die "Failed to extract python source (Python-3.4.6.tgz)"
-    extract_file $WD/../tarballs/distribute-0.6.49 || _die "Failed to extract python source (distribute-0.6.49)"
+    extract_file $WD/../tarballs/setuptools-30.2.0 || _die "Failed to extract python source (setuptools-30.2.0)"
 
     cp ../../scripts/$ARCH/tix-8.4.3.4-VC12.patch Python-3.4.6 || _die "Failed to copy the tix build patch tix-8.4.3.4-VC12.patch"
 
