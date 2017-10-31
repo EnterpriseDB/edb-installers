@@ -178,6 +178,28 @@
     </initializationActionList>
     <!-- Preinstallation actions -->
     <preInstallationActionList>
+
+     <!-- Do not perform the below actions in case of extract-only mode -->
+     <actionGroup>
+         <actionList>
+             <!-- Abort installation if not super-user and not running in extract-only mode-->
+             <throwError text="${msg(Installer.Warning.RootPrivileges)}">
+                 <ruleList>
+                     <isFalse value="${installer_is_root_install}"/>
+                     <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                 </ruleList>
+             </throwError>
+             <throwError text="${msg(Installer.Warning.AdministratorPrivileges)}">
+                 <ruleList>
+                     <isFalse value="${installer_is_root_install}"/>
+                     <compareText logic="equals" text="${platform_name}" value="windows"/>
+                 </ruleList>
+             </throwError>
+         </actionList>
+         <ruleList>
+             <isFalse value="${extract_mode}"/>
+         </ruleList>
+      </actionGroup>
       <!-- Creates the ini file if not exits -->
       <touchFile path="/etc/postgres-reg.ini">
           <ruleList>
@@ -186,8 +208,9 @@
                    <text>${platform_name}</text>
                    <value>windows</value>
               </compareText>
+              <isFalse value="${extract_mode}"/>
           </ruleList>
-       </touchFile>
+      </touchFile>
  
 	<!-- Get the PG PG_MAJOR_VERSION installation details -->
 	<actionGroup>
@@ -251,23 +274,7 @@
         <!-- Do not perform the below actions in case of extract-only mode -->
         <actionGroup>
             <actionList>
-                <!-- Abort installation if not super-user and not running in extract-only mode-->
-                <throwError text="${msg(Installer.Warning.RootPrivileges)}">
-                    <ruleList>
-                       <isFalse value="${installer_is_root_install}"/>
-                    </ruleList>
-                </throwError>
                 <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
-                <!-- Creates the ini file if not exits -->
-                <touchFile path="/etc/postgres-reg.ini">
-                    <ruleList>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </touchFile>
                 <!-- WIN: Get the branding & Check Previous Installation of pgmemcache -->
                 <actionGroup>
                     <actionList>

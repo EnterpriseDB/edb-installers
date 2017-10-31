@@ -818,6 +818,27 @@ EOF
             </ruleList>
         </throwError>
 
+        <actionGroup>
+            <actionList>
+                <!-- Abort installation if not super-user and not running in extract-only mode-->
+                <throwError text="${msg(Installer.Warning.RootPrivileges)}">
+                    <ruleList>
+                        <isFalse value="${installer_is_root_install}"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(Installer.Warning.AdministratorPrivileges)}">
+                    <ruleList>
+                        <isFalse value="${installer_is_root_install}"/>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
         <!-- Creates the ini file if not exists -->
         <touchFile path="${PostgreSqlIni}">
             <ruleList>
