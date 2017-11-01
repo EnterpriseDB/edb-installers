@@ -254,8 +254,22 @@ EOF
         <throwError text="${msg(Installer.Warning.RootPrivileges)}">
           <ruleList>
             <isFalse value="${installer_is_root_install}"/>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
         </throwError>
+        <throwError text="${msg(Installer.Warning.AdministratorPrivileges)}">
+          <ruleList>
+            <isFalse value="${installer_is_root_install}"/>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </throwError>
+        <!-- Creates the ini file if not exits -->
+        <touchFile path="/etc/postgres-reg.ini">
+          <ruleList>
+            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            <isFalse value="${extract_mode}"/>
+          </ruleList>
+        </touchFile>
         <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\${project.fullName}"/>
 
         <!-- Installing vcredist on windows -->
@@ -273,12 +287,6 @@ EOF
           </ruleList>
         </actionGroup>
 
-        <!-- Creates the ini file if not exits -->
-        <touchFile path="/etc/postgres-reg.ini">
-          <ruleList>
-            <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-          </ruleList>
-        </touchFile>
         <setInstallerVariable name="defaultinstalldir" value="${installdir}"/>
 
         <!-- LIN & MAC : Check Previous Installation of pgAgent -->
@@ -703,7 +711,6 @@ EOF
             <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
           </ruleList>
         </runProgram>
-
       </actionList>
       <ruleList>
         <isFalse value="${extract_mode}"/>

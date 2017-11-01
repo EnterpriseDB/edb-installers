@@ -292,6 +292,13 @@ EOF
                 <throwError text="${msg(Installer.Warning.RootPrivileges)}">
                     <ruleList>
                        <isFalse value="${installer_is_root_install}"/>
+                       <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(Installer.Warning.AdministratorPrivileges)}">
+                    <ruleList>
+                        <isFalse value="${installer_is_root_install}"/>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </throwError>
                 <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\${project.fullName}"/>
@@ -304,6 +311,7 @@ EOF
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+                        <isFalse value="${extract_mode}"/>
                     </ruleList>
                 </touchFile>
                 <!-- LIN & MAC : Get the branding & check Previous Installation of pgJDBC-->

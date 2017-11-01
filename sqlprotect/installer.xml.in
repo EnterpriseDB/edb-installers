@@ -211,6 +211,26 @@ EOF
      <!-- Creating a temporary directory -->
      <createTempDir dirPrefix="${product_shortname}"/>
 
+       <!-- Abort installation if not super-user and not running in extract-only mode-->
+       <actionGroup>
+            <actionList>
+                <throwError text="${msg(Installer.Warning.RootPrivileges)}">
+                    <ruleList>
+                        <isFalse value="${installer_is_root_install}"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(Installer.Warning.AdministratorPrivileges)}">
+                    <ruleList>
+                        <isFalse value="${installer_is_root_install}"/>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+       </actionGroup>
        <!-- Creates the ini file if not exits -->
        <touchFile path="/etc/postgres-reg.ini">
            <ruleList>
@@ -219,6 +239,7 @@ EOF
                    <text>${platform_name}</text>
                    <value>windows</value>
                </compareText>
+               <isFalse value="${extract_mode}"/>
            </ruleList>
        </touchFile>
        <!-- WIN: Get the branding & Check Previous Installation of sqlprotect -->
