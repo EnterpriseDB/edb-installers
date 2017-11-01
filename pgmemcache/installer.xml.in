@@ -192,6 +192,13 @@
                 <throwError text="${msg(Installer.Warning.RootPrivileges)}">
                     <ruleList>
                        <isFalse value="${installer_is_root_install}"/>
+                       <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </throwError>
+                <throwError text="${msg(Installer.Warning.AdministratorPrivileges)}">
+                    <ruleList>
+                        <isFalse value="${installer_is_root_install}"/>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </throwError>
                 <setInstallerVariable name="windowsSoftwareRegistryPrefix" value="${vendor}\${fullName}" persist="1"/>
@@ -203,6 +210,7 @@
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+                        <isFalse value="${extract_mode}"/>
                     </ruleList>
                 </touchFile>
                 <!-- WIN: Get the branding & Check Previous Installation of pgmemcache -->
