@@ -43,7 +43,7 @@ _build_hdfs_fdw_linux_x64() {
     # build hdfs_fdw
     PG_STAGING_HDFS_FDW=$PG_PATH_LINUX_X64/hdfs_fdw/staging/linux-x64.build
 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64/libhive; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; export JDK_INCLUDE=$PG_JAVA_HOME_LINUX_X64/include; export JVM_LIB=$PG_JAVA_HOME_LINUX_X64/jre/lib/amd64/server; make" || _die "Failed to build libhive"
+ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64/libhive; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; export JDK_INCLUDE=$PG_JAVA_HOME_LINUX_X64/include; export JVM_LIB=$PG_JAVA_HOME_LINUX_X64/jre/lib/amd64/server; LDFLAGS='-lstdc++' make" || _die "Failed to build libhive"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64/libhive; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; export JDK_INCLUDE=$PG_JAVA_HOME_LINUX_X64/include; export JVM_LIB=$PG_JAVA_HOME_LINUX_X64/jre/lib/amd64/server; export INSTALL_DIR=$PG_PGHOME_LINUX_X64;  make install" || _die "Failed to install libhive"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; export JDK_INCLUDE=$PG_JAVA_HOME_LINUX_X64/include; export JVM_LIB=$PG_JAVA_HOME_LINUX_X64/jre/lib/amd64/server; make USE_PGXS=1" || _die "Failed to build hdfs_fdw"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/hdfs_fdw/source/hdfs_fdw.linux-x64; export PATH=$PG_PGHOME_LINUX_X64/bin:$PATH; export JDK_INCLUDE=$PG_JAVA_HOME_LINUX_X64/include; export JVM_LIB=$PG_JAVA_HOME_LINUX_X64/jre/lib/amd64/server; make USE_PGXS=1 install" || _die "Failed to install hdfs_fdw"
