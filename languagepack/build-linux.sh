@@ -29,7 +29,7 @@ _prep_languagepack_linux() {
     cp $WD/tarballs/tk${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src.tar.gz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy tk"
     cp $WD/tarballs/perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL}.tar.gz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy perl"
     cp $WD/tarballs/Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}.tgz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy python"
-    cp $WD/tarballs/distribute-${PG_VERSION_DIST_PYTHON}.tar.gz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy distribute"
+    cp $WD/tarballs/setuptools-${PG_VERSION_PYTHON_SETUPTOOLS}.tar.gz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy setuptools"
 
     # Copy Python_MAXREPEAT.patch to build Python
     cp $WD/languagepack/scripts/linux/Python_MAXREPEAT.patch languagepack.linux || _die "Failed to copy (Python_MAXREPEAT.patch) to build Python"
@@ -58,7 +58,7 @@ _prep_languagepack_linux() {
 
 _build_languagepack_linux() {
 
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/languagepack/source/languagepack.linux; export SSL_INST=/opt/local/Current; ./languagepack.sh -n ${PG_VERSION_NCURSES} -p ${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON} -d ${PG_VERSION_DIST_PYTHON} -t ${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL} -P ${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} -v $PG_VERSION_LANGUAGEPACK -b /opt/local/pg-languagepack -i $PG_LANGUAGEPACK_INSTALL_DIR_LINUX -e" || _die "Failed to build languagepack"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/languagepack/source/languagepack.linux; export SSL_INST=/opt/local/Current; ./languagepack.sh -n ${PG_VERSION_NCURSES} -p ${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON} -d ${PG_VERSION_PYTHON_SETUPTOOLS} -t ${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL} -P ${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} -v $PG_VERSION_LANGUAGEPACK -b /opt/local/pg-languagepack -i $PG_LANGUAGEPACK_INSTALL_DIR_LINUX -e" || _die "Failed to build languagepack"
 
     echo "Removing last successful staging directory ($PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging)"
     ssh $PG_SSH_LINUX "rm -rf $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging" || _die "Couldn't remove the last successful staging directory directory"
@@ -93,7 +93,7 @@ _postprocess_languagepack_linux() {
     cd $WD/languagepack
 
     echo "Copying files to staging directory from install directory"
-    ssh $PG_SSH_LINUX "cp -rp $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging/$PG_VERSION_LANGUAGEPACK/* $PG_PATH_LINUX/languagepack/staging/linux" || _die "Failed to copy the built tree into the staging directory"
+    ssh $PG_SSH_LINUX "cp -rp $PG_LANGUAGEPACK_INSTALL_DIR_LINUX.staging/* $PG_PATH_LINUX_X64/languagepack/staging/linux" || _die "Failed to copy the built tree into the staging directory"
 
     source $WD/languagepack/staging/linux/versions-linux.sh
     PG_BUILD_LANGUAGEPACK=$(expr $PG_BUILD_LANGUAGEPACK + $SKIPBUILD)
@@ -115,7 +115,7 @@ _postprocess_languagepack_linux() {
     fi
 
     # Rename the installer
-    mv $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-linux.run $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}linux.run || _die "Failed to rename the installer"
+    mv $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-linux.run $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}linux.run
 
     cd $WD
 }

@@ -71,22 +71,22 @@ _prep_languagepack_osx() {
     cp -pR tcl$PG_VERSION_TCL.$PG_MINOR_VERSION_TCL tcl.osx || _die "Failed to copy the source code (source/tcl-$PG_VERSION_TCL.$PG_MINOR_VERSION_TCL)"
     tar -jcvf tcl.tar.bz2 tcl.osx || _die "Failed to create the archive (source/tcl.tar.bz2)"
    
-    if [ -e distribute-$PG_VERSION_DIST_PYTHON ];
+    if [ -e setuptools-$PG_VERSION_PYTHON_SETUPTOOLS ];
     then
-      echo "Removing existing distribute-$PG_VERSION_DIST_PYTHON source directory"
-      rm -rf distribute-$PG_VERSION_DIST_PYTHON  || _die "Couldn't remove the existing ditribute-$PG_VERSION_DIST_PYTHON source directory (source/distribute-$PG_VERSION_DIST_PYTHON)"
+      echo "Removing existing setuptools-$PG_VERSION_DIST_PYTHON source directory"
+      rm -rf setuptools-$PG_VERSION_PYTHON_SETUPTOOLS  || _die "Couldn't remove the existing setuptools-$PG_VERSION_PYTHON_SETUPTOOLS source directory (source/setuptools-$PG_VERSION_PYTHON_SETUPTOOLS)"
     fi
 
-    echo "Unpacking distribute python source..."
-    extract_file  ../../tarballs/distribute-$PG_VERSION_DIST_PYTHON || exit 1
+    echo "Unpacking setuptools python source..."
+    extract_file  ../../tarballs/setuptools-$PG_VERSION_PYTHON_SETUPTOOLS || exit 1
  
-    if [ -e distribute-python.osx ];
+    if [ -e setuptools-python.osx ];
     then
       echo "Removing existing python.osx source directory"
-      rm -rf distribute-python.osx  || _die "Couldn't remove the existing distribute-python.osx source directory (source/distribute-python.osx)"
+      rm -rf setuptools-python.osx  || _die "Couldn't remove the existing setuptools-python.osx source directory (source/setuptools-python.osx)"
     fi
-    cp -pR distribute-$PG_VERSION_DIST_PYTHON distribute-python.osx || _die "Failed to copy the source code (source/python-$PG_VERSION_PYTHON)"             
-    tar -jcvf distribute-python.tar.bz2 distribute-python.osx || _die "Failed to create the archive (source/distribute-python.tar.bz2)"
+    cp -pR setuptools-$PG_VERSION_PYTHON_SETUPTOOLS setuptools-python.osx || _die "Failed to copy the source code (source/python-$PG_VERSION_PYTHON)"
+    tar -jcvf setuptools-python.tar.bz2 setuptools-python.osx || _die "Failed to create the archive (source/setuptools-python.tar.bz2)"
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/languagepack/staging/osx ];
@@ -100,7 +100,7 @@ _prep_languagepack_osx() {
 
     echo "Copy the sources to the build VM"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/languagepack/source" || _die "Failed to create the source dircetory on the build VM"
-    scp python.tar.bz2 perl.tar.bz2 tcl.tar.bz2 distribute-python.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/languagepack/source/ || _die "Failed to copy the source archives to build VM"
+    scp python.tar.bz2 perl.tar.bz2 tcl.tar.bz2 setuptools-python.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/languagepack/source/ || _die "Failed to copy the source archives to build VM"
 
     echo "Copy the scripts required to build VM"
     cd $WD/languagepack
@@ -110,7 +110,7 @@ _prep_languagepack_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/languagepack/source; tar -jxvf python.tar.bz2" || _die "Failed to extract python archive on build VM"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/languagepack/source; tar -jxpvf perl.tar.bz2" || _die "Failed to extract perl archive on build VM"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/languagepack/source; tar -jxvf tcl.tar.bz2" || _die "Failed to extract tcl archive on build VM"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/languagepack/source; tar -jxvf distribute-python.tar.bz2" || _die "Failed to extract distribute-python archive on build VM"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/languagepack/source; tar -jxvf setuptools-python.tar.bz2" || _die "Failed to extract setuptools-python archive on build VM"
    
     echo "END PREP LanguagePack OSX" 
 }
@@ -208,7 +208,7 @@ _build_languagepack_osx() {
      install_name_tool -change libpython\$PG_VERSION_PYTHON\m.dylib \$PYTHON_INSTALL_PATH/lib/libpython\$PG_VERSION_PYTHON\m.dylib
      echo "=========================end==============="
      echo "Building Python Distribute..."
-     cd $PG_PATH_OSX/languagepack/source/distribute-python.osx
+     cd $PG_PATH_OSX/languagepack/source/setuptools-python.osx
      echo "============PATH Varaibles==========" 
      export PYTHONHOME="\$PYTHON_INSTALL_PATH"
      export PATH="\$PYTHON_INSTALL_PATH/bin:\$PATH"
@@ -328,7 +328,7 @@ _postprocess_languagepack_osx() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
     # Rename the installer
-    mv $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app || _die "Failed to rename the installer"
+    mv $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-osx.app $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app
 
     # Using own scripts for extract-only mode
     cp -f $WD/risePrivileges $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app/Contents/MacOS/Language\ Pack
