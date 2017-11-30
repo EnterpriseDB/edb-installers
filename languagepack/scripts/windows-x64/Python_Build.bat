@@ -108,8 +108,8 @@ ECHO PYTHONHOME -------- %PYTHONHOME%
 ECHO PYTHONPATH -------- %PYTHONPATH%
 ECHO PATH -------- %PATH%
 
-ECHO Changing Directory to %vScriptsDir%\distribute-0.6.49
-CD %vScriptsDir%\distribute-0.6.49
+ECHO Changing Directory to %vScriptsDir%\setuptools-30.2.0
+CD %vScriptsDir%\setuptools-30.2.0
 python setup.py install
 
 ECHO Changing Directory to %vPythonInstallDir%\Scripts

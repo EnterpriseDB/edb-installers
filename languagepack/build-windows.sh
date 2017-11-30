@@ -39,7 +39,7 @@ _prep_languagepack_windows() {
     extract_file $WD/../tarballs/tk8.5.17-src || _die "Failed to extract tcl/tk source (tk-8.5.17-src.tar.gz)"
     extract_file $WD/../tarballs/perl-5.20.3 || _die "Failed to extract perl source (perl-5.20.3.tar.gz)"
     extract_file $WD/../tarballs/Python-3.3.4 || _die "Failed to extract python source (Python-3.3.4.tgz)"
-    extract_file $WD/../tarballs/distribute-0.6.49 || _die "Failed to extract python source (distribute-0.6.49)"
+    extract_file $WD/../tarballs/setuptools-30.2.0 || _die "Failed to extract python source (setuptools-30.2.0)"
 
     if [ "$ARCH" = "windows-x32" ];
     then
@@ -167,7 +167,11 @@ EOT
     # Perl Build
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 PERL"
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 DBI"
+    # Install cpanm to exclude running test cases when installing IPC and DBD as one of test cases stucks
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 CPANMINUS"
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 DBD"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 IPC"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.20.3 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.20 INSTALL"
 
     # Generating/Updating liblzma.def file for Python Build
     if [ "$ARCH" = "windows-x32" ];
