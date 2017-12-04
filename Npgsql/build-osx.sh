@@ -29,15 +29,15 @@ _prep_Npgsql_osx() {
     cp -R Npgsql$PG_VERSION_NPGSQL/Mono2.0/* Npgsql.osx || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql)"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/Npgsql/staging/osx ];
+    if [ -e $WD/Npgsql/staging/osx.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/Npgsql/staging/osx || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/Npgsql/staging/osx.build || _die "Couldn't remove the existing staging directory"
     fi
 
-    echo "Creating staging directory ($WD/Npgsql/staging/osx)"
-    mkdir -p $WD/Npgsql/staging/osx || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/Npgsql/staging/osx || _die "Couldn't set the permissions on the staging directory"
+    echo "Creating staging directory ($WD/Npgsql/staging/osx.build)"
+    mkdir -p $WD/Npgsql/staging/osx.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/Npgsql/staging/osx.build || _die "Couldn't set the permissions on the staging directory"
     
     echo "END PREP Npgsql OSX"
 
@@ -52,6 +52,12 @@ _build_Npgsql_osx() {
     echo "BEGIN BUILD Npgsql OSX"
 
     cd $WD
+    echo "PG_VERSION_NPGSQL=$PG_VERSION_NPGSQL" > $WD/Npgsql/staging/osx.build/versions-osx.sh
+    echo "PG_BUILDNUM_NPGSQL=$PG_BUILDNUM_NPGSQL" >> $WD/Npgsql/staging/osx.build/versions-osx.sh
+    # Cpoy the complete build to staging linux
+    mkdir -p Npgsql/staging/osx || _die "Failed to create the staging/osx directroy"
+    echo "Copy the comple sucessfully build stating directory to $WD/staging/linux"
+    cp -pR $WD/Npgsql/staging/osx.build/* $WD/Npgsql/staging/osx || _die "Failed to copy staging/osx.build/ to staging/osx"
 
     echo "END BUILD Npgsql OSX"
 }
@@ -64,6 +70,8 @@ _build_Npgsql_osx() {
 _postprocess_Npgsql_osx() {
 
     echo "BEGIN POST Npgsql OSX"
+    source $WD/Npgsql/staging/osx/versions-osx.sh
+    PG_BUILD_NPGSQL=$(expr $PG_BUILD_NPGSQL + $SKIPBUILD)
 
     echo "********************************"
     echo "*  Post Process: Npgsql (OSX)  *"
@@ -95,12 +103,12 @@ _postprocess_Npgsql_osx() {
 
     if [ ! -f $WD/scripts/risePrivileges ]; then
         cp installer.xml installer_1.xml
-        _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByR
+        _replace "<requireInstallationByRootUser>\${admin_rights}</requireInstallationByRootUser>" "<requireInstallationByRootUser>1</requireInstallationByRootUser>" installer_1.xml
 
         # Build the installer (for the root privileges required)
         echo Building the installer with the root privileges required
         "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
-        cp $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/Npgsql $WD/scripts/risePrivileges || _die "Failed to copy the pri
+        cp $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/Npgsql $WD/scripts/risePrivileges || _die "Failed to copy the pri"
 
         rm -rf $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app
     fi
@@ -108,30 +116,39 @@ _postprocess_Npgsql_osx() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_NPGSQL -gt 0 ]; then
+        BUILD_FAILED=""
+    fi
+
+   # Rename the installer
+   mv $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app
+
     # Using own scripts for extract-only mode
-    cp -f $WD/scripts/risePrivileges $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/Npgsql
-    chmod a+x $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/Npgsql
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ Npgsql $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with Npgsql ($WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/installbuilder.sh)"
-    chmod a+x $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/Contents/MacOS/installbuilder.sh
+    cp -f $WD/scripts/risePrivileges $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app/Contents/MacOS/Npgsql
+    chmod a+x $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app/Contents/MacOS/Npgsql
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ Npgsql $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with Npgsql ($WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh)"
+    chmod a+x $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
 
     cd $WD/output
     # Copy the versions file to signing server
     scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
 
     # Scp the app bundle to the signing machine for signing
-    tar -jcvf npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app.tar.bz2 npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app || _die "Failed to create the archive."
+    tar -jcvf npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app.tar.bz2 npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app || _die "Failed to create the archive."
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf npgsql*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
-    scp npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/ || _die "Failed to copy the archive to sign server."
-    rm -fr npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app* || _die "Failed to clean the output directory."
+    scp npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/ || _die "Failed to copy the archive to sign server."
+    rm -fr npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app* || _die "Failed to clean the output directory."
 
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app; mv npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx-signed.app  npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app;" || _die "could not rename the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app; mv npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx-signed.app  npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app;" || _die "could not rename the signed app"
 
     # Archive the .app and copy back to controller
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.zip npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.app/" || _die "Failed to zip the installer bundle"
-    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.zip npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.app/" || _die "Failed to zip the installer bundle"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
  
     cd $WD
 

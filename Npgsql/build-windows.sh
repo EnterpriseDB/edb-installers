@@ -34,15 +34,15 @@ _prep_Npgsql_windows() {
     chmod -R ugo+w Npgsql.windows || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/Npgsql/staging/windows ];
+    if [ -e $WD/Npgsql/staging/windows.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/Npgsql/staging/windows || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/Npgsql/staging/windows.build || _die "Couldn't remove the existing staging directory"
     fi
 
     echo "Creating staging directory ($WD/Npgsql/staging/windows)"
-    mkdir -p $WD/Npgsql/staging/windows || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/Npgsql/staging/windows || _die "Couldn't set the permissions on the staging directory"
+    mkdir -p $WD/Npgsql/staging/windows.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/Npgsql/staging/windows.build || _die "Couldn't set the permissions on the staging directory"
     
     echo "END PREP Npgsql Windows"
 }
@@ -56,7 +56,12 @@ _build_Npgsql_windows() {
     echo "BEGIN BUILD Npgsql Windows"
 
     cd $WD
-    
+    echo "PG_VERSION_NPGSQL=$PG_VERSION_NPGSQL" > $WD/Npgsql/staging/windows.build/versions-windows.sh
+    echo "PG_BUILDNUM_NPGSQL=$PG_BUILDNUM_NPGSQL" >> $WD/Npgsql/staging/windows.build/versions-windows.sh
+    # Cpoy the complete build to staging windows
+    mkdir -p Npgsql/staging/windows || _die "Failed to create the staging/windows directroy"
+    cp -pR Npgsql/staging/windows.build/* Npgsql/staging/windows || _die "Failed to staging/windows.build/ staging/windows"
+
     echo "END BUILD Npgsql Windows"
 }
 
@@ -68,6 +73,8 @@ _build_Npgsql_windows() {
 _postprocess_Npgsql_windows() {
 
     echo "BEGIN POST Npgsql Windows"
+    source $WD/Npgsql/staging/windows/versions-windows.sh
+    PG_BUILD_NPGSQL=$(expr $PG_BUILD_NPGSQL + $SKIPBUILD)
  
     cp -R $WD/Npgsql/source/Npgsql.windows/* $WD/Npgsql/staging/windows || _die "Failed to copy the Npgsql Source into the staging directory"
     chmod -R ugo+rx $WD/Npgsql/staging/windows/docs
@@ -81,8 +88,18 @@ _postprocess_Npgsql_windows() {
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml windows || _die "Failed to build the installer"
 
-	# Sign the installer
-	win32_sign "npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-windows.exe"
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_NPGSQL -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-windows.exe $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}windows.exe
+
+    # Sign the installer
+    win32_sign "npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}windows.exe"
 
     cd $WD
 

@@ -272,6 +272,15 @@ then
     echo "### Package: Npgsql"
     cd $WD
     source ./Npgsql/build.sh
+    PG_BUILD_NPGSQL=0
+    if [ $SKIPBUILD = 0 ];
+    then
+        (_prep_Npgsql && _build_Npgsql)
+        if [ $? == 0 ]; then
+           PG_BUILD_NPGSQL=1
+        fi
+    fi
+    (_postprocess_Npgsql)
 
     if [ $SKIPBUILD = 0 ];
     then
