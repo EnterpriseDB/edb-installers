@@ -38,15 +38,15 @@ _prep_Npgsql_linux() {
     chmod -R ugo+w Npgsql.linux || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/Npgsql/staging/linux ];
+    if [ -e $WD/Npgsql/staging/linux.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/Npgsql/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/Npgsql/staging/linux.build || _die "Couldn't remove the existing staging directory"
     fi
 
     echo "Creating staging directory ($WD/Npgsql/staging/linux)"
-    mkdir -p $WD/Npgsql/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/Npgsql/staging/linux || _die "Couldn't set the permissions on the staging directory"
+    mkdir -p $WD/Npgsql/staging/linux.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/Npgsql/staging/linux.build || _die "Couldn't set the permissions on the staging directory"
 
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Npgsql.zip del /S /Q Npgsql.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\Npgsql.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Npgsql.linux rd /S /Q Npgsql.linux" || _die "Couldn't remove the $PG_PATH_WINDOWS\\Npgsql.linux directory on Windows VM"
@@ -73,20 +73,12 @@ _build_Npgsql_linux() {
     cd $WD/Npgsql/source
 
     cat <<EOT > "build-Npgsql.bat"
-REM Setting Visual Studio Environment
-CALL "$PG_VSINSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
+    cd Npgsql.linux\src\Npgsql
+    REM Restore Npgsql
+    dotnet restore
+    REM Build Npgsql
+    dotnet build -c Release
 
-REM batch file splits single argument containing "=" sign into two
-REM Following code handles this scenario
-
-cd Npgsql.linux
-CALL "$PG_NUGET_WINDOWS\nuget.exe" restore Npgsql.sln
-
-IF "%~3" == "" ( SET VAR3=""
-) ELSE (
-SET VAR3="%3=%4"
-)
-msbuild %1 /p:Configuration=%2 %VAR3%
 GOTO end
 
 :end
@@ -99,16 +91,20 @@ EOT
      
     # We need to copy them to staging directory
     ssh $PG_SSH_WINDOWS  "mkdir -p $PG_PATH_WINDOWS/Npgsql.staging/bin" || _die "Failed to create the bin directory"
-    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Npgsql.linux/src/Npgsql/bin/Release/* $PG_PATH_WINDOWS/Npgsql.staging/bin" || _die "Failed to copy Npgsql binary to staging directory"
+    ssh $PG_SSH_WINDOWS "cp -pR $PG_PATH_WINDOWS/Npgsql.linux/src/Npgsql/bin/Release/* $PG_PATH_WINDOWS/Npgsql.staging/bin" || _die "Failed to copy Npgsql binary to staging directory"
     
     # Zip up the installed code, copy it back here, and unpack.
     echo "Copying npgsql built tree to Unix host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\Npgsql.staging; cmd /c zip -r ..\\\\npgsql-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/Npgsql.staging)"
-    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/npgsql-staging.zip $WD/Npgsql/staging/linux || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/npgsql-staging.zip)"
-    unzip $WD/Npgsql/staging/linux/npgsql-staging.zip -d $WD/Npgsql/staging/linux || _die "Failed to unpack the built source tree ($WD/staging/linux/npgsql-staging.zip)"
-    rm $WD/Npgsql/staging/linux/npgsql-staging.zip
+    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/npgsql-staging.zip $WD/Npgsql/staging/linux.build || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/npgsql-staging.zip)"
+    unzip $WD/Npgsql/staging/linux.build/npgsql-staging.zip -d $WD/Npgsql/staging/linux.build || _die "Failed to unpack the built source tree ($WD/staging/linux/npgsql-staging.zip)"
+    rm $WD/Npgsql/staging/linux.build/npgsql-staging.zip
     
-    cp $WD/Npgsql/source/Npgsql.linux/LICENSE.txt $WD/Npgsql/staging/linux/ || _die "Unable to copy LICENSE.txt"	
+    cp $WD/Npgsql/source/Npgsql.linux/LICENSE.txt $WD/Npgsql/staging/linux.build/ || _die "Unable to copy LICENSE.txt"
+    mkdir -p $WD/Npgsql/staging/linux || _die "Failed to create staging/linux directory"
+    cp -pR $WD/Npgsql/staging/linux.build/* $WD/Npgsql/staging/linux || _die "Failed to copy the staging/linux.build to staging/linux"
+    echo "PG_VERSION_NPGSQL=$PG_VERSION_NPGSQL" > $WD/Npgsql/staging/linux/versions-linux.sh
+    echo "PG_BUILDNUM_NPGSQL=$PG_BUILDNUM_NPGSQL" >> $WD/Npgsql/staging/linux/versions-linux.sh
 
     cd $WD
 
@@ -123,6 +119,8 @@ EOT
 _postprocess_Npgsql_linux() {
 
     echo "BEGIN POST Npgsql Linux"
+    source $WD/Npgsql/staging/linux/versions-linux.sh
+    PG_BUILD_NPGSQL=$(expr $PG_BUILD_NPGSQL + $SKIPBUILD)
  
     cd $WD/Npgsql
 
@@ -153,13 +151,23 @@ _postprocess_Npgsql_linux() {
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the menu pick xdg files"
     
     # Copy in installation xdg Files
-    cp -R $WD/scripts/xdg/xdg* staging/linux/installer/xdg || _die "Failed to copy the xdg files "
+    cp -R $WD/scripts/xdg/xdg* staging/linux/installer/xdg || _die "Failed to copy the xdg files"
 
     # Set permissions to all files and folders in staging
     _set_permissions linux
      
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_NPGSQL -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-linux.run $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}linux.run
 
     cd $WD
 
