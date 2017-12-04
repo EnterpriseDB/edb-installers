@@ -72,20 +72,11 @@ _build_Npgsql_windows() {
     cd $WD/Npgsql/source
 
     cat <<EOT > "build-Npgsql.bat"
-REM Setting Visual Studio Environment
-CALL "$PG_VSINSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
-
-REM batch file splits single argument containing "=" sign into two
-REM Following code handles this scenario
-
-cd Npgsql.windows
-CALL "$PG_NUGET_WINDOWS\nuget.exe" restore Npgsql.sln
-
-IF "%~3" == "" ( SET VAR3=""
-) ELSE (
-SET VAR3="%3=%4"
-)
-msbuild %1 /p:Configuration=%2 %VAR3%
+    cd Npgsql.windows\src\Npgsql
+    REM Restore Npgsql
+    dotnet restore
+    REM Build Npgsql
+    dotnet build -c Release
 GOTO end
 
 :end
@@ -98,7 +89,7 @@ EOT
 
     # We need to copy them to staging directory
     ssh $PG_SSH_WINDOWS  "mkdir -p $PG_PATH_WINDOWS/Npgsql.staging.build/bin" || _die "Failed to create the bin directory"
-    ssh $PG_SSH_WINDOWS "cp $PG_PATH_WINDOWS/Npgsql.windows/src/Npgsql/bin/Release/* $PG_PATH_WINDOWS/Npgsql.staging.build/bin" || _die "Failed to copy Npgsql binary to staging directory"
+    ssh $PG_SSH_WINDOWS "cp -pR $PG_PATH_WINDOWS/Npgsql.windows/src/Npgsql/bin/Release/* $PG_PATH_WINDOWS/Npgsql.staging.build/bin" || _die "Failed to copy Npgsql binary to staging directory"
 
     echo "Removing last successful staging directory ($PG_PATH_WINDOWS\\\\Npgsql.staging)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST Npgsql.staging rd /S /Q Npgsql.staging" || _die "Couldn't remove the last successful staging directory directory"
