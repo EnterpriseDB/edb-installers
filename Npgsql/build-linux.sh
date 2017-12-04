@@ -34,15 +34,15 @@ _prep_Npgsql_linux() {
     cp -R Npgsql-$PG_VERSION_NPGSQL-docs/* Npgsql.linux/docs || _die "Failed to copy the source code (source/Npgsql-$PG_VERSION_Npgsql-docs)"
     
     # Remove any existing staging directory that might exist, and create a clean one
-    if [ -e $WD/Npgsql/staging/linux ];
+    if [ -e $WD/Npgsql/staging/linux.build ];
     then
       echo "Removing existing staging directory"
-      rm -rf $WD/Npgsql/staging/linux || _die "Couldn't remove the existing staging directory"
+      rm -rf $WD/Npgsql/staging/linux.build || _die "Couldn't remove the existing staging directory"
     fi
 
     echo "Creating staging directory ($WD/Npgsql/staging/linux)"
-    mkdir -p $WD/Npgsql/staging/linux || _die "Couldn't create the staging directory"
-    chmod ugo+w $WD/Npgsql/staging/linux || _die "Couldn't set the permissions on the staging directory"
+    mkdir -p $WD/Npgsql/staging/linux.build || _die "Couldn't create the staging directory"
+    chmod ugo+w $WD/Npgsql/staging/linux.build || _die "Couldn't set the permissions on the staging directory"
     
     echo "END PREP Npgsql Linux"
 
@@ -57,6 +57,11 @@ _build_Npgsql_linux() {
     echo "BEGIN BUILD Npgsql Linux"
 
     cd $WD
+    echo "PG_VERSION_NPGSQL=$PG_VERSION_NPGSQL" > $WD/Npgsql/staging/linux.build/versions-linux.sh
+    echo "PG_BUILDNUM_NPGSQL=$PG_BUILDNUM_NPGSQL" >> $WD/Npgsql/staging/linux.build/versions-linux.sh
+    # Cpoy the complete build to staging linux
+    mkdir -p Npgsql/staging/linux || _die "Failed to create the staging/linux directroy"
+    cp -pR $WD/Npgsql/staging/linux.build/* $WD/Npgsql/staging/linux || _die "Failed to copy the staging/linux.build/ staging/linux"
 
     echo "END BUILD Npgsql Linux"
 }
@@ -69,6 +74,9 @@ _build_Npgsql_linux() {
 _postprocess_Npgsql_linux() {
 
     echo "BEGIN POST Npgsql Linux"
+
+    source $WD/Npgsql/staging/linux/versions-linux.sh
+    PG_BUILD_NPGSQL=$(expr $PG_BUILD_NPGSQL + $SKIPBUILD)
  
     cp -R $WD/Npgsql/source/Npgsql.linux/* $WD/Npgsql/staging/linux || _die "Failed to copy the Npgsql Source into the staging directory"
     chmod -R ugo+rx $WD/Npgsql/staging/linux/docs
@@ -102,13 +110,23 @@ _postprocess_Npgsql_linux() {
     mkdir -p staging/linux/installer/xdg || _die "Failed to create a directory for the menu pick xdg files"
     
     # Copy in installation xdg Files
-    cp -R $WD/scripts/xdg/xdg* staging/linux/installer/xdg || _die "Failed to copy the xdg files "
+    cp -R $WD/scripts/xdg/xdg* staging/linux/installer/xdg || _die "Failed to copy the xdg files"
 
     # Set permissions to all files and folders in staging
     _set_permissions linux
      
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer.xml linux || _die "Failed to build the installer"
+
+    # If build passed empty this variable
+    BUILD_FAILED="build_failed-"
+    if [ $PG_BUILD_NPGSQL -gt 0 ];
+    then
+        BUILD_FAILED=""
+    fi
+
+    # Rename the installer
+    mv $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-linux.run $WD/output/npgsql-$PG_VERSION_NPGSQL-$PG_BUILDNUM_NPGSQL-${BUILD_FAILED}linux.run
 
     cd $WD
 
