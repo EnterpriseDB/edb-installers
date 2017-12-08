@@ -21,7 +21,7 @@ _prep_ApacheHTTPD_windows() {
     #cd apache.windows/srclib/apr/atomic/win32/
     #patch -p0 < $WD/tarballs/apr-win32.patch
     cd $WD/ApacheHTTPD/source/apache.windows/srclib/apr-iconv/build
-    patch -p0 < $WD/tarballs/apr-iconv-win32.patch
+    patch -p0 < $WD/tarballs/apr-iconv-win32.patch || _die "Failed to apply apr-iconv-win32 patch"
     cd $WD/ApacheHTTPD/source/apache.windows
     if [ -f $WD/tarballs/apache_win_$PG_VERSION_APACHE.patch ];
     then
@@ -148,7 +148,7 @@ EOT
     APACHE_WIN_BUILT_COUNT=0
     while [ $APACHE_BUILT == 0 ]; do
         # We will stop trying, if the count is more than 3
-        if [ $APACHE_WIN_BUILT_COUNT -gt 9 ];
+        if [ $APACHE_WIN_BUILT_COUNT -gt 2 ];
         then
             _die "Failed to build Apache on Windows VM"
         fi
