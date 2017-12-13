@@ -917,7 +917,377 @@ EOF
 
     </finalPageActionList>
 
+    <readyToInstallActionList>
+        <setInstallerVariable name="branding" value="" persist="1">
+            <ruleList>
+                <isTrue value="${extract_mode}"/>
+            </ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable name="create_shortcuts" value="0" persist="1">
+            <ruleList>
+                <isTrue value="${extract_mode}"/>
+            </ruleList>
+        </setInstallerVariable>
+    </readyToInstallActionList>
+
     <preInstallationActionList>
+        <createTempDir dirPrefix="postgresql_installer"/>
+        <actionGroup>
+            <actionList>
+                <createDirectory path="${system_temp_directory}/postgresql_installer_${random_number}/bin"/>
+                <createDirectory path="${system_temp_directory}/postgresql_installer_${random_number}/lib"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- prerun_check script -->
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
+            <folder>defaultwindows</folder>
+            <origin>prerun_checks.vbs</origin>
+            <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
+            <folder>defaultlinux</folder>
+            <origin>prerun_checks.sh</origin>
+            <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
+            <folder>defaultlinux-x64</folder>
+            <origin>prerun_checks.sh</origin>
+            <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
+            <folder>defaultmacosx</folder>
+            <origin>prerun_checks.sh</origin>
+            <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
+            <folder>programfilessolaris-x64</folder>
+            <origin>server/installer/prerun_checks.sh</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-intel</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+        <unpackFile>
+            <component>default</component>
+            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
+            <folder>programfilessolaris-sparc</folder>
+            <origin>server/installer/prerun_checks.sh</origin>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>solaris-sparc</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </unpackFile>
+
+         <actionGroup>
+            <actionList>
+                <runProgram>
+                <program>cscript</program>
+                <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer_${random_number}\prerun_checks.vbs"</programArguments>
+                <abortOnError>0</abortOnError>
+                <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </runProgram>
+                <runProgram program="${system_temp_directory}/postgresql_installer_${random_number}/prerun_checks.sh">
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </runProgram>
+                <throwError>
+                    <text>${msg(prerunscript.command.line.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>1</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+                <throwError>
+                    <text>${msg(prerunscript.command.line.execute.error)}</text>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>2</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <actionList>
+                <!-- Do not create shortcuts, if extract mode is enabled -->
+                <setInstallerVariable name="create_shortcuts" value="0"/>
+                <!-- Do not create uninstaller in case of extract-only mode -->
+                <setInstallerVariable name="createUninstaller" value="0"/>
+                <setInstallerVariable name="iBranding" value=""/>
+                <componentSelection select="extractonly"/>
+            </actionList>
+            <ruleList>
+                <isTrue value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+        <setInstallerVariable name="branding" value="">
+            <ruleList>
+                <isFalse value="${create_shortcuts}"/>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- !WIN: Get existing directories & branding -->
+        <actionGroup>
+            <actionList>
+                <!-- Check whether menus were created, if its a re-install/upgrade -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>Shortcuts</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iShortcut</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+
+                <!-- Get the branding. -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>Branding</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>iBranding</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>iBranding</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+
+                <!-- Get the version installed. We use this to figure out if we have a pre-branding installation -->
+                <iniFileGet>
+                    <file>${PostgreSqlIni}</file>
+                    <key>Version</key>
+                    <section>PostgreSQL/${product_version}</section>
+                    <variable>brandingVer</variable>
+                    <ruleList>
+                        <fileTest>
+                            <condition>readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </iniFileGet>
+                <setInstallerVariable>
+                    <name>brandingVer</name>
+                    <persist>0</persist>
+                    <value></value>
+                    <ruleList>
+                        <fileTest>
+                            <condition>not_readable</condition>
+                            <path>${PostgreSqlIni}</path>
+                        </fileTest>
+                    </ruleList>
+                </setInstallerVariable>
+
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>windows</value>
+                </compareText>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- WIN: Get existing directories & branding -->
+        <actionGroup>
+            <actionList>
+                <!-- Get the existing installation directory. -->
+                <registryGet>
+                    <name>Base Directory</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <variable>iBaseDirectory</variable>
+                </registryGet>
+
+                <!-- Get the branding -->
+                <registryGet>
+                    <name>Branding</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <variable>iBranding</variable>
+                </registryGet>
+
+                <!-- Get the version installed. We use this to figure out if we have a pre-branding installation -->
+                <registryGet>
+                    <name>Version</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <variable>brandingVer</variable>
+                </registryGet>
+
+                <!-- Check whether menus were created, if its a re-install/upgrade -->
+                <registryGet>
+                    <name>Shortcuts</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <variable>iShortcut</variable>
+                </registryGet>
+
+           </actionList>
+           <ruleList>
+               <compareText>
+                   <logic>equals</logic>
+                   <text>${platform_name}</text>
+                   <value>windows</value>
+               </compareText>
+               <isFalse value="${extract_mode}"/>
+           </ruleList>
+        </actionGroup>
+
+        <!-- If there appears to be an existing installation, with no Branding value. -->
+        <!-- force the default value. Otherwise, set the branding to whatever we read, -->
+        <!-- or, set the default -->
+
+        <!-- In case of 32 bit installation on win64 append (x86) in the branding-->
+        <setInstallerVariable name="branding_suffix" value=""/>
+        <setInstallerVariable name="branding_suffix" value=" (x86)">
+            <ruleList>
+                <isTrue value="${win64_platform}"/>
+                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- In case of 32 bit installer being run on 64 bit machine, change display name to
+                     have suffix x86 for example in case of add or remove programs menu -->
+        <setInstallerVariable name="project.productDisplayName" value="${product_fullname} ${product_version} ${branding_suffix}"/>
+
+        <!-- Existing, old install (version, but no branding) -->
+        <setInstallerVariable>
+            <name>branding</name>
+            <persist>0</persist>
+            <value>PostgreSQL ${product_version}${branding_suffix}</value>
+            <ruleList>
+                <isTrue value="${create_shortcuts}"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${brandingVer}</text>
+                    <value></value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${iBranding}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- Existing install, with branding -->
+        <setInstallerVariable>
+            <name>branding</name>
+            <persist>0</persist>
+            <value>${iBranding}</value>
+            <ruleList>
+                <isTrue value="${create_shortcuts}"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${iBranding}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- New install, nothing set on the command line -->
+        <setInstallerVariable>
+            <name>branding</name>
+            <persist>0</persist>
+            <value>PostgreSQL ${product_version}${branding_suffix}</value>
+            <ruleList>
+                <isTrue value="${create_shortcuts}"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${branding}</text>
+                    <value></value>
+                </compareText>
+            </ruleList>
+        </setInstallerVariable>
+
+        <!-- Debugging -->
+        <logMessage>
+            <text>Using branding: ${branding}</text>
+        </logMessage>
+
         <actionGroup>
             <actionList>
                 <throwError>
@@ -1103,6 +1473,55 @@ EOF
     </preInstallationActionList>
 
     <postInstallationActionList>
+        <actionGroup>
+            <actionList>
+            <!-- Log server description -->
+            <logMessage>
+                <text>Write the server description to the ini file...</text>
+            </logMessage>
+            <iniFileSet>
+                <file>${PostgreSqlIni}</file>
+                <section>PostgreSQL/${product_version}</section>
+                <key>Description</key>
+                <value>${branding}</value>
+                <ruleList>
+                    <compareText>
+                        <logic>does_not_equal</logic>
+                        <text>${platform_name}</text>
+                        <value>windows</value>
+                    </compareText>
+                </ruleList>
+            </iniFileSet>
+            <registrySet>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
+                <name>Display Name</name>
+                <value>${branding}</value>
+            </registrySet>
+
+                <!-- Branding info -->
+                <logMessage>
+                    <text>Write the server branding to the ini file...</text>
+                </logMessage>
+                <iniFileSet>
+                    <file>${PostgreSqlIni}</file>
+                    <section>PostgreSQL/${product_version}</section>
+                    <key>Branding</key>
+                    <value>${branding}</value>
+                    <ruleList>
+                        <compareText>
+                            <logic>does_not_equal</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </iniFileSet>
+                <registrySet>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+                    <name>Branding</name>
+                    <value>${branding}</value>
+                </registrySet>
+             </actionList>
+           </actionGroup>
         <!-- Set server binary path in pgAdmin config_distro.py -->
         <actionGroup>
             <actionList>

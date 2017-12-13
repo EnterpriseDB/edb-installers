@@ -161,6 +161,9 @@
                 <distributionDirectory>
                     <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin 4</origin>
                 </distributionDirectory>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/pgadmin4/scripts</origin>
+                </distributionDirectory>
                 <distributionFile>
                     <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin_3rd_party_licenses.txt</origin>
                 </distributionFile>
@@ -226,7 +229,7 @@
                     <name>pgAdmin documentation</name>
                     <runInTerminal>0</runInTerminal>
                     <url>file://${installdir}/pgAdmin 4/docs/en_US/html/index.html</url>
-                    <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
+                    <windowsIcon>${installdir}\scripts\images\pgadmin-help.ico</windowsIcon>
                     <ruleList>
                         <isTrue value="${create_shortcuts}" />
                     </ruleList>

@@ -756,7 +756,12 @@ _postprocess_server_windows_x64() {
     mkdir -p $PGSERVER_STAGING_WINDOWS_X64/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/pg-help.ico $PGSERVER_STAGING_WINDOWS_X64/scripts/images || _die "Failed to copy the menu pick images (resources/pg-help.ico)"
     cp resources/pg-reload.ico $PGSERVER_STAGING_WINDOWS_X64/scripts/images || _die "Failed to copy the menu pick images (resources/pg-reload.ico)"
-    
+
+   # Copy in the menu pick images and XDG items
+    mkdir -p $PGADMIN_STAGING_WINDOWS_X64/scripts/images || _die "Failed to create a directory for the menu pick images"
+    cp resources/pg-help.ico $PGADMIN_STAGING_WINDOWS_X64/scripts/images/pgadmin-help.ico || _die "Failed to copy the menu pick images (resources/pg-help.ico)"
+
+
     # Copy the launch scripts
     cp scripts/windows/serverctl.vbs $PGSERVER_STAGING_WINDOWS_X64/scripts/serverctl.vbs || _die "Failed to copy the serverctl script (scripts/windows/serverctl.vbs)"
     cp scripts/windows/runpsql.bat $PGSERVER_STAGING_WINDOWS_X64/scripts/runpsql.bat || _die "Failed to copy the runpsql script (scripts/windows/runpsql.bat)"
