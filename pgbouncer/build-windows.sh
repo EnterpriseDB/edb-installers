@@ -82,7 +82,7 @@ _build_pgbouncer_windows() {
 @SET TEMP=/tmp
 
 REM Configuring, building the pgbouncer source tree
-@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/include -D_mkgmtime32=_mkgmtime" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS/lib" ./configure --prefix=\$COMMONDIR/pgbouncer.staging.build --with-libevent=$PG_PGBUILD_MINGW_WINDOWS --with-openssl=$PG_PGBUILD_MINGW_WINDOWS; make; make install  | $PG_MSYS_WINDOWS_PGBOUNCER\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/include -D_mkgmtime32=_mkgmtime" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS/bin -L$PG_PGBUILD_MINGW_WINDOWS/lib" ./configure --prefix=\$COMMONDIR/pgbouncer.staging.build --with-libevent=$PG_PGBUILD_MINGW_WINDOWS --with-openssl=$PG_PGBUILD_MINGW_WINDOWS; make; make install  | $PG_MSYS_WINDOWS_PGBOUNCER\bin\sh --login -i
 
 EOT
 
