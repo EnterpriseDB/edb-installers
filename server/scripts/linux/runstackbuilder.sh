@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2012-2017, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2018, EnterpriseDB Corporation.  All rights reserved
 
 usage() {
   echo "Usage: $0 [-h] [-m <str>] [-a <str>] [-d <str>] [-l <str>] [-c <str>]"
