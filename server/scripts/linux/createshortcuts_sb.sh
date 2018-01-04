@@ -73,7 +73,7 @@ fi
 
 if [ -f "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" ];
 then
-   "$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
+   "$INSTALLDIR/stackbuilder/installer/xdg/xdg-desktop-menu" uninstall --mode system \
           "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION.directory" \
           "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop"
 fi
@@ -86,8 +86,8 @@ fi
 
 # Create the icon resources
 cd "$INSTALLDIR/scripts/images"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 pg-stackbuilder-$VERSION_STR.png
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" install --size 32 pg-postgresql-$VERSION_STR.png
+"$INSTALLDIR/stackbuilder/installer/xdg/xdg-icon-resource" install --size 32 pg-stackbuilder-$VERSION_STR.png
+"$INSTALLDIR/stackbuilder/installer/xdg/xdg-icon-resource" install --size 32 pg-postgresql-$VERSION_STR.png
 
 # Fixup the scripts
 _fixup_file "$INSTALLDIR/scripts/launchstackbuilder.sh"
@@ -105,7 +105,7 @@ fi
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop"
 _fixup_file "$INSTALLDIR/scripts/xdg/pg-postgresql-$VERSION_STR.directory"
 
-"$INSTALLDIR/installer/xdg/xdg-desktop-menu" install --mode system  \
+"$INSTALLDIR/stackbuilder/installer/xdg/xdg-desktop-menu" install --mode system  \
   "$INSTALLDIR/scripts/xdg/pg-$BRANDING_STR.directory" \
     "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop" || _warn "Failed to create the top level menu for stack-builder"
 #Ubuntu 10.04 and greater require menu cache update

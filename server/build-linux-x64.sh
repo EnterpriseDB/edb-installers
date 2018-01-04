@@ -699,13 +699,9 @@ _postprocess_server_linux_x64() {
     chmod ugo+x $PGSERVER_STAGING_X64/installer/server/removeshortcuts_server.sh
 
     # Copy the XDG scripts
-    mkdir -p $PGSERVER_STAGING_X64/installer/xdg || _die "Failed to create a directory for the $PGSERVER_STAGING_X64/installer/xdg scripts"
-    mkdir -p $PGADMIN_STAGING_X64/installer/xdg || _die "Failed to create a directory for the $PGADMIN_STAGING_X64/installer/xdg scripts"
     mkdir -p $SB_STAGING_X64/installer/xdg || _die "Failed to create a directory for the $SB_STAGING_X64/installer/xdg scripts"
     mkdir -p $CLT_STAGING_X64/installer/xdg || _die "Failed to create a directory for the $CLT_STAGING_X64/installer/xdg scripts"
 
-    cp -pR $WD/scripts/xdg/xdg* $PGSERVER_STAGING_X64/installer/xdg || _die "Failed to copy the xdg scripts ($PGSERVER_STAGING_X64/scripts/xdg/xdg*)"
-    cp -pR $WD/scripts/xdg/xdg* $PGADMIN_STAGING_X64/installer/xdg || _die "Failed to copy the xdg scripts ($PGADMIN_STAGING_X64/scripts/xdg/xdg*)"
     cp -pR $WD/scripts/xdg/xdg* $SB_STAGING_X64/installer/xdg || _die "Failed to copy the xdg scripts ($SB_STAGING_X64/scripts/xdg/xdg*)"
     cp -pR $WD/scripts/xdg/xdg* $CLT_STAGING_X64/installer/xdg || _die "Failed to copy the xdg scripts ($CLT_STAGING_X64/scripts/xdg/xdg*)"
 

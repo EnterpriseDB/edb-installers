@@ -15,9 +15,6 @@
                 <distributionDirectory>
                     <origin>staging/linux/stackbuilder/scripts</origin>
                 </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux/stackbuilder/installer</origin>
-                </distributionDirectory>
                 <distributionFile>
                     <origin>staging/linux/stackbuilder/StackBuilder_3rd_party_licenses.txt</origin>
                 </distributionFile>
@@ -33,7 +30,7 @@
         <folder>
         <description>Program Files</description>
             <destination>${installdir}/stackbuilder</destination>
-            <name>programfileslinux_2</name>
+            <name>programfileslinux_1</name>
             <platforms>linux</platforms>
             <distributionFileList>
                 <distributionDirectory>
@@ -54,6 +51,46 @@
                 </compareText>
             </ruleList>
         </folder>
+        <folder>
+        <description>Program Files</description>
+            <destination>${installdir}/stackbuilder/installer</destination>
+            <name>programfileslinux_2</name>
+            <platforms>linux</platforms>
+            <distributionFileList>
+                <distributionDirectory allowWildcards="1">
+                    <excludeFiles>*/server</excludeFiles>
+                    <origin>staging/linux/stackbuilder/installer/*</origin>
+                </distributionDirectory>
+            </distributionFileList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+            </ruleList>
+        </folder>
+        <folder>
+        <description>Program Files</description>
+            <destination>${installdir}/installer/server</destination>
+            <name>programfileslinux_3</name>
+            <platforms>linux</platforms>
+            <distributionFileList>
+                <distributionFile>
+                    <origin>staging/linux/stackbuilder/installer/server/createshortcuts_sb.sh</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/linux/stackbuilder/installer/server/removeshortcuts_sb.sh</origin>
+                </distributionFile>
+            </distributionFileList>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
+                </compareText>
+            </ruleList>
+        </folder>
         <!-- LINUX_X64: Program files -->
         <folder>
             <description>Program Files</description>
@@ -64,9 +101,6 @@
                 <distributionDirectory>
                     <origin>staging/linux-x64/stackbuilder/scripts</origin>
                 </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/stackbuilder/installer</origin>
-                </distributionDirectory>
                 <distributionFile>
                     <origin>staging/linux-x64/stackbuilder/StackBuilder_3rd_party_licenses.txt</origin>
                 </distributionFile>
@@ -75,7 +109,7 @@
         <folder>
             <description>Program Files</description>
             <destination>${installdir}/stackbuilder</destination>
-            <name>programfileslinux-x64_2</name>
+            <name>programfileslinux-x64_1</name>
             <platforms>linux-x64</platforms>
             <distributionFileList>
                 <distributionDirectory>
@@ -87,6 +121,32 @@
                 <distributionDirectory>
                     <origin>staging/linux-x64/stackbuilder/share</origin>
                 </distributionDirectory>
+            </distributionFileList>
+        </folder>
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}/stackbuilder/installer</destination>
+            <name>programfileslinux-x64_2</name>
+            <platforms>linux-x64</platforms>
+            <distributionFileList>
+                <distributionDirectory allowWildcards="1">
+                    <excludeFiles>*/server</excludeFiles>
+                    <origin>staging/linux-x64/stackbuilder/installer/*</origin>
+                </distributionDirectory>
+            </distributionFileList>
+        </folder>
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}/installer/server</destination>
+            <name>programfileslinux-x64_3</name>
+            <platforms>linux-x64</platforms>
+            <distributionFileList>
+                <distributionFile>
+                    <origin>staging/linux-x64/stackbuilder/installer/server/createshortcuts_sb.sh</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>staging/linux-x64/stackbuilder/installer/server/removeshortcuts_sb.sh</origin>
+                </distributionFile>
             </distributionFileList>
         </folder>
         <!-- LINUX_PPC64: Program files -->

@@ -53,15 +53,15 @@ _warn() {
 }
 
 # Remove the menu shortcuts
-"$INSTALLDIR/installer/xdg/xdg-desktop-menu" uninstall --mode system \
+"$INSTALLDIR/stackbuilder/installer/xdg/xdg-desktop-menu" uninstall --mode system \
 	  "$INSTALLDIR/scripts/xdg/pg-stackbuilder-$VERSION_STR.desktop" || _warn "Failed to remove the top level menu"
 
 # Remove the icon resources
 cd "$INSTALLDIR/scripts/images"
-"$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 pg-stackbuilder-$VERSION_STR.png
+"$INSTALLDIR/stackbuilder/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 pg-stackbuilder-$VERSION_STR.png
 if [ ! -f pg-psql-$VERSION_STR.png ];
 then
-    "$INSTALLDIR/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 pg-postgresql-$VERSION_STR.png
+    "$INSTALLDIR/stackbuilder/installer/xdg/xdg-icon-resource" uninstall --mode system --size 32 pg-postgresql-$VERSION_STR.png
 fi
 
 # Only remove the directory file if it's branded
