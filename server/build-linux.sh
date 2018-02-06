@@ -301,9 +301,7 @@ EOT
 cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     source ../versions.sh
     source ../common.sh
-    # In PG10, the version numbering scheme got changed and adopted a single digit major version (10) instead of two which is not supported by psycopg2
-    # and requires a two digit version. Hence, use 9.6 installation to build pgAdmin
-    PATH=/opt/local/pg96-linux:\$PATH
+    PATH=$PG_STAGING/bin:\$PATH
     LD_LIBRARY_PATH=$PG_STAGING/lib:\$LD_LIBRARY_PATH
     # Set PYTHON_VERSION variable required for pgadmin build
     PYTHON_HOME=$PGADMIN_PYTHON_LINUX
@@ -326,9 +324,6 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     fi
     SOURCEDIR=$PG_PATH_LINUX/server/source/pgadmin.linux
     BUILDROOT=$PG_PATH_LINUX/server/source/pgadmin.linux/linux-build
-    # temp hack to use psycopg2 v2.7.1 as the latest version does not load on Linux and
-    # throws "ELF 64-bit LSB shared object, x86-64, version 1" error
-    sed -i 's/psycopg2>=2.7.1/psycopg2==2.7.1/g' \$SOURCEDIR/\requirements.txt
     test -d \$BUILDROOT || mkdir \$BUILDROOT
     cd \$BUILDROOT
     mkdir -p venv/lib
@@ -337,6 +332,24 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
     \$PIP --cache-dir "~/.cache/\$PIP-pgadmin" install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
+    # Uninstall psycopg2 and reinstall without binaries as the latest version does not load on Linux and
+    # throws ImportError "ELF load command address/offset not properly aligned for _psycopg.so"
+    pip uninstall -y psycopg2
+    PYSITEPACKAGES="$PG_PATH_LINUX/server/source/pgadmin.linux-x64/linux-build/venv/lib/python\$PYTHON_VERSION/site-packages"
+    LDFLAGS="-Wl,--rpath,\$PYSITEPACKAGES/psycopg2/.libs" pip install -v --no-cache-dir --no-binary :all: psycopg2
+    DEPLIBS="\`ldd \$PYSITEPACKAGES/psycopg2/_psycopg.so  | awk '{print \$1}'\`"
+    # copy the dependent libs and change the rpath
+    mkdir -p \$PYSITEPACKAGES/psycopg2/.libs
+    chrpath -r "\\\$ORIGIN/.libs:\\\$ORIGIN/../../.." \$PYSITEPACKAGES/psycopg2/_psycopg.so
+    for lib in \$DEPLIBS
+    do
+        if [ -f $PG_STAGING/lib/\$lib ]
+        then
+            cp $PG_STAGING/lib/\$lib \$PYSITEPACKAGES/psycopg2/.libs/
+        fi
+        chrpath -r "\\\$ORIGIN" \$PYSITEPACKAGES/psycopg2/.libs/lib*so*
+    done
+
     rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
 
     # Move the python<version> directory to python so that the private environment path is found by the application.
