@@ -200,6 +200,7 @@ use warnings;
     '$PG_VSINSTALLDIR_WINDOWS\VC\PlatformSDK\include',
     '$PG_FRAMEWORKSDKDIR_WINDOWS\include',
     '$PG_PGBUILD_WINDOWS\include',
+    '$PG_SDK_WINDOWS\Include',
     \$ENV{INCLUDE}
 );
 
@@ -211,6 +212,7 @@ use warnings;
     '$PG_VSINSTALLDIR_WINDOWS\VC\PlatformSDK\lib',
     '$PG_FRAMEWORKSDKDIR_WINDOWS\lib',
     '$PG_PGBUILD_WINDOWS\lib',
+    '$PG_SDK_WINDOWS\Lib',
     \$ENV{LIB}
 );
 
