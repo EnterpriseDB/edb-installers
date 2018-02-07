@@ -332,8 +332,9 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
         if [ -f $PG_STAGING/lib/\$lib ]
         then
             cp $PG_STAGING/lib/\$lib \$PYSITEPACKAGES/psycopg2/.libs/
+            chmod 755 \$PYSITEPACKAGES/psycopg2/.libs/\$lib
+            chrpath -r "\\\$ORIGIN" \$PYSITEPACKAGES/psycopg2/.libs/\$lib
         fi
-        chrpath -r "\\\$ORIGIN" \$PYSITEPACKAGES/psycopg2/.libs/lib*so*
     done
 
     rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
