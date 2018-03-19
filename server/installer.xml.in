@@ -1473,6 +1473,16 @@ EOF
     </preInstallationActionList>
 
     <postInstallationActionList>
+    <!-- Remove the pg_log directory in upgrademode -->
+        <actionGroup>
+           <actionList>
+               <deleteFile path="${installdir}/data/pg_log">
+                  <ruleList>
+                     <fileExists path="${installdir}/data/pg_log"/>
+                  </ruleList>
+               </deleteFile>
+           </actionList>
+        </actionGroup>
         <actionGroup>
             <actionList>
             <!-- Log server description -->

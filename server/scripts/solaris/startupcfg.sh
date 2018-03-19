@@ -42,14 +42,14 @@ cat <<EOT > "/lib/svc/method/$SERVICENAME"
 start()
 {
 	echo \$"Starting PostgreSQL $VERSION: "
-	su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\""
+	su - $USERNAME -c "$INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$DATADIR/log/startup.log\""
 	
 	if [ \$? -eq 0 ];
 	then
 		echo "PostgreSQL $VERSION started successfully"
                 exit 0
 	else
-		echo "PostgreSQL $VERSION did not start in a timely fashion, please see $DATADIR/pg_log/startup.log for details"
+		echo "PostgreSQL $VERSION did not start in a timely fashion, please see $DATADIR/log/startup.log for details"
                 exit 1
 	fi
 }

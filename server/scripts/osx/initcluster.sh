@@ -57,11 +57,11 @@ else
     su - $OSUSERNAME -c "$INSTALLDIR/bin/initdb --pwfile $INSTALLDIR/installer/server/initdbpw.$$ --locale=$LOCALE -A md5 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
 fi	
 	
-if [ ! -d "$DATADIR/pg_log" ];
+if [ ! -d "$DATADIR/log" ];
 then
-    mkdir "$DATADIR/pg_log" || _die "Failed to create the log directory ($DATADIR/pg_log)"
+    mkdir "$DATADIR/log" || _die "Failed to create the log directory ($DATADIR/log)"
 fi
-chown $OSUSERNAME:daemon "$DATADIR/pg_log" || _die "Failed to set the ownership of the log directory ($DATADIR/pg_log)"
+chown $OSUSERNAME:daemon "$DATADIR/log" || _die "Failed to set the ownership of the log directory ($DATADIR/log)"
 rm $INSTALLDIR/installer/server/initdbpw.$$ || _warn "Failed to remove the initdb password file ($INSTALLDIR/installer/server/initdbpw.$$)"
 
 # Edit the config files.

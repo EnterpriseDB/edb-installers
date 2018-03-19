@@ -60,7 +60,7 @@ User=$USERNAME
 Environment=PGDATA=$DATADIR
 PIDFILE=$DATADIR/postmaster.pid
 
-ExecStart=$INSTALLDIR/bin/pg_ctl start -w -D "$DATADIR" -l "$DATADIR/pg_log/startup.log"
+ExecStart=$INSTALLDIR/bin/pg_ctl start -w -D "$DATADIR" -l "$DATADIR/log/startup.log"
 ExecStop=$INSTALLDIR/bin/pg_ctl stop -m fast -w -D "$DATADIR"
 ExecReload=$INSTALLDIR/bin/pg_ctl reload -D "$DATADIR"
 
@@ -95,15 +95,15 @@ source $INSTALLDIR/etc/sysconfig/loadplLanguages.sh $INSTALLDIR
 
 start()
 {
-	su - $USERNAME -c "touch $DATADIR/pg_log/startup.log"
+	su - $USERNAME -c "touch $DATADIR/log/startup.log"
 	echo \$"Starting PostgreSQL $VERSION: "
 
 	echo
-	VerifyPLPaths &> $DATADIR/pg_log/startup.log
+	VerifyPLPaths &> $DATADIR/log/startup.log
 	LoadPLPaths
 	echo
 
-	su -s /bin/sh - $USERNAME -c "PATH=$INSTALLDIR/bin:\$PATH_PL_LANGUAGES:\$PATH LD_LIBRARY_PATH=$INSTALLDIR/lib:\$LD_LIBRARY_PATH_PL_LANGUAGES:\$LD_LIBRARY_PATH $INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\""
+	su -s /bin/sh - $USERNAME -c "PATH=$INSTALLDIR/bin:\$PATH_PL_LANGUAGES:\$PATH LD_LIBRARY_PATH=$INSTALLDIR/lib:\$LD_LIBRARY_PATH_PL_LANGUAGES:\$LD_LIBRARY_PATH $INSTALLDIR/bin/pg_ctl -w start -D \"$DATADIR\" -l \"$DATADIR/log/startup.log\""
 
 	if [ \$? -eq 0 ];
 	then
@@ -116,7 +116,7 @@ start()
 			exit 0
 
 	else
-		echo "PostgreSQL $VERSION did not start in a timely fashion, please see $DATADIR/pg_log/startup.log for details"
+		echo "PostgreSQL $VERSION did not start in a timely fashion, please see $DATADIR/log/startup.log for details"
                 exit 1
 	fi
 }
@@ -133,15 +133,15 @@ stop()
 
 restart()
 {
-	su - $USERNAME -c "touch $DATADIR/pg_log/startup.log"
+	su - $USERNAME -c "touch $DATADIR/log/startup.log"
 	echo \$"Restarting PostgreSQL $VERSION: "
 
         echo
-        VerifyPLPaths &> $DATADIR/pg_log/startup.log
+        VerifyPLPaths &> $DATADIR/log/startup.log
         LoadPLPaths
         echo
 
-	su -s /bin/sh - $USERNAME -c "PATH=$INSTALLDIR/bin:\$PATH_PL_LANGUAGES:\$PATH LD_LIBRARY_PATH=$INSTALLDIR/lib:\$LD_LIBRARY_PATH_PL_LANGUAGES:\$LD_LIBRARY_PATH $INSTALLDIR/bin/pg_ctl -w restart -D \"$DATADIR\" -l \"$DATADIR/pg_log/startup.log\" -m fast"
+	su -s /bin/sh - $USERNAME -c "PATH=$INSTALLDIR/bin:\$PATH_PL_LANGUAGES:\$PATH LD_LIBRARY_PATH=$INSTALLDIR/lib:\$LD_LIBRARY_PATH_PL_LANGUAGES:\$LD_LIBRARY_PATH $INSTALLDIR/bin/pg_ctl -w restart -D \"$DATADIR\" -l \"$DATADIR/log/startup.log\" -m fast"
 	
 	if [ \$? -eq 0 ];
 	then
@@ -153,7 +153,7 @@ restart()
 		echo "PostgreSQL $VERSION restarted successfully"
                 exit 0
 	else
-		echo "PostgreSQL $VERSION did not start in a timely fashion, please see $DATADIR/pg_log/startup.log for details"
+		echo "PostgreSQL $VERSION did not start in a timely fashion, please see $DATADIR/log/startup.log for details"
                 exit 1
 	fi
 }

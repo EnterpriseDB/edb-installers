@@ -350,10 +350,10 @@ If boolCheckAcl Then
     End If
 End If
 
-' Create the <DATA_DIR>\pg_log directory (if not exists)
+' Create the <DATA_DIR>\log directory (if not exists)
 ' Create it before updating the permissions, so that it will also get affected
-If  Not objFso.FolderExists(strDataDir & "\pg_log") Then
-    newfolder = objFso.CreateFolder (strDataDir & "\pg_log")
+If  Not objFso.FolderExists(strDataDir & "\log") Then
+    newfolder = objFso.CreateFolder (strDataDir & "\log")
 End If
 
 ' Secure the data directory
