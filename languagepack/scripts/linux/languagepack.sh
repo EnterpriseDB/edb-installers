@@ -465,7 +465,7 @@ then
 	ExecuteCommand "cp -rp $SSL_INST/lib/libjpeg* $PYTHON_INSTALL_PATH/lib"
 	ExecuteCommand "cp -rp $SSL_INST/lib/libtiff* $PYTHON_INSTALL_PATH/lib"
 	ExecuteCommand "pip install pytz"
-	ExecuteCommand "pip install sphinx"
+	ExecuteCommand "pip install sphinx==1.6.7"
 	ExecuteCommand "CFLAGS=-I$PYTHON_INSTALL_PATH/include LDFLAGS=-L$PYTHON_INSTALL_PATH/lib pip install cython"
 
 	ExecuteCommand "pip list >$PYTHON_INSTALL_PATH/pip_packages_list.txt"
