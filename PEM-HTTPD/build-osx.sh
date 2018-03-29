@@ -273,7 +273,6 @@ _postprocess_ApacheHTTPD_osx() {
     chmod ugo+x staging/osx/scripts/getapacheport.sh
 
     cp resources/index.html staging/osx/apache/www || _die "Failed to copy index.html"
-    _replace PG_VERSION_APACHE $PG_VERSION_APACHE "staging/osx/apache/www/index.html"
 
     # Set permissions to all files and folders in staging
     _set_permissions osx
