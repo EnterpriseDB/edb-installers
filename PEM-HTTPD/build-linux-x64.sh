@@ -81,6 +81,7 @@ _build_PEM-HTTPD_linux_x64() {
 	sed -e "s,^LoadModule unique_id_module modules/mod_unique_id.so,#LoadModule unique_id_module modules/mod_unique_id.so,g" httpd.conf > "/tmp/httpd.conf.tmp"
 	mv /tmp/httpd.conf.tmp httpd.conf
 
+    echo "ServerTokens Prod" >> "httpd.conf"
     # disable SSL v3 because of POODLE vulnerability
     echo "SSLProtocol All -SSLv2 -SSLv3" >> extra/httpd-ssl.conf
 

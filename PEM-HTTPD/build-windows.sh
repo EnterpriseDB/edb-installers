@@ -205,6 +205,7 @@ _postprocess_PEM-HTTPD_windows() {
     _replace "#ServerName www.example.com:8080" "ServerName localhost:@@PORT@@" "$WD/PEM-HTTPD/staging/windows/apache/conf/httpd.conf"
     _replace "#LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "LoadModule socache_shmcb_module modules/mod_socache_shmcb.so" "$WD/PEM-HTTPD/staging/windows/apache/conf/httpd.conf"
 
+    echo "ServerTokens Prod" >> "$WD/PEM-HTTPD/staging/windows/apache/conf/httpd.conf"
     # disable SSL v3 because of POODLE vulnerability
     echo "SSLProtocol All -SSLv2 -SSLv3" >> "$WD/PEM-HTTPD/staging/windows/apache/conf/extra/httpd-ssl.conf"
 
