@@ -240,7 +240,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     \$PYTHON_HOME/bin/virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
-    \$PIP --cache-dir "~/Library/Caches/\$PIP-pgadmin" install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
+    \$PIP --no-cache-dir install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
     rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
 
     # Move the python<version> directory to python so that the private environment path is found by the application.
