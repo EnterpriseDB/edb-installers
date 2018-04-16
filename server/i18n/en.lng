@@ -102,3 +102,4 @@ servicename.already.exists.osx=A service (com.edb.launchd.${servicename}.plist) 
 pg.service.description=Provides relational database storage.
 cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
 acl.check.description=Check and give the read permissions on the complete data directory path for the service account.
+warning.gnome.desktop=pgAdmin utilises the system tray which was removed in GNOME v3.26. In order to run pgAdmin you will need to install and enable the TopIcons Plus shell extension or equivalent.

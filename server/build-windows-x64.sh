@@ -198,7 +198,7 @@ cat <<EOT > "mingw-build-pgadmin4.bat"
 @SET PYTHON_VERSION=27
 @SET PATH=$PG_MINGW_QTTOOLS_WINDOWS_X64\bin;%PATH%
 cd "$PG_PATH_WINDOWS_X64\pgadmin.windows-x64\runtime"
-$PG_MINGW_QMAKE_WINDOWS_X64 DEFINES+=PGADMIN4_USE_WEBKIT
+$PG_MINGW_QMAKE_WINDOWS_X64
 mingw32-make clean
 mingw32-make
 
@@ -494,8 +494,6 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Quick.dll  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Quick.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Sensors.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Sensors.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Widgets.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Widgets.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5WebKit.dll  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebKit.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5WebKitWidgets.dll  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebKitWidgets.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libgcc_s_dw2-1.dll  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libgcc_s_dw2-1.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libst*  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libstdc++-6.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libwinpthread-1.dll  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libwinpthread-1.dll"

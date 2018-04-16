@@ -568,7 +568,26 @@ EOF
 
     <!-- Preinstallation actions -->
     <preInstallationActionList>
-
+        <!-- Get the GNOME Version -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariableFromScriptOutput name="current_desktop"
+                    exec="echo"
+                    execArgs="$XDG_CURRENT_DESKTOP"
+                    abortOnError="0" showMessageOnError="0" />
+                 <setInstallerVariableFromScriptOutput name="gnome_version"
+                     exec="echo"
+                     execArgs=" `gnome-shell --version | awk '{print $3}' | cut -d '.' -f1,2`"
+                     abortOnError="0" showMessageOnError="0" >
+                         <ruleList>
+                             <compareText logic="contains" text="${current_desktop}" value="GNOME" />
+                         </ruleList>
+                 </setInstallerVariableFromScriptOutput>
+            </actionList>
+            <ruleList>
+                <compareText logic="contains" text="${platform_name}" value="linux"/>
+            </ruleList>
+        </actionGroup>
         <!-- Create temporary directory where all the temp files will be copied -->   
         <!-- createTempDir is a custom function that creates the unique temporary directory with proper permissions and returns the path in tempDir variable -->
         <createTempDir dirPrefix="postgresql_installer"/>
@@ -2407,6 +2426,39 @@ EOF
     </preInstallationActionList>
 
     <readyToInstallActionList>
+         <!-- pgAdmin 3.x runs in the system tray. But, unfortunately the system tray was removed
+              in GNOME version 3.26. Hence, extensions like TopIcons Plus or an equivalent needs
+              to be installed on the target system if the deaktop session is GNOME and it's version
+              is equal or higher than 3.26.  The user should be warned of this -->
+         <actionGroup>
+             <actionList>
+                 <showWarning text="${msg(warning.gnome.desktop)}" />
+             </actionList>
+             <ruleList>
+                 <compareText logic="contains" text="${current_desktop}" value="GNOME" />
+                 <compareVersions logic="greater_or_equal"
+                     version1="${gnome_version}" version2="3.26" />
+                 <compareText logic="contains" text="${platform_name}" value="linux"/>
+                 <compareText text="${installer_interactivity}" logic="equals" value="normal"/>
+                 <isFalse value="${extract_mode}"/>
+             </ruleList>
+         </actionGroup>
+         <!-- log the warning message in unattended mode -->
+         <actionGroup>
+             <actionList>
+                 <logMessage text="${msg(warning.gnome.desktop)}" />
+                 <consoleWrite text="&#xA;Warning: ${msg(warning.gnome.desktop)}&#xA;"/>
+             </actionList>
+             <ruleList>
+                 <compareText logic="contains" text="${current_desktop}" value="GNOME" />
+                 <compareVersions logic="greater_or_equal"
+                     version1="${gnome_version}" version2="3.26" />
+                 <!-- following check means mode equals unattended -->
+                 <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
+                 <compareText logic="contains" text="${platform_name}" value="linux"/>
+                 <isFalse value="${extract_mode}"/>
+             </ruleList>
+         </actionGroup>
 
         <!-- Attempt to stop any existing server. We *always* do this, just in case  -->
         <!-- the existing installation is broken and it doesn't look like an upgrade -->
@@ -2820,6 +2872,51 @@ EOF
 
     <!-- Postinstallation actions -->
     <postInstallationActionList>
+    <!-- Remove the QtWebkit/QtWebengine files in upgrade mode -->
+    <actionGroup>
+        <actionList>
+            <deleteFile path="${installdir}/pgAdmin 4/plugins/qtwebengine">
+                <ruleList>
+                    <fileExists path="${installdir}/pgAdmin 4/plugins/qtwebengine"/>
+                </ruleList>
+            </deleteFile>
+            <deleteFile path="${installdir}/pgAdmin 4/translations">
+                <ruleList>
+                    <fileExists path="${installdir}/pgAdmin 4/translations"/>
+                </ruleList>
+            </deleteFile>
+            <deleteFile path="${installdir}/pgAdmin 4/bin/qtwebengine*.pak">
+                <ruleList>
+                    <fileExists path="${installdir}/pgAdmin 4/bin/qtwebengine*.pak"/>
+                </ruleList>
+            </deleteFile>
+            <deleteFile path="${installdir}/pgAdmin 4/bin/QtWebEngineProcess">
+                <ruleList>
+                    <fileExists path="${installdir}/pgAdmin 4/bin/QtWebEngineProcess"/>
+                </ruleList>
+            </deleteFile>
+            <deleteFile path="${installdir}/pgAdmin 4/lib/libQt5WebEngine*">
+                <ruleList>
+                    <fileExists path="${installdir}/pgAdmin 4/lib/libQt5WebEngine*"/>
+                </ruleList>
+            </deleteFile>
+        </actionList>
+        <ruleList>
+            <compareText logic="contains" text="${platform_name}" value="linux"/>
+        </ruleList>
+    </actionGroup>
+    <actionGroup>
+        <actionList>
+            <deleteFile path="${installdir}/pgAdmin 4/bin/Qt5WebKit*.dll">
+                <ruleList>
+                    <fileExists path="${installdir}/pgAdmin 4/bin/Qt5WebKit*.dll"/>
+                </ruleList>
+            </deleteFile>
+         </actionList>
+         <ruleList>
+             <compareText logic="equals" text="${platform_name}" value="windows"/>
+         </ruleList>
+    </actionGroup>
 
         <!-- Make the service-name persistent to make it available during uninstallation -->
         <setInstallerVariable>
