@@ -122,3 +122,4 @@ summary.database.port=Database Port
 summary.database.superuser=Database Superuser
 summary.serviceaccount=Operating System Account
 summary.databaseservice=Database Service
+warning.gnome.desktop=pgAdmin utilises the system tray which was removed in GNOME v3.26. In order to run pgAdmin you will need to install and enable the TopIcons Plus shell extension or equivalent.

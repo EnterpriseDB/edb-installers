@@ -76,3 +76,4 @@ pg.service.description=Proporciona almacenamiento de base de datos relacional.
 commandlinetools.desc=This option installs command line tools and client libraries such as libpq, ecpg, pg_basebackup, pg_dump, pg_restore, pg_bench and more. The command line tools are a required option when installing the PostgreSQL Database Server or pgAdmin 4.
 pgadmin.desc=pgAdmin 4 is a graphical interface for managing and working with PostgreSQL databases and servers.
 preinstall.exp=The following settings will be used for the installation:
+warning.gnome.desktop=pgAdmin utilises the system tray which was removed in GNOME v3.26. In order to run pgAdmin you will need to install and enable the TopIcons Plus shell extension or equivalent.
