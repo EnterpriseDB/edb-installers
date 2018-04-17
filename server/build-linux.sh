@@ -414,7 +414,6 @@ EOT-PGADMIN
     ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libicuuc.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libicudata.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Quick.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
-    ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5WebChannel.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Qml.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Positioning.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX "cp -pR $PG_QT_LINUX/lib/libQt5Core.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"

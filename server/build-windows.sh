@@ -445,7 +445,6 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_MINGW_QTPATH_WINDOWS\\\\bin\\\\libEGL.dll \"$PG_PATH_WINDOWS\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libEGL.dll"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_MINGW_QTPATH_WINDOWS\\\\bin\\\\libGLESv2.dll \"$PG_PATH_WINDOWS\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libGLESv2.dll"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_MINGW_QTPATH_WINDOWS\\\\bin\\\\Qt5Svg.dll \"$PG_PATH_WINDOWS\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Svg.dll"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_MINGW_QTPATH_WINDOWS\\\\bin\\\\Qt5WebChannel.dll \"$PG_PATH_WINDOWS\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebChannel.dll"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_MINGW_QTPATH_WINDOWS\\\\bin\\\\Qt5Positioning.dll \"$PG_PATH_WINDOWS\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Positioning.dll"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_MINGW_QTPATH_WINDOWS\\\\bin\\\\Qt5PrintSupport.dll \"$PG_PATH_WINDOWS\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5PrintSupport.dll"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_MINGW_QTPATH_WINDOWS\\\\bin\\\\Qt5MultimediaWidgets.dll \"$PG_PATH_WINDOWS\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5MultimediaWidgets.dll"

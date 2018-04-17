@@ -501,7 +501,6 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\libxslt-1.dll  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libxslt-1.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Network.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Network.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Multimedia.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Multimedia.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5WebChannel.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5WebChannel.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Positioning.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Positioning.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5PrintSupport.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5PrintSupport.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5MultimediaWidgets.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5MultimediaWidgets.dll"
