@@ -84,6 +84,13 @@ _prep_server() {
 
     echo "Unpacking pgAdmin source..."
     tar -zxvf ../../tarballs/pgadmin4-$PG_TARBALL_PGADMIN.tar.gz
+    # Applying the patch for pgAdmin.Because it has icon rendering issue.
+    cd pgadmin4-$PG_TARBALL_PGADMIN
+    if [ -e $WD/tarballs/icon_display_issue.patch ]
+    then
+    echo "Appyling the icon_display_issue.patch"
+    patch -p1 < $WD/tarballs/icon_display_issue.patch || _die "icon_display_issue.patch doesnot applied"
+    fi
 
     cd $WD/server/source
 
