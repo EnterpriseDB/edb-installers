@@ -288,7 +288,6 @@ use warnings;
     '$PG_DEVENVDIR_WINDOWS_X64',
     '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.13.26128\bin\Hostx64\x64',
     'C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin',
-    #'C:\Windows\Microsoft.NET\Framework\v4.0.30319',
     '$PG_FRAMEWORKSDKDIR_WINDOWS_X64\bin',
     'C:\WINDOWS\Microsoft.NET\Framework64\\$PG_FRAMEWORKVERSION_WINDOWS_X64',
     '$PG_PGBUILD_WINDOWS_X64\bin',
