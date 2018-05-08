@@ -137,7 +137,7 @@ _build_server_windows_x64() {
     cd $WD/server/scripts/windows
     cat <<EOT > "vc-build.bat"
 REM Setting Visual Studio Environment
-CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" x86
+CALL "$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Auxiliary\Build\vcvarsall.bat" x86
 
 @SET PGBUILD=$PG_PGBUILD_WINDOWS
 @SET OPENSSL=$PG_PGBUILD_WINDOWS
@@ -149,11 +149,11 @@ CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" x86
 
 IF "%2" == "UPGRADE" GOTO upgrade
 
-msbuild %1 /p:Configuration=%2 %3
+msbuild %1 /p:Configuration=%2 %3 /p:WindowsTargetPlatformVersion=10.0.16299.0
 GOTO end
 
 :upgrade
-vcupgrade /overwrite %1
+devenv /upgrade %1
 
 :end
 
@@ -162,7 +162,7 @@ EOT
   
     cat <<EOT > "vc-build-x64.bat"
 REM Setting Visual Studio Environment
-CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
+CALL "$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
 @SET PGBUILD=$PG_PGBUILD_WINDOWS_X64
 @SET OPENSSL=$PG_PGBUILD_WINDOWS_X64
@@ -180,11 +180,11 @@ IF "%~3" == "" ( SET VAR3=""
 ) ELSE (
 SET VAR3="%3=%4"
 )
-msbuild %1 /p:Configuration=%2 %VAR3%
+msbuild %1 /p:Configuration=%2 /p:WindowsTargetPlatformVersion=10.0.16299.0 %VAR3%
 GOTO end
 
 :upgrade
-vcupgrade /overwrite %1
+devenv /upgrade %1
 
 :end
 
@@ -215,7 +215,7 @@ mingw32-make
 EOT
     cat <<EOT > "vc-build-doc.bat"
 REM Setting Visual Studio Environment
-CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" x86
+CALL "$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Auxiliary\Build\vcvarsall.bat" x86
 
 @SET PGBUILD=$PG_PGBUILD_WINDOWS_X64
 @SET OPENSSL=$PG_PGBUILD_WINDOWS_X64
@@ -233,11 +233,11 @@ IF "%~3" == "" ( SET VAR3=""
 ) ELSE (
 SET VAR3="%3=%4"
 )
-msbuild %1 /p:Configuration=%2 %VAR3%
+msbuild %1 /p:Configuration=%2 /p:WindowsTargetPlatformVersion=10.0.16299.0 %VAR3%
 GOTO end
 
 :upgrade
-vcupgrade /overwrite %1
+devenv /upgrade %1
 
 :end
 
@@ -276,11 +276,8 @@ use warnings;
 
 \$ENV{VSINSTALLDIR} = '$PG_VSINSTALLDIR_WINDOWS_X64';
 \$ENV{VCINSTALLDIR} = '$PG_VSINSTALLDIR_WINDOWS_X64\VC';
-\$ENV{VS90COMNTOOLS} = '$PG_VSINSTALLDIR_WINDOWS_X64\Common7\Tools';
 \$ENV{FrameworkDir} = 'C:\WINDOWS\Microsoft.NET\Framework64';
 \$ENV{FrameworkVersion} = '$PG_FRAMEWORKVERSION_WINDOWS_X64';
-\$ENV{Framework35Version} = 'v3.5';
-\$ENV{FrameworkSDKDir} = '$PG_FRAMEWORKSDKDIR_WINDOWS_X64';
 \$ENV{DevEnvDir} = '$PG_DEVENVDIR_WINDOWS_X64';
 \$ENV{M4} = '$PG_PGBUILD_WINDOWS_X64\bin\m4.exe';
 \$ENV{CONFIG} = 'Release $PLATFORM_TOOLSET';
@@ -289,13 +286,11 @@ use warnings;
 (
     ';' ,
     '$PG_DEVENVDIR_WINDOWS_X64',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\VC\bin\amd64',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\Common7\Tools',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\Common7\Tools\bin',
+    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.13.26128\bin\Hostx64\x64',
+    'C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin',
+    #'C:\Windows\Microsoft.NET\Framework\v4.0.30319',
     '$PG_FRAMEWORKSDKDIR_WINDOWS_X64\bin',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\VC\PlatformSDK\Bin',
     'C:\WINDOWS\Microsoft.NET\Framework64\\$PG_FRAMEWORKVERSION_WINDOWS_X64',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\VC\VCPackages',
     '$PG_PGBUILD_WINDOWS_X64\bin',
     '$PG_PERL_WINDOWS_X64\bin',
     '$PG_PYTHON_WINDOWS_X64',
@@ -306,10 +301,8 @@ use warnings;
 \$ENV{INCLUDE} = join
 (
     ';',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\VC\ATLMFC\INCLUDE',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\VC\INCLUDE',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\VC\PlatformSDK\include',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\VC\PlatformSDK\include',
+    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.13.26128\ATLMFC\INCLUDE',
+    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.13.26128\INCLUDE',
     '$PG_FRAMEWORKSDKDIR_WINDOWS_X64\include',
     '$PG_PGBUILD_WINDOWS_X64\include',
     \$ENV{INCLUDE}
@@ -318,9 +311,8 @@ use warnings;
 \$ENV{LIB} = join
 (
     ';',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\VC\ATLMFC\LIB',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\VC\LIB',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\VC\PlatformSDK\lib',
+    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.13.26128\ATLMFC\LIB',
+    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.13.26128\LIB\onecore\x64',
     '$PG_FRAMEWORKSDKDIR_WINDOWS_X64\lib',
     '$PG_PGBUILD_WINDOWS_X64\lib',
     \$ENV{LIB}
@@ -330,7 +322,7 @@ use warnings;
 (
     ';',
     'C:\Windows\Microsoft.NET\Framework64\\$PG_FRAMEWORKVERSION_WINDOWS_X64',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\VC\ATLMFC\LIB'
+    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.13.26128\ATLMFC\LIB'
 );
 
 1;
@@ -402,7 +394,9 @@ EOT
 
 
     # Build the code and install into a temporary directory
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin:$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin; export M4=$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin/m4.exe; export VisualStudioVersion=12.0; ./build.bat RELEASE" || _die "Failed to build postgres on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin:$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin; export M4=$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin/m4.exe; export VisualStudioVersion=15.0; ./build.bat RELEASE" || _die "Failed to build postgres on the windows-x64 build host"
+
+#exit 1;
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin; ./install.bat $PG_PATH_WINDOWS_X64\\\\output.build" || _die "Failed to install postgres on the windows-x64 build host"
     
     # Build the debugger plugins
