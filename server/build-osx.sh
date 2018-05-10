@@ -135,60 +135,24 @@ _build_server_osx() {
 
     cd $WD/server/source/postgres.osx
 
-    if [ -f src/backend/catalog/genbki.sh ];
-	then
-      echo "Updating genbki.sh (WARNING: Not 64 bit safe!)..."
-      echo ""
-      ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx; source $PG_PATH_OSX/common.sh; _replace 'pg_config.h' 'pg_config_i386.h' src/backend/catalog/genbki.sh"
-    fi
-
     # Configure the source tree
-    echo "Configuring the postgres source tree for Intel"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -O2' LDFLAGS="-L/opt/local/Current/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/lib/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ICU_LIBS=\"-L/opt/local/Current/lib -licuuc -licudata -licui18n\" ICU_CFLAGS=\"-I/opt/local/Current/include\" ./configure --with-icu --host=i386-apple-darwin --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --enable-thread-safety --with-libxml --with-uuid=e2fs --with-includes=/opt/local/Current/include/libxml2:/opt/local/Current/include:/opt/local/Current/include/security --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi" || _die "Failed to configure postgres for i386"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx; mv src/include/pg_config.h src/include/pg_config_i386.h"
-
     echo "Configuring the postgres source tree for x86_64"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -arch x86_64 -O2' LDFLAGS="-L/opt/local/Current/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/lib/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ICU_LIBS=\"-L/opt/local/Current/lib -licuuc -licudata -licui18n\" ICU_CFLAGS=\"-I/opt/local/Current/include\"  ./configure --with-icu --host=x86_64-apple-darwin --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --enable-thread-safety --with-libxml --with-uuid=e2fs --with-includes=/opt/local/Current/include/libxml2:/opt/local/Current/include:/opt/local/Current/include/security --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi" || _die "Failed to configure postgres for x86_64"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx; mv src/include/pg_config.h src/include/pg_config_x86_64.h"
-
-    echo "Configuring the postgres source tree for Universal"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -O2' LDFLAGS="-L/opt/local/Current/lib" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/lib/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ICU_LIBS=\"-L/opt/local/Current/lib -licuuc -licudata -licui18n\" ICU_CFLAGS=\"-I/opt/local/Current/include\"  ./configure --with-icu --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --enable-thread-safety --with-libxml --with-uuid=e2fs --with-includes=/opt/local/Current/include/libxml2:/opt/local/Current/include:/opt/local/Current/include/security --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi" || _die "Failed to configure postgres for Universal"
-
-    # Create a replacement pg_config.h that will pull in the appropriate architecture-specific one:
-cat <<EOT > "/tmp/pg_config.h"
-#ifdef __BIG_ENDIAN__
- #error "Dont support ppc architecture"
-#else
- #ifdef __LP64__
-  #include "pg_config_x86_64.h"
- #else
-  #include "pg_config_i386.h"
- #endif
-#endif
-
-EOT
-   
-    ssh $PG_SSH_OSX "rm -f $PG_PATH_OSX/server/source/postgres.osx/src/include/pg_config.h" || _die "Failed to remove pg_config.h"
-    scp /tmp/pg_config.h $PG_SSH_OSX:$PG_PATH_OSX/server/source/postgres.osx/src/include/
-    rm -f /tmp/pg_config.h
 
     echo "Building postgres"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -O2' make -j4" || _die "Failed to build postgres"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS  -arch x86_64 -O2' make -j4" || _die "Failed to build postgres"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; make install" || _die "Failed to install postgres"
 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; cp src/include/pg_config_i386.h $PG_STAGING/include/"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; cp src/include/pg_config_x86_64.h $PG_STAGING/include/"
-
     echo "Building contrib modules"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64' make -j4" || _die "Failed to build the postgres contrib modules"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch x86_64' make -j4" || _die "Failed to build the postgres contrib modules"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; make install" || _die "Failed to install the postgres contrib modules"
 
     echo "Building pldebugger module"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64' make -j4" || _die "Failed to build the debugger module"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch x86_64' make -j4" || _die "Failed to build the debugger module"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
 
     echo "Building uuid-ossp module"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64' make -j4" || _die "Failed to build the uuid-ossp module" 
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch x86_64' make -j4" || _die "Failed to build the uuid-ossp module"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
 
     # Now, build pgAdmin
@@ -401,7 +365,7 @@ EOT-PGADMIN
     # Changing loader path of plpython3.so
      ssh $PG_SSH_OSX "install_name_tool -change libpython$PG_VERSION_PYTHON\m.dylib $PG_PYTHON_OSX/lib/libpython$PG_VERSION_PYTHON\m.dylib $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plpython3.so"
 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/scripts/osx/getlocales; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch i386 -arch x86_64 -o getlocales.osx -O0 getlocales.c"  || _die "Failed to build getlocales utility"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/scripts/osx/getlocales; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch x86_64 -o getlocales.osx -O0 getlocales.c"  || _die "Failed to build getlocales utility"
 
     # Delete the old regress dir from regression setup
     ssh $PG_SSH_OSX "cd /buildfarm/src/test/; rm -rf regress" || _die "Failed to remove the regression regress directory"
