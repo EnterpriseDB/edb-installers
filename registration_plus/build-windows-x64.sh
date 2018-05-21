@@ -61,11 +61,10 @@ _registration_plus_build_windows_x64()
 @ECHO OFF
 REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64
-REM CALL "$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\vcvarsall.bat" amd64
 
 cd $PG_REG_COMP_HOST_PATH\\dbserver_guid
 devenv /upgrade dbserver_guid.vcproj
-msbuild dbserver_guid.vcxproj /p:Configuration=Release /p:WindowsTargetPlatformVersion=10.0.16299.0
+msbuild dbserver_guid.vcxproj /p:Configuration=Release
 if NOT EXIST $PG_REG_COMP_HOST_PATH\\dbserver_guid\\release\\dbserver_guid.exe GOTO dbserver_guid-build-failed
 
 GOTO end

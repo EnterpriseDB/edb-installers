@@ -149,7 +149,7 @@ CALL "$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Auxiliary\Build\vcvarsall.bat
 
 IF "%2" == "UPGRADE" GOTO upgrade
 
-msbuild %1 /p:Configuration=%2 %3 /p:WindowsTargetPlatformVersion=10.0.16299.0
+msbuild %1 /p:Configuration=%2 %3
 GOTO end
 
 :upgrade
@@ -180,7 +180,7 @@ IF "%~3" == "" ( SET VAR3=""
 ) ELSE (
 SET VAR3="%3=%4"
 )
-msbuild %1 /p:Configuration=%2 /p:WindowsTargetPlatformVersion=10.0.16299.0 %VAR3%
+msbuild %1 /p:Configuration=%2 %VAR3%
 GOTO end
 
 :upgrade
@@ -233,7 +233,7 @@ IF "%~3" == "" ( SET VAR3=""
 ) ELSE (
 SET VAR3="%3=%4"
 )
-msbuild %1 /p:Configuration=%2 /p:WindowsTargetPlatformVersion=10.0.16299.0 %VAR3%
+msbuild %1 /p:Configuration=%2 %VAR3%
 GOTO end
 
 :upgrade
@@ -276,8 +276,6 @@ use warnings;
 
 \$ENV{VSINSTALLDIR} = '$PG_VSINSTALLDIR_WINDOWS_X64';
 \$ENV{VCINSTALLDIR} = '$PG_VSINSTALLDIR_WINDOWS_X64\VC';
-\$ENV{FrameworkDir} = 'C:\WINDOWS\Microsoft.NET\Framework64';
-\$ENV{FrameworkVersion} = '$PG_FRAMEWORKVERSION_WINDOWS_X64';
 \$ENV{DevEnvDir} = '$PG_DEVENVDIR_WINDOWS_X64';
 \$ENV{M4} = '$PG_PGBUILD_WINDOWS_X64\bin\m4.exe';
 \$ENV{CONFIG} = 'Release $PLATFORM_TOOLSET';
@@ -285,11 +283,9 @@ use warnings;
 \$ENV{PATH} = join
 (
     ';' ,
+    '$PG_MSBUILDDIR_WINDOWS_X64\bin',
     '$PG_DEVENVDIR_WINDOWS_X64',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.13.26128\bin\Hostx64\x64',
-    'C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin',
-    '$PG_FRAMEWORKSDKDIR_WINDOWS_X64\bin',
-    'C:\WINDOWS\Microsoft.NET\Framework64\\$PG_FRAMEWORKVERSION_WINDOWS_X64',
+    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.14.26428\bin\HostX64\x64',
     '$PG_PGBUILD_WINDOWS_X64\bin',
     '$PG_PERL_WINDOWS_X64\bin',
     '$PG_PYTHON_WINDOWS_X64',
@@ -300,9 +296,8 @@ use warnings;
 \$ENV{INCLUDE} = join
 (
     ';',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.13.26128\ATLMFC\INCLUDE',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.13.26128\INCLUDE',
-    '$PG_FRAMEWORKSDKDIR_WINDOWS_X64\include',
+    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.14.26428\ATLMFC\INCLUDE',
+    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.14.26428\INCLUDE',
     '$PG_PGBUILD_WINDOWS_X64\include',
     \$ENV{INCLUDE}
 );
@@ -310,9 +305,8 @@ use warnings;
 \$ENV{LIB} = join
 (
     ';',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.13.26128\ATLMFC\LIB',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.13.26128\LIB\onecore\x64',
-    '$PG_FRAMEWORKSDKDIR_WINDOWS_X64\lib',
+    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.14.26428\ATLMFC\LIB',
+    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.14.26428\LIB\onecore\x64',
     '$PG_PGBUILD_WINDOWS_X64\lib',
     \$ENV{LIB}
 );
@@ -320,8 +314,7 @@ use warnings;
 \$ENV{LIBPATH} = join
 (
     ';',
-    'C:\Windows\Microsoft.NET\Framework64\\$PG_FRAMEWORKVERSION_WINDOWS_X64',
-    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.13.26128\ATLMFC\LIB'
+    '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.14.26428\ATLMFC\LIB'
 );
 
 1;
@@ -551,7 +544,7 @@ EOT
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip -o stackbuilder-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (stackbuilder-win64.zip)"
 
     # Build the code
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"Visual Studio 12 Win64\" -D MS_VS_10=1 -D CURL_ROOT:PATH=$PG_PGBUILD_WINDOWS_X64 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS_X64 -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS_X64\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"$CMAKE_BUILD_GENERATOR Win64\" -D MS_VS_10=1 -D CURL_ROOT:PATH=$PG_PGBUILD_WINDOWS_X64 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS_X64 -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS_X64\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat stackbuilder.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat INSTALL.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to install stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mv $PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder\\\\bin\\\\stackbuilder.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to relocate the stackbuilder executable on the build host"
