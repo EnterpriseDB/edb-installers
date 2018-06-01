@@ -112,8 +112,6 @@ _prep_server() {
     
     # Get the last commit id
     cd pldebugger
-    echo "Applying debugger patch for v11 RM#43522"
-    test -f ~/tarballs/pldebugger_v11.patch && git apply ~/tarballs/pldebugger_v11.patch
     echo "pldebugger repo details:" 
     echo "Branch: `git branch | sed -n -e 's/^\* \(.*\)/\1/p'`"
     echo "Last commit:"
