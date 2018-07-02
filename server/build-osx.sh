@@ -709,7 +709,7 @@ _postprocess_server_osx() {
     scp server.img.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/output || _die "faled to copy server.img.tar.bz2 to $PG_PATH_OSX/output"
     rm -rf server.img* || _die "Failed to remove server.img from output directory."
 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; tar -jxvf server.img.tar.bz2; touch server.img/.Trash; hdiutil create -quiet -anyowners -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg'" || _die "Failed to create the disk image (postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg)"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; tar -jxvf server.img.tar.bz2; touch server.img/.Trash; hdiutil create -quiet -anyowners -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg'" || ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; rm -f server.img/.Trash; hdiutil create -quiet -anyowners -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg'" || _die "Failed to create the disk image (postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg)"
 
     echo "Attach the  disk image, create zip and then detach the image"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; hdid postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg" || _die "Failed to open the disk image (postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg in remote host.)"
