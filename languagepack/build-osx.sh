@@ -369,7 +369,7 @@ _postprocess_languagepack_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; tar -jxvf lp.img.tar.bz2; hdiutil create -quiet -anyowners -srcfolder lp.img -format UDZO -volname 'EDB-LanguagePack $PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK' -ov 'edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg'" || _die "Failed to create the disk image (edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg)"
 
     echo "Attach the  disk image, create zip and then detach the image"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; hdid edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg" || _die "Failed to open the disk image (edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg in remote host)"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; hdiutil detach '/Volumes/EDB_LanguagePack $PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK* -force'; hdid edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg" || _die "Failed to open the disk image (edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg in remote host)"
 
     ssh $PG_SSH_OSX "cd '/Volumes/EDB-LanguagePack $PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK'; zip -r $PG_PATH_OSX/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.zip edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app" || _die "Failed to create the installer zip file (edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.zip) in remote host."
 
