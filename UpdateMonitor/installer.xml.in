@@ -153,9 +153,6 @@ EOF
       <compareText text="${originalplatform}" value="linux-x32"/>
       </ruleList>
     </throwError>
-    <!-- Custom Page for Registration -->
-    <include file="staging/registration_plus_initialization.xml"/>
-
   </initializationActionList>
 
   <preInstallationActionList>
@@ -475,9 +472,6 @@ EOF
         <isFalse value="${extract_mode}"/>
       </ruleList>
     </actionGroup>
-
-    <!-- Custom Page for Registration -->
-    <include file="staging/registration_plus_preinstallation.xml"/>
   </preInstallationActionList>
 
   <readyToInstallActionList>
@@ -779,8 +773,6 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
                <fileExists path="${installdir}\scripts\launchUpdateMonitor.vbs" />
             </ruleList>
         </runProgram>
-    	<!-- Custom Page for Registration -->
-    	<include file="staging/registration_plus_postinstallation.xml"/>
       </actionList>
       <ruleList>
         <isFalse value="${extract_mode}"/>
@@ -1001,10 +993,6 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
     </deleteFile>
-
-    <!-- Custom Page for Registration -->
-    <include file="staging/registration_plus_preuninstallation.xml" />
-
   </preUninstallationActionList>
   <postUninstallationActionList>
     <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
@@ -1094,15 +1082,10 @@ ${num_client},RestartCommand=${installdir}/scripts/launchUpdateMonitor.sh &amp;
         </folder>
       </folderList>
    </component>  
-   <!-- Custom Page for Registration -->
-   <include file="staging/registration_plus_component.xml"/> 
   </componentList>
   <!-- Install Directory -->
   <parameterList>
 
-    <!-- Custom Page for Registration -->
-    <include file="staging/registration_plus_already_registered_parameter.xml"/>
-    <include file="staging/registration_plus_authentication_parameter.xml"/>
     <booleanParameter name="extract_mode" cliOptionName="extract-only" default="0" ask="1" cliOptionShow="1"/>
     <booleanParameter name="admin_rights" cliOptionName="require-admin" default="0" ask="0" cliOptionShow="0"/>
     <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>

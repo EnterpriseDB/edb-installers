@@ -34,19 +34,6 @@ sqlprotect.incompatible.pg64.error=The PostgreSQL Server Installation is incompa
 
 sqlprotect.incompatible.pg32.error=The PostgreSQL Server Installation is incompatible with this version of SQL/Protect. You are trying 64 bit SQL/Protect against 32 bit PostgreSQL server.
 
-registration_plus.error.invalid.email.value=Invalid email address. You must provide a valid email address.  Please try again.
-registration_plus.error.invalid.password.value=Password is empty or contains invalid characters. Please enter valid password.
-registration_plus.existingemail.authentication.explanation.value=Please enter the email address and password for your enterprisedb.com user account.
-registration_plus.existingemail.authentication.title.value=EnterpriseDB User Account Information
-registration_plus.existingemail.no=I do not have an enterprisedb.com user account.
-registration_plus.existingemail.yes=I already have an enterprisedb.com user account.
-registration_plus.explanation.value=If you do not have an account, click 'Next' to open your default web browser to register at the EnterpriseDB website.  Registration will also give you access to many free assets at EnterpriseDB including:\n\n- On Demand Webcasts\n- Instructional and business videos\n- White Papers
-registration_plus.title.value=Registration required at www.enterprisedb.com
-registration_plus.userAuth.email.value=Email address
-registration_plus.userAuth.password.value=Password
-registration_plus.ws.internet.not.connected=Error in calling web service. Please check the internet connection and try again.
-registration_plus.emailpassword.not.provided=Please provide the email address and password for your EnterpriseDB user account.
-internet.con.title=Checking Internet Connection
 sqlprotect.remove.shared_preload_libraries.info=Please do not forget to remove 'sqlprotect' from the 'shared_preload_libraries' setting in the server's postgresql.conf, and restart the PostgreSQL server.
 cannot.create.tmp.dir=Unable to create temp directory in ${system_temp_directory}. Please remove all existing installer directories in ${system_temp_directory} to proceed.
 

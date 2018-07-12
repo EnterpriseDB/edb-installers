@@ -142,13 +142,6 @@ echo "################################################"
 echo " Build common utilities or modularized packages"
 echo "################################################"
 
-#echo "### Module: registartion_plus"
-source $WD/registration_plus/build.sh
-
-if [ $SKIPBUILD = 0 ];
-then
-  _registration_plus_component_build
-fi
 
 # Build each package. This may have interdepencies so must be built in order
 echo "############################################################################"

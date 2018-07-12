@@ -230,8 +230,6 @@ _postprocess_updatemonitor_windows() {
     mkdir -p $WD/UpdateMonitor/staging/windows/share || _die "Couldn't create the staging/share directory"
     chmod ugo+w $WD/UpdateMonitor/staging/windows || _die "Couldn't set the permissions on the staging directory"
 
-    _registration_plus_postprocess "$WD/UpdateMonitor/staging"  "UpdateMonitor" "iUMVersion" "/etc/postgres-reg.ini" "UpdateMonitor" "UpdateMonitor" "UpdateMonitor" "$PG_VERSION_UPDATE_MONITOR"
-
     cd $WD/UpdateMonitor/staging/windows
     echo "Copying built tree to Windows host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST um_output.zip del /S /Q um_output.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\um_output.zip on Windows VM"
@@ -276,8 +274,6 @@ _postprocess_updatemonitor_windows() {
         rm -f installer-win.xml
     fi
     cp installer.xml installer-win.xml
-    _replace "registration_plus_component" "registration_plus_component_windows" installer-win.xml || _die "Failed to replace the registration_plus component file name"
-    _replace "registration_plus_preinstallation" "registration_plus_preinstallation_windows" installer-win.xml || _die "Failed to replace the registration_plus preinstallation file name"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-win.xml windows || _die "Failed to build the installer"

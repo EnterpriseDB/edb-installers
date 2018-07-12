@@ -100,8 +100,6 @@ _postprocess_sqlprotect_osx() {
     mkdir -p $WD/sqlprotect/staging/osx/sqlprotect || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/sqlprotect/staging/osx || _die "Couldn't set the permissions on the staging directory"
 
-    _registration_plus_postprocess "$WD/sqlprotect/staging"  "SQL Protect" "sqlprotectVersion" "/etc/postgres-reg.ini" "sqlprotect-PG_$PG_MAJOR_VERSION" "sqlprotect-PG_$PG_MAJOR_VERSION" "SQL Protect" "$PG_VERSION_SQLPROTECT"
-
     chmod -R ugo+r $WD/sqlprotect/staging/osx.build
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/sqlprotect/staging/osx; rm -f sqlprotect-staging.tar.bz2" || _die "Failed to remove archive of the sqlprotect staging"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/sqlprotect/staging/osx; tar -jcvf sqlprotect-staging.tar.bz2 *" || _die "Failed to create archive of the sqlprotect staging"

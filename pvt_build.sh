@@ -5,8 +5,6 @@ then
 
     # Source the private settings.    
     source $WD/pvt_settings.sh.REL-10
-    source $WD/registration_plus/build.sh
-    _registration_plus_component_build
 
     # Create the pvt_packages directory. If not exist.
     if [ ! -e $WD/pvt_packages ];

@@ -192,8 +192,6 @@ _postprocess_updatemonitor_osx() {
     mkdir -p $WD/UpdateMonitor/staging/osx || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/UpdateMonitor/staging/osx || _die "Couldn't set the permissions on the staging directory"
 
-    _registration_plus_postprocess "$WD/UpdateMonitor/staging"  "UpdateMonitor" "iUMVersion" "/etc/postgres-reg.ini" "UpdateMonitor" "UpdateMonitor" "UpdateMonitor" "$PG_VERSION_UPDATE_MONITOR"
-
     # Copy the staging to controller to build the installers
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/UpdateMonitor/staging/osx; rm -f updatemonitor-staging.tar.bz2" || _die "Failed to remove archive of the UpdateMonitor staging"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/UpdateMonitor/staging/osx; tar -jcvf updatemonitor-staging.tar.bz2 *" || _die "Failed to create archive of the updatemonitor staging"

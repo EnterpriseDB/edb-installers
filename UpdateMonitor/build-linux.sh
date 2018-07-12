@@ -137,8 +137,6 @@ _postprocess_updatemonitor_linux() {
     source $WD/UpdateMonitor/staging/linux/versions-linux.sh
     PG_BUILD_UPDATE_MONITOR=$(expr $PG_BUILD_UPDATE_MONITOR + $SKIPBUILD)
 
-    _registration_plus_postprocess "$WD/UpdateMonitor/staging"  "UpdateMonitor" "iUMVersion" "/etc/postgres-reg.ini" "UpdateMonitor" "UpdateMonitor" "UpdateMonitor" "$PG_VERSION_UPDATE_MONITOR"
-
     cd $WD/UpdateMonitor
     
     pushd staging/linux

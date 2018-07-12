@@ -10,7 +10,7 @@ installerFile=$1
 i18nFile=$2
 
 msgInInstaller=`sed 's/^.*\${msg(\(.*\))}.*$/###\1/' $installerFile  | grep "###" | sed 's/^###\(.*\)/\1/' | sort | uniq | grep -v "Installer"`
-msgInI18n=`sed -e '/^$/d' -e 's/^\([a-zA-Z._0-9\-]*\)=.*$/\1/' $i18nFile  | sort | uniq | grep -v "Installer" | grep -v "registration_plus" | grep -v "internet.con.title"`
+msgInI18n=`sed -e '/^$/d' -e 's/^\([a-zA-Z._0-9\-]*\)=.*$/\1/' $i18nFile  | sort | uniq | grep -v "Installer"`
 
 i=1
 echo "Testing for i18n tokens not described in i18n file .. "

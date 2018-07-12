@@ -201,10 +201,6 @@ EOF
         <setInstallerVariable name="pglibdir" value=""/>
         <setInstallerVariable name="installdir" value=""/>
         <setInstallerVariable name="default_installdir" value=""/>
-
-        <!-- Custome Page for Registration -->
-        <include file="staging/registration_plus_initialization.xml"/>
-
     </initializationActionList>
     <!-- Preinstallation actions -->
     <preInstallationActionList>
@@ -481,10 +477,6 @@ EOF
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/>
             </ruleList>
         </actionGroup>
-
-        <!-- Custome Page for Registration -->
-        <include file="staging/registration_plus_preinstallation.xml"/>
-
     </preInstallationActionList>
     <readyToInstallActionList>
         <actionGroup>
@@ -550,15 +542,11 @@ EOF
                 </actionGroup>
             </actionList>
         </actionGroup>
-
-        <!-- Custome Page for Registration -->
-        <include file="staging/registration_plus_postinstallation.xml"/>
-
-      <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
+        <deleteFile path="${system_temp_directory}/${product_shortname}_${random_number}" >
             <ruleList>
                 <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}" />
             </ruleList>
-      </deleteFile>
+        </deleteFile>
     </postInstallationActionList>
     <!-- preUninstallation actions -->
     <preUninstallationActionList>
@@ -593,9 +581,6 @@ EOF
             </ruleList>
         </actionGroup>
         <registryDelete key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\sqlprotect-PG_PG_MAJOR_VERSION"/>
-
-        <!-- Custome Page for Registration -->
-        <include file="staging/registration_plus_preuninstallation.xml"/>
     </preUninstallationActionList>
 
     <!-- postUninstallation actions -->
@@ -715,16 +700,8 @@ EOF
                 </folder>
             </folderList>
         </component>
-
-        <!-- Custome Page for Registration -->
-        <include file="staging/registration_plus_component.xml"/>
-
     </componentList>
     <parameterList>
-
-        <!-- Custome Page for Registration -->
-        <include file="staging/registration_plus_already_registered_parameter.xml"/>
-        <include file="staging/registration_plus_authentication_parameter.xml"/>
 
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>

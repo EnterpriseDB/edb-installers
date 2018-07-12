@@ -131,8 +131,6 @@ _postprocess_sqlprotect_windows_x64() {
     mkdir -p $WD/sqlprotect/staging/windows-x64/sqlprotect || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/sqlprotect/staging/windows-x64 || _die "Couldn't set the permissions on the staging directory"
 
-    _registration_plus_postprocess "$WD/sqlprotect/staging"  "SQL Protect" "sqlprotectVersion" "/etc/postgres-reg.ini" "sqlprotect-PG_$PG_MAJOR_VERSION" "sqlprotect-PG_$PG_MAJOR_VERSION" "SQL Protect" "$PG_VERSION_SQLPROTECT"
-
    # Zip up the installed code, copy it back here, and unpack.
    echo "Copying sqlprotect build tree to Unix host"
    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST sqlprotect-staging.zip del /S /Q sqlprotect-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\sqlprotect-staging.zip on Windows VM"
@@ -157,8 +155,6 @@ _postprocess_sqlprotect_windows_x64() {
 
     _replace @@WIN64MODE@@ "1" installer-win-x64.xml || _die "Failed to replace the WIN64MODE setting in the installer.xml"
     _replace @@WINDIR@@ "windows-x64" installer-win-x64.xml || _die "Failed to replace the WINDIR setting in the installer.xml"
-    _replace "registration_plus_component" "registration_plus_component_windows_x64" installer-win-x64.xml || _die "Failed to replace the registration_plus component file name"
-    _replace "registration_plus_preinstallation" "registration_plus_preinstallation_windows_x64" installer-win-x64.xml || _die "Failed to replace the registration_plus preinstallation file name"
 
     # Build the installer
     "$PG_INSTALLBUILDER_BIN" build installer-win-x64.xml windows || _die "Failed to build the installer"
