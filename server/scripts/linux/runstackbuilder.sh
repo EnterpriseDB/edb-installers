@@ -70,35 +70,28 @@ echo "This window must be kept open while Stack Builder is running."
 echo ""
 
 #Is it Ubuntu?
-uname -a | grep -i ubuntu > /dev/null
-if [ "$?" -eq "0" ];
+if [ -f /etc/lsb-release ];
 then
-    #assuming /etc/lsb-release is always present on Ubuntu
-    #libpng causes the issue while launching the Stackbuilder as it has dependecny on libz so used the LD_PRELOAD variable to launch it without any issues.
-
-    UBUNTU_VERSION=`grep DISTRIB_RELEASE /etc/lsb-release | cut -d "=" -f2 | cut -d "." -f1`
-    if [ "$UBUNTU_VERSION" -ge "17" ];
-    then
-       SET_LDPRELOAD="LD_PRELOAD=/lib/x86_64-linux-gnu/libz.so.1"
-    fi
-fi
-if [ ! -z "$SET_LDPRELOAD" ];
-then
-   export eval ${SET_LDPRELOAD}
+   if [ `grep -E '^DISTRIB_ID=[a-zA-Z]?buntu$' /etc/lsb-release | wc -l` != "0" ];
+   then
+      ISIT_UBUNTU=1
+      #libpng causes the issue while launching the Stackbuilder as it has dependecny on libz so used the LD_PRELOAD variable to launch it without any issues.
+      UBUNTU_VERSION=`grep DISTRIB_RELEASE /etc/lsb-release | cut -d "=" -f2 | cut -d "." -f1`
+      if [ "$UBUNTU_VERSION" -ge "17" ];
+      then
+         LD_PRELOAD="/lib/x86_64-linux-gnu/libz.so.1"
+      fi
+   fi
 fi
 
 # You're not running this script as root user
 if [ x"$LOADINGUSER" != x"root" ];
 then
-
     USE_SUDO=0
 
-    if [ -f /etc/lsb-release ];
+    if [ ! -z $ISIT_UBUNTU ];
     then
-        if [ `grep -E '^DISTRIB_ID=[a-zA-Z]?buntu$' /etc/lsb-release | wc -l` != "0" ];
-        then
-            USE_SUDO=1
-        fi
+       USE_SUDO=1
     fi
 
     if [ $USE_SUDO != "1" ];
