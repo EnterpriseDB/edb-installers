@@ -879,7 +879,7 @@ EOF
 
         <!-- Linux: Run stackbuilder -->
         <runProgram>
-            <program>${installdir}/scripts/launchstackbuilder.sh</program>
+            <program>${installdir}/scripts/runstackbuilder.sh</program>
             <progressText>${msg(progress.text.run.stackbuilder)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>

@@ -72,27 +72,28 @@ echo ""
 #Is it Ubuntu?
 if [ -f /etc/lsb-release ];
 then
-   if [ `grep -E '^DISTRIB_ID=[a-zA-Z]?buntu$' /etc/lsb-release | wc -l` != "0" ];
-   then
-      ISIT_UBUNTU=1
-      #libpng causes the issue while launching the Stackbuilder as it has dependecny on libz so used the LD_PRELOAD variable to launch it without any issues.
-      UBUNTU_VERSION=`grep DISTRIB_RELEASE /etc/lsb-release | cut -d "=" -f2 | cut -d "." -f1`
-      if [ "$UBUNTU_VERSION" -ge "17" ];
-      then
-         LD_PRELOAD="/lib/x86_64-linux-gnu/libz.so.1"
-      fi
-   fi
+    if [ `grep -E '^DISTRIB_ID=[a-zA-Z]?buntu$' /etc/lsb-release | wc -l` != "0" ];
+    then
+        ISIT_UBUNTU=1
+        #libpng causes the issue while launching the Stackbuilder as it has dependecny on libz so used the LD_PRELOAD variable to launch it without any issues.
+        UBUNTU_VERSION=`grep DISTRIB_RELEASE /etc/lsb-release | cut -d "=" -f2 | cut -d "." -f1`
+        if [ "$UBUNTU_VERSION" -ge "17" ];
+        then
+            LD_PRELOAD="/lib/x86_64-linux-gnu/libz.so.1"
+        fi
+    fi
 fi
 
 # You're not running this script as root user
 if [ x"$LOADINGUSER" != x"root" ];
 then
-    USE_SUDO=0
 
-    if [ ! -z $ISIT_UBUNTU ];
-    then
+   USE_SUDO=0
+
+   if [ ! -z $ISIT_UBUNTU ];
+   then
        USE_SUDO=1
-    fi
+   fi
 
     if [ $USE_SUDO != "1" ];
     then
@@ -103,13 +104,13 @@ then
 
     if [ $USE_SUDO = "1" ];
     then
-        sudo su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $COMMAND_LINE_ARGS"
+        sudo su - -c "LD_PRELOAD="$LD_PRELOAD" LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $COMMAND_LINE_ARGS"
     else
         su - -c "LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $COMMAND_LINE_ARGS"
     fi
 
 else
-    LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $COMMAND_LINE_ARGS
+    LD_PRELOAD="$LD_PRELOAD" LD_LIBRARY_PATH="PG_INSTALLDIR/stackbuilder/lib":"PG_INSTALLDIR/lib":$LD_LIBRARY_PATH G_SLICE=always-malloc "PG_INSTALLDIR/stackbuilder/bin/stackbuilder" $COMMAND_LINE_ARGS
 fi
 
 # Wait a while to display su or sudo invalid password error if any
