@@ -60,7 +60,7 @@ mkdir -p "$FOLDER/Documentation" || _die "Failed to create the menu directory ($
 
 # Create the scripts
 #_compile_script "$INSTALLDIR/scripts/doc-installationnotes.applescript" "$FOLDER/Documentation/Installation notes.app" "$INSTALLDIR/scripts/images/pg-help.icns"
-_compile_script "$INSTALLDIR/scripts/doc-postgresql.applescript" "$FOLDER/Documentation/PostgreSQL documentation.app" "$INSTALLDIR/scripts/images/pg-help.icns"
+#_compile_script "$INSTALLDIR/scripts/doc-postgresql.applescript" "$FOLDER/Documentation/PostgreSQL documentation.app" "$INSTALLDIR/scripts/images/pg-help.icns"
 #_compile_script "$INSTALLDIR/scripts/doc-postgresql-releasenotes.applescript" "$FOLDER/Documentation/PostgreSQL release notes.app" "$INSTALLDIR/scripts/images/pg-help.icns"
 _compile_script "$INSTALLDIR/scripts/doc-pgadmin.applescript" "$FOLDER/Documentation/pgAdmin documentation.app" "$INSTALLDIR/scripts/images/pg-help.icns"
 _compile_script "$INSTALLDIR/scripts/pgadmin.applescript" "$FOLDER/pgAdmin 4.app" "$INSTALLDIR/pgAdmin 4.app/Contents/Resources/pgAdmin4.icns"
