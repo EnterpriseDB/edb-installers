@@ -315,7 +315,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cd \$BUILDROOT
     mkdir -p venv/lib
     cp -pR \$PYTHON_HOME/lib/lib*.so* venv/lib/
-    virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
+    \$PYTHON_HOME/bin/virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
     \$PIP --cache-dir "~/.cache/\$PIP-pgadmin" install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
@@ -324,10 +324,10 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     pip uninstall -y psycopg2
     PYSITEPACKAGES="$PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/linux-build/venv/lib/python\$PYTHON_VERSION/site-packages"
     LDFLAGS="-Wl,--rpath,\$PYSITEPACKAGES/psycopg2/.libs" pip install -v --no-cache-dir --no-binary :all: psycopg2
-    DEPLIBS="\`ldd \$PYSITEPACKAGES/psycopg2/_psycopg.so  | awk '{print \$1}'\`"
+    DEPLIBS="\`ldd \$PYSITEPACKAGES/psycopg2/_psycopg*.so  | awk '{print \$1}'\`"
     # copy the dependent libs and change the rpath
     mkdir -p \$PYSITEPACKAGES/psycopg2/.libs
-    chrpath -r "\\\$ORIGIN/.libs:\\\$ORIGIN/../../.." \$PYSITEPACKAGES/psycopg2/_psycopg.so
+    chrpath -r "\\\$ORIGIN/.libs:\\\$ORIGIN/../../.." \$PYSITEPACKAGES/psycopg2/_psycopg*.so
     for lib in \$DEPLIBS
     do
         if [ -f $PG_STAGING/lib/\$lib ]
@@ -503,7 +503,6 @@ EOT-PGADMIN
     mkdir -p $WD/output/symbols/linux-x64 || _die "Failed to create $WD/output/symbols/linux-x64 directory"
     mv $WD/server/staging/linux-x64.build/symbols $WD/output/symbols/linux-x64/server || _die "Failed to move $WD/server/staging/linux-x64.build/symbols to $WD/output/symbols/linux-x64/server directory"
     mv $WD/server/staging/linux-x64.build/pgAdmin4 $WD/server/staging/linux-x64.build/pgAdmin\ 4/
-    touch $WD/server/staging/linux-x64.build/pgAdmin\ 4/venv/lib/python2.7/site-packages/backports/__init__.py || _die "Failed to tocuh the __init__.py"
 
     echo "Removing last successful staging directory ($WD/server/staging/linux-x64)"
     rm -rf $WD/server/staging/linux-x64 || _die "Couldn't remove the last successful staging directory"

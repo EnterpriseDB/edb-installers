@@ -444,8 +444,6 @@ _postprocess_server_osx() {
     # Copy the required Python executables
     scp $PG_SSH_OSX:$PGADMIN_PYTHON_OSX/Python $WD/server/staging/osx/pgAdmin\ 4.app/Contents/Resources/venv/.Python
 
-    # ensure that there's an __init__.py file present in the backports module directory
-    touch $WD/server/staging/osx/pgAdmin\ 4.app/Contents/Resources/venv/lib/python/site-packages/backports/__init__.py || _die "Failed to touch the __init__.py"
     cd $WD/server
 
     pushd staging/osx
