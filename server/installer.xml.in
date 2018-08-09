@@ -2868,6 +2868,16 @@ EOF
                 <fileExists path="${installdir}/pgAdmin 4/web"/>
             </ruleList>
         </deleteFile>
+        <!-- Always remove the old venv in upgrade -->
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${installdir}/pgAdmin 4/venv">
+                    <ruleList>
+                        <fileExists path="${installdir}/pgAdmin 4/venv"/>
+                    </ruleList>
+                </deleteFile>
+            </actionList>
+        </actionGroup>
     </readyToInstallActionList>
 
     <!-- Postinstallation actions -->
