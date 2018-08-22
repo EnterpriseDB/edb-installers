@@ -15,6 +15,17 @@ then
     fi
 fi
 
+#Is it Fedora?
+if [ -f /etc/fedora-release ];
+then
+    FEDORA_VERSION=`cat /etc/fedora-release | cut -d " " -f3`
+    #libpng causes the issue while launching the pgAdmin as it has dependecny on libz so used the LD_PRELOAD variable to launch it without any issues
+    if [ "$FEDORA_VERSION" -ge "28" ];
+    then
+        SET_LDPRELOAD="LD_PRELOAD=/lib64/libz.so.1"
+    fi
+fi
+
   if [ ! -z "$SET_LDPRELOAD" ];
   then
      export eval ${SET_LDPRELOAD}
