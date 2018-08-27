@@ -368,7 +368,7 @@ generate_3rd_party_license()
 _archive_symbols() {
     pushd output/symbols
 
-    for platform in linux linux-x64 windows windows-x64
+    for platform in linux linux-x64 windows windows-x64 pem-linux-x64/pem-server pem-linux-x64/pem-agent
     do
         if [ -d $platform ]
         then
