@@ -34,6 +34,8 @@
     <windowsSoftwareRegistryPrefix/>
     <!-- set if it is a native windows 64 bit-->
     <windows64bitMode>@@WIN64MODE@@</windows64bitMode>
+    <!-- macOS 64bit App -->
+    <osxPlatforms>osx-intel osx-x86_64</osxPlatforms>
 
     <!-- Images -->
     <disableSplashScreen>1</disableSplashScreen>
