@@ -34,6 +34,8 @@
   <wrapLicenseFileText>1</wrapLicenseFileText>
   <licenseFile encoding="utf-8">resources/licence.txt</licenseFile>
   <startMenuGroupName/>
+  <!-- macOS 64bit App -->
+  <osxPlatforms>osx-intel osx-x86_64</osxPlatforms>
   <!-- Images -->
   <disableSplashScreen>1</disableSplashScreen>
   <leftImage>../resources/edb-side.png</leftImage>
