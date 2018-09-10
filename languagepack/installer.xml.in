@@ -35,6 +35,8 @@
   <uninstallationLogFile>${system_temp_directory}/uninstall-edb-${product_shortname}.log</uninstallationLogFile>
   <windowsSoftwareRegistryPrefix/>
   <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
+  <!-- macOS 64bit App -->
+  <osxPlatforms>osx-intel osx-x86_64</osxPlatforms>
   <!-- Images -->
   <disableSplashScreen>1</disableSplashScreen>
   <leftImage>../resources/pg-side.png</leftImage>
