@@ -226,7 +226,7 @@ _build_languagepack_osx() {
     cd $PG_PATH_OSX/languagepack/source/perl.osx
     export LD_RUN_PATH=\$PERL_INSTALL_PATH/lib
 
-    LDFLAGS='-L\$PERL_INSTALL_PATH/lib' ./Configure -ders -Dcc=gcc -Dusethreads -Duseithreads -Uinstallusrbinperl -Ulocincpth= -Uloclibpth= -A ccflags=-DUSE_SITECUSTOMIZE -A ccflags=-DPERL_RELOCATABLE_INCPUSH -A ccflags=-Duselargefiles -Accflags='\$PG_ARCH_OSX_CFLAGS -arch x86_64 -fno-merge-constants' -Aldflags='-arch x86_64' -Duseshrplib -Dprefix=\$PERL_INSTALL_PATH -Dprivlib=\$PERL_INSTALL_PATH/lib -Darchlib=\$PERL_INSTALL_PATH/lib -Dsiteprefix=\$PERL_INSTALL_PATH/site -Dsitelib=\$PERL_INSTALL_PATH/site/lib -Dsitearch=\$PERL_INSTALL_PATH/site/lib || _die "Failed to configure Perl"
+    LDFLAGS='-L\$PERL_INSTALL_PATH/lib' ./Configure -ders -Dcc=llvm-gcc-4.2 -Dusethreads -Duseithreads -Uinstallusrbinperl -Ulocincpth= -Uloclibpth= -A ccflags=-DUSE_SITECUSTOMIZE -A ccflags=-DPERL_RELOCATABLE_INCPUSH -A ccflags=-Duselargefiles -Accflags='\$PG_ARCH_OSX_CFLAGS -arch x86_64 -fno-merge-constants' -Aldflags='-arch x86_64' -Duseshrplib -Dprefix=\$PERL_INSTALL_PATH -Dprivlib=\$PERL_INSTALL_PATH/lib -Darchlib=\$PERL_INSTALL_PATH/lib -Dsiteprefix=\$PERL_INSTALL_PATH/site -Dsitelib=\$PERL_INSTALL_PATH/site/lib -Dsitearch=\$PERL_INSTALL_PATH/site/lib || _die "Failed to configure Perl"
     make || _die "Failed to Make Perl"
     make install || _die "Failed to make install Perl"   
     
