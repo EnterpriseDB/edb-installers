@@ -86,7 +86,7 @@ cat <<PGMEMCACHE > $WD/pgmemcache/build-pgmemcache.sh
     PG_PATH=$PG_PATH_OSX/server/staging_cache/\$PGMEM_PLATFORM
 
     cd \$PGMEM_SOURCE
-    PATH=\$PG_PATH/bin:\$PATH make CFLAGS="$PG_ARCH_OSX_CFLAGS -I/opt/local/Current/include -arch x86_64 -arch i386" LDFLAGS="-L/opt/local/Current/lib -arch x86_64 -arch i386" || _die "Failed to build the pgmemcache for \$PGMEM_PLATFORM"
+    PATH=\$PG_PATH/bin:\$PATH make CFLAGS="$PG_ARCH_OSX_CFLAGS -I/opt/local/Current/include -arch x86_64" LDFLAGS="-L/opt/local/Current/lib -arch x86_64" || _die "Failed to build the pgmemcache for \$PGMEM_PLATFORM"
 
     # Copying the binaries
     mkdir -p \$PGMEM_STAGING/include || _die "Failed to create include directory"
