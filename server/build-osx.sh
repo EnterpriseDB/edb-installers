@@ -201,7 +201,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
         export UNINSTALL_VIRTUALENV=1
     fi
 
-    \$PYTHON_HOME/bin/virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
+    \$PYTHON_HOME/bin/virtualenv --always-copy -p \$PYTHON venv || _die "Failed to create venv"
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
     \$PIP --no-cache-dir install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
@@ -259,6 +259,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
 
     # copy the web directory to the bundle as it is required by runtime
     cp -r $PG_PATH_OSX/server/source/pgadmin.osx/web "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/"
+    cp /opt/local/Current/certs/cacert.pem "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/web/"
     mkdir -p "\$BUILDROOT/pgAdmin 4.app/Contents/Resources/venv/bin"
     cp "\$BUILDROOT/venv/bin/python" "\$BUILDROOT/pgAdmin 4.app/Contents/Resources/venv/bin"
 
@@ -454,8 +455,6 @@ _postprocess_server_osx() {
     # Copy the required Python executables
     scp $PG_SSH_OSX:$PGADMIN_PYTHON_OSX/Python $WD/server/staging_cache/osx/pgAdmin\ 4.app/Contents/Resources/venv/.Python
 
-    # ensure that there's an __init__.py file present in the backports module directory
-    touch $WD/server/staging_cache/osx/pgAdmin\ 4.app/Contents/Resources/venv/lib/python/site-packages/backports/__init__.py || _die "Failed to touch the __init__.py"
 
     echo "Preparing restructured staging for server"
     cp -r $WD/server/staging_cache/osx/bin $PGSERVER_STAGING_OSX  || _die "Failed to copy $WD/server/staging_cache/osx/bin"
