@@ -211,7 +211,7 @@ echo %PATH%
 pip install -r requirements.txt --no-cache-dir
 pip install sphinx
 REM Edit nt.py in the package to fix the pycrypto issue on Python3
-CALL powershell -Command "(gc  pgAdmin.output\venv\Lib\site-packages\Crypto\Random\OSRNG\nt.py) -replace 'import winrandom', 'from . import winrandom' | Out-File -encoding ASCII  pgAdmin.output\venv\Lib\site-packages\Crypto\Random\OSRNG\nt.py"
+CALL powershell -Command "(gc  venv\Lib\site-packages\Crypto\Random\OSRNG\nt.py) -replace 'import winrandom', 'from . import winrandom' | Out-File -encoding ASCII  venv\Lib\site-packages\Crypto\Random\OSRNG\nt.py"
 EOT
 
     cat <<EOT > "vc-build-doc.bat"
@@ -351,7 +351,7 @@ EOT
     # Zip up the scripts directories and copy them to the build host, then unzip
     cd $WD/server/scripts/windows/
     echo "Copying scripts source tree to Windows build VM"
-    zip -r scripts.zip vc-build.bat vc-build-pgadmin4.bat vc-build-x64.bat vc-build-doc.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build-x64.bat vc-build-x64.bat, createuser, getlocales, validateuser)"
+    zip -r scripts.zip vc-build.bat build-pgadmin-dep.bat vc-build-pgadmin4.bat vc-build-x64.bat vc-build-doc.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build-x64.bat vc-build-x64.bat, createuser, getlocales, validateuser)"
 
     rsync -av scripts.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the scripts source tree to the windows-x64 build host (scripts.zip)"
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; unzip -o scripts.zip" || _die "Failed to unpack the scripts source tree on the windows-x64 build host (scripts.zip)"
@@ -609,7 +609,7 @@ _postprocess_server_windows_x64() {
 
    cd $WD/server
    # Copy debug symbols to output/symbols directory
-   if [ -e "$WD/output/symbols/windows-x64/server"];
+   if [ -e "$WD/output/symbols/windows-x64/server" ];
    then
        echo "Removing the exsisting symbol directory"
        rm -rf $WD/output/symbols/windows-x64/server || _die "Failed to clean the symbols directory"
