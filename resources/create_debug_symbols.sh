@@ -9,22 +9,37 @@ generate_debug_symbols()
 	os=`uname | awk '{print $1}'`
 
 	if [ "$os" = "SunOS" ]
-        then
-	    OBJCOPY=/usr/sfw/bin/gobjcopy
-	    STRIP=/usr/sfw/bin/gstrip
+	then
+		OBJCOPY=/usr/sfw/bin/gobjcopy
+		STRIP=/usr/sfw/bin/gstrip
+	elif [ "$os" = "Darwin" ]
+	then
+		OBJCOPY=/opt/local/bin/gobjcopy
+		STRIP=/opt/local/bin/gstrip
+		DSYMUTIL=dsymutil
 	else
-	    OBJCOPY=objcopy
-            STRIP=strip
+		OBJCOPY=objcopy
+		STRIP=strip
 	fi
 
 	cd $STAGING_DIR
 	find . -type d | xargs -I{} mkdir -p symbols/{}
 
-	for tostripfile in `find . -type f | xargs -I{} file {} | grep ELF | grep "not stripped" | cut -d : -f 1 `; do 
-    	    $OBJCOPY --only-keep-debug "${tostripfile}" "${STAGING_DIR}/symbols/${tostripfile}.symbols"
-    	    $STRIP --strip-debug --strip-unneeded "${tostripfile}"
-    	    $OBJCOPY --add-gnu-debuglink="${STAGING_DIR}/symbols/${tostripfile}.symbols" "${tostripfile}"
-	done
+	if [ "$os" = "Darwin" ]
+	then
+		for tostripfile in `find . -type f | xargs -I{} file {} | grep "Mach-O 64-bit executable \| Mach-O 64-bit dynamically linked shared library\| Mach-O executable i386" | cut -d : -f 1 `
+		do
+			$DSYMUTIL "${tostripfile}" -o "${STAGING_DIR}/symbols/${tostripfile}.dSYM"
+			$STRIP --strip-debug --strip-unneeded "${tostripfile}"
+		done
+	else
+		for tostripfile in `find . -type f | xargs -I{} file {} | grep ELF | grep "not stripped" | cut -d : -f 1 `
+		do
+			$OBJCOPY --only-keep-debug "${tostripfile}" "${STAGING_DIR}/symbols/${tostripfile}.symbols"
+			$STRIP --strip-debug --strip-unneeded "${tostripfile}"
+			$OBJCOPY --add-gnu-debuglink="${STAGING_DIR}/symbols/${tostripfile}.symbols" "${tostripfile}"
+		done
+	fi
 
 	cd $WD
 }

@@ -709,6 +709,11 @@ _postprocess_server_windows_x64() {
     cp $WD/resources/license.txt $PGSERVER_STAGING_WINDOWS_X64/server_license.txt
     cp $WD/server/source/pgadmin.windows-x64/LICENSE $PGADMIN_STAGING_WINDOWS_X64/pgAdmin_license.txt
 
+
+    #Copy the symbols to staging directory
+    mkdir -p $PGSERVER_STAGING_WINDOWS_X64/debug_symbols
+    cp -r $WD/output/symbols/windows-x64/server/* $PGSERVER_STAGING_WINDOWS_X64/debug_symbols
+
     cd $WD/server
 
     # Setup the installer scripts. 
@@ -729,7 +734,6 @@ _postprocess_server_windows_x64() {
    # Copy in the menu pick images and XDG items
     mkdir -p $PGADMIN_STAGING_WINDOWS_X64/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/pg-help.ico $PGADMIN_STAGING_WINDOWS_X64/scripts/images/pgadmin-help.ico || _die "Failed to copy the menu pick images (resources/pg-help.ico)"
-
 
     # Copy the launch scripts
     cp scripts/windows/serverctl.vbs $PGSERVER_STAGING_WINDOWS_X64/scripts/serverctl.vbs || _die "Failed to copy the serverctl script (scripts/windows/serverctl.vbs)"

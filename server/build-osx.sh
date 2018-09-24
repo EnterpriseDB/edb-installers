@@ -88,7 +88,7 @@ _prep_server_osx() {
     echo "Creating staging_cache directory ($WD/server/staging/osx)"
     mkdir -p $WD/server/staging_cache/osx || _die "Couldn't create the staging_cache directory"
 
-    echo "Creating staging directory ($WD/server/staging/linux-x64)"
+    echo "Creating staging directory ($WD/server/staging/osx)"
     mkdir -p $PGSERVER_STAGING_OSX || _die "Couldn't create the staging directory $PGSERVER_STAGING_OSX"
     mkdir -p $PGADMIN_STAGING_OSX || _die "Couldn't create the staging directory $PGADMIN_STAGING_OSX"
     mkdir -p $SB_STAGING_OSX || _die "Couldn't create the staging directory $SB_STAGING_OSX"
@@ -106,7 +106,7 @@ _prep_server_osx() {
     cd $WD/server
     tar -jcvf scripts.tar.bz2 scripts/osx resources/complete-bundle.sh
     scp $WD/server/scripts.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server || _die "Failed to copy the scripts to build VM"
-    scp $WD/versions.sh $WD/common.sh $WD/settings.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
+    scp $WD/versions.sh $WD/common.sh $WD/settings.sh $WD/resources/create_debug_symbols.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
     rm -f scripts.tar.bz2 || _die "Couldn't remove the scipts archive (source/scripts.tar.bz2)"    
 
     echo "Extracting the archives"
@@ -137,7 +137,7 @@ _build_server_osx() {
 
     # Configure the source tree
     echo "Configuring the postgres source tree for x86_64"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -arch x86_64 -O2' LDFLAGS=\"-L/opt/local/Current/lib -L/opt/local/libexec/llvm-6.0/lib\" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/lib/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ICU_LIBS=\"-L/opt/local/Current/lib -licuuc -licudata -licui18n\" ICU_CFLAGS=\"-I/opt/local/Current/include\" LLVM_CONFIG=/opt/local/bin/llvm-config-mp-6.0 CLANG=/opt/local/bin/clang-mp-6.0 ./configure --with-llvm --with-icu --host=x86_64-apple-darwin --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --enable-thread-safety --with-libxml --with-uuid=e2fs --with-includes=/opt/local/Current/include/libxml2:/opt/local/Current/include:/opt/local/Current/include/security --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi" || _die "Failed to configure postgres for x86_64"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -arch x86_64 -O2' LDFLAGS=\"-L/opt/local/Current/lib -L/opt/local/libexec/llvm-6.0/lib\" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/lib/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl ICU_LIBS=\"-L/opt/local/Current/lib -licuuc -licudata -licui18n\" ICU_CFLAGS=\"-I/opt/local/Current/include\" LLVM_CONFIG=/opt/local/bin/llvm-config-mp-6.0 CLANG=/opt/local/bin/clang-mp-6.0 ./configure --with-llvm --with-icu --enable-debug --host=x86_64-apple-darwin --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --enable-thread-safety --with-libxml --with-uuid=e2fs --with-includes=/opt/local/Current/include/libxml2:/opt/local/Current/include:/opt/local/Current/include/security --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi" || _die "Failed to configure postgres for x86_64"
 
     echo "Building postgres"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS  -arch x86_64 -O2' make -j4" || _die "Failed to build postgres"
@@ -368,6 +368,12 @@ EOT-PGADMIN
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/scripts/osx/getlocales; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch x86_64 -o getlocales.osx -O0 getlocales.c"  || _die "Failed to build getlocales utility"
 
+    # Generate debug symbols
+    ssh $PG_SSH_OSX "cd $PG_STAGING; mv pgAdmin\ 4.app/ pgAdmin4.app"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
+
+    ssh $PG_SSH_OSX "cd $PG_STAGING; mv pgAdmin4.app/ pgAdmin\ 4.app"
+
     # Delete the old regress dir from regression setup
     ssh $PG_SSH_OSX "cd /buildfarm/src/test/; rm -rf regress" || _die "Failed to remove the regression regress directory"
 
@@ -417,6 +423,12 @@ _postprocess_server_osx() {
     mkdir -p $SB_STAGING_OSX || _die "Couldn't create the staging directory $SB_STAGING_OSX"
     mkdir -p $CLT_STAGING_OSX || _die "Couldn't create the staging directory $CLT_STAGING_OSX"
 
+    echo "Creating staging directory for debug symbols"
+    mkdir -p $PGSERVER_STAGING_OSX/debug_symbols || _die "Couldn't create the staging directory $PGSERVER_STAGING_OSX/debug_symbols"
+    mkdir -p $PGADMIN_STAGING_OSX/debug_symbols || _die "Couldn't create the staging directory $PGADMIN_STAGING_OSX/debug_symbols"
+    mkdir -p $SB_STAGING_OSX/debug_symbols || _die "Couldn't create the staging directory $SB_STAGING_OSX/debug_symbols"
+
+
     # Copy the staging to controller to build the installers
     ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create archive of the server staging_cache"
     scp $PG_SSH_OSX:$PG_STAGING/server-staging.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to scp server staging_cache"
@@ -462,6 +474,7 @@ _postprocess_server_osx() {
     cp -r $WD/server/staging_cache/osx/include $PGSERVER_STAGING_OSX || _die "Failed to copy $WD/server/staging_cache/osx/include"
     cp -r $WD/server/staging_cache/osx/doc $PGSERVER_STAGING_OSX || _die "Failed to copy $WD/server/staging_cache/osx/doc"
     cp -r $WD/server/staging_cache/osx/share $PGSERVER_STAGING_OSX || _die "Failed to copy $WD/server/staging_cache/osx/share"
+    cp -r $WD/server/staging_cache/osx/symbols/bin $WD/server/staging_cache/osx/symbols/lib $PGSERVER_STAGING_OSX/debug_symbols/ || _die "Failed to copy $WD/server/staging_cache/osx/share"
 
     echo "Preparing restructured staging for Command Line Tools"
     mkdir -p $CLT_STAGING_OSX/bin || _die "Failed to create the $CLT_STAGING_OSX/bin directory"
@@ -501,11 +514,13 @@ _postprocess_server_osx() {
 
     echo "Preparing restructured staging for pgAdmin"
     cp -pR $WD/server/staging_cache/osx/pgAdmin\ 4.app/  $PGADMIN_STAGING_OSX
+    cp -pR $WD/server/staging_cache/osx/symbols/pgAdmin4.app $PGADMIN_STAGING_OSX/debug_symbols
 
     echo "Preparing restructured staging for stackbuilder"
     mkdir -p $WD/server/staging_cache/osx/stackbuilder
     mv $WD/server/staging_cache/osx/stackbuilder.app $WD/server/staging_cache/osx/stackbuilder/ || _die "Failed to move stackbuilder.app"
     cp -pR $WD/server/staging_cache/osx/stackbuilder/stackbuilder.app $SB_STAGING_OSX || _die "Failed to copy stackbuilder.app"
+    cp -pR $WD/server/staging_cache/osx/symbols/stackbuilder.app $SB_STAGING_OSX/debug_symbols
 
     cd $WD/server
 
@@ -536,6 +551,17 @@ _postprocess_server_osx() {
     mv postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip $WD/output/ || _die "Failed to move the archive to output folder"
 
     rm -rf pgsql || _die "Failed to remove the binaries directory"
+
+    # Remove existing symbols directory in output directory
+    if [ -e $WD/output/symbols/osx/server ];
+    then
+        echo "Removing existing $WD/output/symbols/osx/server directory"
+        rm -rf $WD/output/symbols/osx/server  || _die "Couldn't remove the existing $WD/output/symbols/osx/server directory."
+    fi
+
+    # Move symbols directory in output
+    mkdir -p $WD/output/symbols/osx || _die "Failed to create $WD/output/symbols/osx directory"
+    mv $WD/server/staging_cache/osx/symbols $WD/output/symbols/osx/server || _die "Failed to move $WD/server/staging_cache/osx/symbols to $WD/output/symbols/osx/server directory"
 
     # Complete the staging and prepare the installer
     #cp $WD/server/staging_cache/osx/server_3rd_party_licenses.txt $PGSERVER_STAGING_OSX/../
