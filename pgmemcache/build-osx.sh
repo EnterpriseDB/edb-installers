@@ -86,7 +86,7 @@ cat <<PGMEMCACHE > $WD/pgmemcache/build-pgmemcache.sh
     PG_PATH=$PG_PATH_OSX/server/staging_cache/\$PGMEM_PLATFORM
 
     cd \$PGMEM_SOURCE
-    PATH=\$PG_PATH/bin:\$PATH make CFLAGS="$PG_ARCH_OSX_CFLAGS -I/opt/local/Current/include -arch x86_64" LDFLAGS="-L/opt/local/Current/lib -arch x86_64" || _die "Failed to build the pgmemcache for \$PGMEM_PLATFORM"
+    PATH=\$PG_PATH/bin:\$PATH make CFLAGS="$PG_ARCH_OSX_CFLAGS -g -I/opt/local/Current/include -arch x86_64" LDFLAGS="-L/opt/local/Current/lib -arch x86_64" || _die "Failed to build the pgmemcache for \$PGMEM_PLATFORM"
 
     # Copying the binaries
     mkdir -p \$PGMEM_STAGING/include || _die "Failed to create include directory"
@@ -108,6 +108,7 @@ cat <<PGMEMCACHE > $WD/pgmemcache/build-pgmemcache.sh
 PGMEMCACHE
     
     cd $WD
+    scp resources/create_debug_symbols.sh $PG_SSH_OSX:$PG_PATH_OSX
     scp pgmemcache/build-pgmemcache.sh $PG_SSH_OSX:$PG_PATH_OSX/pgmemcache
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/pgmemcache; sh ./build-pgmemcache.sh" || _die "Failed to build the pgmemcache on OSX VM"
 
@@ -118,6 +119,7 @@ PGMEMCACHE
     echo "Copying the complete build to the successful staging directory"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; cp -PR pgmemcache/staging/osx.build/* pgmemcache/staging/osx" || _die "Couldn't copy the existing staging directory"
 
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; chmod 755 create_debug_symbols.sh; sh ./create_debug_symbols.sh $PG_PATH_OSX/pgmemcache/staging/osx" || _die "Failed to create debug symbols for pgmemcache on OSX VM"
     ssh $PG_SSH_OSX "echo PG_VERSION_PGMEMCACHE=$PG_VERSION_PGMEMCACHE > $PG_PATH_OSX/pgmemcache/staging/osx/versions-osx.sh" || _die "Failed to write pgmemcache version number into versions-osx.sh"
     ssh $PG_SSH_OSX "echo PG_VERSION_PGMEMCACHE=$PG_VERSION_PGMEMCACHE >> $PG_PATH_OSX/pgmemcache/staging/osx/versions-osx.sh" || _die "Failed to write pgmemcache build number into versions-osx.sh"
 
