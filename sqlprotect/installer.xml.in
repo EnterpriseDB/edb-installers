@@ -613,6 +613,9 @@ EOF
 		                <distributionDirectory>
                             <origin>staging/@@WINDIR@@/share</origin>
                         </distributionDirectory>
+                                <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/debug_symbols</origin>
+                        </distributionDirectory>
                         <distributionFile origin="staging/@@WINDIR@@/sqlprotect_license.txt"/>
                     </distributionFileList>
                 </folder>

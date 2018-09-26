@@ -70,7 +70,7 @@ _build_sqlprotect_windows_x64() {
     cat <<EOT > "$WD/server/source/build64-sqlprotect.bat"
 
 REM Setting Visual Studio Environment
-CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
+CALL "$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
 @SET PATH=%PATH%;$PG_PERL_WINDOWS_X64\bin
 
@@ -86,10 +86,12 @@ EOT
    ssh $PG_SSH_WINDOWS_X64 "mkdir -p $PG_PATH_WINDOWS_X64/sqlprotect.staging.build/lib/postgresql" || _die "Failed to create the lib directory"
    ssh $PG_SSH_WINDOWS_X64 "mkdir -p $PG_PATH_WINDOWS_X64/sqlprotect.staging.build/share" || _die "Failed to create the share directory"
    ssh $PG_SSH_WINDOWS_X64 "mkdir -p $PG_PATH_WINDOWS_X64/sqlprotect.staging.build/doc" || _die "Failed to create the doc directory"
+   ssh $PG_SSH_WINDOWS_X64 "mkdir -p $PG_PATH_WINDOWS_X64/sqlprotect.staging.build/debug_symbols" || _die "Failed to create the debug symbols directory"
 
    ssh $PG_SSH_WINDOWS_X64 "cp $PG_PATH_WINDOWS_X64/postgres.windows-x64/release/sqlprotect/sqlprotect.dll $PG_PATH_WINDOWS_X64/sqlprotect.staging.build/lib/postgresql" || _die "Failed to copy sqlprotect.dll to staging directory"
    ssh $PG_SSH_WINDOWS_X64 "cp $PG_PATH_WINDOWS_X64/postgres.windows-x64/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_WINDOWS_X64/sqlprotect.staging.build/share" || _die "Failed to copy sqlprotect.sql to staging directory"
    ssh $PG_SSH_WINDOWS_X64 "cp $PG_PATH_WINDOWS_X64/postgres.windows-x64/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_WINDOWS_X64/sqlprotect.staging.build/doc" || _die "Failed to copy README-sqlprotect.txt to staging directory"
+   ssh $PG_SSH_WINDOWS_X64 "cp $PG_PATH_WINDOWS_X64/postgres.windows-x64/Release/sqlprotect/*.pdb $PG_PATH_WINDOWS_X64/sqlprotect.staging.build/debug_symbols" || _die "Failed to copy debug symbols to staging directory"
 
     echo "Removing last successful staging directory ($PG_PATH_WINDOWS_X64\\\\sqlprotect.staging)"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST sqlprotect.staging rd /S /Q sqlprotect.staging" || _die "Couldn't remove the last successful staging directory directory"
@@ -131,20 +133,24 @@ _postprocess_sqlprotect_windows_x64() {
     mkdir -p $WD/sqlprotect/staging/windows-x64/sqlprotect || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/sqlprotect/staging/windows-x64 || _die "Couldn't set the permissions on the staging directory"
 
-   # Zip up the installed code, copy it back here, and unpack.
-   echo "Copying sqlprotect build tree to Unix host"
-   ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST sqlprotect-staging.zip del /S /Q sqlprotect-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\sqlprotect-staging.zip on Windows VM"
-   ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\sqlprotect.staging; zip -r ..\\\\sqlprotect-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/sqlprotect.staging)"
-   scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/sqlprotect-staging.zip $WD/sqlprotect/staging/windows-x64 || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/sqlprotect-staging.zip)"
-   unzip $WD/sqlprotect/staging/windows-x64/sqlprotect-staging.zip -d $WD/sqlprotect/staging/windows-x64 || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/sqlprotect-staging.zip)"
-   rm $WD/sqlprotect/staging/windows-x64/sqlprotect-staging.zip
+    # Zip up the installed code, copy it back here, and unpack.
+    echo "Copying sqlprotect build tree to Unix host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST sqlprotect-staging.zip del /S /Q sqlprotect-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS_X64\sqlprotect-staging.zip on Windows VM"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\sqlprotect.staging; zip -r ..\\\\sqlprotect-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/sqlprotect.staging)"
+    scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/sqlprotect-staging.zip $WD/sqlprotect/staging/windows-x64 || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/sqlprotect-staging.zip)"
+    unzip $WD/sqlprotect/staging/windows-x64/sqlprotect-staging.zip -d $WD/sqlprotect/staging/windows-x64 || _die "Failed to unpack the built source tree ($WD/staging/windows-x64/sqlprotect-staging.zip)"
+    rm $WD/sqlprotect/staging/windows-x64/sqlprotect-staging.zip
 
     dos2unix $WD/sqlprotect/staging/windows-x64/versions-windows-x64.sh || _die "Failed to convert format of versions-windows.sh from dos to unix"
     source $WD/sqlprotect/staging/windows-x64/versions-windows-x64.sh
     PG_BUILD_SQLPROTECT=$(expr $PG_BUILD_SQLPROTECT + $SKIPBUILD)
 
-   cp $WD/sqlprotect/resources/licence.txt $WD/sqlprotect/staging/windows-x64/sqlprotect_license.txt || _die "Unable to copy sqlprotect_license.txt"
-   chmod 444 $WD/sqlprotect/staging/windows-x64/sqlprotect_license.txt || _die "Unable to change permissions for license file"
+    cp $WD/sqlprotect/resources/licence.txt $WD/sqlprotect/staging/windows-x64/sqlprotect_license.txt || _die "Unable to copy sqlprotect_license.txt"
+    chmod 444 $WD/sqlprotect/staging/windows-x64/sqlprotect_license.txt || _die "Unable to change permissions for license file"
+
+    # Copy the debug symbols from staging directory to output directory.
+    mkdir -p $WD/output/symbols/windows-x64/sqlprotect
+    cp -r $WD/sqlprotect/staging/windows-x64/debug_symbols/* $WD/output/symbols/windows-x64/sqlprotect
 
     cd $WD/sqlprotect
 
