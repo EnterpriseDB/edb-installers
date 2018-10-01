@@ -1950,6 +1950,12 @@ EOF
 
                 <!-- We will also need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
                 <setInstallerVariable name="vcredist_executable" value="vcredist_x86.exe"/>
+                <setInstallerVariable name="vcredist2015_executable" value="vcredist2017_x86.exe"/>
+                <setInstallerVariable name="vcredist2015_executable" value="vcredist2015_x64.exe">
+                    <ruleList>
+                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                    </ruleList>
+                </setInstallerVariable>
                 <setInstallerVariable name="vcredist_executable" value="vcredist_x64.exe">
                     <ruleList>
                         <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
@@ -1964,12 +1970,9 @@ EOF
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x86.exe</destination>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\${vcredist2015_executable}</destination>
                     <folder>programfileswindows</folder>
-                    <origin>installer/vcredist_x86.exe</origin>
-                    <ruleList>
-                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
-                    </ruleList>
+                    <origin>installer/${vcredist2015_executable}</origin>
                     <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
                 </unpackFile>
                 <actionGroup>
@@ -1980,13 +1983,9 @@ EOF
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
-                        <!-- RM # 40893 add vcredist_86.exe on windows-x64 staging installer directroy -->
                         <runProgram>
-                            <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x86.exe</program>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\${vcredist2015_executable}</program>
                             <programArguments>/passive /norestart</programArguments>
-                                <ruleList>
-                                    <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
-                                </ruleList>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
