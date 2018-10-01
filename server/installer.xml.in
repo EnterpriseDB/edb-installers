@@ -1841,10 +1841,24 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/server/installer/prerun_checks.vbs</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}/installer</destination>
+                    <name>defaultwindows-x86</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/server/installer/vcredist_x86.exe</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/server/installer/vcredist2015_x86.exe</origin>
+                        </distributionDirectory>
                     </distributionFileList>
+                    <shouldPackRuleList>
+                      <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                    </shouldPackRuleList>
                 </folder>
                 <folder>
                     <description>Program Files</description>
@@ -1854,6 +1868,9 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}
                     <distributionFileList>
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/server/installer/vcredist_x64.exe</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>staging/@@WINDIR@@/server/installer/vcredist2015_x64.exe</origin>
                         </distributionDirectory>
                     </distributionFileList>
                     <shouldPackRuleList>

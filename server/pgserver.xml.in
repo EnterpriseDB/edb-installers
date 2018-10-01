@@ -1699,17 +1699,34 @@
                 </unpackFile>
 
                 <!-- We will also need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
-                <setInstallerVariable name="vcredist_executable" value="vcredist_x86.exe"/>
-                <setInstallerVariable name="vcredist_executable" value="vcredist_x64.exe">
-                    <ruleList>
-                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
-                    </ruleList>
-                </setInstallerVariable>
                 <unpackFile>
                     <component>default</component>
                     <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x86.exe</destination>
-                    <folder>defaultwindows</folder>
+                    <folder>defaultwindows-x86</folder>
                     <origin>vcredist_x86.exe</origin>
+                    <ruleList>
+                       <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                    </ruleList>
+                    <!--<customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>-->
+                </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist2015_x86.exe</destination>
+                    <folder>defaultwindows-x86</folder>
+                    <origin>vcredist2015_x86.exe</origin>
+                    <ruleList>
+                       <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                    </ruleList>
+                    <!--<customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>-->
+                </unpackFile>
+                <unpackFile>
+                    <component>default</component>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist2015_x64.exe</destination>
+                    <folder>defaultwindows-x64</folder>
+                    <origin>vcredist2015_x64.exe</origin>
+                    <ruleList>
+                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                    </ruleList>
                     <!--<customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>-->
                 </unpackFile>
                 <unpackFile>
@@ -1725,8 +1742,29 @@
                 <actionGroup>
                     <actionList>
                         <runProgram>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist2015_x64.exe</program>
+                            <programArguments>/passive /norestart</programArguments>
+                                <ruleList>
+                                    <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                                </ruleList>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                        <runProgram>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist2015_x86.exe</program>
+                            <programArguments>/passive /norestart</programArguments>
+                            <ruleList>
+                               <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                            </ruleList>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                        <runProgram>
                             <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x86.exe</program>
                             <programArguments>/passive /norestart</programArguments>
+                            <ruleList>
+                               <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
+                            </ruleList>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
