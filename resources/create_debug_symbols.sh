@@ -15,7 +15,7 @@ generate_debug_symbols()
 	elif [ "$os" = "Darwin" ]
 	then
 		OBJCOPY=/opt/local/bin/gobjcopy
-		STRIP=/opt/local/bin/gstrip
+		STRIP=/opt/local/bin/strip
 		DSYMUTIL=dsymutil
 	else
 		OBJCOPY=objcopy
@@ -30,7 +30,7 @@ generate_debug_symbols()
 		for tostripfile in `find . -type f | xargs -I{} file {} | grep "Mach-O 64-bit executable \| Mach-O 64-bit dynamically linked shared library\| Mach-O executable i386\| Mach-O 64-bit bundle" | cut -d : -f 1 `
 		do
 			$DSYMUTIL "${tostripfile}" -o "${STAGING_DIR}/symbols/${tostripfile}.dSYM"
-			$STRIP --strip-debug --strip-unneeded "${tostripfile}"
+			$STRIP -S "${tostripfile}"
 		done
 	else
 		for tostripfile in `find . -type f | xargs -I{} file {} | grep ELF | grep "not stripped" | cut -d : -f 1 `
