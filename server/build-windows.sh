@@ -355,7 +355,6 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libintl-8.dll $PG_PATH_WINDOWS\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (intl.dll)"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (libxml2.dll)"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (libxslt.dll)"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\zlib1.dll $PG_PATH_WINDOWS\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (zlib1.dll)"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libcurl.dll $PG_PATH_WINDOWS\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (libcurl)"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\icu*.dll $PG_PATH_WINDOWS\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (icu*.dll)"
 
@@ -581,6 +580,10 @@ _postprocess_server_windows() {
     echo "Restructuring commandlinetools"
     mkdir -p $CLT_STAGING_WINDOWS/bin || _die "Couldn't create the staging directory $CLT_STAGING_WINDOWS/bin"
     cp -r $WD/server/staging_cache/windows/lib   $CLT_STAGING_WINDOWS || _die "Failed to move lib"
+
+    # Copy the zlib1.dll to commandlinetools
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/zlib1.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to copy zlib1.dll to $CLT_STAGING_WINDOWS/bin"
+
     mv $PGSERVER_STAGING_WINDOWS/bin/psql.exe $CLT_STAGING_WINDOWS/bin || _die "Failed to move psql.exe"
     mv $PGSERVER_STAGING_WINDOWS/bin/libpq*   $CLT_STAGING_WINDOWS/bin || _die "Failed to move bin/libpq"
     mv $PGSERVER_STAGING_WINDOWS/bin/pg_basebackup.exe  $CLT_STAGING_WINDOWS/bin || _die "Failed to move pg_basebackup"
