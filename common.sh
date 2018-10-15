@@ -188,7 +188,7 @@ win32_sign()
             # We will stop trying, if the count is more than 3
             if [ $COUNT -gt 2 ];
             then
-               _warn "Failed to sign the installer ($FILENAME)"
+               _die "Failed to sign the installer ($FILENAME)"
                return
             fi
             NOT_SIGNED=0
