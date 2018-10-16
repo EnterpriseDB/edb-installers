@@ -61,19 +61,19 @@
     </customLanguageFileList>
     <preShowHelpActionList>
         <!-- WIN: Set the pghome default value -->
-        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}\postgresql\pgPG_MAJOR_VERSION">
+        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}\postgresql\PG_MAJOR_VERSION">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
         <!-- LIN: Set the pghome default value  -->
-        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}/postgresql/pgPG_MAJOR_VERSION">
+        <setInstallerVariable name="default_installdir" value="${platform_install_prefix}/postgresql/PG_MAJOR_VERSION">
             <ruleList>
                 <compareText logic="contains" text="${platform_name}" value="linux"/>
             </ruleList>
         </setInstallerVariable>
         <!-- MAC: Set the  pghome default value  -->
-        <setInstallerVariable name="default_installdir" value="/Library/postgresql/pgPG_VERSION_SQLPROTECT">
+        <setInstallerVariable name="default_installdir" value="/Library/postgresql/PG_MAJOR_VERSION">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
@@ -192,7 +192,7 @@ EOF
         </setInstallerVariable>
 
         <!-- MAC: Set the  pghome default value  -->
-        <setInstallerVariable name="defaultpghome" value="/Library/postgresql/pgPG_VERSION_SQLPROTECT">
+        <setInstallerVariable name="defaultpghome" value="/Library/postgresql/PG_MAJOR_VERSION">
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
             </ruleList>
@@ -335,19 +335,19 @@ EOF
         <actionGroup>
             <actionList>
                 <!-- WIN: Set the pghome default value -->
-                <setInstallerVariable name="default_installdir" value="${platform_install_prefix}\postgresql\pgPG_MAJOR_VERSION">
+                <setInstallerVariable name="default_installdir" value="${platform_install_prefix}\postgresql\PG_MAJOR_VERSION">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </setInstallerVariable>
                 <!-- LIN: Set the pghome default value  -->
-                <setInstallerVariable name="default_installdir" value="${platform_install_prefix}/postgresql/pgPG_MAJOR_VERSION">
+                <setInstallerVariable name="default_installdir" value="${platform_install_prefix}/postgresql/PG_MAJOR_VERSION">
                     <ruleList>
                         <compareText logic="contains" text="${platform_name}" value="linux"/>
                     </ruleList>
                 </setInstallerVariable>
                 <!-- MAC: Set the  pghome default value  -->
-                <setInstallerVariable name="default_installdir" value="/Library/postgresql/pgPG_VERSION_SQLPROTECT">
+                <setInstallerVariable name="default_installdir" value="/Library/postgresql/PG_MAJOR_VERSION">
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="osx"/>
                     </ruleList>
@@ -426,7 +426,6 @@ EOF
                             <ruleList>
                                 <fileTest path="${installdir}/bin/psql" condition="not_exists"/>
                                 <fileTest path="${installdir}/bin/createdb" condition="not_exists"/>
-                                <fileTest path="${installdir}/bin/createlang" condition="not_exists"/>
                                 <fileTest path="${installdir}/bin/pg_config" condition="not_exists"/>
                             </ruleList>
                         </ruleGroup>
@@ -442,7 +441,6 @@ EOF
                             <ruleList>
                                 <fileTest path="${installdir}\bin\psql.exe" condition="not_exists"/>
                                 <fileTest path="${installdir}\bin\createdb.exe" condition="not_exists"/>
-                                <fileTest path="${installdir}\bin\createlang.exe" condition="not_exists"/>
                                 <fileTest path="${installdir}\bin\pg_config.exe" condition="not_exists"/>
                             </ruleList>
                         </ruleGroup>
@@ -764,7 +762,6 @@ EOF
                                     <ruleList>
                                         <fileTest path="${installdir}/bin/psql" condition="not_exists"/>
                                         <fileTest path="${installdir}/bin/createdb" condition="not_exists"/>
-                                        <fileTest path="${installdir}/bin/createlang" condition="not_exists"/>
                                         <fileTest path="${installdir}/bin/pg_config" condition="not_exists"/>
                                     </ruleList>
                                 </ruleGroup>
@@ -780,7 +777,6 @@ EOF
                                     <ruleList>
                                         <fileTest path="${installdir}\bin\psql.exe" condition="not_exists"/>
                                         <fileTest path="${installdir}\bin\createdb.exe" condition="not_exists"/>
-                                        <fileTest path="${installdir}\bin\createlang.exe" condition="not_exists"/>
                                         <fileTest path="${installdir}\bin\pg_config.exe" condition="not_exists"/>
                                     </ruleList>
                                 </ruleGroup>
@@ -842,7 +838,7 @@ EOF
                               abortOnError="0" showMessageOnError="0"
                               workingDirectory="${installdir}/bin"/>
                         <setInstallerVariableFromRegEx name="pg_version" text="${pg_version_str}">
-                            <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
+                            <pattern>^PostgreSQL ([0-9][0-9]).?[\w]*$</pattern>
                             <substitution>\1</substitution>
                             <ruleList>
                                 <compareText logic="does_not_equal" text="${pg_version_str}" value=""/>
