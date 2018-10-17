@@ -23,13 +23,13 @@ generate_debug_symbols()
 	fi
 
 	cd $STAGING_DIR
-	find . -type d | xargs -I{} mkdir -p symbols/{}
+	find . -type d | xargs -I{} mkdir -p debug_symbols/{}
 
 	if [ "$os" = "Darwin" ]
 	then
-		for tostripfile in `find . -type f | xargs -I{} file {} | grep "Mach-O 64-bit executable \| Mach-O 64-bit dynamically linked shared library\| Mach-O executable i386\| Mach-O 64-bit bundle" | cut -d : -f 1 `
+		for tostripfile in `find . -type f | xargs -I{} file {} | grep "Mach-O 64-bit executable \| Mach-O 64-bit dynamically linked shared library\| Mach-O executable i386\| Mach-O 64-bit bundle \|PE32+ executable" | cut -d : -f 1 `
 		do
-			$DSYMUTIL "${tostripfile}" -o "${STAGING_DIR}/symbols/${tostripfile}.dSYM"
+			$DSYMUTIL "${tostripfile}" -o "${STAGING_DIR}/debug_symbols/${tostripfile}.dSYM"
 			$STRIP -S "${tostripfile}"
 		done
 	else

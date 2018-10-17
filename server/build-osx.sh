@@ -474,7 +474,7 @@ _postprocess_server_osx() {
     cp -r $WD/server/staging_cache/osx/include $PGSERVER_STAGING_OSX || _die "Failed to copy $WD/server/staging_cache/osx/include"
     cp -r $WD/server/staging_cache/osx/doc $PGSERVER_STAGING_OSX || _die "Failed to copy $WD/server/staging_cache/osx/doc"
     cp -r $WD/server/staging_cache/osx/share $PGSERVER_STAGING_OSX || _die "Failed to copy $WD/server/staging_cache/osx/share"
-    cp -r $WD/server/staging_cache/osx/symbols/bin $WD/server/staging_cache/osx/symbols/lib $PGSERVER_STAGING_OSX/debug_symbols/ || _die "Failed to copy $WD/server/staging_cache/osx/share"
+    cp -r $WD/server/staging_cache/osx/debug_symbols/bin $WD/server/staging_cache/osx/debug_symbols/lib $PGSERVER_STAGING_OSX/debug_symbols/ || _die "Failed to copy $WD/server/staging_cache/osx/share"
 
     echo "Preparing restructured staging for Command Line Tools"
     mkdir -p $CLT_STAGING_OSX/bin || _die "Failed to create the $CLT_STAGING_OSX/bin directory"
@@ -514,13 +514,13 @@ _postprocess_server_osx() {
 
     echo "Preparing restructured staging for pgAdmin"
     cp -pR $WD/server/staging_cache/osx/pgAdmin\ 4.app/  $PGADMIN_STAGING_OSX
-    cp -pR $WD/server/staging_cache/osx/symbols/pgAdmin4.app $PGADMIN_STAGING_OSX/debug_symbols
+    cp -pR $WD/server/staging_cache/osx/debug_symbols/pgAdmin4.app $PGADMIN_STAGING_OSX/debug_symbols
 
     echo "Preparing restructured staging for stackbuilder"
     mkdir -p $WD/server/staging_cache/osx/stackbuilder
     mv $WD/server/staging_cache/osx/stackbuilder.app $WD/server/staging_cache/osx/stackbuilder/ || _die "Failed to move stackbuilder.app"
     cp -pR $WD/server/staging_cache/osx/stackbuilder/stackbuilder.app $SB_STAGING_OSX || _die "Failed to copy stackbuilder.app"
-    cp -pR $WD/server/staging_cache/osx/symbols/stackbuilder.app $SB_STAGING_OSX/debug_symbols
+    cp -pR $WD/server/staging_cache/osx/debug_symbols/stackbuilder.app $SB_STAGING_OSX/debug_symbols
 
     cd $WD/server
 
@@ -561,7 +561,7 @@ _postprocess_server_osx() {
 
     # Move symbols directory in output
     mkdir -p $WD/output/symbols/osx || _die "Failed to create $WD/output/symbols/osx directory"
-    mv $WD/server/staging_cache/osx/symbols $WD/output/symbols/osx/server || _die "Failed to move $WD/server/staging_cache/osx/symbols to $WD/output/symbols/osx/server directory"
+    mv $WD/server/staging_cache/osx/debug_symbols $WD/output/symbols/osx/server || _die "Failed to move $WD/server/staging_cache/osx/debug_symbols to $WD/output/symbols/osx/server directory"
 
     # Complete the staging and prepare the installer
     #cp $WD/server/staging_cache/osx/server_3rd_party_licenses.txt $PGSERVER_STAGING_OSX/../
