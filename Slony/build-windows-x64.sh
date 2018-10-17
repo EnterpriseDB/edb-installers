@@ -30,8 +30,8 @@ _prep_Slony_windows_x64() {
     # Grab a copy of the Slony source tree
     cp -R slony1-$PG_VERSION_SLONY/* Slony.windows-x64 || _die "Failed to copy the source code (source/Slony-$PG_VERSION_Slony)"
 
-    cd Slony.windows-x64
-    patch -p1 <$WD/tarballs/slony_for_VS12.patch || _die "Failed to apply patch."
+    #cd Slony.windows-x64
+    #patch -p1 <$WD/tarballs/slony_for_VS12.patch || _die "Failed to apply patch."
     #patch -p0 <$WD/tarballs/slony_pg95.patch || _die "Failed to apply patch for pg95."
     cd $WD/Slony/source
 
@@ -78,7 +78,7 @@ _build_Slony_windows_x64() {
 
     cat <<EOT > "build-Slony.bat"
 REM Setting Visual Studio Environment
-CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
+CALL "$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
 @SET PG_INC=$PG_PATH_WINDOWS_X64\output\include
 @SET PG_LIB=$PG_PATH_WINDOWS_X64\output\lib

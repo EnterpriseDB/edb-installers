@@ -64,9 +64,14 @@ _prep_Slony() {
     echo "Unpacking SLONY source..."
     extract_file  $WD/tarballs/slony1-$PG_VERSION_SLONY 
 
-    #Slony1-2.2.3 patch against PG9.4
-    cd slony1-$PG_VERSION_SLONY
-    patch -p0 < $WD/tarballs/slony_pg94.patch
+    cd $WD/Slony/source/slony1-$PG_VERSION_SLONY
+    echo "$WD/tarballs/slony_pg11.patch" || _die "Could not apply slony_pg11.patch"
+    patch -p1 < $WD/tarballs/slony_pg11.patch
+
+    cd $WD/Slony/source/slony1-$PG_VERSION_SLONY/src/backend
+    echo "Applying slony_227_win32.patch"
+    patch -p0 < $WD/tarballs/slony_227_win32.patch || _die "Could not apply slony_227_win32.patch"
+
     autoconf
 
     # Per-platform prep
