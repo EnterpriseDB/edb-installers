@@ -95,11 +95,11 @@ cat <<EOT-SLONY > $WD/Slony/build-slony.sh
     cd $PG_PATH_OSX/Slony/source/slony.osx/
 
     echo "Configuring slony sources for x86_64"
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" PATH="$PG_PGHOME_OSX/bin:$PATH" DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$PG_PGHOME_OSX/lib" ./configure --prefix=$PG_PGHOME_OSX --with-pgconfigdir=$PG_PGHOME_OSX/bin --with-pgport=yes || _die "Failed to configure slony for intel x86_64"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -g" PATH="$PG_PGHOME_OSX/bin:$PATH" DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$PG_PGHOME_OSX/lib" ./configure --prefix=$PG_PGHOME_OSX --with-pgconfigdir=$PG_PGHOME_OSX/bin --with-pgport=yes || _die "Failed to configure slony for intel x86_64"
 
     echo "Building slony"
     cd $PG_PATH_OSX/Slony/source/slony.osx
-    CFLAGS="$PG_ARCH_OSX_CFLAGS" make
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -g" make
 
     cd $PG_PATH_OSX/Slony/source/slony.osx
     make install || _die "Failed to install slony"
@@ -132,6 +132,8 @@ EOT-SLONY
     cd $WD
     scp Slony/build-slony.sh $PG_SSH_OSX:$PG_PATH_OSX/Slony
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/Slony; sh ./build-slony.sh" || _die "Failed to build slony on OSX VM"
+
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_PATH_OSX/Slony/staging/osx.build/" || _die "Failed to execute create_debug_symbols.sh"
 
     echo "Removing last successful staging directory ($PG_PATH_OSX/Slony/staging/osx)"
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/Slony/staging/osx" || _die "Couldn't remove the last successful staging directory directory"

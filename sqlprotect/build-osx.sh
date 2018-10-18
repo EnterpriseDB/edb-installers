@@ -42,7 +42,7 @@ _prep_sqlprotect_osx() {
     echo "Copy the sources to the build VM"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT" || _die "Failed to create the source dircetory on the build VM"
     scp $WD/server/source/postgres.osx/contrib/sqlprotect.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server/source/postgres.osx/contrib/ || _die "Failed to copy the source archives to build VM"
-    scp $WD/versions.sh $WD/common.sh $WD/settings.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
+    scp $WD/versions.sh $WD/common.sh $WD/settings.sh $WD/resources/create_debug_symbols.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
 
     echo "Extracting the archives"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; tar -jxvf sqlprotect.tar.bz2"
@@ -67,6 +67,8 @@ _build_sqlprotect_osx() {
     ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.so $PG_PATH_OSX/sqlprotect/staging/osx.build/lib/postgresql/" || _die "Failed to copy sqlprotect.so to staging directory"
     ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_OSX/sqlprotect/staging/osx.build/share/" || _die "Failed to copy sqlprotect.sql to staging directory"
     ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_OSX/sqlprotect/staging/osx.build/doc/" || _die "Failed to copy README-sqlprotect.txt to staging directory"
+
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_PATH_OSX/sqlprotect/staging/osx.build" || _die "Failed to execute create_debug_symbols.sh"
 
     echo "Removing last successful staging directory ($PG_PATH_OSX/sqlprotect/staging/osx)"
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/sqlprotect/staging/osx" || _die "Couldn't remove the last successful staging directory directory"
