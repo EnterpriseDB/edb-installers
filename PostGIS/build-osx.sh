@@ -46,14 +46,10 @@ _prep_PostGIS_osx() {
     POSTGIS_MAJOR_VERSION=`echo $PG_VERSION_POSTGIS | cut -f1,2 -d "."`
 
     echo "Removing existing PostGIS files from the PostgreSQL directory"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/staging"
-    ssh $PG_SSH_OSX "rm -f bin/shp2pgsql bin/pgsql2shp" || _die "Failed to remove postgis binary files"
-    ssh $PG_SSH_OSX "rm -f lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so" || _die "Failed to remove postgis library files"
-    ssh $PG_SSH_OSX "rm -f share/postgresql/contrib/spatial_ref_sys.sql share/postgresql/contrib/postgis.sql" || _die "Failed to remove postgis share files"
-    ssh $PG_SSH_OSX "rm -f share/postgresql/contrib/uninstall_postgis.sql  share/postgresql/contrib/postgis_upgrade*.sql"  || _die "Failed to remove postgis share files"
-    ssh $PG_SSH_OSX "rm -f share/postgresql/contrib/postgis_comments.sql" || _die "Failed to remove postgis share files"
-    ssh $PG_SSH_OSX "rm -f doc/postgresql/postgis/postgis.html doc/postgresql/postgis/README.postgis" || _die "Failed to remove documentation"
-    ssh $PG_SSH_OSX "rm -f share/man/man1/pgsql2shp.1 share/man/man1/shp2pgsql.1" || _die "Failed to remove man pages"
+    ssh $PG_SSH_OSX "cd $PG_PGHOME_OSX; rm -f bin/shp2pgsql bin/pgsql2shp lib/postgresql/postgis-$POSTGIS_MAJOR_VERSION.so" || _die "Failed to remove PostGIS binaries from server staging"
+    ssh $PG_SSH_OSX "cd $PG_PGHOME_OSX/share/postgresql/contrib; rm -f spatial_ref_sys.sql *postgis*sql" || _die "Failed to remove postgis sql from server staging"
+    ssh $PG_SSH_OSX "cd $PG_PGHOME_OSX/doc/postgresql/postgis; rm -f postgis.html README.postgis" || _die "Failed to remove postgis doc from server staging"
+    ssh $PG_SSH_OSX "cd $PG_PGHOME_OSX; rm -f share/man/man1/pgsql2shp.1 share/man/man1/shp2pgsql.1" || _die "Failed to remove man pages from server staging"
     
     # Remove existing source and staging directories
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/PostGIS/source" || _die "Falied to clean the PostGIS/source directory on Mac OS X VM"
@@ -207,8 +203,11 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
 
     echo "Building PostGIS"
     LDFLAGS="-L/opt/local/Current/lib -arch x86_64 " CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 " MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make || _die "Failed to build PostGIS"
+    echo "Building comments"
     make comments || _die "Failed to build comments"
+    echo "Installing PostGIS"
     make install PGXSOVERRIDE=0 DESTDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/doc PGSQL_MANDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/man PGSQL_SHAREDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/share/postgresql || _die "Failed to install PostGIS"
+    echo "Installing comments"
     make comments-install PGXSOVERRIDE=0 DESTDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/doc PGSQL_MANDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/man PGSQL_SHAREDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/share/postgresql || _die "Failed to install PostGIS comments"
 
     echo "Building postgis-doc"
@@ -296,47 +295,47 @@ cat <<EOT-POSTGIS >> $WD/PostGIS/build-postgis.sh
     install_name_tool -change "@loader_path/../../lib/libgeos-$PG_TARBALL_GEOS.dylib" "@loader_path/libgeos-$PG_TARBALL_GEOS.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/libgeos_c.1.dylib
     install_name_tool -change "@loader_path/../../lib/libpcre.1.dylib" "@loader_path/libpcre.1.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/libgdal.20.dylib
     install_name_tool -change "@loader_path/../../lib/libcurl.4.dylib" "@loader_path/libcurl.4.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/libgdal.20.dylib
-    install_name_tool -change "@loader_path/../../lib/libjson-c.2.dylib" "@loader_path/libjson-c.2.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/libgdal.20.dylib
+    install_name_tool -change "@loader_path/../../lib/libjson-c.4.dylib" "@loader_path/libjson-c.4.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/libgdal.20.dylib
     install_name_tool -change "@loader_path/../../lib/libexpat.1.dylib" "@loader_path/libexpat.1.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/libgdal.20.dylib
     install_name_tool -change "@loader_path/../../lib/libgeos_c.1.dylib" "@loader_path/libgeos_c.1.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/postgis-$POSTGIS_MAJOR_VERSION.so
     install_name_tool -change "@loader_path/../../lib/libgeos_c.1.dylib" "@loader_path/libgeos_c.1.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/rtpostgis-$POSTGIS_MAJOR_VERSION.so
-    install_name_tool -change "@loader_path/../../lib/libjson-c.2.dylib" "@loader_path/libjson-c.2.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/postgis-$POSTGIS_MAJOR_VERSION.so
-    install_name_tool -change "@loader_path/../../lib/libjson-c.2.dylib" "@loader_path/libjson-c.2.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/rtpostgis-$POSTGIS_MAJOR_VERSION.so
-    install_name_tool -change "@loader_path/../../lib/libproj.9.dylib" "@loader_path/libproj.9.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/postgis-$POSTGIS_MAJOR_VERSION.so
-    install_name_tool -change "@loader_path/../../lib/libproj.9.dylib" "@loader_path/libproj.9.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/rtpostgis-$POSTGIS_MAJOR_VERSION.so
+    install_name_tool -change "@loader_path/../../lib/libjson-c.4.dylib" "@loader_path/libjson-c.4.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/postgis-$POSTGIS_MAJOR_VERSION.so
+    install_name_tool -change "@loader_path/../../lib/libjson-c.4.dylib" "@loader_path/libjson-c.4.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/rtpostgis-$POSTGIS_MAJOR_VERSION.so
+    install_name_tool -change "@loader_path/../../lib/libproj.13.dylib" "@loader_path/libproj.13.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/postgis-$POSTGIS_MAJOR_VERSION.so
+    install_name_tool -change "@loader_path/../../lib/libproj.13.dylib" "@loader_path/libproj.13.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/rtpostgis-$POSTGIS_MAJOR_VERSION.so
     install_name_tool -change "@loader_path/../../lib/libgdal.20.dylib" "@loader_path/libgdal.20.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/rtpostgis-$POSTGIS_MAJOR_VERSION.so
     install_name_tool -change "@loader_path/../../lib/libgeos_c.1.dylib" "@loader_path/libgeos_c.1.dylib" "$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/postgis_topology-$POSTGIS_MAJOR_VERSION.so"
-    install_name_tool -change "@loader_path/../../lib/libproj.9.dylib" "@loader_path/libproj.9.dylib" "$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/postgis_topology-$POSTGIS_MAJOR_VERSION.so"
+    install_name_tool -change "@loader_path/../../lib/libproj.13.dylib" "@loader_path/libproj.13.dylib" "$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/postgis_topology-$POSTGIS_MAJOR_VERSION.so"
     install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/pgsql2shp
     install_name_tool -change "@loader_path/../../lib/libgeos-$PG_TARBALL_GEOS.dylib" "@loader_path/libgeos-$PG_TARBALL_GEOS.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/liblwgeom-$POSTGIS_MAJOR_VERSION.\$LIBLWGEOM_IFACE_CUR.dylib
     install_name_tool -change "@loader_path/../../lib/libgeos_c.1.dylib" "@loader_path/libgeos_c.1.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/liblwgeom-$POSTGIS_MAJOR_VERSION.\$LIBLWGEOM_IFACE_CUR.dylib
-    install_name_tool -change "@loader_path/../../lib/libproj.9.dylib" "@loader_path/libproj.9.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/liblwgeom-$POSTGIS_MAJOR_VERSION.\$LIBLWGEOM_IFACE_CUR.dylib
-    install_name_tool -change "@loader_path/../../lib/libjson-c.2.dylib" "@loader_path/libjson-c.2.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/liblwgeom-$POSTGIS_MAJOR_VERSION.\$LIBLWGEOM_IFACE_CUR.dylib
+    install_name_tool -change "@loader_path/../../lib/libproj.13.dylib" "@loader_path/libproj.13.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/liblwgeom-$POSTGIS_MAJOR_VERSION.\$LIBLWGEOM_IFACE_CUR.dylib
+    install_name_tool -change "@loader_path/../../lib/libjson-c.4.dylib" "@loader_path/libjson-c.4.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/liblwgeom-$POSTGIS_MAJOR_VERSION.\$LIBLWGEOM_IFACE_CUR.dylib
     # Change the path for libs that will be installed in lib/postgresql
     install_name_tool -change "@loader_path/../lib/liblwgeom-$POSTGIS_MAJOR_VERSION.\$LIBLWGEOM_IFACE_CUR.dylib" "@loader_path/../lib/postgresql/liblwgeom-$POSTGIS_MAJOR_VERSION.\$LIBLWGEOM_IFACE_CUR.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/pgsql2shp
     install_name_tool -change "@loader_path/../lib/libgeos_c.1.dylib" "@loader_path/../lib/postgresql/libgeos_c.1.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/pgsql2shp
     install_name_tool -change "@loader_path/../lib/libgeos-$PG_TARBALL_GEOS.dylib" "@loader_path/../lib/postgresql/libgeos-$PG_TARBALL_GEOS.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/pgsql2shp
-    install_name_tool -change "@loader_path/../lib/libproj.9.dylib" "@loader_path/../lib/postgresql/libproj.9.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/pgsql2shp
-    install_name_tool -change "@loader_path/../lib/libjson-c.2.dylib" "@loader_path/../lib/postgresql/libjson-c.2.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/pgsql2shp
-    install_name_tool -change "@loader_path/../lib/libintl.8.dylib" "@loader_path/../lib/postgresql/libintl.8.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/pgsql2shp
+    install_name_tool -change "@loader_path/../lib/libproj.13.dylib" "@loader_path/../lib/postgresql/libproj.13.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/pgsql2shp
+    install_name_tool -change "@loader_path/../lib/libjson-c.4.dylib" "@loader_path/../lib/postgresql/libjson-c.4.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/pgsql2shp
+    install_name_tool -change "@loader_path/../lib/libintl.9.dylib" "@loader_path/../lib/postgresql/libintl.9.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/pgsql2shp
     install_name_tool -change "@loader_path/../lib/liblwgeom-$POSTGIS_MAJOR_VERSION.\$LIBLWGEOM_IFACE_CUR.dylib" "@loader_path/../lib/postgresql/liblwgeom-$POSTGIS_MAJOR_VERSION.\$LIBLWGEOM_IFACE_CUR.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/shp2pgsql
     install_name_tool -change "@loader_path/../lib/libgeos_c.1.dylib" "@loader_path/../lib/postgresql/libgeos_c.1.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/shp2pgsql
     install_name_tool -change "@loader_path/../lib/libgeos-$PG_TARBALL_GEOS.dylib" "@loader_path/../lib/postgresql/libgeos-$PG_TARBALL_GEOS.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/shp2pgsql
-    install_name_tool -change "@loader_path/../lib/libproj.9.dylib" "@loader_path/../lib/postgresql/libproj.9.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/shp2pgsql
-    install_name_tool -change "@loader_path/../lib/libjson-c.2.dylib" "@loader_path/../lib/postgresql/libjson-c.2.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/shp2pgsql
-    install_name_tool -change "@loader_path/../lib/libintl.8.dylib" "@loader_path/../lib/postgresql/libintl.8.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/shp2pgsql
+    install_name_tool -change "@loader_path/../lib/libproj.13.dylib" "@loader_path/../lib/postgresql/libproj.13.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/shp2pgsql
+    install_name_tool -change "@loader_path/../lib/libjson-c.4.dylib" "@loader_path/../lib/postgresql/libjson-c.4.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/shp2pgsql
+    install_name_tool -change "@loader_path/../lib/libintl.9.dylib" "@loader_path/../lib/postgresql/libintl.9.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/shp2pgsql
     install_name_tool -change "@loader_path/../lib/libiconv.2.dylib" "@loader_path/../lib/postgresql/libiconv.2.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/shp2pgsql
     install_name_tool -change "@loader_path/../lib/liblwgeom-$POSTGIS_MAJOR_VERSION.\$LIBLWGEOM_IFACE_CUR.dylib" "@loader_path/../lib/postgresql/liblwgeom-$POSTGIS_MAJOR_VERSION.\$LIBLWGEOM_IFACE_CUR.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
     install_name_tool -change "@loader_path/../lib/libgeos_c.1.dylib" "@loader_path/../lib/postgresql/libgeos_c.1.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
     install_name_tool -change "@loader_path/../lib/libgeos-$PG_TARBALL_GEOS.dylib" "@loader_path/../lib/postgresql/libgeos-$PG_TARBALL_GEOS.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
-    install_name_tool -change "@loader_path/../lib/libproj.9.dylib" "@loader_path/../lib/postgresql/libproj.9.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
-    install_name_tool -change "@loader_path/../lib/libintl.8.dylib" "@loader_path/../lib/postgresql/libintl.8.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
+    install_name_tool -change "@loader_path/../lib/libproj.13.dylib" "@loader_path/../lib/postgresql/libproj.13.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
+    install_name_tool -change "@loader_path/../lib/libintl.9.dylib" "@loader_path/../lib/postgresql/libintl.9.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
     install_name_tool -change "@loader_path/../lib/libiconv.2.dylib" "@loader_path/../lib/postgresql/libiconv.2.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
     install_name_tool -change "@loader_path/../lib/libexpat.1.dylib" "@loader_path/../lib/postgresql/libexpat.1.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
     install_name_tool -change "@loader_path/../lib/libcurl.4.dylib" "@loader_path/../lib/postgresql/libcurl.4.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
     install_name_tool -change "@loader_path/../lib/libgdal.20.dylib" "@loader_path/../lib/postgresql/libgdal.20.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
     install_name_tool -change "@loader_path/../lib/libpcre.1.dylib" "@loader_path/../lib/postgresql/libpcre.1.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
-    install_name_tool -change "@loader_path/../lib/libjson-c.2.dylib" "@loader_path/../lib/postgresql/libjson-c.2.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
+    install_name_tool -change "@loader_path/../lib/libjson-c.4.dylib" "@loader_path/../lib/postgresql/libjson-c.4.dylib" $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/raster2pgsql
 
     chmod +r $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/lib/*
     chmod +rx $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/bin/*
