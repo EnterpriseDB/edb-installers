@@ -199,7 +199,7 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
 
     # Configure the source tree
     echo "Configuring the PostGIS source tree for x86_64"
-    LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/opt/local/Current/lib -arch x86_64" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PATH=/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current || _die "Failed to configure PostGIS for x86_64"
+    LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/opt/local/Current/lib -arch x86_64" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PATH=/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH ./configure --enable-debug --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current || _die "Failed to configure PostGIS for x86_64"
 
     echo "Building PostGIS"
     LDFLAGS="-L/opt/local/Current/lib -arch x86_64 " CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 " MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make || _die "Failed to build PostGIS"
@@ -345,6 +345,9 @@ EOT-POSTGIS
     scp PostGIS/build-postgis.sh $PG_SSH_OSX:$PG_PATH_OSX/PostGIS
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/PostGIS; sh ./build-postgis.sh" || _die "Failed to build PostGIS on OSX"
 
+    # Generate debug symbols
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
+
     echo "Removing last successful staging directory ($PG_PATH_OSX/PostGIS/staging/osx)"
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/PostGIS/staging/osx" || _die "Couldn't remove the last successful staging directory directory"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/PostGIS/staging/osx" || _die "Couldn't create the last successful staging directory"
@@ -393,6 +396,10 @@ _postprocess_PostGIS_osx() {
     cd $WD/PostGIS/staging/osx
     tar -jxvf postgis-staging.tar.bz2 || _die "Failed to extract the postgis staging archive"
     rm -f postgis-staging.tar.bz2
+
+    # Restructing the staging for debug symbols
+    mv $WD/PostGIS/staging/osx/debug_symbols/PostGIS/* $WD/PostGIS/staging/osx/debug_symbols/
+    rm -rf $WD/PostGIS/staging/osx/debug_symbols/PostGIS
 
     source $WD/PostGIS/staging/osx/versions-osx.sh
     PG_BUILD_POSTGIS=$(expr $PG_BUILD_POSTGIS + $SKIPBUILD)
