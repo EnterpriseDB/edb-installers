@@ -582,7 +582,7 @@ _postprocess_server_windows() {
     cp -r $WD/server/staging_cache/windows/lib   $CLT_STAGING_WINDOWS || _die "Failed to move lib"
 
     # Copy the zlib1.dll to commandlinetools
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/zlib1.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to copy zlib1.dll to $CLT_STAGING_WINDOWS/bin"
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/zlib1.dll $CLT_STAGING_WINDOWS/bin || _die "Failed to copy zlib1.dll to $CLT_STAGING_WINDOWS/bin"
 
     mv $PGSERVER_STAGING_WINDOWS/bin/psql.exe $CLT_STAGING_WINDOWS/bin || _die "Failed to move psql.exe"
     mv $PGSERVER_STAGING_WINDOWS/bin/libpq*   $CLT_STAGING_WINDOWS/bin || _die "Failed to move bin/libpq"
