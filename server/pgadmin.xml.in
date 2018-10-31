@@ -494,12 +494,18 @@
          <!-- Always remove the old venv in upgrade -->
          <actionGroup>
              <actionList>
+                 <!-- Show warning if pgAdmin server is on while doing upgrademode installation -->
+                 <showWarning text="${msg(warning.upgrademode.installation)}" />
+                 <logMessage text="${msg(warning.upgrademode.installation)}" />
                  <deleteFile path="${installdir}/pgAdmin 4/venv">
                      <ruleList>
                          <fileExists path="${installdir}/pgAdmin 4/venv"/>
                      </ruleList>
                  </deleteFile>
              </actionList>
+             <ruleList>
+                  <stringTest text="${pgadmin_version}" type="not_empty"/>
+             </ruleList>
          </actionGroup>
    </readyToInstallActionList>
 
