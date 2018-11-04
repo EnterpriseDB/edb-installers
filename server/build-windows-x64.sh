@@ -419,6 +419,7 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-8.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib1.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libcurl.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\icu*.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
    
@@ -644,9 +645,8 @@ _postprocess_server_windows_x64() {
    mkdir -p $CLT_STAGING_WINDOWS_X64/bin || _die "Couldn't create the staging directory $CLT_STAGING_WINDOWS_X64/bin"
    cp -r $WD/server/staging_cache/windows-x64/lib   $CLT_STAGING_WINDOWS_X64 || _die "Failed to move lib"
 
-   # Copy the zlib1.dll to commandlinetools
-   scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/zlib1.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to copy zlib1.dll to $CLT_STAGING_WINDOWS_X64/bin"
 
+   mv $PGSERVER_STAGING_WINDOWS_X64/bin/zlib1.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move zlib1.dll"
    mv $PGSERVER_STAGING_WINDOWS_X64/bin/psql.exe $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move psql.exe"
    mv $PGSERVER_STAGING_WINDOWS_X64/bin/libpq*   $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move bin/libpq"
    mv $PGSERVER_STAGING_WINDOWS_X64/bin/pg_basebackup.exe  $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move pg_basebackup"
