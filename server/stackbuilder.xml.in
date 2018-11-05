@@ -255,6 +255,7 @@
             <windowsExec>${installdir}\bin\stackbuilder.exe</windowsExec>
             <ruleList>
                 <isTrue value="${create_shortcuts}" />
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </startMenuShortcut>
     </startMenuShortcutList>
@@ -277,6 +278,7 @@
                     <text>${platform_name}</text>
                     <value>windows</value>
                 </compareText>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </runProgram>
         <setInstallerVariable name="stackbuilder_installation_done" value="1" persist="1"/>

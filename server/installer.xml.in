@@ -1364,7 +1364,6 @@ EOF
                 <setInstallerVariable name="createUninstaller" value="0" persist="1"/>
                 <setInstallerVariable name="project.startMenuGroupName" value=""/>
                 <componentSelection select="extractonly"/>
-                <componentSelection deselect="stackbuilder"/>
             </actionList>
             <ruleList>
                 <isTrue value="${extract_mode}"/>
