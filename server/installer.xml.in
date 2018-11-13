@@ -2882,6 +2882,7 @@ EOF
                 </deleteFile>
             </actionList>
             <ruleList>
+                  <isFalse value="${extract_mode}"/>
                   <isTrue value="${IsUpgrade}"/>
              </ruleList>
         </actionGroup>
