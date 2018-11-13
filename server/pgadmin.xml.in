@@ -504,6 +504,7 @@
                  </deleteFile>
              </actionList>
              <ruleList>
+                  <isFalse value="${extract_mode}"/>
                   <stringTest text="${pgadmin_version}" type="not_empty"/>
              </ruleList>
          </actionGroup>
