@@ -348,7 +348,7 @@ EOT
     
     # Copy the various support files into place
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\vcredist\\\\vcredist_x86.exe $PG_PATH_WINDOWS\\\\output.build\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\vcredist\\\\vc_redist.x86_2015.exe $PG_PATH_WINDOWS\\\\output.build\\\\installer\\\\vcredist2015_x86.exe" || _die "Failed to copy the 2015 VC++ runtimes on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\vcredist\\\\vc_redist.x86_2017.exe $PG_PATH_WINDOWS\\\\output.build\\\\installer\\\\vcredist2017_x86.exe" || _die "Failed to copy the 2017 VC++ runtimes on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\ssleay32.dll $PG_PATH_WINDOWS\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (ssleay32.dd)"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libeay32.dll $PG_PATH_WINDOWS\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (libeay32.dll)"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libiconv-2.dll $PG_PATH_WINDOWS\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (iconv.dll)"

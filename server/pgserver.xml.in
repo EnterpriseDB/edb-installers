@@ -1711,9 +1711,9 @@
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist2015_x86.exe</destination>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist2017_x86.exe</destination>
                     <folder>defaultwindows-x86</folder>
-                    <origin>vcredist2015_x86.exe</origin>
+                    <origin>vcredist2017_x86.exe</origin>
                     <ruleList>
                        <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>
                     </ruleList>
@@ -1721,9 +1721,9 @@
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist2015_x64.exe</destination>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist2017_x64.exe</destination>
                     <folder>defaultwindows-x64</folder>
-                    <origin>vcredist2015_x64.exe</origin>
+                    <origin>vcredist2017_x64.exe</origin>
                     <ruleList>
                         <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
                     </ruleList>
@@ -1742,7 +1742,7 @@
                 <actionGroup>
                     <actionList>
                         <runProgram>
-                            <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist2015_x64.exe</program>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist2017_x64.exe</program>
                             <programArguments>/passive /norestart</programArguments>
                                 <ruleList>
                                     <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
@@ -1751,7 +1751,7 @@
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
                         <runProgram>
-                            <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist2015_x86.exe</program>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist2017_x86.exe</program>
                             <programArguments>/passive /norestart</programArguments>
                             <ruleList>
                                <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="does_not_equal"/>

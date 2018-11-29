@@ -1852,7 +1852,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}
                             <origin>staging/@@WINDIR@@/server/installer/vcredist_x86.exe</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/server/installer/vcredist2015_x86.exe</origin>
+                            <origin>staging/@@WINDIR@@/server/installer/vcredist2017_x86.exe</origin>
                         </distributionDirectory>
                     </distributionFileList>
                     <shouldPackRuleList>
@@ -1869,7 +1869,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}
                             <origin>staging/@@WINDIR@@/server/installer/vcredist_x64.exe</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/server/installer/vcredist2015_x64.exe</origin>
+                            <origin>staging/@@WINDIR@@/server/installer/vcredist2017_x64.exe</origin>
                         </distributionDirectory>
                     </distributionFileList>
                     <shouldPackRuleList>
