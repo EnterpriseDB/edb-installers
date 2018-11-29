@@ -1950,8 +1950,8 @@ EOF
 
                 <!-- We will also need to get the VC++ runtimes installed on Windows, before we do anything with binaries -->
                 <setInstallerVariable name="vcredist_executable" value="vcredist_x86.exe"/>
-                <setInstallerVariable name="vcredist2015_executable" value="vcredist2017_x86.exe"/>
-                <setInstallerVariable name="vcredist2015_executable" value="vcredist2015_x64.exe">
+                <setInstallerVariable name="vcredist2017_executable" value="vcredist2017_x86.exe"/>
+                <setInstallerVariable name="vcredist2017_executable" value="vcredist2017_x64.exe">
                     <ruleList>
                         <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
                     </ruleList>
@@ -1970,9 +1970,9 @@ EOF
                 </unpackFile>
                 <unpackFile>
                     <component>default</component>
-                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\${vcredist2015_executable}</destination>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\${vcredist2017_executable}</destination>
                     <folder>programfileswindows</folder>
-                    <origin>installer/${vcredist2015_executable}</origin>
+                    <origin>installer/${vcredist2017_executable}</origin>
                     <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>
                 </unpackFile>
                 <actionGroup>
@@ -1984,7 +1984,7 @@ EOF
                             <showMessageOnError>0</showMessageOnError>
                         </runProgram>
                         <runProgram>
-                            <program>${system_temp_directory}\postgresql_installer_${random_number}\${vcredist2015_executable}</program>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\${vcredist2017_executable}</program>
                             <programArguments>/passive /norestart</programArguments>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
