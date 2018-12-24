@@ -1507,6 +1507,9 @@ EOF
                 <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql${service_suffix}-${product_version}</key>
                 <name>Display Name</name>
                 <value>${branding}</value>
+                <ruleList>
+			<compareText logic="equals" text="${platform_name}" value="windows"/>
+                </ruleList>
             </registrySet>
 
                 <!-- Branding info -->
@@ -1530,8 +1533,14 @@ EOF
                     <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                     <name>Branding</name>
                     <value>${branding}</value>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
                 </registrySet>
              </actionList>
+             <ruleList>
+		<isFalse value="${extract_mode}"/>
+             </ruleList>
            </actionGroup>
         <!-- Set server binary path in pgAdmin config_distro.py -->
         <actionGroup>
