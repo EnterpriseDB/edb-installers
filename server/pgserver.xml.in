@@ -1743,6 +1743,28 @@
                     <!--<customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage>-->
                 </unpackFile>
                 <actionGroup>
+                   <actionList>
+                        <registryGet>
+                                <name>Version</name>
+                                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\X64</key>
+                                <variable>vcredist_ver</variable>
+                        </registryGet>
+                        <setInstallerVariable name="install_runtimes" value="0">
+                                <ruleList>
+                                    <stringTest>
+                                        <text>${vcredist_ver}</text>
+                                        <type>not_empty</type>
+                                    </stringTest>
+                                    <compareVersions logic="greater"
+                                         version1="${vcredist_ver}" version2="@@VCREDIST_BUNDLED_VER@@" />
+			        </ruleList>
+		        </setInstallerVariable>
+                   </actionList>
+                   <ruleList>
+                        <isTrue value="${install_runtimes}" />
+                   </ruleList>
+                </actionGroup>
+                <actionGroup>
                     <actionList>
                         <runProgram>
                             <program>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x86_2013.exe</program>

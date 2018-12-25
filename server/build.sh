@@ -313,6 +313,7 @@ _prepare_server_xml() {
                     SERVICESUFFIX="-x64"
                 fi
                 _replace @@WINDIR@@ $PLATFORM $filename || _die "Failed to replace WINDIR in $filename"
+                _replace @@VCREDIST_BUNDLED_VER@@ $VCREDIST_VERSION $filename || _die "Failed to replace WINDIR in $filename"
                 ;;
 
             *)  #installer.xml which is in server/build.sh
