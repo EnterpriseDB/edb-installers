@@ -161,9 +161,6 @@ SET LINK="/FORCE:MULTIPLE"
 pip install psycopg2==2.6.2 --global-option="build_ext"
 pip install Pillow==3.4.2 --global-option="build_ext" --global-option="--disable-zlib" --global-option="--disable-jpeg"
 
-ECHO pip install -r %vScriptsDir%\..\requirements.txt
-pip install -r %vScriptsDir%\..\requirements.txt
-
 ECHO copying required dll's to %vPythonInstallDir%\Lib\site-packages\psycopg2
 
 XCOPY /f /y %vOpenSSLDir%\bin\libeay32.dll %vPythonInstallDir%\Lib\site-packages\psycopg2

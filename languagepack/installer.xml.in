@@ -691,6 +691,49 @@ EOF
         <isFalse value="${extract_mode}"/>
       </ruleList>
      </actionGroup>
+
+     <!-- from LP 10.6 onwards, pem components are moved from LP to pem installer -->
+     <actionGroup>
+       <actionList>
+         <actionGroup>
+           <actionList>
+             <addFilesToUninstaller>
+               <files>${installdir}/Python-EDB_VERSION_PYTHON/lib/pythonEDB_VERSION_PYTHON/site-packages/</files>
+             </addFilesToUninstaller>
+           </actionList>
+	   <ruleList>
+	     <fileTest path="${installdir}/Python-EDB_VERSION_PYTHON/lib/pythonEDB_VERSION_PYTHON/site-packages" condition="exists" />
+             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+	   </ruleList>
+         </actionGroup>
+         <actionGroup>
+           <actionList>
+             <addFilesToUninstaller>
+               <files>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\i386\Python-EDB_VERSION_PYTHON\Lib\site-packages</files>
+             </addFilesToUninstaller>
+           </actionList>
+	   <ruleList>
+	     <fileTest path="C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\i386\Python-EDB_VERSION_PYTHON\Lib\site-packages" condition="exists" />
+             <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
+	   </ruleList>
+         </actionGroup>
+         <actionGroup>
+           <actionList>
+             <addFilesToUninstaller>
+               <files>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\x64\Python-EDB_VERSION_PYTHON\Lib\site-packages</files>
+             </addFilesToUninstaller>
+           </actionList>
+	   <ruleList>
+	     <fileTest path="C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\x64\Python-EDB_VERSION_PYTHON\Lib\site-packages" condition="exists" />
+             <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
+	   </ruleList>
+         </actionGroup>
+     </actionList>
+     <ruleList>
+       <isFalse value="${extract_mode}"/>
+       <compareVersions logic="less_or_equal" version1="${languagepackversion}" version2="10-5"/>
+     </ruleList>
+   </actionGroup>
   </postInstallationActionList>
   <installationAbortedActionList>
     <deleteFile path="${system_temp_directory}/languagepack_${random_number}" abortOnError="0" showMessageOnError="0">

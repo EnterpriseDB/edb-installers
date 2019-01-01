@@ -451,7 +451,6 @@ then
 	export LD_LIBRARY_PATH="$SSL_INST/lib:$LD_LIBRARY_PATH"
         ExecuteCommand "python setup.py install"
     	ExecuteCommand "easy_install pip"
-	ExecuteCommand "pip3 install -r /mnt/hgfs/pem/requirements.txt"
 	ExecuteCommand "cp -rp $SSL_INST/lib/libjpeg* $PYTHON_INSTALL_PATH/lib"
 	ExecuteCommand "cp -rp $SSL_INST/lib/libtiff* $PYTHON_INSTALL_PATH/lib"
 

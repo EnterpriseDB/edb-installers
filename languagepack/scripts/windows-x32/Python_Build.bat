@@ -158,17 +158,6 @@ SET LINK="/FORCE:MULTIPLE"
 REM pip install psycopg2==2.6.2 --global-option="build_ext"
 REM pip install Pillow==3.4.2 --global-option="build_ext" --global-option="--disable-zlib" --global-option="--disable-jpeg"
 
-ECHO pip install -r %vScriptsDir%\..\requirements.txt
-pip install -r %vScriptsDir%\..\requirements.txt
-
-ECHO copying required dll's to %vPythonInstallDir%\Lib\site-packages\psycopg2
-
-XCOPY /f /y %vOpenSSLDir%\bin\libeay32.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
-XCOPY /f /y %vOpenSSLDir%\bin\ssleay32.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
-XCOPY /f /y %vOpenSSLDir%\bin\libintl-8.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
-XCOPY /f /y %vOpenSSLDir%\bin\libiconv-2.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
-XCOPY /f /y %vPgBuildDir%\bin\libpq.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
-
 pip list >%vPythonInstallDir%\pip_packages_list.txt
 
 ECHO ....End Install Python....
