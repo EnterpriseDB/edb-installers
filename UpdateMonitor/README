@@ -1,0 +1,4 @@
+* Followed these links - To run the UpdateManager as a startup program (when user logins in GUI mode).
+  WINDOWS : http://support.microsoft.com/kb/179365
+  LINUX   : http://standards.freedesktop.org/autostart-spec/autostart-spec-latest.html
+  OSX     : http://developer.apple.com/documentation/MacOSX/Conceptual/BPSystemStartup/Articles/CustomLogin.html#//apple_ref/doc/uid/20002134-SW2

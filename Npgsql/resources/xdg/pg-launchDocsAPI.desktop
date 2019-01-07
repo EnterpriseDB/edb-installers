@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Npgsql Docs API
+Exec="INSTALL_DIR/scripts/launchbrowser.sh" http://npgsql.projects.postgresql.org/docs/api
+Icon=pg-launchDocsAPI.png
+Terminal=false
+Type=Application
+

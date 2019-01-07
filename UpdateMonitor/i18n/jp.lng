@@ -1,0 +1,48 @@
+﻿Installer.Welcome.Title=StackBuilder Plusのセットアップ
+
+Installer.Welcome.Text=StackBuilder Plusのセットアップへようこそ。
+
+Installer.Installing.Title=StackBuilder Plus ${product_version}をインストールしています
+
+Installer.Parameter.installdir.explanation=StackBuilder Plusをインストールするディレクトリを指定してください。
+
+Installer.Ready.Text1=コンピュータへのStackBuilder Plusのインストールを開始する準備が整いました。
+
+Installer.Installing.Text=コンピュータへのStackBuilder Plusのインストールが完了するまでしばらくお待ちください。
+
+Installer.Installation.Finished.Title=StackBuilder Plusのセットアップウィザードが完了しました。
+
+Installer.Installation.Finished.Text=コンピュータへのStackBuilder Plusのインストールが完了しました。
+
+Installer.Uninstallation.ConfirmationQuestion=StackBuilder Plusおよびそのすべてのモジュールをアンインストールしますか?
+
+Installer.Uninstallation.Title=StackBuilder Plusをアンインストールしています
+
+upgrade.existing.installation.title=既存のインストール
+
+upgrade.existing.installation.description=${installdir}には、StackBuilder Plusが既にインストールされています。このインストール済みのファイルはアップグレードされます。
+
+platform.not.match=64ビットマシンで32ビットインストーラを実行しようとしています。インストーラはすぐに終了します
+
+progress.text.creating.shortcuts=メニューショートカットを作成しています
+
+Installer.Installation.Finished.Title=%1$sセットアップウィザードを完了しました
+
+Installer.Installation.Finished.Text=EnterpriseDBは、Postgresコミュニティ向けの付加価値製品や付加価値サービスの大手プロバイダです。\n\n詳細については、弊社のWebサイトwww.enterprisedb.comをご覧ください
+
+install.summary=StackBuilder Plus (高度なアプリケーションスタックビルダ)
+
+sbp.installdir.empty=インストールディレクトリを空にすることはできません
+
+sbp.installdir.error=インストールディレクトリは、文字、数字、および記号「-」、「/」、「.」、「_」のみを使用した絶対パスであり、書き込み可能でなければなりません。
+
+monitor.server.version.warning=監視するように指定されているサーバは、インストールされている有効なサーバではありません。Update Monitoringサービスは無効になります。
+monitor.server.title=PostgreSQLサーバのバージョン
+monitor.server.explanation=監視するpostgresqlサーバのバージョンを指定してください。
+monitor.server.version.invalid=監視するように指定されているサーバは、インストールされている有効なサーバではありません。\n<Major Version>.<Minor Version>の形式で有効な文字列を指定してください。
+
+progress.text.fixing.libs=ライブラリを修復しています
+progress.text.creating.loginHook.osx=ログインフックを作成しています
+progress.text.removing.loginHook.osx=ログインフックを削除しています
+progress.text.removing.shortcuts=メニューショートカットを削除しています
+

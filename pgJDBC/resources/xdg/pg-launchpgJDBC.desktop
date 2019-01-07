@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=PostgreSQL JDBC Home Page
+Exec="INSTALL_DIR/scripts/launchbrowser.sh" http://jdbc.postgresql.org/
+Icon=pg-launchPgJDBC.png
+Terminal=false
+Type=Application
+

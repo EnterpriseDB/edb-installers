@@ -1,0 +1,48 @@
+﻿Installer.Welcome.Title=安裝 StackBuilder Plus
+
+Installer.Welcome.Text=歡迎使用 StackBuilder Plus 安裝精靈。
+
+Installer.Installing.Title=正在安裝 StackBuilder Plus ${product_version}
+
+Installer.Parameter.installdir.explanation=請指定 StackBuilder Plus 的安裝目錄。
+
+Installer.Ready.Text1=安裝程式已準備好開始將 StackBuilder Plus 安裝到您的電腦。
+
+Installer.Installing.Text=請稍候，安裝程式正將 StackBuilder Plus 安裝到您的電腦。
+
+Installer.Installation.Finished.Title=已完成 StackBuilder Plus 安裝精靈。
+
+Installer.Installation.Finished.Text=安裝程式已經將 StackBuilder Plus 安裝到您的電腦。
+
+Installer.Uninstallation.ConfirmationQuestion=要解除安裝 StackBuilder Plus 和它的所有模組嗎？
+
+Installer.Uninstallation.Title=正在解除安裝 StackBuilder Plus
+
+upgrade.existing.installation.title=現有安裝
+
+upgrade.existing.installation.description=已在 ${installdir} 找到現有 StackBuilder Plus 安裝。將升級此安裝。
+
+platform.not.match=您正嘗試在 64 位元電腦中執行 32 位元安裝程式。安裝程式即將結束
+
+progress.text.creating.shortcuts=正在建立功能表捷徑
+
+Installer.Installation.Finished.Title=已完成 %1$s 安裝精靈
+
+Installer.Installation.Finished.Text=EnterpriseDB 是 Postgres 社群中加值產品和服務的主要提供者。\n\n請造訪我們的網站: www.enterprisedb.com
+
+install.summary=StackBuilder Plus (進階應用程式堆疊產生器)
+
+sbp.installdir.empty=安裝目錄不可是空的
+
+sbp.installdir.error=安裝目錄必須是絕對路徑，只包含字母、數字和字元 '-'、'/'、'.' 和 '_'，而且為可寫入。
+
+monitor.server.version.warning=指定要監視的伺服器不是有效的已安裝伺服器。更新監視服務將會停用。
+monitor.server.title=PostgreSQL Server 版本
+monitor.server.explanation=請指定要監視的 PostgreSQL Server 版本。
+monitor.server.version.invalid=指定要監視的伺服器不是有效的已安裝伺服器。\n請指定格式為 <主要版本>.<次要版本> 的有效字串。
+
+progress.text.fixing.libs=正在修復程式庫
+progress.text.creating.loginHook.osx=正在建立登入攔截程序
+progress.text.removing.loginHook.osx=正在移除登入攔截程序
+progress.text.removing.shortcuts=正在移除功能表捷徑
+

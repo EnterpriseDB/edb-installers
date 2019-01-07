@@ -1,0 +1,43 @@
+﻿Installer.Welcome.Title=%1$sのセットアップ
+
+Installer.Welcome.Text=%1$sセットアップウィザードへようこそ。
+
+Installer.Installing.Title=${product_fullname}をインストールしています
+
+upgrade.existing.installation.title=既存のインストール
+
+upgrade.existing.installation.description=PgBouncerが既に${installdir}にインストールされています。このインストール済みのファイルはアップグレードされます。
+
+platform.not.match=64ビットマシンで32ビットインストーラを実行しようとしています。インストーラはすぐに終了します
+
+Installer.Installation.Finished.Title=%1$sセットアップウィザードを完了しました
+
+Installer.Installation.Finished.Text=EnterpriseDBは、Postgresコミュニティ向けの付加価値製品や付加価値サービスの大手プロバイダです。\n\n詳細については、弊社のWebサイトwww.enterprisedb.comをご覧ください
+
+install.summary=EnterpriseDBによってパッケージされたPostgreSQL Serverの接続プーラ。
+
+pgbouncer.installdir.empty=インストールディレクトリを空にすることはできません
+
+pgbouncer.installdir.error=インストールディレクトリは、文字、数字、および記号「-」、「/」、「.」、「_」のみを使用した絶対パスであり、書き込み可能でなければなりません。
+
+pgbouncer.install.service.error=pgbouncerサービスをインストールできませんでした。
+pgbouncer.service.description=PostgreSQL Serverの接続プールサービス。
+pgbouncer.osx.service.error=pgbouncer LaunchDaemonsを作成できませんでした。
+pgbouncer.service.start.error=pgbouncerサービスを開始できませんでした。
+pgbouncer.service.stop.error=pgbouncerサービスを終了できませんでした。
+pgbouncer.linux.service.error=pgbouncerサービスをインストールできませんでした。
+pgbouncer.uninstall.service.error=pgbouncerサービスをアンインストールできませんでした。
+
+pg.details.title=PostgreSQLのインストールの詳細
+pg.details.explanation=PostgreSQLのインストールの詳細を確認してください。
+pg.details.error=PostgreSQLへの接続に失敗しました。提示される詳細を再確認してください。
+pg.blank.error=すべてのフィールドの値を入力する必要があります。
+
+pgbouncer.details.title=PgBouncerの設定
+pgbouncer.details.explanation=PgBouncerの設定に関して、以下の情報を提供してください。
+pgbouncer.port.error=指定したポートにバインドできませんでした。別の値を指定してください。
+pgbouncer.blank.error=すべてのフィールドの値を入力する必要があります。
+pgbouncer.user.error=指定したユーザは、システムに存在していません。
+
+error.file.notsecure={installdir}\etc\userlist.txtファイルを保護できません。
+pgbouncer.system.user.error=pgBouncerは、ルートユーザとして実行できません。別のユーザ名を指定してください。

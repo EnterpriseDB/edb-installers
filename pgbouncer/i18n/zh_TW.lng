@@ -1,0 +1,43 @@
+﻿Installer.Welcome.Title=安裝 %1$s
+
+Installer.Welcome.Text=歡迎使用 %1$s 安裝精靈。
+
+Installer.Installing.Title=正在安裝 ${product_fullname}
+
+upgrade.existing.installation.title=現有安裝
+
+upgrade.existing.installation.description=已在 ${installdir} 找到現有 PgBouncer 安裝。將升級此安裝。
+
+platform.not.match=您正嘗試在 64 位元電腦中執行 32 位元安裝程式。安裝程式即將結束
+
+Installer.Installation.Finished.Title=已完成 %1$s 安裝精靈
+
+Installer.Installation.Finished.Text=EnterpriseDB 是 Postgres 社群中加值產品和服務的主要提供者。\n\n請造訪我們的網站: www.enterprisedb.com
+
+install.summary=PostgreSQL Server 的連線共用器，由 EnterpriseDB 封裝。
+
+pgbouncer.installdir.empty=安裝目錄不可是空的
+
+pgbouncer.installdir.error=安裝目錄必須是絕對路徑，只包含字母、數字和字元 '-'、'/'、'.' 和 '_'，而且為可寫入。
+
+pgbouncer.install.service.error=無法安裝 pgbouncer 服務。
+pgbouncer.service.description=PostgreSQL Server 的連線共用服務。
+pgbouncer.osx.service.error=無法建立 pgbouncer LaunchDaemons。
+pgbouncer.service.start.error=無法啟動 pgbouncer 服務。
+pgbouncer.service.stop.error=無法停止 pgbouncer 服務。
+pgbouncer.linux.service.error=無法安裝 pgbouncer 服務。
+pgbouncer.uninstall.service.error=無法解除安裝 the pgbouncer 服務。
+
+pg.details.title=PostgreSQL 安裝詳細資料
+pg.details.explanation=請確認 PostgreSQL 安裝詳細資料
+pg.details.error=與 PostgreSQL Server 的連線失敗。請重新檢查提供的詳細資料。
+pg.blank.error=所有欄位都必須輸入值。
+
+pgbouncer.details.title=PgBouncer 設定
+pgbouncer.details.explanation=請提供下列有關 PgBouncer 設定的資訊。
+pgbouncer.port.error=無法繫結到指定的埠號。請指定其他值。
+pgbouncer.blank.error=所有欄位都必須輸入值。
+pgbouncer.user.error=系統中沒有指定的使用者。
+
+error.file.notsecure=無法保護 {installdir}\etc\userlist.txt 檔案。
+pgbouncer.system.user.error=pgBouncer 無法以根使用者身分執行。請指定另一個使用者名稱。

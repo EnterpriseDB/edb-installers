@@ -33,6 +33,9 @@ _set_config PG_PACKAGE_SERVER 0
 _set_config PG_PACKAGE_POSTGIS 0
 _set_config PG_PACKAGE_SLONY 0
 _set_config PG_PACKAGE_PGAGENT 0
+_set_config PG_PACKAGE_PGJDBC 0
+_set_config PG_PACKAGE_PSQLODBC 0
+_set_config PG_PACKAGE_NPGSQL 0
 _set_config PG_PACKAGE_PGMEMCACHE 0
 _set_config PG_PACKAGE_PGBOUNCER 0
 _set_config PG_PACKAGE_MIGRATIONTOOLKIT 0
@@ -40,6 +43,7 @@ _set_config PG_PACKAGE_SQLPROTECT 0
 _set_config PG_PACKAGE_LANGUAGEPACK 0
 _set_config PG_PACKAGE_APACHEHTTPD 0
 _set_config PG_PACKAGE_HDFS_FDW 0
+_set_config PG_PACKAGE_UPDATE_MONITOR 0
 
 # Path for the build machine (/opt/... must be at the end!)
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
