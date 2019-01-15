@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2012-2018, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2019, EnterpriseDB Corporation.  All rights reserved
 
 export PGHOST=$1
 export PGPORT=$2
