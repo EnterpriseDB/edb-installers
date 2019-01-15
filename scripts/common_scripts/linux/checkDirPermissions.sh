@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2012-2018, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2019, EnterpriseDB Corporation.  All rights reserved
 # This script accepts a path, which it traverses and checks if 'others' users have
 # read & execute permissions. If any of the directory do not have the permissions
 # then it will echo "100" and exit.

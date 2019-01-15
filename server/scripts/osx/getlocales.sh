@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2012-2018, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2019, EnterpriseDB Corporation.  All rights reserved
 
 # PostgreSQL server locales script for OSX (returns valid locales on the system)
 
