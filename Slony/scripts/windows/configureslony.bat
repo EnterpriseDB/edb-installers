@@ -1,5 +1,5 @@
 @ECHO OFF
-REM Copyright (c) 2012-2018, EnterpriseDB Corporation.  All rights reserved
+REM Copyright (c) 2012-2019, EnterpriseDB Corporation.  All rights reserved
 
 REM Copying the lib files to pkglibdir
 move %1\lib\slony1_funcs*.dll @@PKG_LIBDIR@@
