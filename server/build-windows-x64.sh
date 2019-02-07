@@ -468,7 +468,7 @@ EOT
     #Create pgAdmin4 folder inside the output.build
     ssh $PG_SSH_WINDOWS_X64 "mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\"" || _die "Failed to create a pgAdmin 4 directory on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to create a bin directory on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\web; echo SERVER_MODE = False > config_distro.py; echo HELP_PATH = \'../../../docs/en_US/html/\' >> config_distro.py" || _die "Failed to copy config_distro.py on the windows build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\web; echo SERVER_MODE = False > config_distro.py; echo HELP_PATH = \'../../../docs/en_US/html/\' >> config_distro.py; echo UPGRADE_CHECK_KEY = \'edb-pgadmin4\' >> config_distro.py" || _die "Failed to copy config_distro.py on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\web \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\"" || _die "Failed to copy web folder on the windows build host"
 
     #create virtualenv and install required components using pip and compile documents and runtime
