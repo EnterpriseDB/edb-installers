@@ -394,6 +394,7 @@ EOF
     # Create config_distro
     echo "SERVER_MODE = False" > config_distro.py
     echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_distro.py
+    echo "UPGRADE_CHECK_KEY = 'edb-pgadmin4'"  >> config_distro.py
 
 EOT-PGADMIN
 
