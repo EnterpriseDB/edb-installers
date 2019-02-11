@@ -175,8 +175,6 @@ CALL $PG_PATH_WINDOWS/pgadmin.windows/venv/Scripts/activate
 @SET PATH=$PG_PATH_WINDOWS\output.build\bin;%PATH%
 pip install -r requirements.txt --no-cache-dir
 pip install sphinx
-REM Edit nt.py in the package to fix the pycrypto issue on Python3
-CALL powershell -Command "(gc  venv\Lib\site-packages\Crypto\Random\OSRNG\nt.py) -replace 'import winrandom', 'from . import winrandom' | Out-File -encoding ASCII  venv\Lib\site-packages\Crypto\Random\OSRNG\nt.py"
 
 EOT
 
