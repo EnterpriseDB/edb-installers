@@ -216,7 +216,7 @@ _build_languagepack_osx() {
 
      python setup.py install --prefix=\$PYTHON_INSTALL_PATH 
      easy_install pip
-     pip install sphnix
+     pip install sphinx
      pip install virtualvenv
 
      cd \$PYTHON_INSTALL_PATH
