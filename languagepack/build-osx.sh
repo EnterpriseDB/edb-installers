@@ -215,7 +215,7 @@ _build_languagepack_osx() {
      export LD_LIBRARY_PATH="/opt/local/Current/lib:\$LD_LIBRARY_PATH"
 
      python setup.py install --prefix=\$PYTHON_INSTALL_PATH 
-     easy_install pip
+     easy_install pip==10.0.1
      # Install specific version of sphinx as the latest versions requires at least Python 2.7 or 3.4 to run
      pip install sphinx==1.3.1
 
