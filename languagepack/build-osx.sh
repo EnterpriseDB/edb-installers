@@ -215,8 +215,8 @@ _build_languagepack_osx() {
      export LD_LIBRARY_PATH="/opt/local/Current/lib:\$LD_LIBRARY_PATH"
 
      python setup.py install --prefix=\$PYTHON_INSTALL_PATH 
-     easy_install pip
-     easy_install sphinx
+     easy_install pip==10.0.1
+     easy_install sphinx==1.3.1
 
      cd \$PYTHON_INSTALL_PATH
      pip list > \$install_path/pip_packages_list.txt
