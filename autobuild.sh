@@ -218,12 +218,12 @@ remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
 pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v6.0"
 
 # determine the host location
-dns=$(grep -w "172.24" /etc/resolv.conf | cut -f3 -d".") >> autobuild.log 2>&1
+dns=$(grep -w "172.19" /etc/resolv.conf | cut -f3 -d".") >> autobuild.log 2>&1
 
 if [ $dns -eq 32 ]
 then
         country="UK"
-elif [ $dns -eq 34 ]
+elif [ $dns -eq 5 ]
 then
         country="IN"
 elif [ $dns -eq 36 ]
