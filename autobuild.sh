@@ -218,22 +218,9 @@ remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
 pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v7.0"
 
 # determine the host location
-dns=$(grep -w "172.24" /etc/resolv.conf | cut -f3 -d".") >> autobuild.log 2>&1
-
-if [ $dns -eq 32 ]
-then
-        country="UK"
-elif [ $dns -eq 34 ]
-then
-        country="IN"
-elif [ $dns -eq 36 ]
-then
-        country="PK"
-elif [ -z "$dns" ]
-then
-        echo "Unable to determine host location. Check /etc/resolv.conf" >> autobuild.log
-        country="unknownlocation"
-fi
+curl -O http://cm-dashboard2.enterprisedb.com/interfaces/cm-dashboard-status.sh
+chmod 755 cm-dashboard-status.sh
+country="$(source ./cm-dashboard-status.sh; GetBuildsLocation)"
 
 # Different location for the manual and cron triggered builds.
 if [ "$BUILD_USER" == "" ]
