@@ -215,7 +215,7 @@ echo "Running the build (REL-11) " >> autobuild.log
 ./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-11.log
 
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
-pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v7.3"
+pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v7.6"
 
 # determine the host location
 curl -O http://cm-dashboard2.enterprisedb.com/interfaces/cm-dashboard-status.sh
