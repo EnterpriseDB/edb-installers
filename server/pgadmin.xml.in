@@ -499,11 +499,23 @@
                          <fileExists path="${installdir}/pgAdmin 4/venv"/>
                      </ruleList>
                  </deleteFile>
+                  <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Resources/venv">
+                    <ruleList>
+                        <fileExists path="${installdir}/pgAdmin 4.app/Contents/Resources/venv"/>
+                        <compareText logic="equals" text="${platform_name}" value="osx" />
+                    </ruleList>
+                 </deleteFile>
                   <deleteFile path="${installdir}/pgAdmin 4/web/pgadmin">
                      <ruleList>
                          <fileExists path="${installdir}/pgAdmin 4/web/pgadmin"/>
                      </ruleList>
                  </deleteFile>
+                  <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Resources/web/pgadmin">
+                    <ruleList>
+                        <fileExists path="${installdir}/pgAdmin 4.app/Contents/Resources/web/pgadmin"/>
+                        <compareText logic="equals" text="${platform_name}" value="osx" />
+                    </ruleList>
+                </deleteFile>
              </actionList>
              <ruleList>
                   <isFalse value="${extract_mode}"/>
