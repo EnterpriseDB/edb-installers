@@ -491,7 +491,7 @@
                  <isFalse value="${extract_mode}"/>
              </ruleList>
          </actionGroup>
-         <!-- Always remove the old venv in upgrade -->
+         <!-- Always remove the old venv and web/pgadmin in upgrade -->
          <actionGroup>
              <actionList>
                  <!-- Show warning if pgAdmin server is on while doing upgrademode installation -->
@@ -500,6 +500,11 @@
                  <deleteFile path="${installdir}/pgAdmin 4/venv">
                      <ruleList>
                          <fileExists path="${installdir}/pgAdmin 4/venv"/>
+                     </ruleList>
+                 </deleteFile>
+                 <deleteFile path="${installdir}/pgAdmin 4/web/pgadmin">
+                     <ruleList>
+                         <fileExists path="${installdir}/pgAdmin 4/web/pgadmin"/>
                      </ruleList>
                  </deleteFile>
              </actionList>
