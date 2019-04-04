@@ -2880,6 +2880,11 @@ EOF
                         <fileExists path="${installdir}/pgAdmin 4/venv"/>
                     </ruleList>
                 </deleteFile>
+                  <deleteFile path="${installdir}/pgAdmin 4/web/pgadmin">
+                    <ruleList>
+                        <fileExists path="${installdir}/pgAdmin 4/web/pgadmin"/>
+                    </ruleList>
+                </deleteFile>
             </actionList>
             <ruleList>
                   <isFalse value="${extract_mode}"/>
