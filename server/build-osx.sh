@@ -202,7 +202,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     source ../common.sh
     # In PG10, the version numbering scheme got changed and adopted a single digit major version (10) instead of two which is not supported by psycopg2
     # and requires a two digit version. Hence, use 9.6 installation to build pgAdmin
-    PATH=/opt/local/pg96-osx:\$PATH
+    PATH=$PG_STAGING/bin:\$PATH
     LD_LIBRARY_PATH=$PG_STAGING/lib:\$LD_LIBRARY_PATH
     # Set PYTHON_VERSION variable required for pgadmin build
     PYTHON_HOME=$PGADMIN_PYTHON_OSX
