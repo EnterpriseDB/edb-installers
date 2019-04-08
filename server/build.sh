@@ -88,8 +88,14 @@ _prep_server() {
     cd pgadmin4-$PG_TARBALL_PGADMIN
     if [ -e $WD/tarballs/icon_display_issue.patch ]
     then
-    echo "Appyling the icon_display_issue.patch"
-    patch -p1 < $WD/tarballs/icon_display_issue.patch || _die "icon_display_issue.patch doesnot applied"
+        echo "Appyling the icon_display_issue.patch"
+        patch -p1 < $WD/tarballs/icon_display_issue.patch || _die "icon_display_issue.patch doesnot applied"
+    fi
+
+    # psycopg2 latest version 2.8 is not yet supported. Hence use the last supported version
+    if [ "$PG_TARBALL_PGADMIN" = "4.4" ]
+    then
+        sed -i 's/psycopg2.*/psycopg2==2.7.7/' requirements.txt || die "failed to modify requirements.txt for psycopg2"
     fi
 
     cd $WD/server/source
