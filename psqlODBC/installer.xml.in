@@ -1572,7 +1572,7 @@ EOF
                     <comment>psqlODBC Documentation</comment>
                     <name>psqlODBC Documentation</name>
                     <runInTerminal>0</runInTerminal>
-                    <url>http://psqlodbc.projects.postgresql.org/</url>
+                    <url>https://odbc.postgresql.org/docs/config.html</url>
                     <windowsIcon>${installdir}\scripts\images\pg-launchOdbcDocs.ico</windowsIcon>
                     <ruleList>
                         <isFalse value="${extract_mode}"/>
