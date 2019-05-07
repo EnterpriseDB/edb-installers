@@ -655,7 +655,78 @@
             </ruleList>
         </actionGroup>
 
+        <!--WIN: in upgrade mode, fix the ACLs for installdir if it's outside Program Files -->
+        <actionGroup>
+            <actionList>
+                <logMessage text="Fixing the ACLs on install directory"/>
+                <copyAcl sourceDir="${windows_folder_program_files}" destDir="${installdir}"/>
+            </actionList>
+            <ruleList>
+                <isTrue value="${IsUpgrade}"/>
+                <isFalse value="${extract_mode}"/>
+                <fileExists path="${installdir}" />
+                <fileTest path="${installdir}" condition="is_not_empty" />
+                <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="11.2-2"/>
+                <compareText logic ="contains" text="${platform_name}" value="windows" />
+                <compareText text="${installdir}" logic="does_not_contain" value="${windows_folder_program_files}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!--WIN: in upgrade mode, fix the ACLs for data directory -->
+        <actionGroup>
+            <actionList>
+                <logMessage text="Fixing the ACLs on data directory"/>
+                <!-- clear the ACL -->
+                <runProgram>
+                    <program>icacls</program>
+                    <programArguments>"${datadir}" /inheritance:r</programArguments>
+                    <showMessageOnError>1</showMessageOnError>
+                    <progressText></progressText>
+                </runProgram>
+                <!-- <clearWindowsACL files="${datadir}"/> -->
+                <!-- user running the installer -->
+                <runProgram>
+                    <program>icacls</program>
+                    <programArguments>"${datadir}" /T /Q /grant "${system_username}:(OI)(CI)F"</programArguments>
+                    <showMessageOnError>1</showMessageOnError>
+                </runProgram>
+                <!-- user running the service -->
+                <runProgram>
+                    <program>icacls</program>
+                    <programArguments>"${datadir}" /T /Q /grant "${serviceaccount}:(OI)(CI)F"</programArguments>
+                    <showMessageOnError>1</showMessageOnError>
+                </runProgram>
+                <!-- Creator Owner -->
+                <runProgram>
+                    <program>icacls</program>
+                    <programArguments>"${datadir}" /T /Q /grant "*S-1-3-0:(OI)(CI)F"</programArguments>
+                    <showMessageOnError>1</showMessageOnError>
+                </runProgram>
+                <!-- SYSTEM -->
+                <runProgram>
+                    <program>icacls</program>
+                    <programArguments>"${datadir}" /T /Q /grant "*S-1-5-18:(OI)(CI)F"</programArguments>
+                    <showMessageOnError>1</showMessageOnError>
+                </runProgram>
+                <!-- Administrators -->
+                <runProgram>
+                    <program>icacls</program>
+                    <programArguments>"${datadir}" /T /Q /grant "*S-1-5-32-544:(OI)(CI)F"</programArguments>
+                    <showMessageOnError>1</showMessageOnError>
+                </runProgram>
+                <!-- <copyAcl sourceDir="${windows_folder_program_files}" destDir="${datadir}"/> -->
+            </actionList>
+            <ruleList>
+                <isTrue value="${IsUpgrade}"/>
+                <isFalse value="${extract_mode}"/>
+                <fileExists path="${datadir}" />
+                <fileTest path="${datadir}" condition="is_not_empty" />
+                <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="11.2-2"/>
+                <compareText logic ="contains" text="${platform_name}" value="windows" />
+            </ruleList>
+        </actionGroup>
     </readyToInstallActionList>
+
     <!-- Preinstallation actions -->
     <preInstallationActionList>
         <!-- Set the service account value to NT AUTHORITY\NetworkService if platform is windows 
@@ -1090,34 +1161,12 @@
         <!-- Validate installdir & datadir in unattended mode -->
         <actionGroup>
             <actionList>
-                <throwError text="${msg(error.install.directory.invalid)}">
-                    <ruleList>
-                        <regExMatch>
-                            <text>${installdir}</text>
-                            <logic>does_not_match</logic>
-                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
-                        </regExMatch>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </throwError>
-                <throwError text="${msg(error.install.directory.invalid.linux)}">
-                    <ruleList>
-                        <regExMatch>
-                            <text>${installdir}</text>
-                            <logic>matches</logic>
-                            <pattern>^/+(usr)?$</pattern>
-                        </regExMatch>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </throwError>
+            <validateInstallDir  installdir="${installdir}">
+                <ruleList>
+                   <isFalse value="${extract_mode}"/>
+                </ruleList>
+                </validateInstallDir>
+
                 <throwError text="${msg(error.data.directory.invalid)}">
                     <ruleList>
                         <regExMatch>
@@ -1134,21 +1183,6 @@
                     </ruleList>
                 </throwError>
 
-                <!-- WIN: Always check if the installation/data directory path looks valid -->
-                <throwError text="${msg(error.install.directory.invalid)}">
-                    <ruleList>
-                        <regExMatch>
-                            <text>${installdir}</text>
-                            <logic>does_not_match</logic>
-                            <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
-                        </regExMatch>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </throwError>
                 <throwError text="${msg(error.data.directory.invalid)}">
                     <ruleList>
                         <regExMatch>
@@ -1165,33 +1199,6 @@
                     </ruleList>
                 </throwError>
 
-                <actionGroup>
-                    <actionList>
-                        <throwError text="${msg(error.install.directory.not.writable)}">
-                            <ruleList>
-                                <ruleGroup>
-                                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                                    <ruleList>
-                                        <fileTest path="${installdir}" condition="not_writable"/>
-                                        <fileTest path="${installdir}" condition="is_not_directory"/>
-                                    </ruleList>
-                                </ruleGroup>
-                                <fileTest path="${installdir}" condition="exists"/>
-                            </ruleList>
-                        </throwError>
-                        <createDirectory path="${installdir}"
-                                         abortOnError="1"
-                                         showMessageOnError="1"
-                                         customErrorMessage="${msg(error.install.directory.not.writable)}">
-                            <ruleList>
-                                <fileTest path="${installdir}" condition="not_exists"/>
-                            </ruleList>
-                        </createDirectory>
-                    </actionList>
-                    <ruleList>
-                        <isTrue value="${extract_mode}"/>
-                    </ruleList>
-                </actionGroup>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/>
