@@ -130,6 +130,147 @@ EOF
          <stringParameter name="dirPrefix" allowEmptyValue="0"/>
        </parameterList>
      </actionDefinition>
+     <!-- copyAcl: To copy ACLs from one directory and apply to another -->
+     <actionDefinition name="copyAcl">
+         <parameterList>
+             <stringParameter name="sourceDir" allowEmptyValue="0" />
+             <stringParameter name="destDir" allowEmptyValue="0" />
+         </parameterList>
+         <actionList>
+         <createTempDir dirPrefix="postgresql_installer"/>
+         <runProgram>
+             <program>icacls</program>
+             <programArguments>. /save "${system_temp_directory}/postgresql_installer_${random_number}/aclfile"</programArguments>
+             <progressText></progressText>
+             <workingDirectory>${sourceDir}</workingDirectory>
+         </runProgram>
+         <copyFile origin="${system_temp_directory}/postgresql_installer_${random_number}/aclfile" destination="${destDir}"/>
+         <!-- <deleteFile path="${sourceDir}/aclfile"/> -->
+         <runProgram>
+             <program>icacls</program>
+             <programArguments>. /restore "${system_temp_directory}/postgresql_installer_${random_number}/aclfile"</programArguments>
+             <progressText></progressText>
+             <workingDirectory>${destDir}</workingDirectory>
+         </runProgram>
+         <deleteFile path="${destDir}/aclfile"/>
+         <deleteFile path="${system_temp_directory}/postgresql_installer_${random_number}/aclfile"/>
+         </actionList>
+      </actionDefinition>
+      <actionDefinition name="validateInstallDir">
+          <parameterList>
+              <stringParameter name="installdir" allowEmptyValue="0" />
+          </parameterList>
+          <actionList>
+              <throwError text="${msg(error.install.directory.invalid)}">
+                  <ruleList>
+                      <regExMatch>
+                          <text>${installdir}</text>
+                          <logic>does_not_match</logic>
+                          <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
+                      </regExMatch>
+                      <compareText>
+                          <logic>does_not_equal</logic>
+                          <text>${platform_name}</text>
+                          <value>windows</value>
+                      </compareText>
+                  </ruleList>
+              </throwError>
+
+             <throwError text="${msg(error.install.directory.invalid.linux)}">
+                 <ruleList>
+                     <regExMatch>
+                         <text>${installdir}</text>
+                         <logic>matches</logic>
+                         <pattern>^/+(usr)?$</pattern>
+                     </regExMatch>
+                     <compareText>
+                         <logic>does_not_equal</logic>
+                         <text>${platform_name}</text>
+                         <value>windows</value>
+                    </compareText>
+                </ruleList>
+             </throwError>
+
+             <throwError text="${msg(error.install.directory.invalid)}">
+                 <ruleList>
+                     <regExMatch>
+                         <text>${installdir}</text>
+                         <logic>does_not_match</logic>
+                         <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
+                     </regExMatch>
+                     <compareText>
+                         <logic>equals</logic>
+                         <text>${platform_name}</text>
+                         <value>windows</value>
+                     </compareText>
+                 </ruleList>
+             </throwError>
+
+             <!-- WIN: if the installation directory is non-default and outside program files,
+                  exists and non-empty, then error -->
+             <throwError text="${msg(error.install.directory.nondefault)}">
+                 <ruleList>
+                     <compareText text="${platform_name}" logic="equals" value="windows"/>
+                     <compareText text="${installdir}" logic="does_not_contain" value="${windows_folder_program_files}"/>
+                     <fileTest condition="exists" path="${installdir}"/>
+                     <fileTest condition="is_directory" path="${installdir}"/>
+                     <fileTest condition="is_not_empty" path="${installdir}"/>
+                 </ruleList>
+             </throwError>
+
+             <!-- WIN: if the installation directory is non-default and outside program files,
+                  exists and is empty then remove the directory  -->
+             <actionGroup>
+                 <actionList>
+                     <logMessage>
+                         <text>${msg(info.install.directory.nondefault)}</text>
+                     </logMessage>
+                     <deleteFile path="${installdir}"/>
+                  </actionList>
+                  <ruleList>
+                      <compareText text="${platform_name}" logic="equals" value="windows"/>
+                      <compareText text="${installdir}" logic="does_not_contain" value="${windows_folder_program_files}"/>
+                      <fileTest condition="exists" path="${installdir}"/>
+                      <fileTest condition="is_directory" path="${installdir}"/>
+                      <fileTest condition="is_empty" path="${installdir}"/>
+                 </ruleList>
+             </actionGroup>
+
+             <!-- WIN: Create $installdir and copy the ACL from Program Files which is assumed
+                  to have the safe ACLs -->
+             <actionGroup>
+                 <actionList>
+                     <createDirectory path="${installdir}"
+                                      abortOnError="0"
+                                      showMessageOnError="1"
+                                      customErrorMessage="${msg(error.install.directory.not.writable)}">
+                         <onErrorActionList>
+                             <setInstallerVariable name="next_page" value="installdir"/>
+                         </onErrorActionList>
+                     </createDirectory>
+                          <copyAcl sourceDir="${windows_folder_program_files}" destDir="${installdir}"/>
+                 </actionList>
+                      <ruleList>
+                          <compareText text="${platform_name}" logic="equals" value="windows"/>
+                          <compareText text="${installdir}" logic="does_not_contain" value="${windows_folder_program_files}"/>
+                          <fileTest path="${installdir}" condition="not_exists"/>
+                      </ruleList>
+             </actionGroup>
+
+            <!-- WIN: if the installation directory is non-default and outside program files,
+                 exists and is still non-empty then error out as hostile user may have created
+                 a file after createDirectory and before copyAcl is called -->
+            <throwError text="${msg(error.install.directory.nondefault)}">
+                <ruleList>
+                    <compareText text="${platform_name}" logic="equals" value="windows"/>
+                        <compareText text="${installdir}" logic="does_not_contain" value="${windows_folder_program_files}"/>
+                        <fileTest condition="exists" path="${installdir}"/>
+                        <fileTest condition="is_directory" path="${installdir}"/>
+                        <fileTest condition="is_not_empty" path="${installdir}"/>
+                </ruleList>
+            </throwError>
+         </actionList>
+     </actionDefinition>
      <include file="../scripts/determineLinuxInitSystem.xml"/>
      <include file="../scripts/linuxServiceAction.xml"/>
     </functionDefinitionList>
@@ -1176,34 +1317,11 @@ EOF
         <!-- Validate installdir & datadir in unattended mode -->
         <actionGroup>
             <actionList>
-                <throwError text="${msg(error.install.directory.invalid)}">
+                <validateInstallDir  installdir="${installdir}">
                     <ruleList>
-                        <regExMatch>
-                            <text>${installdir}</text>
-                            <logic>does_not_match</logic>
-                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
-                        </regExMatch>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
+                        <isFalse value="${extract_mode}"/>
                     </ruleList>
-                </throwError>
-                <throwError text="${msg(error.install.directory.invalid.linux)}">
-                    <ruleList>
-                        <regExMatch>
-                            <text>${installdir}</text>
-                            <logic>matches</logic>
-                            <pattern>^/+(usr)?$</pattern>
-                        </regExMatch>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </throwError>
+                </validateInstallDir>
 
                 <throwError text="${msg(error.data.directory.invalid)}">
                     <ruleList>
@@ -1221,21 +1339,6 @@ EOF
                     </ruleList>
                 </throwError>
 
-                <!-- WIN: Always check if the installation/data directory path looks valid -->
-                <throwError text="${msg(error.install.directory.invalid)}">
-                    <ruleList>
-                        <regExMatch>
-                            <text>${installdir}</text>
-                            <logic>does_not_match</logic>
-                            <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
-                        </regExMatch>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </throwError>
                 <throwError text="${msg(error.data.directory.invalid)}">
                     <ruleList>
                         <regExMatch>
@@ -1252,33 +1355,6 @@ EOF
                     </ruleList>
                 </throwError>
 
-                <actionGroup>
-                    <actionList>
-                        <throwError text="${msg(error.install.directory.not.writable)}">
-                            <ruleList>
-                                <ruleGroup>
-                                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                                    <ruleList>
-                                        <fileTest path="${installdir}" condition="not_writable"/>
-                                        <fileTest path="${installdir}" condition="is_not_directory"/>
-                                    </ruleList>
-                                </ruleGroup>
-                                <fileTest path="${installdir}" condition="exists"/>
-                            </ruleList>
-                        </throwError>
-                        <createDirectory path="${installdir}"
-                                         abortOnError="1"
-                                         showMessageOnError="1"
-                                         customErrorMessage="${msg(error.install.directory.not.writable)}">
-                            <ruleList>
-                                <fileTest path="${installdir}" condition="not_exists"/>
-                            </ruleList>
-                        </createDirectory>
-                    </actionList>
-                    <ruleList>
-                        <isTrue value="${extract_mode}"/>
-                    </ruleList>
-                </actionGroup>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${installer_ui}" value="unattended"/>
@@ -2903,6 +2979,77 @@ EOF
                   <isTrue value="${IsUpgrade}"/>
              </ruleList>
         </actionGroup>
+
+       <!--WIN: in upgrade mode, fix the ACLs for installdir if it's outside Program Files -->
+        <actionGroup>
+            <actionList>
+                <logMessage text="Fixing the ACLs on install directory"/>
+                <copyAcl sourceDir="${windows_folder_program_files}" destDir="${installdir}"/>
+            </actionList>
+            <ruleList>
+                <isTrue value="${IsUpgrade}"/>
+                <isFalse value="${extract_mode}"/>
+                <fileExists path="${installdir}" />
+                <fileTest path="${installdir}" condition="is_not_empty" />
+                <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="9.6.12-2"/>
+                <compareText logic ="contains" text="${platform_name}" value="windows" />
+                <compareText text="${installdir}" logic="does_not_contain" value="${windows_folder_program_files}"/>
+            </ruleList>
+        </actionGroup>
+
+       <!--WIN: in upgrade mode, fix the ACLs for data directory -->
+        <actionGroup>
+            <actionList>
+                <logMessage text="Fixing the ACLs on data directory"/>
+                <!-- clear the ACL -->
+                <runProgram>
+                    <program>icacls</program>
+                    <programArguments>"${datadir}" /inheritance:r</programArguments>
+                    <showMessageOnError>1</showMessageOnError>
+                    <progressText></progressText>
+                </runProgram>
+                <!-- <clearWindowsACL files="${datadir}"/> -->
+                <!-- user running the installer -->
+                <runProgram>
+                    <program>icacls</program>
+                    <programArguments>"${datadir}" /T /Q /grant "${system_username}:(OI)(CI)F"</programArguments>
+                    <showMessageOnError>1</showMessageOnError>
+                </runProgram>
+                <!-- user running the service -->
+                <runProgram>
+                    <program>icacls</program>
+                    <programArguments>"${datadir}" /T /Q /grant "${serviceaccount}:(OI)(CI)F"</programArguments>
+                    <showMessageOnError>1</showMessageOnError>
+                </runProgram>
+                <!-- Creator Owner -->
+                <runProgram>
+                    <program>icacls</program>
+                    <programArguments>"${datadir}" /T /Q /grant "*S-1-3-0:(OI)(CI)F"</programArguments>
+                    <showMessageOnError>1</showMessageOnError>
+                </runProgram>
+                <!-- SYSTEM -->
+                <runProgram>
+                    <program>icacls</program>
+                    <programArguments>"${datadir}" /T /Q /grant "*S-1-5-18:(OI)(CI)F"</programArguments>
+                    <showMessageOnError>1</showMessageOnError>
+                </runProgram>
+                <!-- Administrators -->
+                <runProgram>
+                    <program>icacls</program>
+                    <programArguments>"${datadir}" /T /Q /grant "*S-1-5-32-544:(OI)(CI)F"</programArguments>
+                    <showMessageOnError>1</showMessageOnError>
+                </runProgram>
+                <!-- <copyAcl sourceDir="${windows_folder_program_files}" destDir="${datadir}"/> -->
+            </actionList>
+            <ruleList>
+                <isTrue value="${IsUpgrade}"/>
+                <isFalse value="${extract_mode}"/>
+                <fileExists path="${datadir}" />
+                <fileTest path="${datadir}" condition="is_not_empty" />
+                <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="9.6.12-2"/>
+                <compareText logic ="contains" text="${platform_name}" value="windows" />
+            </ruleList>
+        </actionGroup>
     </readyToInstallActionList>
 
     <!-- Postinstallation actions -->
@@ -4476,6 +4623,7 @@ REM The script sets environment variables helpful for PostgreSQL
             </ruleList>
         </runProgram>
 
+
         <!-- MAC: Remove menu shortcuts -->
         <deleteFile>
             <path>/Applications/${branding}</path>
@@ -5344,79 +5492,15 @@ REM The script sets environment variables helpful for PostgreSQL
                 <wow64FsRedirection action="disable" />
             </postShowPageActionList>
 
-            <!-- Note that this validation occurs in a postShowPageActionList due     -->
-            <!-- to some odd behaviour in InstallBuilder in the way <allowEmptyValue> -->
-            <!-- interacts with default values, on the advice of tech support         -->
+            <validationActionList>
+                <validateInstallDir  installdir="${installdir}">
+                <ruleList>
+                   <isFalse value="${extract_mode}"/>
+                </ruleList>
+                </validateInstallDir>
+            </validationActionList>
 
-            <!-- !WIN: Always check if the installation directory path looks valid -->
             <postShowPageActionList>
-                <actionGroup>
-                    <actionList>
-                        <showWarning>
-                            <text>${msg(error.install.directory.invalid)}</text>
-                        </showWarning>
-                        <setInstallerVariable name="next_page" value="installdir"/>
-                    </actionList>
-
-                    <ruleList>
-                        <regExMatch>
-                            <text>${installdir}</text>
-                            <logic>does_not_match</logic>
-                            <pattern>^/([0-9a-zA-Z_/\.\-]*)$</pattern>
-                        </regExMatch>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-
-                <actionGroup>
-                    <actionList>
-                        <showWarning>
-                            <text>${msg(error.install.directory.invalid.linux)}</text>
-                        </showWarning>
-                        <setInstallerVariable name="next_page" value="installdir"/>
-                    </actionList>
-
-                    <ruleList>
-                        <regExMatch>
-                            <text>${installdir}</text>
-                            <logic>matches</logic>
-                            <pattern>^/+(usr)?$</pattern>
-                        </regExMatch>
-                        <compareText>
-                            <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-
-                <!-- WIN: Always check if the installation directory path looks valid -->
-                <actionGroup>
-                    <actionList>
-                        <showWarning>
-                            <text>${msg(error.install.directory.invalid)}</text>
-                        </showWarning>
-                        <setInstallerVariable name="next_page" value="installdir"/>
-                    </actionList>
-
-                    <ruleList>
-                        <regExMatch>
-                            <text>${installdir}</text>
-                            <logic>does_not_match</logic>
-                            <pattern>^([a-zA-Z]:)\\([0-9a-zA-Z_\\\s\.\-\(\)]*)$</pattern>
-                        </regExMatch>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </actionGroup>
-
                 <actionGroup>
                     <actionList>
                       <actionGroup>
@@ -5897,6 +5981,22 @@ REM The script sets environment variables helpful for PostgreSQL
                           </fileTest>
                      </ruleList>
                 </actionGroup> <!-- End of data directory check -->
+
+                <!-- WIN: If data directory exists and is empty -->
+                <actionGroup>
+                    <actionList>
+                        <logMessage>
+                            <text>Data Directory exists and is empty. Removing it</text>
+                        </logMessage>
+                        <deleteFile path="${datadir}"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                        <fileTest condition="exists" path="${datadir}"/>
+                        <fileTest condition="is_empty" path="${datadir}"/>
+                        <fileTest condition="is_directory" path="${datadir}"/>
+                    </ruleList>
+                </actionGroup>
 
                 <actionGroup>   
                      <actionList>
