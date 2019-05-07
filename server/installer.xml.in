@@ -140,7 +140,7 @@ EOF
             <createTempDir dirPrefix="postgresql_installer"/>
             <runProgram>
                 <program>icacls</program>
-                <programArguments>. /save ${system_temp_directory}/postgresql_installer_${random_number}/aclfile</programArguments>
+                <programArguments>. /save "${system_temp_directory}/postgresql_installer_${random_number}/aclfile"</programArguments>
                 <progressText></progressText>
                 <workingDirectory>${sourceDir}</workingDirectory>
             </runProgram>
@@ -148,7 +148,7 @@ EOF
             <!-- <deleteFile path="${sourceDir}/aclfile"/> -->
             <runProgram>
                 <program>icacls</program>
-                <programArguments>. /restore ${system_temp_directory}/postgresql_installer_${random_number}/aclfile</programArguments>
+                <programArguments>. /restore "${system_temp_directory}/postgresql_installer_${random_number}/aclfile"</programArguments>
                 <progressText></progressText>
                 <workingDirectory>${destDir}</workingDirectory>
             </runProgram>
