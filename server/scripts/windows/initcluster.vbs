@@ -142,6 +142,16 @@ Sub Warn(msg)
     iWarn = 2
 End Sub
 
+
+Function ClearAcl(DirectoryPath)
+    WScript.Echo "Called ClearAcl (" & DirectoryPath & ")..."
+    WScript.Echo "Remove inherited ACLs on (" & DirectoryPath & ")"
+    iRet = DoCmd("icacls """ & DirectoryPath & """ /inheritance:r")
+    if iRet <> 0 Then
+        WScript.Echo "Failed to remove inherited ACLs on (" & DirectoryPath & ")"
+    End If
+End Function
+
 Function CreateDirectory(DirectoryPath)
     WScript.Echo "Called CreateDirectory(" & DirectoryPath & ")..."
     If objFso.FolderExists(DirectoryPath) Then Exit Function
@@ -164,6 +174,12 @@ If objFso.FolderExists(strDataDir) <> True Then
     If Err.number <> 0 Then
         Die "Failed to create the data directory (" & strDataDir & ")"
     End If
+End If
+
+' Remove inherited ACEs
+ClearAcl(strDataDir)
+If Err.number <> 0 Then
+    Die "Failed to reset the ACL (" & strDataDir & ")"
 End If
 
 Dim objNetwork
@@ -266,6 +282,52 @@ Else
 End If
 if iRet <> 0 Then
     WScript.Echo "Failed to ensure the data directory is accessible (" & strDataDir & ")"
+End If
+
+
+
+' Grant ACLs for specific users on data directory'
+If IsVistaOrNewer() = True Then
+    WScript.Echo "Ensuring we can write to the data directory (using icacls) to  " & loggedInUser & ":"
+    iRet = DoCmd("icacls """ & strDataDir & """ /T /grant:r """ & loggedInUser & """:(OI)(CI)F")
+Else
+    WScript.Echo "Ensuring we can write to the data directory (using cacls):"
+    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /G """ & loggedIUser & """:F")
+End If
+if iRet <> 0 Then
+    WScript.Echo "Failed to ensure the data directory is accessible (" & strDataDir & ")"
+End If
+
+If IsVistaOrNewer() = True Then
+    WScript.Echo "Granting full access to ("& strOSUsername & ") on (" & strDataDir & ")"
+    iRet = DoCmd("icacls """ & strDataDir & """ /grant """ & strOSUsername & """:(OI)(CI)F")
+End If
+if iRet <> 0 Then
+    WScript.Echo "Failed to grant access to ("& strOSUsername & ") on (" & strDataDir & ")"
+End If
+
+If IsVistaOrNewer() = True Then
+    WScript.Echo "Granting full access to CREATOR OWNER on (" & strDataDir & ")"
+    iRet = DoCmd("icacls """ & strDataDir & """ /grant ""*S-1-3-0"":(OI)(CI)F")
+End If
+if iRet <> 0 Then
+    WScript.Echo "Failed to grant access to CREATOR OWNER on (" & strDataDir & ")"
+End If
+
+If IsVistaOrNewer() = True Then
+    WScript.Echo "Granting full access to SYSTEM on (" & strDataDir & ")"
+    iRet = DoCmd("icacls """ & strDataDir & """ /grant ""*S-1-5-18"":(OI)(CI)F")
+End If
+if iRet <> 0 Then
+    WScript.Echo "Failed to grant access to SYSTEM on (" & strDataDir & ")"
+End If
+
+If IsVistaOrNewer() = True Then
+    WScript.Echo "Granting full access to Administrators on (" & strDataDir & ")"
+    iRet = DoCmd("icacls """ & strDataDir & """ /grant ""*S-1-5-32-544"":(OI)(CI)F")
+End If
+if iRet <> 0 Then
+    WScript.Echo "Failed to grant access to Administrators on (" & strDataDir & ")"
 End If
 
 

@@ -19,6 +19,8 @@ upgrade.existing.datadir.description=An existing data directory has been found a
 error.install.directory.invalid=The installation directory must be an absolute path, containing only letters, numbers and the characters '-', '/', '.' and '_', and must be writable.
 error.install.directory.invalid.linux=The installation directory cannot not be '/' or '/usr'.
 error.install.directory.not.writable=Permission denied to read/write to the installation directory.
+error.install.directory.nondefault=The chosen installation directory exists and is non-empty. Please choose a different directory
+info.install.directory.nondefault=The chosen installation directory exists and is empty. Removing it
 
 platform.not.match=You are trying to run a 32bit installer in a 64bit machine. The installer will exit now
 platform.not.match64=You are trying to run a 64bit installer in a 32bit machine. The installer will exit now
