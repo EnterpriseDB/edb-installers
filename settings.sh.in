@@ -50,51 +50,29 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            On Windows we don't have a shared directory, so specify a build directory
 #            We can also specify additional directorys to include in the path.
 
-PG_SSH_WINDOWS=buildfarm@bf11-windows.ox.uk.enterprisedb.com
 PG_SSH_SIGN_WINDOWS=buildfarm@bf5-windows.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS=D:\\\\pginstaller.auto
-PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller.auto
-PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0"
+PG_PATH_WINDOWS=D:\\\\pginstaller_12.auto
+PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller_12.auto
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
 PG_FRAMEWORKVERSION_WINDOWS=v4.0.30319
 PG_FRAMEWORKSDKDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0\\\\SDK\\\\v3.5"
-PG_DEVENVDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0\\\\Common7\\\\IDE"
-PG_PGBUILD_WINDOWS="C:\\\\pgBuild32"
-PG_BINARY_PATH="D:\\\\pg-languagepack"
-PG_WXWIN_WINDOWS="$PG_PGBUILD_WINDOWS\\\\wxWidgets-2.8.12"
-PG_CMAKE_WINDOWS="C:\\\\cmake-x86"
 PG_ANT_WINDOWS="C:\\\\apache-ant-1.8.4"
 PG_NUGET_WINDOWS="C:\\\\nuget-3.5.0"
 PG_MINGW_WINDOWS=C:\\\\MinGW\\\\mingw-w64\\\\mingw32
 PG_MSYS_WINDOWS=C:\\\\MinGW\\\\msys\\\\1.0
 PG_MINGW_WINDOWS_PGBOUNCER=$PG_MINGW_WINDOWS
 PG_MSYS_WINDOWS_PGBOUNCER=$PG_MSYS_WINDOWS
-PG_JAVA_HOME_WINDOWS="C:\\\\jdk1.7.0_51"
 PG_QTPATH_WINDOWS_UM=C:\\\\QtSDK
-PG_SDK_WINDOWS="C:\\\\Program Files (x86)\\\\Windows Kits\\\\8.1"
-PG_SIGNTOOL_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
-PG_PERL_WINDOWS=C:\\\\pgBuild32\\\\edb\\\\languagepack-10\\\\i386\\\\Perl-5.24
-PG_PYTHON_WINDOWS=C:\\\\pgBuild32\\\\edb\\\\languagepack-10\\\\i386\\\\Python-3.4
-PEM_PYTHON_WINDOWS=$PG_PYTHON_WINDOWS
-PGADMIN_PYTHON_WINDOWS=C:\\\\Python27
-PGADMIN_PYTHON_DLL_WINDOWS=C:\\\\Windows\\\\SysWOW64\\\\python27.dll
-PG_TCL_WINDOWS=C:\\\\pgBuild32\\\\edb\\\\languagepack-10\\\\i386\\\\Tcl-8.6
 PLATFORM_TOOLSET_VALUE=
 CMAKE_BUILD_GENERATOR="Visual Studio 15 2017" #used for SB and pgAgent
 PLATFORM_TOOLSET=
-PG_MINGW_QTPATH_WINDOWS="D:\\\\pgBuild32\\\\Qt5.9.1\\\\5.9.1\\\\mingw53_32"
-PG_MINGW_QMAKE_WINDOWS="$PG_MINGW_QTPATH_WINDOWS\\\\bin\\\\qmake.exe"
 PG_MINGW_MAKE_WINDOWS="D:\\\\pgBuild32\\\\Qt5.9.1\\\\Tools\\\\mingw530_32\\\\bin\\\\mingw32-make"
 PG_MINGW_QTTOOLS_WINDOWS="D:\\\\pgBuild32\\\\Qt5.9.1\\\\Tools\\\\mingw530_32"
-PGSERVER_STAGING_WINDOWS=$PWD/server/staging/windows/server
-PGADMIN_STAGING_WINDOWS=$PWD/server/staging/windows/pgadmin4
-SB_STAGING_WINDOWS=$PWD/server/staging/windows/stackbuilder
-CLT_STAGING_WINDOWS=$PWD/server/staging/windows/commandlinetools
 
 
 PG_SSH_WINDOWS_X64=buildfarm@bf11-windows-x64.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS_X64=D:\\\\pginstaller.auto
-PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller.auto
+PG_PATH_WINDOWS_X64=D:\\\\pginstaller_12.auto
+PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller_12.auto
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017"
 PG_MSBUILDDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017\\\\Professional\\\\MSBuild\\\\15.0"
 PG_DEVENVDIR_WINDOWS_X64="$PG_VSINSTALLDIR_WINDOWS_X64\\\\Professional\\\\Common7\\\\IDE"
@@ -103,7 +81,7 @@ PG_BINARY_PATH_X64="D:\\\\pg-languagepack-x64"
 PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets-2.8.12"
 PG_JAVA_HOME_WINDOWS_X64="C:\\\\Program Files\\\\Java\\\\jdk1.7.0_51"
 PG_CMAKE_WINDOWS_X64="C:\\\\cmake-x64"
-PG_PERL24_WINDOWS_X64=C:\\\\pgBuild64\\\\edb\\\\languagepack-10\\\\x64\\\\Perl-5.24
+PG_PERL24_WINDOWS_X64=C:\\\\pgBuild64\\\\edb\\\\languagepack-12\\\\x64\\\\Perl-5.24
 PG_PERL_WINDOWS_X64=C:\\\\pgBuild64\\\\edb\\\\languagepack-11\\\\x64\\\\Perl-5.26
 PG_PYTHON_WINDOWS_X64=C:\\\\pgBuild64\\\\edb\\\\languagepack-11\\\\x64\\\\Python-3.6
 PGADMIN_PYTHON_WINDOWS_X64=D:\\\\Python36
@@ -121,7 +99,7 @@ SB_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/stackbuilder
 CLT_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/commandlinetools
 
 PG_SSH_OSX=buildfarm@bf11-osx.ox.uk.enterprisedb.com
-PG_PATH_OSX=/mnt/hgfs/pginstaller.auto
+PG_PATH_OSX=/mnt/hgfs/pginstaller_12.auto
 PG_SSH_OSX_SIGN=buildfarm@bf-osx-sign.ox.uk.enterprisedb.com
 PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_11.auto
 PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner-new
@@ -159,5 +137,5 @@ PG_INSTALLBUILDER_BIN="/opt/installbuilder-18.8.0/bin/builder"
 KEYCHAIN_PASSWD="XXXXXX"
 
 # LanguagePack Variables
-PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack-10"
-PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/edb/languagepack-10"
+PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack-12"
+PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/edb/languagepack-12"
