@@ -107,6 +107,6 @@ PG_ARCH_OSX_CPPFLAGS="-isysroot $PG_OSX_SDK -mmacosx-version-min=$PG_OSX_DEPLOYM
 PG_ARCH_OSX_CXXFLAGS="-isysroot $PG_OSX_SDK -mmacosx-version-min=$PG_OSX_DEPLOYMENT_TARGET -headerpad_max_install_names"
 
 # The InstallBuilder main binary.
-PG_INSTALLBUILDER_BIN="/opt/installbuilder-17.7.0/bin/builder"
+PG_INSTALLBUILDER_BIN="/opt/installbuilder-19.6.0/bin/builder"
 
 
