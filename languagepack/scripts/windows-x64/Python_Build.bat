@@ -124,7 +124,7 @@ set /a "i = 1"
 :ITERATOR
     if %i% leq 5 (
 	echo ==========iteration !i! ==================
-        %vPythonInstallDir%\Scripts\easy_install.exe pip
+        %vPythonInstallDir%\Scripts\easy_install.exe pip==9.0.1
        IF !ERRORLEVEL! == 0 goto BREAK
         echo ====error level is !ERRORLEVEL!===========
         set /a "i = i + 1"
