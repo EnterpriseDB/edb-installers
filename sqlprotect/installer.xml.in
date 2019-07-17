@@ -453,7 +453,7 @@ EOF
                       abortOnError="0" showMessageOnError="0"
                       workingDirectory="${installdir}/bin"/>
                 <setInstallerVariableFromRegEx name="pg_version" text="${pg_version_str}">
-                    <pattern>^PostgreSQL ([0-9].[0-9]).?[\w]*$</pattern>
+                    <pattern>^PostgreSQL ([0-9][0-9]).?[\w]*$</pattern>
                     <substitution>\1</substitution>
                     <ruleList>
                         <compareText logic="does_not_equal" text="${pg_version_str}" value=""/>
