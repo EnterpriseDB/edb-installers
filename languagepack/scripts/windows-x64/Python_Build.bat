@@ -114,7 +114,7 @@ python setup.py install
 ECHO Changing Directory to %vPythonInstallDir%\Scripts
 CD %vPythonInstallDir%\Scripts
 SET PATH=%vPythonInstallDir%\Scripts;D:\edb-postgres.auto-repo-x64\output\bin;%PATH%
-%vPythonInstallDir%\Scripts\easy_install.exe pip
+%vPythonInstallDir%\Scripts\easy_install.exe pip==6.0.8
 
 CD %vPythonInstallDir%\Scripts
 SET LINK="/FORCE:MULTIPLE"
