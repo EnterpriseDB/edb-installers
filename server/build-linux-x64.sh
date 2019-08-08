@@ -288,7 +288,7 @@ EOT
 
     # Configure
     echo "Configuring the pgAdmin source tree"
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; LD_LIBRARY_PATH="/opt/local/Current/lib" CPPFLAGS="-I/opt/local/Current/include" LDFLAGS="-L/opt/local/Current/lib" ./configure --prefix=$PG_STAGING/pgAdmin3 --with-pgsql=$PG_PATH_LINUX_X64/server/staging/linux-x64.build --with-wx=/opt/local/Current --with-libxml2=/opt/local/Current --with-libxslt=/opt/local/Current --disable-debug --disable-static --with-sphinx-build=$PG_PYTHON_LINUX_X64/bin/sphinx-build" || _die "Failed to configure pgAdmin"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/server/source/pgadmin.linux-x64/; LD_LIBRARY_PATH="/opt/local/Current/lib" CPPFLAGS='-I/opt/local/Current/openssl-102/include -I/opt/local/Current/include' LDFLAGS='-L/opt/local/Current/openssl-102/lib -L/opt/local/Current/lib' ./configure --prefix=$PG_STAGING/pgAdmin3 --with-libssl-prefix=/opt/local/Current/openssl-102 --with-pgsql=$PG_PATH_LINUX_X64/server/staging/linux-x64.build --with-wx=/opt/local/Current --with-libxml2=/opt/local/Current --with-libxslt=/opt/local/Current --disable-debug --disable-static --with-sphinx-build=$PG_PYTHON_LINUX_X64/bin/sphinx-build" || _die "Failed to configure pgAdmin"
 
     # Build the app
     echo "Building & installing pgAdmin"
@@ -318,6 +318,8 @@ EOT
     ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libjpeg.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libfreetype.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
     ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/lib/libfontconfig.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/openssl-102/lib/libssl.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/openssl-102/lib/libcrypto.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
 
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_PATH_LINUX_X64/server/staging/linux-x64.build/lib/libpq.so* $PG_STAGING/pgAdmin3/lib" || _die "Failed to copy the dependency library"
 
