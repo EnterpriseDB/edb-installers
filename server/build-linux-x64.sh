@@ -315,7 +315,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cd \$BUILDROOT
     mkdir -p venv/lib
     cp -pR \$PYTHON_HOME/lib/lib*.so* venv/lib/
-    \$PYTHON_HOME/bin/virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
+    \$PYTHON_HOME/bin/virtualenv --always-copy -p \$PYTHON venv || _die "Failed to create venv"
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
     \$PIP --cache-dir "~/.cache/\$PIP-pgadmin" install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
@@ -418,6 +418,8 @@ EOT-PGADMIN
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5Qml.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5Positioning.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/lib/libQt5Core.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy qt dependent libs to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/openssl-102/lib/libssl.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy dependent libs to staging"
+    ssh $PG_SSH_LINUX_X64 "cp -pR /opt/local/Current/openssl-102/lib/libcrypto.so* \"$PG_STAGING/pgAdmin 4/lib\"" || _die "Failed to copy dependent libs to staging"
     ssh $PG_SSH_LINUX_X64 "cp -pR $PG_QT_LINUX_X64/icu*.dat \"$PG_STAGING/pgAdmin 4/bin/\""|| _die "Failed to copy qt dependent icu*.dat to staging"
 
     # Remove the unwanted stuff from staging
