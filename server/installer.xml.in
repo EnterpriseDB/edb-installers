@@ -119,6 +119,17 @@ EOF
           <actionList>
             <generateRandomValue length="10" variable="random_number"/>
             <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
+	    <runProgram>
+	       <program>icacls</program>
+	       <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /inheritance:r</programArguments>
+	       <showMessageOnError>1</showMessageOnError>
+	       <progressText></progressText>
+	    </runProgram>
+	    <runProgram>
+	       <program>icacls</program>
+	       <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /T /Q /grant "${system_username}:(OI)(CI)F"</programArguments>
+	       <showMessageOnError>1</showMessageOnError>
+	    </runProgram>
             <setInstallerVariable name="random_number" value="${random_number}"/>
           </actionList>
            <ruleList>
@@ -2927,6 +2938,102 @@ EOF
                 <compareText logic ="contains" text="${platform_name}" value="windows" />
             </ruleList>
         </actionGroup>
+
+	<!-- Linux: Remove OpenSSL 1.0.2 files in upgrade -->
+	<actionGroup>
+	    <actionList>
+	        <logMessage text="${msg(info.openssl.remove)}" />
+	        <deleteFile path="${installdir}${slash}lib${slash}libssl.so.1.0.0"  >
+	            <ruleList>
+	                <fileExists path="${installdir}${slash}lib${slash}libssl.so.1.0.0" />
+	            </ruleList>
+	        </deleteFile>
+
+	        <deleteFile path="${installdir}${slash}lib${slash}libcrypto.so.1.0.0"  >
+	            <ruleList>
+	                <fileExists path="${installdir}${slash}lib${slash}libcrypto.so.1.0.0" />
+	            </ruleList>
+	        </deleteFile>
+	     </actionList>
+            <ruleList>
+		<compareText text="${platform_name}" logic="contains" value="linux" />
+		<isTrue value="${IsUpgrade}"/>
+            </ruleList>
+	</actionGroup>
+
+	<!-- OSX: Remove OpenSSL 1.0.2 files in upgrade -->
+	<actionGroup>
+	    <actionList>
+	        <logMessage text="${msg(info.openssl.remove)}" />
+	        <deleteFile path="${installdir}${slash}lib${slash}libssl.1.0.0.dylib"  >
+	            <ruleList>
+	                <fileExists path="${installdir}${slash}lib${slash}libssl.1.0.0.dylib" />
+	            </ruleList>
+	        </deleteFile>
+
+	        <deleteFile path="${installdir}${slash}lib${slash}libcrypto.1.0.0.dylib"  >
+	            <ruleList>
+	                <fileExists path="${installdir}${slash}lib${slash}libcrypto.1.0.0.dylib" />
+	            </ruleList>
+	        </deleteFile>
+
+	        <deleteFile path="${installdir}${slash}stackbuilder.app${slash}Contents${slash}Frameworks/libcrypto.1.0.0.dylib"  >
+	            <ruleList>
+	                <fileExists path="${installdir}${slash}stackbuilder.app${slash}Contents${slash}Frameworks/libcrypto.1.0.0.dylib" />
+	            </ruleList>
+	        </deleteFile>
+	     </actionList>
+             <ruleList>
+		<compareText text="${platform_name}" logic="equals" value="osx" />
+		<isTrue value="${IsUpgrade}"/>
+            </ruleList>
+	</actionGroup>
+
+	<!-- WIN: Remove OpenSSL 1.0.2 files in upgrade -->
+	<!--<actionGroup>
+	    <actionList>
+	        <logMessage text="${msg(info.openssl.remove)}" />
+	        <deleteFile path="${installdir}${slash}bin${slash}ssleay32.dll"  >
+	            <ruleList>
+	                <fileExists path="${installdir}${slash}bin${slash}ssleay32.dll" />
+	            </ruleList>
+	        </deleteFile>
+
+	        <deleteFile path="${installdir}${slash}bin${slash}libeay32.dll"  >
+	            <ruleList>
+	                <fileExists path="${installdir}${slash}bin${slash}libeay32.dll" />
+	            </ruleList>
+	        </deleteFile>
+
+	        <deleteFile path="${installdir}${slash}lib${slash}ssleay32.lib"  >
+	            <ruleList>
+	                <fileExists path="${installdir}${slash}lib${slash}ssleay32.lib" />
+	            </ruleList>
+	        </deleteFile>
+
+	        <deleteFile path="${installdir}${slash}lib${slash}ssleay32MD.lib"  >
+	            <ruleList>
+	                <fileExists path="${installdir}${slash}lib${slash}ssleay32MD.lib" />
+	            </ruleList>
+	        </deleteFile>
+
+	        <deleteFile path="${installdir}${slash}lib${slash}libeay32.lib"  >
+	            <ruleList>
+	                <fileExists path="${installdir}${slash}lib${slash}libeay32.lib" />
+	            </ruleList>
+	        </deleteFile>
+
+	        <deleteFile path="${installdir}${slash}lib${slash}libeay32MD.lib"  >
+	            <ruleList>
+	                <fileExists path="${installdir}${slash}lib${slash}libeay32MD.lib" />
+	            </ruleList>
+	        </deleteFile>
+	     </actionList>
+            <ruleList>
+		<compareText text="${platform_name}" logic="contains" value="windows" />
+		<isTrue value="${IsUpgrade}"/>
+            </ruleList>
+	</actionGroup>-->
     </readyToInstallActionList>
 
     <!-- Postinstallation actions -->
@@ -3243,7 +3350,7 @@ EOF
 
                         <runProgram>
                             <program>cscript</program>
-                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} "${reallocale}" ${enable_aclcheck}</programArguments>
+                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${system_temp_directory}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${reallocale}" ${enable_aclcheck}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
