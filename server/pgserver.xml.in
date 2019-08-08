@@ -2902,7 +2902,7 @@
 
                         <runProgram>
                             <program>cscript</program>
-                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${installdir}" "${datadir}" ${serverport} "${reallocale}" ${enable_aclcheck}</programArguments>
+                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${system_temp_directory}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${reallocale}" ${enable_aclcheck}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>

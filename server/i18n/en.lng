@@ -126,3 +126,4 @@ summary.serviceaccount=Operating System Account
 summary.databaseservice=Database Service
 warning.gnome.desktop=pgAdmin utilises the system tray which was removed in GNOME v3.26. In order to run pgAdmin you will need to install and enable the TopIcons Plus shell extension or equivalent.
 warning.upgrademode.installation=Please make sure pgAdmin server is shutdown before proceeding with the upgrade.
+info.openssl.remove=Removing OpenSSL 1.0.2 files from installdir if exist
