@@ -119,17 +119,6 @@ EOF
                     <actionList>
                         <generateRandomValue length="10" variable="random_number"/>
                         <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
-                        <runProgram>
-                          <program>icacls</program>
-                          <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /inheritance:r</programArguments>
-                          <showMessageOnError>1</showMessageOnError>
-                          <progressText></progressText>
-                        </runProgram>
-                        <runProgram>
-                          <program>icacls</program>
-                          <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /T /Q /grant "${system_username}:(OI)(CI)F"</programArguments>
-                          <showMessageOnError>1</showMessageOnError>
-                        </runProgram>
                         <setInstallerVariable name="random_number" value="${random_number}"/>
                     </actionList>
                     <ruleList>
