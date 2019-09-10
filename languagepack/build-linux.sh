@@ -29,10 +29,10 @@ _prep_languagepack_linux() {
     cp $WD/tarballs/tk${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src.tar.gz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy tk"
     cp $WD/tarballs/perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL}.tar.gz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy perl"
     cp $WD/tarballs/Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}.tgz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy python"
-    cp $WD/tarballs/setuptools-${PG_VERSION_PYTHON_SETUPTOOLS}.tar.gz $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy setuptools"
+    cp $WD/tarballs/setuptools-${PG_VERSION_PYTHON_SETUPTOOLS}.zip $WD/languagepack/source/languagepack.linux/ || _die  "failed to copy setuptools"
 
-    # Copy Python_MAXREPEAT.patch to build Python
-    cp $WD/languagepack/scripts/linux/Python_MAXREPEAT.patch languagepack.linux || _die "Failed to copy (Python_MAXREPEAT.patch) to build Python"
+    ### Copy Python_MAXREPEAT.patch to build Python
+    ##cp $WD/languagepack/scripts/linux/Python_MAXREPEAT.patch languagepack.linux || _die "Failed to copy (Python_MAXREPEAT.patch) to build Python"
 
     # Remove any existing staging/install directory that might exist, and create a clean one
     echo "Removing existing install directory"
@@ -98,7 +98,7 @@ _postprocess_languagepack_linux() {
     source $WD/languagepack/staging/linux/versions-linux.sh
     PG_BUILD_LANGUAGEPACK=$(expr $PG_BUILD_LANGUAGEPACK + $SKIPBUILD)
 
-    mv $WD/languagepack/staging/linux/Python-3.4/pip_packages_list.txt $WD/languagepack/staging/linux || _die "Failed to move pip_packages_list.txt to $WD/languagepack/staging/linux"
+    mv $WD/languagepack/staging/linux/Python-3.7/pip_packages_list.txt $WD/languagepack/staging/linux || _die "Failed to move pip_packages_list.txt to $WD/languagepack/staging/linux"
 
     pushd $WD/languagepack/staging/linux
     generate_3rd_party_license "languagepack"

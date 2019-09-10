@@ -262,7 +262,8 @@ NCURSES_LINK="http://ftp.gnu.org/gnu/ncurses/ncurses-$PG_VERSION_NCURSES.tar.gz"
 TCL_LINK="ftp://ftp.tcl.tk/pub/tcl/tcl8.6/tcl$PG_VERSION_TCL_TK-src.tar.gz"
 TK_LINK="ftp://ftp.tcl.tk/pub/tcl/tcl8.6/tk$PG_VERSION_TCL_TK-src.tar.gz"
 PYTHON_LINK="https://www.python.org/ftp/python/$PG_VERSION_PYTHON/Python-$PG_VERSION_PYTHON.tgz"
-PYTHON_SETUPTOOLS_LINK="https://pypi.python.org/packages/f1/92/12c7251039b274c30106c3e0babdcb040cbd13c3ad4b3f0ef9a7c217e36a/setuptools-$PG_VERSION_PYTHON_SETUPTOOLS.tar.gz"
+#PYTHON_SETUPTOOLS_LINK="https://pypi.python.org/packages/f1/92/12c7251039b274c30106c3e0babdcb040cbd13c3ad4b3f0ef9a7c217e36a/setuptools-$PG_VERSION_PYTHON_SETUPTOOLS.tar.gz"
+PYTHON_SETUPTOOLS_LINK="https://files.pythonhosted.org/packages/d9/ca/7279974e489e8b65003fe618a1a741d6350227fa2bf48d16be76c7422423/setuptools-$PG_VERSION_PYTHON_SETUPTOOLS.zip"
 PERL_LINK="http://www.cpan.org/src/5.0/perl-$PG_VERSION_PERL.tar.gz"
 
 
@@ -281,7 +282,7 @@ then
     rm -rf tcl$PG_VERSION_TCL_TK*tar*
     rm -rf tk$PG_VERSION_TCL_TK*tar*
     rm -rf Python-$PG_VERSION_PYTHON*tar*
-    rm -rf setuptools-$PG_VERSION_PYTHON_SETUPTOOLS*tar*
+    rm -rf setuptools-$PG_VERSION_PYTHON_SETUPTOOLS*zip*
     rm -rf perl-$PG_VERSION_PERL*tar*
 
     DownlloadSource "ncurses" "$PG_VERSION_NCURSES" "$NCURSES_LINK"
@@ -393,7 +394,7 @@ then
     #    ExecuteCommand "patch -p0 < Python_MAXREPEAT.patch"
     #fi
     
-    ExecuteCommand "tar -zxvf setuptools-$PG_VERSION_PYTHON_SETUPTOOLS.tar.gz"
+    ExecuteCommand "unzip setuptools-$PG_VERSION_PYTHON_SETUPTOOLS.zip"
 
     Message $MSG_INFO_BIG "Building Python..."
 
@@ -405,13 +406,13 @@ then
         export LD_LIBRARY_PATH="$SSL_INST/lib:$TCL_TK_INSTALL_PATH/lib:$LD_LIBRARY_PATH"
         export LD_RUN_PATH="$PYTHON_INSTALL_PATH/lib"
 
-        ExecuteCommand "CC='gcc -O2' ./configure  --prefix=$PYTHON_INSTALL_PATH --with-threads --enable-shared"
+        ExecuteCommand "CC='gcc -O2' ./configure  --prefix=$PYTHON_INSTALL_PATH --with-threads --enable-shared --with-openssl=$SSL_INST"
         ExecuteCommand "make"
         ExecuteCommand "make install"
 
     	Message $MSG_INFO_BIG "Copying OpenSSL libraries to Python installation..."
-        ExecuteCommand "cp -rp $SSL_INST/lib/libssl.so* $PYTHON_INSTALL_PATH/lib"
-        ExecuteCommand "cp -rp $SSL_INST/lib/libcrypto.so* $PYTHON_INSTALL_PATH/lib"
+       ExecuteCommand "cp -rp $SSL_INST/lib/libssl.so* $PYTHON_INSTALL_PATH/lib"
+       ExecuteCommand "cp -rp $SSL_INST/lib/libcrypto.so* $PYTHON_INSTALL_PATH/lib"
 
         Message $MSG_INFO_BIG "Copying TCL libraries to Python installation..."
         ExecuteCommand "cp -rp $TCL_TK_INSTALL_PATH/lib/libtcl* $PYTHON_INSTALL_PATH/lib"
@@ -447,14 +448,14 @@ then
     (
     	export PYTHONHOME="$PYTHON_INSTALL_PATH"
         export PYTHONPATH="$PYTHON_INSTALL_PATH"
-	export PATH="$PYTHON_INSTALL_PATH/bin:$PG_INSTALL_PATH/bin:$PATH"
-	export LD_LIBRARY_PATH="$SSL_INST/lib:$LD_LIBRARY_PATH"
+        export PATH="$PYTHON_INSTALL_PATH/bin:$PG_INSTALL_PATH/bin:$PATH"
+        export LD_LIBRARY_PATH="$SSL_INST/lib:$LD_LIBRARY_PATH"
         ExecuteCommand "python setup.py install"
     	ExecuteCommand "easy_install pip"
-	ExecuteCommand "cp -rp $SSL_INST/lib/libjpeg* $PYTHON_INSTALL_PATH/lib"
-	ExecuteCommand "cp -rp $SSL_INST/lib/libtiff* $PYTHON_INSTALL_PATH/lib"
+        ExecuteCommand "cp -rp $SSL_INST/lib/libjpeg* $PYTHON_INSTALL_PATH/lib"
+        ExecuteCommand "cp -rp $SSL_INST/lib/libtiff* $PYTHON_INSTALL_PATH/lib"
 
-	ExecuteCommand "pip3 list >$PYTHON_INSTALL_PATH/pip_packages_list.txt"
+        ExecuteCommand "pip3 list >$PYTHON_INSTALL_PATH/pip_packages_list.txt"
     )
     ExecuteCommand "popd"
 
