@@ -757,7 +757,7 @@ _postprocess_server_windows_x64() {
     fi
 
     # Rename the installer
-    mv $WD/output/postgresql-$PG_MAJOR_VERSION-windows-installer.exe $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}windows-x64.exe || _die "Failed to rename the installer"
+    mv $WD/output/postgresql-$PG_MAJOR_VERSION-windows-installer.exe $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}windows-x64.exe
 
     # Sign the installer
     win32_sign "postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}windows-x64.exe"

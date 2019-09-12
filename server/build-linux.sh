@@ -795,7 +795,7 @@ _postprocess_server_linux() {
     fi
 
 	# Rename the installer
-	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}linux.run || _die "Failed to rename the installer"
+	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}linux.run
 
     cd $WD
     echo "END POST Server Linux"

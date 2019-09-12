@@ -802,7 +802,7 @@ _postprocess_server_linux_x64() {
     fi
 
 	# Rename the installer
-	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}linux-x64.run || _die "Failed to rename the installer"
+	mv $WD/output/postgresql-$PG_MAJOR_VERSION-linux-x64-installer.run $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}linux-x64.run
 
     cd $WD
     echo "END POST Server Linux-x64"
