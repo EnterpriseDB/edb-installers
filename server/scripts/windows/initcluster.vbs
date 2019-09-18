@@ -146,7 +146,8 @@ End Sub
 
 Function ClearAcl(DirectoryPath)
     WScript.Echo "Called ClearAcl (" & DirectoryPath & ")..."
-    WScript.Echo "Remove inherited ACLs on (" & DirectoryPath & ")"
+    iRet = DoCmd("icacls """ & DirectoryPath & "")
+    WScript.Echo "Removing inherited ACLs on (" & DirectoryPath & ")"
     iRet = DoCmd("icacls """ & DirectoryPath & """ /inheritance:r")
     if iRet <> 0 Then
         WScript.Echo "Failed to remove inherited ACLs on (" & DirectoryPath & ")"
