@@ -215,7 +215,13 @@ echo "Running the build (REL-11) " >> autobuild.log
 ./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-11.log
 
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
-pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v7.7"
+PEM_VERSION_FILE="${DIRNAME}/pvt_packages/PEM/common/version.h"
+if [ -f ${PEM_VERSION_FILE} ]; then
+        PEM_CURRENT_VERSION="v$(grep "VERSION_PACKAGE" ${PEM_VERSION_FILE} | awk '{print $3}')"
+else
+        PEM_CURRENT_VERSION=unknown
+fi
+pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/${PEM_CURRENT_VERSION}"
 
 # determine the host location
 curl -O http://cm-dashboard2.enterprisedb.com/interfaces/cm-dashboard-status.sh
