@@ -577,8 +577,6 @@ _postprocess_server_windows_x64() {
     source $WD/server/staging_cache/windows-x64/versions-windows-x64.sh
     PG_BUILD_SERVER=$(expr $PG_BUILD_SERVER + $SKIPBUILD)
 
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/vcredist/vcredist_x86.exe $WD/server/staging_cache/windows-x64/installer/vcredist_x86_2013.exe || _die "Failed to copy the vcredist_x86.exe to windows-x64 staging_cache"
-
     # fixes #35408. In 9.5, some modules were moved from contrib to src/test/modules. They are meant for server testing
     # and should not be packaged for distribution. On Unix, the top level make does not build these, but on windows it does.
     # Hence, removing the files of these modules from the staging_cache
