@@ -1686,9 +1686,9 @@
                 </unpackFile>
                 <unpackFile>
                     <component>server</component>
-                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\libintl-9.dll</destination>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\libintl-8.dll</destination>
                     <folder>programfileswindows</folder>
-                    <origin>bin/libintl-9.dll</origin>
+                    <origin>bin/libintl-8.dll</origin>
                 </unpackFile>
                 <unpackFile>
                     <component>server</component>
@@ -2595,7 +2595,7 @@
     <postInstallationActionList>
         <!-- WINDOWS :: This files belongs to command line tools, so server should not remove this files -->
         <removeFilesFromUninstaller>
-            <files>${installdir}/bin/ssleay32.dll;${installdir}/bin/libeay32.dll;${installdir}/bin/libiconv-2.dll;${installdir}/bin/libintl-9.dll</files>
+            <files>${installdir}/bin/ssleay32.dll;${installdir}/bin/libeay32.dll;${installdir}/bin/libiconv-2.dll;${installdir}/bin/libintl-8.dll</files>
         </removeFilesFromUninstaller>
 
         <createTempDir dirPrefix="postgresql_installer"/>

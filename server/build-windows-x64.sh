@@ -195,7 +195,7 @@ REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64
 REM CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
 @SET PYTHON_HOME=$PGADMIN_PYTHON_WINDOWS_X64
-@SET PYTHON_VERSION=36
+@SET PYTHON_VERSION=37
 
 cd "$PG_PATH_WINDOWS_X64\pgadmin.windows-x64\runtime"
 $PG_QMAKE_WINDOWS_X64
@@ -401,7 +401,7 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libssl-1_1-x64.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libcrypto-1_1-x64.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libiconv-2.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-9.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-8.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libwinpthread-1.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
@@ -503,7 +503,7 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cp $PGADMIN_PYTHON_DLL_WINDOWS_X64  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" ||  _die "Failed to copy a dependency $PGADMIN_PYTHON_DLL_WINDOWS_X64"
 
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libiconv-2.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libiconv-2.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-9.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libintl-9.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-8.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libintl-8.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\libpq.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libpq.dll"
 
     ssh $PG_SSH_WINDOWS_X64 "cmd /c rd /S /Q $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\Include" || _die "Failed to remove the venv\Include directory on the build host"
@@ -663,7 +663,7 @@ _postprocess_server_windows_x64() {
    cp $PGSERVER_STAGING_WINDOWS_X64/bin/libssl-1_1-x64.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libssl-1_1-x64.dll"
    cp $PGSERVER_STAGING_WINDOWS_X64/bin/libcrypto-1_1-x64.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libcrypto-1_1-x64.dll"
    cp $PGSERVER_STAGING_WINDOWS_X64/bin/libiconv-2.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libiconv-2.dll"
-   cp $PGSERVER_STAGING_WINDOWS_X64/bin/libintl-9.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libintl-9.dll"
+   cp $PGSERVER_STAGING_WINDOWS_X64/bin/libintl-8.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libintl-8.dll"
 
 
     cd $WD/server
