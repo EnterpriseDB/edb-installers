@@ -2,9 +2,9 @@
 # Copyright (c) 2012-2019, EnterpriseDB Corporation.  All rights reserved
 
 # Check the command line
-if [ $# -ne 6 ]; 
+if [ $# -ne 7 ]; 
 then
-echo "Usage: $0 <PG_HOST> <PG_PORT> <PG_USER> <SYSTEM_USER> <Install dir> <PG_DATABASE>"
+echo "Usage: $0 <PG_HOST> <PG_PORT> <PG_USER> <SYSTEM_USER> <Install dir> <PG_DATABASE> <PG_VERSION>"
     exit 127
 fi
 
@@ -14,6 +14,7 @@ PG_USER=$3
 SYSTEM_USER=$4
 INSTALL_DIR=$5
 PG_DATABASE=$6
+PGAGENT_SER_VER=$7
 USER_HOME_DIR=`su $SYSTEM_USER -c "echo ~"`
 
 if [ ! -f $USER_HOME_DIR ]; then
@@ -34,8 +35,8 @@ _warn() {
     WARN=2
 }
 
-touch /var/log/pgagent.log
-chown $SYSTEM_USER /var/log/pgagent.log
+touch /var/log/pgagent-pg$PGAGENT_SER_VER.log
+chown $SYSTEM_USER /var/log/pgagent-pg$PGAGENT_SER_VER.log
 if [ -f $USER_HOME_DIR/.pgpass ];
 then
     chk=`grep -c ^$PG_HOST:$PG_PORT:$PG_DATABASE:$PG_USER $USER_HOME_DIR/.pgpass`
@@ -57,7 +58,7 @@ if [ ! -e /Library/LaunchDaemons ]; then
 fi
 
 # Write the plist file
-cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgagent.plist"
+cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgagent-pg$PGAGENT_SER_VER.plist"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
         "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -66,14 +67,14 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgagent.plist"
 	<key>Disabled</key>
 	<false/>
         <key>Label</key>
-        <string>com.edb.launchd.pgagent</string>
+        <string>com.edb.launchd.pgagent-pg$PGAGENT_SER_VER</string>
         <key>ProgramArguments</key>
         <array>
                 <string>$INSTALL_DIR/bin/pgagent</string>
                 <string>-f</string>
                 <string>-l1</string>
                 <string>-s</string>
-                <string>/var/log/pgagent.log</string>
+                <string>/var/log/pgagent-pg$PGAGENT_SER_VER.log</string>
                 <string>host=$PG_HOST</string> 
                 <string>port=$PG_PORT</string> 
                 <string>dbname=$PG_DATABASE</string> 
@@ -93,7 +94,7 @@ cat <<EOT > "/Library/LaunchDaemons/com.edb.launchd.pgagent.plist"
 EOT
 
 # Fixup the permissions on the launchDaemon
-chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.pgagent.plist" || _warn "Failed to set the ownership of the launchd daemon for pgAgent (/Library/LaunchDaemons/com.edb.launchd.pgagent.plist)"
+chown -R root:wheel "/Library/LaunchDaemons/com.edb.launchd.pgagent-pg$PGAGENT_SER_VER.plist" || _warn "Failed to set the ownership of the launchd daemon for pgAgent (/Library/LaunchDaemons/com.edb.launchd.pgagent-pg$PGAGENT_SER_VER.plist)"
 
 echo "$0 ran to completion"
 exit $WARN

@@ -664,7 +664,6 @@ _postprocess_server_osx() {
 
     # Rename the installer
     mv $WD/output/postgresql-$PG_MAJOR_VERSION-osx-installer.app $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app || _die "Failed to rename the installer"
-
     # Now we need to turn this into a DMG file
     echo "Creating disk image"
     cd $WD/output

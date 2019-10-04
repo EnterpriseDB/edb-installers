@@ -31,6 +31,12 @@ if [ $PG_ARCH_WINDOWS = 1 ];
 then
     source $WD/pgAgent/build-windows.sh
 fi
+
+# Windows-x64
+if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+then
+    source $WD/pgAgent/build-windows-x64.sh
+fi
     
 ################################################################################
 # Build preparation
@@ -92,6 +98,12 @@ _prep_pgAgent() {
     then
         _prep_pgAgent_windows 
     fi
+
+    # Windows_x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _prep_pgAgent_windows_x64
+    fi
     
 }
 
@@ -131,6 +143,12 @@ _build_pgAgent() {
     then
         _build_pgAgent_windows 
     fi
+
+    # Windows_x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _build_pgAgent_windows_x64
+    fi
 }
 
 ################################################################################
@@ -152,8 +170,18 @@ _postprocess_pgAgent() {
 
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (pgAgent/installer.xml.in)"
 
+     PG_CURRENT_VERSION=`echo $PG_MAJOR_VERSION | sed -e 's/\.//'`
+
+     PGAGENT_MAJOR_VERSION=`echo $PG_VERSION_PGAGENT | cut -f1,2 -d "."`
+     PGAGENT_SERVICE_NAME=pgagent-pg$PG_MAJOR_VERSION
+
     _replace PG_VERSION_PGAGENT $PG_VERSION_PGAGENT installer.xml || _die "Failed to set the version in the installer project file (pgAgent/installer.xml)"
     _replace PG_BUILDNUM_PGAGENT $PG_BUILDNUM_PGAGENT installer.xml || _die "Failed to set the Build Number in the installer project file (pgAgent/installer.xml)"
+
+    _replace PG_CURRENT_VERSION $PG_CURRENT_VERSION installer.xml || _die "Failed to set the PG Current Number in the installer project file (PostGIS/installer.xml)"
+    _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the PG MAJOR Number in the installer project file (PostGIS/installer.xml)"
+    _replace PGAGENT_MAJOR_VERSION $PGAGENT_MAJOR_VERSION installer.xml || _die "Failed to set the PGAGENT MAJOR Number in the installer project file (PostGIS/installer.xml)"
+    _replace PGAGENT_SERVICE_NAME $PGAGENT_SERVICE_NAME installer.xml || _die "Failed to set the PGAGENT SERVICE NAME in the installer project file (PostGIS/installer.xml)"
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
@@ -183,5 +211,11 @@ _postprocess_pgAgent() {
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         _postprocess_pgAgent_windows 
+    fi
+
+    # Windows_x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _postprocess_pgAgent_windows_x64
     fi
 }

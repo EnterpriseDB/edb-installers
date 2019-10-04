@@ -77,6 +77,7 @@ PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studi
 PG_MSBUILDDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017\\\\Professional\\\\MSBuild\\\\15.0"
 PG_DEVENVDIR_WINDOWS_X64="$PG_VSINSTALLDIR_WINDOWS_X64\\\\Professional\\\\Common7\\\\IDE"
 PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild64"
+PG_BOOST_WINDOWS_X64="D:\\\\pgBuild64\\\\Boost"
 PG_BINARY_PATH_X64="D:\\\\pg-languagepack-x64"
 PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets-2.8.12"
 PG_JAVA_HOME_WINDOWS_X64="C:\\\\Program Files\\\\Java\\\\jdk1.7.0_51"
@@ -97,6 +98,7 @@ PGSERVER_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/server
 PGADMIN_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/pgadmin4
 SB_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/stackbuilder
 CLT_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/commandlinetools
+CMAKE_BUILD_GENERATOR_X64="Visual Studio 15 2017" #used for pgAgent
 
 PG_SSH_OSX=buildfarm@bf11-osx.ox.uk.enterprisedb.com
 PG_PATH_OSX=/mnt/hgfs/pginstaller_12.auto
