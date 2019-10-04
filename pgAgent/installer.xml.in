@@ -355,7 +355,6 @@ EOF
                              name="Port" variable="pgport" />
                 <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\${pgservice_id}"
                              name="Database Superuser" variable="pguser" />
-		<showInfo text="${pgport}"/>
             </actionList>
                 <ruleList>
                     <platformTest type="windows-x64" />
