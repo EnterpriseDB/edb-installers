@@ -2,7 +2,7 @@
 
   <!-- Package details -->
   <shortName>pgagent</shortName>
-  <fullName>pgAgent</fullName>
+  <fullName>pgAgent_PGPG_CURRENT_VERSION</fullName>
   <version>PG_VERSION_PGAGENT-PG_BUILDNUM_PGAGENT</version>
 
   <!-- product Specific Options -->
@@ -23,7 +23,7 @@
   <height>400</height>
 
   <!-- Misc options -->
-  <installerFilename>${product_shortname}-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
+  <installerFilename>${product_shortname}-pgPG_CURRENT_VERSION-${product_version}-${platform_name}.${platform_exec_suffix}</installerFilename>
   <compressionAlgorithm>lzma</compressionAlgorithm>
   <enableRollback>0</enableRollback>
   <requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>
@@ -116,34 +116,19 @@ EOF
          <stringParameter name="dirPrefix" allowEmptyValue="0"/>
        </parameterList>
     </actionDefinition>
-    <include file="../scripts/determineLinuxInitSystem.xml"/>
-    <include file="../scripts/linuxServiceAction.xml"/>
   </functionDefinitionList>
   <preShowHelpActionList>
-     <!-- Set the default values -->
-    <setInstallerVariable name="defaultpghost" value="localhost"/>
-    <setInstallerVariable name="defaultpguser" value="postgres"/>
-    <setInstallerVariable name="defaultpgport" value="5432"/>
-    <setInstallerVariable name="defaultpgdbname" value="postgres"/>
-    <!-- Set the installation directory for different platform -->
-    <setInstallerVariable name="defaultinstalldir" value="${platform_install_prefix}\pgAgent">
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="windows"/>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable name="defaultinstalldir" value="${platform_install_prefix}/pgAgent">
-      <ruleList>
-        <compareText logic="contains" text="${platform_name}" value="linux"/>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable name="defaultinstalldir" value="/Library/pgAgent">
-      <ruleList>
-        <compareText logic="equals" text="${platform_name}" value="osx"/>
-      </ruleList>
-    </setInstallerVariable>
-    <setInstallerVariable name="defaultsyspassword" value=""/>
-    <setInstallerVariable name="defaultpgpassword" value=""/>
+	<setInstallerVariable name="defaultpghost" value="localhost"/>
+        <setInstallerVariable name="defaultpguser" value="postgres"/>
+        <setInstallerVariable name="defaultpgport" value="5432"/>
+        <setInstallerVariable name="defaultpgdbname" value="postgres"/>
+    <!-- Set the PG Major Version -->
+        <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION">
+            <persist>1</persist>
+        </setInstallerVariable>
+        <setInstallerVariable name="defaultpassword" value="postgres"/>
   </preShowHelpActionList>
+
 
   <!-- Prebuild Actions -->
   <preBuildActionList>
@@ -153,7 +138,19 @@ EOF
         <compareText text="${platform_name}" value="linux"/>
       </ruleList>
     </setInstallerVariable>
-    <setInstallerVariable name="defaultpgpassword" value=""/>
+    <!-- Setting windows64bitMode for windows-x64 -->
+     <setInstallerVariable name="project.windows64bitMode" value="1">
+        <ruleList>
+          <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
+        </ruleList>
+      </setInstallerVariable>
+      <!-- Change installer file name for Windows-x64 -->
+      <setInstallerVariable name="project.installerFilename" value="${product_shortname}-pgPG_CURRENT_VERSION-${product_version}-${platform_name}-${windowsArchitecture}.${platform_exec_suffix}">
+        <ruleList>
+          <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
+       </ruleList>
+      </setInstallerVariable>
+
   </preBuildActionList>
 
   <!-- Initialisation actions -->
@@ -177,8 +174,63 @@ EOF
         <compareText text="${originalplatform}" value="linux-x32"/>
       </ruleList>
     </throwError>
+    <!-- Abort Installation as trying to run a 64-bit installer on 32-bit machine for windows -->
+    <throwError>
+      <customErrorMessage>${msg(error.platform.not.match.win)}</customErrorMessage>
+        <text>Unknown Error</text>
+        <ruleList>
+         <platformTest type="windows-x86"/>
+          <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
+        </ruleList>
+     </throwError>
+     <!-- Set the pghost varaible to localhost -->
+         <setInstallerVariable name="pghost" value="localhost">
+             <persist>0</persist>
+        </setInstallerVariable>
+    <!-- Set the PG Current version(if exists) -->
+        <setInstallerVariable name="PGCurrentVersion" value="PG_CURRENT_VERSION">
+            <persist>1</persist>
+        </setInstallerVariable>
+        <setInstallerVariable name="pgAgentMajorVersion" value="PGAGENT_MAJOR_VERSION">
+            <persist>1</persist>
+        </setInstallerVariable>
+        <!-- Set the pgAgent version(if exists) -->
+        <setInstallerVariable name="pgAgentVersion" value="">
+            <persist>0</persist>
+        </setInstallerVariable>
+        <setInstallerVariable name="pgAgentVersionInstalled" value="">
+            <persist>0</persist>
+        </setInstallerVariable>
+        <!-- Set the PG Major Version -->
+        <setInstallerVariable name="PGMajorVersion" value="PG_MAJOR_VERSION">
+            <persist>1</persist>
+        </setInstallerVariable>
+
 
     <!-- Set the default values -->
+
+    <setInstallerVariable name="pghome" value=""/>
+        <setInstallerVariable name="pgport" value=""/>
+        <setInstallerVariable name="pguser" value=""/>
+        <setInstallerVariable name="defaultuser" value=""/>
+        <setInstallerVariable name="defaultpassword" value=""/>
+        <setInstallerVariable name="installdir" value=""/>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="defaultuser" value="postgres"/>
+                <setInstallerVariable name="defaultpassword" value="postgres"/>
+                <setInstallerVariable name="pguser" value="postgres"/>
+                <setInstallerVariable name="pgpassword" value="postgres"/>
+            </actionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${installer_ui}</text>
+                    <value>unattended</value>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+
     <setInstallerVariable name="defaultpghost" value="localhost"/>
     <setInstallerVariable name="defaultpguser" value="postgres"/>
     <setInstallerVariable name="defaultpgport" value="5432"/>
@@ -191,32 +243,8 @@ EOF
       <substitution>\1</substitution>
     </setInstallerVariableFromRegEx>
 
-    <!-- Set the default postgres password, to be used only in unnattended mode -->
-    <setInstallerVariable name="defaultpgpassword" value=""/>
-    <setInstallerVariable name="defaultpgpassword" value="postgres">
-      <ruleList>
-        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-      </ruleList>
-    </setInstallerVariable>
-
-    <!-- Set the default system password, to be used only in unnattended mode -->
-    <setInstallerVariable name="defaultsyspassword" value=""/>
-    <setInstallerVariable name="defaultsyspassword" value="postgres">
-      <ruleList>
-        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-      </ruleList>
-    </setInstallerVariable>
-
-    <!-- Set the system user, to be used only in unnattended mode -->
-    <setInstallerVariable name="systemuser" value=""/>
-    <setInstallerVariable name="systemuser" value="postgres">
-      <ruleList>
-        <compareText logic="equals" text="${installer_ui}" value="unattended"/>
-      </ruleList>
-    </setInstallerVariable>
-
     <!-- Set the installation directory for different platform -->
-    <setInstallerVariable name="defaultinstalldir" value="${platform_install_prefix}\pgAgent">
+    <!--setInstallerVariable name="defaultinstalldir" value="${platform_install_prefix}\pgAgent">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
@@ -230,7 +258,7 @@ EOF
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
-    </setInstallerVariable>
+    </setInstallerVariable-->
   </initializationActionList>
 
   <!-- Preinstallation actions -->
@@ -268,7 +296,7 @@ EOF
         <setInstallerVariable name="project.windowsSoftwareRegistryPrefix" value="${project.vendor}\${project.fullName}"/>
 
         <!-- Installing vcredist on windows -->
-        <actionGroup>
+        <!--actionGroup>
           <actionList>
             <unpackFile component="configuration"
                destination="${system_temp_directory}\${product_shortname}_${random_number}\vcredist_x86.exe"
@@ -280,7 +308,7 @@ EOF
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
           </ruleList>
-        </actionGroup>
+        </actionGroup-->
 
         <!-- Creates the ini file if not exits -->
         <touchFile path="/etc/postgres-reg.ini">
@@ -289,12 +317,165 @@ EOF
             <isFalse value="${extract_mode}"/>
           </ruleList>
         </touchFile>
-        <setInstallerVariable name="defaultinstalldir" value="${installdir}"/>
 
+	<!-- Get the PG PG_MAJOR_VERSION installation details -->
+        <actionGroup>
+            <actionList>
+                <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGMajorVersion}" key="InstallationDirectory" variable="pghome" />
+                <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGMajorVersion}" key="Port" variable="pgport" />
+                <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGMajorVersion}" key="Superuser" variable="pguser" />
+            </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-${PGMajorVersion}"
+                             name="Base Directory" variable="pghome" />
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-${PGMajorVersion}"
+                             name="Service ID" variable="pgservice_id" />
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-x64-${PGMajorVersion}"
+                             name="Port" variable="pgport" />
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\postgresql-x64-${PGMajorVersion}"
+                             name="Database Superuser" variable="pguser" />
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+	<actionGroup>
+            <actionList>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-${PGMajorVersion}"
+                   name="Base Directory" variable="pghome" />
+		<registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-${PGMajorVersion}"
+                             name="Service ID" variable="pgservice_id" />
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\${pgservice_id}"
+                             name="Port" variable="pgport" />
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\${pgservice_id}"
+                             name="Database Superuser" variable="pguser" />
+		<showInfo text="${pgport}"/>
+            </actionList>
+                <ruleList>
+                    <platformTest type="windows-x64" />
+                </ruleList>
+        </actionGroup>
+
+
+       <!-- Throw Error if PG PG_MAJOR_VERSION not found -->
+        <if>
+            <actionList>
+                <throwError text="${msg(pg.not.found.win64)}" >
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText text="${pghome}" logic="equals" value="" />
+                        <compareText text="${pguser}" logic="equals" value="" />
+                        <compareText text="${pgport}" logic="equals" value="" />
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <elseActionList>
+                <throwError text="${msg(pg.not.found)}" >
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText text="${pghome}" logic="equals" value="" />
+                        <compareText text="${pguser}" logic="equals" value="" />
+                        <compareText text="${pgport}" logic="equals" value="" />
+                    </ruleList>
+                </throwError>
+            </elseActionList>
+            <conditionRuleList>
+                <platformTest type="windows-x64" />
+            </conditionRuleList>
+        </if>
+
+       <!-- Set installation directory as the PGHOME -->
+        <setInstallerVariable name="installdir" value="${pghome}" />
+
+        <!-- Do not create uninstaller in case of extract-only mode -->
+        <setInstallerVariable name="createUninstaller" value="0" persist="1">
+            <ruleList>
+                <isTrue value="${extract_mode}" />
+            </ruleList>
+        </setInstallerVariable>
+
+        <setInstallerVariable name="branding" value="" persist="1"/>
+        <setInstallerVariable name="pg_config" value="${installdir}/bin/pg_config"/>
+        <setInstallerVariable name="pg_config" value="${installdir}\bin\pg_config.exe">
+          <ruleList>
+            <compareText logic="equals" text="${platform_name}" value="windows"/>
+          </ruleList>
+        </setInstallerVariable>
+
+        <setInstallerVariable name="parentlibdir" value="${installdir}"/>
+        <setInstallerVariable name="libdir" value="${installdir}/lib"/>
+        <setInstallerVariable name="sharedir" value="${installdir}/share"/>
+        <setInstallerVariable name="mandir" value="${installdir}/man"/>
+        <setInstallerVariable name="docdir" value="${installdir}/doc"/>
+       
+        <actionGroup>
+            <actionList>
+                <setInstallerVariableFromScriptOutput>
+                    <name>libdir</name>
+                    <exec>${pg_config}</exec>
+                    <execArgs>--libdir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <onErrorActionList>
+                        <setInstallerVariable name="libdir" value="${installdir}/lib"/>
+                    </onErrorActionList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>sharedir</name>
+                    <exec>${pg_config}</exec>
+                    <execArgs>--sharedir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <onErrorActionList>
+                        <setInstallerVariable name="sharedir" value="${installdir}/share"/>
+                    </onErrorActionList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>docdir</name>
+                    <exec>${pg_config}</exec>
+                    <execArgs>--docdir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <onErrorActionList>
+                        <setInstallerVariable name="docdir" value="${installdir}/doc"/>
+                    </onErrorActionList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromScriptOutput>
+                    <name>mandir</name>
+                    <exec>${pg_config}</exec>
+                    <execArgs>--mandir</execArgs>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <onErrorActionList>
+                        <setInstallerVariable name="mandir" value="${installdir}/man"/>
+                    </onErrorActionList>
+                </setInstallerVariableFromScriptOutput>
+                <setInstallerVariableFromRegEx>
+                    <name>parentlibdir</name>
+                    <text>${libdir}</text>
+                    <pattern>(.*)[/\\]lib</pattern>
+                    <substitution>\1</substitution>
+                </setInstallerVariableFromRegEx>
+            </actionList>
+            <ruleList>
+                <fileExists path="${pg_config}"/>
+            </ruleList>
+        </actionGroup>
+
+
+
+
+  
         <!-- LIN & MAC : Check Previous Installation of pgAgent -->
         <actionGroup>
           <actionList>
-            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="Version" variable="pgAgentVersion"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="Version" variable="pgAgentVersion"/>
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -304,13 +485,13 @@ EOF
         <!-- LIN & MAC : Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
           <actionList>
-            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="InstallationDirectory" variable="installdir"/>
-            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="ServiceManager" variable="systemuser"/>
-            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" variable="pguser"/>
-            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" variable="pgport"/>
-            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" variable="pghost"/>
-            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="PGDATABASE" variable="pgdbname"/>
-            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent" key="UpgradeMode" variable="iUpgradeMode"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="InstallationDirectory" variable="installdir"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="ServiceManager" variable="systemuser"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="PGUSER" variable="pguser"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="PGPORT" variable="pgport"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="PGHOST" variable="pghost"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="PGDATABASE" variable="pgdbname"/>
+            <iniFileGet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="UpgradeMode" variable="iUpgradeMode"/>
           </actionList>
           <ruleList>
             <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
@@ -318,10 +499,45 @@ EOF
           </ruleList>
         </actionGroup>
 
+	<!-- Throw error if 32 bit installation already exists-->
+         <actionGroup>
+           <actionList>
+              <!-- Get the existing installation version. -->
+             <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="Version" variable="install_32bit_exists" wowMode="32"/>
+            <throwError text="${msg(error.32bit.installation.exists)}">
+               <ruleList>
+                 <stringTest text="${install_32bit_exists}" type="not_empty"/>
+               </ruleList>
+              </throwError>
+            </actionList>
+           <ruleList>
+             <platformTest type="windows-x64"/>
+             <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
+              <isFalse value="${extract_mode}"/>
+            </ruleList>
+          </actionGroup>
+         <!-- Throw error if 64 bit installation already exists and user try to upgrade with 32 bit -->
+         <actionGroup>
+            <actionList>
+             <!-- Get the existing installation version. -->
+              <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="Version" variable="install_64bit_exists" wowMode="64"/>
+              <throwError text="${msg(error.64bit.installation.exists)}">
+                <ruleList>
+                  <stringTest text="${install_64bit_exists}" type="not_empty"/>
+                </ruleList>
+             </throwError>
+           </actionList>
+           <ruleList>
+             <platformTest type="windows-x64"/>
+             <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
+             <isFalse value="${extract_mode}"/>
+           </ruleList>
+         </actionGroup>
+
         <!-- WIN : Check Previous Installation of pgAgent -->
         <actionGroup>
           <actionList>
-            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Version" variable="pgAgentVersion"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="Version" variable="pgAgentVersion"/>
           </actionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -331,12 +547,12 @@ EOF
         <!-- WIN : Set the installation directory in case of re-install/upgrade -->
         <actionGroup>
           <actionList>
-            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Location" variable="installdir"/>
-            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="ServiceManager" variable="systemuser"/>
-            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGUSER" variable="pguser"/>
-            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGHOST" variable="pghost"/>
-            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGPORT" variable="pgport"/>
-            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="UpgradeMode" variable="iUpgradeMode"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="Location" variable="installdir"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="ServiceManager" variable="systemuser"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="PGUSER" variable="pguser"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="PGHOST" variable="pghost"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="PGPORT" variable="pgport"/>
+            <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="UpgradeMode" variable="iUpgradeMode"/>
           </actionList>
           <ruleList>
             <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -382,48 +598,9 @@ EOF
 
         <actionGroup>
            <actionList>
-            <!-- LIN: Unpack psql and its shared libraries -->
-            <unpackDirectory>
-              <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_shortname}_${random_number}</destination>
-              <folder>programfileslinux</folder>
-              <origin>bin</origin>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="linux"/>
-              </ruleList>
-            </unpackDirectory>
-            <unpackDirectory>
-              <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_shortname}_${random_number}/lib</destination>
-              <folder>libfileslinux</folder>
-              <origin>lib</origin>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="linux"/>
-              </ruleList>
-            </unpackDirectory>
-
-            <!-- LIN-x64: Unpack psql and its shared libraries -->
-            <unpackDirectory>
-              <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_shortname}_${random_number}</destination>
-              <folder>programfileslinux-x64</folder>
-              <origin>bin</origin>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
-              </ruleList>
-            </unpackDirectory>
-            <unpackDirectory>
-              <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_shortname}_${random_number}/lib</destination>
-              <folder>libfileslinux-x64</folder>
-              <origin>lib</origin>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
-              </ruleList>
-            </unpackDirectory>
 
             <!-- MAC: Unpack psql and its shared libraries -->
-            <unpackFile>
+            <!--unpackFile>
               <component>pgAgent</component>
               <destination>${system_temp_directory}/${product_shortname}_${random_number}/bin/psql</destination>
               <folder>programfilesosx</folder>
@@ -440,10 +617,10 @@ EOF
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
               </ruleList>
-            </unpackDirectory>
+            </unpackDirectory-->
 
             <!-- WIN: Unpack psql and its shared libraries -->
-            <unpackFile>
+            <!--unpackFile>
               <component>pgAgent</component>
               <destination>${system_temp_directory}\${product_shortname}_${random_number}\bin\psql.exe</destination>
               <folder>libfileswindows</folder>
@@ -460,7 +637,7 @@ EOF
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>
-            </unpackDirectory>
+            </unpackDirectory-->
            </actionList>
 	</actionGroup>
 
@@ -475,8 +652,8 @@ EOF
               <setInstallerVariable name="pgdbname" value="" />
               <setInstallerVariable name="connection" value="" />
 
-              <setInstallerVariable name="psql_executable" value="${system_temp_directory}/${product_shortname}_${random_number}/bin/psql"/>
-              <setInstallerVariable name="psql_executable" value="${system_temp_directory}\${product_shortname}_${random_number}\bin\psql.exe">
+              <setInstallerVariable name="psql_executable" value="${installdir}/bin/psql"/>
+              <setInstallerVariable name="psql_executable" value="${installdir}\bin\psql.exe">
                <ruleList>
                  <compareText logic="equals" text="${platform_name}" value="windows"/>
                </ruleList>
@@ -674,25 +851,25 @@ EOF
           </ruleList>
         </actionGroup>
 
-        <determineLinuxInitSystem>
+        <!--determineLinuxInitSystem>
           <ruleList>
             <isFalse value="${extract_mode}"/>
           </ruleList>
-        </determineLinuxInitSystem>
+        </determineLinuxInitSystem-->
 
         <!-- LIN : Stop the pgAgent Service -->
-        <linuxServiceAction
+        <!--linuxServiceAction
           name="pgagent" action="stop" systemdBooted="${is_init_systemd}"
           abortOnError="0" showMessageOnError="0">
           <ruleList>
             <compareText logic="contains" text="${platform_name}" value="linux"/>
             <compareText logic="does_not_equal" text="${pgAgentVersion}" value=""/>
           </ruleList>
-        </linuxServiceAction>
+        </linuxServiceAction-->
 
         <!-- WIN : Stop the pgAgent Service -->
         <stopWindowsService>
-          <serviceName>pgagent</serviceName>
+          <serviceName>PGAGENT_SERVICE_NAME</serviceName>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
           <customErrorMessage>${msg(error.stop.pgagent)}</customErrorMessage>
@@ -705,7 +882,7 @@ EOF
         <!-- MAC: Stop the pgAgent Service -->
         <runProgram>
           <program>launchctl</program>
-          <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgagent.plist</programArguments>
+          <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgagent-pg${PGMajorVersion}.plist</programArguments>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -730,30 +907,30 @@ EOF
         <!-- LIN & MAC : Write the pgAgent Info to INI File -->
         <actionGroup>
           <actionList>
-            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="Description" value="${msg(install.summary)}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="InstallationDirectory" value="${installdir}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="Version" value="${product_version}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="ServiceManager" value="${systemuser}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" value="${pguser}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" value="${pghost}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" value="${pgport}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGDATABASE" value="${pgdbname}"/>
-            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="UpgradeMode" value="${upgrade_mode}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="Description" value="${msg(install.summary)}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="InstallationDirectory" value="${installdir}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="Version" value="${product_version}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="ServiceManager" value="${systemuser}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="PGUSER" value="${pguser}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="PGHOST" value="${pghost}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="PGPORT" value="${pgport}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="PGDATABASE" value="${pgdbname}"/>
+            <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="UpgradeMode" value="${upgrade_mode}"/>
           </actionList>
           <ruleList>
             <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
           </ruleList>
         </actionGroup>
 
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Description" value="${msg(install.summary)}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Location" value="${installdir}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="Version" value="${product_version}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="ServiceManager" value="${systemuser}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGUSER" value="${pguser}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGHOST" value="${pghost}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGPORT" value="${pgport}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="PGDATABASE" value="${pgdbname}"/>
-        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent" name="UpgradeMode" value="${upgrade_mode}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="Description" value="${msg(install.summary)}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="Location" value="${installdir}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="Version" value="${product_version}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="ServiceManager" value="${systemuser}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="PGUSER" value="${pguser}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="PGHOST" value="${pghost}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="PGPORT" value="${pgport}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="PGDATABASE" value="${pgdbname}"/>
+        <registrySet key="HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\pgAgent_PG${PGMajorVersion}" name="UpgradeMode" value="${upgrade_mode}"/>
 
         <!-- Create the user account with which pgAgent will run-->
         <runProgram>
@@ -777,7 +954,8 @@ EOF
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="windows"/>
+	    <platformTest type="windows-x64" />
+            <!--compareText logic="equals" text="${platform_name}" value="windows"/-->
             <compareText logic="equals" text="${pgAgentVersion}" value=""/>
             <compareText logic="equals" text="${installer_ui}" value="unattended"/>
           </ruleList>
@@ -831,7 +1009,7 @@ EOF
             <!-- Create pgagent schema -->
             <runProgram>
               <program>${installdir}/bin/psql</program>
-              <programArguments>-t -f "${installdir}/share/pgagent.sql"</programArguments>
+              <programArguments>-c "CREATE EXTENSION pgagent" -d ${pgdbname}</programArguments>
               <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
@@ -844,7 +1022,7 @@ EOF
             </runProgram>
             <runProgram>
               <program>${installdir}\bin\psql.exe</program>
-              <programArguments>-t -f "${installdir}\share\pgagent.sql"</programArguments>
+              <programArguments>-c "CREATE EXTENSION pgagent" -d ${pgdbname}</programArguments>
               <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
@@ -860,7 +1038,7 @@ EOF
             <!-- Upgrade schema pgagent -->
             <runProgram>
               <program>${installdir}/bin/psql</program>
-              <programArguments>-t -f "${installdir}/share/pgagent_upgrade.sql"</programArguments>
+              <programArguments>-c "ALTER EXTENSION pgagent UPDATE" -d ${pgdbname}</programArguments>
               <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
@@ -875,7 +1053,7 @@ EOF
             </runProgram>
             <runProgram>
               <program>${installdir}\bin\psql.exe</program>
-              <programArguments>-t -f "${installdir}\share\pgagent_upgrade.sql"</programArguments>
+              <programArguments>-c "ALTER EXTENSION pgagent UPDATE" -d ${pgdbname}</programArguments>
               <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
@@ -948,7 +1126,7 @@ EOF
             <!-- Create pgagent schema -->
             <runProgram>
               <program>${installdir}/bin/psql</program>
-              <programArguments>-t -f "${installdir}/share/pgagent.sql"</programArguments>
+              <programArguments>-c "CREATE EXTENSION pgagent" -d ${pgdbname}</programArguments>
               <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
@@ -961,7 +1139,7 @@ EOF
             </runProgram>
             <runProgram>
               <program>${installdir}\bin\psql.exe</program>
-              <programArguments>-t -f "${installdir}\share\pgagent.sql"</programArguments>
+              <programArguments>-c "CREATE EXTENSION pgagent" -d ${pgdbname}</programArguments>
               <progressText>${msg(progress.text.creating.pgagentschema)}</progressText>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
@@ -976,7 +1154,7 @@ EOF
             <!-- Upgrade schema pgagent -->
             <runProgram>
               <program>${installdir}/bin/psql</program>
-              <programArguments>-t -f "${installdir}/share/pgagent_upgrade.sql"</programArguments>
+              <programArguments>-c "ALTER EXTENSION pgagent UPDATE" -d ${pgdbname}</programArguments>
               <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
@@ -989,7 +1167,7 @@ EOF
             </runProgram>
             <runProgram>
               <program>${installdir}\bin\psql.exe</program>
-              <programArguments>-t -f "${installdir}\share\pgagent_upgrade.sql"</programArguments>
+              <programArguments>-c "ALTER EXTENSION pgagent UPDATE" -d ${pgdbname}</programArguments>
               <progressText>${msg(progress.text.upgrading.pgagentschema)}</progressText>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
@@ -1057,7 +1235,7 @@ EOF
             <!-- WIN : Remove the existing service, if any exist, when upgrading/reinstalling -->
             <runProgram>
               <program>${installdir}\bin\pgagent.exe</program>
-              <programArguments>REMOVE pgAgent</programArguments>
+              <programArguments>REMOVE PGAGENT_SERVICE_NAME</programArguments>
               <workingDirectory>${installdir}\bin</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>0</showMessageOnError>
@@ -1068,7 +1246,7 @@ EOF
             <runProgram>
               <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
               <program>${installdir}\bin\pgagent.exe</program>
-              <programArguments>INSTALL pgAgent -u "${systemuser}" -p "${systempassword.password}" host=${pghost} port=${pgport} user=${pguser} dbname=${pgdbname}</programArguments>
+              <programArguments>INSTALL PGAGENT_SERVICE_NAME -u "${systemuser}" -p "${systempassword.password}" host=${pghost} port=${pgport} user=${pguser} dbname=${pgdbname}</programArguments>
               <workingDirectory>${installdir}\bin</workingDirectory>
               <abortOnError>0</abortOnError>
               <showMessageOnError>1</showMessageOnError>
@@ -1085,7 +1263,7 @@ EOF
             <runProgram>
               <customErrorMessage>${msg(error.install.pgagent)}</customErrorMessage>
               <program>${installdir}/installer/pgAgent/startupcfg.sh</program>
-              <programArguments>"${pghost}" "${pgport}" "${pguser}" "${systemuser}" "${installdir}" "${pgdbname}"</programArguments>
+              <programArguments>"${pghost}" "${pgport}" "${pguser}" "${systemuser}" "${installdir}" "${pgdbname}" "${PGMajorVersion}"</programArguments>
               <workingDirectory>${installdir}/installer/pgAgent</workingDirectory>
               <progressText>Configure pgAgent service</progressText>
               <abortOnError>0</abortOnError>
@@ -1111,7 +1289,7 @@ EOF
 
         <!-- WIN : Start the pgAgent service -->
         <startWindowsService>
-          <serviceName>pgAgent</serviceName>
+          <serviceName>PGAGENT_SERVICE_NAME</serviceName>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
           <ruleList>
@@ -1121,7 +1299,7 @@ EOF
         </startWindowsService>
 
         <!-- LIN  : Start pgAgent -->
-        <linuxServiceAction
+        <!--linuxServiceAction
           name="pgagent" action="start" systemdBooted="${is_init_systemd}"
           abortOnError="0" showMessageOnError="0" customErrorMessage="${msg(error.start.pgagent)}">
           <ruleList>
@@ -1129,12 +1307,12 @@ EOF
             <compareText logic="contains" text="${platform_name}" value="linux"/>
             <compareText logic="equals" text="${autostart}" value="yes"/>
           </ruleList>
-        </linuxServiceAction>
+        </linuxServiceAction-->
 
         <!-- MAC : Start the pgAgent service -->
         <runProgram>
           <program>launchctl</program>
-          <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgagent.plist</programArguments>
+          <programArguments>load /Library/LaunchDaemons/com.edb.launchd.pgagent-pg${PGMajorVersion}.plist</programArguments>
           <abortOnError>0</abortOnError>
           <showMessageOnError>1</showMessageOnError>
           <customErrorMessage>${msg(error.start.pgagent)}</customErrorMessage>
@@ -1156,7 +1334,7 @@ EOF
     </actionGroup>
 
     <!-- Add description to the services -->
-    <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\pgAgent" name="Description" value="${msg(pgagent.service.description)}" >
+    <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PGAGENT_SERVICE_NAME" name="Description" value="${msg(pgagent.service.description)}" >
         <ruleList>
            <isFalse value="${extract_mode}"/>
         </ruleList>
@@ -1218,14 +1396,14 @@ EOF
     <!-- LIN & MAC : Unset the pgAgent Info from the ini file -->
     <actionGroup>
       <actionList>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="Description" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="InstallationDirectory" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="Version" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGUSER" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGHOST" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGPORT" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="PGDATABASE" value=""/>
-        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent" key="ServiceManager" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="Description" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="InstallationDirectory" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="Version" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="PGUSER" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="PGHOST" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="PGPORT" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="PGDATABASE" value=""/>
+        <iniFileSet file="/etc/postgres-reg.ini" section="pgAgent_PG${PGMajorVersion}" key="ServiceManager" value=""/>
       </actionList>
       <ruleList>
         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -1236,7 +1414,7 @@ EOF
     <actionGroup>
       <actionList>
         <stopWindowsService>
-          <serviceName>pgAgent</serviceName>
+          <serviceName>PGAGENT_SERVICE_NAME</serviceName>
           <abortOnError>0</abortOnError>
           <showMessageOnError>0</showMessageOnError>
           <customErrorMessage>${msg(error.stop.pgagent)}</customErrorMessage>
@@ -1244,7 +1422,7 @@ EOF
         <runProgram>
           <customErrorMessage>${msg(error.uninstall.pgagent)}</customErrorMessage>
           <program>${installdir}\bin\pgagent.exe</program>
-          <programArguments>REMOVE pgagent</programArguments>
+          <programArguments>REMOVE PGAGENT_SERVICE_NAME</programArguments>
           <workingDirectory>${installdir}\bin</workingDirectory>
           <abortOnError>0</abortOnError>
           <showMessageOnError>1</showMessageOnError>
@@ -1263,12 +1441,12 @@ EOF
         <runProgram>
           <customErrorMessage>${msg(error.uninstall.pgagent)}</customErrorMessage>
           <program>launchctl</program>
-          <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgagent.plist</programArguments>
+          <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.pgagent-pg${PGMajorVersion}.plist</programArguments>
           <abortOnError>0</abortOnError>
           <showMessageOnError>1</showMessageOnError>
         </runProgram>
         <deleteFile>
-          <path>/Library/LaunchDaemons/com.edb.launchd.pgagent.plist</path>
+          <path>/Library/LaunchDaemons/com.edb.launchd.pgagent-pg${PGMajorVersion}.plist</path>
         </deleteFile>
       </actionList>
       <ruleList>
@@ -1279,15 +1457,15 @@ EOF
     <!-- LIN : Stop and Uninstall pgAgent Service -->
     <actionGroup>
       <actionList>
-        <determineLinuxInitSystem/>
+        <!--determineLinuxInitSystem/-->
         <!-- Stop the pgAgent service -->
-        <linuxServiceAction
+        <!--linuxServiceAction
           name="pgagent" action="stop" systemdBooted="${is_init_systemd}"
           abortOnError="0" showMessageOnError="0">
           <ruleList>
             <compareText logic="contains" text="${platform_name}" value="linux"/>
           </ruleList>
-        </linuxServiceAction>
+        </linuxServiceAction-->
 
         <!-- Attempt to remove any runlevel config with chkconfig -->
         <runProgram>
@@ -1351,254 +1529,6 @@ EOF
       <show>1</show>
       <folderList>
 
-        <!-- LIN : Program files -->
-        <folder>
-          <description>Program Files</description>
-          <destination>${installdir}</destination>
-          <name>programfileslinux</name>
-          <platforms>linux</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-              <origin>staging/linux/bin</origin>
-            </distributionDirectory>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Library Files</description>
-          <destination>${installdir}</destination>
-          <name>libfileslinux</name>
-          <platforms>linux</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-              <origin>staging/linux/lib</origin>
-            </distributionDirectory>
-	    <distributionFile origin="staging/linux/pgAgent_3rd_party_licenses.txt"/>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Configure Files</description>
-          <destination>${installdir}</destination>
-          <name>configurefileslinux</name>
-          <platforms>linux</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-              <origin>staging/linux/share</origin>
-            </distributionDirectory>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Installer Files</description>
-          <destination>${installdir}</destination>
-          <name>installfileslinux</name>
-          <platforms>linux</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-              <origin>staging/linux/installer</origin>
-            </distributionDirectory>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Other Files</description>
-          <destination>${installdir}</destination>
-          <name>otherfileslinux</name>
-          <platforms>linux</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/linux/LICENSE</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/linux/README</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-        <!-- LIN-X64 : Program files -->
-        <folder>
-          <description>Program Files</description>
-          <destination>${installdir}</destination>
-          <name>programfileslinux-x64</name>
-          <platforms>linux-x64</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-              <origin>staging/linux-x64/bin</origin>
-            </distributionDirectory>
-	    <distributionFile origin="staging/linux-x64/pgAgent_3rd_party_licenses.txt"/>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Library Files</description>
-          <destination>${installdir}</destination>
-          <name>libfileslinux-x64</name>
-          <platforms>linux-x64</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-                <origin>staging/linux-x64/lib</origin>
-            </distributionDirectory>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Configure Files</description>
-          <destination>${installdir}</destination>
-          <name>configurefileslinux-x64</name>
-          <platforms>linux-x64</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-              <origin>staging/linux-x64/share</origin>
-            </distributionDirectory>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Installer Files</description>
-          <destination>${installdir}</destination>
-          <name>installfileslinux-x64</name>
-          <platforms>linux-x64</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-              <origin>staging/linux-x64/installer</origin>
-            </distributionDirectory>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Other Files</description>
-          <destination>${installdir}</destination>
-          <name>otherfileslinux-x64</name>
-          <platforms>linux-x64</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/linux-x64/LICENSE</origin>
-            </distributionFile>
-	    <distributionFile>
-              <origin>staging/linux-x64/README</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-
-        <!-- LIN-PPC64 : Program files -->
-        <folder>
-          <description>Program Files</description>
-          <destination>${installdir}</destination>
-          <name>programfileslinux-ppc64</name>
-          <platforms>linux-ppc</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-              <origin>staging/linux-ppc64/bin</origin>
-            </distributionDirectory>
-	    <distributionFile origin="staging/linux-ppc/pgAgent_3rd_party_licenses.txt"/>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Library Files</description>
-          <destination>${installdir}</destination>
-          <name>libfileslinux-ppc64</name>
-          <platforms>linux-ppc</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-                <origin>staging/linux-ppc64/lib</origin>
-            </distributionDirectory>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Configure Files</description>
-          <destination>${installdir}</destination>
-          <name>configurefileslinux-ppc64</name>
-          <platforms>linux-ppc</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-              <origin>staging/linux-ppc64/share</origin>
-            </distributionDirectory>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Installer Files</description>
-          <destination>${installdir}</destination>
-          <name>installfileslinux-ppc64</name>
-          <platforms>linux-ppc</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-              <origin>staging/linux-ppc64/installer</origin>
-            </distributionDirectory>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Other Files</description>
-          <destination>${installdir}</destination>
-          <name>otherfileslinux-ppc64</name>
-          <platforms>linux-ppc</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/linux-ppc64/LICENSE</origin>
-            </distributionFile>
-	    <distributionFile>
-              <origin>staging/linux-ppc64/README</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-
-        <!-- WIN : Program files -->
-        <folder>
-          <description>Program Files</description>
-          <destination>${installdir}/bin</destination>
-          <name>pgagentbinarywindows</name>
-          <platforms>windows</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/windows/pgagent.exe</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/windows/pgaevent.dll</origin>
-            </distributionFile>
-          </distributionFileList>
-       </folder>
-       <folder>
-          <description>Supported Library Files</description>
-          <destination>${installdir}</destination>
-          <name>libfileswindows</name>
-          <platforms>windows</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-              <origin>staging/windows/bin</origin>
-            </distributionDirectory>
-	    <distributionFile origin="staging/windows/pgAgent_3rd_party_licenses.txt"/>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Configure Files</description>
-          <destination>${installdir}/share</destination>
-          <name>configurefileswindows</name>
-          <platforms>windows</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/windows/pgagent.sql</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/windows/pgagent_upgrade.sql</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Installer Files</description>
-          <destination>${installdir}</destination>
-          <name>installfileswindows</name>
-          <platforms>windows</platforms>
-          <distributionFileList>
-            <distributionDirectory>
-              <origin>staging/windows/installer</origin>
-            </distributionDirectory>
-          </distributionFileList>
-        </folder>
-        <folder>
-          <description>Other Files</description>
-          <destination>${installdir}</destination>
-          <name>otherfileswindows</name>
-          <platforms>windows</platforms>
-          <distributionFileList>
-            <distributionFile>
-              <origin>staging/windows/LICENSE</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/windows/README</origin>
-            </distributionFile>
-          </distributionFileList>
-        </folder>
 
         <!-- MAC : Program files -->
         <folder>
@@ -1608,7 +1538,7 @@ EOF
           <platforms>osx</platforms>
           <distributionFileList>
             <distributionDirectory>
-              <origin>staging/osx/bin</origin>
+              <origin>staging/osx/pgAgent/bin</origin>
             </distributionDirectory>
 	    <distributionFile origin="staging/osx/pgAgent_3rd_party_licenses.txt"/>
           </distributionFileList>
@@ -1620,7 +1550,7 @@ EOF
           <platforms>osx</platforms>
           <distributionFileList>
             <distributionDirectory>
-              <origin>staging/osx/lib</origin>
+              <origin>staging/osx/pgAgent/lib</origin>
             </distributionDirectory>
           </distributionFileList>
         </folder>
@@ -1631,10 +1561,35 @@ EOF
           <platforms>osx</platforms>
           <distributionFileList>
             <distributionDirectory>
-              <origin>staging/osx/share</origin>
+              <origin>staging/osx/pgAgent/share</origin>
             </distributionDirectory>
           </distributionFileList>
         </folder>
+
+	<folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}/extension</destination>
+                    <name>programfilesshareosxextn1</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/osx/pgAgent/share/extension/pgagent*.control</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}/extension</destination>
+                    <name>programfilesshareosxextn2</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                           <allowWildcards>1</allowWildcards>
+                            <origin>staging/osx/pgAgent/share/extension/pgagent*.*</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
         <folder>
           <description>Installer Files</description>
           <destination>${installdir}</destination>
@@ -1646,20 +1601,70 @@ EOF
             </distributionDirectory>
           </distributionFileList>
         </folder>
+
+
+	
+        <!-- Win64 : Program files -->
         <folder>
-          <description>Other Files</description>
+          <description>Program Files</description>
           <destination>${installdir}</destination>
-          <name>otherfilesosx</name>
-          <platforms>osx</platforms>
+          <name>programfileswin64</name>
+          <platforms>windows</platforms>
           <distributionFileList>
-            <distributionFile>
-              <origin>staging/osx/LICENSE</origin>
-            </distributionFile>
-            <distributionFile>
-              <origin>staging/osx/README</origin>
-            </distributionFile>
+            <distributionDirectory>
+              <origin>staging/windows-x64/pgAgent/bin</origin>
+            </distributionDirectory>
+	    <distributionFile origin="staging/windows-x64/pgAgent_3rd_party_licenses.txt"/>
           </distributionFileList>
         </folder>
+        <folder>
+          <description>Configure Files</description>
+          <destination>${installdir}</destination>
+          <name>configurefileswin64</name>
+          <platforms>windows</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+              <origin>staging/windows-x64/pgAgent/share</origin>
+            </distributionDirectory>
+          </distributionFileList>
+        </folder>
+
+	<folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}/extension</destination>
+                    <name>programfilessharewin64extn1</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/windows-x64/pgAgent/share/extension/pgagent*.control</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}/extension</destination>
+                    <name>programfilessharewin64extn2</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                           <allowWildcards>1</allowWildcards>
+                            <origin>staging/windows-x64/pgAgent/share/extension/pgagent*.*</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+        <folder>
+          <description>Installer Files</description>
+          <destination>${installdir}</destination>
+          <name>installfileswindows</name>
+          <platforms>windows</platforms>
+          <distributionFileList>
+            <distributionDirectory>
+              <origin>staging/windows-x64/installer</origin>
+            </distributionDirectory>
+          </distributionFileList>
+        </folder>
+
       </folderList>
     </component>
     <component>
@@ -1677,10 +1682,11 @@ EOF
           <platforms>windows</platforms>
           <distributionFileList>
             <distributionFile>
-              <origin>staging/windows/CreatePGPassconfForUser.exe</origin>
+              <origin>staging/windows-x64/installer/pgAgent/CreatePGPassconfForUser.exe</origin>
             </distributionFile>
           </distributionFileList>
         </folder>
+	<!--
         <folder>
           <description>Visual C++.Net 2005 Redistribution Files</description>
           <destination>${installdir}</destination>
@@ -1692,6 +1698,7 @@ EOF
             </distributionDirectory>
           </distributionFileList>
         </folder>
+	-->
       </folderList>
     </component>
   </componentList>
@@ -1716,7 +1723,7 @@ EOF
     </booleanParameter>
 
     <!-- Install Directory -->
-    <directoryParameter>
+    <!--directoryParameter>
       <name>installdir</name>
       <description>Installer.Parameter.installdir.description</description>
       <explanation>${msg(pgagent.installdir.explanation)}</explanation>
@@ -1730,10 +1737,10 @@ EOF
       <width>40</width>
       <ruleList>
         <compareText logic="equals" text="${pgAgentVersion}" value=""/>
-      </ruleList>
+      </ruleList-->
 
       <!-- Validating whether installdir is empty -->
-      <validationActionList>
+      <!--validationActionList>
         <actionGroup>
           <actionList>
             <setInstallerVariable name="installdir" value="${defaultinstalldir}"/>
@@ -1745,13 +1752,13 @@ EOF
             <compareText logic="equals" text="${installdir}" value=""/>
           </ruleList>
         </actionGroup>
-      </validationActionList>
+      </validationActionList-->
 
       <!-- Validating whether installdir is valid -->
-      <validationActionList>
+      <!--validationActionList-->
 
         <!-- Validating whether installdir contains whitespaces (Linux) -->
-        <actionGroup>
+        <!--actionGroup>
           <actionList>
             <setInstallerVariable name="installdir" value="${defaultinstalldir}"/>
             <throwError>
@@ -1763,10 +1770,10 @@ EOF
             <regExMatch text="${installdir}" logic="does_not_match" pattern="^/([0-9a-zA-Z_/\.\-]*)$"/>
             <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
           </ruleList>
-        </actionGroup>
+        </actionGroup-->
 
         <!-- Validating whether installdir is valid (Windows) -->
-        <actionGroup>
+        <!--actionGroup>
           <actionList>
             <setInstallerVariable name="installdir" value="${defaultinstalldir}"/>
             <throwError>
@@ -1780,8 +1787,7 @@ EOF
           </ruleList>
         </actionGroup>
       </validationActionList>
-    </directoryParameter>
-
+    </directoryParameter-->
     <!-- Explain that we're using an existing installation directory -->
     <labelParameter>
       <name>upgrade</name>
@@ -1834,7 +1840,7 @@ EOF
           <description>Password</description>
           <explanation/>
           <value/>
-          <default>${defaultpgpassword}</default>
+          <default>${defaultpassword}</default>
           <allowEmptyValue>1</allowEmptyValue>
           <askForConfirmation>0</askForConfirmation>
           <descriptionRetype/>
@@ -1962,49 +1968,9 @@ EOF
               </ruleList>
             </unpackDirectory>
 
-            <!-- LIN-x64: Unpack psql and its shared libraries -->
-            <unpackDirectory>
-              <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_shortname}_${random_number}</destination>
-              <folder>programfileslinux-x64</folder>
-              <origin>bin</origin>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
-              </ruleList>
-            </unpackDirectory>
-            <unpackDirectory>
-              <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_shortname}_${random_number}/lib</destination>
-              <folder>libfileslinux-x64</folder>
-              <origin>lib</origin>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="linux-x64"/>
-              </ruleList>
-            </unpackDirectory>
-
-            <!-- LIN-ppc64: Unpack psql and its shared libraries -->
-            <unpackFile>
-              <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_shortname}_${random_number}/bin/psql</destination>
-              <folder>programfileslinux-ppc64</folder>
-              <origin>bin/psql</origin>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
-              </ruleList>
-            </unpackFile>
-            <unpackDirectory>
-              <component>pgAgent</component>
-              <destination>${system_temp_directory}/${product_shortname}_${random_number}/lib</destination>
-              <folder>libfileslinux-ppc64</folder>
-              <origin>lib</origin>
-              <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="linux-ppc"/>
-              </ruleList>
-            </unpackDirectory>
-
 
             <!-- MAC: Unpack psql and its shared libraries -->
-            <unpackFile>
+            <!--unpackFile>
               <component>pgAgent</component>
               <destination>${system_temp_directory}/${product_shortname}_${random_number}/bin/psql</destination>
               <folder>programfilesosx</folder>
@@ -2021,10 +1987,10 @@ EOF
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
               </ruleList>
-            </unpackDirectory>
+            </unpackDirectory-->
 
             <!-- WIN: Unpack psql and its shared libraries -->
-            <unpackFile>
+            <!--unpackFile>
               <component>pgAgent</component>
               <destination>${system_temp_directory}\${product_shortname}_${random_number}\bin\psql.exe</destination>
               <folder>libfileswindows</folder>
@@ -2032,9 +1998,9 @@ EOF
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>
-            </unpackFile>
+            </unpackFile-->
 
-            <unpackDirectory>
+            <!--unpackDirectory>
               <component>pgAgent</component>
               <destination>${system_temp_directory}\${product_shortname}_${random_number}</destination>
               <folder>libfileswindows</folder>
@@ -2042,7 +2008,7 @@ EOF
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>
-            </unpackDirectory>
+            </unpackDirectory-->
 
             <!-- Running the Script to validate the PostgreSQL Server Details -->
             <setEnvironmentVariable name="PGHOST" value="${pghost}"/>
@@ -2050,17 +2016,17 @@ EOF
             <setEnvironmentVariable name="PGPASSWORD" value="${pgpassword}"/>
             <setEnvironmentVariable name="PGPORT" value="${pgport}"/>
             <setEnvironmentVariable name="PGDATABASE" value=""/>
-            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_shortname}_${random_number}/lib"/>
+            <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib"/>
             <setInstallerVariable name="pgdbname" value="" />
             <setInstallerVariable name="connection" value="" />
             <foreach variables="dbname">
               <values>postgres edb template1</values>
               <actionList>
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/${product_shortname}_${random_number}/bin/psql</exec>
+                  <exec>${installdir}/bin/psql</exec>
                   <execArgs>-l -d ${dbname}</execArgs>
                   <name>connection</name>
-                  <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/bin</workingDirectory>
+                  <workingDirectory>${installdir}/bin</workingDirectory>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError>
                   <ruleList>
@@ -2069,10 +2035,10 @@ EOF
                   </ruleList>
                 </setInstallerVariableFromScriptOutput>
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}\${product_shortname}_${random_number}\bin\psql.exe</exec>
+                  <exec>${installdir}\bin\psql.exe</exec>
                   <execArgs>-t -c "SELECT d.datname FROM pg_catalog.pg_database d WHERE d.datname='${dbname}'" -d ${dbname}</execArgs>
                   <name>connection</name>
-                  <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/bin</workingDirectory>
+                  <workingDirectory>${installdir}/bin</workingDirectory>
                   <abortOnError>0</abortOnError>
                   <showMessageOnError>0</showMessageOnError>
                   <ruleList>
@@ -2095,8 +2061,8 @@ EOF
               </ruleList>
             </throwError>
             <setEnvironmentVariable name="PGDATABASE" value="${pgdbname}" />
-            <setInstallerVariable name="psql_executable" value="${system_temp_directory}/${product_shortname}_${random_number}/bin/psql"/>
-            <setInstallerVariable name="psql_executable" value="${system_temp_directory}\${product_shortname}_${random_number}\bin\psql.exe">
+            <setInstallerVariable name="psql_executable" value="${installdir}/bin/psql"/>
+            <setInstallerVariable name="psql_executable" value="${installdir}\bin\psql.exe">
               <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
               </ruleList>
@@ -2122,7 +2088,7 @@ EOF
               <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT lanname FROM pg_language WHERE lanname='plpgsql'"</execArgs>
               <name>plpgsql_exist</name>
-              <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
+              <workingDirectory>${installdir}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
             </setInstallerVariableFromScriptOutput>
@@ -2133,7 +2099,7 @@ EOF
               <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT has_schema_privilege('pgagent', 'USAGE')"</execArgs>
               <name>pgagent_schema_exist</name>
-              <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
+              <workingDirectory>${installdir}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
             </setInstallerVariableFromScriptOutput>
@@ -2144,7 +2110,7 @@ EOF
               <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT COUNT(*) FROM pg_proc WHERE proname = 'pgagent_schema_version' AND pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'pgagent') AND prorettype = (SELECT oid FROM pg_type WHERE typname = 'int2') AND proargtypes = ''"</execArgs>
               <name>pgagent_schema_version_function_exist</name>
-              <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
+              <workingDirectory>${installdir}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
               <ruleList>
@@ -2158,7 +2124,7 @@ EOF
               <exec>${psql_executable}</exec>
               <execArgs>-t -A -c "SELECT pgagent.pgagent_schema_version()"</execArgs>
               <name>pgagent_current_schema_version</name>
-              <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}</workingDirectory>
+              <workingDirectory>${installdir}</workingDirectory>
               <showMessageOnError>0</showMessageOnError>
               <abortOnError>0</abortOnError>
               <ruleList>
@@ -2390,7 +2356,8 @@ EOF
               </throwError>
             </actionList>
             <ruleList>
-              <compareText logic="equals" text="${platform_name}" value="windows"/>
+		<platformTest type="windows-x64" />
+              <!--compareText logic="equals" text="${platform_name}" value="windows"/-->
             </ruleList>
         </actionGroup>
         <!-- WIN : Validate user name & password -->

@@ -5,9 +5,26 @@
 #include <io.h>
 #include <direct.h>
 #include <userenv.h>
+#include <stdlib.h>
 
 FILE *fPGPASSConf = NULL;
+FILE *fPGPASSConfTemp = NULL;
 HANDLE  hToken    = NULL;
+char szLine[5000];
+char szLineToWrite[1024] = {0};
+char szPart [5000] = {0};
+char szCombined [5000] = {0};
+int len	= 0;
+int ret = 0;
+int pos = 0;
+int i = 0;
+int countofreduntantlines = 0;
+int countoftotallines = 0;
+int countoflinestobecopied = 0;
+int onwhichline = 0;
+DWORD dwBytesToWrite = 0;
+DWORD dwBytesWritten = 0;
+
 
 void DisplayError(LPCSTR pszAPI)
 {
@@ -31,6 +48,192 @@ void DisplayError(LPCSTR pszAPI)
     ExitProcess(GetLastError());
 }
 
+int CountRedundantEntries(_TCHAR **argv)
+{
+	//Check for file existence.Count existing enteries having same argv[3], argv[4], argv[5], argv[6]
+	fPGPASSConf = NULL;
+	countofreduntantlines = 0;
+
+    ret = fopen_s(&fPGPASSConf, "pgpass.conf", "r");
+    if (fPGPASSConf == 0)
+	{
+		//File not available for reading
+	}
+	else
+	{
+		memset(szCombined,'\0',sizeof(szCombined));
+		strcat(szCombined,argv[3]);
+		strcat(szCombined,":");
+		strcat(szCombined,argv[4]);
+		strcat(szCombined,":");
+		strcat(szCombined,argv[5]);
+		strcat(szCombined,":");
+		strcat(szCombined,argv[6]);
+		strcat(szCombined,":");
+
+		fseek(fPGPASSConf, 0L, SEEK_SET);
+		while ( fgets ( szLine, sizeof szLine, fPGPASSConf ) != NULL )
+		{         
+			memset(szPart,'\0',sizeof(szPart));
+			len = strlen(szLine);
+			while(len > 0)
+			{
+				if(szLine[len] == ':')
+					break;
+
+				len--;
+			}
+			memcpy(szPart,szLine,len+1);
+
+			//Ignore line if contains same entry
+			if(strcmp(szPart,szCombined)==0)
+			{
+				countofreduntantlines++;
+			}
+			else
+			{
+				//ignore it
+			}
+			memset(szLine,'\0',sizeof(szLine));
+		}
+		fclose(fPGPASSConf);
+	}
+
+	return countofreduntantlines;
+}
+
+int CountTotalEntries(_TCHAR **argv)
+{
+	//Check for file existence.Count existing enteries having same argv[3], argv[4], argv[5], argv[6]
+	fPGPASSConf = NULL;
+	countoftotallines = 0;
+
+    ret = fopen_s(&fPGPASSConf, "pgpass.conf", "r");
+    if (fPGPASSConf == 0)
+	{
+		//File not available for reading
+	}
+	else
+	{
+		fseek(fPGPASSConf, 0L, SEEK_SET);
+		while ( fgets ( szLine, sizeof szLine, fPGPASSConf ) != NULL )
+		{         
+			countoftotallines++;
+		}
+		fclose(fPGPASSConf);
+	}
+
+	return countoftotallines;
+}
+
+int RemoveRedundantEntries(_TCHAR **argv)
+{
+	//Check for file existence.Remove existing enteries having same argv[3], argv[4], argv[5], argv[6]
+	fPGPASSConf = NULL;
+	fPGPASSConfTemp = NULL;
+
+    ret = fopen_s(&fPGPASSConf, "pgpass.conf", "r");
+    if (fPGPASSConf == 0)
+	{
+		//File not available for reading
+        DisplayError("OpenPGPASSConf");
+	}
+	else
+	{
+	    ret = fopen_s(&fPGPASSConfTemp, "pgpass.conftemp", "w");
+		if (fPGPASSConfTemp == 0)
+		{
+			//File not available for reading
+			DisplayError("OpenPGPASSConfTemp");
+		}
+
+		memset(szCombined,'\0',sizeof(szCombined));
+		strcat(szCombined,argv[3]);
+		strcat(szCombined,":");
+		strcat(szCombined,argv[4]);
+		strcat(szCombined,":");
+		strcat(szCombined,argv[5]);
+		strcat(szCombined,":");
+		strcat(szCombined,argv[6]);
+		strcat(szCombined,":");
+
+		fseek(fPGPASSConf, 0L, SEEK_SET);
+		while ( fgets ( szLine, sizeof szLine, fPGPASSConf ) != NULL )
+		{         
+			memset(szPart,'\0',sizeof(szPart));
+			len = strlen(szLine);
+			while(len > 0)
+			{
+				if(szLine[len] == ':')
+					break;
+
+				len--;
+			}
+			memcpy(szPart,szLine,len+1);
+
+			//Ignore line if contains same entry
+			if(strcmp(szPart,szCombined)==0)
+			{
+
+			}
+			//Write lines in different file
+			else
+			{
+				//Increment line number
+				onwhichline++;
+
+				memset(szLineToWrite,'\0',sizeof(szLineToWrite));
+				dwBytesToWrite = 0;
+				dwBytesWritten = 0;
+				if(onwhichline == countoflinestobecopied)
+				{
+					for(i = 0; i < strlen(szLine); i++)
+					{
+						if(szLine[i] == '\n')
+						{
+							szLine[i] = '\0';
+							break;
+						}
+					}
+					//We don't have to write CR\LF(ASCII value 10) on last line which is being picked by fgets
+					sprintf_s(szLineToWrite, 1023, "%s", szLine);
+				}
+				else
+				{
+					sprintf_s(szLineToWrite, 1023, "%s", szLine);
+				}
+				
+				dwBytesToWrite = (DWORD)strlen(szLineToWrite);
+
+				if (fwrite(szLineToWrite, sizeof(char), dwBytesToWrite, fPGPASSConfTemp) != dwBytesToWrite)
+				{
+					fprintf(stderr, "Could not write to pgpass.conftemp:ERROR CODE:%d", GetLastError());
+				}
+			}
+			memset(szLine,'\0',sizeof(szLine));
+		}
+
+		// Move to the end of file
+		pos=0;
+	    fseek(fPGPASSConfTemp, 0L, SEEK_END);
+	    fgetpos(fPGPASSConfTemp, &pos);
+		fclose(fPGPASSConf);
+		fclose(fPGPASSConfTemp);
+
+		if (pos == 0L)
+		{	
+			//Nothing found to be replaced
+			system("del -F pgpass.conftemp");
+		}
+		else
+		{
+			//system("copy - /Y pgpass.conftemp pgpass.conf");
+			system("del -F pgpass.conf");
+			system("copy /Y pgpass.conftemp pgpass.conf");
+			system("del -F pgpass.conftemp");
+		}
+	}
+}
 
 #ifdef __cplusplus
 extern "C"
@@ -43,8 +246,6 @@ int _tmain(int argc, _TCHAR **argv, _TCHAR **envp)
     int          res       = 0;
     fpos_t       pos;
     char         szConfstr[1024] = {0};
-    DWORD        dwBytesToWrite = 0;
-    DWORD        dwBytesWritten = 0;
 
 
     // Check for the required command-line arguments
@@ -124,27 +325,53 @@ int _tmain(int argc, _TCHAR **argv, _TCHAR **envp)
     else
         DisplayError("CreatePostgresqlDir");
 
-    res = fopen_s(&fPGPASSConf, "pgpass.conf", "a");
+	countoftotallines = CountTotalEntries(argv);
+	if ( countoftotallines > 0 )
+	{
+		countofreduntantlines = CountRedundantEntries(argv);
+		if ( countofreduntantlines > 0)
+		{
+			countoflinestobecopied = countoftotallines - countofreduntantlines;
+			if ( countoflinestobecopied > 0)
+			{
+				RemoveRedundantEntries(argv);
+			}
+		}
+	}
+
+	//If whole file is filled previously with same entries then we don't need it at all.
+	//Opening file in w mode to overwrite.
+	if( countoftotallines == countofreduntantlines)
+	{
+		res = fopen_s(&fPGPASSConf, "pgpass.conf", "w");
+	}
+	else
+	{
+		res = fopen_s(&fPGPASSConf, "pgpass.conf", "a");
+	}
 
     if (fPGPASSConf == 0)
         DisplayError("OpenPGPASSConf");
+
+	dwBytesToWrite = 0;
+	dwBytesWritten = 0;
 
     // Move to the end of file
     fseek(fPGPASSConf, 0L, SEEK_END);
     fgetpos(fPGPASSConf, &pos);
 
-    if (pos == 0L)
-        sprintf_s(szConfstr, 1023, "%s:%s:%s:%s:%s", argv[3], argv[4], argv[5], argv[6], argv[7]);
-    else
-        sprintf_s(szConfstr, 1023, "\n%s:%s:%s:%s:%s", argv[3], argv[4], argv[5], argv[6], argv[7]);
-
+	if (pos == 0L)
+			sprintf_s(szConfstr, 1023, "%s:%s:%s:%s:%s", argv[3], argv[4], argv[5], argv[6], argv[7]);
+	else
+			sprintf_s(szConfstr, 1023, "\n%s:%s:%s:%s:%s", argv[3], argv[4], argv[5], argv[6], argv[7]);
+	
     dwBytesToWrite = (DWORD)strlen(szConfstr);
 
     if (fwrite(szConfstr, sizeof(char), dwBytesToWrite, fPGPASSConf) != dwBytesToWrite)
     {
         fprintf(stderr, "Could not write to pgpass.conf:ERROR CODE:%d", GetLastError());
     }
-
+	
     fclose(fPGPASSConf);
     CloseHandle(hToken);
 
@@ -152,4 +379,3 @@ int _tmain(int argc, _TCHAR **argv, _TCHAR **envp)
 
     return 0;
 }
-
