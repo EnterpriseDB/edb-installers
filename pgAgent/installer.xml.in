@@ -276,6 +276,60 @@ EOF
         <isTrue value="${extract_mode}"/>
       </ruleList>
     </actionGroup>
+	<!-- Get the PG PG_MAJOR_VERSION installation details -->
+         <actionGroup>
+            <actionList>
+                <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGMajorVersion}" key="InstallationDirectory" variable="pghome" />
+                <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGMajorVersion}" key="Port" variable="pgport" />
+                <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGMajorVersion}" key="Superuser" variable="pguser" />
+            </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+
+        <actionGroup>
+            <actionList>
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-${PGMajorVersion}"
+                   name="Base Directory" variable="pghome" />
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql-x64-${PGMajorVersion}"
+                             name="Service ID" variable="pgservice_id" />
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\${pgservice_id}"
+                             name="Port" variable="pgport" />
+                <registryGet key="HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Services\${pgservice_id}"
+                             name="Database Superuser" variable="pguser" />
+            </actionList>
+                <ruleList>
+                    <platformTest type="windows-x64" />
+                </ruleList>
+        </actionGroup>
+        <setInstallerVariable name="installdir" value="${pghome}" />
+        <setInstallerVariable name="sharedir" value="${installdir}/share"/>
+        <if>
+            <actionList>
+                <throwError text="${msg(pg.not.found.win64)}" >
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText text="${pghome}" logic="equals" value="" />
+                        <compareText text="${pguser}" logic="equals" value="" />
+                        <compareText text="${pgport}" logic="equals" value="" />
+                    </ruleList>
+                </throwError>
+            </actionList>
+            <elseActionList>
+                <throwError text="${msg(pg.not.found)}" >
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText text="${pghome}" logic="equals" value="" />
+                        <compareText text="${pguser}" logic="equals" value="" />
+                        <compareText text="${pgport}" logic="equals" value="" />
+                    </ruleList>
+                </throwError>
+            </elseActionList>
+            <conditionRuleList>
+                <platformTest type="windows-x64" />
+            </conditionRuleList>
+        </if>
 
     <!-- Do not perform the below actions in case of extract-only mode -->
     <actionGroup>
@@ -319,7 +373,7 @@ EOF
         </touchFile>
 
 	<!-- Get the PG PG_MAJOR_VERSION installation details -->
-        <actionGroup>
+        <!--actionGroup>
             <actionList>
                 <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGMajorVersion}" key="InstallationDirectory" variable="pghome" />
                 <iniFileGet file="/etc/postgres-reg.ini" section="PostgreSQL/${PGMajorVersion}" key="Port" variable="pgport" />
@@ -360,11 +414,11 @@ EOF
                 <ruleList>
                     <platformTest type="windows-x64" />
                 </ruleList>
-        </actionGroup>
+        </actionGroup-->
 
 
        <!-- Throw Error if PG PG_MAJOR_VERSION not found -->
-        <if>
+        <!--if>
             <actionList>
                 <throwError text="${msg(pg.not.found.win64)}" >
                     <ruleEvaluationLogic>or</ruleEvaluationLogic>
@@ -388,7 +442,7 @@ EOF
             <conditionRuleList>
                 <platformTest type="windows-x64" />
             </conditionRuleList>
-        </if>
+        </if-->
 
        <!-- Set installation directory as the PGHOME -->
         <setInstallerVariable name="installdir" value="${pghome}" />
