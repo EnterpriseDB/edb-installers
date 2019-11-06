@@ -259,6 +259,20 @@
             </ruleList>
         </startMenuShortcut>
     </startMenuShortcutList>
+
+    <!-- delete wxWidgets 2.8 libs in upgrade mode -->
+    <readyToInstallActionList>
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${installdir}/stackbuilder.app/Contents/Frameworks/libwx*dylib"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
+                <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="11.5-3"/>
+            </ruleList>
+        </actionGroup>
+    </readyToInstallActionList>
+
     <postInstallationActionList>
         <createTempDir dirPrefix="postgresql_installer"/>
         <runProgram>
