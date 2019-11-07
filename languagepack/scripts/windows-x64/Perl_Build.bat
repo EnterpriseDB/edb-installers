@@ -1,6 +1,7 @@
 @ECHO OFF
 
-CALL "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64
+@REM CALL "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64
+CALL "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
 
 SET vPerlBuildDir=%1
 SET vPerlInstallDir=%2
@@ -12,12 +13,7 @@ ECHO %vPerlInstallDir%
 ECHO %vPgBuildDir%
 ECHO %vPerlModule%
 
-SET PROCESSOR_ARCHITECTURE=AMD64
-SET INCLUDE=%ProgramFiles(x86)%\Microsoft SDKs\Windows\v7.1A\Include;%INCLUDE%
-SET PATH=%ProgramFiles(x86)%\Microsoft SDKs\Windows\v7.1A\Bin\x64;%vPgBuildDir%\bin;%vPgBuildDir%\lib;C:\pgBuild64\bin;C:\pgBuild64\lib;%PATH%
-SET LIB=%ProgramFiles(x86)%\Microsoft SDKs\Windows\v7.1A\Lib\x64;%LIB%
-SET CL=/D_USING_V120_SDK71_
-SET LINK=/SUBSYSTEM:CONSOLE,5.02
+SET PATH=%vPgBuildDir%\bin;%vPgBuildDir%\lib;C:\pgBuild64\bin;C:\pgBuild64\lib;%PATH%
 
 IF "%vPerlModule%"=="PERL" GOTO PERL
 IF "%vPerlModule%"=="DBI" GOTO DBI
