@@ -168,7 +168,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>${platform_install_prefix}/edb/languagepack-EDB_VERSION_LANGUAGEPACK</value>
+      <value>${platform_install_prefix}/edb/languagepack/vEDB_MAJOR_VERSION</value>
       <ruleEvaluationLogic>or</ruleEvaluationLogic>
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
@@ -187,7 +187,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\x64</value>
+      <value>C:\edb\languagepack\vEDB_MAJOR_VERSION</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -201,7 +201,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\i386</value>
+      <value>C:\edb\languagepack\vEDB_MAJOR_VERSION</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -212,7 +212,7 @@ EOF
       </ruleList>
     </setInstallerVariable>
     <!-- Mac -->
-    <setInstallerVariable name="default_installdir" value="/Library/edb/languagepack-EDB_VERSION_LANGUAGEPACK">
+    <setInstallerVariable name="default_installdir" value="/Library/edb/languagepack/vEDB_MAJOR_VERSION">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
@@ -234,7 +234,7 @@ EOF
     <!-- MAC: Set the default values for unattended mode -->
     <actionGroup>
       <actionList>
-        <setInstallerVariable name="installdir" value="/Library/edb/languagepack-EDB_VERSION_LANGUAGEPACK"/>
+        <setInstallerVariable name="installdir" value="/Library/edb/languagepack/vEDB_MAJOR_VERSION"/>
       </actionList>
       <ruleList>
 	<!-- following check means mode equals unattended -->
@@ -245,7 +245,7 @@ EOF
     <!-- LIN/SOLARIS/HPUX : Set the default values for unattended mode -->
     <actionGroup>
       <actionList>
-        <setInstallerVariable name="installdir" value="${platform_install_prefix}/edb/languagepack-EDB_VERSION_LANGUAGEPACK"/>
+        <setInstallerVariable name="installdir" value="${platform_install_prefix}/edb/languagepack/vEDB_MAJOR_VERSION"/>
       </actionList>
       <ruleList>
 	<!-- following check means mode equals unattended -->
@@ -265,7 +265,7 @@ EOF
     	<!-- WIN : Set the default installation directory for win64 -->
     	<setInstallerVariable>
       	  <name>installdir</name>
-      	  <value>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\x64</value>
+	  <value>C:\edb\languagepack\vEDB_MAJOR_VERSION</value>
       	  <ruleList>
             <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
       	  </ruleList>
@@ -273,7 +273,7 @@ EOF
     	<!-- WIN : Set the default installation directory -->
     	<setInstallerVariable>
       	  <name>installdir</name>
-      	  <value>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\i386</value>
+	  <value>C:\edb\languagepack\vEDB_MAJOR_VERSION</value>
       	  <ruleList>
             <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
       	  </ruleList>
@@ -290,7 +290,7 @@ EOF
       </ruleList>
     </actionGroup>
     <!-- MAC : Set the default installation directory -->
-    <setInstallerVariable name="default_installdir" persist="1" value="/Library/edb/languagepack-EDB_VERSION_LANGUAGEPACK">
+    <setInstallerVariable name="default_installdir" persist="1" value="/Library/edb/languagepack/vEDB_MAJOR_VERSION">
       <ruleList>
         <compareText logic="equals" text="${platform_name}" value="osx"/>
       </ruleList>
@@ -299,7 +299,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>${platform_install_prefix}/edb/languagepack-EDB_VERSION_LANGUAGEPACK</value>
+      <value>${platform_install_prefix}/edb/languagepack/vEDB_MAJOR_VERSION</value>
       <ruleEvaluationLogic>or</ruleEvaluationLogic>
       <ruleList>
         <compareText logic="contains" text="${platform_name}" value="linux"/>
@@ -311,7 +311,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\x64</value>
+      <value>C:\edb\languagepack\vEDB_MAJOR_VERSION</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -325,7 +325,7 @@ EOF
     <setInstallerVariable>
       <name>default_installdir</name>
       <persist>1</persist>
-      <value>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\i386</value>
+      <value>C:\edb\languagepack\vEDB_MAJOR_VERSION</value>
       <ruleList>
         <compareText>
           <logic>equals</logic>
@@ -405,7 +405,7 @@ EOF
           <actionList>
             <iniFileGet>
               <file>/etc/postgres-reg.ini</file>
-              <section>${installer_registry_prefix}_languagepack_EDB_VERSION_LANGUAGEPACK</section>
+              <section>${installer_registry_prefix}_languagepack_vEDB_MAJOR_VERSION</section>
               <key>Version</key>
               <variable>languagepackversion</variable>
             </iniFileGet>
@@ -422,7 +422,7 @@ EOF
         <actionGroup>
           <actionList>
             <registryGet>
-              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\${installer_registry_prefix}\EDB_VERSION_LANGUAGEPACK</key>
+              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\${installer_registry_prefix}\vEDB_MAJOR_VERSION</key>
               <name>Version</name>
               <variable>languagepackversion</variable>
             </registryGet>
@@ -440,7 +440,7 @@ EOF
           <actionList>
             <iniFileGet>
               <file>/etc/postgres-reg.ini</file>
-              <section>${installer_registry_prefix}_languagepack_EDB_VERSION_LANGUAGEPACK</section>
+              <section>${installer_registry_prefix}_languagepack_vEDB_MAJOR_VERSION</section>
               <key>InstallationDirectory</key>
               <variable>installdir</variable>
             </iniFileGet>
@@ -462,7 +462,7 @@ EOF
         <actionGroup>
           <actionList>
             <registryGet>
-              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\${installer_registry_prefix}\EDB_VERSION_LANGUAGEPACK</key>
+              <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\${installer_registry_prefix}\vEDB_MAJOR_VERSION</key>
               <name>Base Directory</name>
               <variable>installdir</variable>
             </registryGet>
@@ -491,9 +491,9 @@ EOF
 	<createTempDir dirPrefix="languagepack"/>
         <unpackFile>
           <component>default</component>
-          <destination>${system_temp_directory}\languagepack_${random_number}\vcredist_x86.exe</destination>
+          <destination>${system_temp_directory}\languagepack_${random_number}\vcredist2017_x86.exe</destination>
           <folder>programfileswindows</folder>
-          <origin>installer/languagepack/vcredist_x86.exe</origin>
+          <origin>installer/languagepack/vcredist2017_x86.exe</origin>
 	  <ruleList>
             <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
           </ruleList>
@@ -511,9 +511,9 @@ EOF
 
         <unpackFile>
           <component>default</component>
-          <destination>${system_temp_directory}\languagepack_${random_number}\vcredist_x64.exe</destination>
+          <destination>${system_temp_directory}\languagepack_${random_number}\vcredist2017_x64.exe</destination>
           <folder>programfileswindows</folder>
-          <origin>installer/languagepack/vcredist_x64.exe</origin>
+          <origin>installer/languagepack/vcredist2017_x64.exe</origin>
           <ruleList>
             <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
           </ruleList>
@@ -597,7 +597,7 @@ EOF
    
    <!-- replace installdir place holder in launchpsql.sh for HPUX -->
     <!-- substitute>
-      <files>${installdir}/languagepack-EDB_VERSION_LANGUAGEPACK.config</files>
+      <files>${installdir}/languagepack-vEDB_MAJOR_VERSION.config</files>
       <substitutionList>
         <substitution>
           <pattern>PERL_INST</pattern>
@@ -620,19 +620,19 @@ EOF
           <actionList>
             <iniFileSet>
               <file>/etc/postgres-reg.ini</file>
-              <section>${installer_registry_prefix}_languagepack_EDB_VERSION_LANGUAGEPACK</section>
+              <section>${installer_registry_prefix}_languagepack_vEDB_MAJOR_VERSION</section>
               <key>Description</key>
               <value>${msg(install.summary)}</value>
             </iniFileSet>
             <iniFileSet>
               <file>/etc/postgres-reg.ini</file>
-              <section>${installer_registry_prefix}_languagepack_EDB_VERSION_LANGUAGEPACK</section>
+              <section>${installer_registry_prefix}_languagepack_vEDB_MAJOR_VERSION</section>
               <key>InstallationDirectory</key>
               <value>${installdir}</value>
             </iniFileSet>
             <iniFileSet>
               <file>/etc/postgres-reg.ini</file>
-              <section>${installer_registry_prefix}_languagepack_EDB_VERSION_LANGUAGEPACK</section>
+              <section>${installer_registry_prefix}_languagepack_vEDB_MAJOR_VERSION</section>
               <key>Version</key>
               <value>${product_version}</value>
             </iniFileSet>
@@ -646,7 +646,7 @@ EOF
           </ruleList>
         </actionGroup>
         <registrySet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\${installer_registry_prefix}\EDB_VERSION_LANGUAGEPACK</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\${installer_registry_prefix}\vEDB_MAJOR_VERSION</key>
           <name>Description</name>
           <value>${msg(install.summary)}</value>
           <ruleList>
@@ -658,7 +658,7 @@ EOF
           </ruleList>
         </registrySet>
         <registrySet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\${installer_registry_prefix}\EDB_VERSION_LANGUAGEPACK</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\${installer_registry_prefix}\vEDB_MAJOR_VERSION</key>
           <name>Base Directory</name>
           <value>${installdir}</value>
           <ruleList>
@@ -670,7 +670,7 @@ EOF
           </ruleList>
         </registrySet>
         <registrySet>
-          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\${installer_registry_prefix}\EDB_VERSION_LANGUAGEPACK</key>
+          <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\${installer_registry_prefix}\vEDB_MAJOR_VERSION</key>
           <name>Version</name>
           <value>${product_version}</value>
           <ruleList>
@@ -709,22 +709,22 @@ EOF
          <actionGroup>
            <actionList>
              <addFilesToUninstaller>
-               <files>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\i386\Python-EDB_VERSION_PYTHON\Lib\site-packages</files>
+               <files>C:\edb\languagepack\vEDB_MAJOR_VERSION\Python-EDB_VERSION_PYTHON\Lib\site-packages</files>
              </addFilesToUninstaller>
            </actionList>
 	   <ruleList>
-	     <fileTest path="C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\i386\Python-EDB_VERSION_PYTHON\Lib\site-packages" condition="exists" />
+	     <fileTest path="C:\edb\languagepack\vEDB_MAJOR_VERSION\Python-EDB_VERSION_PYTHON\Lib\site-packages" condition="exists" />
              <compareText logic="equals" text="${windowsArchitecture}" value="x32"/>
 	   </ruleList>
          </actionGroup>
          <actionGroup>
            <actionList>
              <addFilesToUninstaller>
-               <files>C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\x64\Python-EDB_VERSION_PYTHON\Lib\site-packages</files>
+               <files>C:\edb\languagepack\vEDB_MAJOR_VERSION\Python-EDB_VERSION_PYTHON\Lib\site-packages</files>
              </addFilesToUninstaller>
            </actionList>
 	   <ruleList>
-	     <fileTest path="C:\edb\languagepack-EDB_VERSION_LANGUAGEPACK\x64\Python-EDB_VERSION_PYTHON\Lib\site-packages" condition="exists" />
+	     <fileTest path="C:\edb\languagepack\vEDB_MAJOR_VERSION\Python-EDB_VERSION_PYTHON\Lib\site-packages" condition="exists" />
              <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
 	   </ruleList>
          </actionGroup>
@@ -768,19 +768,19 @@ EOF
       <actionList>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>${installer_registry_prefix}_languagepack_EDB_VERSION_LANGUAGEPACK</section>
+          <section>${installer_registry_prefix}_languagepack_vEDB_MAJOR_VERSION</section>
           <key>Description</key>
           <value/>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>${installer_registry_prefix}_languagepack_EDB_VERSION_LANGUAGEPACK</section>
+          <section>${installer_registry_prefix}_languagepack_vEDB_MAJOR_VERSION</section>
           <key>InstallationDirectory</key>
           <value/>
         </iniFileSet>
         <iniFileSet>
           <file>/etc/postgres-reg.ini</file>
-          <section>${installer_registry_prefix}_languagepack_EDB_VERSION_LANGUAGEPACK</section>
+          <section>${installer_registry_prefix}_languagepack_vEDB_MAJOR_VERSION</section>
           <key>Version</key>
           <value/>
         </iniFileSet>
@@ -794,7 +794,7 @@ EOF
       </ruleList>
     </actionGroup>
     <registryDelete>
-      <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\${installer_registry_prefix}\EDB_VERSION_LANGUAGEPACK</key>
+      <key>HKEY_LOCAL_MACHINE\SOFTWARE\EnterpriseDB\languagepack\${installer_registry_prefix}\vEDB_MAJOR_VERSION</key>
     </registryDelete>
   </preUninstallationActionList>
   <postUninstallationActionList>
@@ -835,7 +835,7 @@ EOF
               <origin>staging/linux/Tcl-EDB_VERSION_TCL</origin>
             </distributionDirectory>
             <!-- distributionFile>
-              <origin>staging/linux/languagepack-EDB_VERSION_LANGUAGEPACK.config</origin>
+              <origin>staging/linux/languagepack\vEDB_MAJOR_VERSION.config</origin>
             </distributionFile -->
             <distributionFile>
               <origin>staging/linux/languagepack_3rd_party_licenses.txt</origin>
@@ -859,7 +859,7 @@ EOF
               <origin>staging/linux-x64/Tcl-EDB_VERSION_TCL</origin>
             </distributionDirectory>
             <!-- distributionFile>
-              <origin>staging/linux-x64/languagepack-EDB_VERSION_LANGUAGEPACK.config</origin>
+              <origin>staging/linux-x64/languagepack\vEDB_MAJOR_VERSION.config</origin>
             </distributionFile -->
             <distributionFile>
               <origin>staging/linux-x64/languagepack_3rd_party_licenses.txt</origin>
