@@ -490,6 +490,15 @@ _postprocess_server_osx() {
 
     scp $PG_SSH_OSX:$PG_PATH_OSX/output/postgresql-$PG_PACKAGE_VERSION${BUILD_FAILED}-osx.* $WD/output || _die "Failed to copy installers to $WD/output."
 
+    # Notarize the OS X installer
+    ssh $PG_SSH_OSX_NOTARY "mkdir -p $PG_PATH_OSX_NOTARY" || _die "Failed to create $PG_PATH_OSX_NOTARY"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf postgresql-*.dmg" || _die "Failed to remove the installer from notarization installer directory"
+    scp $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
+    scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
+
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION postgresql" || _die "Failed to notarize the app"
+    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg $WD/output || _die "Failed to copy notarized installer to $WD/output."
+
      # Delete the old installer from regression setup
     ssh $PG_SSH_OSX "cd /buildfarm/installers; rm -rf postgresql-*.dmg" || _die "Failed to remove the installer from regression installer directory"
 
