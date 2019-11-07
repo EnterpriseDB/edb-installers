@@ -1,10 +1,5 @@
-call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
-
-set INCLUDE=%ProgramFiles(x86)%\Microsoft SDKs\Windows\v7.1A\Include;%INCLUDE%
-set PATH=%ProgramFiles(x86)%\Microsoft SDKs\Windows\v7.1A\Bin;%PATH%
-set LIB=%ProgramFiles(x86)%\Microsoft SDKs\Windows\v7.1A\Lib;%LIB%
-set CL=/D_USING_V120_SDK71_
-set LINK=/SUBSYSTEM:CONSOLE,5.01
+@REM call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
+CALL "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
 
 set vTcl_SRC_Dir=%1
 set vTcl_INST_Dir=%2
@@ -22,6 +17,6 @@ echo ....End Build TCL....
 
 echo ....Starting TK Build - 32 bit....
 cd %vTk_SRC_Dir%\win
-nmake -f makefile.vc COMPILERFLAGS=-DWINVER=0x0500 OPTS=noxp INSTALLDIR=%vTcl_INST_Dir% TCLDIR=%vTcl_SRC_Dir%
-nmake -f makefile.vc COMPILERFLAGS=-DWINVER=0x0500 OPTS=noxp INSTALLDIR=%vTcl_INST_Dir% TCLDIR=%vTcl_SRC_Dir% install
+nmake -f makefile.vc INSTALLDIR=%vTcl_INST_Dir% TCLDIR=%vTcl_SRC_Dir%
+nmake -f makefile.vc INSTALLDIR=%vTcl_INST_Dir% TCLDIR=%vTcl_SRC_Dir% install
 echo ....End Build TK...
