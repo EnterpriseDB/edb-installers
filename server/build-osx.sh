@@ -190,7 +190,7 @@ EOT
     cd $WD/server/source/stackbuilder.osx
 
     echo "Configuring the StackBuilder"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; PATH=/opt/local/Current/bin:$PATH cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6 -D CURL_ROOT:PATH=/opt/local/Current -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=i386 ."  || _die "Failed to configure StackBuilder"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; PATH=/opt/local/Current/bin:$PATH cmake -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6 -D CURL_ROOT:PATH=/opt/local/Current -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/wxWidgets-30/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=x86_64 ."  || _die "Failed to configure StackBuilder"
     echo "Building the StackBuilder"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; make all" || _die "Failed to build StackBuilder"
 
@@ -224,11 +224,15 @@ EOT
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libintl.*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libintl"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libcurl*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libcurl"
 
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_macu_adv-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_macu_core-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_base_carbonu-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_base_carbonu_net-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_base_carbonu_xml-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libuuid"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wxWidgets-30/lib/libwx_osx_cocoau_xrc-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libwx"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wxWidgets-30/lib/libwx_osx_cocoau_webview-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libwx"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wxWidgets-30/lib/libwx_osx_cocoau_html-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libwx"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wxWidgets-30/lib/libwx_osx_cocoau_qa-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libwx"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wxWidgets-30/lib/libwx_osx_cocoau_adv-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libwx"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wxWidgets-30/lib/libwx_osx_cocoau_core-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libwx"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wxWidgets-30/lib/libwx_baseu_xml-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libwx"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wxWidgets-30/lib/libwx_baseu_net-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libwx"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/wxWidgets-30/lib/libwx_baseu-*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libwx"
 
     # Copying plperl to staging/osx.build directory as we would not like to update the _rewrite_so_refs for it.
     cp -f $WD/server/staging/osx.build/lib/postgresql/plperl.so $WD/server/staging/osx.build/
