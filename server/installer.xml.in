@@ -3068,6 +3068,19 @@ EOF
 		<isTrue value="${IsUpgrade}"/>
             </ruleList>
 	</actionGroup> -->
+
+        <!-- delete wxWidgets 2.8 libs in upgrade mode -->
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${installdir}/lib/libwx*dylib"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
+                <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="9.5.19-2"/>
+               <isTrue value="${IsUpgrade}"/>
+            </ruleList>
+        </actionGroup>
+
     </readyToInstallActionList>
 
     <!-- Postinstallation actions -->
