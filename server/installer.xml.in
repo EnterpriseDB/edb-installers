@@ -3133,7 +3133,7 @@ EOF
         <!-- delete wxWidgets 2.8 libs in upgrade mode -->
         <actionGroup>
             <actionList>
-                <deleteFile path="${installdir}/stackbuilder.app/Contents/Frameworks/libwx*dylib"/>
+                <deleteFile path="${installdir}/lib/libwx*dylib"/>
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
