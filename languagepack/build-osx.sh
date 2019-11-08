@@ -216,11 +216,11 @@ _build_languagepack_osx() {
 
      python setup.py install --prefix=\$PYTHON_INSTALL_PATH 
      easy_install pip
-     pip install sphinx
-     pip install virtualvenv
+     pip3 install sphinx
+     pip3 install virtualvenv
 
-     cd \$PYTHON_INSTALL_PATH
-     pip list > \$install_path/pip_packages_list.txt
+     cd \$PYTHON_INSTALL_PATH/bin
+     pip3 list > \$install_path/pip_packages_list.txt
 
     echo "Building Perl..."
     cd $PG_PATH_OSX/languagepack/source/perl.osx
@@ -378,6 +378,15 @@ _postprocess_languagepack_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; sleep 2; echo 'Detaching /Volumes/edb-LanguagePack $PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK...' ; hdiutil detach '/Volumes/edb-LanguagePack $PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK'" || _die "Failed to detach the /Volumes/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK in remote host."
 
     scp $PG_SSH_OSX:$PG_PATH_OSX/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.* $WD/output || _die "Failed to copy installers to $WD/output."
+
+    # Notarize the OS X installer
+    ssh $PG_SSH_OSX_NOTARY "mkdir -p $PG_PATH_OSX_NOTARY" || _die "Failed to create $PG_PATH_OSX_NOTARY"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf edb-languagepack-*.dmg" || _die "Failed to remove the installer from notarization installer directory"
+    scp $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
+    scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
+
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; sh -x ./notarize_apps.sh edb-languagepack-$PG_VERSION_LANGUAGEPACK edb-languagepack" || _die "Failed to notarize the app"
+    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/edb-languagepack-${PG_VERSION_LANGUAGEPACK}-${BUILD_FAILED}osx.dmg $WD/output || _die "Failed to copy notarized installer to $WD/output."
 
     # Delete the old installer from regression setup
     ssh $PG_SSH_OSX "cd /buildfarm/installers;rm -rf edb-languagepack-*.dmg" || _die "Failed to remove the installer from the regression intaller directory"
