@@ -3130,6 +3130,18 @@ EOF
             </ruleList>
 	</actionGroup>
 
+        <!-- delete wxWidgets 2.8 libs in upgrade mode -->
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${installdir}/stackbuilder.app/Contents/Frameworks/libwx*dylib"/>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="osx"/>
+                <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="9.6.15-2"/>
+		<isTrue value="${IsUpgrade}"/>
+            </ruleList>
+        </actionGroup>
+
 	<!-- WIN: Remove OpenSSL 1.0.2 files in upgrade -->
 	<actionGroup>
 	    <actionList>
