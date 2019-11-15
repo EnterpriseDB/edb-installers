@@ -130,11 +130,11 @@ _build_server_windows_x64() {
 REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" x86
 
-@SET PGBUILD=$PG_PGBUILD_WINDOWS
-@SET OPENSSL=$PG_PGBUILD_WINDOWS
+@SET PGBUILD=$PG_PGBUILD_WINDOWS_X64;$PG_PGBUILD_OPENSSL_WINDOWS_X64
+@SET OPENSSL=$PG_PGBUILD_OPENSSL_WINDOWS_X64
 @SET WXWIN=$PG_WXWIN_WINDOWS
-@SET INCLUDE=$PG_PGBUILD_WINDOWS\\include;%INCLUDE%
-@SET LIB=$PG_PGBUILD_WINDOWS\\lib;%LIB%
+@SET INCLUDE=$PG_PGBUILD_WINDOWS_X64\\include;$PG_PGBUILD_OPENSSL_WINDOWS_X64\\include;%INCLUDE%
+@SET LIB=$PG_PGBUILD_WINDOWS_X64\\lib;$PG_PGBUILD_OPENSSL_WINDOWS_X64\\lib;%LIB%
 @SET PGDIR=$PG_PATH_WINDOWS\\output.build
 @SET SPHINXBUILD=$PG_PYTHON_WINDOWS_X64\\Scripts\\sphinx-build.exe
 
@@ -156,9 +156,9 @@ REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
 
 @SET PGBUILD=$PG_PGBUILD_WINDOWS_X64
-@SET OPENSSL=$PG_PGBUILD_WINDOWS_X64
+@SET OPENSSL=$PG_PGBUILD_OPENSSL_WINDOWS_X64
 @SET WXWIN=$PG_WXWIN_WINDOWS_X64
-@SET INCLUDE=$PG_PGBUILD_WINDOWS_X64\\include;%INCLUDE%
+@SET INCLUDE=$PG_PGBUILD_WINDOWS_X64\\include;$PG_PGBUILD_OPENSSL_WINDOWS_X64\\include;%INCLUDE%
 @SET LIB=$PG_PGBUILD_WINDOWS_X64\\lib;%LIB%
 @SET PGDIR=$PG_PATH_WINDOWS_X64\\output.build
 @SET SPHINXBUILD=$PG_PYTHON_WINDOWS_X64\\Scripts\\sphinx-build.exe
@@ -205,11 +205,11 @@ EOT
 REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" x86
 
-@SET PGBUILD=$PG_PGBUILD_WINDOWS_X64
-@SET OPENSSL=$PG_PGBUILD_WINDOWS_X64
+@SET PGBUILD=$PG_PGBUILD_WINDOWS_X64;$PG_PGBUILD_OPENSSL_WINDOWS_X64
+@SET OPENSSL=$PG_PGBUILD_OPENSSL_WINDOWS_X64
 @SET WXWIN=$PG_WXWIN_WINDOWS_X64
-@SET INCLUDE=$PG_PGBUILD_WINDOWS_X64\\include;%INCLUDE%
-@SET LIB=$PG_PGBUILD_WINDOWS_X64\\lib;%LIB%
+@SET INCLUDE=$PG_PGBUILD_WINDOWS_X64\\include;$PG_PGBUILD_OPENSSL_WINDOWS_X64\\include;%INCLUDE%
+@SET LIB=$PG_PGBUILD_WINDOWS_X64\\lib;$PG_PGBUILD_OPENSSL_WINDOWS_X64\\lib;%LIB%
 @SET PGDIR=$PG_PATH_WINDOWS_X64\\output.build
 @SET SPHINXBUILD=$PG_PYTHON_WINDOWS_X64\\Scripts\\sphinx-build.exe
 
@@ -247,7 +247,7 @@ our \$config = {
     python=>'$PG_PYTHON_WINDOWS_X64',         # --with-python=<path>
     tcl=>'$PG_TCL_WINDOWS_X64',            # --with-tls=<path>
     ldap=>1,                # --with-ldap
-    openssl=>'$PG_PGBUILD_WINDOWS_X64',     # --with-ssl=<path>
+    openssl=>'$PG_PGBUILD_OPENSSL_WINDOWS_X64',     # --with-ssl=<path>
     xml=>'$PG_PGBUILD_WINDOWS_X64',
     xslt=>'$PG_PGBUILD_WINDOWS_X64',
     iconv=>'$PG_PGBUILD_WINDOWS_X64',
@@ -285,6 +285,7 @@ use warnings;
     'C:\WINDOWS\Microsoft.NET\Framework64\\$PG_FRAMEWORKVERSION_WINDOWS_X64',
     '$PG_VSINSTALLDIR_WINDOWS_X64\VC\VCPackages',
     '$PG_PGBUILD_WINDOWS_X64\bin',
+    '$PG_PGBUILD_OPENSSL_WINDOWS_X64\bin',
     '$PG_PERL_WINDOWS_X64\bin',
     '$PG_PYTHON_WINDOWS_X64',
     '$PG_TCL_WINDOWS_X64\bin',
@@ -300,6 +301,7 @@ use warnings;
     '$PG_VSINSTALLDIR_WINDOWS_X64\VC\PlatformSDK\include',
     '$PG_FRAMEWORKSDKDIR_WINDOWS_X64\include',
     '$PG_PGBUILD_WINDOWS_X64\include',
+    '$PG_PGBUILD_OPENSSL_WINDOWS_X64\include',
     \$ENV{INCLUDE}
 );
 
@@ -311,6 +313,7 @@ use warnings;
     '$PG_VSINSTALLDIR_WINDOWS_X64\VC\PlatformSDK\lib',
     '$PG_FRAMEWORKSDKDIR_WINDOWS_X64\lib',
     '$PG_PGBUILD_WINDOWS_X64\lib',
+    '$PG_PGBUILD_OPENSSL_WINDOWS_X64\lib',
     \$ENV{LIB}
 );
 
@@ -387,10 +390,11 @@ EOT
     #PG_CYGWIN_PYTHON_WINDOWS_X64=`echo $PGADMIN_PYTHON_WINDOWS_X64 | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'`
     PG_CYGWIN_TCL_WINDOWS_X64=`echo $PG_TCL_WINDOWS_X64 | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'`
     PG_CYGWIN_PGBUILD_WINDOWS_X64=`echo $PG_PGBUILD_WINDOWS_X64 | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'`
+    PG_CYGWIN_PGBUILD_OPENSSL_WINDOWS_X64=`echo $PG_PGBUILD_OPENSSL_WINDOWS_X64 | sed -e 's;:;;g' | sed -e 's:\\\\:/:g' | sed -e 's:^:/cygdrive/:g'`
 
 
     # Build the code and install into a temporary directory
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin:$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin; export M4=$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin/m4.exe; export VisualStudioVersion=12.0; ./build.bat RELEASE" || _die "Failed to build postgres on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin:$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin; $PG_CYGWIN_PGBUILD_OPENSSL_WINDOWS_X64/bin;  export M4=$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin/m4.exe; export VisualStudioVersion=12.0; ./build.bat RELEASE" || _die "Failed to build postgres on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin; ./install.bat $PG_PATH_WINDOWS_X64\\\\output.build" || _die "Failed to install postgres on the windows-x64 build host"
     
     # Build the debugger plugins
@@ -402,8 +406,8 @@ EOT
     # Copy the various support files into place
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vcredist_x64.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vc_redist.x64_2017.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\installer\\\\vcredist2017_x64.exe" || _die "Failed to copy the 2017 VC++ runtimes on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libssl-1_1-x64.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libcrypto-1_1-x64.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_OPENSSL_WINDOWS_X64\\\\bin\\\\libssl-1_1-x64.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_OPENSSL_WINDOWS_X64\\\\bin\\\\libcrypto-1_1-x64.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libiconv-2.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-8.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
@@ -411,8 +415,8 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib1.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libcurl.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
    
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libssl.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libcrypto.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_OPENSSL_WINDOWS_X64\\\\lib\\\\libssl.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_OPENSSL_WINDOWS_X64\\\\lib\\\\libcrypto.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\iconv.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libintl.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libxml2.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
@@ -428,7 +432,7 @@ EOT
     rm -rf $WD/server/staging/windows-x64/3rdinclude || _die "Failed to remove the third party headers directory"
 
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\openssl\"" || _die "Failed to create openssl directory"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\openssl\\\\*.h $PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\openssl" || _die "Failed to copy third party headers on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_OPENSSL_WINDOWS_X64\\\\include\\\\openssl\\\\*.h $PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\openssl" || _die "Failed to copy third party headers on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\libxml\"" || _die "Failed to create libxml directory"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\libxml\\\\*.h $PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\libxml" || _die "Failed to copy third party headers on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\libxslt\"" || _die "Failed to create libxslt directory"
@@ -526,7 +530,7 @@ EOT
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip -o stackbuilder-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (stackbuilder-win64.zip)"
 
     # Build the code
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"Visual Studio 12 Win64\" -D MS_VS_10=1 -D CURL_ROOT:PATH=$PG_PGBUILD_WINDOWS_X64 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS_X64 -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS_X64\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"Visual Studio 12 Win64\" -D MS_VS_10=1 -D CURL_ROOT:PATH=$PG_PGBUILD_WINDOWS_X64 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS_X64 -D WX_STATIC=NO -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS_X64\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat stackbuilder.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat INSTALL.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to install stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mv $PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder\\\\bin\\\\stackbuilder.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to relocate the stackbuilder executable on the build host"
