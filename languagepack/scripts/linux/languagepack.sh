@@ -405,7 +405,7 @@ then
         export LD_LIBRARY_PATH="$SSL_INST/lib:$TCL_TK_INSTALL_PATH/lib:$LD_LIBRARY_PATH"
         export LD_RUN_PATH="$PYTHON_INSTALL_PATH/lib"
 
-        ExecuteCommand "CC='gcc -O2' ./configure  --prefix=$PYTHON_INSTALL_PATH --with-threads --enable-shared"
+        ExecuteCommand "CC='gcc -O2' ./configure  --prefix=$PYTHON_INSTALL_PATH --with-threads --enable-shared  --with-openssl=$SSL_INST"
         ExecuteCommand "make"
         ExecuteCommand "make install"
 
