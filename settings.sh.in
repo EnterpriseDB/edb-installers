@@ -77,6 +77,7 @@ PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studi
 PG_MSBUILDDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017\\\\Professional\\\\MSBuild\\\\15.0"
 PG_DEVENVDIR_WINDOWS_X64="$PG_VSINSTALLDIR_WINDOWS_X64\\\\Professional\\\\Common7\\\\IDE"
 PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild64"
+PG_PGBUILD_OPENSSL_WINDOWS_X64="C:\\\\pgBuild64-openssl-1.1.1"
 PG_BOOST_WINDOWS_X64="D:\\\\pgBuild64\\\\Boost"
 PG_BINARY_PATH_X64="D:\\\\pg-languagepack-x64"
 PG_WXWIN_WINDOWS_X64="$PG_PGBUILD_WINDOWS_X64\\\\wxWidgets-2.8.12"
@@ -141,5 +142,5 @@ PG_INSTALLBUILDER_BIN="/opt/installbuilder-19.6.0/bin/builder"
 KEYCHAIN_PASSWD="XXXXXX"
 
 # LanguagePack Variables
-PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack-12"
-PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/edb/languagepack-12"
+PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack\\\\v1"
+PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/edb/languagepack/v1"
