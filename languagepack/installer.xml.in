@@ -37,6 +37,14 @@
   <replaceLockedFilesOnReboot>1</replaceLockedFilesOnReboot>
   <!-- macOS 64bit App -->
   <osxPlatforms>osx-intel osx-x86_64</osxPlatforms>
+
+   <!--Signing the installer -->
+    <osxSigningPkcs12File>%OSXSIGN_P12File%</osxSigningPkcs12File>
+    <osxSigningPkcs12Password>%KEYCHAIN_PASSWORD%</osxSigningPkcs12Password>
+    <osxSigningIdentity>Developer ID Application: EnterpriseDB Corporation</osxSigningIdentity>
+    <osxApplicationBundleIdentifier>com.edb.postgresql</osxApplicationBundleIdentifier>
+    <osxSigningEnableHardenedRuntime>1</osxSigningEnableHardenedRuntime>
+
   <!-- Images -->
   <disableSplashScreen>1</disableSplashScreen>
   <leftImage>../resources/pg-side.png</leftImage>
