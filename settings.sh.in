@@ -160,6 +160,7 @@ PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSIO
 # The InstallBuilder main binary.
 PG_INSTALLBUILDER_BIN="/opt/installbuilder-19.6.0/bin/builder"
 KEYCHAIN_PASSWD="XXXXXX"
+OSXSIGN_P12File="osx-signing-cert.p12"
 
 # LanguagePack Variables
 PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack-10"
