@@ -157,6 +157,18 @@ _postprocess_pgmemcache_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/pgmemcache/staging/osx; tar -jcvf pgmemcache-staging.tar.bz2 *" || _die "Failed to create archive of the pgmemcache staging"
     scp $PG_SSH_OSX:$PG_PATH_OSX/pgmemcache/staging/osx/pgmemcache-staging.tar.bz2 $WD/pgmemcache/staging/osx || _die "Failed to scp pgmemcache staging"
 
+    # sign the binaries and libraries
+    scp $WD/common.sh $WD/settings.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf pgmemcache-staging.tar.bz2" || _die "Failed to remove pgmemcache-staging.tar from signing server"
+    scp $WD/pgmemcache/staging/osx/pgmemcache-staging.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy pgmemcache-staging.tar.bz2 on signing server"
+    rm -rf $WD/pgmemcache/staging/osx/pgmemcache-staging.tar.bz2 || _die "Failed to remove pgmemcache-staging.tar from controller"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf staging" || _die "Failed to remove staging from signing server"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../pgmemcache-staging.tar.bz2"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging;tar -jcvf pgmemcache-staging.tar.bz2 *" || _die "Failed to create pgmemcache-staging tar on signing server"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/staging/pgmemcache-staging.tar.bz2 $WD/pgmemcache/staging/osx || _die "Failed to copy pgmemcache-staging to controller vm"
+
     # Extract the staging archive
     cd $WD/pgmemcache/staging/osx
     tar -jxvf pgmemcache-staging.tar.bz2 || _die "Failed to extract the pgmemcache staging archive"
@@ -235,6 +247,16 @@ _postprocess_pgmemcache_osx() {
     # Archive the .app and copy back to controller
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.zip pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.app" || _die "Failed to zip the installer bundle"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
+
+    # Notarize the OS X installer
+    ssh $PG_SSH_OSX_NOTARY "mkdir -p $PG_PATH_OSX_NOTARY" || _die "Failed to create $PG_PATH_OSX_NOTARY"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx*" || _die "Failed to remove the installer from notarization installer directory"
+    scp $WD/output/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.zip $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
+    scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
+
+    echo ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.zip pgmemcache" || _die "Failed to notarize the app"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; sh -x ./notarize_apps.sh pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.zip pgmemcache" || _die "Failed to notarize the app"
+    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/pgmemcache-pg$PG_CURRENT_VERSION-$PG_VERSION_PGMEMCACHE-$PG_BUILDNUM_PGMEMCACHE-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy notarized installer to $WD/output."
 
     cd $WD
 

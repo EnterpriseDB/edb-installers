@@ -178,6 +178,19 @@ _postprocess_pgAgent_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/pgAgent/staging/osx; tar -jcvf pgagent-staging.tar.bz2 *" || _die "Failed to create archive of the pgagent staging"
     scp $PG_SSH_OSX:$PG_PATH_OSX/pgAgent/staging/osx/pgagent-staging.tar.bz2 $WD/pgAgent/staging/osx || _die "Failed to scp pgagent staging"
 
+    # sign the binaries and libraries
+    scp $WD/common.sh $WD/settings.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf pgagent-staging.tar.bz2" || _die "Failed to remove pgAgent-staging.tar from signing server"
+    scp $WD/pgAgent/staging/osx/pgagent-staging.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy pgagent-staging.tar.bz2 on signing server"
+    rm -rf $WD/pgAgent/staging/osx/pgagent-staging.tar.bz2 || _die "Failed to remove pgAgent-staging.tar from controller"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf staging" || _die "Failed to remove staging from signing server"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../pgagent-staging.tar.bz2"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging;tar -jcvf pgagent-staging.tar.bz2 *" || _die "Failed to create pgagent-staging tar on signing server"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/staging/pgagent-staging.tar.bz2 $WD/pgAgent/staging/osx || _die "Failed to copy pgagent-staging to controller vm"
+
+
     # Extract the staging archive
     cd $WD/pgAgent/staging/osx
     tar -jxvf pgagent-staging.tar.bz2 || _die "Failed to extract the pgagent staging archive"
@@ -257,6 +270,16 @@ _postprocess_pgAgent_osx() {
     # Archive the .app and copy back to controller
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app" || _die "Failed to zip the installer bundle"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
+
+    # Notarize the OS X installer
+    ssh $PG_SSH_OSX_NOTARY "mkdir -p $PG_PATH_OSX_NOTARY" || _die "Failed to create $PG_PATH_OSX_NOTARY"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx*" || _die "Failed to remove the installer from notarization installer directory"
+    scp $WD/output/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
+    scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
+
+    echo ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip pgagent" || _die "Failed to notarize the app"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; sh -x ./notarize_apps.sh pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip pgagent" || _die "Failed to notarize the app"
+    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy notarized installer to $WD/output."
 
     cd $WD
 

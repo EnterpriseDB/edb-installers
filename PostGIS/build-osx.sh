@@ -392,6 +392,18 @@ _postprocess_PostGIS_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/PostGIS/staging/osx; tar -jcvf postgis-staging.tar.bz2 *" || _die "Failed to create archive of the postgis staging"
     scp $PG_SSH_OSX:$PG_PATH_OSX/PostGIS/staging/osx/postgis-staging.tar.bz2 $WD/PostGIS/staging/osx || _die "Failed to scp postgis staging"
 
+    # sign the binaries and libraries
+    scp $WD/common.sh $WD/settings.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf postgis-staging.tar.bz2" || _die "Failed to remove PostGIS-staging.tar from signing server"
+    scp $WD/PostGIS/staging/osx/postgis-staging.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy postgis-staging.tar.bz2 on signing server"
+    rm -rf $WD/PostGIS/staging/osx/postgis-staging.tar.bz2 || _die "Failed to remove PostGIS-staging.tar from controller"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf staging" || _die "Failed to remove staging from signing server"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../postgis-staging.tar.bz2"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging;tar -jcvf postgis-staging.tar.bz2 *" || _die "Failed to create postgis-staging tar on signing server"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/staging/postgis-staging.tar.bz2 $WD/PostGIS/staging/osx || _die "Failed to copy postgis-staging to controller vm"
+
     # Extract the staging archive
     cd $WD/PostGIS/staging/osx
     tar -jxvf postgis-staging.tar.bz2 || _die "Failed to extract the postgis staging archive"
