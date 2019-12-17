@@ -3,11 +3,13 @@
 export dev_asc_provider=EnterpriseDBCorporation
 export dev_account=packages@enterprisedb.com
 export dev_password_keychain_name=packages-app-notarization
-export dev_primary_bundle_id=$1
+export package_name=$1
 export dev_installer_name_prefix=$2
+export dev_primary_bundle_id=${package_name%.*}
 
 echo =======================================================================
 echo Notarize the appbundle
+echo "package name is: $package_name"
 echo =======================================================================
 
 # functions
@@ -22,7 +24,13 @@ requeststatus() { # $1: requestUUID
     echo "$req_status"
 }
 
-requestUUID=$(xcrun altool --notarize-app -f ${dev_installer_name_prefix}*.dmg --asc-provider $dev_asc_provider --primary-bundle-id $dev_primary_bundle_id -u $dev_account -p "@keychain:${dev_password_keychain_name}" 2>&1 | awk '/RequestUUID/ { print $NF; }')
+if [ "${package_name##*.}" = "zip" ]; then
+	# Zip cannot be stapled. Also, we can't unzip the notarized archive and then staple. Hence, use ditto
+	unzip $package_name && rm -f $package_name
+	ditto -c -k --keepParent ${dev_primary_bundle_id}.app $package_name
+fi
+
+requestUUID=$(xcrun altool --notarize-app -f $package_name --asc-provider $dev_asc_provider --primary-bundle-id $dev_primary_bundle_id -u $dev_account -p "@keychain:${dev_password_keychain_name}" 2>&1 | awk '/RequestUUID/ { print $NF; }')
 
 if [[ $requestUUID == "" ]]; then
 	echo "ERROR:could not upload for notarization"
@@ -50,12 +58,17 @@ if [[ $request_status != "success" ]]; then
 	exit 1
 fi
 
-echo "Staple PostgreSQL DMG"
+echo "Staple $package_name"
 
-xcrun stapler staple ${dev_installer_name_prefix}*.dmg
+if [[ "${package_name##*.}" == "zip" ]]; then
+	xcrun stapler staple ${dev_primary_bundle_id}.app
+	ditto -c -k --keepParent ${dev_primary_bundle_id}.app $package_name
+else
+	xcrun stapler staple $package_name
+fi
 
 if [ $? != 0 ]; then
-	echo "ERROR: could not staple ${dev_installer_name_prefix} DMG"
+	echo "ERROR: could not staple $package_name"
     exit 1
 fi
 
