@@ -26,6 +26,7 @@ requeststatus() { # $1: requestUUID
 
 if [ "${package_name##*.}" = "zip" ]; then
 	# Zip cannot be stapled. Also, we can't unzip the notarized archive and then staple. Hence, use ditto
+	rm -rf ${dev_primary_bundle_id}.app
 	unzip $package_name && rm -f $package_name
 	ditto -c -k --keepParent ${dev_primary_bundle_id}.app $package_name
 fi
