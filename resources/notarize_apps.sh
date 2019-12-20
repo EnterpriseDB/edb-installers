@@ -6,6 +6,8 @@ export dev_password_keychain_name=packages-app-notarization
 export package_name=$1
 export dev_installer_name_prefix=$2
 export dev_primary_bundle_id=${package_name%.*}
+source common.sh
+source settings.sh
 
 echo =======================================================================
 echo Notarize the appbundle
@@ -31,6 +33,10 @@ if [ "${package_name##*.}" = "zip" ]; then
 	ditto -c -k --keepParent ${dev_primary_bundle_id}.app $package_name
 fi
 
+if [ "${package_name##*.}" = "dmg" ]; then
+	security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime $package_name || _die "Failed to codesign $package_name"
+	echo "$package_name Code signed done successfully"
+fi
 requestUUID=$(xcrun altool --notarize-app -f $package_name --asc-provider $dev_asc_provider --primary-bundle-id $dev_primary_bundle_id -u $dev_account -p "@keychain:${dev_password_keychain_name}" 2>&1 | awk '/RequestUUID/ { print $NF; }')
 
 if [[ $requestUUID == "" ]]; then
