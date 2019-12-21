@@ -401,6 +401,18 @@ _postprocess_PostGIS_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/PostGIS/staging/osx; tar -jcvf postgis-staging.tar.bz2 *" || _die "Failed to create archive of the postgis staging"
     scp $PG_SSH_OSX:$PG_PATH_OSX/PostGIS/staging/osx/postgis-staging.tar.bz2 $WD/PostGIS/staging/osx || _die "Failed to scp postgis staging"
 
+   # sign the binaries and libraries
+   scp $WD/common.sh $WD/settings.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
+   ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf postgis-staging.tar.bz2" || _die "Failed to remove PostGIS-staging.tar from signing server"
+   scp $WD/PostGIS/staging/osx/postgis-staging.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy postgis-staging.tar.bz2 on signing server"
+   rm -rf $WD/PostGIS/staging/osx/postgis-staging.tar.bz2 || _die "Failed to remove PostGIS-staging.tar from controller"
+   ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf staging" || _die "Failed to remove staging from signing server"
+   ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../postgis-staging.tar.bz2"
+   ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh; sign_binaries staging" || _die "Failed to do binaries signing"
+   ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh; sign_libraries staging" || _die "Failed to do libraries signing"
+   ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging;tar -jcvf postgis-staging.tar.bz2 *" || _die "Failed to create postgis-staging tar on signing server"
+   scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/staging/postgis-staging.tar.bz2 $WD/PostGIS/staging/osx || _die "Failed to copy postgis-staging to controller vm"
+
     # Extract the staging archive
     cd $WD/PostGIS/staging/osx
     tar -jxvf postgis-staging.tar.bz2 || _die "Failed to extract the postgis staging archive"
@@ -473,7 +485,7 @@ _postprocess_PostGIS_osx() {
     cd $WD/output
     
     # Copy the versions file to signing server
-    scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
+    scp ../versions.sh ../resources/entitlements.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
 
     # Scp the app bundle to the signing machine for signing
     tar -jcvf postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.app.tar.bz2 postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.app || _die "Failed to create the archive."
@@ -482,12 +494,26 @@ _postprocess_PostGIS_osx() {
     rm -fr postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.app* || _die "Failed to clean the output directory."
 
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.app; mv postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx-signed.app  postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s '$DEVELOPER_ID' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements.xml postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
+
+    #ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.app; mv postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx-signed.app  postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
+
+    #macOS signing certificate check
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; codesign -vvv postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.app | grep "CSSMERR_TP_CERT_EXPIRED" > /dev/null" && _die "macOS signing certificate is expired. Please renew the certs and build again"
 
     # Archive the .app and copy back to controller
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.zip postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.app" || _die "Failed to zip the installer bundle"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
+
+   # Notarize the OS X installer
+   ssh $PG_SSH_OSX_NOTARY "mkdir -p $PG_PATH_OSX_NOTARY; cp $PG_PATH_OSX_SIGN/settings.sh $PG_PATH_OSX_NOTARY; cp $PG_PATH_OSX_SIGN/common.sh $PG_PATH_OSX_NOTARY" || _die "Failed to create $PG_PATH_OSX_NOTARY"
+   ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx*" || _die "Failed to remove the installer from notarization installer directory"
+   scp $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.zip $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
+   scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
+
+   echo ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.zip postgis" || _die "Failed to notarize the app"
+   ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.zip postgis" || _die "Failed to notarize the app"
+   scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy notarized installer to $WD/output."
     
     cd $WD
 
