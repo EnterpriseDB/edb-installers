@@ -195,6 +195,8 @@ PG_QMAKE_SOLARIS_SPARC=/usr/local.sun/bin/qmake
 PG_SSH_OSX=buildfarm@bf10-osx.ox.uk.enterprisedb.com
 PG_PATH_OSX=/mnt/hgfs/pginstaller.auto
 PG_SSH_OSX_SIGN=buildfarm@mors.ox.uk.enterprisedb.com
+PG_SSH_OSX_NOTARY=buildfarm@mors.ox.uk.enterprisedb.com
+PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_10.notary
 #PG_SSH_OSX_SIGN=buildfarm@bf-osx-sign.ox.uk.enterprisedb.com
 PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_10.auto
 PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
@@ -230,8 +232,9 @@ PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSIO
 # The InstallBuilder main binary.
 PG_INSTALLBUILDER_BIN="/opt/installbuilder-19.11.0/bin/builder"
 KEYCHAIN_PASSWD="XXXXXX"
+DEVELOPER_ID="Developer ID Application: EnterpriseDB Corporation"
 
 # LanguagePack Variables
-PG_LANGUAGEPACK_INSTALL_DIR_LINUX="/opt/edb/languagepack-10"
-PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack-10"
-PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/edb/languagepack-10"
+PG_LANGUAGEPACK_INSTALL_DIR_LINUX="/opt/edb/languagepack/v1"
+PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack\\\\v1"
+PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/edb/languagepack/v1"
