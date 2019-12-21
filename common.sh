@@ -346,7 +346,7 @@ sign_binaries()
                 #error: invalid or inappropriate API flag(s) specified
 
                 security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain
-                codesign --deep -f -i "com.edb.postgresql" -s "Developer ID Application" --options 0x10000 $i
+                codesign --deep -f -i "com.edb.postgresql" -s "Developer ID Application" --options runtime $i
            fi
 
 
@@ -359,6 +359,6 @@ sign_libraries()
 {
 
         security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain
-        find $1 -type f -name "*.dylib*" -exec codesign --deep -f -i "com.edb.postgresql" -s "Developer ID Application" --options 0x10000 {} \;
+        find $1 -type f -name "*.dylib*" -exec codesign --deep -f -i "com.edb.postgresql" -s "Developer ID Application" --options runtime {} \;
 
 }
