@@ -118,7 +118,7 @@ PG_PERL_OSX=/Library/edb/languagepack/v1/Perl-5.26
 PG_PYTHON_OSX=/Library/edb/languagepack/v1/Python-3.7
 PGADMIN_PYTHON_OSX=/Library/Frameworks/Python.framework/Versions/3.6
 PG_TCL_OSX=/Library/edb/languagepack/v1/Tcl-8.6
-PG_LANGUAGEPACK_OSX=/Library/edb/languagepack-11
+PG_LANGUAGEPACK_OSX=/Library/edb/languagepack/v1
 PG_QTFRAMEWORK_OSX=/Library/Frameworks
 PG_QMAKE_OSX=/opt/local/Qt5.8.0/5.8/clang_64/bin/qmake
 PG_QMAKE_OSX_UM=/Developer/Tools/Qt/qmake
@@ -141,6 +141,7 @@ PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSIO
 # The InstallBuilder main binary.
 PG_INSTALLBUILDER_BIN="/opt/installbuilder-19.11.0/bin/builder"
 KEYCHAIN_PASSWD="XXXXXX"
+DEVELOPER_ID="Developer ID Application: EnterpriseDB Corporation"
 
 # LanguagePack Variables
 PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack\\\\v1"
