@@ -327,7 +327,7 @@ _postprocess_server_osx() {
     # sign the getlocales binary
     scp $WD/common.sh $WD/settings.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
     scp $WD/server/scripts/osx/getlocales/getlocales.osx $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy getlocales binary to  signing server"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application' --options 0x10000 getlocales.osx" || _die "Failed to sign the getlocales binary"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application' --options runtime getlocales.osx" || _die "Failed to sign the getlocales binary"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/getlocales.osx $WD/server/scripts/osx/getlocales/ || _die "Failed to copy getlocales binary to controller"
 
     # sign the binaries and libraries
