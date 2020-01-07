@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2012-2019, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2020, EnterpriseDB Corporation.  All rights reserved
 
 #Get the odbcinst file path
 odbc_config --odbcinstini > odbcinstfilepath
