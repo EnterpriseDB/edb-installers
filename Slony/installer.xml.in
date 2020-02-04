@@ -989,7 +989,7 @@ EOF
                             <origin>staging/@@WINDIR@@/bin/slonik.exe</origin>
                         </distributionFile>
 			<distributionFile>
-                            <origin>staging/@@WINDIR@@/bin/pthreadVC2.dll</origin>
+                            <origin>staging/@@WINDIR@@/bin/pthreadVC2_x64.dll</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>

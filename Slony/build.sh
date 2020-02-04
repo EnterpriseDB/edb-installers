@@ -65,12 +65,8 @@ _prep_Slony() {
     extract_file  $WD/tarballs/slony1-$PG_VERSION_SLONY 
 
     cd $WD/Slony/source/slony1-$PG_VERSION_SLONY
-    echo "$WD/tarballs/slony_pg11.patch" || _die "Could not apply slony_pg11.patch"
-    patch -p1 < $WD/tarballs/slony_pg11.patch
-
-    cd $WD/Slony/source/slony1-$PG_VERSION_SLONY/src/backend
-    echo "Applying slony_227_win32.patch"
-    patch -p0 < $WD/tarballs/slony_227_win32.patch || _die "Could not apply slony_227_win32.patch"
+    echo "Applying slony_228_win64.patch"
+    patch -p1 < $WD/tarballs/slony_228_win64.patch || _die "Could not apply slony_228_win64.patch"
 
     autoconf
 
