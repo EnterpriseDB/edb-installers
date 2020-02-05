@@ -214,7 +214,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cd \$BUILDROOT
     mkdir -p venv/lib
     cp -pR \$PYTHON_HOME/lib/lib*.dylib* venv/lib/
-    virtualenv --always-copy -p \$PYTHON_HOME/bin/python venv || _die "Failed to create venv"
+    virtualenv --always-copy -p \$PYTHON venv || _die "Failed to create venv"
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
     \$PIP --cache-dir "~/Library/Caches/\$PIP-pgadmin" install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
@@ -355,8 +355,8 @@ EOT-PGADMIN
 
     echo "Some specific rewriting of shared library references"
     ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change $PG_STAGING/lib/libpq.5.dylib @loader_path/../../../../../../Frameworks/libpq.5.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libpq"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /usr/lib/libssl.0.9.8.dylib @loader_path/../../../../../../../Contents/Frameworks/libssl.1.0.0.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libssl"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /usr/lib/libcrypto.0.9.8.dylib @loader_path/../../../../../../../Contents/Frameworks/libcrypto.1.0.0.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libcrypto"
+    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /usr/lib/libssl.0.9.8.dylib @loader_path/../../../../../../../Contents/Frameworks/libssl.1.1.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libssl"
+    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /usr/lib/libcrypto.0.9.8.dylib @loader_path/../../../../../../../Contents/Frameworks/libcrypto.1.1.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libcrypto"
     ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -id libpq.5.dylib Contents/Frameworks/libpq.5.dylib" || _die "install_name_tool id failed for libpq"
 
     # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.

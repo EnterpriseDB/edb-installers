@@ -126,8 +126,8 @@ function CompleteSingleApp() {
 
 	# Fix the rpaths for psycopg module
 	find "$bundle/Contents/Resources/venv/" -name _psycopg.so -print0 | xargs -0 install_name_tool -change libpq.5.dylib @loader_path/../../../../../../Frameworks/libpq.5.dylib
-	find "$bundle/Contents/Resources/venv/" -name _psycopg.so -print0 | xargs -0 install_name_tool -change libssl.1.0.0.dylib @loader_path/../../../../../../Frameworks/libssl.1.0.0.dylib
-	find "$bundle/Contents/Resources/venv/" -name _psycopg.so -print0 | xargs -0 install_name_tool -change libcrypto.1.0.0.dylib @loader_path/../../../../../../Frameworks/libcrypto.1.0.0.dylib
+	find "$bundle/Contents/Resources/venv/" -name _psycopg.so -print0 | xargs -0 install_name_tool -change libcrypto.1.1.dylib @loader_path/../../../../../../Frameworks/libcrypto.1.1.dylib
+	find "$bundle/Contents/Resources/venv/" -name _psycopg.so -print0 | xargs -0 install_name_tool -change libcrypto.1.1.dylib @loader_path/../../../../../../Frameworks/libcrypto.1.1.dylib
 
 	# Fix the rpath for QtWebKit
 	find "$bundle/Contents/Frameworks" -name QtWebKit -print0 | xargs -0 install_name_tool -change @executable_path/../../../../../../../QtCore.framework/QtCore @executable_path/../../../../../../../QtCore.framework/Versions/5/QtCore
