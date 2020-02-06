@@ -194,6 +194,17 @@ _postprocess_psqlODBC_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/psqlODBC/staging/osx; tar -jcvf psqlodbc-staging.tar.bz2 *" || _die "Failed to create archive of the psqlodbc staging"
     scp $PG_SSH_OSX:$PG_PATH_OSX/psqlODBC/staging/osx/psqlodbc-staging.tar.bz2 $WD/psqlODBC/staging/osx || _die "Failed to scp psqlodbc staging"
 
+    # sign the binaries and libraries
+    scp $WD/common.sh $WD/settings.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf psqlodbc-staging.tar.bz2" || _die "Failed to remove psqlodbc-staging.tar from signing server"
+    scp $WD/psqlODBC/staging/osx/psqlodbc-staging.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy psqlodbc-staging.tar.bz2 on signing server"
+    rm -rf $WD/psqlODBC/staging/osx/psqlodbc-staging.tar.bz2 || _die "Failed to remove psqlodbc-staging.tar from controller"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf staging" || _die "Failed to remove staging from signing server"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../psqlodbc-staging.tar.bz2"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging;tar -jcvf psqlodbc-staging.tar.bz2 *" || _die "Failed to create psqlodbc-staging tar on signing server"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/staging/psqlodbc-staging.tar.bz2 $WD/psqlODBC/staging/osx || _die "Failed to copy psqlodbc-staging to controller vm"
+
     # Extract the staging archive
     cd $WD/psqlODBC/staging/osx
     tar -jxvf psqlodbc-staging.tar.bz2 || _die "Failed to extract the psqlodbc staging archive"
@@ -266,7 +277,7 @@ _postprocess_psqlODBC_osx() {
     cd $WD/output
 
     # Copy the versions file to signing server
-    scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
+    scp ../versions.sh ../resources/entitlements.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
 
     # Scp the app bundle to the signing machine for signing
     tar -jcvf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.app.tar.bz2 psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.app || _die "Failed to create the archive."
@@ -275,12 +286,26 @@ _postprocess_psqlODBC_osx() {
     rm -fr psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.app* || _die "Failed to clean the output directory."
 
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.app; mv psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx-signed.app  psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.app.tar.bz2;security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s '$DEVELOPER_ID' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements.xml psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.app" || _die "Failed to sign the code"
+
+    #ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.app; mv psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx-signed.app  psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
+
+    #macOS signing certificate check
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; codesign -vvv psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.app | grep "CSSMERR_TP_CERT_EXPIRED" > /dev/null" && _die "macOS signing certificate is expired. Please renew the certs and build again"
 
     # Archive the .app and copy back to controller
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.zip psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.app" || _die "Failed to zip the installer bundle"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
+
+    # Notarize the OS X installer
+    ssh $PG_SSH_OSX_NOTARY "mkdir -p $PG_PATH_OSX_NOTARY; cp $PG_PATH_OSX_SIGN/settings.sh $PG_PATH_OSX_NOTARY; cp $PG_PATH_OSX_SIGN/common.sh $PG_PATH_OSX_NOTARY" || _die "Failed to create $PG_PATH_OSX_NOTARY"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx*" || _die "Failed to remove the installer from notarization installer directory"
+    scp $WD/output/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.zip $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
+    scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
+
+    echo ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.zip psqlodbc" || _die "Failed to notarize the app"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; sh -x ./notarize_apps.sh psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.zip psqlodbc" || _die "Failed to notarize the app"
+    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/psqlodbc-$PG_VERSION_PSQLODBC-$PG_BUILDNUM_PSQLODBC-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy notarized installer to $WD/output."
 
     cd $WD
     
