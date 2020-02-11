@@ -107,7 +107,7 @@ EOT
    ssh $PG_SSH_WINDOWS_X64  "mkdir -p $PG_PATH_WINDOWS_X64/Slony.staging.build/bin" || _die "Failed to create the bin directory"
    ssh $PG_SSH_WINDOWS_X64 "cp $PG_PATH_WINDOWS_X64/Slony.windows-x64/src/slon/slon.exe $PG_PATH_WINDOWS_X64/Slony.staging.build/bin" || _die "Failed to copy slon binary to staging directory"
    ssh $PG_SSH_WINDOWS_X64 "cp $PG_PATH_WINDOWS_X64/Slony.windows-x64/src/slonik/slonik.exe $PG_PATH_WINDOWS_X64/Slony.staging.build/bin" || _die "Failed to copy slonik binary to staging directory"
-   ssh $PG_SSH_WINDOWS_X64 "cp $PG_PGBUILD_WINDOWS_X64/bin/pthreadVC2_x64.dll $PG_PATH_WINDOWS_X64/Slony.staging.build/bin" || _die "Failed to copy slonik binary to staging directory"
+   ssh $PG_SSH_WINDOWS_X64 "cp $PG_PGBUILD_WINDOWS_X64/bin/pthreadVC2.dll $PG_PATH_WINDOWS_X64/Slony.staging.build/bin" || _die "Failed to copy slonik binary to staging directory"
 
    ssh $PG_SSH_WINDOWS_X64 "mkdir -p $PG_PATH_WINDOWS_X64/Slony.staging.build/lib" || _die "Failed to create the bin directory"
    ssh $PG_SSH_WINDOWS_X64 "cp $PG_PATH_WINDOWS_X64/Slony.windows-x64/src/backend/slony1_funcs.$PG_VERSION_SLONY.dll $PG_PATH_WINDOWS_X64/Slony.staging.build/lib" || _die "Failed to copy slony_funcs.dll to staging directory"
