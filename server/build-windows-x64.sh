@@ -195,7 +195,7 @@ REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64
 REM CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
 @SET PYTHON_HOME=$PGADMIN_PYTHON_WINDOWS_X64
-@SET PYTHON_VERSION=36
+@SET PYTHON_VERSION=37
 
 cd "$PG_PATH_WINDOWS_X64\pgadmin.windows-x64\runtime"
 $PG_QMAKE_WINDOWS_X64
