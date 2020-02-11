@@ -160,7 +160,7 @@ cat <<EOT > "vc-build-pgadmin4.bat"
 REM Setting Visual Studio Environment
 CALL "$PG_VS15INSTALLDIR_WINDOWS\\\\BuildTools\\\\VC\\\\Auxiliary\\\\Build\\\\vcvarsall.bat" x86
 @SET PYTHON_HOME=$PGADMIN_PYTHON_WINDOWS
-@SET PYTHON_VERSION=36
+@SET PYTHON_VERSION=37
 
 cd "$PG_PATH_WINDOWS\pgadmin.windows\runtime"
 $PG_QMAKE_WINDOWS
