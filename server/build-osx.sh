@@ -104,7 +104,7 @@ _prep_server_osx() {
 
     echo "Copy the scripts required to build VM"
     cd $WD/server
-    tar -jcvf scripts.tar.bz2 scripts/osx resources/complete-bundle.sh
+    tar -jcvf scripts.tar.bz2 scripts/osx resources/complete-bundle.sh resources/framework-config.sh resources/Info.plist-template_Qt5
     scp $WD/server/scripts.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server || _die "Failed to copy the scripts to build VM"
     scp $WD/versions.sh $WD/common.sh $WD/settings.sh $WD/resources/create_debug_symbols.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
     rm -f scripts.tar.bz2 || _die "Couldn't remove the scipts archive (source/scripts.tar.bz2)"    
@@ -249,7 +249,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cp -pR \$BUILDROOT/venv "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/" || exit 1
 
     # remove the unwanted files from the virtual environment
-    rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/.Python" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/include" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/bin"
+    rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/include" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/bin"
 
     cd $PG_PATH_OSX/server/resources/
     # run complete-bundle to copy the dependent libraries and frameworks and fix the rpaths
@@ -277,7 +277,11 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     # Remove the .pyc files if any
     cd "\$BUILDROOT/$APP_BUNDLE_NAME"
     find . \( -name "*.pyc" -o -name "*.pyo" \) -delete
-    
+
+    #fix the Qt framework else codesign may fail
+    cd $PG_PATH_OSX/server/resources/
+    sh ./framework-config.sh "\$BUILDROOT/$APP_BUNDLE_NAME" || _die "framework-config.sh failed"
+
     # Copy the app bundle into place
     cp -pR "\$BUILDROOT/$APP_BUNDLE_NAME" $PG_PATH_OSX/server/staging_cache/osx.build || _die "Failed to copy pgAdmin into the staging_cache directory"
 EOT-PGADMIN
@@ -450,8 +454,8 @@ _postprocess_server_osx() {
     rm -rf $WD/server/staging_cache/osx/server-staging.tar.bz2 || _die "Failed to remove server-staging.tar from controller"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf staging" || _die "Failed to remove staging from signing server"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../server-staging.tar.bz2; mv pgAdmin\ 4.app pgAdmin4.app"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging; mv pgAdmin4.app pgAdmin\ 4.app; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create server-staging tar on signing server"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/staging/server-staging.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to copy server-staging to controller vm"
 
@@ -486,10 +490,6 @@ _postprocess_server_osx() {
     then
         BUILD_FAILED=""
     fi
-
-    # Copy the required Python executables
-    scp $PG_SSH_OSX:$PGADMIN_PYTHON_OSX/Python $WD/server/staging_cache/osx/pgAdmin\ 4.app/Contents/Resources/venv/.Python
-
 
     echo "Preparing restructured staging for server"
     cp -r $WD/server/staging_cache/osx/bin $PGSERVER_STAGING_OSX  || _die "Failed to copy $WD/server/staging_cache/osx/bin"
