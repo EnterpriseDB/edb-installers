@@ -391,27 +391,25 @@ sign_binaries()
 {
         for i in `find $1 -type f`
         do
-
            file $i | grep -E "Mach-O executable|Mach-O 64-bit executable|Mach-O 64-bit bundle"
            if [ $? -eq 0 ];
            then
-                #We are using 0x1000 instead of runtimes as it returns following error because our signing server is macOS 10.9 and codesign recommends to use 10.13 or later and XCode 10 or later.
-                #error: invalid or inappropriate API flag(s) specified
-
                 security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain
-                codesign --deep -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime $i
+                echo "Signing binary $i"
+                codesign -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime $i
            fi
 
 
         done
-
 }
 
 #This function is used to sign the every library on MAC
 sign_libraries()
 {
-
         security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain
-        find $1 -type f -name "*.dylib*" -exec codesign --deep -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime {} \;
-
+        for i in `find $1 -type f -name "*.dylib*" -o -name "Qt*" -o -name "Python" -o -name ".Python"`
+        do
+            echo "Signing library $i"
+            codesign -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime $i
+        done
 }
