@@ -17,11 +17,6 @@ _prep_PEM-HTTPD_windows() {
     mv openssl-$PG_TARBALL_OPENSSL apache.windows/srclib/openssl
     mv zlib-$PG_TARBALL_ZLIB apache.windows/srclib/zlib
 
-    # Apply the patch
-    #cd apache.windows/srclib/apr/atomic/win32/
-    #patch -p0 < $WD/tarballs/apr-win32.patch
-    cd $WD/PEM-HTTPD/source/apache.windows/srclib/apr-iconv/build
-    patch -p0 < $WD/tarballs/apr-iconv-win32.patch || _die "Failed to apply apr-iconv-win32 patch"
     cd $WD/PEM-HTTPD/source/apache.windows
     if [ -f $WD/tarballs/apache_win_$PG_VERSION_APACHE.patch ];
     then
@@ -36,12 +31,16 @@ _prep_PEM-HTTPD_windows() {
 
     # Patches to build the correct version
     cd apache.windows/mod_wsgi/win32
+    cp ap24py34-win32-VC10.mk ap24py37-win32-VC10.mk
+    sed -i 's/Python34/Python37/g' ap24py37-win32-VC10.mk
+    sed -i 's/34/37/g' ap24py37-win32-VC10.mk
+    sed -i 's/ap24py34-win32-VC10.mk/ap24py37-win32-VC10.mk/g' build-win32-VC10.bat
     patch -p0 < $WD/tarballs/mod_wsgi_psapi.patch
 
     # For PEM7, apachehttpd needs to be built with python3.4 (LP10)
     PEM_PYTHON_WINDOWS=$PEM_PYTHON_WINDOWS
     patch -p0 < $WD/tarballs/apache-build-win32.patch
-    MOD_WSGI_MAKEFILE=ap24py34-win32-VC10.mk
+    MOD_WSGI_MAKEFILE=ap24py37-win32-VC10.mk
 
     sed -i "s/^APACHE_ROOTDIR =\(.*\)$/APACHE_ROOTDIR=$PG_PATH_WINDOWS\\\\apache.staging.build/g" ${MOD_WSGI_MAKEFILE}
     sed -i "s/^PYTHON_ROOTDIR =\(.*\)$/PYTHON_ROOTDIR=$PEM_PYTHON_WINDOWS/g" ${MOD_WSGI_MAKEFILE}
@@ -53,6 +52,9 @@ _prep_PEM-HTTPD_windows() {
         echo "Removing old zip of apache source"
         rm -f apache.zip || _die "Couldn't remove the zip of apache source"
     fi
+    echo "Change older ssl reference"
+    find apache.windows -type f -name "*" -exec sed -i 's/libeay32.lib/libssl.lib/g' {} \;
+    find apache.windows -type f -name "*" -exec sed -i 's/ssleay32.lib/libcrypto.lib/g' {} \;
 
     echo "Archieving apache sources"
     zip -r apache.zip apache.windows/ || _die "Couldn't create zip of the apache sources (apache.zip)"
@@ -99,10 +101,9 @@ _build_PEM-HTTPD_windows() {
     cat <<EOT > "build-apache.bat"
 
 REM Setting Visual Studio Environment
-CALL "$PG_VSINSTALLDIR_WINDOWS\Common7\Tools\vsvars32.bat"
+CALL "$PG_VS14INSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 
 @SET PGBUILD=$PG_PGBUILD_WINDOWS
-
 REM Building zlib first
 cd $PG_PATH_WINDOWS\apache.windows\srclib\zlib
 nmake -f win32\Makefile.msc
@@ -112,16 +113,16 @@ if EXIST "$PG_PATH_WINDOWS\apache.windows\srclib\zlib\zlib.lib" copy "$PG_PATH_W
 REM Building openssl
 cd $PG_PATH_WINDOWS\apache.windows\srclib\openssl
 SET LIB=$PEM_PYTHON_WINDOWS\Lib;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;$PG_PGBUILD_WINDOWS\lib;%LIB%
-SET INCLUDE=$PEM_PYTHON_WINDOWS\include;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;$PG_PGBUILD_WINDOWS\include\openssl;%INCLUDE%
+SET INCLUDE=$PEM_PYTHON_WINDOWS\include;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;$PG_PGBUILD_WINDOWS\include\openssl;%INCLUDE%;$PG_PGBUILD_WINDOWS\include
 SET PATH=$PG_PATH_WINDOWS;$PG_PGBUILD_WINDOWS\bin;$PG_PERL_WINDOWS\bin;$PEM_PYTHON_WINDOWS;$PG_TCL_WINDOWS\bin;%PATH%;C:\cygwin\bin
-perl Configure no-mdc2 no-rc5 no-idea no-asm enable-zlib VC-WIN32
-CALL ms\do_ms.bat
-nmake -f ms\ntdll.mak
+perl Configure VC-WIN32 no-asm --prefix=%CD% --openssldir=%CD%\openssl.build
+nmake
+nmake test
+nmake install 
 
 REM Building apache
 cd $PG_PATH_WINDOWS
 SET STAGING_DIR=%CD%
-SET VisualStudioVersion=12.0
 cd $PG_PATH_WINDOWS\apache.windows
 perl srclib\apr\build\lineends.pl
 perl srclib\apr\build\fixwin32mak.pl
