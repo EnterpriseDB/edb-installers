@@ -203,7 +203,7 @@ PG_QMAKE_OSX_UM=/Developer/Tools/Qt/qmake
 # where we may need to use non-default SDKs if we're building on a platform newer than the
 # oldest supported
 
-MACOSX_MIN_VERSION=10.7
+MACOSX_MIN_VERSION=10.9
 SDK_PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk
 PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
 PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"

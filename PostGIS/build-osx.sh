@@ -203,15 +203,15 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
 
     # Configure the source tree
     echo "Configuring the PostGIS source tree for Intel"
-    LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-L/opt/local/Current/lib -arch i386" PATH=/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH MACOSX_DEPLOYMENT_TARGET=10.6 ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX  --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current || _die "Failed to configure PostGIS for i386"
+    LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch i386" LDFLAGS="-L/opt/local/Current/lib $PG_ARCH_OSX_LDFLAGS -arch i386" PATH=/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX  --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current || _die "Failed to configure PostGIS for i386"
     mv postgis_config.h postgis_config_i386.h
 
     echo "Configuring the PostGIS source tree for x86_64"
-    LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/opt/local/Current/lib -arch x86_64" MACOSX_DEPLOYMENT_TARGET=10.6 PATH=/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current || _die "Failed to configure PostGIS for x86_64"
+    LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/opt/local/Current/lib $PG_ARCH_OSX_LDFLAGS -arch x86_64" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PATH=/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current || _die "Failed to configure PostGIS for x86_64"
     mv postgis_config.h postgis_config_x86_64.h
 
     echo "Configuring the PostGIS source tree for Universal"
-    LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -arch i386" LDFLAGS="-L/opt/local/Current/lib -arch x86_64 -arch i386" MACOSX_DEPLOYMENT_TARGET=10.6 PATH=/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current || _die "Failed to configure PostGIS for x86_64"
+    LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -arch i386" LDFLAGS="-L/opt/local/Current/lib $PG_ARCH_OSX_LDFLAGS -arch x86_64 -arch i386" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PATH=/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH ./configure --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current || _die "Failed to configure PostGIS for x86_64"
 
     # Create a replacement config.h that will pull in the appropriate architecture-specific one:
     echo "#ifndef __BIG_ENDIAN__" > postgis_config.h
@@ -222,7 +222,7 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
     echo "  #endif" >> postgis_config.h
     echo "#endif" >> postgis_config.h
     echo "Building PostGIS"
-    LDFLAGS="-L/opt/local/Current/lib -arch x86_64 -arch i386" CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -arch i386" MACOSX_DEPLOYMENT_TARGET=10.6 make || _die "Failed to build PostGIS"
+    LDFLAGS="-L/opt/local/Current/lib $PG_ARCH_OSX_LDFLAGS -arch x86_64 -arch i386" CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -arch i386" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make || _die "Failed to build PostGIS"
     make comments || _die "Failed to build comments"
     make install PGXSOVERRIDE=0 DESTDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/doc PGSQL_MANDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/man PGSQL_SHAREDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/share/postgresql || _die "Failed to install PostGIS"
     make comments-install PGXSOVERRIDE=0 DESTDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/doc PGSQL_MANDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/man PGSQL_SHAREDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/share/postgresql || _die "Failed to install PostGIS comments"
@@ -230,9 +230,9 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
     echo "Building postgis-doc"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc/html/image_src;
     make clean
-    LDFLAGS="-L/opt/local/Current/lib -arch x86_64 -arch i386" CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -arch i386" MACOSX_DEPLOYMENT_TARGET=10.6 make|| _die "Failed to build postgis-doc"
+    LDFLAGS="-L/opt/local/Current/lib -arch x86_64 -arch i386" CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -arch i386" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make|| _die "Failed to build postgis-doc"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc; 
-    LDFLAGS="-L/opt/local/Current/lib -arch x86_64 -arch i386" CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -arch i386" MACOSX_DEPLOYMENT_TARGET=10.6 make html || _die "Failed to build postgis-doc"
+    LDFLAGS="-L/opt/local/Current/lib -arch x86_64 -arch i386" CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -arch i386" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make html || _die "Failed to build postgis-doc"
     make install PGXSOVERRIDE=0 DESTDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/doc PGSQL_MANDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/man PGSQL_SHAREDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/share/postgresql || _die "Failed to install PostGIS-doc"
 
     cd $PG_PATH_OSX/PostGIS
