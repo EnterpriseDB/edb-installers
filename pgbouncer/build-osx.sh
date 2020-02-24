@@ -133,6 +133,8 @@ cat<<PGBOUNCER > $WD/pgbouncer/build-pgbouncer.sh
     cp -pR $PG_PGHOME_OSX/lib/libxml2* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libxml2 in instscripts"
     cp -pR $PG_PGHOME_OSX/bin/psql $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/bin || _die "Failed to copy psql in instscripts"
 
+    install_name_tool -change "@loader_path//lib/libcrypto.1.1.dylib" "@loader_path/libcrypto.1.1.dylib" $PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer/lib/libssl.1.1.dylib
+
 PGBOUNCER
     
     cd $WD
