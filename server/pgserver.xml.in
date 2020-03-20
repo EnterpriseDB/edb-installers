@@ -311,7 +311,7 @@
         <startMenuShortcut>
             <name>Reload Configuration</name>
             <runInTerminal>0</runInTerminal>
-            <windowsExec>cscript.exe</windowsExec>
+            <windowsExec>${env(WINDIR)}\System32\cscript</windowsExec>
             <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
             <windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
             <ruleList>
@@ -678,7 +678,7 @@
                 <logMessage text="Fixing the ACLs on data directory"/>
                 <!-- clear the ACL -->
                 <runProgram>
-                    <program>icacls</program>
+                    <program>${env(WINDIR)}\System32\icacls</program>
                     <programArguments>"${datadir}" /inheritance:r</programArguments>
                     <showMessageOnError>1</showMessageOnError>
                     <progressText></progressText>
@@ -686,31 +686,31 @@
                 <!-- <clearWindowsACL files="${datadir}"/> -->
                 <!-- user running the installer -->
                 <runProgram>
-                    <program>icacls</program>
+                    <program>${env(WINDIR)}\System32\icacls</program>
                     <programArguments>"${datadir}" /T /Q /grant "${system_username}:(OI)(CI)F"</programArguments>
                     <showMessageOnError>1</showMessageOnError>
                 </runProgram>
                 <!-- user running the service -->
                 <runProgram>
-                    <program>icacls</program>
+                    <program>i${env(WINDIR)}\System32\icacls</program>
                     <programArguments>"${datadir}" /T /Q /grant "${serviceaccount}:(OI)(CI)F"</programArguments>
                     <showMessageOnError>1</showMessageOnError>
                 </runProgram>
                 <!-- Creator Owner -->
                 <runProgram>
-                    <program>icacls</program>
+                    <program>${env(WINDIR)}\System32\icacls</program>
                     <programArguments>"${datadir}" /T /Q /grant "*S-1-3-0:(OI)(CI)F"</programArguments>
                     <showMessageOnError>1</showMessageOnError>
                 </runProgram>
                 <!-- SYSTEM -->
                 <runProgram>
-                    <program>icacls</program>
+                    <program>${env(WINDIR)}\System32\icacls</program>
                     <programArguments>"${datadir}" /T /Q /grant "*S-1-5-18:(OI)(CI)F"</programArguments>
                     <showMessageOnError>1</showMessageOnError>
                 </runProgram>
                 <!-- Administrators -->
                 <runProgram>
-                    <program>icacls</program>
+                    <program>${env(WINDIR)}\System32\icacls</program>
                     <programArguments>"${datadir}" /T /Q /grant "*S-1-5-32-544:(OI)(CI)F"</programArguments>
                     <showMessageOnError>1</showMessageOnError>
                 </runProgram>
@@ -2911,7 +2911,7 @@
                         </runProgram>
 
                         <runProgram>
-                            <program>cscript</program>
+                            <program>${env(WINDIR)}\System32\cscript</program>
                             <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${system_temp_directory}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${reallocale}" ${enable_aclcheck}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
@@ -3010,7 +3010,7 @@
                 </runProgram>
 
                 <runProgram>
-                    <program>cscript</program>
+                    <program>${env(WINDIR)}\System32\cscript</program>
                     <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword.password}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
                     <progressText>${msg(progress.text.configuring.startup)}</progressText>
                     <abortOnError>0</abortOnError>
@@ -3069,7 +3069,7 @@
 
                 <!-- we aren't require to pass ${serviceaccount} to createshortcuts in windows -->
                 <runProgram>
-                    <program>cscript</program>
+                    <program>${env(WINDIR)}\System32\cscript</program>
                     <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts_server.vbs" ${product_version} "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>0</abortOnError>
@@ -3171,7 +3171,7 @@
                 </linuxServiceAction>
 
                 <runProgram>
-                    <program>cscript</program>
+                    <program>${env(WINDIR)}\System32\cscript</program>
                     <programArguments>//NoLogo "${installdir}\installer\server\startserver.vbs" ${servicename}</programArguments>
                     <progressText>${msg(progress.text.starting.server)}</progressText>
                     <abortOnError>0</abortOnError>
