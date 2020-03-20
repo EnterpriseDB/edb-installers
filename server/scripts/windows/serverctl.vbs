@@ -7,6 +7,11 @@ On Error Resume Next
 If WScript.Arguments.Count = 0 OR WScript.Arguments.Count > 2 Then
     usage
 End If
+Dim objShell, objFso, objTempFolder, objWMI
+' Get temporary filenames
+Set objShell = WScript.CreateObject("WScript.Shell")
+
+strWinDir = objShell.ExpandEnvironmentStrings("%WINDIR%")
 
 bWait = False
 If WScript.Arguments.Count = 2 Then
@@ -22,15 +27,15 @@ iRet = 0
 
 Select Case strAction
     Case "start"
-         iRet = DoCmd("net start PG_SERVICENAME")
+         iRet = DoCmd("""" & strWinDir & """\System32\net start PG_SERVICENAME")
     Case "stop"
-         iRet = DoCmd("net stop PG_SERVICENAME")
+         iRet = DoCmd("""" & strWinDir & """\System32\net stop PG_SERVICENAME")
     Case "reload"
          iRet = DoCmd("""PG_INSTALLDIR\bin\pg_ctl.exe"" -D ""PG_DATADIR"" reload")
     Case "restart"
-	     iRet = DoCmd("net stop PG_SERVICENAME")
+	     iRet = DoCmd("""" & strWinDir & """\System32\net stop PG_SERVICENAME")
 		 If iRet = 0 Then
-		     iRet = DoCmd("net start PG_SERVICENAME")
+		     iRet = DoCmd("""" & strWinDir & """\System32\net start PG_SERVICENAME")
 		 End If
     Case Else
         usage

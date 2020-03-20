@@ -187,7 +187,7 @@
     <postInstallationActionList>
         <createTempDir dirPrefix="postgresql_installer"/>
         <runProgram>
-            <program>cscript</program>
+            <program>${env(WINDIR)}\System32\cscript</program>
             <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts_clt.vbs" "${branding}" "${installdir}"</programArguments>
             <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
             <abortOnError>0</abortOnError>
