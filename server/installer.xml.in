@@ -120,13 +120,13 @@ EOF
                         <generateRandomValue length="10" variable="random_number"/>
                         <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
                         <runProgram>
-                          <program>icacls</program>
+                          <program>${env(WINDIR)}\System32\icacls</program>
                           <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /inheritance:r</programArguments>
                           <showMessageOnError>1</showMessageOnError>
                           <progressText></progressText>
                         </runProgram>
                         <runProgram>
-                          <program>icacls</program>
+                          <program>${env(WINDIR)}\System32\icacls</program>
                           <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /T /Q /grant "${env(USERDOMAIN)}\${system_username}:(OI)(CI)F"</programArguments>
                           <showMessageOnError>1</showMessageOnError>
                         </runProgram>
@@ -150,7 +150,7 @@ EOF
             <actionList>
             <createTempDir dirPrefix="postgresql_installer"/>
             <runProgram>
-                <program>icacls</program>
+                <program>${env(WINDIR)}\System32\icacls</program>
                 <programArguments>. /save "${system_temp_directory}/postgresql_installer_${random_number}/aclfile"</programArguments>
                 <progressText></progressText>
                 <workingDirectory>${sourceDir}</workingDirectory>
@@ -158,7 +158,7 @@ EOF
             <copyFile origin="${system_temp_directory}/postgresql_installer_${random_number}/aclfile" destination="${destDir}"/>
             <!-- <deleteFile path="${sourceDir}/aclfile"/> -->
             <runProgram>
-                <program>icacls</program>
+                <program>${env(WINDIR)}\System32\icacls</program>
                 <programArguments>. /restore "${system_temp_directory}/postgresql_installer_${random_number}/aclfile"</programArguments>
                 <progressText></progressText>
                 <workingDirectory>${destDir}</workingDirectory>
