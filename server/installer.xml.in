@@ -120,13 +120,13 @@ EOF
             <generateRandomValue length="10" variable="random_number"/>
             <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
 	    <runProgram>
-	       <program>icacls</program>
+	       <program>${env(WINDIR)}\System32\icacls</program>
 	       <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /inheritance:r</programArguments>
 	       <showMessageOnError>1</showMessageOnError>
 	       <progressText></progressText>
 	    </runProgram>
 	    <runProgram>
-	       <program>icacls</program>
+	       <program>${env(WINDIR)}\System32\icacls</program>
 	       <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /T /Q /grant "${env(USERDOMAIN)}\${system_username}:(OI)(CI)F"</programArguments>
 	       <showMessageOnError>1</showMessageOnError>
 	    </runProgram>
@@ -150,7 +150,7 @@ EOF
          <actionList>
          <createTempDir dirPrefix="postgresql_installer"/>
          <runProgram>
-             <program>icacls</program>
+             <program>${env(WINDIR)}\System32\icacls</program>
              <programArguments>. /save "${system_temp_directory}/postgresql_installer_${random_number}/aclfile"</programArguments>
              <progressText></progressText>
              <workingDirectory>${sourceDir}</workingDirectory>
@@ -158,7 +158,7 @@ EOF
          <copyFile origin="${system_temp_directory}/postgresql_installer_${random_number}/aclfile" destination="${destDir}"/>
          <!-- <deleteFile path="${sourceDir}/aclfile"/> -->
          <runProgram>
-             <program>icacls</program>
+             <program>${env(WINDIR)}\System32\icacls</program>
              <programArguments>. /restore "${system_temp_directory}/postgresql_installer_${random_number}/aclfile"</programArguments>
              <progressText></progressText>
              <workingDirectory>${destDir}</workingDirectory>
@@ -1651,7 +1651,7 @@ EOF
 	<actionGroup>
 	    <actionList>
 		<runProgram>
-		    <program>cscript</program>
+		    <program>${env(WINDIR)}\System32\cscript</program>
 		    <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer_${random_number}\prerun_checks.vbs"</programArguments>
 		    <abortOnError>0</abortOnError>
 		    <showMessageOnError>0</showMessageOnError>
@@ -2919,7 +2919,7 @@ EOF
                 <logMessage text="Fixing the ACLs on data directory"/>
                 <!-- clear the ACL -->
                 <runProgram>
-                    <program>icacls</program>
+                    <program>${env(WINDIR)}\System32\icacls</program>
                     <programArguments>"${datadir}" /inheritance:r</programArguments>
                     <showMessageOnError>1</showMessageOnError>
                     <progressText></progressText>
@@ -2927,31 +2927,31 @@ EOF
                 <!-- <clearWindowsACL files="${datadir}"/> -->
                 <!-- user running the installer -->
                 <runProgram>
-                    <program>icacls</program>
+                    <program>${env(WINDIR)}\System32\icacls</program>
                     <programArguments>"${datadir}" /T /Q /grant "${system_username}:(OI)(CI)F"</programArguments>
                     <showMessageOnError>1</showMessageOnError>
                 </runProgram>
                 <!-- user running the service -->
                 <runProgram>
-                    <program>icacls</program>
+                    <program>${env(WINDIR)}\System32\icacls</program>
                     <programArguments>"${datadir}" /T /Q /grant "${serviceaccount}:(OI)(CI)F"</programArguments>
                     <showMessageOnError>1</showMessageOnError>
                 </runProgram>
                 <!-- Creator Owner -->
                 <runProgram>
-                    <program>icacls</program>
+                    <program>${env(WINDIR)}\System32\icacls</program>
                     <programArguments>"${datadir}" /T /Q /grant "*S-1-3-0:(OI)(CI)F"</programArguments>
                     <showMessageOnError>1</showMessageOnError>
                 </runProgram>
                 <!-- SYSTEM -->
                 <runProgram>
-                    <program>icacls</program>
+                    <program>${env(WINDIR)}\System32\icacls</program>
                     <programArguments>"${datadir}" /T /Q /grant "*S-1-5-18:(OI)(CI)F"</programArguments>
                     <showMessageOnError>1</showMessageOnError>
                 </runProgram>
                 <!-- Administrators -->
                 <runProgram>
-                    <program>icacls</program>
+                    <program>${env(WINDIR)}\System32\icacls</program>
                     <programArguments>"${datadir}" /T /Q /grant "*S-1-5-32-544:(OI)(CI)F"</programArguments>
                     <showMessageOnError>1</showMessageOnError>
                 </runProgram>
@@ -3396,7 +3396,7 @@ EOF
                         </runProgram>
 
                         <runProgram>
-                            <program>cscript</program>
+                            <program>${env(WINDIR)}\System32\cscript</program>
                             <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${system_temp_directory}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${reallocale}" ${enable_aclcheck}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
@@ -3502,7 +3502,7 @@ EOF
                 </runProgram>
 
                 <runProgram>
-                    <program>cscript</program>
+                    <program>${env(WINDIR)}\System32\cscript</program>
                     <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword.password}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
                     <progressText>${msg(progress.text.configuring.startup)}</progressText>
                     <abortOnError>0</abortOnError>
@@ -3600,7 +3600,7 @@ EOF
 
                 <!-- we aren't require to pass ${serviceaccount} to createshortcuts in windows -->
                 <runProgram>
-                    <program>cscript</program>
+                    <program>${env(WINDIR)}\System32\cscript</program>
                     <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts.vbs" ${product_version} "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
                     <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
                     <abortOnError>0</abortOnError>
@@ -3735,7 +3735,7 @@ PostgreSQLHelpPath=file://${installdir_win}/doc/postgresql/html
                 </linuxServiceAction>
 
                 <runProgram>
-                    <program>cscript</program>
+                    <program>${env(WINDIR)}\System32\cscript</program>
                     <programArguments>//NoLogo "${installdir}\installer\server\startserver.vbs" ${servicename}</programArguments>
                     <progressText>${msg(progress.text.starting.server)}</progressText>
                     <abortOnError>0</abortOnError>
@@ -5242,7 +5242,7 @@ REM The script sets environment variables helpful for PostgreSQL
                 <startMenuShortcut>
                     <name>Reload Configuration</name>
                     <runInTerminal>0</runInTerminal>
-                    <windowsExec>cscript.exe</windowsExec>
+                    <windowsExec>${env(WINDIR)}\System32\${env(WINDIR)}\System32\cscrip</windowsExec>
                     <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
                     <windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
                     <ruleList>
