@@ -472,7 +472,7 @@ EOF
                             <variable>installdir</variable>
                         </registryGet>
                         <runProgram>
-                          <program>cmd</program>
+                          <program>${env(WINDIR)}\System32\cmd</program>
                           <programArguments>/c del "${installdir}\*.jar"</programArguments>
                           <abortOnError>0</abortOnError>
                           <showMessageOnError>0</showMessageOnError>
