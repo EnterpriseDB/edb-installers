@@ -1074,7 +1074,7 @@ EOF
                 <!-- Register pgbouncer service -->
                  <runProgram>
                     <program>${installdir}\installer\pgbouncer\startupcfg.bat</program>
-                    <programArguments>"${installdir}"</programArguments>
+                    <programArguments>"${env(WINDIR)}" "${installdir}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                     <ruleList>
@@ -1246,7 +1246,7 @@ EOF
                 </runProgram>
         
                 <runProgram>
-                    <program>cscript</program>
+                    <program>${env(WINDIR)}\System32\cscript</program>
                     <programArguments>//NoLogo "${installdir}/installer/pgbouncer/securefile.vbs" "${installdir}\etc\userlist.txt" "${system_username}"</programArguments>
                     <abortOnError>0</abortOnError>
                     <customErrorMessage>${msg(error.file.notsecure)}</customErrorMessage>

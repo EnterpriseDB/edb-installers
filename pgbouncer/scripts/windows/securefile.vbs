@@ -10,6 +10,7 @@ Set objFso = CreateObject("Scripting.FileSystemObject")
 Set objTempFolder = objFso.GetSpecialFolder(2)
 strBatchFile = Replace(objFso.GetTempName, ".tmp", ".bat")
 strOutputFile = objTempFolder.Path & "\" & objFso.GetTempName
+strWinDir = objShell.ExpandEnvironmentStrings("%WINDIR%")
 Set objFso = CreateObject("Scripting.FileSystemObject")
 
 ' Is this Vista or above?
@@ -62,7 +63,7 @@ End Sub
 
 If IsVistaOrNewer() = True Then
     WScript.Echo "Securing userlist.txt file (using icacls):"
-    iRet = DoCmd("icacls """ & strFilename & """ /inheritance:r /T /grant:r *S-1-5-32-544:M /grant:r """ & strUsername & """:M")
+    iRet = DoCmd("""" & strWinDir & "\System32\icacls"" """ & strFilename & """ /inheritance:r /T /grant:r *S-1-5-32-544:M /grant:r """ & strUsername & """:M")
 Else
     WScript.Echo "Securing userlist.txt file (using cacls): " & strFilename & " " & strUsername
     iRet = DoCmd("echo y|cacls """ & strFilename & """ /T /G Administrators:F """ & strUsername & """:C")

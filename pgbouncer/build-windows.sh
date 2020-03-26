@@ -82,7 +82,7 @@ _build_pgbouncer_windows() {
 @SET TEMP=/tmp
 
 REM Configuring, building the pgbouncer source tree
-@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/include -D_mkgmtime32=_mkgmtime" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS/lib" ./configure --prefix=\$COMMONDIR/pgbouncer.staging.build --with-libevent=$PG_PGBUILD_MINGW_WINDOWS --with-openssl=$PG_PGBUILD_MINGW_WINDOWS; make; make install  | $PG_MSYS_WINDOWS_PGBOUNCER\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/include -D_mkgmtime32=_mkgmtime" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS/lib -L$PG_PGBUILD_MINGW_WINDOWS/bin" LIBEVENT_LIBS="-L$PG_PGBUILD_MINGW_WINDOWS/lib -levent" LIBEVENT_CFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/include" ./configure --prefix=\$COMMONDIR/pgbouncer.staging.build --with-openssl=$PG_PGBUILD_MINGW_WINDOWS; make; make install  | $PG_MSYS_WINDOWS_PGBOUNCER\bin\sh --login -i
 
 EOT
 
@@ -91,8 +91,8 @@ EOT
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-pgbouncer.bat " || _die "Failed to build pgbouncer on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\regex2.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\bin" || _die "Failed to build pgbouncer on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libevent*.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\bin" || _die "Failed to build pgbouncer on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\ssleay32.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\bin" || _die "Failed to build pgbouncer on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libeay32.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\bin" || _die "Failed to build pgbouncer on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libssl-1_1.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\bin" || _die "Failed to build pgbouncer on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libcrypto-1_1.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\bin" || _die "Failed to build pgbouncer on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\share\\\\doc\\\\pgbouncer\\\\pgbouncer.ini $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\share" || _die "Failed to copy  pgbouncer ini to share dir"
 
     # Copy psql and dependent libraries
@@ -104,8 +104,8 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\output\\\\bin\\\\psql.exe  $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\instscripts" || _die "Failed to copy the psql.exe to the pgbouncer.staging.build\\\\instscripts directory on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\output\\\\bin\\\\libpq.dll  $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\instscripts" || _die "Failed to copy the psql.exe to the pgbouncer.staging.build\\\\instscripts directory on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\vcredist\\\\vcredist_x86.exe $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\instscripts" || _die "Failed to copy the VC++ runtimes on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\ssleay32.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libeay32.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libssl-1_1.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libcrypto-1_1.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libiconv-2.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libintl-8.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\instscripts" || _die "Failed to copy a dependency DLL on the windows build host"
