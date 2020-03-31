@@ -16,6 +16,15 @@ strApachePort = WSHShell.RegRead(strRegKey & "APACHE_HPORT")
 strURL="http://localhost:" & strApachePort
 strArgs= "url.dll,FileProtocolHandler " & strURL
 
+
+Set objShell = WScript.CreateObject("WScript.Shell")
+If objShell Is Nothing Then
+  WScript.Echo "Couldn't create WScript.Shell object..."
+End If
+
+strWinDir = objShell.ExpandEnvironmentStrings("%WINDIR%")
+cmd = strWinDir & "\System32\" & "rundll32.exe"
+
 Set shellApp = WScript.CreateObject("Shell.Application")
-shellApp.ShellExecute "rundll32.exe", strArgs, "", "open", 0
+shellApp.ShellExecute cmd, strArgs, "", "open", 0
 

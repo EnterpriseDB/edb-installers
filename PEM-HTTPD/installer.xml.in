@@ -941,7 +941,7 @@ EOF
 
     <!-- Stopping apache if already started - Windows  -->
     <runProgram>
-      <program>wscript</program>
+      <program>${env(WINDIR)}\System32\wscript</program>
       <programArguments>//NOLOGO "${installdir}/installer/PEM-HTTPD/stopApache.vbs" "${installdir}"</programArguments>
       <workingDirectory>${installdir}/installer/PEM-HTTPD</workingDirectory>
       <abortOnError>0</abortOnError>
@@ -964,7 +964,7 @@ EOF
     </runProgram>
     <!-- Stopping apache if already started - (Old) Windows  -->
     <runProgram>
-      <program>wscript</program>
+      <program>${env(WINDIR)}\System32\wscript</program>
       <programArguments>//NOLOGO "${installdir}/apache/stopApache.vbs" "${installdir}\apache"</programArguments>
       <workingDirectory>${installdir}/apache</workingDirectory>
       <abortOnError>0</abortOnError>
@@ -2369,7 +2369,7 @@ include conf\addons\*.conf
           <comment>PEM-HTTPD</comment>
           <name>PEMHTTPD</name>
           <runInTerminal>0</runInTerminal>
-          <windowsExec>wscript</windowsExec>
+          <windowsExec>${env(WINDIR)}\System32\wscript</windowsExec>
           <windowsExecArgs>//NoLogo "${installdir}\scripts\launchApacheHTTPD.vbs"</windowsExecArgs>
           <windowsIcon>${installdir}\scripts\images\run.ico</windowsIcon>
         </startMenuShortcut>
