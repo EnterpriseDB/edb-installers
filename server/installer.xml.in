@@ -127,7 +127,7 @@ EOF
                         </runProgram>
                         <runProgram>
                           <program>${env(WINDIR)}\System32\icacls</program>
-                          <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /T /Q /grant "${env(USERDOMAIN)}\${system_username}:(OI)(CI)F"</programArguments>
+                          <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /T /Q /grant "${whoami}:(OI)(CI)F"</programArguments>
                           <showMessageOnError>1</showMessageOnError>
                         </runProgram>
                         <setInstallerVariable name="random_number" value="${random_number}"/>
@@ -709,6 +709,19 @@ EOF
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
+
+
+        <!-- BUG #16341 Windows: System account -->
+        <setInstallerVariableFromScriptOutput>
+        <exec>whoami</exec>
+        <execArgs></execArgs>
+        <name>whoami</name>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariableFromScriptOutput>
+        <!--<showInfo text="whoami = ${whoami}"/>-->
+
         <!-- Set variable for upgrade screen test -->
         <setInstallerVariable name="test_filename" value="postgres"/>
         <setInstallerVariable name="test_filename" value="postgres.exe">
