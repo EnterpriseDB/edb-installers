@@ -491,6 +491,17 @@ EOF
 
         <setInstallerVariable name="iDisableStackBuilder" value="0" />
 
+        <!-- BUG #16341 Windows: System account -->
+        <setInstallerVariableFromScriptOutput>
+        <exec>whoami</exec>
+        <execArgs></execArgs>
+        <name>whoami</name>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariableFromScriptOutput>
+        <!--<showInfo text="whoami = ${whoami}"/>-->
+
         <!-- PostgreSQL superuser account -->
         <setInstallerVariable name ="superaccount" value="" />
         <!-- OS Account to own postgres process -->
