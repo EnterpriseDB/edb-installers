@@ -115,6 +115,16 @@ EOF
            </ruleList>
          </actionGroup>
         <!-- Windows -->
+        <!-- BUG #16341 Windows: System account -->
+        <setInstallerVariableFromScriptOutput>
+        <exec>${env(WINDIR)}\System32\whoami</exec>
+        <execArgs></execArgs>
+        <name>whoami</name>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </setInstallerVariableFromScriptOutput>
+
         <actionGroup>
           <actionList>
             <generateRandomValue length="10" variable="random_number"/>
@@ -490,17 +500,6 @@ EOF
         <setInstallerVariable name="iShortcut" value="" />
 
         <setInstallerVariable name="iDisableStackBuilder" value="0" />
-
-        <!-- BUG #16341 Windows: System account -->
-        <setInstallerVariableFromScriptOutput>
-        <exec>whoami</exec>
-        <execArgs></execArgs>
-        <name>whoami</name>
-            <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
-            </ruleList>
-        </setInstallerVariableFromScriptOutput>
-        <!--<showInfo text="whoami = ${whoami}"/>-->
 
         <!-- PostgreSQL superuser account -->
         <setInstallerVariable name ="superaccount" value="" />
