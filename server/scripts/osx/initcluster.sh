@@ -52,9 +52,9 @@ chown $OSUSERNAME:daemon "$DATADIR" || _die "Failed to set the ownership of the 
 # Initialise the database cluster. Specify the encoding if we're using the default locale, otherwise we'll probably get ASCII
 if [ $LOCALE = "DEFAULT" ];
 then
-    su - $OSUSERNAME -c "$INSTALLDIR/bin/initdb --pwfile $INSTALLDIR/installer/server/initdbpw.$$ --encoding=utf8 -A md5 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+    su - $OSUSERNAME -c "$INSTALLDIR/bin/initdb --pwfile $INSTALLDIR/installer/server/initdbpw.$$ --encoding=utf8 -A scram-sha-256 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
 else
-    su - $OSUSERNAME -c "$INSTALLDIR/bin/initdb --pwfile $INSTALLDIR/installer/server/initdbpw.$$ --locale=$LOCALE -A md5 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+    su - $OSUSERNAME -c "$INSTALLDIR/bin/initdb --pwfile $INSTALLDIR/installer/server/initdbpw.$$ --locale=$LOCALE -A scram-sha-256 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
 fi	
 	
 if [ ! -d "$DATADIR/log" ];

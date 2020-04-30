@@ -320,9 +320,9 @@ End If
 
 ' Initialise the database cluster, and set the appropriate permissions/ownership
 if strLocale = "DEFAULT" Then
-    iRet = DoCmd("""" & strInstallDir & "\bin\initdb.exe"" --pwfile """ & strInitdbPass & """ --encoding=UTF-8 -A md5 -U " & strUsername & " -D """ & strDataDir & """")
+    iRet = DoCmd("""" & strInstallDir & "\bin\initdb.exe"" --pwfile """ & strInitdbPass & """ --encoding=UTF-8 -A scram-sha-256 -U " & strUsername & " -D """ & strDataDir & """")
 Else
-    iRet = DoCmd("""" & strInstallDir & "\bin\initdb.exe"" --pwfile """ & strInitdbPass & """ --locale=""" & strLocale & """ --encoding=UTF-8 -A md5 -U " & strUsername & " -D """ & strDataDir & """")
+    iRet = DoCmd("""" & strInstallDir & "\bin\initdb.exe"" --pwfile """ & strInitdbPass & """ --locale=""" & strLocale & """ --encoding=UTF-8 -A scram-sha-256 -U " & strUsername & " -D """ & strDataDir & """")
 End If
 
 if iRet <> 0 Then
