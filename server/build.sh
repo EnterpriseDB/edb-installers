@@ -76,7 +76,8 @@ _prep_server() {
     tar -jxvf ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL.tar.bz2
 
     #Following patch is temporary fix to build v11 sources on Windows
-    cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/include && patch -p0 < ~/tarballs/locale-v11.patch
+    cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/include
+    patch -p0 < ~/patches/locale-v13.patch || _die "locale-v13.patch was not applied"
     cd $WD/server/source
 
     # pgAdmin
@@ -88,20 +89,6 @@ _prep_server() {
 
     echo "Unpacking pgAdmin source..."
     tar -zxvf ../../tarballs/pgadmin4-$PG_TARBALL_PGADMIN.tar.gz
-    # Applying the patch for pgAdmin.Because it has icon rendering issue.
-    cd pgadmin4-$PG_TARBALL_PGADMIN
-    if [ -e $WD/tarballs/icon_display_issue.patch ]
-    then
-        echo "Appyling the icon_display_issue.patch"
-        patch -p1 < $WD/tarballs/icon_display_issue.patch || _die "icon_display_issue.patch doesnot applied"
-    fi
-
-    # psycopg2 latest version 2.8 is not yet supported. Hence use the last supported version
-    if [ "$PG_TARBALL_PGADMIN" = "4.4" ]
-    then
-        sed -i 's/psycopg2.*/psycopg2==2.7.7/' requirements.txt || die "failed to modify requirements.txt for psycopg2"
-    fi
-
     cd $WD/server/source
 
     # Debugger

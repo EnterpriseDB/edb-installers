@@ -22,7 +22,7 @@ usage()
         echo "     $BASENAME -skipbuild 1 -skippvtpkg 1 -platforms "all" -packages "all""
         echo ""
         echo "    Note: setting skipbuild to 1 will skip the product build and just create the installer. 'all' option for -packages and -platforms will set all platforms and packages."
-        echo "    Note: setting skippvtpkg to 1 will skip the private package (PEM) build and installers"
+        echo "    Note: setting skippvtpkg to 1 will skip the private package build and installers"
         echo ""
         exit 1;
 }
@@ -68,8 +68,8 @@ then
 else
         SKIPPVTPACKAGES=""
 	# Make sure, we always do a full private build
-	if [ -f pvt_settings.sh.full.REL-12 ]; then
-		cp -f pvt_settings.sh.full.REL-12 pvt_settings.sh.REL-12
+	if [ -f pvt_settings.sh.full.REL-13 ]; then
+		cp -f pvt_settings.sh.full.REL-13 pvt_settings.sh.REL-13
 	fi
 fi
 
@@ -173,7 +173,7 @@ $footer_fail"
                         mail_receipents="-c cm@enterprisedb.com"
                 elif [ ${#pvtbuild_error_flag} -gt 0 ]
                 then
-                        mail_receipents="-c cm@enterprisedb.com pem@enterprisedb.com"
+                        mail_receipents="-c cm@enterprisedb.com"
                 fi
         fi
 
@@ -196,32 +196,25 @@ DATE=`date +'%Y-%m-%d'`
 echo "Cleaning up old output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
 
-# Switch to REL-12 branch
-echo "Switching to REL-12 branch" >> autobuild.log
+# Switch to REL-13 branch
+echo "Switching to REL-13 branch" >> autobuild.log
 git reset --hard >> autobuild.log 2>&1
-git checkout REL-12 >> autobuild.log 2>&1
+git checkout REL-13 >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
-if [ -f settings.sh.full.REL-12 ]; then
-   cp -f settings.sh.full.REL-12 settings.sh
+if [ -f settings.sh.full.REL-13 ]; then
+   cp -f settings.sh.full.REL-13 settings.sh
 fi
 
 # Self update
-echo "Updating REL-12 branch build system" >> autobuild.log
+echo "Updating REL-13 branch build system" >> autobuild.log
 git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
-echo "Running the build (REL-12) " >> autobuild.log
-./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-12.log
+echo "Running the build (REL-13) " >> autobuild.log
+./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-13.log
 
 remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
-PEM_VERSION_FILE="${DIRNAME}/pvt_packages/PEM/common/version.h"
-if [ -f ${PEM_VERSION_FILE} ]; then
-        PEM_CURRENT_VERSION="v$(grep "VERSION_PACKAGE" ${PEM_VERSION_FILE} | awk '{print $3}')"
-else
-        PEM_CURRENT_VERSION=unknown
-fi
-pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/${PEM_CURRENT_VERSION}"
 
 # determine the host location
 curl -O http://cm-dashboard2.enterprisedb.com/interfaces/cm-dashboard-status.sh
@@ -232,30 +225,25 @@ country="$(source ./cm-dashboard-status.sh; GetBuildsLocation)"
 if [ "$BUILD_USER" == "" ]
 then
         echo "Host country = $country" >> autobuild.log
-        remote_location="$remote_location/Latest/12/$country"
-        pem_remote_location="$pem_remote_location/$DATE/$country"
+        remote_location="$remote_location/Latest/13/$country"
 else
-        remote_location="$remote_location/Custom/$BUILD_USER/12/$country/$BUILD_NUMBER"
-        pem_remote_location="$pem_remote_location/Custom/$BUILD_USER/$country/$BUILD_NUMBER"
+        remote_location="$remote_location/Custom/$BUILD_USER/13/$country/$BUILD_NUMBER"
 fi
 
-_mail_status "build-12.log" "build-pvt.log" "12"
+_mail_status "build-13.log" "build-pvt.log" "13"
 
 if [ "$BUILD_USER" == "" ]
 then
         # Get the date of the last successful build (LSB), create the directory of that date and copy the installers from the Latest and copy them to this directory.
-        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-12.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../../\$LSB_DATE/12/$country; cp -R $remote_location/* $remote_location/../../../\$LSB_DATE/12/$country"
+        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-13.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../../\$LSB_DATE/13/$country; cp -R $remote_location/* $remote_location/../../../\$LSB_DATE/13/$country"
 fi
 
 # Create a remote directory if not present
 echo "Creating $remote_location on the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location $pem_remote_location >> autobuild.log 2>&1
-
-echo "Uploading pem installers to $pem_remote_location on the builds server" >> autobuild.log
-rsync -avh --del output/{pem*,sqlprof*,build-pvt*,php_edbpem*} buildfarm@builds.enterprisedb.com:$pem_remote_location/ >> autobuild.log 2>&1
+ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location  >> autobuild.log 2>&1
 
 echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-rsync -avh --del --exclude={pem*,sqlprof*,build-pvt*,server.img,php_edbpem*} output/ buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
+rsync -avh --del --exclude={build-pvt*,server.img} output/ buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
 
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log

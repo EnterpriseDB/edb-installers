@@ -27,7 +27,7 @@ cp -f $QTDIR/plugins/platforms/libqcocoa.dylib "$bundle/Contents/PlugIns/platfor
 cp -r $QTDIR/plugins/bearer "$bundle/Contents/PlugIns/" || { echo bearer not found in $QTDIR/plugins/; exit 1; }
 cp -r $QTDIR/plugins/imageformats "$bundle/Contents/PlugIns/" || { echo imageformats not found in $QTDIR/plugins/; exit 1; }
 cp -r $QTDIR/plugins/printsupport "$bundle/Contents/PlugIns/" || { echo printsupport not found in $QTDIR/plugins/; exit 1; }
-find $bundle/Contents/PlugIns/ -name "*debug.dylib" | xargs rm -f || { echo failed to remove debug libs from plugins; exit 1; }
+find '$bundle'/Contents/PlugIns/ -name "*debug.dylib" | xargs rm -f || { echo failed to remove debug libs from plugins; exit 1; }
 cp -f $PGDIR/lib/libpq.5.dylib "$bundle/Contents/Frameworks" || { echo libpq.5.dylib not found in $PGDIR; exit 1; }
 
 function CompleteSingleApp() {
@@ -109,6 +109,8 @@ function CompleteSingleApp() {
 				if echo $lib | grep libpython || echo $lib | grep libintl > /dev/null ; then
 					fw_relpath="../../Contents/Resources/venv/lib"
 				fi
+
+				chmod 755 $todo_obj;
 				echo "Rewriting library $lib to @loader_path/$fw_relpath/$lib_bn in $todo_obj"
                                         echo install_name_tool -change "$lib" "@loader_path/$fw_relpath/$lib_bn" "$todo_obj"
 				install_name_tool -change \

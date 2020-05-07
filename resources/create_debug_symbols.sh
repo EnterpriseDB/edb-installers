@@ -15,7 +15,7 @@ generate_debug_symbols()
 	elif [ "$os" = "Darwin" ]
 	then
 		OBJCOPY=/opt/local/bin/gobjcopy
-		STRIP=/opt/local/bin/strip
+		STRIP=strip
 		DSYMUTIL=dsymutil
 	else
 		OBJCOPY=objcopy
