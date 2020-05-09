@@ -170,26 +170,19 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     PYTHON_HOME=$PGADMIN_PYTHON_OSX
     export LD_LIBRARY_PATH=\$PYTHON_HOME/lib:\$LD_LIBRARY_PATH
     # Check if Python is working and calculate PYTHON_VERSION
-    if \$PYTHON_HOME/bin/python2 -V > /dev/null 2>&1; then
-        export PYTHON_VERSION=\`\$PYTHON_HOME/bin/python2 -V 2>&1 | awk '{print \$2}' | cut -d"." -f1-2\`
-    elif \$PYTHON_HOME/bin/python3 -V > /dev/null 2>&1; then
+    if \$PYTHON_HOME/bin/python3 -V > /dev/null 2>&1; then
         export PYTHON_VERSION=\`\$PYTHON_HOME/bin/python3 -V 2>&1 | awk '{print \$2}' | cut -d"." -f1-2\`
     else
         echo "Error: Python installation missing!"
         exit 1
     fi
-    if echo \$PYTHON_VERSION | grep ^3 > /dev/null 2>&1 ; then
-        export PYTHON=\$PYTHON_HOME/bin/python3
-        export PIP=pip3
-    else
-        export PYTHON=\$PYTHON_HOME/bin/python2
-        export PIP=pip
-    fi
+    export PYTHON=\$PYTHON_HOME/bin/python3
+    export PIP=pip3
     SOURCEDIR=$PG_PATH_OSX/server/source/pgadmin.osx
     BUILDROOT=$PG_PATH_OSX/server/source/pgadmin.osx/mac-build
     test -d \$BUILDROOT || mkdir \$BUILDROOT
     cd \$BUILDROOT
-    mkdir -p venv/lib
+    mkdir -p venv/lib/python\$PYTHON_VERSION/lib-dynload
     cp -pR \$PYTHON_HOME/lib/lib*.dylib* venv/lib/
 
     #Install virtualenv if not present in python installation to create venv
@@ -224,7 +217,9 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
 
     # Build runtime
     cd \$BUILDROOT/../runtime
-    PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib" $PG_QMAKE_OSX DEFINES+=PGADMIN4_USE_WEBKIT || _die "qmake failed"
+    # python3.8-config --libs output doesn't include -lpython3.8. Hence, add that in the ldflags
+    # Also set PYTHON_CONFIG to python3 as the default python-config is python2
+    PYTHON_CONFIG="\$PYTHON_HOME/bin/python\$PYTHON_VERSION-config" PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib -lpython\$PYTHON_VERSION" $PG_QMAKE_OSX || _die "qmake failed"
     make || _die "pgadmin runtime build failed"
 
     # Copy the generated app bundle to buildroot and rename the bundle as required
@@ -305,7 +300,8 @@ EOT-PGADMIN
     echo "Building the StackBuilder"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; make all" || _die "Failed to build StackBuilder"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs" || _die "Failed to create certs directory"
-    ssh $PG_SSH_OSX "cp /opt/local/Current/certs/cacert.pem $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs/ " || _die "Failed to copy certs bundle"
+    # copy the cert and name it as required by the stackbuilder
+    ssh $PG_SSH_OSX "cp /opt/local/Current/certs/cacert.pem $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs/ca-bundle.crt" || _die "Failed to copy certs bundle"
 
     # Copy the StackBuilder app bundle into place
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; cp -pR stackbuilder.app $PG_PATH_OSX/server/staging_cache/osx.build" || _die "Failed to copy StackBuilder into the staging_cache directory"
