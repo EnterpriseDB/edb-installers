@@ -545,6 +545,7 @@ _postprocess_server_osx() {
 
     echo "Preparing restructured staging for stackbuilder"
     mkdir -p $WD/server/staging_cache/osx/stackbuilder
+    rm -rf $WD/server/staging_cache/osx/stackbuilder/stackbuilder.app
     mv $WD/server/staging_cache/osx/stackbuilder.app $WD/server/staging_cache/osx/stackbuilder/ || _die "Failed to move stackbuilder.app"
     cp -pR $WD/server/staging_cache/osx/stackbuilder/stackbuilder.app $SB_STAGING_OSX || _die "Failed to copy stackbuilder.app"
     cp -pR $WD/server/staging_cache/osx/debug_symbols/stackbuilder.app $SB_STAGING_OSX/debug_symbols
@@ -699,7 +700,6 @@ _postprocess_server_osx() {
     rm -rf server.img*
     mkdir server.img || _die "Failed to create DMG staging directory"
     mv postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-    cp $WD/server/resources/README.osx server.img/README || _die "Failed to copy the installer README file into the DMG staging directory"
    
     tar -jcvf server.img.tar.bz2 server.img || _die "Failed to create the archive."
     # Clean up the output directory on signing server before copying the image
