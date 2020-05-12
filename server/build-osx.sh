@@ -587,7 +587,6 @@ _postprocess_server_osx() {
     rm -rf server.img*
     mkdir server.img || _die "Failed to create DMG staging directory"
     mv postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
-    cp $WD/server/resources/README.osx server.img/README || _die "Failed to copy the installer README file into the DMG staging directory"
    
     tar -jcvf server.img.tar.bz2 server.img || _die "Failed to create the archive."
     # Clean up the output directory on signing server before copying the image
