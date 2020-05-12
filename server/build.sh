@@ -96,6 +96,16 @@ _prep_server() {
         patch -p1 < $WD/tarballs/icon_display_issue.patch || _die "icon_display_issue.patch doesnot applied"
     fi
 
+    # Patch to compile the pgAdmin runtime successfully on macOS with 10.19 SDK
+    if [ "$PG_TARBALL_PGADMIN" = "4.21" ]
+    then
+        if [ -e $WD/tarballs/pgadmin-oldsdk.patch ]
+        then
+            echo "Appyling the pgadmin-oldsdk.patch"
+            patch -p1 < ~/tarballs/pgadmin-oldsdk.patch || _die "failed to apply pgadmin-oldsdk.patch"
+        fi
+    fi
+
     # psycopg2 latest version 2.8 is not yet supported. Hence use the last supported version
     if [ "$PG_TARBALL_PGADMIN" = "4.4" ]
     then
