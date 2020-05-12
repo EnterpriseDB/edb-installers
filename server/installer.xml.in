@@ -4325,7 +4325,28 @@ REM The script sets environment variables helpful for PostgreSQL
           </ruleList>
         </actionGroup>
 
+        <!-- Replace the build paths in the pkgconfig files to the actual installation path
+             so that extensions can be built without having to change them manually as the
+             build paths will most likely not exist on the target machine -->
+       <substitute>
+            <files>${installdir}/lib/pkgconfig/*.pc</files>
+            <type>regexp</type>
+            <substitutionList>
+                <substitution pattern="Cflags:.*include" value="Cflags: -I${installdir}/include"/>
+            </substitutionList>
+            <substitutionList>
+                <substitution pattern="Libs:.*lib" value="Libs: -L${installdir}/lib"/>
+            </substitutionList>
+            <ruleList>
+                <compareText>
+                    <logic>equals</logic>
+                    <text>${platform_name}</text>
+                    <value>osx</value>
+                </compareText>
+            </ruleList>
+        </substitute>
     </postInstallationActionList>
+
     <installationAbortedActionList>
     <deleteFile path="${system_temp_directory}/postgresql_installer_${random_number}" abortOnError="0" showMessageOnError="0">
       <ruleList>
