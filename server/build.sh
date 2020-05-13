@@ -6,6 +6,7 @@
 if [ $PG_ARCH_OSX = 1 ]; 
 then
     source $WD/server/build-osx.sh
+    export PG_TARBALL_PGADMIN=4.20
 fi
 
 # Linux
