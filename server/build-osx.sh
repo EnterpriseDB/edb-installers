@@ -178,18 +178,13 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
         echo "Error: Python installation missing!"
         exit 1
     fi
-    if echo \$PYTHON_VERSION | grep ^3 > /dev/null 2>&1 ; then
-        export PYTHON=\$PYTHON_HOME/bin/python3
-        export PIP=pip3
-    else
-        export PYTHON=\$PYTHON_HOME/bin/python2
-        export PIP=pip
-    fi
+    export PYTHON=\$PYTHON_HOME/bin/python3
+    export PIP=pip3
     SOURCEDIR=$PG_PATH_OSX/server/source/pgadmin.osx
     BUILDROOT=$PG_PATH_OSX/server/source/pgadmin.osx/mac-build
     test -d \$BUILDROOT || mkdir \$BUILDROOT
     cd \$BUILDROOT
-    mkdir -p venv/lib
+    mkdir -p venv/lib/python\$PYTHON_VERSION/lib-dynload
     cp -pR \$PYTHON_HOME/lib/lib*.dylib* venv/lib/
 
     #Install virtualenv if not present in python installation to create venv
@@ -202,8 +197,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     \$PYTHON_HOME/bin/virtualenv --always-copy -p \$PYTHON venv || _die "Failed to create venv"
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
-    #cryptography needs to be compiled against the custom OpenSSL 1.1.1
-    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP --no-cache-dir install cryptography || _die "PIP install cryptography failed"
+    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP --no-cache-dir install psycopg2
     \$PIP --no-cache-dir install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
     rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
 
@@ -223,7 +217,9 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
 
     # Build runtime
     cd \$BUILDROOT/../runtime
-    PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib" $PG_QMAKE_OSX DEFINES+=PGADMIN4_USE_WEBKIT || _die "qmake failed"
+    # python3.8-config --libs output doesn't include -lpython3.8. Hence, add that in the ldflags
+    # Also set PYTHON_CONFIG to python3 as the default python-config is python2
+    PYTHON_CONFIG="\$PYTHON_HOME/bin/python\$PYTHON_VERSION-config" PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib -lpython\$PYTHON_VERSION" $PG_QMAKE_OSX || _die "qmake failed"
     make || _die "pgadmin runtime build failed"
 
     # Copy the generated app bundle to buildroot and rename the bundle as required
