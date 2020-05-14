@@ -289,6 +289,10 @@ _postprocess_languagepack_windows() {
 
     cd $WD/languagepack
     pushd staging/$ARCH
+
+    # DBSCM-385, Remove pyw.exe from staging as it's detected Trojan Virus.
+    find . -name "pyw.exe" | xargs rm -f {} \; || _die "Failed to clear pyw.exe from staging/$ARCHD"
+
     generate_3rd_party_license "languagepack"
     popd
 
