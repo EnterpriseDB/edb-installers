@@ -13,12 +13,14 @@ fi
 if [ $PG_ARCH_LINUX = 1 ];
 then
     source $WD/server/build-linux.sh
+    export PG_TARBALL_PGADMIN=4.20
 fi
 
 # Linux x64
 if [ $PG_ARCH_LINUX_X64 = 1 ];
 then
     source $WD/server/build-linux-x64.sh
+    export PG_TARBALL_PGADMIN=4.20
 fi
 
 # Linux ppc64

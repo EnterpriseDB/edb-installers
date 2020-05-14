@@ -218,8 +218,8 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
     #cryptography needs to be compiled against the custom OpenSSL 1.1.1
-    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP --no-cache-dir install cryptography || _die "PIP install cryptography failed"
-    \$PIP --cache-dir "~/Library/Caches/\$PIP-pgadmin" install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
+    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP --no-cache-dir install cryptography psycopg2 || _die "PIP install cryptography failed"
+    \$PIP --no-cache-dir install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
     rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
 
     # Move the python<version> directory to python so that the private environment path is found by the application.
@@ -357,8 +357,10 @@ EOT-PGADMIN
 
     echo "Some specific rewriting of shared library references"
     ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change $PG_STAGING/lib/libpq.5.dylib @loader_path/../../../../../../Frameworks/libpq.5.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libpq"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /usr/lib/libssl.0.9.8.dylib @loader_path/../../../../../../../Contents/Frameworks/libssl.1.1.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libssl"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /usr/lib/libcrypto.0.9.8.dylib @loader_path/../../../../../../../Contents/Frameworks/libcrypto.1.1.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libcrypto"
+    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /opt/local/20200101/lib/libssl.1.1.dylib @loader_path/../../../../../../Frameworks/libssl.1.1.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libssl"
+    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /opt/local/20200101/lib/libcrypto.1.1.dylib @loader_path/../../../../../../Frameworks/libcrypto.1.1.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libcrypto"
+    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /opt/local/20200101/lib/libssl.1.1.dylib @loader_path/../../../../../../../../Frameworks/libssl.1.1.dylib Contents/Resources/venv/lib/python/site-packages/cryptography/hazmat/bindings/_openssl.abi3.so" || _die "install_name_tool change failed for libssl"
+    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /opt/local/20200101/lib/libcrypto.1.1.dylib @loader_path/../../../../../../../../Frameworks/libcrypto.1.1.dylib Contents/Resources/venv/lib/python/site-packages/cryptography/hazmat/bindings/_openssl.abi3.so" || _die "install_name_tool change failed for libcrypto"
     ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -id libpq.5.dylib Contents/Frameworks/libpq.5.dylib" || _die "install_name_tool id failed for libpq"
 
     # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
@@ -445,8 +447,12 @@ _postprocess_server_osx() {
     rm -rf $WD/server/staging/osx/server-staging.tar.bz2 || _die "Failed to remove server-staging.tar from controller"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf staging" || _die "Failed to remove staging from signing server"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../server-staging.tar.bz2; mv pgAdmin\ 4.app pgAdmin4.app"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
+    #ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging/lib entitlements-server.xml" || _die "Failed to do libraries signing with entitlements"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_bundles staging" || _die "Failed to sign bundle"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_bundles staging/lib/postgresql entitlements-server.xml" || _die "Failed to sign bundle with entitlements"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging/bin entitlements-server.xml" || _die "Failed to do binaries signing with entitlements"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging; mv pgAdmin4.app pgAdmin\ 4.app; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create server-staging tar on signing server"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/staging/server-staging.tar.bz2 $WD/server/staging/osx || _die "Failed to copy server-staging to controller vm"
 
