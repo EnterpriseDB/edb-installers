@@ -195,7 +195,7 @@ REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64
 REM CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
 @SET PYTHON_HOME=$PGADMIN_PYTHON_WINDOWS_X64
-@SET PYTHON_VERSION=37
+@SET PYTHON_VERSION=38
 
 cd "$PG_PATH_WINDOWS_X64\pgadmin.windows-x64\runtime"
 $PG_QMAKE_WINDOWS_X64
@@ -433,25 +433,26 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\libxslt\\\\*.h $PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\libxslt" || _die "Failed to copy third party headers on the windows-x64 build host"
 
     # Copy the wxWidgets libraries
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_net_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_xml_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_adv_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_aui_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_core_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_html_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    #ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_stc_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_xrc_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxbase30ud_net_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxbase30u_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxbase30u_xml_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxmsw30u_adv_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxmsw30ud_aui_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxmsw30u_core_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxmsw30ud_html_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    #ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxmsw30ud_stc_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxmsw30ud_xrc_vc_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
 
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_net.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxbase28u_xml.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_adv.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_aui.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_core.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_html.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    #ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_stc.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_dll\\\\wxmsw28u_xrc.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxbase30ud_net.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxbase30ud.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxbase30ud_xml.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxmsw30ud_adv.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxmsw30ud_aui.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxmsw30ud_core.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxmsw30ud_html.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    #ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxmsw30ud_stc.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxmsw30ud_xrc.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxmsw30u_adv.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     #####################
     # pgAdmin
     #####################
@@ -468,13 +469,14 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\web \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\"" || _die "Failed to copy web folder on the windows build host"
 
     #create virtualenv and install required components using pip and compile documents and runtime
+    #ssh $PG_SSH_WINDOWS_X64 "cmd /c test -f $PGADMIN_PYTHON_WINDOWS_X64\\\\Scripts\\\\virtualenv.exe || cmd /c $PGADMIN_PYTHON_WINDOWS_X64\\\\Scripts\\\\pip3.8.exe install virtualenv"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; $PGADMIN_PYTHON_WINDOWS_X64/Scripts/virtualenv.exe venv" || _die "Failed to create venv";
     # In PG10, the version numbering scheme got changed and adopted a single digit major version (10) instead of two which is not supported by psycopg2
     # and requires a two digit version. Hence, use 9.6 installation to build pgAdmin
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\build-pgadmin-dep.bat" || _die "Failed to install pgadmin dependencies"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/sphinx-build $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/docs/en_US \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\docs\\\\en_US\\\\html\"" || _die "Failed to compile html docs"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; source $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/activate; $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/pip uninstall -y sphinx" || _die "pip uninstall sphinx failed"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-pgadmin4.bat" || _die "Failed to buildi pgadmin4 on the windows build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-pgadmin4.bat" || _die "Failed to build pgadmin4 on the windows build host"
 
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\runtime\\\Release\\\\pgAdmin4.exe \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy a program file on the windows build host"
 
@@ -506,8 +508,8 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-8.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libintl-8.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\libpq.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libpq.dll"
 
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c rd /S /Q $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\Include" || _die "Failed to remove the venv\Include directory on the build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c del $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\pip-selfcheck.json" || _die "Failed to remove venn\pip-selfcheck.json on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c rd /S /Q $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\Include"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c del $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\pip-selfcheck.json"
 
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\ \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\\"" || _die "Failed to copy venv folder on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PGADMIN_PYTHON_WINDOWS_X64\\\\DLLs \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy DLLs folder on the windows build host"
@@ -527,7 +529,7 @@ EOT
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip -o stackbuilder-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (stackbuilder-win64.zip)"
 
     # Build the code
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"$CMAKE_BUILD_GENERATOR Win64\" -D MS_VS_10=1 -D CURL_ROOT:PATH=$PG_PGBUILD_WINDOWS_X64 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS_X64 -D WX_STATIC=NO -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS_X64\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"$CMAKE_BUILD_GENERATOR Win64\" -D MS_VS_10=1 -D CURL_ROOT:PATH=$PG_PGBUILD_WINDOWS_X64 -D WX_ROOT_DIR=$PG_WXWIN_WINDOWS_X64 -D WX_VERSION="3.0" -D WX_STATIC=NO -D MSGFMT_EXECUTABLE=$PG_PGBUILD_WINDOWS_X64\\\\bin\\\\msgfmt -D CMAKE_INSTALL_PREFIX=$PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder -D CMAKE_CXX_FLAGS=\"/D _UNICODE /EHsc\" ." || _die "Failed to configure stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat stackbuilder.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/stackbuilder.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat INSTALL.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to install stackbuilder on the build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mv $PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder\\\\bin\\\\stackbuilder.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to relocate the stackbuilder executable on the build host"

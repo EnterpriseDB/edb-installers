@@ -75,11 +75,6 @@ _prep_server() {
     echo "Unpacking PostgreSQL source..."
     tar -jxvf ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL.tar.bz2
 
-    #Following patch is temporary fix to build v11 sources on Windows
-    cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/src/include
-    patch -p0 < ~/patches/locale-v13.patch || _die "locale-v13.patch was not applied"
-    cd $WD/server/source
-
     # pgAdmin
     if [ -e pgadmin4-$PG_TARBALL_PGADMIN ];
     then
