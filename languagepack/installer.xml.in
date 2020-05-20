@@ -621,6 +621,14 @@ EOF
         </substitution>
       </substitutionList>
     </substitute -->
+    <!-- remove pyw.exe in upgrade -->
+    <deleteFile path="${installdir}/Python-EDB_VERSION_PYTHON/pyw.exe">
+      <ruleList>
+         <fileTest path="${installdir}/Python-EDB_VERSION_PYTHON/pyw.exe" condition="exists" />
+         <compareText logic="equals" text="${platform_name}" value="windows"/>
+      </ruleList>
+    </deleteFile>
+
     <!-- Do not perform the below actions in case of extract-only mode -->
     <actionGroup>
       <actionList>
