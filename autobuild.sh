@@ -285,7 +285,7 @@ CopyToBuilds(){
         PLATFORM_NAME=${2,,}
         if [[ $PACKAGE_NAME == *"PEM"* ]]; then
                 PKG_NAME=$(GetPemDirName)
-                remote_location="/mnt/builds/daily_builds/$country/edb/$PKG_NAME"
+                remote_location="/mnt/builds/daily-builds/$country/edb/$PKG_NAME"
         else
                 PKG_NAME=$(GetPkgDirName $PACKAGE_NAME)
                 remote_location="/mnt/builds/daily_builds/$country/pg/$PKG_NAME"
