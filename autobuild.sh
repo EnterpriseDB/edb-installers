@@ -6,6 +6,11 @@
 BASENAME=`basename $0`
 DIRNAME=`dirname $0`
 
+declare -a PACKAGES_ARR=(SERVER APACHEHTTPD PHPPGADMIN PGJDBC PSQLODBC POSTGIS SLONY NPGSQL PGAGENT PGMEMCACHE PGBOUNCER MIGRATIONTOOLKIT SQLPROTECT UPDATE_MONITOR PEM)
+declare -a PLATFORMS_ARR=(LINUX LINUX_X64 WINDOWS WINDOWS_X64 SOLARIS_INTEL SOLARIS_SPARC HPUX OSX)
+declare -a ENABLED_PKG_ARR=()
+declare -a ENABLED_PLAT_ARR=()
+declare -a DECOUPLED_ARR=(APACHEHTTPD PHPPGADMIN PGJDBC PSQLODBC NPGSQL PGBOUNCER MIGRATIONTOOLKIT PGAGENT UPDATE_MONITOR PEM)
 # Any changes to this file should be made to all the git branches.
 
 usage()
@@ -78,6 +83,7 @@ _set_config_package()
 	if echo $PACKAGES | grep -w -i $1 > /dev/null
         then
              export PG_PACKAGE_$1=1
+             ENABLED_PKG_ARR+=( $1 )
 	else
 	     export PG_PACKAGE_$1=0
         fi
@@ -88,38 +94,56 @@ _set_config_platform()
 	if echo $PLATFORMS | grep -w -i $1 > /dev/null
         then
              export PG_ARCH_$1=1
+             ENABLED_PLAT_ARR+=( $1 )
 	else
 	     export PG_ARCH_$1=0
         fi
 }
 
+#check if value is enabled or disabled in setting.sh file
+IsValueEnabled(){
+        searchStr=$1
+        varStatus=`cat settings.sh | grep -w $1 | cut -f 3 -d ' '`
+        echo $varStatus
+}
+# Query if component is coupled
+IsCoupled(){
+        componentName=$1
+        [[ ! " ${DECOUPLED_ARR[@]} " =~ " ${componentName} " ]] && return 0 || return 1;
+}
+
 #If the platforms list is defined as 'all', then no need to set the config variables. settings.sh will take care of it.
 if ! echo $PLATFORMS | grep -w -i all > /dev/null
 then
-_set_config_platform LINUX
-_set_config_platform LINUX_X64
-_set_config_platform OSX
-_set_config_platform WINDOWS
-_set_config_platform WINDOWS_X64
+        for PLAT in "${PLATFORMS_ARR[@]}";
+        do
+                _set_config_platform $PLAT
+        done
+else
+        for plat in "${PLATFORMS_ARR[@]}";
+        do
+                rValue=$(IsValueEnabled PG_ARCH_$plat)
+                if [[ $rValue == 1 ]]; then
+                        ENABLED_PLAT_ARR+=( $plat )
+                fi
+        done
 fi
 
 #If the packages list is defined as 'all', then no need to set the config variables. settings.sh will take care of it.
 if ! echo $PACKAGES | grep -w -i all > /dev/null
 then
-_set_config_package SERVER
-_set_config_package APACHEPHP
-_set_config_package PHPPGADMIN
-_set_config_package PGJDBC
-_set_config_package PSQLODBC
-_set_config_package POSTGIS
-_set_config_package SLONY
-_set_config_package NPGSQL
-_set_config_package PGAGENT
-_set_config_package PGMEMCACHE
-_set_config_package PGBOUNCER
-_set_config_package MIGRATIONTOOLKIT
-_set_config_package SQLPROTECT
-_set_config_package UPDATE_MONITOR
+        for pkg in "${PACKAGES_ARR[@]}";
+        do
+                _set_config_package $pkg
+        done
+else
+        for pkg in "${PACKAGES_ARR[@]}";
+        do
+                rValue=$(IsValueEnabled PG_PACKAGE_$pkg)
+                if [[ $rValue == 1 ]]; then
+                        ENABLED_PKG_ARR+=( $pkg )
+                fi
+        done
 fi
 
 # Generic mail variables
@@ -213,51 +237,99 @@ git pull >> autobuild.log 2>&1
 # Run the build, and dump the output to a log file
 echo "Running the build (REL-9_5) " >> autobuild.log
 ./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-95.log
-
-remote_location="/var/www/html/builds/DailyBuilds/Installers/PG"
-pem_remote_location="/var/www/html/builds/DailyBuilds/Installers/PEM/v6.0"
+VERSION_NUMBER=`cat versions.sh | grep PG_MAJOR_VERSION= | cut -f 2 -d '='`
+STR_VERSION_NUMBER=`echo $VERSION_NUMBER | sed 's/\.//'`
 
 # determine the host location
 curl -O http://cm-dashboard2.enterprisedb.com/interfaces/cm-dashboard-status.sh
 chmod 755 cm-dashboard-status.sh
 country="$(source ./cm-dashboard-status.sh; GetBuildsLocation)"
 
-# Different location for the manual and cron triggered builds.
-if [ "$BUILD_USER" == "" ]
-then
-        echo "Host country = $country" >> autobuild.log
-        remote_location="$remote_location/Latest/9.5/$country"
-        pem_remote_location="$pem_remote_location/$DATE/$country"
-else
-        remote_location="$remote_location/Custom/$BUILD_USER/9.5/$country/$BUILD_NUMBER"
-        pem_remote_location="$pem_remote_location/Custom/$BUILD_USER/$country/$BUILD_NUMBER"
-fi
-
+#-------------------
+GetPkgDirName(){
+        COMP_NAME=$1
+        PACKAGES=${COMP_NAME,,}
+        SERVER_VERSION=$STR_VERSION_NUMBER
+        if ! (IsCoupled $COMP_NAME); then
+                COMP_VERSION=`cat versions.sh | grep PG_VERSION_$COMP_NAME= | cut -f1,2 -d "." | cut -f 2 -d '='`
+                if [[ $PACKAGES != *"pgbouncer"* ]]; then
+                        COMP_VERSION=$(echo "${COMP_VERSION}" | cut -c1-2)
+                fi
+                if [[ $COMP_VERSION == *"PG_MAJOR_VERSION"* ]]; then
+                        COMP_VERSION_NUMBER=$SERVER_VERSION
+                else
+                        COMP_VERSION_NUMBER=`echo $COMP_VERSION | sed 's/\.//'`
+                fi
+                P_NAME=$PACKAGES/$COMP_VERSION_NUMBER
+        else
+                P_NAME=postgresql/$SERVER_VERSION
+        fi
+        echo $P_NAME
+}
+#------------------
+GetPemDirName(){
+        PEM_VERSION_FILE="${DIRNAME}/pvt_packages/PEM/common/version.h"
+        if [ -f ${PEM_VERSION_FILE} ]; then
+                PEM_CURRENT_VERSION="v$(grep "VERSION_PACKAGE" ${PEM_VERSION_FILE} | awk '{print $3}')"
+        else
+                PEM_CURRENT_VERSION=unknown
+        fi
+        p_name=pem/${PEM_CURRENT_VERSION}
+        echo $p_name
+}
+#------------------
 _mail_status "build-95.log" "build-pvt.log" "9.5"
+#------------------
+CopyToBuilds(){
+        PACKAGE_NAME=$1
+        PLATFORM_NAME=${2,,}
+        if [[ $PACKAGE_NAME == *"PEM"* ]]; then
+                PKG_NAME=$(GetPemDirName)
+                remote_location="/mnt/builds/daily_builds/$country/edb/$PKG_NAME"
+        else
+                PKG_NAME=$(GetPkgDirName $PACKAGE_NAME)
+                remote_location="/mnt/builds/daily_builds/$country/pg/$PKG_NAME"
+        fi
+        echo "Purging old builds from the builds server" >> autobuild.log
+        ssh builds.enterprisedb.com <<EOF
 
-if [ "$BUILD_USER" == "" ]
-then
-        # Get the date of the last successful build (LSB), create the directory of that date and copy the installers from the Latest and copy them to this directory.
-        ssh buildfarm@builds.enterprisedb.com "export LSB_DATE=\`ls -l --time-style=+%Y-%m-%d $remote_location/build-95.log | awk '{print \$6}'\`; mkdir -p $remote_location/../../../\$LSB_DATE/9.5/$country; cp -R $remote_location/* $remote_location/../../../\$LSB_DATE/9.5/$country"
-fi
+            pushd $remote_location || exit 1
 
-# Create a remote directory if not present
-echo "Creating $remote_location on the builds server" >> autobuild.log
-ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
+            ToKeepDir=15
 
-echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-rsync -avh --del --exclude={pem*,sqlprof*,build-pvt*,server.img,php_edbpem*} output/ buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
+            DirCount=\$(ls -rt | wc -l)
 
-# Create PEM directory and try to upload the PEM installers only when skippvpkg is not defined
-if [ "$SKIPPVTPACKAGES" == "" ]
-then
-	echo "Creating $pem_remote_location on the builds server" >> autobuild.log
-	ssh buildfarm@builds.enterprisedb.com mkdir -p $pem_remote_location >> autobuild.log 2>&1
-	echo "Uploading pem installers to $pem_remote_location on the builds server" >> autobuild.log
-	rsync -avh --del output/{pem*,sqlprof*,build-pvt*,php_edbpem*} buildfarm@builds.enterprisedb.com:$pem_remote_location/ >> autobuild.log 2>&1
-fi
-
-echo "#######################################################################" >> autobuild.log
-echo "Build run completed at `date`" >> autobuild.log
-echo "#######################################################################" >> autobuild.log
-echo "" >> autobuild.log
+            if [ "\$DirCount" -gt  "\$ToKeepDir" ];
+            then
+                ls -rt | head -\$(expr \$DirCount - \$ToKeepDir) | grep 201 | xargs -I{} rm -rf {}
+            fi
+EOF
+        # Different location for the manual and cron triggered builds.
+        if [ "$BUILD_USER" == "" ]
+        then
+                echo "Host country = $country" >> autobuild.log
+                remote_location="$remote_location/$DATE/installers/$PLATFORM_NAME"
+        else
+                remote_location="$remote_location/Custom/$BUILD_USER/$DATE/$BUILD_NUMBER"
+        fi
+        remote_location=${remote_location,,}
+        _mail_status "build-12.log" "build-pvt.log" "12"
+        # Create a remote directory if not present
+        platInstallerName=`echo $PLATFORM_NAME | sed 's/_/-/'`
+        echo "Creating $remote_location on the builds server" >> autobuild.log
+        ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
+        echo "Uploading output to $remote_location on the builds server" >> autobuild.log
+        rsync -avh --del output/*${PACKAGE_NAME,,}*${platInstallerName}.* buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
+        echo "#######################################################################" >> autobuild.log
+        echo "Build run completed at `date`" >> autobuild.log
+        echo "#######################################################################" >> autobuild.log
+        echo "" >> autobuild.log
+}
+# Copy Installers to Build
+for PLAT in "${ENABLED_PLAT_ARR[@]}";
+do
+        for PKG in "${ENABLED_PKG_ARR[@]}";
+        do
+                CopyToBuilds $PKG $PLAT
+        done
+done
