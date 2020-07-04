@@ -264,7 +264,7 @@ GetPkgDirName(){
         else
                 P_NAME=postgresql/$SERVER_VERSION
         fi
-        echo $P_NAME
+        echo ${P_NAME,,}
 }
 #------------------
 GetPemDirName(){
@@ -275,7 +275,7 @@ GetPemDirName(){
                 PEM_CURRENT_VERSION=unknown
         fi
         p_name=pem/${PEM_CURRENT_VERSION}
-        echo $p_name
+        echo ${p_name,,}
 }
 #------------------
 _mail_status "build-95.log" "build-pvt.log" "9.5"
@@ -310,10 +310,9 @@ EOF
                 echo "Host country = $country" >> autobuild.log
                 remote_location="$remote_location/$DATE/installers/$PLATFORM_NAME"
         else
-                remote_location="$remote_location/Custom/$BUILD_USER/$DATE/$BUILD_NUMBER"
+		build_user=$BUILD_USER
+                remote_location="$remote_location/custom/$build_user/$DATE/$BUILD_NUMBER"
         fi
-        remote_location=${remote_location,,}
-        _mail_status "build-12.log" "build-pvt.log" "12"
         # Create a remote directory if not present
         platInstallerName=`echo $PLATFORM_NAME | sed 's/_/-/'`
         echo "Creating $remote_location on the builds server" >> autobuild.log
