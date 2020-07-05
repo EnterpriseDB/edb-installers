@@ -244,7 +244,6 @@ STR_VERSION_NUMBER=`echo $VERSION_NUMBER | sed 's/\.//'`
 curl -O http://cm-dashboard2.enterprisedb.com/interfaces/cm-dashboard-status.sh
 chmod 755 cm-dashboard-status.sh
 country="$(source ./cm-dashboard-status.sh; GetBuildsLocation)"
-
 #-------------------
 GetPkgDirName(){
         COMP_NAME=$1
@@ -283,6 +282,7 @@ _mail_status "build-95.log" "build-pvt.log" "9.5"
 CopyToBuilds(){
         PACKAGE_NAME=$1
         PLATFORM_NAME=${2,,}
+	country=${country,,}
         if [[ $PACKAGE_NAME == *"PEM"* ]]; then
                 PKG_NAME=$(GetPemDirName)
                 remote_location="/mnt/builds/DailyBuilds/daily-builds/$country/edb/$PKG_NAME"
