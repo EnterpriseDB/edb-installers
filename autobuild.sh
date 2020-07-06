@@ -6,7 +6,7 @@
 BASENAME=`basename $0`
 DIRNAME=`dirname $0`
 
-declare -a PACKAGES_ARR=(SERVER APACHEHTTPD PHPPGADMIN PGJDBC PSQLODBC POSTGIS SLONY NPGSQL PGAGENT PGMEMCACHE PGBOUNCER MIGRATIONTOOLKIT SQLPROTECT UPDATE_MONITOR PEM)
+declare -a PACKAGES_ARR=(SERVER APACHEHTTPD PHPPGADMIN PGJDBC PSQLODBC POSTGIS SLONY NPGSQL PGAGENT PGMEMCACHE PGBOUNCER MIGRATIONTOOLKIT SQLPROTECT UPDATE_MONITOR PEM HDFS_FDW)
 declare -a PLATFORMS_ARR=(LINUX LINUX_X64 WINDOWS WINDOWS_X64 SOLARIS_INTEL SOLARIS_SPARC HPUX OSX)
 declare -a ENABLED_PKG_ARR=()
 declare -a ENABLED_PLAT_ARR=()
@@ -251,13 +251,10 @@ GetPkgDirName(){
         SERVER_VERSION=$STR_VERSION_NUMBER
         if ! (IsCoupled $COMP_NAME); then
                 COMP_VERSION=`cat versions.sh | grep PG_VERSION_$COMP_NAME= | cut -f1,2 -d "." | cut -f 2 -d '='`
-                if [[ $PACKAGES != *"pgbouncer"* ]]; then
-                        COMP_VERSION=$(echo "${COMP_VERSION}" | cut -c1-2)
-                fi
                 if [[ $COMP_VERSION == *"PG_MAJOR_VERSION"* ]]; then
                         COMP_VERSION_NUMBER=$SERVER_VERSION
                 else
-                        COMP_VERSION_NUMBER=`echo $COMP_VERSION | sed 's/\.//'`
+                        COMP_VERSION_NUMBER=$COMP_VERSION
                 fi
                 P_NAME=$PACKAGES/$COMP_VERSION_NUMBER
         else
