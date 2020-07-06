@@ -313,12 +313,19 @@ EOF
 		build_user=$BUILD_USER
                 remote_location="$remote_location/custom/$build_user/$DATE/$BUILD_NUMBER"
         fi
+	if [[ ${PACKAGE_NAME,,}} == *"server"* ]]; then
+                PACKAGE_NAME=postgres
+        fi
         # Create a remote directory if not present
         platInstallerName=`echo $PLATFORM_NAME | sed 's/_/-/'`
         echo "Creating $remote_location on the builds server" >> autobuild.log
         ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
         echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-        rsync -avh --del output/*${PACKAGE_NAME,,}*${platInstallerName}.* buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
+	if [[ $platInstallerName == *"osx"* ]]; then
+		rsync -avh --del output/*${PACKAGE_NAME,,}*${platInstallerName}*.* buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
+	else
+		rsync -avh --del output/*${PACKAGE_NAME,,}*${platInstallerName}.* buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
+	fi
         echo "#######################################################################" >> autobuild.log
         echo "Build run completed at `date`" >> autobuild.log
         echo "#######################################################################" >> autobuild.log
