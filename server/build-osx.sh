@@ -205,45 +205,40 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     PATH=$PG_STAGING/bin:\$PATH
     LD_LIBRARY_PATH=$PG_STAGING/lib:\$LD_LIBRARY_PATH
     # Set PYTHON_VERSION variable required for pgadmin build
-    PYTHON_HOME=$PGADMIN_PYTHON_OSX
-    export LD_LIBRARY_PATH=\$PYTHON_HOME/lib:\$LD_LIBRARY_PATH
+    export PGADMIN_PYTHON_DIR=$PGADMIN_PYTHON_OSX
+    export LD_LIBRARY_PATH=\$PGADMIN_PYTHON_DIR/lib:\$LD_LIBRARY_PATH
     # Check if Python is working and calculate PYTHON_VERSION
-    if \$PYTHON_HOME/bin/python2 -V > /dev/null 2>&1; then
-        export PYTHON_VERSION=\`\$PYTHON_HOME/bin/python2 -V 2>&1 | awk '{print \$2}' | cut -d"." -f1-2\`
-    elif \$PYTHON_HOME/bin/python3 -V > /dev/null 2>&1; then
-        export PYTHON_VERSION=\`\$PYTHON_HOME/bin/python3 -V 2>&1 | awk '{print \$2}' | cut -d"." -f1-2\`
+    if \$PGADMIN_PYTHON_DIR/bin/python3 -V > /dev/null 2>&1; then
+        export PYTHON_VERSION=\`\$PGADMIN_PYTHON_DIR/bin/python3 -V 2>&1 | awk '{print \$2}' | cut -d"." -f1-2\`
     else
         echo "Error: Python installation missing!"
         exit 1
     fi
-    if echo \$PYTHON_VERSION | grep ^3 > /dev/null 2>&1 ; then
-        export PYTHON=\$PYTHON_HOME/bin/python3
-        export PIP=pip3
-    else
-        export PYTHON=\$PYTHON_HOME/bin/python2
-        export PIP=pip
-    fi
+    export PYTHON=\$PGADMIN_PYTHON_DIR/bin/python3
+    export PIP=pip3
     SOURCEDIR=$PG_PATH_OSX/server/source/pgadmin.osx
     BUILDROOT=$PG_PATH_OSX/server/source/pgadmin.osx/mac-build
     test -d \$BUILDROOT || mkdir \$BUILDROOT
     cd \$BUILDROOT
     mkdir -p venv/lib
-    cp -pR \$PYTHON_HOME/lib/lib*.dylib* venv/lib/
+    cp -pR \$PGADMIN_PYTHON_DIR/lib/lib*.dylib* venv/lib/
 
     #Install virtualenv if not present in python installation to create venv
-    if [ ! -f \$PYTHON_HOME/bin/virtualenv ]; then
+    if [ ! -f \$PGADMIN_PYTHON_DIR/bin/virtualenv ]; then
         echo "Installing virtualenv..."
-        \$PYTHON_HOME/bin/pip3 install virtualenv
+        \$PGADMIN_PYTHON_DIR/bin/\$PIP install virtualenv
         export UNINSTALL_VIRTUALENV=1
     fi
 
-    \$PYTHON_HOME/bin/virtualenv --always-copy -p \$PYTHON venv || _die "Failed to create venv"
-    cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
+    \$PGADMIN_PYTHON_DIR/bin/virtualenv --always-copy -p \$PYTHON venv  || _die "Failed to create venv"
+    mkdir -p venv/lib/python\$PYTHON_VERSION/lib-dynload/
+    cp -f \$PGADMIN_PYTHON_DIR/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
     #cryptography needs to be compiled against the custom OpenSSL 1.1.1
-    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP --no-cache-dir install cryptography psycopg2 || _die "PIP install cryptography failed"
+    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP --no-cache-dir install cryptography || _die "PIP install cryptography failed"
+    export CC=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
     \$PIP --no-cache-dir install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
-    rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PYTHON_HOME/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
+    rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PGADMIN_PYTHON_DIR/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
 
     # Move the python<version> directory to python so that the private environment path is found by the application.
     export PYMODULES_PATH=\`python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"\`
@@ -256,12 +251,14 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     #Uninstall virtualenv if installed above
     if [ ! -z "\$UNINSTALL_VIRTUALENV"  ]
     then
-        \$PYTHON_HOME/bin/pip uninstall --yes virtualenv
+        \$PGADMIN_PYTHON_DIR/bin/pip uninstall --yes virtualenv
     fi
 
     # Build runtime
     cd \$BUILDROOT/../runtime
-    PGADMIN_LDFLAGS="-L\$PYTHON_HOME/lib" $PG_QMAKE_OSX DEFINES+=PGADMIN4_USE_WEBKIT || _die "qmake failed"
+    # python3.8-config --libs output doesn't include -lpython3.8. Hence, add that in the ldflags
+    # Also set PYTHON_CONFIG to python3 as the default python-config is python2
+    PYTHON_CONFIG="\$PGADMIN_PYTHON_DIR/bin/python\$PYTHON_VERSION-config" PGADMIN_LDFLAGS="-L\$PGADMIN_PYTHON_DIR/lib -lpython\$PYTHON_VERSION" $PG_QMAKE_OSX || _die "qmake failed"
     make || _die "pgadmin runtime build failed"
 
     # Copy the generated app bundle to buildroot and rename the bundle as required
@@ -289,7 +286,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cp -pR \$BUILDROOT/venv "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/" || exit 1
 
     # remove the unwanted files from the virtual environment
-    rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/.Python" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/include" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/bin"
+    rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/.Python" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/include" 
 
     cd $PG_PATH_OSX/server/resources/
     # run complete-bundle to copy the dependent libraries and frameworks and fix the rpaths
@@ -301,6 +298,9 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cp "\$BUILDROOT/venv/bin/python" "\$BUILDROOT/pgAdmin 4.app/Contents/Resources/venv/bin"
 
     # Removing the unwanted files and directories from the pgAdmin4 staging
+    cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/bin"
+    find . \( -name "*.py" \) -delete
+    rm -rf __pycache__
     cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv"
     find . \( -name test -o -name tests \) -type d | xargs rm -rf
     cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/web"

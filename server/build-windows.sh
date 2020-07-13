@@ -167,8 +167,8 @@ EOT
 cat <<EOT > "vc-build-pgadmin4.bat"
 REM Setting Visual Studio Environment
 CALL "$PG_VS14INSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
-@SET PYTHON_HOME=$PGADMIN_PYTHON_WINDOWS
-@SET PYTHON_VERSION=37
+@SET PGADMIN_PYTHON_DIR=$PGADMIN_PYTHON_WINDOWS
+@SET PYTHON_VERSION=38
 
 cd "$PG_PATH_WINDOWS\pgadmin.windows\runtime"
 $PG_QMAKE_WINDOWS
@@ -453,8 +453,8 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libintl-8.dll \"$PG_PATH_WINDOWS\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libintl-8.dll"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\output.build\\\\bin\\\\libpq.dll \"$PG_PATH_WINDOWS\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libpq.dll"
 
-    ssh $PG_SSH_WINDOWS "cmd /c rd /S /Q $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\Include" || _die "Failed to remove the venv\Include directory on the build host"
-    ssh $PG_SSH_WINDOWS "cmd /c del $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\pip-selfcheck.json" || _die "Failed to remove venn\pip-selfcheck.json on the build host"
+    ssh $PG_SSH_WINDOWS "cmd /c rd /S /Q $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\Include"
+    ssh $PG_SSH_WINDOWS "cmd /c del $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\pip-selfcheck.json"
 
     ssh $PG_SSH_WINDOWS "cp -R $PG_PATH_WINDOWS\\\\pgadmin.windows\\\\venv\\\\ \"$PG_PATH_WINDOWS\\\\output.build\\\\pgAdmin 4\\\\\"" || _die "Failed to copy venv folder on the windows build host"
     ssh $PG_SSH_WINDOWS "cp -R $PGADMIN_PYTHON_WINDOWS\\\\pythonw.exe \"$PG_PATH_WINDOWS\\\\output.build\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy pythonw.exe binary on the windows build host"
