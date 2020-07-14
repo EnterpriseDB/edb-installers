@@ -310,7 +310,7 @@ EOF
 		build_user=$BUILD_USER
                 remote_location="$remote_location/custom/$build_user/$DATE/$BUILD_NUMBER"
         fi
-	if [[ ${PACKAGE_NAME,,}} == *"server"* ]]; then
+        if [[ ${PACKAGE_NAME,,} == *"server"* ]]; then
                 PACKAGE_NAME=postgres
         fi
         # Create a remote directory if not present
