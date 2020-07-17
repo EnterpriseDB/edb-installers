@@ -319,14 +319,10 @@ EOF
         ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
         echo "Uploading output to $remote_location on the builds server" >> autobuild.log
 	if [[ $platInstallerName == *"osx"* ]]; then
-		rsync -avh --del output/*${PACKAGE_NAME,,}*${platInstallerName}*.* buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
+		scp -rp output/*${PACKAGE_NAME,,}*${platInstallerName}*.* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
 	else
-		rsync -avh --del output/*${PACKAGE_NAME,,}*${platInstallerName}.* buildfarm@builds.enterprisedb.com:$remote_location/ >> autobuild.log 2>&1
+		scp -rp output/*${PACKAGE_NAME,,}*${platInstallerName}.* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
 	fi
-        echo "#######################################################################" >> autobuild.log
-        echo "Build run completed at `date`" >> autobuild.log
-        echo "#######################################################################" >> autobuild.log
-        echo "" >> autobuild.log
 }
 # Copy Installers to Build
 for PLAT in "${ENABLED_PLAT_ARR[@]}";
@@ -336,3 +332,7 @@ do
                 CopyToBuilds $PKG $PLAT
         done
 done
+echo "#######################################################################" >> autobuild.log
+echo "Build run completed at `date`" >> autobuild.log
+echo "#######################################################################" >> autobuild.log
+echo "" >> autobuild.log
