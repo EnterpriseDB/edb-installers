@@ -520,8 +520,8 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-8.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libintl-8.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\libpq.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libpq.dll"
 
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c rd /S /Q $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\Include" || _die "Failed to remove the venv\Include directory on the build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c del $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\pip-selfcheck.json" || _die "Failed to remove venn\pip-selfcheck.json on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c rd /S /Q $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\Include"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c del $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\pip-selfcheck.json"
 
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\ \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\\"" || _die "Failed to copy venv folder on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PGADMIN_PYTHON_WINDOWS_X64\\\\DLLs \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy DLLs folder on the windows build host"
