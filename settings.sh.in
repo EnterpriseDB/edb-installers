@@ -113,6 +113,7 @@ PG_FRAMEWORKVERSION_WINDOWS=v4.0.30319
 PG_FRAMEWORKSDKDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0\\\\SDK\\\\v3.5"
 PG_DEVENVDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0\\\\Common7\\\\IDE"
 PG_PGBUILD_WINDOWS="C:\\\\pgBuild32"
+PG_PGBUILD_OPENSSL_WINDOWS="C:\\\\pgBuild32-openssl-1.1.1g"
 PG_BINARY_PATH="D:\\\\pg-languagepack"
 PG_WXWIN_WINDOWS="$PG_PGBUILD_WINDOWS\\\\wxWidgets-2.8.12"
 PG_CMAKE_WINDOWS="C:\\\\cmake-x86"
