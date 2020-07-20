@@ -251,6 +251,9 @@ GetPkgDirName(){
         SERVER_VERSION=$STR_VERSION_NUMBER
         if ! (IsCoupled $COMP_NAME); then
                 COMP_VERSION=`cat versions.sh | grep PG_VERSION_$COMP_NAME= | cut -f1,2 -d "." | cut -f 2 -d '='`
+		if [[ $PACKAGES == *"languagepack"* ]]; then
+			COMP_VERSION=`cat versions.sh | grep PG_LP_VERSION= | cut -f1,2 -d "." | cut -f 2 -d '='`
+		fi
                 if [[ $COMP_VERSION == *"PG_MAJOR_VERSION"* ]]; then
                         COMP_VERSION_NUMBER=$SERVER_VERSION
                 else
