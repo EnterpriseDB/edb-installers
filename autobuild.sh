@@ -289,6 +289,7 @@ GetPemDirName(){
         p_name=pem/${PEM_CURRENT_VERSION}
         echo ${p_name,,}
 }
+declare -a PEM_PKG_ARR=(pem sqlprofiler )
 #------------------
 _mail_status "build-96.log" "build-pvt.log" "9.6"
 #------------------
@@ -328,20 +329,26 @@ EOF
                 build_user=$BUILD_USER
                 remote_location="$remote_location/custom/$build_user/$DATE/$BUILD_NUMBER"
         fi
-        if [[ ${PACKAGE_NAME,,} == *"server"* ]]; then
-                PACKAGE_NAME=postgres
-        fi
         # Create a remote directory if not present
         platInstallerName=`echo $PLATFORM_NAME | sed 's/_/-/'`
+	if  [[ $platInstallerName == *"osx"* ]] || [[ $platInstallerName == *"x64"* ]]; then
+		platInstallerName=${platInstallerName}*.*
+	else
+		platInstallerName=${platInstallerName}.*
+	fi
 	installername=$( GetInstallerName $PACKAGE_NAME )
         echo "Creating $remote_location on the builds server" >> autobuild.log
         ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
         echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-        if [[ $platInstallerName == *"osx"* ]]; then
-                scp -rp output/*${installername}*${platInstallerName}*.* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
-        else
-                scp -rp output/*${installername}*${platInstallerName}.* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
-        fi
+	if [[ ${PACKAGE_NAME,,} == *"pem"* ]] && [[ $PACKAGE_NAME != *"PEMHTTPD"* ]] ; then
+		for pempkg in "${PEM_PKG_ARR[@]}"; do
+			scp -rp output/*${pempkg}*${platInstallerName} buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
+		done
+		scp -rp output/build-pvt* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
+		scp -rp output/server.img buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
+	else
+		scp -rp output/*${installername}*${platInstallerName} buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
+	fi
 }
 # Copy Installers to Build
 for PLAT in "${ENABLED_PLAT_ARR[@]}";
