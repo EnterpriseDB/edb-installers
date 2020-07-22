@@ -6,11 +6,11 @@
 BASENAME=`basename $0`
 DIRNAME=`dirname $0`
 
-declare -a PACKAGES_ARR=(SERVER APACHEHTTPD PHPPGADMIN PGJDBC PSQLODBC POSTGIS SLONY NPGSQL PGAGENT PGMEMCACHE PGBOUNCER MIGRATIONTOOLKIT SQLPROTECT UPDATE_MONITOR PEM)
+declare -a PACKAGES_ARR=(SERVER APACHEHTTPD PHPPGADMIN PGJDBC PSQLODBC POSTGIS SLONY NPGSQL PGAGENT PGMEMCACHE PGBOUNCER MIGRATIONTOOLKIT SQLPROTECT UPDATE_MONITOR PEM HDFS_FDW LANGUAGEPACK PEMHTTPD)
 declare -a PLATFORMS_ARR=(LINUX LINUX_X64 WINDOWS WINDOWS_X64 OSX)
 declare -a ENABLED_PKG_ARR=()
 declare -a ENABLED_PLAT_ARR=()
-declare -a DECOUPLED_ARR=(APACHEHTTPD PHPPGADMIN PGJDBC PSQLODBC NPGSQL PGBOUNCER MIGRATIONTOOLKIT PGAGENT UPDATE_MONITOR PEM)
+declare -a DECOUPLED_ARR=(APACHEHTTPD PHPPGADMIN PGJDBC PSQLODBC NPGSQL PGBOUNCER MIGRATIONTOOLKIT PGAGENT UPDATE_MONITOR PEM LANGUAGEPACK PEMHTTPD)
 # Any changes to this file should be made to all the git branches.
 
 usage()
@@ -250,6 +250,9 @@ GetPkgDirName(){
         SERVER_VERSION=$STR_VERSION_NUMBER
         if ! (IsCoupled $COMP_NAME); then
                 COMP_VERSION=`cat versions.sh | grep PG_VERSION_$COMP_NAME= | cut -f1,2 -d "." | cut -f 2 -d '='`
+		if [[ $PACKAGES == *"pemhttpd" ]]; then
+			COMP_VERSION=`cat versions.sh | grep PG_VERSION_APACHE= | cut -f1,2 -d "." | cut -f 2 -d '='`
+		fi
                 if [[ $COMP_VERSION == *"PG_MAJOR_VERSION"* ]]; then
                         COMP_VERSION_NUMBER=$SERVER_VERSION
                 else
@@ -260,6 +263,20 @@ GetPkgDirName(){
                 P_NAME=postgresql/$SERVER_VERSION
         fi
         echo ${P_NAME,,}
+}
+#------------------
+GetInstallerName(){
+        pkg_name=${1,,}
+        if [[ $pkg_name == *"server"* ]]; then
+                installerName=postgresql
+        elif [[ $pkg_name == *"update_monitor"* ]]; then
+                installerName=updatemonitor
+        elif [[ $pkg_name == *"pemhttpd"* ]]; then
+                installerName=pem-httpd
+        else
+                installerName=$pkg_name
+        fi
+        echo ${installerName,,}
 }
 #------------------
 GetPemDirName(){
@@ -279,7 +296,7 @@ CopyToBuilds(){
         PACKAGE_NAME=$1
         PLATFORM_NAME=${2,,}
         country=${country,,}
-        if [[ $PACKAGE_NAME == *"PEM"* ]]; then
+        if [[ $PACKAGE_NAME == *"PEM"* ]] && [[ $PACKAGE_NAME != *"PEMHTTPD"* ]]; then
                 PKG_NAME=$(GetPemDirName)
                 remote_location="/mnt/builds/DailyBuilds/daily-builds/$country/edb/$PKG_NAME"
         else
@@ -316,13 +333,14 @@ EOF
         fi
         # Create a remote directory if not present
         platInstallerName=`echo $PLATFORM_NAME | sed 's/_/-/'`
+	installername=$( GetInstallerName $PACKAGE_NAME )
         echo "Creating $remote_location on the builds server" >> autobuild.log
         ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
         echo "Uploading output to $remote_location on the builds server" >> autobuild.log
         if [[ $platInstallerName == *"osx"* ]]; then
-                scp -rp output/*${PACKAGE_NAME,,}*${platInstallerName}*.* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
+                scp -rp output/*${installername}*${platInstallerName}*.* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
         else
-                scp -rp output/*${PACKAGE_NAME,,}*${platInstallerName}.* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
+                scp -rp output/*${installername}*${platInstallerName}.* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
         fi
 }
 # Copy Installers to Build
