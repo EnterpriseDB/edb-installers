@@ -294,7 +294,7 @@ GetPemDirName(){
 }
 declare -a PEM_PKG_ARR=(pem sqlprofiler php_edbpem)
 #------------------
-_mail_status "build-11.log" "build-pvt.log" "11"
+_mail_status "build-12.log" "build-pvt.log" "12"
 #------------------
 CopyToBuilds(){
         PACKAGE_NAME=$1
