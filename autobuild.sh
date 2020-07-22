@@ -263,6 +263,20 @@ GetPkgDirName(){
         echo ${P_NAME,,}
 }
 #------------------
+GetInstallerName(){
+        pkg_name=${1,,}
+        if [[ $pkg_name == *"server"* ]]; then
+                installerName=postgresql
+        elif [[ $pkg_name == *"update_monitor"* ]]; then
+                installerName=updatemonitor
+        elif [[ $pkg_name == *"pemhttpd"* ]]; then
+                installerName=pem-httpd
+        else
+                installerName=$pkg_name
+        fi
+        echo ${installerName,,}
+}
+#------------------
 GetPemDirName(){
         PEM_VERSION_FILE="${DIRNAME}/pvt_packages/PEM/common/version.h"
         if [ -f ${PEM_VERSION_FILE} ]; then
@@ -315,13 +329,14 @@ EOF
         fi
         # Create a remote directory if not present
         platInstallerName=`echo $PLATFORM_NAME | sed 's/_/-/'`
+        installername=$( GetInstallerName $PACKAGE_NAME )
         echo "Creating $remote_location on the builds server" >> autobuild.log
         ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
         echo "Uploading output to $remote_location on the builds server" >> autobuild.log
 	if [[ $platInstallerName == *"osx"* ]]; then
-		scp -rp output/*${PACKAGE_NAME,,}*${platInstallerName}*.* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
+		scp -rp output/*${installername}*${platInstallerName}*.* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
 	else
-		scp -rp output/*${PACKAGE_NAME,,}*${platInstallerName}.* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
+		scp -rp output/*${installername}*${platInstallerName}.* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
 	fi
 }
 # Copy Installers to Build
