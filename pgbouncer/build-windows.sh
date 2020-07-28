@@ -75,14 +75,15 @@ _build_pgbouncer_windows() {
     echo "BEGIN BUILD pgbouncer Windows"
 
     PG_PGBUILD_MINGW_WINDOWS=`echo $PG_PGBUILD_WINDOWS | sed -e 's/://g' -e 's:\\\\:/:g' -e 's:^:/:g'`
-
+    PG_MINGW_WINDOWS_PGBOUNCER_INSTALLED=`echo $PG_MINGW_WINDOWS_PGBOUNCER | sed -e 's/://g' -e 's:\\\\:/:g' -e 's:^:/:g'`
+    PG_BUILD_PGBOUNCER_OPENSSL=`echo $PG_PGBUILD_OPENSSL_WINDOWS | sed -e 's/://g' -e 's:\\\\:/:g' -e 's:^:/:g'`
     cat <<EOT > "build-pgbouncer.bat"
 
-@SET PATH=%PATH%;$PG_MINGW_WINDOWS_PGBOUNCER\bin;$PG_MSYS_WINDOWS_PGBOUNCER\bin;$PG_PGBUILD_MINGW_WINDOWS\flex\bin;$PG_PGBUILD_MINGW_WINDOWS\bison\bin;$PG_PGBUILD_MINGW_WINDOWS\regex\bin
+@SET PATH=$PATH:$PG_MINGW_WINDOWS_PGBOUNCER_INSTALLED//bin:$PG_MSYS_WINDOWS_PGBOUNCER//bin:$PG_PGBUILD_MINGW_WINDOWS//bin
 @SET TEMP=/tmp
 
 REM Configuring, building the pgbouncer source tree
-@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/include -D_mkgmtime32=_mkgmtime" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS/lib -L$PG_PGBUILD_MINGW_WINDOWS/bin" LIBEVENT_LIBS="-L$PG_PGBUILD_MINGW_WINDOWS/lib -levent" LIBEVENT_CFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/include" ./configure --prefix=\$COMMONDIR/pgbouncer.staging.build --with-openssl=$PG_PGBUILD_MINGW_WINDOWS; make; make install  | $PG_MSYS_WINDOWS_PGBOUNCER\bin\sh --login -i
+@echo cd $PG_PATH_WINDOWS;export COMMONDIR=\$PWD; cd pgbouncer.windows; CPPFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS//include" LDFLAGS="-L$PG_PGBUILD_MINGW_WINDOWS//lib" PATH=$PG_MINGW_WINDOWS_PGBOUNCER_INSTALLED//bin:\$PATH LIBEVENT_LIBS="-L$PG_PGBUILD_MINGW_WINDOWS/lib -levent" LIBEVENT_CFLAGS="-I$PG_PGBUILD_MINGW_WINDOWS/include" ./configure -host=x86_64-w64-mingw32 --build=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 -with-cares=no --prefix=\$COMMONDIR/pgbouncer.staging.build  --with-openssl=$PG_BUILD_PGBOUNCER_OPENSSL; PATH=$PG_MINGW_WINDOWS_PGBOUNCER_INSTALLED//bin:\$PATH make; make install  | $PG_MSYS_WINDOWS_PGBOUNCER\bin\sh --login -i
 
 EOT
 

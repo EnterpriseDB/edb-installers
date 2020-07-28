@@ -58,7 +58,7 @@ _build_pgbouncer_linux() {
 
     PG_STAGING_CACHE=$WD/server/staging_cache/linux
 
-    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; ./configure --enable-debug --prefix=$PG_PATH_LINUX/pgbouncer/staging/linux.build/pgbouncer --with-libevent=/opt/local/Current --with-openssl=/opt/local/Current" || _die "Failed to configure pgbouncer"
+    ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; LIBEVENT_LIBS=\"-L/opt/local/Current/lib -levent\" LIBEVENT_CFLAGS=-I/opt/local/Current/include/ ./configure --enable-debug --prefix=$PG_PATH_LINUX/pgbouncer/staging/linux.build/pgbouncer --with-openssl=/opt/local/Current" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; make" || _die "Failed to build pgbouncer"
     ssh $PG_SSH_LINUX "cd $PG_PATH_LINUX/pgbouncer/source/pgbouncer.linux/; make install" || _die "Failed to install pgbouncer"
 

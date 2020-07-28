@@ -57,7 +57,7 @@ _build_pgbouncer_linux_x64() {
 
     PG_STAGING_CACHE=$WD/server/staging_cache/linux-x64
 
-    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; ./configure --enable-debug --prefix=$PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/pgbouncer --with-libevent=/opt/local/Current --with-openssl=/opt/local/Current" || _die "Failed to configure pgbouncer"
+    ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; LIBEVENT_LIBS=\"-L/opt/local/Current/lib -levent\" LIBEVENT_CFLAGS=-I/opt/local/Current/include/ ./configure --enable-debug --prefix=$PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/pgbouncer --with-openssl=/opt/local/Current" || _die "Failed to configure pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; make" || _die "Failed to build pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cd $PG_PATH_LINUX_X64/pgbouncer/source/pgbouncer.linux-x64/; make install" || _die "Failed to install pgbouncer"
     ssh $PG_SSH_LINUX_X64 "cp -R $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/pgbouncer/share/doc/pgbouncer/pgbouncer.ini $PG_PATH_LINUX_X64/pgbouncer/staging/linux-x64.build/pgbouncer/share/" || _die "Failed to copy pgbouncer ini to share folder"

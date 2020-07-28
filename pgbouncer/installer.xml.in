@@ -771,7 +771,7 @@ EOF
             <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_shortname}_${random_number}/instscripts"/>
 
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql</exec>
+              <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/psql</exec>
               <execArgs>-d ${pgdbname} -l </execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/instscripts</workingDirectory>
@@ -787,7 +787,7 @@ EOF
               </ruleList>
             </setInstallerVariable>
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql</exec>
+              <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/psql</exec>
               <execArgs>-d ${pgdbname} -l </execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/instscripts</workingDirectory>
@@ -804,7 +804,7 @@ EOF
               </ruleList>
             </setInstallerVariable>
             <setInstallerVariableFromScriptOutput>
-              <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql</exec>
+              <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/psql</exec>
               <execArgs>-d ${pgdbname} -l </execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/instscripts</workingDirectory>
@@ -2039,7 +2039,7 @@ EOF
                 <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${system_temp_directory}/${product_shortname}_${random_number}/instscripts"/>
     
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql</exec>
+                  <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/psql</exec>
                   <execArgs>-d ${pgdbname} -l </execArgs>
                   <name>connection</name>
                   <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/instscripts</workingDirectory>
@@ -2056,7 +2056,7 @@ EOF
                   </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql</exec>
+                  <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/psql</exec>
                   <execArgs>-d ${pgdbname} -l </execArgs>
                   <name>connection</name>
                   <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/instscripts</workingDirectory>
@@ -2074,7 +2074,7 @@ EOF
                   </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
-                  <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql</exec>
+                  <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/psql</exec>
                   <execArgs>-d ${pgdbname} -l </execArgs>
                   <name>connection</name>
                   <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/instscripts</workingDirectory>
