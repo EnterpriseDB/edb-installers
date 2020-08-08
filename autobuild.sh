@@ -326,10 +326,10 @@ EOF
         if [ "$BUILD_USER" == "" ]
         then
                 echo "Host country = $country" >> autobuild.log
-                remote_location="$remote_location/$DATE/installers/$PLATFORM_NAME"
+                remote_location="$remote_location/$DATE/installer/$PLATFORM_NAME"
         else
                 build_user=$BUILD_USER
-                remote_location="$remote_location/custom/$build_user/$DATE/$BUILD_NUMBER"
+                remote_location="$remote_location/custom/$build_user/installer/$PLATFORM_NAME/$DATE/$BUILD_NUMBER"
         fi
         # Create a remote directory if not present
         platInstallerName=`echo $PLATFORM_NAME | sed 's/_/-/'`
