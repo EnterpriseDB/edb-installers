@@ -168,6 +168,7 @@ cat <<EOT > "vc-build-pgadmin4.bat"
 REM Setting Visual Studio Environment
 CALL "$PG_VS14INSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 @SET PGADMIN_PYTHON_DIR=$PGADMIN_PYTHON_WINDOWS
+@SET PYTHON_HOME=$PGADMIN_PYTHON_WINDOWS
 @SET PYTHON_VERSION=38
 
 cd "$PG_PATH_WINDOWS\pgadmin.windows\runtime"
