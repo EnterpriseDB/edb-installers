@@ -419,7 +419,7 @@ EOT
 
 
     #create virtualenv and install required components using pip and compile documents and runtime
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; $PGADMIN_PYTHON_WINDOWS/Scripts/virtualenv.exe venv" || _die "Failed to create venv";
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; $PGADMIN_PYTHON_WINDOWS/python.exe -m venv $PG_PATH_WINDOWS/pgadmin.windows/venv" || _die "Failed to create venv";
     # In PG10, the version numbering scheme got changed and adopted a single digit major version (10) instead of two which is not supported by psycopg2
     # and requires a two digit version. Hence, use 9.6 installation to build pgAdmin
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS/pgadmin.windows; cmd /c $PG_PATH_WINDOWS\\\\build-pgadmin-dep.bat" || _die "Failed to install pgadmin dependencies"
