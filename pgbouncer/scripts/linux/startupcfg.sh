@@ -32,7 +32,7 @@ determine_services_path() {
         SYSTEMD_SERVICES_PATH=`/usr/bin/pkg-config --variable=systemdsystemunitdir systemd`
 
         if [ -z $SYSTEMD_SERVICES_PATH ]; then
-            SYSTEMD_SERVICES_PATH=/usr/lib/systemd/system
+            SYSTEMD_SERVICES_PATH=/lib/systemd/system
         fi
         echo "SYSTEMD_SERVICES_PATH:$SYSTEMD_SERVICES_PATH"
 }
