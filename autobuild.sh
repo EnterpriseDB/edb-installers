@@ -296,10 +296,10 @@ CopyToBuilds(){
 	country=${country,,}
         if [[ $PACKAGE_NAME == *"PEM"* ]]; then
                 PKG_NAME=$(GetPemDirName)
-                remote_location="/mnt/builds/DailyBuilds/daily-builds/$country/edb/$PKG_NAME"
+                remote_location="/mnt/builds/daily-builds/$country/edb/$PKG_NAME"
         else
                 PKG_NAME=$(GetPkgDirName $PACKAGE_NAME)
-                remote_location="/mnt/builds/DailyBuilds/daily-builds/$country/pg/$PKG_NAME"
+                remote_location="/mnt/builds/daily-builds/$country/pg/$PKG_NAME"
         fi
         echo "Purging old builds from the builds server" >> autobuild.log
         ssh builds.enterprisedb.com <<EOF
