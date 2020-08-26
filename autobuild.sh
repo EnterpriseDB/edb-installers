@@ -205,6 +205,41 @@ $mail_content
 EOT
 }
 
+# Get build location
+GetBuildsLocation()
+{
+    OS_UNAME_INFO=$(uname -a)
+    MACHINE_OS_WINDOWS=`echo "$OS_UNAME_INFO" | grep "Msys\|Cygwin"`
+
+    if [ -n "$MACHINE_OS_WINDOWS" ]
+    then
+        cmd /C "ipconfig /all" > tmp.txt
+        dns=$(cat tmp.txt | grep "DNS Servers" | cut -d":" -f2 | cut -f2,3 -d".")
+        rm -f tmp.txt
+    else
+        dns=$(grep -w "172" /etc/resolv.conf | cut -f2,3 -d".")
+    fi
+
+    if [[ "$dns" == "24.32" || "$dns" == "16.208" || "$dns" == "16.209" || "$dns" == "16.1" ]];
+    then
+            COUNTRY="UK"
+    elif [[ "$dns" == "24.35" || "$dns" == "24.34" || "$dns" == "19.5" || "$dns" == "24.5" ]];
+    then
+            COUNTRY="IN"
+    elif [[ "$dns" == "24.36" ]];
+    then
+            COUNTRY="PK"
+    elif [[ "$dns" == "22.5" ]];
+    then
+            COUNTRY="US"
+    else
+            COUNTRY="UN"
+    fi
+
+    #echo $dns
+    echo $COUNTRY
+}
+
 # Run everything from the root of the buld directory
 cd $DIRNAME
 
@@ -241,9 +276,7 @@ VERSION_NUMBER=`cat versions.sh | grep PG_MAJOR_VERSION= | cut -f 2 -d '='`
 STR_VERSION_NUMBER=`echo $VERSION_NUMBER | sed 's/\.//'`
 
 # determine the host location
-curl -O http://cm-dashboard2.enterprisedb.com/interfaces/cm-dashboard-status.sh
-chmod 755 cm-dashboard-status.sh
-country="$(source ./cm-dashboard-status.sh; GetBuildsLocation)"
+country="$(GetBuildsLocation)"
 #-------------------
 GetPkgDirName(){
         COMP_NAME=$1
