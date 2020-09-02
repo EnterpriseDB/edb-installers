@@ -313,9 +313,9 @@ GetInstallerName(){
 GetPemDirName(){
         PEM_VERSION_FILE="${DIRNAME}/pvt_packages/PEM/common/version.h"
         if [ -f ${PEM_VERSION_FILE} ]; then
-                PEM_CURRENT_VERSION="v$(grep "VERSION_PACKAGE" ${PEM_VERSION_FILE} | awk '{print $3}')"
+                PEM_CURRENT_VERSION="$(grep "VERSION_PACKAGE" ${PEM_VERSION_FILE} | awk '{print $3}' | cut -f1,2 -d".")"
         else
-                PEM_CURRENT_VERSION=unknown
+                PEM_CURRENT_VERSION=unknownversion
         fi
         p_name=pem/${PEM_CURRENT_VERSION}
         echo ${p_name,,}
@@ -327,7 +327,7 @@ CopyToBuilds(){
         PACKAGE_NAME=$1
         PLATFORM_NAME=${2,,}
 	country=${country,,}
-        if [[ $PACKAGE_NAME == *"PEM"* ]]; then
+        if [[ ${PACKAGE_NAME,,} == *"pem"* ]]; then
                 PKG_NAME=$(GetPemDirName)
                 remote_location="/mnt/builds/daily-builds/$country/edb/$PKG_NAME"
         else
