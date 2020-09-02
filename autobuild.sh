@@ -315,9 +315,9 @@ GetInstallerName(){
 GetPemDirName(){
         PEM_VERSION_FILE="${DIRNAME}/pvt_packages/PEM/common/version.h"
         if [ -f ${PEM_VERSION_FILE} ]; then
-                PEM_CURRENT_VERSION="v$(grep "VERSION_PACKAGE" ${PEM_VERSION_FILE} | awk '{print $3}')"
+                PEM_CURRENT_VERSION="$(grep "VERSION_PACKAGE" ${PEM_VERSION_FILE} | awk '{print $3}' | cut -f1,2 -d".")"
         else
-                PEM_CURRENT_VERSION=unknown
+                PEM_CURRENT_VERSION=unknownversion
         fi
         p_name=pem/${PEM_CURRENT_VERSION}
         echo ${p_name,,}
@@ -330,7 +330,7 @@ CopyToBuilds(){
         PACKAGE_NAME=$1
         PLATFORM_NAME=${2,,}
         country=${country,,}
-        if [[ $PACKAGE_NAME == *"PEM"* ]] && [[ $PACKAGE_NAME != *"PEMHTTPD"* ]]; then
+        if [[ ${PACKAGE_NAME,,} == *"pem"* ]] && [[ ${PACKAGE_NAME,,} != *"pemhttpd"* ]]; then
                 PKG_NAME=$(GetPemDirName)
                 remote_location="/mnt/builds/daily-builds/$country/edb/$PKG_NAME"
         else
@@ -373,7 +373,7 @@ EOF
         echo "Creating $remote_location on the builds server" >> autobuild.log
         ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
         echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-	if [[ ${PACKAGE_NAME,,} == *"pem"* ]] && [[ $PACKAGE_NAME != *"PEMHTTPD"* ]] ; then
+	if [[ ${PACKAGE_NAME,,} == *"pem"* ]] && [[ ${PACKAGE_NAME,,} != *"pemhttpd"* ]] ; then
 		for pempkg in "${PEM_PKG_ARR[@]}"; do
 			scp -rp output/*${pempkg}*${platInstallerName} buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
 		done
@@ -391,7 +391,6 @@ do
                 CopyToBuilds $PKG $PLAT
         done
 done
-
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
 echo "#######################################################################" >> autobuild.log
