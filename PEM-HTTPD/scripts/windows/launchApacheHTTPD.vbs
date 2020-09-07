@@ -1,7 +1,7 @@
 ' Copyright (c) 2012-2020, EnterpriseDB Corporation.  All rights reserved
 Option Explicit
 
-Dim WSHShell, shellApp, strRegKey, strApachePort, strURL, strArgs, strArch
+Dim WSHShell, shellApp, strRegKey, strApachePort, strURL, strArgs, strArch, objShell, strWinDir, cmd
 Set WSHShell=CreateObject("WScript.Shell")
 
 strArch = WshShell.RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\PROCESSOR_ARCHITECTURE")
