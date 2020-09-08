@@ -26,7 +26,7 @@ then
 		cd $WD/pvt_packages
 		# Get the installer source
 		C_PKG_INSTALLER_REPO=PVT_$PKG"_INSTALLER_REPO"
-		git clone -b ${!C_PKG_INSTALLER_REPO_BRANCH} ${!C_PKG_INSTALLER_REPO}
+		git clone -b ${!C_PKG_INSTALLER_REPO_BRANCH} ${!C_PKG_INSTALLER_REPO} PEM
 	    else
 		# Update the installer repo
 		cd $WD/pvt_packages/${!C_PKG_NAME}
