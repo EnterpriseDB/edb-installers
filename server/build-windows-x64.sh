@@ -27,6 +27,11 @@ _prep_server_windows_x64() {
         echo "Removing existing stackbuilder.windows-x64 source directory"
         rm -rf stackbuilder.windows-x64  || _die "Couldn't remove the existing stackbuilder.windows-x64 source directory (source/stackbuilder.windows-x64)"
     fi
+    if [ -e system_stats.windows-x64 ];
+    then
+        echo "Removing existing system_stats.windows-x64 source directory"
+        rm -rf system_stats.windows-x64  || _die "Couldn't remove the existing system_stats.windows-x64 source directory (source/system_stats.windows-x64)"
+    fi
     
     # Remove any existing zip files
     if [ -f $WD/server/source/postgres-win64.zip ];
@@ -44,6 +49,11 @@ _prep_server_windows_x64() {
         echo "Removing existing stackbuilder archive"
         rm -rf $WD/server/source/stackbuilder-win64.zip || _die "Couldn't remove the existing stackbuilder archive"
     fi
+    if [ -f $WD/server/source/system_stats-win64.zip ];
+    then
+        echo "Removing existing system_stats archive"
+        rm -rf $WD/server/source/system_stats-win64.zip || _die "Couldn't remove the existing system_stats archive"
+    fi
     if [ -f $WD/server/scripts/windows/scripts.zip ];
     then
         echo "Removing existing scripts archive"
@@ -59,16 +69,19 @@ _prep_server_windows_x64() {
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q postgres-win64.zip"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q pgadmin-win64.zip"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q stackbuilder-win64.zip"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q system_stats-win64.zip"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q scripts.zip"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q output.zip"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-x64.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-doc.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-pgadmin4.bat"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-sys-stat.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q output.build"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q postgres.windows-x64"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q pgadmin.windows-x64"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q stackbuilder.windows-x64"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q system_stats.windows-x64"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q createuser"    
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q getlocales"    
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q validateuser"
@@ -92,6 +105,11 @@ _prep_server_windows_x64() {
         rm -rf $WD/server/scripts/windows/vc-build-doc.bat || _die "Couldn't remove the existing vc-build-doc script"
     fi
 
+    if [ -f $WD/server/scripts/windows/vc-build-sys-stat.bat ];
+    then
+        echo "Removing existing vc-build-sys-stat.bat script"
+        rm -rf $WD/server/scripts/windows/vc-build-sys-stat.bat || _die "Couldn't remove the existing vc-build-sys-stat.bat script"
+    fi
     # Grab a copy of the source tree
     cp -R postgresql-$PG_TARBALL_POSTGRESQL postgres.windows-x64 || _die "Failed to copy the source code (source/postgres.windows-x64)"
 
@@ -104,6 +122,8 @@ _prep_server_windows_x64() {
     patch -p1 < $WD/../patches/sb_patch_for_pg.patch   
     cd $WD/server/source
  
+    cp -R system_stats system_stats.windows-x64 || _die "Failed to copy the source code (source/system_stats.windows-x64)"
+
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging_cache/windows-x64 ];
     then
@@ -242,6 +262,30 @@ devenv /upgrade %1
 
 EOT
 
+cat <<EOT > "vc-build-sys-stat.bat"
+REM Setting Visual Studio Environment
+CALL "$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64
+REM CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
+@SET PG_INCLUDE_DIR=$PG_PGBUILD_WINDOWS_X64\\include;$PG_PATH_WINDOWS_X64\\postgres.windows-x64\src\include
+@SET PG_LIB_DIR=$PG_PATH_WINDOWS_X64\postgres.windows-x64\Release\postgres
+
+REM batch file splits single argument containing "=" sign into two
+REM Following code handles this scenario
+
+IF "%2" == "UPGRADE" GOTO upgrade
+IF "%~3" == "" ( SET VAR3=""
+) ELSE (
+SET VAR3="%3=%4"
+)
+msbuild %1 /p:Configuration=%2 %VAR3%
+GOTO end
+
+:upgrade
+devenv /upgrade %1
+
+:end
+
+EOT
  
     # Copy in an appropriate config.pl and buildenv.pl
     cd $WD/server/source/
@@ -349,7 +393,7 @@ EOT
     # Zip up the scripts directories and copy them to the build host, then unzip
     cd $WD/server/scripts/windows/
     echo "Copying scripts source tree to Windows build VM"
-    zip -r scripts.zip vc-build.bat build-pgadmin-dep.bat vc-build-pgadmin4.bat vc-build-x64.bat vc-build-doc.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build-x64.bat vc-build-x64.bat, createuser, getlocales, validateuser)"
+    zip -r scripts.zip vc-build.bat build-pgadmin-dep.bat vc-build-pgadmin4.bat vc-build-x64.bat vc-build-doc.bat vc-build-sys-stat.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build-x64.bat vc-build-x64.bat,vc-build-sys-stat.bat, createuser, getlocales, validateuser)"
 
     rsync -av scripts.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the scripts source tree to the windows-x64 build host (scripts.zip)"
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; unzip -o scripts.zip" || _die "Failed to unpack the scripts source tree on the windows-x64 build host (scripts.zip)"
@@ -394,7 +438,7 @@ EOT
     
     # Copy the debugger plugins into place
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\postgres.windows-x64\\\\contrib\\\\pldebugger\\\\plugin_debugger.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy the debugger plugin on the windows-x64 build host"
-    
+
     # Copy the various support files into place
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vcredist_x64.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vcredist_x86.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
@@ -519,6 +563,19 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c rd /S /Q $PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin\ 4\\\\web\\\\pgadmin\\\feature_tests" || _die "Failed to remove the feature_tests directory on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PGADMIN_PYTHON_WINDOWS_X64\\\\pythonw.exe \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy pythonw.exe binary on the windows build host"
 
+    ##################################
+    # Build the system_stats extension
+    ##################################
+    cd $WD/server/source/
+    echo "Copying StackBuilder source tree to Windows build VM"
+    zip -r system_stats-win64.zip system_stats.windows-x64 || _die "Failed to pack the source tree (system_stats.windows-x64)"
+    rsync -av system_stats-win64.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (system_stats-win64.zip)"
+    ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip -o system_stats-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (system_stats-win64.zip)"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\system_stats.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-sys-stat.bat system_stats.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build system_stats on the build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\system_stats.windows-x64; cmd /c copy system_stats--*.sql $PG_PATH_WINDOWS_X64\\\\output.build\\\\share\\\\extension" || _die "Failed to copy system_stats--*.sql in output.build/share/extension"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\system_stats.windows-x64; cmd /c copy system_stats.control $PG_PATH_WINDOWS_X64\\\\output.build\\\\share\\\\extension" || _die "Failed to copy system_stats.control in output.build/share/extension"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\system_stats.windows-x64\\\\x64\\\\Release; cmd /c copy system_stats.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy system_stats.dll output.build/lib"
+    
     #####################
     # StackBuilder
     #####################
@@ -545,7 +602,7 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c echo PG_MAJOR_VERSION=$PG_MAJOR_VERSION > $PG_PATH_WINDOWS_X64\\\\output/versions-windows-x64.sh" || _die "Failed to write server version number into versions-windows-x64.sh"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c echo PG_MINOR_VERSION=$PG_MINOR_VERSION >> $PG_PATH_WINDOWS_X64\\\\output/versions-windows-x64.sh" || _die "Failed to write server build number into versions-windows-x64.sh"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c echo PG_PACKAGE_VERSION=$PG_PACKAGE_VERSION >> $PG_PATH_WINDOWS_X64\\\\output/versions-windows-x64.sh" || _die "Failed to write server build number into versions-windows-x64.sh"
-
+    
    cd $WD
    echo "END BUILD Server Windows-x64"
 }

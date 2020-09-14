@@ -131,6 +131,25 @@ _prep_server() {
     echo "Last commit:"
     git log -n 1
 
+    # System_stat extension
+    if [ ! -e $WD/server/source/system_stats ]; then
+        echo "Cloning the system_stats source tree..."
+        cd $WD/server/source
+        git clone git://github.com/EnterpriseDB/system_stats
+    else
+        echo "Updating the System_stats source tree..."
+        cd $WD/server/source/system_stats
+        git reset HEAD --hard && git clean -dfx
+        git pull
+    fi
+
+    # Get the last commit id
+    cd $WD/server/source/system_stats
+    echo "system_stats repo details:" 
+    echo "Branch: `git branch | sed -n -e 's/^\* \(.*\)/\1/p'`"
+    echo "Last commit:"
+    git log -n 1
+
     # Per-platform prep
     cd $WD
     

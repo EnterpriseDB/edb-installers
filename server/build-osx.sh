@@ -63,6 +63,22 @@ _prep_server_osx() {
     cp -pR stackbuilder stackbuilder.osx || _die "Failed to copy the source code (source/stackbuilder)"
     tar -jcvf stackbuilder.tar.bz2 stackbuilder.osx || _die "Failed to create the archive (source/stackbuilder.tar.bz2)"
 
+    # Remove the existing direcroties for system_stats 
+    if [ -e system_stats.osx ];
+    then
+      echo "Removing existing system_stats.osx source directory"
+      rm -rf system_stats.osx  || _die "Couldn't remove the existing system_stats.osx source directory (source/system_stats.osx)"
+    fi
+
+    if [ -e system_stats.tar.bz2 ];
+    then
+      echo "Removing existing system_stats archive"
+      rm -f system_stats.tar.bz2  || _die "Couldn't remove the existing system_stats archive (source/system_stats.tar.bz2)"
+    fi
+    # Grab a copy of the system_stats source tree
+    cp -pR system_stats system_stats.osx || _die "Failed to copy the source code (source/system_stats)"
+    tar -jcvf system_stats.tar.bz2 system_stats.osx || _die "Failed to create the archive (source/system_stats.tar.bz2)"
+
     # Remove any existing staging_cache directory that might exist, and create a clean one
     if [ -e $WD/server/staging_cache/osx ];
     then
@@ -100,7 +116,7 @@ _prep_server_osx() {
 
     echo "Copy the sources to the build VM"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source" || _die "Failed to create the source dircetory on the build VM"
-    scp postgres.tar.bz2 pgadmin.tar.bz2 stackbuilder.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server/source/ || _die "Failed to copy the source archives to build VM"
+    scp postgres.tar.bz2 pgadmin.tar.bz2 stackbuilder.tar.bz2 system_stats.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server/source/ || _die "Failed to copy the source archives to build VM"
 
     echo "Copy the scripts required to build VM"
     cd $WD/server
@@ -113,6 +129,7 @@ _prep_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf postgres.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf pgadmin.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf stackbuilder.tar.bz2"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf system_stats.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; tar -jxvf scripts.tar.bz2"
 
     echo "END PREP Server OSX"
@@ -291,6 +308,11 @@ EOT-PGADMIN
 
     #Fix permission in the staging/osx/share
     ssh $PG_SSH_OSX "chmod -R a+r $PG_PATH_OSX/server/staging_cache/osx.build/share/postgresql/timezone/*"
+   
+    # Building 'System_stats' extention and bundled the required files with posgresql
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/system_stats.osx; PATH="$PG_STAGING/bin:$PATH" make USE_PGXS=1; PATH="$PG_STAGING/bin:$PATH" make install USE_PGXS=1" || _die "Failed to build System Status"
+
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/system_stats.osx/; cp system_stats--*.sql system_stats.control $PG_STAGING/share/postgresql/extension; cp system_stats.so $PG_STAGING/lib/postgresql; cp system_stats.bc $PG_STAGING/lib/postgresql/bitcode" || _die "Failed to bundle system_stats extension files"
 
     # Stackbuilder
     #cd $WD/server/source/stackbuilder.osx
