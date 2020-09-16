@@ -181,6 +181,21 @@ EOF
                 <stringParameter name="installdir" allowEmptyValue="0" />
             </parameterList>
             <actionList>
+
+                <!-- macOS: DMSCM-420 Show warning if the user chooses to install in the non-default installation location-->
+                <actionGroup>
+                    <actionList>
+                        <showWarning>
+                            <text>${msg(warning.install.directory.nondefault.osx)}</text>
+                        </showWarning>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="osx"/>
+                        <compareText text="${installdir}" logic="does_not_equal" value="${default_installdir}"/>
+                        <isFalse value="${IsUpgrade}"/>
+                    </ruleList>
+                </actionGroup>
+
                 <throwError text="${msg(error.install.directory.invalid)}">
                     <ruleList>
                         <regExMatch>

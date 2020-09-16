@@ -379,7 +379,7 @@ EOT-PGADMIN
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     echo "Rewrite shared library references"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source settings.sh; source common.sh; cd $PG_STAGING; _rewrite_so_refs $PG_STAGING bin @loader_path/..;\
-        _rewrite_so_refs $PG_STAGING lib @loader_path/..; _rewrite_so_refs $PG_STAGING lib/postgresql @loader_path/../..;\
+        _rewrite_so_refs $PG_STAGING lib @loader_path/.. $PG_INSTALLER_DEFAULT_PATH; _rewrite_so_refs $PG_STAGING lib/postgresql @loader_path/../..;\
         _rewrite_so_refs $PG_STAGING lib/postgresql/plugins @loader_path/../../.."
 
     echo "Some specific rewriting of shared library references"
