@@ -348,6 +348,7 @@ EOT-PGADMIN
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libicui18n*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libicui18n"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libicudata*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libicudata"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libicuuc*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libicuuc"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libiconv*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libiconv"
 
     ssh $PG_SSH_OSX "mkdir -p $PG_STAGING/stackbuilder.app/Contents/Frameworks" || _die "Failed to create $PG_STAGING/stackbuilder/Frameworks"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_osx_cocoau_xrc-*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libwx"
