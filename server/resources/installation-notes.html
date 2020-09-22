@@ -63,6 +63,10 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <p>For further information, please see the pgAdmin online help, and the debugger plugin <a href="README.pldebugger">README file</a>. 
 
+<h3>Important Note with regards to ICU</h3>
+
+<p>PostgreSQL Server 13 is compiled with ICU 67.x. The previous server versions used either ICU 53.x or  57.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes.</p>
+
 <center><a href="http://www.enterprisedb.com"><img border="0" src="edblogo.png" alt="This software was packaged by EnterpriseDB"></a></center>
 
 </body>
