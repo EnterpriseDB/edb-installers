@@ -2,7 +2,7 @@
 
 # Source tarball versions
 
-PG_TARBALL_POSTGRESQL=13rc1
+PG_TARBALL_POSTGRESQL=13.0
 PG_TARBALL_PGADMIN=4.26
 PG_TARBALL_DEBUGGER=0.93
 PG_TARBALL_PLJAVA=1.4.0
@@ -36,7 +36,7 @@ PG_TAG_MIGRATIONTOOLKIT=''
 #                     Minor version is revision.build.
 
 PG_MAJOR_VERSION=13
-PG_MINOR_VERSION=0.rc1
+PG_MINOR_VERSION=0.1
 
 # Other package versions
 PG_VERSION_APACHE=2.4.39
