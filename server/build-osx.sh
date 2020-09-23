@@ -366,7 +366,6 @@ EOT-PGADMIN
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libcrypto*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libcrypto"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libjpeg*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libjpeg"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libpng16*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libpng16"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libiconv*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libiconv"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libexpat*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libexpat"
 
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
