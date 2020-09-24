@@ -134,25 +134,25 @@ _rewrite_so_refs() {
                                             echo "    - rewriting ID: $DLL"
 
                                             NEW_DLL=`echo $DLL | sed -e "s^$FILE_PATH/^^g"`
-                                            echo "                to: $INSTALL_PATH/$NEW_DLL"
+                                            echo "                to: $INSTALL_PATH/lib/$NEW_DLL"
 
-                                            install_name_tool -id "$INSTALL_PATH/$NEW_DLL" "$FILE_PATH/$FILE"
+                                            install_name_tool -id "$INSTALL_PATH/lib/$NEW_DLL" "$FILE_PATH/$FILE"
                                     done
 
                                     for DLL in $ID1; do
                                             echo "    - rewriting ID: $DLL"
                                             NEW_DLL=`echo $DLL | sed -e "s^/opt/local/20.*lib/^^g"`
-                                            echo "                to: $INSTALL_PATH/$NEW_DLL"
+                                            echo "                to: $INSTALL_PATH/lib/$NEW_DLL"
 
-                                            install_name_tool -id "$INSTALL_PATH/$NEW_DLL" "$FILE_PATH/$FILE"
+                                            install_name_tool -id "$INSTALL_PATH/lib/$NEW_DLL" "$FILE_PATH/$FILE"
                                     done
                                     
                                     for DLL in $ID2; do
                                             echo "    - rewriting ID: $DLL"
                                             NEW_DLL=`echo $DLL | sed -e "s^/usr/local/lib/^^g"`
-                                            echo "                to: $INSTALL_PATH/$NEW_DLL"
+                                            echo "                to: $INSTALL_PATH/lib/$NEW_DLL"
 
-                                            install_name_tool -id "$INSTALL_PATH/$NEW_DLL" "$FILE_PATH/$FILE"
+                                            install_name_tool -id "$INSTALL_PATH/lib/$NEW_DLL" "$FILE_PATH/$FILE"
                                     done
                                     
                             fi
