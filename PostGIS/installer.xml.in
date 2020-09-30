@@ -1013,6 +1013,18 @@ EOF
                 <folder>
                     <description>Program Files</description>
                     <destination>${parentlibdir}/lib/postgresql</destination>
+                    <name>programfileslibpostgresqlosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>staging/osx/PostGIS/lib/postgresql/*</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${parentlibdir}/lib</destination>
                     <name>programfileslibosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
