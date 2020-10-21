@@ -95,7 +95,7 @@ _prep_server() {
         cd ..
     else
         echo "Fetching debugger source..."
-        git clone git://git.postgresql.org/git/pldebugger.git || _die "Failed to checkout the pldebugger code"
+        git clone git://github/pldebugger || _die "Failed to checkout the pldebugger code"
     fi  
     
     # Get the last commit id
@@ -116,7 +116,7 @@ _prep_server() {
     if [ ! -e $WD/server/source/stackbuilder ]; then
         echo "Cloning the StackBuilder source tree..."
         cd $WD/server/source
-        git clone git://git.postgresql.org/git/stackbuilder
+        git clone git://github/stackbuilder
     else
         echo "Updating the StackBuilder source tree..."
         cd $WD/server/source/stackbuilder
