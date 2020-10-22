@@ -218,13 +218,23 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     mkdir -p venv/lib/python\$PYTHON_VERSION/lib-dynload/
     cp -f \$PGADMIN_PYTHON_DIR/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
-    #cryptography needs to be compiled against the custom OpenSSL 1.1.1
-    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP --no-cache-dir install cryptography || _die "PIP install cryptography failed"
-     # To resolve the PyNacl (Required by sshtunnel) installation issue. 
-     # This issues occurred due to the older version of /usr/bin/clang which is 4.1. 
-     # So we have to export /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang version 5.1
-     export CC=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
-    \$PIP --no-cache-dir install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
+
+    ### Added to resolve cryptography installation issue.
+    ### cryptography needs custom openssl from /opt/local/Current/lib
+    if [ -f \$SOURCEDIR/\requirements.txt.macos ]; then
+        rm -rf \$SOURCEDIR/\requirements.txt.macos
+    fi
+ 
+    cp \$SOURCEDIR/\requirements.txt \$SOURCEDIR/\requirements.txt.macos
+    CRYPTOGRAPHY=\$(grep ^cryptography \$SOURCEDIR/requirements.txt.macos)
+    sed -i '' "/\$CRYPTOGRAPHY/d" \$SOURCEDIR/\requirements.txt.macos
+    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP --no-cache-dir install cryptography || _die "PIP install failed for cryptography" 
+    # To resolve the PyNacl (Required by sshtunnel) installation issue. 
+    # This issues occurred due to the older version of /usr/bin/clang which is 4.1. 
+    # So we have to export /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang version 5.1
+    export CC=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+    \$PIP --no-cache-dir install -r \$SOURCEDIR/requirements.txt.macos || _die "PIP install failed" 
+
     rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PGADMIN_PYTHON_DIR/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
 
     # Move the python<version> directory to python so that the private environment path is found by the application.
