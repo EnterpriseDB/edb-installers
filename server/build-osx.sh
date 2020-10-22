@@ -194,8 +194,18 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     \$PGADMIN_PYTHON_DIR/bin/virtualenv --always-copy -p \$PYTHON venv || _die "Failed to create venv"
     cp -f \$PGADMIN_PYTHON_DIR/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
     source venv/bin/activate
-    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP --no-cache-dir install psycopg2 cryptography
-    \$PIP --no-cache-dir install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
+
+    ### Added to resolve cryptography installation issue.
+    if [ -f \$SOURCEDIR/\requirements.txt.macos ]; then
+        rm -rf \$SOURCEDIR/\requirements.txt.macos
+    fi
+ 
+    cp \$SOURCEDIR/\requirements.txt \$SOURCEDIR/\requirements.txt.macos
+    CRYPTOGRAPHY=\$(grep ^cryptography \$SOURCEDIR/requirements.txt.macos)
+    sed -i '' "/\$CRYPTOGRAPHY/d" \$SOURCEDIR/\requirements.txt.macos
+    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP --no-cache-dir install cryptography
+    \$PIP --no-cache-dir install -r \$SOURCEDIR/requirements.txt.macos || _die "PIP install failed"    
+
     rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PGADMIN_PYTHON_DIR/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
 
     # Move the python<version> directory to python so that the private environment path is found by the application.
