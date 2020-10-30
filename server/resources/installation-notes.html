@@ -67,6 +67,9 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <p>PostgreSQL Server 13 is compiled with ICU 67.x. The previous server versions used either ICU 53.x or  57.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes.</p>
 
+<h3>StackBuilder on macOS Catalina</h3>
+<p>The SIP on Catalina doesn't allow installers to elevate the privileges and therefore running the stackbuilder application from the menu may result in an install error. Hence, it is recommended to launch the stackbuiler using "sudo $installdir/stackbuilder.app/Contents/MacOS/stackbuilder" where $installdir is the installation location of PostgreSQL installer. </p>
+
 <center><a href="http://www.enterprisedb.com"><img border="0" src="edblogo.png" alt="This software was packaged by EnterpriseDB"></a></center>
 
 </body>
