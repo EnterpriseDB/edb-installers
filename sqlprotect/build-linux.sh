@@ -20,7 +20,7 @@ _prep_sqlprotect_linux() {
 
     # create a copy of the sqlprotect tree
 	cd postgres.linux/contrib
-    git clone ssh://pginstaller@cvs.enterprisedb.com/git/SQLPROTECT
+    git clone git://scm-replica/SQLPROTECT SQLPROTECT
 	
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/sqlprotect/staging/linux.build ];
