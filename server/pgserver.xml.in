@@ -692,7 +692,7 @@
                 </runProgram>
                 <!-- user running the service -->
                 <runProgram>
-                    <program>i${env(WINDIR)}\System32\icacls</program>
+                    <program>${env(WINDIR)}\System32\icacls</program>
                     <programArguments>"${datadir}" /T /Q /grant "${serviceaccount}:(OI)(CI)F"</programArguments>
                     <showMessageOnError>1</showMessageOnError>
                 </runProgram>
