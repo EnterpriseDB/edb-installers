@@ -113,7 +113,7 @@ Function DoCmd(strCmd)
     objBatchFile.WriteLine "EXIT /B %ERRORLEVEL%"
     objBatchFile.Close
     WScript.Echo "    Executing batch file '" & strBatchFile & "'..."
-    DoCmd = objShell.Run(objTempFolder.Path & "\" & strBatchFile, 0, True)
+    DoCmd = objShell.Run(""""&objTempFolder.Path & "\" & strBatchFile & """", 0, True)
     If objFso.FileExists(objTempFolder.Path & "\" & strBatchFile) = True Then
        objFso.DeleteFile objTempFolder.Path & "\" & strBatchFile, True
     Else
