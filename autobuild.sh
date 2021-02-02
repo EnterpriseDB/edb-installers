@@ -322,9 +322,48 @@ GetPemDirName(){
         p_name=pem/${PEM_CURRENT_VERSION}
         echo ${p_name,,}
 }
-declare -a PEM_PKG_ARR=(pem sqlprofiler )
 #------------------
+
+declare -a PEM_PKG_ARR=(pem sqlprofiler )
 _mail_status "build-96.log" "build-pvt.log" "9.6"
+
+#------------------
+GetPlatformName(){
+    PLATFORM_NAME=$1
+    platInstallerName=`echo $PLATFORM_NAME | sed 's/_/-/'`
+    if [[ $platInstallerName == *"osx"* ]] || [[ $platInstallerName == *"x64"* ]]; then
+        platInstallerName=${platInstallerName}*.*
+    else
+        platInstallerName=${platInstallerName}.*
+    fi
+    echo $platInstallerName
+}
+#------------------
+CreateSymlink(){
+        PACKAGE_NAME=$1
+        BUILD_OS=$2
+        PKG_DIR_NAME=$3
+        BUILDS_PATH=output
+        if ! (IsCoupled $PACKAGE_NAME); then
+                if [[ " ${PEM_PKG_ARR[@]} " =~ " ${PACKAGE_NAME} " ]];then
+                        if [[ ${PACKAGE_NAME,,} != "pem" ]]; then
+                                return
+                        fi
+                fi
+        else
+                if [[ ${PACKAGE_NAME,,} != "server" ]]; then
+                        return
+                fi
+        fi
+        ssh builds.enterprisedb.com <<EOF
+        pushd $PKG_DIR_NAME || exit 1
+        mkdir -p ../../../latest
+        echo "Creating latest symlink"
+        pushd ../../../latest || exit 1
+	rm -f $BUILD_OS
+        ln -s ../$DATE $BUILD_OS
+EOF
+}
 #------------------
 CopyToBuilds(){
         PACKAGE_NAME=$1
@@ -338,7 +377,7 @@ CopyToBuilds(){
                 remote_location="/mnt/builds/daily-builds/$country/pg/$PKG_NAME"
         fi
         echo "Purging old builds from the builds server" >> autobuild.log
- 
+
        ssh builds.enterprisedb.com <<EOF
 
             pushd $remote_location || exit 1
@@ -352,7 +391,6 @@ CopyToBuilds(){
                 ls -rt | head -\$(expr \$DirCount - \$ToKeepDir) | grep 201 | xargs -I{} rm -rf {}
             fi
 EOF
-
         # Different location for the manual and cron triggered builds.
         if [ "$BUILD_USER" == "" ]
         then
@@ -362,18 +400,16 @@ EOF
                 build_user=$BUILD_USER
                 remote_location="$remote_location/custom/$build_user/installer/$PLATFORM_NAME/$DATE/$BUILD_NUMBER"
         fi
-        # Create a remote directory if not present
-        platInstallerName=`echo $PLATFORM_NAME | sed 's/_/-/'`
-	if  [[ $platInstallerName == *"osx"* ]] || [[ $platInstallerName == *"x64"* ]]; then
-		platInstallerName=${platInstallerName}*.*
-	else
-		platInstallerName=${platInstallerName}.*
-	fi
+        platInstallerName=$(GetPlatformName $PLATFORM_NAME)
 	installername=$( GetInstallerName $PACKAGE_NAME )
         echo "Creating $remote_location on the builds server" >> autobuild.log
         ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
+        if [ ! -z "$( ls output | grep $installername |grep $platInstallerName)" ]
+        then
+                CreateSymlink $PACKAGE_NAME $PLATFORM_NAME $remote_location
+        fi
         echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-	if [[ ${PACKAGE_NAME,,} == *"pem"* ]] && [[ ${PACKAGE_NAME,,} != *"pemhttpd"* ]] ; then
+	if [[ ${PACKAGE_NAME,,} == *"pem"* ]] && [[ ${PACKAGE_NAME,,} != *"pemhttpd"* ]]; then
 		for pempkg in "${PEM_PKG_ARR[@]}"; do
 			scp -rp output/*${pempkg}*${platInstallerName} buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
 		done
