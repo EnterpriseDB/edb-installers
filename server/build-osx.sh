@@ -228,6 +228,9 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cp \$SOURCEDIR/\requirements.txt \$SOURCEDIR/\requirements.txt.macos
     CRYPTOGRAPHY=\$(grep ^cryptography \$SOURCEDIR/requirements.txt.macos)
     sed -i '' "/\$CRYPTOGRAPHY/d" \$SOURCEDIR/\requirements.txt.macos
+
+    # Added to resolve dependent version error caused by latest version (4.0.0) of Flask_security-Too
+    sed -i '' "s/Flask-Security-Too>=3.0.0/Flask-Security-Too==3.4.4/g" \$SOURCEDIR/\requirements.txt.macos
     LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP --no-cache-dir install cryptography || _die "PIP install failed for cryptography" 
     # To resolve the PyNacl (Required by sshtunnel) installation issue. 
     # This issues occurred due to the older version of /usr/bin/clang which is 4.1. 

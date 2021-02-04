@@ -6,6 +6,9 @@
 if [ $PG_ARCH_OSX = 1 ]; 
 then
     source $WD/server/build-osx.sh
+    # Freezed the pgAdmin version to 4.29 for osx.
+    # As gssapi doesn't support macOS 10.8
+    export PG_TARBALL_PGADMIN=4.29
 fi
 
 # Linux
@@ -34,6 +37,9 @@ fi
 if [ $PG_ARCH_WINDOWS = 1 ];
 then
     source $WD/server/build-windows.sh
+    # Freezed the version 4.29,as pgAdmin4-4.30
+    # has dropped the support of windows32
+    export PG_TARBALL_PGADMIN=4.29
 fi
 
 # Windows x64
