@@ -244,6 +244,9 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cp \$SOURCEDIR/\requirements.txt \$SOURCEDIR/\requirements.txt.macos
     CRYPTOGRAPHY=\$(grep ^cryptography \$SOURCEDIR/requirements.txt.macos)
     sed -i '' "/\$CRYPTOGRAPHY/d" \$SOURCEDIR/\requirements.txt.macos
+    # Added to resolve dependent version error caused by latest version (4.0.0) of Flask_security-Too.
+    sed -i '' "s/Flask-Security-Too>=3.0.0/Flask-Security-Too==3.4.4/g" \$SOURCEDIR/\requirements.txt.macos
+
     LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP --no-cache-dir install cryptography
     export CC=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
     \$PIP --no-cache-dir install -r \$SOURCEDIR/requirements.txt.macos || _die "PIP install failed" 

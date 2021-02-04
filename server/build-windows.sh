@@ -89,6 +89,8 @@ _prep_server_windows() {
 
     cp -R pgadmin4-$PG_TARBALL_PGADMIN pgadmin.windows || _die "Failed to copy the source code (source/pgadmin.windows)"
 
+    # Added to resolve dependent version error caused by latest version (4.0.0) of Flask_security-Too
+    sed -i "s/Flask-Security-Too>=3.0.0/Flask-Security-Too==3.4.4/g" pgadmin.windows/requirements.txt
     # We build only dynamic libs of wxWidgets which puts the hhp2cached in the vc_mswudll instead of vc_mswu.
     # Patch the builddocs.bat of pgadmin so that it finds the hhp2cached executable
     cd pgadmin.windows/docs/
