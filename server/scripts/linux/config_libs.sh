@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2012-2020, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2021, EnterpriseDB Corporation.  All rights reserved
 # postgreSQL startup configuration script for Linux
 echo "executing $0"
 
