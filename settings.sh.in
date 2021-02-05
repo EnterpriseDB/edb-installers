@@ -103,7 +103,7 @@ CLT_STAGING_X64=$PWD/server/staging/linux-x64/commandlinetools
 PG_BINARY_PATH_LINUX_X64=/opt/local/pg-languagepack/server
 
 PG_SSH_WINDOWS=buildfarm@bf10-windows.ox.uk.enterprisedb.com
-PG_SSH_SIGN_WINDOWS=buildfarm@bf5-windows.ox.uk.enterprisedb.com
+PG_SSH_SIGN_WINDOWS=buildfarm@bf-sign-server-windows.ox.uk.enterprisedb.com
 PG_PATH_WINDOWS=D:\\\\pginstaller.auto
 PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller.auto
 PG_VSINSTALLDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0"
