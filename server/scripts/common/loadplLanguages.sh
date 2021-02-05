@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2012-2020, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2012-2021, EnterpriseDB Corporation.  All rights reserved
 
 PG_INSTALLDIR=$1
 source $PG_INSTALLDIR/etc/sysconfig/plLanguages.config
