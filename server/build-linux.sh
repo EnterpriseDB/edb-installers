@@ -316,6 +316,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     cp -pR \$PYTHON_HOME/lib/lib*.so* venv/lib/
     \$PYTHON_HOME/bin/virtualenv --always-copy -p \$PYTHON venv || _die "Failed to create venv"
     cp -f \$PYTHON_HOME/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
+    echo "cryptography==3.2.1" >> \$SOURCEDIR/\requirements.txt
     source venv/bin/activate
     \$PIP --cache-dir "~/.cache/\$PIP-pgadmin" install -r \$SOURCEDIR/\requirements.txt || _die "PIP install failed"
     # Uninstall psycopg2 and reinstall without binaries as the latest version does not load on Linux and
