@@ -8,6 +8,9 @@
 _prep_server_windows() {
     # Following echo statement for Jenkins Console Section output
     echo "BEGIN PREP Server Windows"
+    # Freezed the version 4.29,as pgAdmin4-4.30
+    # has dropped the support of windows32
+    export PG_TARBALL_PGADMIN=4.29
 
     # Enter the source directory and cleanup if required
     cd $WD/server/source

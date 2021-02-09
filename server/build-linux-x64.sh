@@ -6,6 +6,8 @@
 
 _prep_server_linux_x64() {
     echo "BEGIN PREP Server Linux-x64"
+    # Freezed the pgAdmin version to 4.20 for linux.
+    export PG_TARBALL_PGADMIN=4.20
 
     # Enter the source directory and cleanup if required
     cd $WD/server/source
