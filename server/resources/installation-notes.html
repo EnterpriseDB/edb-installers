@@ -40,14 +40,6 @@
 
 <p>Prior to version 9.2, the Windows port used a service account called 'postgres' by default. From 9.2 onwards, the special 'NT AUTHORITY\NetworkService' account is used instead. If you need to use an alternative account, for example, to allow the database server to use server-side COPY with files on a network share, run the installer with a command line option such as <i>--serviceaccount postgres</i>.</p>
 
-<h3>Technical Support</h3>
-
-<p>For Installer support, please use the EnterpriseDB forums at <a href="http://forums.enterprisedb.com/">http://forums.enterprisedb.com/</a>, or if you need a more formal support arrangement, a list of providers can be found on the <a href="http://www.postgresql.org/support/professional_support">PostgreSQL website</a>.</p>
-
-<p>For PostgreSQL support, please use the appropriate mailing list. A complete list may be found at <a href="http://www.postgresql.org/lists.html">http://www.postgresql.org/lists.html</a>.</p>
-
-<p>For pgAdmin support, please use the <a href="mailto:pgadmin-support@postgresql.org">pgadmin-support@postgresql.org</a> mailing list.</p>
-
 <h3>pl/pgsql Debugger</h3>
 
 <p>The package includes EnterpriseDB's pl/pgsql debugger plugin which may be used by the debugger UI in pgAdmin to help with development of your database functions.
@@ -65,6 +57,17 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <h3>StackBuilder on macOS Catalina</h3>
 <p>The SIP on Catalina doesn't allow installers to elevate the privileges and therefore running the stackbuilder application from the menu may result in an install error. Hence, it is recommended to launch the stackbuiler using "sudo $installdir/stackbuilder.app/Contents/MacOS/stackbuilder" where $installdir is the installation location of PostgreSQL installer. </p>
+
+<h3>pgAdmin 4 v4.x on macOS BigSur</h3>
+<p>There is a known issue of pgAdmin freezing on launch on macOS BigSur because of a bug in Qt 5.13 and 5.14 versions. Till this issue is fixed, the work-around for this is to set the variable QT_MAC_WANTS_LAYER. </p>
+
+<h3>Technical Support</h3>
+
+<p>For Installer support, please use the EnterpriseDB forums at <a href="http://forums.enterprisedb.com/">http://forums.enterprisedb.com/</a>, or if you need a more formal support arrangement, a list of providers can be found on the <a href="http://www.postgresql.org/support/professional_support">PostgreSQL website</a>.</p>
+
+<p>For PostgreSQL support, please use the appropriate mailing list. A complete list may be found at <a href="http://www.postgresql.org/lists.html">http://www.postgresql.org/lists.html</a>.</p>
+
+<p>For pgAdmin support, please use the <a href="mailto:pgadmin-support@postgresql.org">pgadmin-support@postgresql.org</a> mailing list.</p>
 
 <center><a href="http://www.enterprisedb.com"><img border="0" src="edblogo.png" alt="This software was packaged by EnterpriseDB"></a></center>
 
