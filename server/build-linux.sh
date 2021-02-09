@@ -6,6 +6,8 @@
 _prep_server_linux() {
     # Following echo statement for Jenkins Console Section output
     echo "BEGIN PREP Server Linux"
+    # Freezed the pgAdmin version to 4.20 for linux.
+    export PG_TARBALL_PGADMIN=4.20
 
     # Enter the source directory and cleanup if required
     cd $WD/server/source

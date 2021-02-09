@@ -12,6 +12,9 @@ _prep_server_osx() {
     echo "*******************************************************"
     echo " Pre Process : Server (OSX)"
     echo "*******************************************************"
+    # Freezed the pgAdmin version to 4.29 for osx.
+    # As gssapi doesn't support macOS 10.8
+    export PG_TARBALL_PGADMIN=4.29
 
     # Enter the source directory and cleanup if required
     cd $WD/server/source
