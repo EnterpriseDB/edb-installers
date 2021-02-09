@@ -200,14 +200,8 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     if [ -f \$SOURCEDIR/\requirements.txt.macos ]; then
  	rm -rf \$SOURCEDIR/\requirements.txt.macos
     fi
- 
-    cp \$SOURCEDIR/\requirements.txt \$SOURCEDIR/\requirements.txt.macos
-    CRYPTOGRAPHY=\$(grep ^cryptography \$SOURCEDIR/requirements.txt.macos)
-    sed -i '' "/\$CRYPTOGRAPHY/d" \$SOURCEDIR/\requirements.txt.macos
-    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP --no-cache-dir install cryptography
-    \$PIP --no-cache-dir install -r \$SOURCEDIR/requirements.txt.macos || _die "PIP install failed"
-    rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PGADMIN_PYTHON_DIR/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
 
+    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP install --no-cache-dir --no-binary psycopg2 -r \$SOURCEDIR/requirements.txt || _die "pip install failed"
     # Move the python<version> directory to python so that the private environment path is found by the application.
     export PYMODULES_PATH=\`python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"\`
     export DIR_PYMODULES_PATH=\`dirname \$PYMODULES_PATH\`
