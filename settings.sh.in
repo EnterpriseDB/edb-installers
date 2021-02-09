@@ -104,7 +104,7 @@ PG_MSYS_WINDOWS_PGBOUNCER=C:\\\\mingw32\\\\msys\\\\1.0
 PG_JAVA_HOME_WINDOWS="C:\\\\jdk1.7.0_51"
 PG_QTPATH_WINDOWS=C:\\\\QtSDK
 PG_SDK_WINDOWS="C:\\\\Program Files (x86)\\\\Windows Kits\\\\8.1"
-PG_SIGNTOOL_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
+PG_SIGNTOOL_WINDOWS="C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\signtool.exe"
 PG_PERL_WINDOWS=C:\\\\edb\\\\languagepack\\\\v1\\\\Perl-5.26
 PG_PYTHON_WINDOWS=C:\\\\edb\\\\languagepack\\\\v1\\\\Python-3.7
 PG_TCL_WINDOWS=C:\\\\edb\\\\languagepack\\\\v1\\\\Tcl-8.6
@@ -126,7 +126,7 @@ PG_PERL_WINDOWS_X64=C:\\\\edb\\\\languagepack\\\\v1\\\\Perl-5.26
 PG_PYTHON_WINDOWS_X64=C:\\\\edb\\\\languagepack\\\\v1\\\\Python-3.7
 PG_TCL_WINDOWS_X64=C:\\\\edb\\\\languagepack\\\\v1\\\\Tcl-8.6
 PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
-PG_SIGNTOOL_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Bin\\\\signtool.exe"
+PG_SIGNTOOL_WINDOWS="C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\signtool.exe"
 
 PG_SSH_SOLARIS_X64=buildfarm@bf3-solaris-x64.pn.in.enterprisedb.com
 PG_PATH_SOLARIS_X64=/mnt/buildfarm/pginstaller_2.auto-repo
