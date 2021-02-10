@@ -223,11 +223,13 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     source venv/bin/activate
  
     # Added to resolve dependent version error caused by latest version (4.0.0) of Flask_security-Too
-    sed -i '' "s/Flask-Security-Too>=3.0.0/Flask-Security-Too==3.4.4/g" \$SOURCEDIR/\requirements.txt
+    sed -i '' "s/Flask-Security-Too>=3.0.0/Flask-Security-Too>=3.0.0,<4.0.0/g" \$SOURCEDIR/\requirements.txt
+    echo "Flask-BabelEx>=0.9.4" >> \$SOURCEDIR/\requirements.txt
+
     export CC=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP install --no-cache-dir --no-binary psycopg2 -r \$SOURCEDIR/requirements.txt || _die "pip install failed"
 
     rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PGADMIN_PYTHON_DIR/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
-    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP install --no-cache-dir --no-binary psycopg2 -r \$SOURCEDIR/requirements.txt || _die "pip install failed"
     # Move the python<version> directory to python so that the private environment path is found by the application.
     export PYMODULES_PATH=\`python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"\`
     export DIR_PYMODULES_PATH=\`dirname \$PYMODULES_PATH\`
