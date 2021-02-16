@@ -31,6 +31,7 @@ then
 		# Update the installer repo
 		cd $WD/pvt_packages/${!C_PKG_NAME}
                 git checkout .
+                git reset --hard
 		git fetch --all
 		git fetch --tags
 		git checkout ${!C_PKG_INSTALLER_REPO_BRANCH}
