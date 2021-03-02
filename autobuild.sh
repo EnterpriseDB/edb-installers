@@ -392,7 +392,7 @@ CopyToBuilds(){
             fi
 EOF
         # Different location for the manual and cron triggered builds.
-        if [ "$BUILD_USER" == "" ]
+        if [ "$BUILD_USER" == "" ] || [ "$BUILD_USER" == "Timer Trigger" ];
         then
                 echo "Host country = $country" >> autobuild.log
                 remote_location="$remote_location/$DATE/installer/$PLATFORM_NAME"
