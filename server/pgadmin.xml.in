@@ -252,61 +252,6 @@
     </startMenuShortcutList>
     <!-- Postinstallation actions -->
     <postInstallationActionList>
-    <!-- Remove the QtWebkit/QtWebengine files in upgrade mode -->
-    <actionGroup>
-        <actionList>
-            <deleteFile path="${installdir}/pgAdmin 4/plugins/qtwebengine">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/plugins/qtwebengine"/>
-                </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/translations">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/translations"/>
-                </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/bin/qtwebengine*.pak">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/bin/qtwebengine*.pak"/>
-                </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/bin/QtWebEngineProcess">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/bin/QtWebEngineProcess"/>
-                </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/lib/libQt5WebEngine*">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/lib/libQt5WebEngine*"/>
-                </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/lib/libQt5WebChannel.so*">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/lib/libQt5WebChannel.so*"/>
-                </ruleList>
-            </deleteFile>
-        </actionList>
-        <ruleList>
-             <compareText logic="contains" text="${platform_name}" value="linux"/>
-        </ruleList>
-    </actionGroup>
-    <actionGroup>
-        <actionList>
-            <deleteFile path="${installdir}/pgAdmin 4/bin/Qt5WebKit*.dll">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/bin/Qt5WebKit*.dll"/>
-                </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/bin/Qt5WebChannel.dll">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/bin/Qt5WebChannel.dll"/>
-                </ruleList>
-            </deleteFile>
-        </actionList>
-        <ruleList>
-            <compareText logic="equals" text="${platform_name}" value="windows"/>
-       </ruleList>
-    </actionGroup>
 
         <createTempDir dirPrefix="postgresql_installer"/>
         <runProgram>
@@ -328,43 +273,6 @@
                     </compareText>
                 </ruleList>
         </runProgram>
-
-        <!-- RM # 39338 Remove the webkit files-->
-        <actionGroup>
-            <actionList>
-                <deleteFile path="${installdir}/pgAdmin 4/lib/Qt5WebEngine.dll" >
-                    <ruleList>
-                        <fileTest path="${installdir}/pgAdmin 4/lib/Qt5WebEngine.dll" condition="exists" />
-                    </ruleList>
-                </deleteFile>
-                <deleteFile path="${installdir}/pgAdmin 4/lib/Qt5WebEngineWidgets.dll" >
-                    <ruleList>
-                        <fileTest path="${installdir}/pgAdmin 4/lib/Qt5WebEngineWidgets.dll" condition="exists" />
-                    </ruleList>
-                </deleteFile>
-            </actionList>
-            <ruleList>
-                <compareText text="${platform_name}" logic="equals" value="windows" />
-            </ruleList>
-        </actionGroup>
-        
-        <actionGroup>
-            <actionList>
-                <deleteFile path="${installdir}/pgAdmin 4/lib/libQt5WebKit.so*" >
-                    <ruleList>
-                        <fileTest path="${installdir}/pgAdmin 4/lib/libQt5WebKit.so*" condition="exists" />
-                    </ruleList>
-                </deleteFile>
-                <deleteFile path="${installdir}/pgAdmin 4/lib/libQt5WebKitWidgets.so*" >
-                    <ruleList>
-                    <fileTest path="${installdir}/pgAdmin 4/lib/libQt5WebKitWidgets.so*" condition="exists" />
-                    </ruleList>
-                </deleteFile>
-            </actionList>
-            <ruleList>
-                <compareText text="${platform_name}" logic="contains" value="Linux" />
-            </ruleList>
-        </actionGroup>
 
         <actionGroup>
             <actionList>
@@ -457,49 +365,19 @@
     </preUninstallationActionList>
 
    <readyToInstallActionList>
-       <!-- pgAdmin 3.x runs in the system tray. But, unfortunately the system tray was removed
-            in GNOME version 3.26. Hence, extensions like TopIcons Plus or an equivalent needs
-            to be installed on the target system if the deaktop session is GNOME and it's version
-            is equal or higher than 3.26.  The user should be warned of this -->
+       <!-- Always remove the old web/pgadmin bin in upgrade if <= 4.30 -->
        <actionGroup>
            <actionList>
-                <showWarning text="${msg(warning.gnome.desktop)}" />
-           </actionList>
-           <ruleList>
-               <compareVersions logic="greater_or_equal"
-                   version1="${gnome_version}" version2="3.26" />
-               <isTrue value="${component(pgAdmin).selected}"/>
-               <compareText logic="contains" text="${current_desktop}" value="GNOME" />
-               <compareText logic="contains" text="${platform_name}" value="linux"/>
-               <compareText text="${installer_interactivity}" logic="equals" value="normal"/>
-                 <isFalse value="${extract_mode}"/>
-             </ruleList>
-         </actionGroup>
-         <!-- log the warning message in unattended mode -->
-         <actionGroup>
-             <actionList>
-                 <logMessage text="${msg(warning.gnome.desktop)}" />
-                 <consoleWrite text="&#xA;Warning: ${msg(warning.gnome.desktop)}&#xA;"/>
-             </actionList>
-             <ruleList>
-                 <compareText logic="contains" text="${current_desktop}" value="GNOME" />
-                 <compareVersions logic="greater_or_equal"
-                             version1="${gnome_version}" version2="3.26" />
-                 <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
-                 <!-- following check means mode equals unattended -->
-                 <compareText logic="contains" text="${platform_name}" value="linux"/>
-                 <isFalse value="${extract_mode}"/>
-             </ruleList>
-         </actionGroup>
-         <!-- Always remove the old venv and web/pgadmin in upgrade -->
-         <actionGroup>
-             <actionList>
-                 <!-- Show warning if pgAdmin server is on while doing upgrademode installation -->
-                 <showWarning text="${msg(warning.upgrademode.installation)}" />
-                 <logMessage text="${msg(warning.upgrademode.installation)}" />
                  <deleteFile path="${installdir}/pgAdmin 4/venv">
                      <ruleList>
                          <fileExists path="${installdir}/pgAdmin 4/venv"/>
+               		 <compareText logic="equals" text="${platform_name}" value="windows"/>
+                     </ruleList>
+                 </deleteFile>
+                 <deleteFile path="${installdir}/pgAdmin 4/bin">
+                     <ruleList>
+                         <fileExists path="${installdir}/pgAdmin 4/bin"/>
+               		 <compareText logic="equals" text="${platform_name}" value="windows"/>
                      </ruleList>
                  </deleteFile>
                  <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Resources/venv">
@@ -508,6 +386,21 @@
                         <compareText logic="equals" text="${platform_name}" value="osx" />
                     </ruleList>
                  </deleteFile>
+           </actionList>
+           <ruleList>
+               <compareVersions logic="less_or_equal"
+                   version1="${pgAdmin_Version}" version2="4.30" />
+               <isTrue value="${component(pgAdmin).selected}"/>
+               <isFalse value="${extract_mode}"/>
+	       <isTrue value="${IsUpgrade}"/>
+             </ruleList>
+         </actionGroup>
+         <!-- Always remove the old web/pgadmin in upgrade -->
+         <actionGroup>
+             <actionList>
+                 <!-- Show warning if pgAdmin server is on while doing upgrademode installation -->
+                 <showWarning text="${msg(warning.upgrademode.installation)}" />
+                 <logMessage text="${msg(warning.upgrademode.installation)}" />
                  <deleteFile path="${installdir}/pgAdmin 4/web/pgadmin">
                      <ruleList>
                          <fileExists path="${installdir}/pgAdmin 4/web/pgadmin"/>
@@ -522,7 +415,8 @@
              </actionList>
              <ruleList>
                   <isFalse value="${extract_mode}"/>
-                  <stringTest text="${pgadmin_version}" type="not_empty"/>
+		  <isTrue value="${IsUpgrade}"/>
+                  <isTrue value="${component(pgAdmin).selected}"/>
              </ruleList>
          </actionGroup>
    </readyToInstallActionList>
