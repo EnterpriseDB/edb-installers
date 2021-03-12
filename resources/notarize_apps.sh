@@ -78,6 +78,10 @@ for i in {1..10}; do
 		request_status=$(requeststatus "$requestUUID")
 		echo "request_status = $request_status"
 	done
+	# exit the loop if return status is success
+	if [[ $request_status == "success" ]]; then
+		break
+	fi
 done
 # print status information
 xcrun altool 	--notarization-info $requestUUID \
