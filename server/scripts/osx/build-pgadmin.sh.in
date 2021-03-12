@@ -263,7 +263,7 @@ _complete_bundle() {
 	echo APPLPGA4 > "${BUNDLE_DIR}/Contents/PkgInfo"
 
 	# Icon
-	cp ${SOURCE_DIR}/pkg/mac/pgAdmin4.icns "${BUNDLE_DIR}/Contents/Resources/app.icns"
+	cp ${SOURCE_DIR}/pkg/mac/pgAdmin4.icns "${BUNDLE_DIR}/Contents/Resources/pgAdmin4.icns"
 
 	# Rename the executable
 	mv "${BUNDLE_DIR}/Contents/MacOS/nwjs" "${BUNDLE_DIR}/Contents/MacOS/${APP_NAME}"

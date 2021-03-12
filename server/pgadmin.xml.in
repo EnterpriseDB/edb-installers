@@ -419,6 +419,17 @@
                         <fileTest path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtSvg.framework" condition="exists" />
                     </ruleList>
                  </deleteFile>
+                 <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWidgets.framework" >
+                    <ruleList>
+                        <fileTest path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWidgets.framework" condition="exists" />
+                    </ruleList>
+                 </deleteFile>
+                 <!-- Delete older pgAdmin4 as from v5.0 onwards its name is changed to "pgAdmin 4" -->
+                 <deleteFile path="${installdir}/pgAdmin 4.app/Contents/MacOS/pgAdmin4" >
+                    <ruleList>
+                        <fileTest path="${installdir}/pgAdmin 4.app/Contents/MacOS/pgAdmin4" condition="exists" />
+                    </ruleList>
+                 </deleteFile>
             </actionList>
             <ruleList>
                <compareVersions logic="less_or_equal"
