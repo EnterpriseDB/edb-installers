@@ -115,6 +115,21 @@ _prep_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf stackbuilder.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; tar -jxvf scripts.tar.bz2"
 
+    PG_STAGING=$PG_PATH_OSX/server/staging_cache/osx.build
+
+    # create pgAdmin script and replace place holder
+    if [ -f $WD/server/scripts/osx/build-pgadmin.sh ]; then
+       rm -f $WD/server/scripts/osx/build-pgadmin.sh
+    fi
+
+    cp $WD/server/scripts/osx/build-pgadmin.sh.in $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to copy build-pgadmin.sh"
+    _replace SOURCE_DIR= "SOURCE_DIR=${PG_PATH_OSX}/server/source/pgadmin.osx" $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace PGADMIN_SRC_DIR in build-pgadmin.sh"
+    _replace PGADMIN_PYTHON_DIR= "PGADMIN_PYTHON_DIR=${PGADMIN_PYTHON_OSX}" $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace PGADMIN_PYTHON_OSX in build-pgadmin.sh"
+    _replace PGBUILD= "PGBUILD=${PG_STAGING}" $WD/server/scripts/osx/build-pgadmin.sh $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace PGBUILD in build-pgadmin.sh"
+    _replace YARN_HOME= "YARN_HOME=${YARN_HOME_OSX}" $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace YARN_HOME in build-pgadmin.sh"
+    _replace NODEJS_HOME= "NODEJS_HOME=${NODEJS_HOME_OSX}" $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace NODEJS_HOME in build-pgadmin.sh"
+    chmod 755 $WD/server/scripts/osx/build-pgadmin.sh
+
     echo "END PREP Server OSX"
 }
 
@@ -131,7 +146,6 @@ _build_server_osx() {
     echo "*******************************************************"
 
     # First, build the server
-    PG_STAGING=$PG_PATH_OSX/server/staging_cache/osx.build
 
     cd $WD/server/source/postgres.osx
 
@@ -156,139 +170,7 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
 
     # Now, build pgAdmin
-
-    #cd $WD/server/source/pgadmin.osx
-
-    # Configure
-    echo "Configuring the pgAdmin source tree"
-cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
-    source ../versions.sh
-    source ../common.sh
-    PATH=$PG_STAGING/bin:\$PATH
-    LD_LIBRARY_PATH=$PG_STAGING/lib:\$LD_LIBRARY_PATH
-    # Set PYTHON_VERSION variable required for pgadmin build
-    export PGADMIN_PYTHON_DIR=$PGADMIN_PYTHON_OSX
-    export LD_LIBRARY_PATH=\$PGADMIN_PYTHON_DIR/lib:\$LD_LIBRARY_PATH
-    # Check if Python is working and calculate PYTHON_VERSION
-    if \$PGADMIN_PYTHON_DIR/bin/python3 -V > /dev/null 2>&1; then
-        export PYTHON_VERSION=\`\$PGADMIN_PYTHON_DIR/bin/python3 -V 2>&1 | awk '{print \$2}' | cut -d"." -f1-2\`
-    else
-        echo "Error: Python installation missing!"
-        exit 1
-    fi
-    export PYTHON=\$PGADMIN_PYTHON_DIR/bin/python3
-    export PIP=pip3
-    SOURCEDIR=$PG_PATH_OSX/server/source/pgadmin.osx
-    BUILDROOT=$PG_PATH_OSX/server/source/pgadmin.osx/mac-build
-    test -d \$BUILDROOT || mkdir \$BUILDROOT
-    cd \$BUILDROOT
-    mkdir -p venv/lib/python\$PYTHON_VERSION/lib-dynload
-    cp -pR \$PGADMIN_PYTHON_DIR/lib/lib*.dylib* venv/lib/
-
-    #Install virtualenv if not present in python installation to create venv
-    if [ ! -f \$PGADMIN_PYTHON_DIR/bin/virtualenv ]; then
-        echo "Installing virtualenv..."
-        \$PGADMIN_PYTHON_DIR/bin/\$PIP install virtualenv
-        export UNINSTALL_VIRTUALENV=1
-    fi
-
-    \$PGADMIN_PYTHON_DIR/bin/virtualenv --always-copy -p \$PYTHON venv || _die "Failed to create venv"
-    cp -f \$PGADMIN_PYTHON_DIR/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
-    source venv/bin/activate
-
-    ### Added to resolve cryptography installation issue.
-    if [ -f \$SOURCEDIR/\requirements.txt.macos ]; then
- 	rm -rf \$SOURCEDIR/\requirements.txt.macos
-    fi
-
-    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP install --no-cache-dir --no-binary psycopg2 -r \$SOURCEDIR/requirements.txt || _die "pip install failed"
-    # Move the python<version> directory to python so that the private environment path is found by the application.
-    export PYMODULES_PATH=\`python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"\`
-    export DIR_PYMODULES_PATH=\`dirname \$PYMODULES_PATH\`
-    if test -d \$DIR_PYMODULES_PATH; then
-        cd \$DIR_PYMODULES_PATH/..
-        ln -s python\$PYTHON_VERSION python
-    fi
-
-    #Uninstall virtualenv if installed above
-    if [ ! -z "\$UNINSTALL_VIRTUALENV"  ]
-    then
-        \$PGADMIN_PYTHON_DIR/bin/pip uninstall --yes virtualenv
-    fi
-
-    # Build runtime
-    cd \$BUILDROOT/../runtime
-    # python3.8-config --libs output doesn't include -lpython3.8. Hence, add that in the ldflags
-    # Also set PYTHON_CONFIG to python3 as the default python-config is python2
-    PYTHON_CONFIG="\$PGADMIN_PYTHON_DIR/bin/python\$PYTHON_VERSION-config" PGADMIN_LDFLAGS="-L\$PGADMIN_PYTHON_DIR/lib -lpython\$PYTHON_VERSION" $PG_QMAKE_OSX || _die "qmake failed"
-    make || _die "pgadmin runtime build failed"
-
-    # Copy the generated app bundle to buildroot and rename the bundle as required
-    cp -r pgAdmin4.app "\$BUILDROOT/$APP_BUNDLE_NAME"
-
-    # Build docs
-    \$PIP install Sphinx || _die "PIP Sphinx failed"
-    cd $PG_PATH_OSX/server/source/pgadmin.osx/docs/en_US
-    LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 make -f Makefile.sphinx html || exit 1
-    
-    # Uninstall as it is not required to bundle Sphinx
-    \$PIP uninstall --yes Sphinx
-    
-    # Copy docs
-    test -d "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources" || "mkdir -p \$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources"
-    test -d "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/docs/en_US" || mkdir -p "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/docs/en_US"
-    cp -r _build/html "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/docs/en_US/" || exit 1
-   
-    cd $PG_PATH_OSX/server/source/pgadmin.osx/pkg/mac
-   
-    # Replace the place holders with the current version
-    sed -e "s/PGADMIN_LONG_VERSION/$APP_LONG_VERSION/g" -e "s/PGADMIN_SHORT_VERSION/$APP_SHORT_VERSION/g" pgadmin.Info.plist.in > pgadmin.Info.plist
-
-    # copy Python private environment to app bundle
-    cp -pR \$BUILDROOT/venv "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/" || exit 1
-
-    # remove the unwanted files from the virtual environment
-    rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/include"
-
-    cd $PG_PATH_OSX/server/resources/
-    # run complete-bundle to copy the dependent libraries and frameworks and fix the rpaths
-    PGDIR=$PG_PATH_OSX/server/staging_cache/osx.build QTDIR="`dirname $PG_QMAKE_OSX`/.." sh ./complete-bundle.sh "\$BUILDROOT/$APP_BUNDLE_NAME" || _die "complete-bundle.sh failed"
-
-    # copy the web directory to the bundle as it is required by runtime
-    cp -r $PG_PATH_OSX/server/source/pgadmin.osx/web "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/"
-    cp /opt/local/Current/certs/cacert.pem "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/web/"
-
-    # Removing the unwanted files and directories from the pgAdmin4 staging
-    cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/bin"
-    find . \( -name "*.py" \) -delete
-    rm -rf __pycache__
-    cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv"
-    find . \( -name test -o -name tests \) -type d | xargs rm -rf
-    cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/web"
-    find . \( -name tests -o -name feature_tests \) -type d | xargs rm -rf
-    rm -rf regressioni
-    rm -f pgadmin4.db config_local.*
-    # Create config_distro
-    echo "SERVER_MODE = False" > config_distro.py
-    echo "MINIFY_HTML = False" >> config_distro.py
-    echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_distro.py
-    echo "UPGRADE_CHECK_KEY = 'edb-pgadmin4'" >> config_distro.py
-
-    # Remove the .pyc files if any
-    cd "\$BUILDROOT/$APP_BUNDLE_NAME"
-    find . \( -name "*.pyc" -o -name "*.pyo" \) -delete
-
-    #fix the Qt framework else codesign may fail
-    cd $PG_PATH_OSX/server/resources/
-    sh ./framework-config.sh "\$BUILDROOT/$APP_BUNDLE_NAME" || _die "framework-config.sh failed"
-
-    # Copy the app bundle into place
-    cp -pR "\$BUILDROOT/$APP_BUNDLE_NAME" $PG_PATH_OSX/server/staging_cache/osx.build || _die "Failed to copy pgAdmin into the staging_cache directory"
-EOT-PGADMIN
-
-    cd $WD
-    chmod 755 $WD/server/build-pgadmin.sh
-    scp server/build-pgadmin.sh $PG_SSH_OSX:$PG_PATH_OSX/server
+    scp $WD/server/scripts/osx/build-pgadmin.sh $PG_SSH_OSX:$PG_PATH_OSX/server
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on OSX"
 
     #Fix permission in the staging/osx/share
