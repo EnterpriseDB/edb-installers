@@ -187,12 +187,15 @@ _postprocess_languagepack() {
     fi
     cp installer.xml.in installer.xml || _die "Failed to copy the installer project file (languagepack/installer.xml.in)"
 
+    echo "Extract the number from the $PG_LP_VERSION"
+    LP_VERSION=`echo $PG_LP_VERSION | cut -f1 -d "."`
+
     _replace EDB_VERSION_PERL $PG_VERSION_PERL installer.xml || _die "Failed to set the version in the installer project file (languagepack/installer.xml)"
     _replace EDB_VERSION_TCL $PG_VERSION_TCL installer.xml || _die "Failed to set the version in the installer project file (languagepack/installer.xml)"
     _replace EDB_VERSION_PYTHON $PG_VERSION_PYTHON installer.xml || _die "Failed to set the version in the installer project file (languagepack/installer.xml)"
     _replace EDB_VERSION_LANGUAGEPACK $PG_VERSION_LANGUAGEPACK installer.xml || _die "Failed to set the version in the installer project file (languagepack/installer.xml)"
     _replace EDB_BUILDNUM_LANGUAGEPACK $PG_BUILDNUM_LANGUAGEPACK installer.xml || _die "Failed to set the buildnumber in the installer project file (languagepack/installer.xml)"
-    _replace EDB_MAJOR_VERSION $PG_MAJOR_VERSION installer.xml || _die "Failed to set the version in the installer project file (languagepack/installer.xml)"
+    _replace EDB_MAJOR_VERSION $LP_VERSION installer.xml || _die "Failed to set the version in the installer project file (languagepack/installer.xml)"
     
    
     # Mac OSX

@@ -169,7 +169,7 @@ _build_languagepack_osx() {
      export MACOSX_DEPLOYMENT_TARGET=\$MACOSX_MIN_VERSION
      export PYTHONHOME="\$PYTHON_INSTALL_PATH"
 
-     CC='clang' CFLAGS="\$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/opt/local/Current/lib \$PG_ARCH_OSX_LDFLAGS -arch x86_64" ./configure --prefix=\$PYTHON_INSTALL_PATH --enable-shared || _die "Failed to configure Python"
+     CC='clang' CFLAGS="\$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/opt/local/Current/lib \$PG_ARCH_OSX_LDFLAGS -arch x86_64" ./configure --prefix=\$PYTHON_INSTALL_PATH --enable-shared --with-openssl=/opt/local/Current || _die "Failed to configure Python"
      echo "-----------------------------------------------------"
      echo "out put of Python Make started"
      echo "-----------------------------------------------------"
@@ -214,10 +214,19 @@ _build_languagepack_osx() {
      export PATH="\$PYTHON_INSTALL_PATH/bin:\$PATH"
      export LD_LIBRARY_PATH="/opt/local/Current/lib:\$LD_LIBRARY_PATH"
 
+     python -m pip install --upgrade pip
+     pip3 install --upgrade setuptools
+     pip3 install --upgrade distlib
+     # Update for deprecated HTMLParser.unescape for python >=3.9
+     # ref # https://github.com/coursera-dl/edx-dl/commit/5490a99a98b56f544661c131229ef640ace2b064
+     sed -ie "/unescape = getattr(html, 'unescape', html_parser.HTMLParser().unescape)/d" setuptools/py33compat.py
+     echo "unescape = getattr(html, 'unescape', None)" >> setuptools/py33compat.py
+     echo "if unescape is None:" >> setuptools/py33compat.py
+     echo "    # HTMLParser.unescape is deprecated since Python 3.4, and will be removed" >> setuptools/py33compat.py
+     echo "    # from 3.9." >> setuptools/py33compat.py
+     echo "    unescape = html_parser.HTMLParser().unescape" >> setuptools/py33compat.py
+
      python setup.py install --prefix=\$PYTHON_INSTALL_PATH 
-     easy_install pip
-     pip install sphnix
-     pip install virtualvenv
 
      cd \$PYTHON_INSTALL_PATH
      pip list > \$install_path/pip_packages_list.txt
@@ -226,10 +235,9 @@ _build_languagepack_osx() {
     cd $PG_PATH_OSX/languagepack/source/perl.osx
     export LD_RUN_PATH=\$PERL_INSTALL_PATH/lib
 
-    LDFLAGS='-L\$PERL_INSTALL_PATH/lib' ./Configure -ders -Dcc=llvm-gcc-4.2 -Dusethreads -Duseithreads -Uinstallusrbinperl -Ulocincpth= -Uloclibpth= -A ccflags=-DUSE_SITECUSTOMIZE -A ccflags=-DPERL_RELOCATABLE_INCPUSH -A ccflags=-Duselargefiles -Accflags='\$PG_ARCH_OSX_CFLAGS -arch x86_64 -fno-merge-constants' -Aldflags='-arch x86_64' -Duseshrplib -Dprefix=\$PERL_INSTALL_PATH -Dprivlib=\$PERL_INSTALL_PATH/lib -Darchlib=\$PERL_INSTALL_PATH/lib -Dsiteprefix=\$PERL_INSTALL_PATH/site -Dsitelib=\$PERL_INSTALL_PATH/site/lib -Dsitearch=\$PERL_INSTALL_PATH/site/lib || _die "Failed to configure Perl"
+    LDFLAGS='-L\$PERL_INSTALL_PATH/lib' ./Configure -ders -Dcc=llvm-gcc -Dusethreads -Duseithreads -Uinstallusrbinperl -Ulocincpth= -Uloclibpth= -A ccflags=-DUSE_SITECUSTOMIZE -A ccflags=-DPERL_RELOCATABLE_INCPUSH -A ccflags=-Duselargefiles -Accflags='\$PG_ARCH_OSX_CFLAGS -arch x86_64 -fno-merge-constants' -Aldflags='-arch x86_64' -Duseshrplib -Dprefix=\$PERL_INSTALL_PATH -Dprivlib=\$PERL_INSTALL_PATH/lib -Darchlib=\$PERL_INSTALL_PATH/lib -Dsiteprefix=\$PERL_INSTALL_PATH/site -Dsitelib=\$PERL_INSTALL_PATH/site/lib -Dsitearch=\$PERL_INSTALL_PATH/site/lib || _die "Failed to configure Perl"
     make || _die "Failed to Make Perl"
-    make install || _die "Failed to make install Perl"   
-    
+    make install || _die "Failed to make install Perl"
     echo "Setting RPATHs..."
     cd \$PERL_INSTALL_PATH/bin
     find * -type f | xargs file | grep ELF | cut -f1 -d":" | xargs -I{} chrpath -r "\$ORIGIN/../lib/CORE" {}
@@ -256,7 +264,7 @@ EOT-LANGUAGEPACK
     ssh $PG_SSH_OSX "chmod ugo+w $PG_LANGUAGEPACK_OSX.staging" || _die "Couldn't set the permission on the last successful staging directory"
 
     echo "Copying the complete build to the successful staging directory"
-    ssh $PG_SSH_OSX "cp -rp $PG_LANGUAGEPACK_OSX/* $PG_LANGUAGEPACK_OSX.staging" || _die "Couldn't copy the existing staging directory"
+    ssh $PG_SSH_OSX "cp -a $PG_LANGUAGEPACK_OSX/* $PG_LANGUAGEPACK_OSX.staging" || _die "Couldn't copy the existing staging directory"
 
     ssh $PG_SSH_OSX "echo PG_VERSION_LANGUAGEPACK=$PG_VERSION_LANGUAGEPACK > $PG_LANGUAGEPACK_OSX.staging/versions-osx.sh" || _die "Failed to write languagepack version number into versions-osx.sh"
     ssh $PG_SSH_OSX "echo PG_BUILDNUM_LANGUAGEPACK=$PG_BUILDNUM_LANGUAGEPACK >> $PG_LANGUAGEPACK_OSX.staging/versions-osx.sh" || _die "Failed to write languagepack build number into versions-osx.sh"
@@ -288,6 +296,19 @@ _postprocess_languagepack_osx() {
     ssh $PG_SSH_OSX "cd $PG_LANGUAGEPACK_OSX.staging; rm -f LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_LANGUAGEPACK_OSX.staging; tar -jcvf LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 *" || _die "Failed to create an archive of languagepack build"
     scp $PG_SSH_OSX:$PG_LANGUAGEPACK_OSX.staging/LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 $WD/languagepack/staging/osx || _die "Failed to copy the binaries to controller"
+
+    # sign the binaries and libraries
+    scp $WD/common.sh $WD/settings.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2" || _die "Failed to remove lp staging tar from signing server"
+    scp $WD/languagepack/staging/osx/LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy lp tar file on signing server"
+    rm -rf $WD/languagepack/staging_cache/osx/LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 || _die "Failed to remove lp tar from controller"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf staging" || _die "Failed to remove staging from signing server"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging;tar -jcvf LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 *" || _die "Failed to create lp tar on signing server"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/staging/LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to copy lp to controller vm"
+
 
     cd $WD/languagepack/staging/osx
     tar -jxvf LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 || _die "Failed to extract the staging binary archive on controller"
@@ -355,12 +376,15 @@ _postprocess_languagepack_osx() {
     rm lp.img.tar.bz2 || _die "Failed to remove the lp.img archive"
 
     # Copy the versions file to signing server
-    scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
+    scp ../versions.sh ../resources/entitlements.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
 
     # Sign the .app, create the DMG
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output/; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf lp.img.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' --output ./lp.img lp.img/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output/; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf lp.img.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s '$DEVELOPER_ID' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements.xml lp.img/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
 
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output/lp.img; rm -rf edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app; mv edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx-signed.app  edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
+    #ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output/lp.img; rm -rf edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app; mv edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx-signed.app  edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
+
+    #macOS signing certificate check
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; codesign -vvv lp.img/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.app | grep "CSSMERR_TP_CERT_EXPIRED" > /dev/null" && _die "macOS signing certificate is expired. Please renew the certs and build again"
 
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; tar -jcvf lp.img.tar.bz2 lp.img" || _die "Failed to create lp.img on $PG_SSH_OSX_SIGN"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/lp.img.tar.bz2 $WD/output || _die "Failed to copy lp.img.tar.bz2 to $WD/output."
@@ -379,11 +403,22 @@ _postprocess_languagepack_osx() {
 
     scp $PG_SSH_OSX:$PG_PATH_OSX/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.* $WD/output || _die "Failed to copy installers to $WD/output."
 
+    # Notarize the OS X installer
+    ssh $PG_SSH_OSX_NOTARY "mkdir -p $PG_PATH_OSX_NOTARY; cp $PG_PATH_OSX_SIGN/settings.sh $PG_PATH_OSX_NOTARY; cp $PG_PATH_OSX_SIGN/common.sh $PG_PATH_OSX_NOTARY" || _die "Failed to create $PG_PATH_OSX_NOTARY"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf edb-languagepack-*.dmg edb-languagepack-*.zip" || _die "Failed to remove the installer from notarization installer directory"
+    scp $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg $WD/output/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.zip  $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
+    scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
+
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg edb-languagepack" || _die "Failed to notarize the app"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.zip edb-languagepack" || _die "Failed to notarize the zip"
+    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.dmg $WD/output || _die "Failed to copy notarized installer to $WD/output."
+    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/edb-languagepack-$PG_VERSION_LANGUAGEPACK-$PG_BUILDNUM_LANGUAGEPACK-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy notarized installer to $WD/output."
+
     # Delete the old installer from regression setup
-    ssh $PG_SSH_OSX "cd /buildfarm/installers;rm -rf edb-languagepack-*.dmg" || _die "Failed to remove the installer from the regression intaller directory"
+    #ssh $PG_SSH_OSX "cd /buildfarm/installers;rm -rf edb-languagepack-*.dmg" || _die "Failed to remove the installer from the regression intaller directory"
 
     # Copy the installer to regression setup
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output;cp -p edb-languagepack-*.dmg /buildfarm/installers/" || _die "Failed to copy installers to the regression direcory"
+    #ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output;cp -p edb-languagepack-*.dmg /buildfarm/installers/" || _die "Failed to copy installers to the regression direcory"
 
     # Delete the installer from remote output directory
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; rm -rf edb-languagepack* lp*" || _die "Failed to clean the remote output directory"

@@ -213,6 +213,9 @@ extract_file()
     elif [ -e $FILENAME.tgz ]; then
        # This is a tgz tarball
        tar -zxvf $FILENAME.tgz
+    elif [ -e $FILENAME.tar.xz ]; then
+       # This is a xz tarball
+       tar -xvf $FILENAME.tar.xz
     else
        _die "tarball doesn't exist for the this Package ($FILENAME)"
     fi
