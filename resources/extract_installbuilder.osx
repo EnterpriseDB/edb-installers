@@ -47,7 +47,7 @@ if [ "$executable" == "none" ]; then
     exit 1
 fi
 
-if [ "${1}" == --help -o $EXTRACT_MODE -eq 1 ];then
+if [ "${1}" == --help -o $EXTRACT_MODE -eq 1 -o "`id -u 2>/dev/null`" == "0" ];then
     "`dirname \"${0}\"`/$executable" "$@"
 else
     "`dirname \"${0}\"`/@@PROJECTNAME@@" $executable "$@" --require-admin 1
