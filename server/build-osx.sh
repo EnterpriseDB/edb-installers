@@ -240,16 +240,8 @@ _build_server_osx() {
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     echo "Rewrite shared library references"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; source settings.sh; source common.sh; cd $PG_STAGING; _rewrite_so_refs $PG_STAGING bin @loader_path/..;\
-        _rewrite_so_refs $PG_STAGING lib @loader_path/..; _rewrite_so_refs $PG_STAGING lib/postgresql @loader_path/../..;\
+        _rewrite_so_refs $PG_STAGING lib @loader_path/.. $PG_INSTALLER_DEFAULT_PATH; _rewrite_so_refs $PG_STAGING lib/postgresql @loader_path/../..;\
         _rewrite_so_refs $PG_STAGING lib/postgresql/plugins @loader_path/../../.."
-
-    echo "Some specific rewriting of shared library references"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change $PG_STAGING/lib/libpq.5.dylib @loader_path/../../../../../../Frameworks/libpq.5.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libpq"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /opt/local/20180529/lib/libssl.1.1.dylib @loader_path/../../../../../../Frameworks/libssl.1.1.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libssl"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /opt/local/20180529/lib/libcrypto.1.1.dylib @loader_path/../../../../../../Frameworks/libcrypto.1.1.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libcrypto"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /opt/local/20180529/lib/libssl.1.1.dylib @loader_path/../../../../../../../../Frameworks/libssl.1.1.dylib Contents/Resources/venv/lib/python/site-packages/cryptography/hazmat/bindings/_openssl.abi3.so" || _die "install_name_tool change failed for libssl"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /opt/local/20180529/lib/libcrypto.1.1.dylib @loader_path/../../../../../../../../Frameworks/libcrypto.1.1.dylib Contents/Resources/venv/lib/python/site-packages/cryptography/hazmat/bindings/_openssl.abi3.so" || _die "install_name_tool change failed for libcrypto"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -id libpq.5.dylib Contents/Frameworks/libpq.5.dylib" || _die "install_name_tool id failed for libpq"
 
     # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
      ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging_cache/osx.build/plperl.so $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plperl.so"
