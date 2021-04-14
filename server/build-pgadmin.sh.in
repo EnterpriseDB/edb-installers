@@ -38,8 +38,8 @@ _create_python_env() {
 	echo "Creating the Python environment..."
 	LD_LIBRARY_PATH=${PGBUILD}/lib:${LD_LIBRARY_PATH}
 
-	git clone https://github.com/gregneagle/relocatable-python.git "${BUILD_ROOT}/relocatable_python"
-	LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" ${PGADMIN_PYTHON_DIR}/bin/python3 \
+	git clone git://github.com/gregneagle/relocatable-python.git "${BUILD_ROOT}/relocatable_python"
+	LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" PATH=/opt/local/lib/postgresql/bin:${PATH} ${PGADMIN_PYTHON_DIR}/bin/python3 \
 		"${BUILD_ROOT}/relocatable_python/make_relocatable_python_framework.py" \
 		--upgrade-pip \
 		--python-version ${PGADMIN_PYTHON_VERSION} \
@@ -87,7 +87,7 @@ _build_docs() {
 	${PGADMIN_PYTHON_DIR}/bin/python3 -m venv "${BUILD_ROOT}/venv"
 	source "${BUILD_ROOT}/venv/bin/activate"
 	pip3 install --upgrade pip
-	LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" pip3 install -r "${SOURCE_DIR}/requirements.txt"
+	LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" PATH=/opt/local/lib/postgresql/bin:${PATH}  pip3 install -r "${SOURCE_DIR}/requirements.txt"
 	pip3 install sphinx
 
 	cd "${SOURCE_DIR}"
