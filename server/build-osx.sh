@@ -118,6 +118,9 @@ _prep_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf stackbuilder.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; tar -jxvf scripts.tar.bz2"
 
+    echo "Creating staging_cache directory on remote server"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/staging_cache/osx" || _die "Couldn't create staging_cache directory"
+
     echo "END PREP Server OSX"
 }
 
