@@ -130,6 +130,9 @@ _prep_server_osx() {
     _replace NODEJS_HOME= "NODEJS_HOME=${NODEJS_HOME_OSX}" $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace NODEJS_HOME in build-pgadmin.sh"
     chmod 755 $WD/server/scripts/osx/build-pgadmin.sh
 
+    echo "Creating staging_cache directory on remote server"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/staging_cache/osx" || _die "Couldn't create staging_cache directory"
+
     echo "END PREP Server OSX"
 }
 
