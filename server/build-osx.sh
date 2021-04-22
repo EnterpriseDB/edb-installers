@@ -85,6 +85,12 @@ _prep_server_osx() {
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/*.sh" || _die "Falied to clean the server/*.sh scripts on Mac OS X VM"
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/staging_cache/osx.build" || _die "Falied to clean the server directory on Mac OS X VM"
 
+    echo "Cleaning the files in remote server directory for pgAdmin4-5.x"
+    ssh $PG_SSH_OSX_PGADMIN "rm -rf $PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx.build" || _die "Failed to clean the directory on Mac OSX pgAdmin4 build VM"
+    ssh $PG_SSH_OSX_PGADMIN "rm -rf $PG_PATH_OSX_PGADMIN/pgadmin4/source" || _die "Failed to clean the server/source directory on Mac OSX pgAdmin4 build VM"
+    ssh $PG_SSH_OSX_PGADMIN "rm -rf $PG_PATH_OSX_PGADMIN/pgadmin4/*.bz2" || _die "Failed to clean the server/*.bz2 files on Mac OSX pgAdmin4 build VM"
+    ssh $PG_SSH_OSX_PGADMIN "rm -rf $PG_PATH_OSX_PGADMIN/pgadmin4/*.sh" || _die "Falied to clean the server/*.sh scripts on Mac OSX pgAdmin4 build VM"
+
     echo "Creating staging_cache directory ($WD/server/staging/osx)"
     mkdir -p $WD/server/staging_cache/osx || _die "Couldn't create the staging_cache directory"
 
@@ -100,7 +106,10 @@ _prep_server_osx() {
 
     echo "Copy the sources to the build VM"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source" || _die "Failed to create the source dircetory on the build VM"
-    scp postgres.tar.bz2 pgadmin.tar.bz2 stackbuilder.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server/source/ || _die "Failed to copy the source archives to build VM"
+    scp postgres.tar.bz2 stackbuilder.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server/source/ || _die "Failed to copy the source archives to build VM"
+    # Build pgAdmin4-5.x on server with macOS 10.15.
+    ssh $PG_SSH_OSX_PGADMIN "mkdir -p $PG_PATH_OSX_PGADMIN/pgadmin4/source" || _die "Failed to create the source dircetory on the pgAdmin4-5.x build VM"
+    scp pgadmin.tar.bz2 $PG_SSH_OSX_PGADMIN:$PG_PATH_OSX_PGADMIN/pgadmin4/source/ || _die "Failed to copy the source archives to pgAdmin4-5.x build VM"
 
     echo "Copy the scripts required to build VM"
     cd $WD/server
@@ -111,24 +120,26 @@ _prep_server_osx() {
 
     echo "Extracting the archives"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf postgres.tar.bz2"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf pgadmin.tar.bz2"
+    ssh $PG_SSH_OSX_PGADMIN "cd $PG_PATH_OSX_PGADMIN/pgadmin4/source; tar -jxvf pgadmin.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf stackbuilder.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; tar -jxvf scripts.tar.bz2"
 
     PG_STAGING=$PG_PATH_OSX/server/staging_cache/osx.build
+    PG_STAGING_PGADMIN=$PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx.build
 
     # create pgAdmin script and replace place holder
-    if [ -f $WD/server/scripts/osx/build-pgadmin.sh ]; then
-       rm -f $WD/server/scripts/osx/build-pgadmin.sh
+    if [ -f $WD/server/build-pgadmin.sh ]; then
+       rm -f $WD/server/build-pgadmin.sh
     fi
 
-    cp $WD/server/scripts/osx/build-pgadmin.sh.in $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to copy build-pgadmin.sh"
-    _replace SOURCE_DIR= "SOURCE_DIR=${PG_PATH_OSX}/server/source/pgadmin.osx" $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace PGADMIN_SRC_DIR in build-pgadmin.sh"
-    _replace PGADMIN_PYTHON_DIR= "PGADMIN_PYTHON_DIR=${PGADMIN_PYTHON_OSX}" $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace PGADMIN_PYTHON_OSX in build-pgadmin.sh"
-    _replace PGBUILD= "PGBUILD=${PG_STAGING}" $WD/server/scripts/osx/build-pgadmin.sh $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace PGBUILD in build-pgadmin.sh"
-    _replace YARN_HOME= "YARN_HOME=${YARN_HOME_OSX}" $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace YARN_HOME in build-pgadmin.sh"
-    _replace NODEJS_HOME= "NODEJS_HOME=${NODEJS_HOME_OSX}" $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace NODEJS_HOME in build-pgadmin.sh"
-    chmod 755 $WD/server/scripts/osx/build-pgadmin.sh
+    cp $WD/server/build-pgadmin.sh.in $WD/server/build-pgadmin.sh || _die "Failed to copy build-pgadmin.sh"
+    _replace SOURCE_DIR= "SOURCE_DIR=${PG_PATH_OSX_PGADMIN}/pgadmin4/source/pgadmin.osx" $WD/server/build-pgadmin.sh || _die "Failed to replace PGADMIN_SRC_DIR in build-pgadmin.sh"
+    _replace PGADMIN_PYTHON_DIR= "PGADMIN_PYTHON_DIR=${PGADMIN_PYTHON_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace PGADMIN_PYTHON_OSX in build-pgadmin.sh"
+    _replace PGBUILD= "PGBUILD=${PG_BUILD_PGADMIN}" $WD/server/build-pgadmin.sh $WD/server/build-pgadmin.sh || _die "Failed to replace PGBUILD in build-pgadmin.sh"
+    _replace YARN_HOME= "YARN_HOME=${YARN_HOME_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace YARN_HOME in build-pgadmin.sh"
+    _replace NODEJS_HOME= "NODEJS_HOME=${NODEJS_HOME_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace NODEJS_HOME in build-pgadmin.sh"
+    _replace PGADMIN_STAGING= "PGADMIN_STAGING=${PG_STAGING_PGADMIN}" $WD/server/build-pgadmin.sh || _die "Failed to replace NODEJS_HOME in build-pgadmin.sh"
+    chmod 755 $WD/server/build-pgadmin.sh
 
     echo "Creating staging_cache directory on remote server"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/staging_cache/osx" || _die "Couldn't create staging_cache directory"
@@ -172,9 +183,11 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; CFLAGS='$PG_ARCH_OSX_CFLAGS -arch x86_64' make -j4" || _die "Failed to build the uuid-ossp module"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
 
-    # Now, build pgAdmin
-    scp $WD/server/scripts/osx/build-pgadmin.sh $PG_SSH_OSX:$PG_PATH_OSX/server
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on OSX"
+    # pgAdmin4 5.x build
+    ssh $PG_SSH_OSX_PGADMIN "mkdir -p $PG_STAGING_PGADMIN" || _die "Failed to create staging_cache on pgAdmin4 build VM"
+    ssh $PG_SSH_OSX_PGADMIN "cd $PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx.build; rm -rf pgAdmin\ 4.app" || _die "Failed to remove pgAdmin\ 4.app"
+    scp $WD/server/build-pgadmin.sh $PG_SSH_OSX_PGADMIN:$PG_PATH_OSX_PGADMIN/pgadmin4 || _die "Failed to copy build-pgadmin.sh on OSX"
+    ssh $PG_SSH_OSX_PGADMIN "cd $PG_PATH_OSX_PGADMIN/pgadmin4; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on OSX"
 
     #Fix permission in the staging/osx/share
     ssh $PG_SSH_OSX "chmod -R a+r $PG_PATH_OSX/server/staging_cache/osx.build/share/postgresql/timezone/*"
@@ -255,23 +268,28 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/scripts/osx/getlocales; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -arch x86_64 -o getlocales.osx -O0 getlocales.c"  || _die "Failed to build getlocales utility"
 
     # Generate debug symbols
-    ssh $PG_SSH_OSX "cd $PG_STAGING; mv pgAdmin\ 4.app/ pgAdmin4.app"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
 
-    ssh $PG_SSH_OSX "cd $PG_STAGING; mv pgAdmin4.app/ pgAdmin\ 4.app"
 
     # Delete the old regress dir from regression setup
     ssh $PG_SSH_OSX "cd /buildfarm/src/test/; rm -rf regress" || _die "Failed to remove the regression regress directory"
 
     # Copy the regress source to the regression setup 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/src/test/; cp -pR regress /buildfarm/src/test/" || _die "Failed to Copy regress to the regression directory"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/src/test/; cp -pR regress /buildfarm/src/test/"
 
     echo "Removing last successful staging directory ($PG_PATH_OSX/server/staging_cache/osx)"
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/staging_cache/osx" || _die "Couldn't remove the last successful staging_cache directory directory"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/staging_cache/osx" || _die "Couldn't create the last successful staging_cache directory"
 
+    #Removing and creating the staging_cache on pgAdmin4 build server.
+    echo "Removing last successful staging directory ($PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx)"
+    ssh $PG_SSH_OSX_PGADMIN "rm -rf $PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx" || _die "Couldn't remove the last successful staging_cache directory for pgAdmin4"
+    ssh $PG_SSH_OSX_PGADMIN "mkdir -p $PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx" || _die "Couldn't create the last successful staging_cache directory for pgAdmin4"
+
     echo "Copying the complete build to the successful staging_cache directory"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; cp -PR server/staging_cache/osx.build/* server/staging_cache/osx" || _die "Couldn't copy the existing staging_cache directory"
+    echo "Copying the pgAdmin4-5.x build to the successful staging_cache directory"
+    ssh $PG_SSH_OSX_PGADMIN "cd $PG_PATH_OSX_PGADMIN; cp -PR pgadmin4/staging_cache/osx.build/* pgadmin4/staging_cache/osx" || _die "Couldn't copy the existing staging_cache directory for pgAdmin4"
 
     ssh $PG_SSH_OSX "echo PG_MAJOR_VERSION=$PG_MAJOR_VERSION > $PG_PATH_OSX/server/staging_cache/osx/versions-osx.sh" || _die "Failed to write server version number into versions-osx.sh"
     ssh $PG_SSH_OSX "echo PG_MINOR_VERSION=$PG_MINOR_VERSION >> $PG_PATH_OSX/server/staging_cache/osx/versions-osx.sh" || _die "Failed to write server build number into versions-osx.sh"
@@ -295,6 +313,7 @@ _postprocess_server_osx() {
     echo "*******************************************************"
 
     PG_STAGING=$PG_PATH_OSX/server/staging_cache/osx
+    PG_STAGING_PGADMIN=$PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx.build
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/osx ];
@@ -319,6 +338,10 @@ _postprocess_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create archive of the server staging_cache"
     scp $PG_SSH_OSX:$PG_STAGING/server-staging.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to scp server staging_cache"
     scp $PG_SSH_OSX:$PG_PATH_OSX/server/scripts/osx/getlocales/getlocales.osx $WD/server/scripts/osx/getlocales/ || _die "Failed to scp getlocales.osx"
+    # Copy the staging of pgAdmin4 from build machine to controller to build the installer
+    echo "Copying the pgAdmin4 from build machine to controller"
+    ssh $PG_SSH_OSX_PGADMIN "cd $PG_STAGING_PGADMIN; tar -jcf pgadmin.tar.bz2 pgAdmin\ 4.app" || _die "Failed to create archive of the pgadmin4 staging_cache"
+    scp $PG_SSH_OSX_PGADMIN:$PG_STAGING_PGADMIN/pgadmin.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to scp pgadmin4 staging_cache"
 
     # Copy the required files to signing server
     scp $WD/common.sh $WD/settings.sh $WD/versions.sh $WD/resources/entitlements-server.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
@@ -329,10 +352,14 @@ _postprocess_server_osx() {
 
     # sign the binaries and libraries
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf server-staging.tar.bz2" || _die "Failed to remove server-staging.tar from signing server"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf pgadmin.tar.bz2" || _die "Failed to remove pgadmin.tar.bz2 from signing server"
     scp $WD/server/staging_cache/osx/server-staging.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy server-staging.tar.bz2 on signing server"
+    scp $WD/server/staging_cache/osx/pgadmin.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy pgadmin.tar.bz2 on signing server"
     rm -rf $WD/server/staging_cache/osx/server-staging.tar.bz2 || _die "Failed to remove server-staging.tar from controller"
+    rm -rf $WD/server/staging_cache/osx/pgadmin.tar.bz2 || _die "Failed to remove pgadmin.tar.bz2 from controller"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf staging" || _die "Failed to remove staging from signing server"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../server-staging.tar.bz2; mv pgAdmin\ 4.app pgAdmin4.app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../server-staging.tar.bz2"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging; tar -zxvf ../pgadmin.tar.bz2; mv pgAdmin\ 4.app pgAdmin4.app" || _die "Failed to rename pgAdmin 4.app to pgAdmin.app"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
     #ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging/lib entitlements-server.xml" || _die "Failed to do libraries signing with entitlements"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_bundles staging" || _die "Failed to sign bundle"
@@ -418,7 +445,6 @@ _postprocess_server_osx() {
 
     echo "Preparing restructured staging for pgAdmin"
     cp -pR $WD/server/staging_cache/osx/pgAdmin\ 4.app/  $PGADMIN_STAGING_OSX
-    cp -pR $WD/server/staging_cache/osx/debug_symbols/pgAdmin4.app $PGADMIN_STAGING_OSX/debug_symbols
 
     echo "Preparing restructured staging for stackbuilder"
     mkdir -p $WD/server/staging_cache/osx/stackbuilder
