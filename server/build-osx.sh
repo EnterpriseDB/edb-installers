@@ -135,17 +135,17 @@ _prep_server_osx() {
     PG_STAGING=$PG_PATH_OSX/server/staging_cache/osx.build
 
     # create pgAdmin script and replace place holder
-    if [ -f $WD/server/scripts/osx/build-pgadmin.sh ]; then
-       rm -f $WD/server/scripts/osx/build-pgadmin.sh
+    if [ -f $WD/server/build-pgadmin.sh ]; then
+       rm -f $WD/server/build-pgadmin.sh
     fi
 
-    cp $WD/server/scripts/osx/build-pgadmin.sh.in $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to copy build-pgadmin.sh"
-    _replace SOURCE_DIR= "SOURCE_DIR=${PG_PATH_OSX}/server/source/pgadmin.osx" $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace PGADMIN_SRC_DIR in build-pgadmin.sh"
-    _replace PGADMIN_PYTHON_DIR= "PGADMIN_PYTHON_DIR=${PGADMIN_PYTHON_OSX}" $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace PGADMIN_PYTHON_OSX in build-pgadmin.sh"
-    _replace PGBUILD= "PGBUILD=${PG_STAGING}" $WD/server/scripts/osx/build-pgadmin.sh $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace PGBUILD in build-pgadmin.sh"
-    _replace YARN_HOME= "YARN_HOME=${YARN_HOME_OSX}" $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace YARN_HOME in build-pgadmin.sh"
-    _replace NODEJS_HOME= "NODEJS_HOME=${NODEJS_HOME_OSX}" $WD/server/scripts/osx/build-pgadmin.sh || _die "Failed to replace NODEJS_HOME in build-pgadmin.sh"
-    chmod 755 $WD/server/scripts/osx/build-pgadmin.sh
+    cp $WD/server/build-pgadmin.sh.in $WD/server/build-pgadmin.sh || _die "Failed to copy build-pgadmin.sh"
+    _replace SOURCE_DIR= "SOURCE_DIR=${PG_PATH_OSX}/server/source/pgadmin.osx" $WD/server/build-pgadmin.sh || _die "Failed to replace PGADMIN_SRC_DIR in build-pgadmin.sh"
+    _replace PGADMIN_PYTHON_DIR= "PGADMIN_PYTHON_DIR=${PGADMIN_PYTHON_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace PGADMIN_PYTHON_OSX in build-pgadmin.sh"
+    _replace PGBUILD= "PGBUILD=${PG_STAGING}" $WD/server/build-pgadmin.sh $WD/server/build-pgadmin.sh || _die "Failed to replace PGBUILD in build-pgadmin.sh"
+    _replace YARN_HOME= "YARN_HOME=${YARN_HOME_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace YARN_HOME in build-pgadmin.sh"
+    _replace NODEJS_HOME= "NODEJS_HOME=${NODEJS_HOME_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace NODEJS_HOME in build-pgadmin.sh"
+    chmod 755 $WD/server/build-pgadmin.sh
 
     echo "Creating staging_cache directory on remote server"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/staging_cache/osx" || _die "Couldn't create staging_cache directory"
@@ -190,7 +190,7 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
 
     # Now, build pgAdmin
-    scp $WD/server/scripts/osx/build-pgadmin.sh $PG_SSH_OSX:$PG_PATH_OSX/server
+    scp $WD/server/build-pgadmin.sh $PG_SSH_OSX:$PG_PATH_OSX/server
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on OSX"
 
     #Fix permission in the staging/osx/share
