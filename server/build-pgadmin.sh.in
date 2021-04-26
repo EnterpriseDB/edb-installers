@@ -8,9 +8,12 @@ YARN_HOME=
 NODEJS_HOME=
 BUILD_ROOT=${SOURCE_DIR}/mac-build
 TEMP_DIR=${SOURCE_DIR}/mac-temp
+PGADMIN_STAGING=
+# Variable added as we use the postgresql installed from macport having different path of bin directory
+PGBUILD_BIN="${PGBUILD}/postgresql12/bin"
 
 _setup_env() {
-	export PATH=${YARN_HOME}/bin:${NODEJS_HOME}:${PGBUILD}/bin:${PATH}:/opt/local/bin:
+	export PATH=${YARN_HOME}/bin:${NODEJS_HOME}:${PGBUILD_BIN}:${PATH}:/opt/local/bin:
 	APP_RELEASE=`grep "^APP_RELEASE" ${SOURCE_DIR}/web/config.py | cut -d"=" -f2 | sed 's/ //g'`
 	APP_REVISION=`grep "^APP_REVISION" ${SOURCE_DIR}/web/config.py | cut -d"=" -f2 | sed 's/ //g'`
 	APP_NAME=`grep "^APP_NAME" ${SOURCE_DIR}/web/config.py | cut -d"=" -f2 | sed "s/'//g" | sed 's/^ //'`
@@ -24,7 +27,7 @@ _setup_env() {
 	BUNDLE_DIR="${BUILD_ROOT}/${APP_NAME}.app"
 
 	PGADMIN_PYTHON_VERSION=$(${PGADMIN_PYTHON_DIR}/bin/python3 -c "import sys; print(sys.version.split(' ')[0])")
-	export PATH=${PGBUILD}/bin:${YARN_HOME}/bin:${NODEJS_HOME}/bin:$PATH
+	export PATH=${PGBUILD_BIN}:${YARN_HOME}/bin:${NODEJS_HOME}/bin:$PATH
 }
 
 
@@ -39,7 +42,7 @@ _create_python_env() {
 	LD_LIBRARY_PATH=${PGBUILD}/lib:${LD_LIBRARY_PATH}
 
 	git clone git://github.com/gregneagle/relocatable-python.git "${BUILD_ROOT}/relocatable_python"
-	LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" PATH=/opt/local/lib/postgresql/bin:${PATH} ${PGADMIN_PYTHON_DIR}/bin/python3 \
+	LDFLAGS="-L${PGBUILD}/lib" CFLAGS="-I${PGBUILD}/include" PATH=${PGBUILD_BIN}:${PATH} ${PGADMIN_PYTHON_DIR}/bin/python3 \
 		"${BUILD_ROOT}/relocatable_python/make_relocatable_python_framework.py" \
 		--upgrade-pip \
 		--python-version ${PGADMIN_PYTHON_VERSION} \
@@ -87,7 +90,7 @@ _build_docs() {
 	${PGADMIN_PYTHON_DIR}/bin/python3 -m venv "${BUILD_ROOT}/venv"
 	source "${BUILD_ROOT}/venv/bin/activate"
 	pip3 install --upgrade pip
-	LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" PATH=/opt/local/lib/postgresql/bin:${PATH}  pip3 install -r "${SOURCE_DIR}/requirements.txt"
+	LDFLAGS="-L${PGBUILD}/lib" CFLAGS="-I${PGBUILD}/include" PATH=${PGBUILD_BIN}:${PATH}  pip3 install -r "${SOURCE_DIR}/requirements.txt"
 	pip3 install sphinx
 
 	cd "${SOURCE_DIR}"
@@ -246,7 +249,10 @@ _complete_bundle() {
 
 	# Copy the binary utilities into place
 	mkdir -p "${BUNDLE_DIR}/Contents/SharedSupport/"
-	cp "${PGBUILD}/bin/psql" "${BUNDLE_DIR}/Contents/SharedSupport/"
+	cp "${PGBUILD_BIN}/psql" "${BUNDLE_DIR}/Contents/SharedSupport/"
+	cp "${PGBUILD_BIN}/pg_restore" "${BUNDLE_DIR}/Contents/SharedSupport/"
+	cp "${PGBUILD_BIN}/pg_dumpall" "${BUNDLE_DIR}/Contents/SharedSupport/"
+	cp "${PGBUILD_BIN}/pg_dump" "${BUNDLE_DIR}/Contents/SharedSupport/"
 
 	# Update the plist
 	cp ${SOURCE_DIR}/pkg/mac/Info.plist.in "${BUNDLE_DIR}/Contents/Info.plist"
@@ -306,7 +312,7 @@ _complete_bundle() {
 
 	# Remove the .pyc files if any
 	find "${BUNDLE_DIR}" -name "*.pyc" -print0 | xargs -0 rm -f
-	cp -pR "${BUNDLE_DIR}" "${PGBUILD}"
+	cp -pR "${BUNDLE_DIR}" "${PGADMIN_STAGING}"
 }
 
 _setup_env
