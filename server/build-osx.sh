@@ -12,9 +12,6 @@ _prep_server_osx() {
     echo "*******************************************************"
     echo " Pre Process : Server (OSX)"
     echo "*******************************************************"
-    # Freezed the pgAdmin version to 4.29 for osx.
-    # As gssapi doesn't support macOS 10.8
-    export PG_TARBALL_PGADMIN=4.29
 
     # Enter the source directory and cleanup if required
     cd $WD/server/source
@@ -88,6 +85,13 @@ _prep_server_osx() {
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/*.sh" || _die "Falied to clean the server/*.sh scripts on Mac OS X VM"
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/staging_cache/osx.build" || _die "Falied to clean the server directory on Mac OS X VM"
 
+    echo "Cleaning the files in remote pgadmin4 directory for pgAdmin4-5.x"
+    ssh $PG_SSH_OSX_PGADMIN "rm -rf $PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx.build" || _die "Failed to clean the directory on Mac OSX pgAdmin4 build VM"
+    ssh $PG_SSH_OSX_PGADMIN "rm -rf $PG_PATH_OSX_PGADMIN/pgadmin4/source" || _die "Failed to clean the server/source directory on Mac OSX pgAdmin4 build VM"
+    ssh $PG_SSH_OSX_PGADMIN "rm -rf $PG_PATH_OSX_PGADMIN/pgadmin4/*.bz2" || _die "Failed to clean the server/*.bz2 files on Mac OSX pgAdmin4 build VM"
+    ssh $PG_SSH_OSX_PGADMIN "rm -rf $PG_PATH_OSX_PGADMIN/pgadmin4/*.sh" || _die "Falied to clean the server/*.sh scripts on Mac OSX pgAdmin4 build VM"
+
+
     echo "Creating staging_cache directory ($WD/server/staging/osx)"
     mkdir -p $WD/server/staging_cache/osx || _die "Couldn't create the staging_cache directory"
 
@@ -103,7 +107,10 @@ _prep_server_osx() {
 
     echo "Copy the sources to the build VM"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source" || _die "Failed to create the source dircetory on the build VM"
-    scp postgres.tar.bz2 pgadmin.tar.bz2 stackbuilder.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server/source/ || _die "Failed to copy the source archives to build VM"
+    scp postgres.tar.bz2 stackbuilder.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server/source/ || _die "Failed to copy the source archives to build VM"
+    # Build pgAdmin4-5.x on server with macOS 10.15.
+    ssh $PG_SSH_OSX_PGADMIN "mkdir -p $PG_PATH_OSX_PGADMIN/pgadmin4/source" || _die "Failed to create the source dircetory on the pgAdmin4-5.x build VM"
+    scp pgadmin.tar.bz2 $PG_SSH_OSX_PGADMIN:$PG_PATH_OSX_PGADMIN/pgadmin4/source/ || _die "Failed to copy the source archives to pgAdmin4-5.x build VM"
 
     echo "Copy the scripts required to build VM"
     cd $WD/server
@@ -114,13 +121,29 @@ _prep_server_osx() {
 
     echo "Extracting the archives"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf postgres.tar.bz2"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf pgadmin.tar.bz2"
+    ssh $PG_SSH_OSX_PGADMIN "cd $PG_PATH_OSX_PGADMIN/pgadmin4/source; tar -jxvf pgadmin.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf stackbuilder.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; tar -jxvf scripts.tar.bz2"
 
     echo "Creating staging_cache directory on remote server"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/staging_cache/osx" || _die "Couldn't create staging_cache directory"
 
+    PG_STAGING_PGADMIN=$PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx.build
+
+    # create pgAdmin script and replace place holder
+    if [ -f $WD/server/build-pgadmin.sh ]; then
+       rm -f $WD/server/build-pgadmin.sh
+    fi
+
+    cp $WD/server/build-pgadmin.sh.in $WD/server/build-pgadmin.sh || _die "Failed to copy build-pgadmin.sh"
+    _replace SOURCE_DIR= "SOURCE_DIR=${PG_PATH_OSX_PGADMIN}/pgadmin4/source/pgadmin.osx" $WD/server/build-pgadmin.sh || _die "Failed to replace PGADMIN_SRC_DIR in build-pgadmin.sh"
+    _replace PGADMIN_PYTHON_DIR= "PGADMIN_PYTHON_DIR=${PGADMIN_PYTHON_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace PGADMIN_PYTHON_OSX in build-pgadmin.sh"
+    _replace PGBUILD= "PGBUILD=${PG_BUILD_PGADMIN}" $WD/server/build-pgadmin.sh $WD/server/build-pgadmin.sh || _die "Failed to replace PGBUILD in build-pgadmin.sh"
+    _replace YARN_HOME= "YARN_HOME=${YARN_HOME_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace YARN_HOME in build-pgadmin.sh"
+    _replace NODEJS_HOME= "NODEJS_HOME=${NODEJS_HOME_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace NODEJS_HOME in build-pgadmin.sh"
+    _replace PGADMIN_STAGING= "PGADMIN_STAGING=${PG_STAGING_PGADMIN}" $WD/server/build-pgadmin.sh || _die "Failed to replace NODEJS_HOME in build-pgadmin.sh"
+    chmod 755 $WD/server/build-pgadmin.sh
+    
     echo "END PREP Server OSX"
 }
 
@@ -198,143 +221,10 @@ EOT
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
 
     # Now, build pgAdmin
-
-    #cd $WD/server/source/pgadmin.osx
-
-    # Configure
-    echo "Configuring the pgAdmin source tree"
-cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
-    source ../versions.sh
-    source ../common.sh
-    # In PG10, the version numbering scheme got changed and adopted a single digit major version (10) instead of two which is not supported by psycopg2
-    # and requires a two digit version. Hence, use 9.6 installation to build pgAdmin
-    PATH=$PG_STAGING/bin:\$PATH
-    LD_LIBRARY_PATH=$PG_STAGING/lib:\$LD_LIBRARY_PATH
-    # Set PYTHON_VERSION variable required for pgadmin build
-    export PGADMIN_PYTHON_DIR=$PGADMIN_PYTHON_OSX
-    export LD_LIBRARY_PATH=\$PGADMIN_PYTHON_DIR/lib:\$LD_LIBRARY_PATH
-    # Check if Python is working and calculate PYTHON_VERSION
-    if \$PGADMIN_PYTHON_DIR/bin/python3 -V > /dev/null 2>&1; then
-        export PYTHON_VERSION=\`\$PGADMIN_PYTHON_DIR/bin/python3 -V 2>&1 | awk '{print \$2}' | cut -d"." -f1-2\`
-    else
-        echo "Error: Python installation missing!"
-        exit 1
-    fi
-    export PYTHON=\$PGADMIN_PYTHON_DIR/bin/python3
-    export PIP=pip3
-    SOURCEDIR=$PG_PATH_OSX/server/source/pgadmin.osx
-    BUILDROOT=$PG_PATH_OSX/server/source/pgadmin.osx/mac-build
-    test -d \$BUILDROOT || mkdir \$BUILDROOT
-    cd \$BUILDROOT
-    mkdir -p venv/lib
-    cp -pR \$PGADMIN_PYTHON_DIR/lib/lib*.dylib* venv/lib/
-
-    #Install virtualenv if not present in python installation to create venv
-    if [ ! -f \$PGADMIN_PYTHON_DIR/bin/virtualenv ]; then
-        echo "Installing virtualenv..."
-        \$PGADMIN_PYTHON_DIR/bin/\$PIP install virtualenv
-        export UNINSTALL_VIRTUALENV=1
-    fi
-
-    \$PGADMIN_PYTHON_DIR/bin/virtualenv --always-copy -p \$PYTHON venv  || _die "Failed to create venv"
-    mkdir -p venv/lib/python\$PYTHON_VERSION/lib-dynload/
-    cp -f \$PGADMIN_PYTHON_DIR/lib/python\$PYTHON_VERSION/lib-dynload/*.so venv/lib/python\$PYTHON_VERSION/lib-dynload/
-    source venv/bin/activate
-
-    # Added to resolve dependent version error caused by latest version (4.0.0) of Flask_security-Too.
-    sed -i '' "s/Flask-Security-Too>=3.0.0/Flask-Security-Too>=3.0.0,<4.0.0/g" \$SOURCEDIR/\requirements.txt
-    echo "Flask-BabelEx>=0.9.4" >> \$SOURCEDIR/\requirements.txt
-
-    export CC=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
-    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" \$PIP install --no-cache-dir --no-binary psycopg2 -r \$SOURCEDIR/requirements.txt || _die "pip install failed"
-   
-    rsync -zrva --exclude site-packages --exclude lib2to3 --include="*.py" --include="*/" --exclude="*" \$PGADMIN_PYTHON_DIR/lib/python\$PYTHON_VERSION/* venv/lib/python\$PYTHON_VERSION/
-
-    # Move the python<version> directory to python so that the private environment path is found by the application.
-    export PYMODULES_PATH=\`python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"\`
-    export DIR_PYMODULES_PATH=\`dirname \$PYMODULES_PATH\`
-    if test -d \$DIR_PYMODULES_PATH; then
-        cd \$DIR_PYMODULES_PATH/..
-        ln -s python\$PYTHON_VERSION python
-    fi
-
-    #Uninstall virtualenv if installed above
-    if [ ! -z "\$UNINSTALL_VIRTUALENV"  ]
-    then
-        \$PGADMIN_PYTHON_DIR/bin/pip uninstall --yes virtualenv
-    fi
-
-    # Build runtime
-    cd \$BUILDROOT/../runtime
-    # python3.8-config --libs output doesn't include -lpython3.8. Hence, add that in the ldflags
-    # Also set PYTHON_CONFIG to python3 as the default python-config is python2
-    PYTHON_CONFIG="\$PGADMIN_PYTHON_DIR/bin/python\$PYTHON_VERSION-config" PGADMIN_LDFLAGS="-L\$PGADMIN_PYTHON_DIR/lib -lpython\$PYTHON_VERSION" $PG_QMAKE_OSX || _die "qmake failed"
-    make || _die "pgadmin runtime build failed"
-
-    # Copy the generated app bundle to buildroot and rename the bundle as required
-    cp -r pgAdmin4.app "\$BUILDROOT/$APP_BUNDLE_NAME"
-
-    # Build docs
-    \$PIP install Sphinx || _die "PIP Sphinx failed"
-    cd $PG_PATH_OSX/server/source/pgadmin.osx/docs/en_US
-    LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 make -f Makefile.sphinx html || exit 1
-    
-    # Uninstall as it is not required to bundle Sphinx
-    \$PIP uninstall --yes Sphinx
-    
-    # Copy docs
-    test -d "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources" || "mkdir -p \$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources"
-    test -d "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/docs/en_US" || mkdir -p "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/docs/en_US"
-    cp -r _build/html "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/docs/en_US/" || exit 1
-   
-    cd $PG_PATH_OSX/server/source/pgadmin.osx/pkg/mac
-   
-    # Replace the place holders with the current version
-    sed -e "s/PGADMIN_LONG_VERSION/$APP_LONG_VERSION/g" -e "s/PGADMIN_SHORT_VERSION/$APP_SHORT_VERSION/g" pgadmin.Info.plist.in > pgadmin.Info.plist
-
-    # copy Python private environment to app bundle
-    cp -pR \$BUILDROOT/venv "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/" || exit 1
-
-    # remove the unwanted files from the virtual environment
-    rm -rf "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/.Python" "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/include" 
-
-    cd $PG_PATH_OSX/server/resources/
-    # run complete-bundle to copy the dependent libraries and frameworks and fix the rpaths
-    PGDIR=$PG_PATH_OSX/server/staging_cache/osx.build QTDIR="`dirname $PG_QMAKE_OSX`/.." sh ./complete-bundle.sh "\$BUILDROOT/$APP_BUNDLE_NAME" || _die "complete-bundle.sh failed"
-
-    # copy the web directory to the bundle as it is required by runtime
-    cp -r $PG_PATH_OSX/server/source/pgadmin.osx/web "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/"
-    mkdir -p "\$BUILDROOT/pgAdmin 4.app/Contents/Resources/venv/bin"
-    cp "\$BUILDROOT/venv/bin/python" "\$BUILDROOT/pgAdmin 4.app/Contents/Resources/venv/bin"
-
-    # Removing the unwanted files and directories from the pgAdmin4 staging
-    cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv/bin"
-    find . \( -name "*.py" \) -delete
-    rm -rf __pycache__
-    cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/venv"
-    find . \( -name test -o -name tests \) -type d | xargs rm -rf
-    cd "\$BUILDROOT/$APP_BUNDLE_NAME/Contents/Resources/web"
-    find . \( -name tests -o -name feature_tests \) -type d | xargs rm -rf
-    rm -rf regressioni
-    rm -f pgadmin4.db config_local.*
-    # Create config_distro
-    echo "SERVER_MODE = False" > config_distro.py
-    echo "MINIFY_HTML = False" >> config_distro.py
-    echo "HELP_PATH = '../../../docs/en_US/html/'" >> config_distro.py
-    echo "UPGRADE_CHECK_KEY = 'edb-pgadmin4'"  >> config_distro.py
-
-    # Remove the .pyc files if any
-    cd "\$BUILDROOT/$APP_BUNDLE_NAME"
-    find . \( -name "*.pyc" -o -name "*.pyo" \) -delete
-    
-    # Copy the app bundle into place
-    cp -pR "\$BUILDROOT/$APP_BUNDLE_NAME" $PG_PATH_OSX/server/staging_cache/osx.build || _die "Failed to copy pgAdmin into the staging_cache directory"
-EOT-PGADMIN
-
-    cd $WD
-    chmod 755 $WD/server/build-pgadmin.sh
-    scp server/build-pgadmin.sh $PG_SSH_OSX:$PG_PATH_OSX/server
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on OSX"
+    ssh $PG_SSH_OSX_PGADMIN "mkdir -p $PG_STAGING_PGADMIN" || _die "Failed to create staging_cache on pgAdmin4 build VM"
+    ssh $PG_SSH_OSX_PGADMIN "cd $PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx.build; rm -rf pgAdmin\ 4.app" || _die "Failed to remove pgAdmin\ 4.app"
+    scp $WD/server/build-pgadmin.sh $PG_SSH_OSX_PGADMIN:$PG_PATH_OSX_PGADMIN/pgadmin4 || _die "Failed to copy build-pgadmin.sh on OSX"
+    ssh $PG_SSH_OSX_PGADMIN "cd $PG_PATH_OSX_PGADMIN/pgadmin4; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on OSX"
 
     #Fix permission in the staging/osx/share
     ssh $PG_SSH_OSX "chmod -R a+r $PG_PATH_OSX/server/staging_cache/osx.build/share/postgresql/timezone/*"
@@ -406,14 +296,6 @@ EOT-PGADMIN
         _rewrite_so_refs $PG_STAGING lib @loader_path/..; _rewrite_so_refs $PG_STAGING lib/postgresql @loader_path/../..;\
         _rewrite_so_refs $PG_STAGING lib/postgresql/plugins @loader_path/../../.."
 
-    echo "Some specific rewriting of shared library references"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change $PG_STAGING/lib/libpq.5.dylib @loader_path/../../../../../../Frameworks/libpq.5.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libpq"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /opt/local/20191229/lib/libssl.1.1.dylib @loader_path/../../../../../../Frameworks/libssl.1.1.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libssl"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /opt/local/20191229/lib/libcrypto.1.1.dylib @loader_path/../../../../../../Frameworks/libcrypto.1.1.dylib Contents/Resources/venv/lib/python/site-packages/psycopg2/_psycopg*.so" || _die "install_name_tool change failed for libcrypto"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /opt/local/20191229/lib/libssl.1.1.dylib @loader_path/../../../../../../../../Frameworks/libssl.1.1.dylib Contents/Resources/venv/lib/python/site-packages/cryptography/hazmat/bindings/_openssl.abi3.so" || _die "install_name_tool change failed for libssl"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -change /opt/local/20191229/lib/libcrypto.1.1.dylib @loader_path/../../../../../../../../Frameworks/libcrypto.1.1.dylib Contents/Resources/venv/lib/python/site-packages/cryptography/hazmat/bindings/_openssl.abi3.so" || _die "install_name_tool change failed for libcrypto"
-    ssh $PG_SSH_OSX "cd \"$PG_STAGING/$APP_BUNDLE_NAME\"; install_name_tool -id libpq.5.dylib Contents/Frameworks/libpq.5.dylib" || _die "install_name_tool id failed for libpq"
-
     # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
      ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging_cache/osx.build/plperl.so $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plperl.so"
 
@@ -426,11 +308,15 @@ EOT-PGADMIN
     ssh $PG_SSH_OSX "cd /buildfarm/src/test/; rm -rf regress" || _die "Failed to remove the regression regress directory"
 
     # Copy the regress source to the regression setup 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/src/test/; cp -pR regress /buildfarm/src/test/" || _die "Failed to Copy regress to the regression directory"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/src/test/; cp -pR regress /buildfarm/src/test/" 
 
     echo "Removing last successful staging directory ($PG_PATH_OSX/server/staging_cache/osx)"
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/staging_cache/osx" || _die "Couldn't remove the last successful staging_cache directory directory"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/staging_cache/osx" || _die "Couldn't create the last successful staging_cache directory"
+    #Removing and creating the staging_cache on pgAdmin4 build server.
+    echo "Removing last successful staging directory ($PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx)"
+    ssh $PG_SSH_OSX_PGADMIN "rm -rf $PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx" || _die "Couldn't remove the last successful staging_cache directory for pgAdmin4"
+    ssh $PG_SSH_OSX_PGADMIN "mkdir -p $PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx" || _die "Couldn't create the last successful staging_cache directory for pgAdmin4"
 
     echo "Copying the complete build to the successful staging_cache directory"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; cp -PR server/staging_cache/osx.build/* server/staging_cache/osx" || _die "Couldn't copy the existing staging_cache directory"
@@ -457,6 +343,7 @@ _postprocess_server_osx() {
     echo "*******************************************************"
 
     PG_STAGING=$PG_PATH_OSX/server/staging_cache/osx
+    PG_STAGING_PGADMIN=$PG_PATH_OSX_PGADMIN/pgadmin4/staging_cache/osx.build
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/server/staging/osx ];
@@ -475,6 +362,10 @@ _postprocess_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create archive of the server staging_cache"
     scp $PG_SSH_OSX:$PG_STAGING/server-staging.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to scp server staging_cache"
     scp $PG_SSH_OSX:$PG_PATH_OSX/server/scripts/osx/getlocales/getlocales.osx $WD/server/scripts/osx/getlocales/ || _die "Failed to scp getlocales.osx"
+    # Copy the staging of pgAdmin4 from build machine to controller to build the installer
+    echo "Copying the pgAdmin4 from build machine to controller"
+    ssh $PG_SSH_OSX_PGADMIN "cd $PG_STAGING_PGADMIN; tar -jcf pgadmin.tar.bz2 pgAdmin\ 4.app" || _die "Failed to create archive of the pgadmin4 staging_cache"
+    scp $PG_SSH_OSX_PGADMIN:$PG_STAGING_PGADMIN/pgadmin.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to scp pgadmin4 staging_cache"
 
     # sign the getlocales binary
     scp $WD/common.sh $WD/settings.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
@@ -484,10 +375,14 @@ _postprocess_server_osx() {
 
     # sign the binaries and libraries
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf server-staging.tar.bz2" || _die "Failed to remove server-staging.tar from signing server"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf pgadmin.tar.bz2" || _die "Failed to remove pgadmin.tar.bz2 from signing server"
     scp $WD/server/staging_cache/osx/server-staging.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy server-staging.tar.bz2 on signing server"
+    scp $WD/server/staging_cache/osx/pgadmin.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy pgadmin.tar.bz2 on signing server"
     rm -rf $WD/server/staging_cache/osx/server-staging.tar.bz2 || _die "Failed to remove server-staging.tar from controller"
+    rm -rf $WD/server/staging_cache/osx/pgadmin.tar.bz2 || _die "Failed to remove pgadmin.tar.bz2 from controller"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf staging" || _die "Failed to remove staging from signing server"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../server-staging.tar.bz2; mv pgAdmin\ 4.app pgAdmin4.app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../server-staging.tar.bz2"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging; tar -zxvf ../pgadmin.tar.bz2; mv pgAdmin\ 4.app pgAdmin4.app" || _die "Failed to rename pgAdmin 4.app to pgAdmin.app"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
     #ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging/lib entitlements-server.xml" || _die "Failed to do libraries signing with entitlements"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_bundles staging" || _die "Failed to sign bundle"
