@@ -6,11 +6,11 @@
 BASENAME=`basename $0`
 DIRNAME=`dirname $0`
 
-declare -a PACKAGES_ARR=(SERVER APACHEPHP PHPPGADMIN PGJDBC PSQLODBC POSTGIS SLONY NPGSQL PGAGENT PGMEMCACHE PGBOUNCER MIGRATIONTOOLKIT SQLPROTECT UPDATE_MONITOR LANGUAGEPACK APACHEHTTPD HDFS_FDW PEMHTTPD PEM)
+declare -a PACKAGES_ARR=(SERVER PGJDBC PSQLODBC POSTGIS SLONY NPGSQL PGAGENT PGMEMCACHE PGBOUNCER SQLPROTECT LANGUAGEPACK AHDFS_FDW PEMHTTPD PEM)
 declare -a PLATFORMS_ARR=(LINUX LINUX_X64 WINDOWS WINDOWS_X64 OSX)
 declare -a ENABLED_PKG_ARR=()
 declare -a ENABLED_PLAT_ARR=()
-declare -a DECOUPLED_ARR=(APACHEHTTPD APACHEPHP PHPPGADMIN PGJDBC PSQLODBC NPGSQL PGBOUNCER MIGRATIONTOOLKIT PGAGENT UPDATE_MONITOR PEMHTTPD LANGUAGEPACK PEM)
+declare -a DECOUPLED_ARR=(PGJDBC PSQLODBC NPGSQL PGBOUNCER PGAGENT PEMHTTPD LANGUAGEPACK PEM)
 # Any changes to this file should be made to all the git branches.
 
 usage()
@@ -22,7 +22,7 @@ usage()
         echo "      [-platforms list]  list of platforms. It may include the list of supported platforms separated by comma or all" 
         echo "      [-packages list]   list of packages. It may include the list of supported platforms separated by comma or all"
         echo "    Examples:"
-        echo "     $BASENAME -skipbuild 0 -platforms "linux, linux_64, windows, windows_x64, osx" -packages "server, apachehttpd, phppgadmin, pgjdbc, psqlodbc, slony, postgis, npgsql, pgagent, pgmemcache, pgbouncer, migrationtoolkit, sqlprotect, update_monitor""
+        echo "     $BASENAME -skipbuild 0 -platforms "linux, linux_64, windows, windows_x64, osx" -packages "server, pemhttpd, pgjdbc, psqlodbc, slony, postgis, npgsql, pgagent, pgmemcache, pgbouncer, sqlprotect""
         echo "     $BASENAME -skipbuild 1 -platforms "all" -packages "all""
         echo "     $BASENAME -skipbuild 1 -skippvtpkg 1 -platforms "all" -packages "all""
         echo ""

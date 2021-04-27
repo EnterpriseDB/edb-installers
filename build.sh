@@ -183,24 +183,6 @@ then
     (_postprocess_languagepack)
 fi
 
-# Package: ApachePhp
-if [ $PG_PACKAGE_APACHEPHP = 1 ];
-then
-    echo "### Package: ApachePhp"
-    cd $WD
-    source ./ApachePhp/build.sh
-
-    PG_BUILD_APACHEPHP=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_ApachePhp && _build_ApachePhp)
-        if [ $? == 0 ]; then
-            PG_BUILD_APACHEPHP=1
-        fi
-    fi
-    (_postprocess_ApachePhp)
-fi
-
 # Package: PEM-HTTPD
 if [ $PG_PACKAGE_PEMHTTPD = 1 ];
 then
@@ -217,24 +199,6 @@ then
         fi
     fi
     (_postprocess_PEM-HTTPD)
-fi
-
-# Package: phppgadmin
-if [ $PG_PACKAGE_PHPPGADMIN = 1 ];
-then
-    echo "### Package: phppgadmin"
-    cd $WD
-    source ./phpPgAdmin/build.sh
-
-    PG_BUILD_PHPPGADMIN=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_phpPgAdmin && _build_phpPgAdmin)
-        if [ $? == 0 ]; then
-           PG_BUILD_PHPPGADMIN=1
-        fi
-    fi
-    (_postprocess_phpPgAdmin)
 fi
 
 # Package: pgJDBC
@@ -381,23 +345,6 @@ then
     (_postprocess_pgbouncer)
 fi
 
-#Package: MigrationToolKit
-if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 ];
-then
-    cd $WD
-    source ./MigrationToolKit/build.sh
-
-    PG_BUILD_MIGRATIONTOOLKIT=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_MigrationToolKit && _build_MigrationToolKit)
-        if [ $? == 0 ]; then
-           PG_BUILD_MIGRATIONTOOLKIT=1
-        fi
-    fi
-    (_postprocess_MigrationToolKit)
-fi
-
 # Package: SQLPROTECT
 if [ $PG_PACKAGE_SQLPROTECT = 1 ];
 then
@@ -413,40 +360,6 @@ then
         fi
     fi
     (_postprocess_sqlprotect)
-fi
-
-# Package: UPDATE_MONITOR
-if [ $PG_PACKAGE_UPDATE_MONITOR = 1 ];
-then
-    cd $WD
-    source ./UpdateMonitor/build.sh
-
-    PG_BUILD_UPDATE_MONITOR=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_updatemonitor && _build_updatemonitor)
-        if [ $? == 0 ]; then
-           PG_BUILD_UPDATE_MONITOR=1
-        fi
-    fi
-    (_postprocess_updatemonitor)
-fi
-
-# Package: hdfs_fdw
-if [ $PG_PACKAGE_HDFS_FDW = 1 ];
-then
-    cd $WD
-    source ./hdfs_fdw/build.sh
-
-    PG_BUILD_HDFS_FDW=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_hdfs_fdw && _build_hdfs_fdw)
-        if [ $? == 0 ]; then
-          PG_BUILD_HDFS_FDW=1
-        fi
-    fi
-    (_postprocess_hdfs_fdw)
 fi
 
 # Check for private builds

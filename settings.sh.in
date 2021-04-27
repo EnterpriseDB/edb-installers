@@ -35,7 +35,6 @@ _set_config PG_PACKAGE_PGMEMCACHE 0
 _set_config PG_PACKAGE_PGBOUNCER 0
 _set_config PG_PACKAGE_SQLPROTECT 0
 _set_config PG_PACKAGE_LANGUAGEPACK 0
-_set_config PG_PACKAGE_HDFS_FDW 0
 _set_config PG_PACKAGE_PEMHTTPD 0
 
 # Path for the build machine (/opt/... must be at the end!)
