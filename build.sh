@@ -190,96 +190,6 @@ then
     (_postprocess_languagepack)
 fi
 
-# Package: ApachePhp
-if [ $PG_PACKAGE_APACHEPHP = 1 ];
-then
-    echo "### Package: ApachePhp"
-    cd $WD
-    source ./ApachePhp/build.sh
-
-    PG_BUILD_APACHE=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_ApachePhp && _build_ApachePhp)
-        if [ $? == 0 ]; then
-            PG_BUILD_APACHE=1
-        fi
-    fi
-    (_postprocess_ApachePhp)
-fi
-
-# Package: PEM-HTTPD
-if [ $PG_PACKAGE_PEMHTTPD = 1 ];
-then
-    echo "### Package: PEM-HTTPD"
-    cd $WD
-    source ./PEM-HTTPD/build.sh
-
-    PG_BUILD_PEMHTTPD=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_PEM-HTTPD && _build_PEM-HTTPD)
-        if [ $? == 0 ]; then
-           PG_BUILD_PEMHTTPD=1
-        fi
-    fi
-    (_postprocess_PEM-HTTPD)
-fi
-
-# Package: phppgadmin
-if [ $PG_PACKAGE_PHPPGADMIN = 1 ];
-then
-    echo "### Package: phppgadmin"
-    cd $WD
-    source ./phpPgAdmin/build.sh
-
-    PG_BUILD_PHPPGADMIN=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_phpPgAdmin && _build_phpPgAdmin)
-        if [ $? == 0 ]; then
-           PG_BUILD_PHPPGADMIN=1
-        fi
-    fi
-    (_postprocess_phpPgAdmin)
-fi
-
-# Package: pgJDBC
-if [ $PG_PACKAGE_PGJDBC = 1 ];
-then
-    echo "### Package: pgJDBC"
-    cd $WD
-    source ./pgJDBC/build.sh
-
-    PG_BUILD_PGJDBC=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_pgJDBC && _build_pgJDBC)
-        if [ $? == 0 ]; then
-           PG_BUILD_PGJDBC=1
-        fi
-    fi
-    (_postprocess_pgJDBC)
-fi
-
-# Package: psqlODBC
-if [ $PG_PACKAGE_PSQLODBC = 1 ];
-then
-    echo "### Package: psqlODBC"
-    cd $WD
-    source ./psqlODBC/build.sh
-
-    PG_BUILD_PSQLODBC=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_psqlODBC && _build_psqlODBC)
-        if [ $? == 0 ]; then
-           PG_BUILD_PSQLODBC=1
-        fi
-    fi
-    (_postprocess_psqlODBC)
-fi
-
 # Package: PostGIS
 if [ $PG_PACKAGE_POSTGIS = 1 ];
 then
@@ -314,24 +224,6 @@ then
         fi
     fi
     (_postprocess_Slony)
-fi
-
-# Package: Npgsql
-if [ $PG_PACKAGE_NPGSQL = 1 ];
-then
-    echo "### Package: Npgsql"
-    cd $WD
-    source ./Npgsql/build.sh
-
-    PG_BUILD_NPGSQL=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_Npgsql && _build_Npgsql)
-        if [ $? == 0 ]; then
-           PG_BUILD_NPGSQL=1
-        fi
-    fi
-    (_postprocess_Npgsql)
 fi
 
 # Package: pgAgent
@@ -370,24 +262,6 @@ then
     (_postprocess_pgmemcache)
 fi
 
-# Package: pgbouncer
-if [ $PG_PACKAGE_PGBOUNCER = 1 ];
-then
-    echo "### Package: pgbouncer"
-    cd $WD
-    source ./pgbouncer/build.sh
-
-    PG_BUILD_PGBOUNCER=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_pgbouncer && _build_pgbouncer)
-        if [ $? == 0 ]; then
-           PG_BUILD_PGBOUNCER=1
-        fi
-    fi
-    (_postprocess_pgbouncer)
-fi
-
 #Package: MigrationToolKit
 if [ $PG_PACKAGE_MIGRATIONTOOLKIT = 1 ];
 then
@@ -420,40 +294,6 @@ then
         fi
     fi
     (_postprocess_sqlprotect)
-fi
-
-# Package: UPDATE_MONITOR
-if [ $PG_PACKAGE_UPDATE_MONITOR = 1 ];
-then
-    cd $WD
-    source ./UpdateMonitor/build.sh
-
-    PG_BUILD_UPDATE_MONITOR=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_updatemonitor && _build_updatemonitor)
-        if [ $? == 0 ]; then
-           PG_BUILD_UPDATE_MONITOR=1
-        fi
-    fi
-    (_postprocess_updatemonitor)
-fi
-
-# Package: hdfs_fdw
-if [ $PG_PACKAGE_HDFS_FDW = 1 ];
-then
-    cd $WD
-    source ./hdfs_fdw/build.sh
-
-    PG_BUILD_HDFS_FDW=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_hdfs_fdw && _build_hdfs_fdw)
-        if [ $? == 0 ]; then
-          PG_BUILD_HDFS_FDW=1
-        fi
-    fi
-    (_postprocess_hdfs_fdw)
 fi
 
 # Check for private builds
