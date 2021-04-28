@@ -146,8 +146,8 @@ _build_languagepack_osx() {
 
    echo "Building TCL..."
    
-   CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L\$TCL_TK_INSTALL_PATH/lib -arch x86_64" ./configure --prefix=\$TCL_TK_INSTALL_PATH --enable-threads --enable-shared || _die "Failed to configure tcl"
-   CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L\$TCL_TK_INSTALL_PATH/lib -arch x86_64" make || _die "Failed to make tcl"
+   CFLAGS="$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L\$TCL_TK_INSTALL_PATH/lib" ./configure --prefix=\$TCL_TK_INSTALL_PATH --enable-threads --enable-shared || _die "Failed to configure tcl"
+   CFLAGS="$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L\$TCL_TK_INSTALL_PATH/lib" make || _die "Failed to make tcl"
    make install || _die "Failed to make install tcl"
 
      echo "Setting RPATHs..."
@@ -169,12 +169,12 @@ _build_languagepack_osx() {
      export MACOSX_DEPLOYMENT_TARGET=\$MACOSX_MIN_VERSION
      export PYTHONHOME="\$PYTHON_INSTALL_PATH"
 
-     CC='clang' CFLAGS="\$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/opt/local/Current/lib \$PG_ARCH_OSX_LDFLAGS -arch x86_64" ./configure --prefix=\$PYTHON_INSTALL_PATH --enable-shared --with-openssl=/opt/local/Current || _die "Failed to configure Python"
+     CC='clang' CFLAGS="\$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current/lib \$PG_ARCH_OSX_LDFLAGS" ./configure --prefix=\$PYTHON_INSTALL_PATH --enable-shared --with-openssl=/opt/local/Current || _die "Failed to configure Python"
      echo "-----------------------------------------------------"
      echo "out put of Python Make started"
      echo "-----------------------------------------------------"
 
-     PYTHONHOME=\$PYTHON_INSTALL_PATH CFLAGS="\$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="\$PG_ARCH_OSX_LDFLAGS -arch x86_64" make || _die "Failed to make Python"
+     PYTHONHOME=\$PYTHON_INSTALL_PATH CFLAGS="\$PG_ARCH_OSX_CFLAGS" LDFLAGS="\$PG_ARCH_OSX_LDFLAGS" make || _die "Failed to make Python"
      echo "-----------------------------------------------------"
      echo "out put of Python Make end"
      echo "-----------------------------------------------------"
@@ -235,7 +235,7 @@ _build_languagepack_osx() {
     cd $PG_PATH_OSX/languagepack/source/perl.osx
     export LD_RUN_PATH=\$PERL_INSTALL_PATH/lib
 
-    LDFLAGS='-L\$PERL_INSTALL_PATH/lib' ./Configure -ders -Dcc=llvm-gcc -Dusethreads -Duseithreads -Uinstallusrbinperl -Ulocincpth= -Uloclibpth= -A ccflags=-DUSE_SITECUSTOMIZE -A ccflags=-DPERL_RELOCATABLE_INCPUSH -A ccflags=-Duselargefiles -Accflags='\$PG_ARCH_OSX_CFLAGS -arch x86_64 -fno-merge-constants' -Aldflags='-arch x86_64' -Duseshrplib -Dprefix=\$PERL_INSTALL_PATH -Dprivlib=\$PERL_INSTALL_PATH/lib -Darchlib=\$PERL_INSTALL_PATH/lib -Dsiteprefix=\$PERL_INSTALL_PATH/site -Dsitelib=\$PERL_INSTALL_PATH/site/lib -Dsitearch=\$PERL_INSTALL_PATH/site/lib || _die "Failed to configure Perl"
+    LDFLAGS='-L\$PERL_INSTALL_PATH/lib' ./Configure -ders -Dcc=llvm-gcc -Dusethreads -Duseithreads -Uinstallusrbinperl -Ulocincpth= -Uloclibpth= -A ccflags=-DUSE_SITECUSTOMIZE -A ccflags=-DPERL_RELOCATABLE_INCPUSH -A ccflags=-Duselargefiles -Accflags='\$PG_ARCH_OSX_CFLAGS -arch x86_64 -arch arm64  -fno-merge-constants' -Aldflags='-arch x86_64 -arch arm64' -Duseshrplib -Dprefix=\$PERL_INSTALL_PATH -Dprivlib=\$PERL_INSTALL_PATH/lib -Darchlib=\$PERL_INSTALL_PATH/lib -Dsiteprefix=\$PERL_INSTALL_PATH/site -Dsitelib=\$PERL_INSTALL_PATH/site/lib -Dsitearch=\$PERL_INSTALL_PATH/site/lib || _die "Failed to configure Perl"
     make || _die "Failed to Make Perl"
     make install || _die "Failed to make install Perl"
     echo "Setting RPATHs..."
