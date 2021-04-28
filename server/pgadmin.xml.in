@@ -143,9 +143,6 @@
                 <distributionDirectory>
                     <origin>staging/osx/pgadmin4/installer</origin>
                 </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/osx/pgadmin4/debug_symbols</origin>
-                </distributionDirectory>
                 <distributionFile>
                     <origin>staging/osx/pgadmin4/pgAdmin_3rd_party_licenses.txt</origin>
                 </distributionFile>
