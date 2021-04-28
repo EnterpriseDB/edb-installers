@@ -31,7 +31,7 @@
     <!-- set if it is a native windows 64 bit-->
     <windows64bitMode>@@WIN64MODE@@</windows64bitMode>
     <!-- macOS 64bit App -->
-    <osxPlatforms>osx-intel osx-x86_64</osxPlatforms>
+    <osxPlatforms>osx-arm64 osx-x86_64</osxPlatforms>
 
     <!-- Images -->
     <leftImage>../resources/pg-side.png</leftImage>

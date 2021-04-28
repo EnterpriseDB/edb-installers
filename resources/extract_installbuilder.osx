@@ -21,26 +21,18 @@ do
   _process_command_line ${opt}
 done
 
-if [ "${os_version:0:1}" == "6" ];then
-    executable="osx-10.2"
-elif [ "${machine_platform}" == "i386" ];then
-
   if [ "${machine_arch}" == "x86_64" ]; then
-    runtimes="osx-x86_64 osx-intel"
-  else
-    runtimes="osx-intel osx-x86_64"
+    runtimes="osx-x86_64"
   fi
-  executable=none
-  for r in ${runtimes} ; do
-    if [ -f "${runtimes_dir}/${r}" ]; then
-      executable=${r}
-      break
-    fi
-  done
 
-else
-    executable="osx-ppc"
-fi
+  if [ "${machine_arch}" == "arm64" ]; then
+    runtimes="osx-arm64"
+  fi
+
+  executable=none
+    if [ -f "${runtimes_dir}/${runtimes}" ]; then
+      executable=${runtimes}
+    fi
 
 if [ "$executable" == "none" ]; then
     echo "The current OS X version is not supported"
