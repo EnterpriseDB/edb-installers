@@ -64,7 +64,7 @@ _prep_server_windows_x64() {
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-x64.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-doc.bat"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-pgadmin4.bat"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q build-pgadmin4.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q output.build"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q postgres.windows-x64"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q pgadmin.windows-x64"
@@ -190,28 +190,8 @@ vcupgrade /overwrite %1
 
 EOT
 
-cat <<EOT > "vc-build-pgadmin4.bat"
-REM Setting Visual Studio Environment
-CALL "$PG_VS14INSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
-@SET PGADMIN_PYTHON_DIR=$PGADMIN_PYTHON_WINDOWS_X64
-@SET PYTHON_HOME=$PGADMIN_PYTHON_WINDOWS_X64
-@SET PYTHON_VERSION=38
 
-cd "$PG_PATH_WINDOWS_X64\pgadmin.windows-x64\runtime"
-$PG_QMAKE_WINDOWS_X64
-nmake
-
-EOT
-
-cat <<EOT > "build-pgadmin-dep.bat"
-@SET CL="-FI$PG_VS14INSTALLDIR_WINDOWS_X64\VC\include\stdint.h"
-CALL $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/activate
-@SET PATH=$PG_PATH_WINDOWS_X64\output.build\bin;%PATH%
-pip install -r requirements.txt --no-cache-dir
-pip install sphinx
-EOT
-
-    cat <<EOT > "vc-build-doc.bat"
+cat <<EOT > "vc-build-doc.bat"
 REM Setting Visual Studio Environment
 CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" x86
 
@@ -363,11 +343,24 @@ EOT
 </Project>
 EOT
 
+    # create pgAdmin script and replace place holder
+    if [ -f $WD/server/scripts/windows/build-pgadmin.bat ]; then
+       rm -f $WD/server/scripts/windows/build-pgadmin.bat
+    fi
+    echo "CALL \"$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Auxiliary\Build\vcvarsall.bat\" amd64" > $WD/server/scripts/windows/build-pgadmin.bat
+    cat $WD/server/scripts/windows/build-pgadmin.bat.in >> $WD/server/scripts/windows/build-pgadmin.bat
+    _replace PGADMIN_SRC_DIR= "PGADMIN_SRC_DIR=${PG_PATH_WINDOWS_X64}\\\\pgadmin.windows-x64" $WD/server/scripts/windows/build-pgadmin.bat || _die "Failed to replace PGADMIN_SRC_DIR in build-pgadmin.bat"
+    _replace PGADMIN_PYTHON_DIR= "PGADMIN_PYTHON_DIR=${PGADMIN_PYTHON_WINDOWS_X64}" $WD/server/scripts/windows/build-pgadmin.bat || _die "Failed to replace PGADMIN_PYTHON_WINDOWS_X64 in build-pgadmin.bat"
+    _replace PGBUILD= "PGBUILD=${PG_PGBUILD_WINDOWS_X64}" $WD/server/scripts/windows/build-pgadmin.bat $WD/server/scripts/windows/build-pgadmin.bat || _die "Failed to replace PGBUILD in build-pgadmin.bat"
+    _replace PGADMIN_KRB5_DIR= "PGADMIN_KRB5_DIR=${PGADMIN_KRB5_DIR_X64}" $WD/server/scripts/windows/build-pgadmin.bat || _die "Failed to replace PGADMIN_KRB5_DIR in build-pgadmin.bat"
+    _replace YARN_HOME= "YARN_HOME=${YARN_HOME_X64}" $WD/server/scripts/windows/build-pgadmin.bat || _die "Failed to replace YARN_HOME in build-pgadmin.bat"
+    _replace NODEJS_HOME= "NODEJS_HOME=${NODEJS_HOME_X64}" $WD/server/scripts/windows/build-pgadmin.bat || _die "Failed to replace NODEJS_HOME in build-pgadmin.bat"
+
         
     # Zip up the scripts directories and copy them to the build host, then unzip
     cd $WD/server/scripts/windows/
     echo "Copying scripts source tree to Windows build VM"
-    zip -r scripts.zip vc-build.bat build-pgadmin-dep.bat vc-build-pgadmin4.bat vc-build-x64.bat vc-build-doc.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build-x64.bat vc-build-x64.bat, createuser, getlocales, validateuser)"
+    zip -r scripts.zip vc-build.bat build-pgadmin.bat vc-build-x64.bat vc-build-doc.bat createuser getlocales validateuser || _die "Failed to pack the scripts source tree (ms-build.bat vc-build-x64.bat vc-build-x64.bat, createuser, getlocales, validateuser)"
 
     rsync -av scripts.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the scripts source tree to the windows-x64 build host (scripts.zip)"
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; unzip -o scripts.zip" || _die "Failed to unpack the scripts source tree on the windows-x64 build host (scripts.zip)"
@@ -480,58 +473,16 @@ EOT
 
     #Create pgAdmin4 folder inside the output.build
     ssh $PG_SSH_WINDOWS_X64 "mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\"" || _die "Failed to create a pgAdmin 4 directory on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to create a bin directory on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\web; echo SERVER_MODE = False > config_distro.py; echo HELP_PATH = \'../../../docs/en_US/html/\' >> config_distro.py; echo UPGRADE_CHECK_KEY = \'edb-pgadmin4\'  >> config_distro.py" || _die "Failed to copy config_distro.py on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\web \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\"" || _die "Failed to copy web folder on the windows build host"
-
-    #create virtualenv and install required components using pip and compile documents and runtime
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; $PGADMIN_PYTHON_WINDOWS_X64/python.exe -m venv $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv" || _die "Failed to create venv"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; source $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/activate; $PGADMIN_PYTHON_WINDOWS_X64/python.exe -m pip install --upgrade pip setuptools" || _die "Failed to upgrade pip setuptools"
-    # In PG10, the version numbering scheme got changed and adopted a single digit major version (10) instead of two which is not supported by psycopg2
-    # and requires a two digit version. Hence, use 9.6 installation to build pgAdmin
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\build-pgadmin-dep.bat" || _die "Failed to install pgadmin dependencies"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/sphinx-build $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/docs/en_US \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\docs\\\\en_US\\\\html\"" || _die "Failed to compile html docs"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; source $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/activate; $PG_PATH_WINDOWS_X64/pgadmin.windows-x64/venv/Scripts/pip uninstall -y sphinx" || _die "pip uninstall sphinx failed"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-pgadmin4.bat" || _die "Failed to buildi pgadmin4 on the windows build host"
-
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\runtime\\\Release\\\\pgAdmin4.exe \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy a program file on the windows build host"
-    #QT related libs
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Core.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Core.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Sql.dll  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Sql.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Gui.dll  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Gui.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Qml.dll  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Qml.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5OpenGL.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5OpenGL.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Quick.dll  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Quick.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Sensors.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Sensors.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Widgets.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Widgets.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Network.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Network.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Multimedia.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Multimedia.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Positioning.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Positioning.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5PrintSupport.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5PrintSupport.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5MultimediaWidgets.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5MultimediaWidgets.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\opengl32sw.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy opengl32sw.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\libEGL.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libEGL.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\libGLESv2.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libGLESv2.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\bin\\\\Qt5Svg.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy Qt5Svg.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\\\\platforms\"" || _die "Failed to create a directory platforms on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_QTPATH_WINDOWS_X64\\\\plugins\\\\platforms\\\\qwindows.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\\\\platforms\"" || _die "Failed to copy qwindows.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c cd \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"; echo [Paths] > qt.conf; echo Plugins=plugins >> qt.conf" || _die "Failed to create qt.conf"
-    ssh $PG_SSH_WINDOWS_X64 "cp $PGADMIN_PYTHON_DLL_WINDOWS_X64  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" ||  _die "Failed to copy a dependency $PGADMIN_PYTHON_DLL_WINDOWS_X64"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\build-pgadmin.bat" || _die "Failed to build pgadmin"
+    ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\win-build\\\\docs \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\docs\"" || _die "Failed to copy pgAdmin doc"
+    ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\win-build\\\\python \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\python\"" || _die "Failed to copy pgAdmin python"
+    ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\win-build\\\\runtime \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy pgAdmin bin"
+    ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\win-build\\\\web \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\web\"" || _die "Failed to copy pgAdmin web"
 
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libiconv-2.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libiconv-2.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-8.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libintl-8.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\libpq.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libpq.dll"
 
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c rd /S /Q $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\Include"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c del $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\pip-selfcheck.json"
-
-    ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\venv\\\\ \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\\"" || _die "Failed to copy venv folder on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cp -R $PGADMIN_PYTHON_WINDOWS_X64\\\\DLLs \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy DLLs folder on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cp -R $PGADMIN_PYTHON_WINDOWS_X64\\\\Lib  \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy Lib folder on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c del /Q $PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin\ 4\\\\\venv\\\\Lib\\\\*.pyc" || _die "Failed to remove the pyc files on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c rd /S /Q $PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin\ 4\\\\web\\\\regression" || _die "Failed to remove the regression directory on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c rd /S /Q $PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin\ 4\\\\web\\\\pgadmin\\\feature_tests" || _die "Failed to remove the feature_tests directory on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cp -R $PGADMIN_PYTHON_WINDOWS_X64\\\\pythonw.exe \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\\venv\\\\\"" || _die "Failed to copy pythonw.exe binary on the windows build host"
 
     #####################
     # StackBuilder
@@ -611,12 +562,6 @@ _postprocess_server_windows_x64() {
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/README.pldebugger $WD/server/staging_cache/windows-x64/doc
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi*.sql $WD/server/staging_cache/windows-x64/share/extension
     cp $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL/contrib/pldebugger/pldbgapi.control $WD/server/staging_cache/windows-x64/share/extension
-
-   # Removing the unwanted files and directories from the pgadmin staging_cache.
-   cd $WD/server/staging_cache/windows-x64/pgAdmin\ 4/web
-   find . -name "tests" -type d | xargs rm -rf
-   cd $WD/server/staging_cache/windows-x64/pgAdmin\ 4/venv/Lib
-   find . \( -name test -o -name tests \) -type d | xargs rm -rf
 
    cd $WD/server
    # Copy debug symbols to output/symbols directory

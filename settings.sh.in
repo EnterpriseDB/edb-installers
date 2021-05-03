@@ -172,6 +172,9 @@ PGSERVER_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/server
 PGADMIN_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/pgadmin4
 SB_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/stackbuilder
 CLT_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/commandlinetools
+PGADMIN_KRB5_DIR_X64="C:\\\\Program Files\\\\MIT\\\\Kerberos"
+YARN_HOME_X64="C:\\\\pgBuild64\\\\Yarn"
+NODEJS_HOME_X64="C:\\\\pgBuild64\\\\node-v14.16.1-win-x64"
 
 
 PG_SSH_SOLARIS_X64=buildfarm@bf3-solaris-x64.pn.in.enterprisedb.com
