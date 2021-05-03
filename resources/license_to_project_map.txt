@@ -31,3 +31,4 @@ Pillow_license.txt	project_pillow
 mozilla_public_license.txt	project_xulrunner
 json2_license.txt	project_json2
 pgAdmin_license.txt	project_pgAdmin	
+boost_license.txt       project_boost

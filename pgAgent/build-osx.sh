@@ -89,35 +89,46 @@ cat <<EOT-PGAGENT > $WD/pgAgent/build-pgagent.sh
 
     echo "Building pgAgent sources"
     cd \$SOURCE_DIR
-    WXWIN=/opt/local/Current PGDIR=$PG_PGHOME_OSX cmake -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6  -DCMAKE_INSTALL_PREFIX=\$PG_STAGING -DSTATIC_BUILD=NO -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=i386 CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
+    BOOST_ROOT=/opt/local/boost PGDIR=$PG_PGHOME_OSX /opt/local/bin/cmake -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.6  -DCMAKE_INSTALL_PREFIX=\$PG_STAGING/pgAgent -DSTATIC_BUILD=NO -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=x86_64 CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
     echo "Compiling pgAgent"
     cd \$SOURCE_DIR
     make || _die "Couldn't compile the pgAgent sources"
     make install || _die "Couldn't install pgAgent"
 
-    mkdir -p \$PG_STAGING/lib
+    mkdir -p \$PG_STAGING/pgAgent/lib
 
-    # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
-    cp -pR $PG_PGHOME_OSX/bin/psql \$PG_STAGING/bin || _die "Failed to copy psql"
-    cp -pR $PG_PGHOME_OSX/lib/libpq.*dylib \$PG_STAGING/lib || _die "Failed to copy the dependency library (libpq.5.dylib)"
-    cp -pR $PG_PGHOME_OSX/lib/libedit.*dylib \$PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
-    cp -pR $PG_PGHOME_OSX/lib/libssl.*dylib \$PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
-    cp -pR $PG_PGHOME_OSX/lib/libcrypto.*dylib \$PG_STAGING/lib || _die "Failed to copy the dependency library (libedit.0.dylib)"
+    cp -pR /opt/local/boost/lib/libboost_filesystem.dylib \$PG_STAGING/pgAgent/lib
+    cp -pR /opt/local/boost/lib/libboost_system.dylib \$PG_STAGING/pgAgent/lib
+    cp -pR /opt/local/boost/lib/libboost_thread.dylib \$PG_STAGING/pgAgent/lib
+    cp -pR /opt/local/boost/lib/libboost_chrono.dylib \$PG_STAGING/pgAgent/lib
+    cp -pR /opt/local/boost/lib/libboost_regex.dylib \$PG_STAGING/pgAgent/lib
+    cp -pR /opt/local/boost/lib/libboost_date_time.dylib \$PG_STAGING/pgAgent/lib
+    cp -pR /opt/local/boost/lib/libboost_atomic.dylib \$PG_STAGING/pgAgent/lib
 
-    # Copy libxml2 as System's libxml can be old.
-    cp -pR /opt/local/Current/lib/libxml2*dylib \$PG_STAGING/lib || _die "Failed to copy the latest libxml2"
-    cp -pR /opt/local/Current/lib/libz*dylib \$PG_STAGING/lib || _die "Failed to copy the latest libxml2"
-    cp -pR /opt/local/Current/lib/libiconv*dylib \$PG_STAGING/lib || _die "Failed to copy the latest libxml2"
-    cp -pR /opt/local/Current/lib/libwx_base_carbonu-2.8*dylib \$PG_STAGING/lib || _die "Failed to copy the latest libxml2"
+    mkdir -p \$PG_STAGING/pgAgent/share/extension
 
-    otool -L $PG_PATH_OSX/pgAgent/staging/osx.build/bin/pgagent
-    install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "\$PG_STAGING/bin/psql"
-    install_name_tool -change "libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "\$PG_STAGING/bin/pgagent"
-    _rewrite_so_refs $PG_PATH_OSX/pgAgent/staging/osx.build lib @loader_path/..
-    _rewrite_so_refs $PG_PATH_OSX/pgAgent/staging/osx.build bin @loader_path/..
+    mv \$PG_STAGING/pgAgent/share/*.sql \$PG_STAGING/pgAgent/share/extension
+    mv \$PG_PGHOME_OSX/share/postgresql/extension/pgagent.control \$PG_STAGING/pgAgent/share/extension
+    mv \$PG_PGHOME_OSX/share/postgresql/extension/pgagent*.sql \$PG_STAGING/pgAgent/share/extension
+    install_name_tool -change "\$PG_PATH_OSX/server/staging_cache/osx.build/lib/libpq.5.dylib" "@loader_path/../lib/libpq.5.dylib" "\$PG_STAGING/pgAgent/bin/pgagent"
+    _rewrite_so_refs $PG_PATH_OSX/pgAgent/staging/osx.build/pgAgent lib @loader_path/..
+    _rewrite_so_refs $PG_PATH_OSX/pgAgent/staging/osx.build/pgAgent bin @loader_path/..
+    install_name_tool -change "libboost_filesystem.dylib" "@loader_path/../lib/libboost_filesystem.dylib" "\$PG_STAGING/pgAgent/bin/pgagent"
+    install_name_tool -change "libboost_regex.dylib" "@loader_path/../lib/libboost_regex.dylib" "\$PG_STAGING/pgAgent/bin/pgagent"
+    install_name_tool -change "libboost_date_time.dylib" "@loader_path/../lib/libboost_date_time.dylib" "\$PG_STAGING/pgAgent/bin/pgagent"
+    install_name_tool -change "libboost_thread.dylib" "@loader_path/../lib/libboost_thread.dylib" "\$PG_STAGING/pgAgent/bin/pgagent"
+    install_name_tool -change "libboost_system.dylib" "@loader_path/../lib/libboost_system.dylib" "\$PG_STAGING/pgAgent/bin/pgagent"
+    install_name_tool -change "libboost_chrono.dylib" "@loader_path/../lib/libboost_chrono.dylib" "\$PG_STAGING/pgAgent/bin/pgagent"
+    install_name_tool -change "libboost_atomic.dylib" "@loader_path/../lib/libboost_atomic.dylib" "\$PG_STAGING/pgAgent/bin/pgagent"
+    install_name_tool -change "libboost_system.dylib" "@loader_path/libboost_system.dylib" "\$PG_STAGING/pgAgent/lib/libboost_filesystem.dylib"
+    install_name_tool -change "../lib/libicudata.57.1.dylib" "@loader_path/libicudata.57.1.dylib" "\$PG_STAGING/pgAgent/lib/libboost_regex.dylib"
+    install_name_tool -change "libicui18n.57.dylib" "@loader_path/libicui18n.57.dylib" "\$PG_STAGING/pgAgent/lib/libboost_regex.dylib"
+    install_name_tool -change "libicuuc.57.dylib" "@loader_path/libicuuc.57.dylib" "\$PG_STAGING/pgAgent/lib/libboost_regex.dylib"
+    install_name_tool -change "libboost_system.dylib" "@loader_path/libboost_system.dylib" "\$PG_STAGING/pgAgent/lib/libboost_thread.dylib"
+    install_name_tool -change "libboost_system.dylib" "@loader_path/libboost_system.dylib" "\$PG_STAGING/pgAgent/lib/libboost_chrono.dylib"
+    chmod +r \$PG_STAGING/pgAgent/lib/*
+    chmod +rx \$PG_STAGING/pgAgent/bin/*
 
-    chmod +r \$PG_STAGING/lib/*
-    chmod +rx \$PG_STAGING/bin/* 
 EOT-PGAGENT
     
     cd $WD
@@ -203,9 +214,8 @@ _postprocess_pgAgent_osx() {
         # Build the installer (for the root privileges required)
         echo Building the installer with the root privileges required
         "$PG_INSTALLBUILDER_BIN" build installer_1.xml osx || _die "Failed to build the installer"
-        cp $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app/Contents/MacOS/pgAgent $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
-
-        rm -rf $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app
+	cp $WD/output/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app/Contents/MacOS/pgAgent $WD/scripts/risePrivileges || _die "Failed to copy the privileges escalation applet"
+	rm -rf $WD/output/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app
     fi
     
     # Set permissions to all files and folders in staging
@@ -215,34 +225,48 @@ _postprocess_pgAgent_osx() {
     "$PG_INSTALLBUILDER_BIN" build installer.xml osx || _die "Failed to build the installer"
 
     # Rename the installer
-    mv $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app
+    mv $WD/output/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-osx.app $WD/output/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app
 
     # Using own scripts for extract-only mode
-    cp -f $WD/scripts/risePrivileges $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app/Contents/MacOS/pgAgent
-    chmod a+x $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app/Contents/MacOS/pgAgent
-    cp -f $WD/resources/extract_installbuilder.osx $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
-    _replace @@PROJECTNAME@@ pgAgent $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with pgAgent ($WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh)"
-    chmod a+x $WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
+    cp -f $WD/scripts/risePrivileges $WD/output/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app/Contents/MacOS/pgAgent
+    chmod a+x $WD/output/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app/Contents/MacOS/pgAgent
+    cp -f $WD/resources/extract_installbuilder.osx $WD/output/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
+    _replace @@PROJECTNAME@@ pgAgent $WD/output/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh || _die "Failed to replace @@PROJECTNAME@@ with pgAgent ($WD/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh)"
+    chmod a+x $WD/output/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app/Contents/MacOS/installbuilder.sh
+
 
     # Zip up the output
     cd $WD/output
 
     # Copy the versions file to signing server
-    scp ../versions.sh $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
+    scp ../versions.sh ../resources/entitlements.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
 
     # Scp the app bundle to the signing machine for signing
-    tar -jcvf pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app.tar.bz2 pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app || _die "Failed to create the archive."
+    tar -jcvf pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app.tar.bz2 pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app || _die "Failed to create the archive."
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf pgagent*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
-    scp pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app.tar.bz2  $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/ || _die "Failed to copy the archive to sign server."
-    rm -fr pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app* || _die "Failed to clean the output directory."
+    scp pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app.tar.bz2  $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/ || _die "Failed to copy the archive to sign server."
+    rm -fr pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app* || _die "Failed to clean the output directory."
+
     
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; $PG_PATH_OSX_SIGNTOOL --keychain ~/Library/Keychains/login.keychain --keychain-password $KEYCHAIN_PASSWD --identity 'Developer ID Application' --identifier 'com.edb.postgresql' pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app; mv pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx-signed.app  pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s '$DEVELOPER_ID' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements.xml pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
+
+    # macOS signing certificate check
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; codesign -vvv pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app | grep "CSSMERR_TP_CERT_EXPIRED" > /dev/null" && _die "macOS signing certificate is expired. Please renew the certs and build again"
 
     # Archive the .app and copy back to controller
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app" || _die "Failed to zip the installer bundle"
-    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/pgagent-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; zip -r pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.app" || _die "Failed to zip the installer bundle"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy installers to $WD/output."
+
+    # Notarize the OS X installer
+    ssh $PG_SSH_OSX_NOTARY "mkdir -p $PG_PATH_OSX_NOTARY; cp $PG_PATH_OSX_SIGN/settings.sh $PG_PATH_OSX_NOTARY; cp $PG_PATH_OSX_SIGN/common.sh $PG_PATH_OSX_NOTARY" || _die "Failed to create $PG_PATH_OSX_NOTARY"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx*" || _die "Failed to remove the installer from notarization installer directory"
+    scp $WD/output/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
+    scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
+
+    echo ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip pgagent" || _die "Failed to notarize the app"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip pgagent" || _die "Failed to notarize the app"
+    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/pgagent-pg$PG_CURRENT_VERSION-$PG_VERSION_PGAGENT-$PG_BUILDNUM_PGAGENT-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy notarized installer to $WD/output."
 
     cd $WD
 
