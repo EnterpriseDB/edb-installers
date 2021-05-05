@@ -46,8 +46,8 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            We can also specify additional directorys to include in the path.
 
 PG_SSH_SIGN_WINDOWS=buildfarm@bf-sign-server-windows.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS=D:\\\\pginstaller_13.auto
-PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller_13.auto
+PG_PATH_WINDOWS=D:\\\\pginstaller_14.auto
+PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller_14.auto
 PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
 PG_FRAMEWORKVERSION_WINDOWS=v4.0.30319
 PG_FRAMEWORKSDKDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0\\\\SDK\\\\v3.5"
@@ -64,9 +64,9 @@ PLATFORM_TOOLSET=
 PG_MINGW_MAKE_WINDOWS="D:\\\\pgBuild32\\\\Qt5.9.1\\\\Tools\\\\mingw530_32\\\\bin\\\\mingw32-make"
 PG_MINGW_QTTOOLS_WINDOWS="D:\\\\pgBuild32\\\\Qt5.9.1\\\\Tools\\\\mingw530_32"
 
-PG_SSH_WINDOWS_X64=buildfarm@bf13-windows-x64.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS_X64=D:\\\\pginstaller_13.auto
-PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller_13.auto
+PG_SSH_WINDOWS_X64=buildfarm@bf14-windows-x64.ox.uk.enterprisedb.com
+PG_PATH_WINDOWS_X64=D:\\\\pginstaller_14.auto
+PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller_14.auto
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017"
 PG_MSBUILDDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017\\\\Professional\\\\MSBuild\\\\15.0"
 PG_DEVENVDIR_WINDOWS_X64="$PG_VSINSTALLDIR_WINDOWS_X64\\\\Professional\\\\Common7\\\\IDE"
@@ -98,45 +98,43 @@ PGADMIN_KRB5_DIR="C:\\\\Program Files\\\\MIT\\\\Kerberos"
 YARN_HOME="C:\\\\pgBuild64\\\\Yarn"
 NODEJS_HOME="C:\\\\pgBuild64\\\\node-v14.16.0-win-x64"
 
-PG_SSH_OSX=buildfarm@bishopscourt.ox.uk.enterprisedb.com
-PG_PATH_OSX=/opt/pginstaller_13.auto
+PG_SSH_OSX=buildfarm@buckmore.ox.uk.enterprisedb.com
+PG_PATH_OSX=/opt/pginstaller_14.auto
 PG_SSH_OSX_SIGN=buildfarm@mors.ox.uk.enterprisedb.com
 #PG_SSH_OSX_SIGN=buildfarm@bf-osx-sign.ox.uk.enterprisedb.com
 PG_SSH_OSX_NOTARY=buildfarm@mors.ox.uk.enterprisedb.com
-PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_13.auto
-PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_13.notary
-PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner-new
+PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_14.auto
+PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_14.notary
+PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging_cache/osx
-PG_ANT_HOME_OSX=/usr
 PG_MAVEN_HOME_OSX=/opt/local/apache-maven-3.5.4
 PG_DOCBOOK_OSX=/usr/local/docbook-xsl-1.77.1
 PG_JAVA_HOME_OSX=/Library/Java/JavaVirtualMachines/jdk1.7.0_67.jdk/Contents/Home
 PG_CMAKE_OSX=/Applications/CMake.app/Contents/bin/cmake
 PG_PERL_OSX=/Library/edb/languagepack/v2/Perl-5.32
 PG_PYTHON_OSX=/Library/edb/languagepack/v2/Python-3.9
-PGADMIN_PYTHON_OSX=/Library/Frameworks/Python.framework/Versions/3.8
+PGADMIN_PYTHON_OSX=/Library/edb/languagepack/v2/Python-3.9
 PG_TCL_OSX=/Library/edb/languagepack/v2/Tcl-8.6
 PG_LANGUAGEPACK_OSX=/Library/edb/languagepack/v2
-PG_QTFRAMEWORK_OSX=/Library/Frameworks
-PG_QMAKE_OSX=/opt/local/Qt5.14/5.14.2/clang_64/bin/qmake
 PGSERVER_STAGING_OSX=$PWD/server/staging/osx/server
 PGADMIN_STAGING_OSX=$PWD/server/staging/osx/pgadmin4
 SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
 CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
-PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/13
+PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/14
 YARN_HOME_OSX=/opt/local/Current/yarn
-NODEJS_HOME_OSX=/opt/local/Current/node-v14.16.0-darwin-x64
+NODEJS_HOME_OSX=/opt/local/Current/nodejs
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the
 # oldest supported
 
-MACOSX_MIN_VERSION=10.13
-SDK_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk
-PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
+MACOSX_MIN_VERSION=10.14
+ARCHFLAGS="-arch x86_64 -arch arm64"
+SDK_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk
+PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
 PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
-PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
-PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
+PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
+PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
 
 # The InstallBuilder main binary.
 PG_INSTALLBUILDER_BIN="/opt/installbuilder-20.12.0/bin/builder"
