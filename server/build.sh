@@ -121,7 +121,7 @@ _prep_server() {
     else
         echo "Fetching debugger source..."
 
-        git clone git://git.postgresql.org/git/pldebugger.git || _die "Failed to checkout the pldebugger code"
+        git clone git://github/pldebugger || _die "Failed to checkout the pldebugger code"
     fi  
     
     # Get the last commit id
