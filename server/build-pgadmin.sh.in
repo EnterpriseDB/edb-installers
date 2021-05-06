@@ -247,6 +247,9 @@ _complete_bundle() {
 	# Copy the binary utilities into place
 	mkdir -p "${BUNDLE_DIR}/Contents/SharedSupport/"
 	cp "${PGBUILD}/bin/psql" "${BUNDLE_DIR}/Contents/SharedSupport/"
+	cp "${PGBUILD}/bin/pg_restore" "${BUNDLE_DIR}/Contents/SharedSupport/"
+	cp "${PGBUILD}/bin/pg_dumpall" "${BUNDLE_DIR}/Contents/SharedSupport/"
+	cp "${PGBUILD}/bin/pg_dump" "${BUNDLE_DIR}/Contents/SharedSupport/"
 
 	# Update the plist
 	cp ${SOURCE_DIR}/pkg/mac/Info.plist.in "${BUNDLE_DIR}/Contents/Info.plist"
