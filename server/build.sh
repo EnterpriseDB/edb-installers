@@ -8,6 +8,12 @@ then
     source $WD/server/build-osx.sh
 fi
 
+# Windows x64
+if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+then
+    source $WD/server/build-windows-x64.sh
+fi
+
 # Linux
 if [ $PG_ARCH_LINUX = 1 ];
 then
@@ -32,11 +38,6 @@ then
     source $WD/server/build-windows.sh
 fi
 
-# Windows x64
-if [ $PG_ARCH_WINDOWS_X64 = 1 ];
-then
-    source $WD/server/build-windows-x64.sh
-fi
     
 # Solaris x64
 if [ $PG_ARCH_SOLARIS_X64 = 1 ];
