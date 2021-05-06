@@ -151,6 +151,10 @@ PG_QMAKE_WINDOWS_X64=$PG_QTPATH_WINDOWS_X64\\\\bin\\\\qmake.exe
 PG_NODE_WINDOWS_X64="C:\\\\pgBuild64\\\node-v6.11.0-win-x64"
 PG_YARN_WINDOWS_X64="C:\\\\pgBuild64\\\\yarn-v0.26.1"
 PG_GIT_WINDOWS_X64="C:\\\\Git"
+PGADMIN_KRB5_DIR_X64="C:\\\\Program Files\\\\MIT\\\\Kerberos"
+YARN_HOME_X64="C:\\\\pgBuild64\\\\Yarn"
+NODEJS_HOME_X64="C:\\\\pgBuild64\\\\node-v14.16.1-win-x64"
+
 
 PG_SSH_SOLARIS_X64=buildfarm@bf3-solaris-x64.pn.in.enterprisedb.com
 PG_PATH_SOLARIS_X64=/mnt/buildfarm/pginstaller_2.auto-repo
