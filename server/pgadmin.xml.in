@@ -438,7 +438,7 @@
             </ruleList>
         </actionGroup>
 
-         <!-- Always remove the old web/pgadmin in upgrade -->
+         <!-- Always remove the old web/pgadmin and venv in upgrade -->
          <actionGroup>
              <actionList>
                  <!-- Show warning if pgAdmin server is on while doing upgrademode installation -->
@@ -449,11 +449,22 @@
                          <fileExists path="${installdir}/pgAdmin 4/web/pgadmin"/>
                      </ruleList>
                  </deleteFile>
+                 <deleteFile path="${installdir}/pgAdmin 4/venv">
+                     <ruleList>
+                         <fileExists path="${installdir}/pgAdmin 4/venv"/>
+                     </ruleList>
+                 </deleteFile>
                  <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Resources/web/pgadmin">
                     <ruleList>
                         <fileExists path="${installdir}/pgAdmin 4.app/Contents/Resources/web/pgadmin"/>
                         <compareText logic="equals" text="${platform_name}" value="osx" />
                     </ruleList>
+                 <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Resources/venv">
+                    <ruleList>
+                        <fileExists path="${installdir}/pgAdmin 4.app/Contents/Resources/venv"/>
+                        <compareText logic="equals" text="${platform_name}" value="osx" />
+                    </ruleList>
+                 </deleteFile>
                 </deleteFile>
              </actionList>
              <ruleList>
