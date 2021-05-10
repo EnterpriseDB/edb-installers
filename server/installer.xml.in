@@ -2958,15 +2958,7 @@ EOF
             </ruleList>
         </setInstallerVariable>
 
-        <deleteFile>
-            <path>${installdir}/pgAdmin 4/web/*</path>
-            <progressText>Removing web folder</progressText>
-            <excludeFiles>*/config_local.py</excludeFiles>
-            <ruleList>
-                <fileExists path="${installdir}/pgAdmin 4/web"/>
-            </ruleList>
-        </deleteFile>
-        <!-- Always remove the old venv in upgrade -->
+        <!-- Always remove the old venv in upgrade for windows  -->
         <actionGroup>
             <actionList>
                 <!-- Show warning if pgAdmin server is on while doing upgrademode installation -->
@@ -2977,25 +2969,59 @@ EOF
                         <fileExists path="${installdir}/pgAdmin 4/venv"/>
                     </ruleList>
                 </deleteFile>
-                  <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Resources/venv">
-                    <ruleList>
-                        <fileExists path="${installdir}/pgAdmin 4.app/Contents/Resources/venv"/>
-                        <compareText logic="equals" text="${platform_name}" value="osx" />
-                    </ruleList>
-                </deleteFile>
                   <deleteFile path="${installdir}/pgAdmin 4/web/pgadmin">
                     <ruleList>
                         <fileExists path="${installdir}/pgAdmin 4/web/pgadmin"/>
                     </ruleList>
                 </deleteFile>
-                  <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Resources/web/pgadmin">
-                    <ruleList>
-                        <fileExists path="${installdir}/pgAdmin 4.app/Contents/Resources/web/pgadmin"/>
-                        <compareText logic="equals" text="${platform_name}" value="osx" />
-                    </ruleList>
-                </deleteFile>
+                  <!-- Remove bin in uograde from 4.x to 5.x -->
+                  <deleteFile path="${installdir}/pgAdmin 4/bin">
+                     <ruleList>
+                         <fileExists path="${installdir}/pgAdmin 4/bin"/>
+                         <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
+                         <compareVersions logic="less_or_equal" version1="${pgAdmin_Version}" version2="4.30" />
+                     </ruleList>
+                  </deleteFile>
             </actionList>
             <ruleList>
+                  <compareText logic="contains" text="${platform_name}" value="windows" />
+                  <isFalse value="${extract_mode}"/>
+                  <isTrue value="${IsUpgrade}"/>
+             </ruleList>
+        </actionGroup>
+
+        <!-- Always remove the old web/pgadmin  and venv in upgrade -->
+        <actionGroup>
+            <actionList>
+                <!-- Show warning if pgAdmin server is on while doing upgrademode installation -->
+                <showWarning text="${msg(warning.upgrademode.installation)}" />
+                <logMessage text="${msg(warning.upgrademode.installation)}" />
+                <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Resources/venv">
+                  <ruleList>
+                      <fileExists path="${installdir}/pgAdmin 4.app/Contents/Resources/venv"/>
+                  </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Resources/web/pgadmin">
+                  <ruleList>
+                      <fileExists path="${installdir}/pgAdmin 4.app/Contents/Resources/web/pgadmin"/>
+                  </ruleList>
+                </deleteFile>
+                <!-- Delete older pgAdmin4 as from v5.0 onwards its name is changed to "pgAdmin 4" -->
+                <deleteFile path="${installdir}/pgAdmin 4.app/Contents/MacOS/pgAdmin4" >
+                    <ruleList>
+                        <fileTest path="${installdir}/pgAdmin 4.app/Contents/MacOS/pgAdmin4" condition="exists" />
+                    </ruleList>
+                </deleteFile>
+                  <!-- Remove bin in uograde from 4.x to 5.x -->
+                  <deleteFile path="${installdir}/pgAdmin 4/bin">
+                     <ruleList>
+                         <fileExists path="${installdir}/pgAdmin 4/bin"/>
+                         <compareVersions logic="less_or_equal" version1="${pgAdmin_Version}" version2="4.30" />
+                     </ruleList>
+                  </deleteFile>
+            </actionList>
+            <ruleList>
+                  <compareText logic="equals" text="${platform_name}" value="osx" />
                   <isFalse value="${extract_mode}"/>
                   <isTrue value="${IsUpgrade}"/>
              </ruleList>
@@ -3201,62 +3227,6 @@ EOF
 
     <!-- Postinstallation actions -->
     <postInstallationActionList>
-    <!-- Remove the QtWebkit/QtWebengine files in upgrade mode -->
-    <actionGroup>
-        <actionList>
-            <deleteFile path="${installdir}/pgAdmin 4/plugins/qtwebengine">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/plugins/qtwebengine"/>
-                </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/translations">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/translations"/>
-                </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/bin/qtwebengine*.pak">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/bin/qtwebengine*.pak"/>
-                </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/bin/QtWebEngineProcess">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/bin/QtWebEngineProcess"/>
-                </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/lib/libQt5WebEngine*">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/lib/libQt5WebEngine*"/>
-                </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/lib/libQt5WebChannel.so*">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/lib/libQt5WebChannel.so*"/>
-                </ruleList>
-            </deleteFile>
-        </actionList>
-        <ruleList>
-            <compareText logic="contains" text="${platform_name}" value="linux"/>
-        </ruleList>
-    </actionGroup>
-    <actionGroup>
-        <actionList>
-            <deleteFile path="${installdir}/pgAdmin 4/bin/Qt5WebKit*.dll">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/bin/Qt5WebKit*.dll"/>
-                </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/bin/Qt5WebChannel.dll">
-                <ruleList>
-                    <fileExists path="${installdir}/pgAdmin 4/bin/Qt5WebChannel.dll"/>
-                </ruleList>
-            </deleteFile>
-         </actionList>
-         <ruleList>
-             <compareText logic="equals" text="${platform_name}" value="windows"/>
-         </ruleList>
-    </actionGroup>
-
         <!-- Make the service-name persistent to make it available during uninstallation -->
         <setInstallerVariable>
             <name>servicename</name>
@@ -4369,61 +4339,6 @@ REM The script sets environment variables helpful for PostgreSQL
             </ruleList>
         </registrySet>
 
-        <!-- RM # 39338 Remove the webkit files-->
-        <actionGroup>
-          <actionList>
-            <deleteFile path="${installdir}/pgAdmin 4/lib/Qt5WebEngine.dll" >
-              <ruleList>
-                <fileTest path="${installdir}/pgAdmin 4/lib/Qt5WebEngine.dll" condition="exists" />
-              </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/lib/Qt5WebEngineWidgets.dll" >
-              <ruleList>
-                <fileTest path="${installdir}/pgAdmin 4/lib/Qt5WebEngineWidgets.dll" condition="exists" />
-              </ruleList>
-            </deleteFile>
-          </actionList>
-          <ruleList>
-            <compareText text="${platform_name}" logic="equals" value="windows" />
-          </ruleList>
-        </actionGroup>
-
-        <actionGroup>
-          <actionList>
-            <deleteFile path="${installdir}/pgAdmin 4/lib/libQt5WebKit.so*" >
-              <ruleList>
-                <fileTest path="${installdir}/pgAdmin 4/lib/libQt5WebKit.so*" condition="exists" />
-              </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4/lib/libQt5WebKitWidgets.so*" >
-              <ruleList>
-                <fileTest path="${installdir}/pgAdmin 4/lib/libQt5WebKitWidgets.so*" condition="exists" />
-              </ruleList>
-            </deleteFile>
-          </actionList>
-          <ruleList>
-            <compareText text="${platform_name}" logic="contains" value="Linux" />
-          </ruleList>
-        </actionGroup>
-
-        <actionGroup>
-          <actionList>
-            <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebEngine.framework" >
-              <ruleList>
-                <fileTest path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebEngine.framework" condition="exists" />
-              </ruleList>
-            </deleteFile>
-            <deleteFile path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebEngineWidgets.framework" >
-              <ruleList>
-                <fileTest path="${installdir}/pgAdmin 4.app/Contents/Frameworks/QtWebEngineWidgets.framework" condition="exists" />
-              </ruleList>
-            </deleteFile>
-          </actionList>
-          <ruleList>
-            <compareText text="${platform_name}" logic="equals" value="osx" />
-          </ruleList>
-        </actionGroup>
-
         <!-- Delete the temp scripts directory -->
         <logMessage>
           <text>Delete the temporary scripts directory...</text>
@@ -5086,6 +5001,24 @@ REM The script sets environment variables helpful for PostgreSQL
                  <compareText text="${platform_name}" logic="contains" value="solaris" />
             </ruleList>
         </deleteFile>
+
+        <iniFileSet>
+            <file>${PostgreSqlIni}</file>
+            <key>pgAdmin_Version</key>
+            <section>PostgreSQL/${product_version}</section>
+            <value></value>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <fileTest path="${PostgreSqlIni}" condition="exists"/>
+            </ruleList>
+        </iniFileSet>
+        <registryDelete>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
+            <name>pgAdmin_Version</name>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </registryDelete>
 
     </preUninstallationActionList>
 
