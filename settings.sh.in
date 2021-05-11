@@ -123,7 +123,7 @@ CLT_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/commandlinetools
 CMAKE_BUILD_GENERATOR_X64="Visual Studio 15 2017" #used for pgAgent
 PGADMIN_KRB5_DIR="C:\\\\Program Files\\\\MIT\\\\Kerberos"
 YARN_HOME="C:\\\\pgBuild64\\\\Yarn"
-NODEJS_HOME="C:\\\\pgBuild64\\\\node-v14.16.0-win-x64"
+NODEJS_HOME="C:\\\\pgBuild64\\\\node-v14.16.1-win-x64"
 
 PG_SSH_OSX=buildfarm@bf11-osx.ox.uk.enterprisedb.com
 PG_PATH_OSX=/mnt/hgfs/pginstaller.auto
@@ -154,7 +154,7 @@ PGADMIN_STAGING_OSX=$PWD/server/staging/osx/pgadmin4
 SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
 CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
 YARN_HOME_OSX=/opt/local/Current/yarn
-NODEJS_HOME_OSX=/opt/local/Current/node-v14.16.0-darwin-x64
+NODEJS_HOME_OSX=/opt/local/Current/node-v14.16.1-darwin-x64
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the
