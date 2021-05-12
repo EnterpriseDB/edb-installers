@@ -5446,6 +5446,7 @@ REM The script sets environment variables helpful for PostgreSQL
                     <name>pgAdmin 4</name>
                     <runInTerminal>0</runInTerminal>
                     <windowsExec>${installdir}\pgAdmin 4\bin\pgAdmin4.exe</windowsExec>
+                    <windowsIcon>${installdir}\scripts\images\pgAdmin4.ico</windowsIcon>
                     <ruleList>
                         <isTrue value="${create_shortcuts}" />
                     </ruleList>

@@ -596,6 +596,7 @@ _postprocess_server_windows_x64() {
     # Copy in the menu pick images and XDG items
     mkdir -p staging/windows-x64/scripts/images || _die "Failed to create a directory for the menu pick images"
     cp resources/*.ico staging/windows-x64/scripts/images || _die "Failed to copy the menu pick images (resources/*.ico)"
+    cp $WD/server/source/pgadmin.windows-x64/pkg/win32/Resources/pgAdmin4.ico staging/windows-x64/scripts/images || _die "Failed to copy pgAdmin4.ico to scripts/images"
     
     # Copy the launch scripts
     cp scripts/windows/serverctl.vbs staging/windows-x64/scripts/serverctl.vbs || _die "Failed to copy the serverctl script (scripts/windows/serverctl.vbs)"
