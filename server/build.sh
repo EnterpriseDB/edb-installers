@@ -93,6 +93,16 @@ _prep_server() {
         patch -p1 < $WD/tarballs/icon_display_issue.patch || _die "icon_display_issue.patch doesnot applied"
     fi
 
+    # Patch PPS-200
+    if [ "$PG_TARBALL_PGADMIN" = "5.2" ]
+    then
+        if [ -e $WD/tarballs/pgadmin52-req.patch ]
+        then
+            echo "Appyling the pgadmin52-req.patch"
+            patch -p0 < ~/tarballs/pgadmin52-req.patch || _die "failed to apply pgadmin52-req.patch"
+        fi
+    fi
+
     # Patch to compile the pgAdmin runtime successfully on macOS with 10.19 SDK
     if [ "$PG_TARBALL_PGADMIN" = "4.21" ]
     then
