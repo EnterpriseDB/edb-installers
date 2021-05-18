@@ -84,6 +84,18 @@ _prep_server() {
 
     echo "Unpacking pgAdmin source..."
     tar -zxvf ../../tarballs/pgadmin4-$PG_TARBALL_PGADMIN.tar.gz
+
+    cd pgadmin4-$PG_TARBALL_PGADMIN
+    # Patch PPS-200
+    if [ "$PG_TARBALL_PGADMIN" = "5.2" ]
+    then
+        if [ -e $WD/tarballs/pgadmin52-req.patch ]
+        then
+            echo "Appyling the pgadmin52-req.patch"
+            patch -p0 < ~/tarballs/pgadmin52-req.patch || _die "failed to apply pgadmin52-req.patch"
+        fi
+    fi
+
     cd $WD/server/source
 
     # Debugger
