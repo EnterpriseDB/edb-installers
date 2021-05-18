@@ -103,6 +103,16 @@ _prep_server() {
         fi
     fi
 
+    # Patch PPS-200
+    if [ "$PG_TARBALL_PGADMIN" = "5.2" ]
+    then
+        if [ -e $WD/tarballs/pgadmin52-req.patch ]
+        then
+            echo "Appyling the pgadmin52-req.patch"
+            patch -p0 < ~/tarballs/pgadmin52-req.patch || _die "failed to apply pgadmin52-req.patch"
+        fi
+    fi
+
     # psycopg2 latest version 2.8 is not yet supported. Hence use the last supported version
     if [ "$PG_TARBALL_PGADMIN" = "4.4" ]
     then
