@@ -8,11 +8,11 @@
 <body>
 
 <center>
-<h1>PostgreSQL 13</h1></p>
+<h1>PostgreSQL 14</h1></p>
 <h2>Installation Notes</h2>
 </center>
 
-<p>Welcome to the PostgreSQL 13 Installation Wizard.</p>
+<p>Welcome to the PostgreSQL 14 Installation Wizard.</p>
 
 <h3>Legal Bits</h3>
 
@@ -24,21 +24,18 @@
 
 <h3>Supported Operating Systems</h3>
 
-<p>The macOS build has been tested on 10.13 (High Sierra) and above. The Windows builds of this installer have been tested on variety of different versions of 64bit Windows platforms like Windows 2016 and above. Please let us know if the installer does not operate as expected on your operating system, and where possible, we will try to add support</p>
+<p>The macOS build has been tested on 11.x (BigSur) and above for x86_64 and ARM64 architectures. The Windows builds of this installer have been tested on variety of different versions of 64bit Windows platforms like Windows 2016 and above. Please let us know if the installer does not operate as expected on your operating system, and where possible, we will try to add support</p>
 
 <h3>Procedural Languages</h3>
 
 <p>The procedural languages pl/Perl, pl/Python and pl/Tcl are included in this distribution of PostgreSQL. The server has been built using the LanguagePack community distributions of those language interpreters. To use any of the these languages from within PostgreSQL, download and install the appropriate interpreters and ensure they are included in the PATH variable under which the database server will be started. The versions used are shown below - newer minor (bugfix) releases may also work, but have not been tested:</p>
 
 <ul>
-  <li>Perl 5.26</li>
-  <li>Python 3.7</li>
+  <li>Perl 5.32</li>
+  <li>Python 3.9</li>
   <li>Tcl 8.6</li>
 </ul>
-<p>The current pl/Python is dynamically linked with Python's shared library in the LanguagePack installers. Some distributions of Python interpreters (including ActivePython) on Linux do not carry a dynamic library of Python. Such interpreters would no longer be functional with pl/Python.We strongly recommend the users to use LanguagePack installers for pl/Perl, pl/Python and pl/Tcl.</p>
-<h3>Windows Service Account</h3>
-
-<p>Prior to version 9.2, the Windows port used a service account called 'postgres' by default. From 9.2 onwards, the special 'NT AUTHORITY\NetworkService' account is used instead. If you need to use an alternative account, for example, to allow the database server to use server-side COPY with files on a network share, run the installer with a command line option such as <i>--serviceaccount postgres</i>.</p>
+<p>The current pl/Python is dynamically linked with Python's shared library in the LanguagePack v2.x installers. Some distributions of Python interpreters (including ActivePython) on Linux do not carry a dynamic library of Python. Such interpreters would no longer be functional with pl/Python.We strongly recommend the users to use LanguagePack installers for pl/Perl, pl/Python and pl/Tcl. The beta installers might see plperl extension failing on x86_64 architecture</p>
 
 <h3>pl/pgsql Debugger</h3>
 
@@ -57,13 +54,7 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <h3>Important Note with regards to ICU</h3>
 
-<p>PostgreSQL Server 13 is compiled with ICU 67.x. The previous server versions used either ICU 53.x or  57.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes.</p>
-
-<h3>StackBuilder on macOS Catalina</h3>
-<p>The SIP on Catalina doesn't allow installers to elevate the privileges and therefore running the stackbuilder application from the menu may result in an install error. Hence, it is recommended to launch the stackbuiler using "sudo $installdir/stackbuilder.app/Contents/MacOS/stackbuilder" where $installdir is the installation location of PostgreSQL installer. </p>
-
-<h3>pgAdmin 4 v4.x on macOS BigSur</h3>
-<p>There is a known issue of pgAdmin freezing on launch on macOS BigSur because of a bug in Qt 5.13 and 5.14 versions. Till this issue is fixed, the work-around for this is to set the variable QT_MAC_WANTS_LAYER. </p>
+<p>PostgreSQL Server 14 is compiled with ICU 67.x. The server versions upto v12 used either ICU 53.x or  57.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes.</p>
 
 <h3>Technical Support</h3>
 

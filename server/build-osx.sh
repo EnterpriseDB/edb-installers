@@ -171,7 +171,7 @@ _build_server_osx() {
 
     # Configure the source tree
     echo "Configuring the postgres source tree for universal binary support"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -O2' LDFLAGS=\"-L/opt/local/Current/lib -L/opt/local/libexec/llvm-8.0/lib\" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/lib/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl XML2_CONFIG=/opt/local/Current/bin/xml2-config ICU_LIBS=\"-L/opt/local/Current/lib -licuuc -licudata -licui18n\" ICU_CFLAGS=\"-I/opt/local/Current/include\" LLVM_CONFIG=/opt/local/bin/llvm-config-mp-8.0 CLANG='/opt/local/bin/clang-mp-8.0 -isysroot $SDK_PATH' ./configure --with-icu --enable-debug  --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --enable-thread-safety --with-libxml --with-uuid=e2fs --with-includes=/opt/local/Current/include/libxml2:/opt/local/Current/include:/opt/local/Current/include/security:/opt/local/libexec/llvm-8.0/include:/opt/local/Current/include/openssl/ --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi" || _die "Failed to configure postgres for universal support"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -O2' LDFLAGS=\"-L/opt/local/Current/lib\" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/lib/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl XML2_CONFIG=/opt/local/Current/bin/xml2-config ICU_LIBS=\"-L/opt/local/Current/lib -licuuc -licudata -licui18n\" ICU_CFLAGS=\"-I/opt/local/Current/include\" ./configure --with-icu --enable-debug  --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --enable-thread-safety --with-libxml --with-uuid=e2fs --with-includes=/opt/local/Current/include/libxml2:/opt/local/Current/include:/opt/local/Current/include/security:/opt/local/Current/include/openssl/ --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi" || _die "Failed to configure postgres for universal support"
 
     echo "Building postgres"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -O2' make -j4" || _die "Failed to build postgres"
@@ -199,7 +199,7 @@ _build_server_osx() {
     # Building 'System_stats' extention and bundled the required files with posgresql
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/system_stats.osx; PATH="$PG_STAGING/bin:$PATH" make USE_PGXS=1; PATH="$PG_STAGING/bin:$PATH" make install USE_PGXS=1" || _die "Failed to build System Status"
 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/system_stats.osx/; cp system_stats--*.sql system_stats.control $PG_STAGING/share/postgresql/extension; cp system_stats.so $PG_STAGING/lib/postgresql; cp system_stats.bc $PG_STAGING/lib/postgresql/bitcode" || _die "Failed to bundle system_stats extension files"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/system_stats.osx/; cp system_stats--*.sql system_stats.control $PG_STAGING/share/postgresql/extension; cp system_stats.so $PG_STAGING/lib/postgresql " || _die "Failed to bundle system_stats extension files"
 
     # Stackbuilder
     #cd $WD/server/source/stackbuilder.osx
@@ -275,7 +275,7 @@ _build_server_osx() {
      ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging_cache/osx.build/plperl.so $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plperl.so"
 
     # Changing loader path of plpython3.so
-     ssh $PG_SSH_OSX "install_name_tool -change libpython$PG_VERSION_PYTHON\m.dylib $PG_PYTHON_OSX/lib/libpython$PG_VERSION_PYTHON\m.dylib $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plpython3.so"
+     ssh $PG_SSH_OSX "install_name_tool -change /lib/libpython${PG_VERSION_PYTHON}.dylib $PG_PYTHON_OSX/lib/libpython${PG_VERSION_PYTHON}.dylib $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plpython3.so"
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/scripts/osx/getlocales; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -o getlocales.osx -O0 getlocales.c"  || _die "Failed to build getlocales utility"
 

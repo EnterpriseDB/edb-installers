@@ -73,8 +73,8 @@ then
 else
         SKIPPVTPACKAGES=""
 	# Make sure, we always do a full private build
-	if [ -f pvt_settings.sh.full.REL-13 ]; then
-		cp -f pvt_settings.sh.full.REL-13 pvt_settings.sh.REL-13
+	if [ -f pvt_settings.sh.full.REL-14 ]; then
+		cp -f pvt_settings.sh.full.REL-14 pvt_settings.sh.REL-14
 	fi
 fi
 
@@ -254,22 +254,22 @@ DATE=`date +'%Y-%m-%d'`
 echo "Cleaning up old output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
 
-# Switch to REL-13 branch
-echo "Switching to REL-13 branch" >> autobuild.log
+# Switch to REL-14 branch
+echo "Switching to REL-14 branch" >> autobuild.log
 git reset --hard >> autobuild.log 2>&1
-git checkout REL-13 >> autobuild.log 2>&1
+git checkout REL-14 >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
-if [ -f settings.sh.full.REL-13 ]; then
-   cp -f settings.sh.full.REL-13 settings.sh
+if [ -f settings.sh.full.REL-14 ]; then
+   cp -f settings.sh.full.REL-14 settings.sh
 fi
 
 # Self update
-echo "Updating REL-13 branch build system" >> autobuild.log
+echo "Updating REL-14 branch build system" >> autobuild.log
 git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
-echo "Running the build (REL-13) " >> autobuild.log
+echo "Running the build (REL-14) " >> autobuild.log
 ./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-13.log
 
 VERSION_NUMBER=`cat versions.sh | grep PG_MAJOR_VERSION= | cut -f 2 -d '='`
