@@ -3170,20 +3170,12 @@
                     </ruleList>
                 </linuxServiceAction>
 
-                <runProgram>
-                    <program>${env(WINDIR)}\System32\cscript</program>
-                    <programArguments>//NoLogo "${installdir}\installer\server\startserver.vbs" ${servicename}</programArguments>
+                <!-- Starting windows service -->
+                <startWindowsService>
+                    <delay>15000</delay>
                     <progressText>${msg(progress.text.starting.server)}</progressText>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </runProgram>
+                    <serviceName>${servicename}</serviceName>
+                </startWindowsService>
 
                 <runProgram>
                     <program>svcadm</program>

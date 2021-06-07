@@ -666,7 +666,6 @@ _postprocess_server_windows_x64() {
     cp scripts/windows/startupcfg.vbs $PGSERVER_STAGING_WINDOWS_X64/installer/server/startupcfg.vbs || _die "Failed to copy the startupcfg script (scripts/windows/startupcfg.vbs)"
     cp scripts/windows/createshortcuts_server.vbs $PGSERVER_STAGING_WINDOWS_X64/installer/server/createshortcuts_server.vbs || _die "Failed to copy the createshortcuts script (scripts/windows/createshortcuts_server.vbs)"
     cp scripts/windows/createshortcuts_clt.vbs $CLT_STAGING_WINDOWS_X64/installer/server/createshortcuts_clt.vbs || _die "Failed to copy the createshortcuts script (scripts/windows/createshortcuts_clt.vbs)"
-    cp scripts/windows/startserver.vbs $PGSERVER_STAGING_WINDOWS_X64/installer/server/startserver.vbs || _die "Failed to copy the startserver script (scripts/windows/startserver.vbs)"
     cp scripts/windows/loadmodules.vbs $PGSERVER_STAGING_WINDOWS_X64/installer/server/loadmodules.vbs || _die "Failed to copy the loadmodules script (scripts/windows/loadmodules.vbs)"
     
     # Copy in the menu pick images and XDG items
