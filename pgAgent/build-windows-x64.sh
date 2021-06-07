@@ -97,7 +97,7 @@ _build_pgAgent_windows_x64() {
 
     cat <<EOT > "vc-build-x64.bat"
 REM Setting Visual Studio Environment
-CALL "$PG_VSINSTALLDIR_WINDOWS_X64\\vcvarsall.bat" amd64
+CALL "$PG_VSINSTALLDIR_WINDOWS_X64\\VC\\vcvarsall.bat" amd64
 @SET PGBUILD=$PG_PGBUILD_WINDOWS_X64
 @SET BOOST_ROOT=$PG_BOOST_WINDOWS_X64
 @SET PGDIR=$PG_PATH_WINDOWS_X64\output
