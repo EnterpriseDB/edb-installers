@@ -31,6 +31,12 @@ if [ $PG_ARCH_WINDOWS = 1 ];
 then
     source $WD/pgAgent/build-windows.sh
 fi
+
+# Windows-x64
+if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+then
+    source $WD/pgAgent/build-windows-x64.sh
+fi
     
 ################################################################################
 # Build preparation
@@ -92,7 +98,12 @@ _prep_pgAgent() {
     then
         _prep_pgAgent_windows 
     fi
-    
+
+    # Windows_x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _prep_pgAgent_windows_x64
+    fi
 }
 
 ################################################################################
@@ -130,6 +141,12 @@ _build_pgAgent() {
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         _build_pgAgent_windows 
+    fi
+
+    # Windows_x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _build_pgAgent_windows_x64
     fi
 }
 
@@ -194,5 +211,11 @@ _postprocess_pgAgent() {
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         _postprocess_pgAgent_windows 
+    fi
+
+    # Windows_x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _postprocess_pgAgent_windows_x64
     fi
 }
