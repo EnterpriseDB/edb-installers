@@ -2995,19 +2995,18 @@
                     </ruleList>
                 </runProgram>
 
-                <runProgram>
-                    <program>${installdir}/installer/server/startupcfg.sh</program>
-                    <programArguments>${product_version} "${serviceaccount}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
+		<createOSXService>
+                    <abandonProcessGroup>0</abandonProcessGroup>
+                    <groupname></groupname>
+                    <keepAlive>0</keepAlive>
+                    <program>${installdir}/bin/postmaster</program>
+                    <programArguments>-D ${datadir}</programArguments>
                     <progressText>${msg(progress.text.configuring.startup)}</progressText>
-                    <abortOnError>0</abortOnError>
-                    <ruleList>
-                        <compareText>
-                            <logic>contains</logic>
-                            <text>osx</text>
-                            <value>${platform_name}</value>
-                        </compareText>
-                    </ruleList>
-                </runProgram>
+                    <scope>system</scope>
+                    <serviceName>${servicename}</serviceName>
+                    <username>${serviceaccount}</username>
+                </createOSXService>
+
 
                 <runProgram>
                     <program>${env(WINDIR)}\System32\cscript</program>
