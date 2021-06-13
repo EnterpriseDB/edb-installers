@@ -1709,6 +1709,7 @@ Class DevServer
        IsFileExists(p_strInstallDir, "installer\server\getlocales.exe", p_strErrMsg) AND _
        IsFileExists(p_strInstallDir, "installer\server\startupcfg.vbs", p_strErrMsg) AND _
        IsFileExists(p_strInstallDir, "installer\server\createshortcuts.vbs", p_strErrMsg) AND _
+       IsFileExists(p_strInstallDir, "installer\server\startserver.vbs", p_strErrMsg) AND _
        IsFileExists(p_strInstallDir, "installer\server\loadmodules.vbs", p_strErrMsg) AND _
        IsFileExists(p_strInstallDir, "installer\server\initcluster.vbs", p_strErrMsg) AND _
        IsFileExists(p_strInstallDir, "installer\vcredist_@@SERVER_SUFFIX@@.exe", p_strErrMsg) AND _
