@@ -198,11 +198,11 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
     LIBLWGEOM_IFACE_CUR=`echo '\`cat Version.config | grep ^LIBLWGEOM_IFACE_CUR| sed 's/LIBLWGEOM_IFACE_CUR=//'\`'`
 
     # Configure the source tree
-    echo "Configuring the PostGIS source tree for x86_64"
-    LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64" LDFLAGS="-L/opt/local/Current/lib -arch x86_64" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PATH=/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH ./configure --enable-debug --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current || _die "Failed to configure PostGIS for x86_64"
+    echo "Configuring the PostGIS source"
+    LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current/lib" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PATH=/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH ./configure --enable-debug --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current --without-protobuf || _die "Failed to configure PostGIS"
 
     echo "Building PostGIS"
-    LDFLAGS="-L/opt/local/Current/lib -arch x86_64 " CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 " MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make || _die "Failed to build PostGIS"
+    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="$PG_ARCH_OSX_CFLAGS" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make || _die "Failed to build PostGIS"
     echo "Building comments"
     make comments || _die "Failed to build comments"
     echo "Installing PostGIS"
@@ -213,9 +213,9 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
     echo "Building postgis-doc"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc/html/image_src;
     make clean
-    LDFLAGS="-L/opt/local/Current/lib -arch x86_64 " CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 " MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make|| _die "Failed to build postgis-doc"
+    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="$PG_ARCH_OSX_CFLAGS" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make|| _die "Failed to build postgis-doc"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc; 
-    LDFLAGS="-L/opt/local/Current/lib -arch x86_64 " CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 " MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make html || _die "Failed to build postgis-doc"
+    LDFLAGS="-L/opt/local/Current/lib" CFLAGS="$PG_ARCH_OSX_CFLAGS" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make html || _die "Failed to build postgis-doc"
     make install PGXSOVERRIDE=0 DESTDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/doc PGSQL_MANDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/man PGSQL_SHAREDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/share/postgresql || _die "Failed to install PostGIS-doc"
 
     cd $PG_PATH_OSX/PostGIS
@@ -235,7 +235,7 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
 
     echo "Building postgis-jdbc"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc
-    CLASSPATH=$PG_PATH_OSX/PostGIS/source/postgis.osx/postgresql-$PG_JAR_POSTGRESQL.jar:\$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_OSX $PG_MAVEN_HOME_OSX/bin/mvn -U clean install || _die "Failed to build postgis-jdbc jar."
+    CLASSPATH=$PG_PATH_OSX/PostGIS/source/postgis.osx/postgresql-$PG_JAR_POSTGRESQL.jar:\$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_OSX $PG_MAVEN_HOME_OSX/bin/mvn3 -U clean install || _die "Failed to build postgis-jdbc jar."
 
     mkdir -p $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/java/jdbc
 
