@@ -511,9 +511,9 @@ EOF
 
         <unpackFile>
           <component>default</component>
-          <destination>${system_temp_directory}\languagepack_${random_number}\vcredist2017_x64.exe</destination>
+          <destination>${system_temp_directory}\languagepack_${random_number}\vcredist_x64.exe</destination>
           <folder>programfileswindows</folder>
-          <origin>installer/languagepack/vcredist2017_x64.exe</origin>
+          <origin>installer/languagepack/vcredist_x64.exe</origin>
           <ruleList>
             <compareText logic="equals" text="${windowsArchitecture}" value="x64"/>
           </ruleList>

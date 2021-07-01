@@ -1,6 +1,6 @@
 @ECHO OFF
 
-CALL "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64 8.1
+CALL "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
 SET vPerlBuildDir=%1
 SET vPerlInstallDir=%2

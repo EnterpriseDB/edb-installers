@@ -24,11 +24,6 @@ GOTO EXIT
 :BUILD
 ECHO ....Starting to Make Python....
 
-@REM ECHO Generating %vPythonBuildDir%\externals\xz-5.0.5\bin_x86-64\liblzma.lib
-@REM CD %vPythonBuildDir%\externals\xz-5.0.5\bin_x86-64
-@REM dumpbin /exports liblzma.dll > liblzma.def
-@REM lib /def:liblzma.def /machine:x64 /out:liblzma.lib
-
 ECHO Upgrading %vPythonBuildDir%\PCbuild\pcbuild.sln
 CD %vPythonBuildDir%\PCbuild
 devenv.exe "pcbuild.sln" /upgrade
@@ -60,8 +55,8 @@ mkdir %vPythonInstallDir%\Lib
 ECHO copying Files %vPythonBuildDir%\Lib\* to %vPythonInstallDir%\Lib\
 XCOPY /s /e /f /h %vPythonBuildDir%\Lib\* %vPythonInstallDir%\Lib\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcltk64\lib\* to %vPythonInstallDir%\Lib\
-XCOPY /s /e /f /h %vPythonBuildDir%\externals\tcltk64\lib\* %vPythonInstallDir%\Lib\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\* to %vPythonInstallDir%\Lib\
+XCOPY /s /e /f /h %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\* %vPythonInstallDir%\Lib\
 
 ECHO making DIR %vPythonInstallDir%\Tools
 mkdir %vPythonInstallDir%\Tools
@@ -78,17 +73,17 @@ mkdir %vPythonInstallDir%\libs
 ECHO copying Files %vPythonBuildDir%\PCbuild\amd64\*.lib to %vPythonInstallDir%\libs\
 XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\*.lib %vPythonInstallDir%\libs\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcltk64\lib\*.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\externals\tcltk64\lib\*.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\*.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\*.lib %vPythonInstallDir%\libs\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcltk64\lib\tix8.4.3\*.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\externals\tcltk64\lib\tix8.4.3\*.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\tix8.4.3\*.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\tix8.4.3\*.lib %vPythonInstallDir%\libs\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcl-core-8.6.6.0\win\Release_AMD64_VC13\tcldde14.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\externals\tcl-core-8.6.6.0\win\Release_AMD64_VC13\tcldde14.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\dde1.4\tcldde14.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\dde1.4\tcldde14.lib %vPythonInstallDir%\libs\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcl-core-8.6.6.0\win\Release_AMD64_VC13\tclreg13.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\externals\tcl-core-8.6.6.0\win\Release_AMD64_VC13\tclreg13.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\reg1.3\tclreg13.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\\reg1.3\tclreg13.lib %vPythonInstallDir%\libs\
 
 ECHO making DIR %vPythonInstallDir%\DLLs
 mkdir %vPythonInstallDir%\DLLs
@@ -98,12 +93,6 @@ XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\*.pyd %vPythonInstallDir%\DLLs\
 
 ECHO copying Files %vPythonBuildDir%\PCbuild\amd64\*.dll to %vPythonInstallDir%\DLLs\
 XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\*.dll %vPythonInstallDir%\DLLs\
-
-@REM ECHO copying Files %vOpenSSLDir%\bin\libeay32.dll to %vPythonInstallDir%\DLLs
-@REM XCOPY /f /y %vOpenSSLDir%\bin\libeay32.dll %vPythonInstallDir%\DLLs
-
-@REM ECHO copying Files  %vOpenSSLDir%\bin\ssleay32.dll to %vPythonInstallDir%\DLLs
-@REM XCOPY /f /y %vOpenSSLDir%\bin\ssleay32.dll %vPythonInstallDir%\DLLs
 
 ECHO deleting Files %vPythonInstallDir%\DLLs\python3*.dll
 DEL %vPythonInstallDir%\DLLs\python3*.dll
@@ -125,50 +114,10 @@ ECHO PYTHONHOME -------- %PYTHONHOME%
 ECHO PYTHONPATH -------- %PYTHONPATH%
 ECHO PATH -------- %PATH%
 
-ECHO Changing Directory to %vScriptsDir%\setuptools-39.2.0
-CD %vScriptsDir%\setuptools-39.2.0
+ECHO Changing Directory to %vScriptsDir%\setuptools*
+CD %vScriptsDir%\setuptools*
 python setup.py install
-
-ECHO Changing Directory to %vPythonInstallDir%\Scripts
-CD %vPythonInstallDir%\Scripts
-SET PATH=%vPythonInstallDir%\Scripts;%vPgBuildDir%\bin;%vPgBuildDir%\lib;%PATH%
-
-REM Sometimes pip is not able to download due to network issues.
-REM Hence we are tryings to hit pip URL for 5 time.
-
-setlocal EnableDelayedExpansion
-set /a "i = 1"
-:ITERATOR
-    if %i% leq 5 (
-	echo ==========iteration !i! ==================
-        %vPythonInstallDir%\Scripts\easy_install.exe pip
-       IF !ERRORLEVEL! == 0 goto BREAK
-        echo ====error level is !ERRORLEVEL!===========
-        set /a "i = i + 1"
-        goto :ITERATOR
-    )
-goto ERR_HANDLER
-
-:BREAK
-
-@REM CD %vPythonInstallDir%\Scripts
-@REM SET LINK="/FORCE:MULTIPLE"
-@REM 
-@REM pip install psycopg2==2.6.2 --global-option="build_ext"
-@REM pip install Pillow==3.4.2 --global-option="build_ext" --global-option="--disable-zlib" --global-option="--disable-jpeg"
-@REM 
-@REM ECHO pip install -r %vScriptsDir%\..\requirements.txt
-@REM pip install -r %vScriptsDir%\..\requirements.txt
-@REM 
-@REM ECHO copying required dll's to %vPythonInstallDir%\Lib\site-packages\psycopg2
-@REM 
-@REM XCOPY /f /y %vOpenSSLDir%\bin\libeay32.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
-@REM XCOPY /f /y %vOpenSSLDir%\bin\ssleay32.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
-@REM XCOPY /f /y %vOpenSSLDir%\bin\libintl-8.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
-@REM XCOPY /f /y %vOpenSSLDir%\bin\libiconv-2.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
-@REM XCOPY /f /y %vPgBuildDir%\bin\libpq.dll %vPythonInstallDir%\Lib\site-packages\psycopg2
-@REM 
-@REM pip list >%vPythonInstallDir%\pip_packages_list.txt
+python -m ensurepip
 
 ECHO ....End Install Python....
 GOTO EXIT

@@ -14,13 +14,13 @@ _prep_languagepack_windows() {
        PG_SSH_WIN=$PG_SSH_WINDOWS
        PG_PATH_WIN=$PG_PATH_WINDOWS
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS
-       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\i386"
+       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}"
     else
        ARCH="windows-x64"
        PG_SSH_WIN=$PG_SSH_WINDOWS_X64
        PG_PATH_WIN=$PG_PATH_WINDOWS_X64
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS_X64
-       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\x64"
+       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}"
     fi
 
     # Enter the source directory and cleanup if required
@@ -37,71 +37,29 @@ _prep_languagepack_windows() {
     cp $WD/languagepack/scripts/$ARCH/Python_Build.bat languagepack.$ARCH || _die "Failed to copy the languagepack build script (Python_Build.bat)"
 
     cd $WD/languagepack/source/languagepack.$ARCH
-    extract_file $WD/../tarballs/tcl8.6.8-src || _die "Failed to extract tcl/tk source (tcl-8.6.8-src.tar.gz)"
-    extract_file $WD/../tarballs/tk8.6.8-src || _die "Failed to extract tcl/tk source (tk-8.6.8-src.tar.gz)"
-    extract_file $WD/../tarballs/perl-5.26.2 || _die "Failed to extract perl source (perl-5.26.2.tar.gz)"
-    extract_file $WD/../tarballs/Python-3.6.5 || _die "Failed to extract python source (Python-3.6.5.tgz)"
-    extract_file $WD/../tarballs/setuptools-39.2.0 || _die "Failed to extract python source (setuptools-39.2.0)"
+    extract_file $WD/../tarballs/tcl${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src || _die "Failed to extract tcl/tk source (tcl-${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src.tar.gz)"
+    extract_file $WD/../tarballs/tk${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src || _die "Failed to extract tcl/tk source (tk-${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src.tar.gz)"
+    extract_file $WD/../tarballs/perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} || _die "Failed to extract perl source (perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL}.tar.gz)"
+    extract_file $WD/../tarballs/Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON} || _die "Failed to extract python source (Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}.tgz)"
+    extract_file $WD/../tarballs/setuptools-${PG_VERSION_PYTHON_SETUPTOOLS} || _die "Failed to extract python source (setuptools-${PG_VERSION_PYTHON_SETUPTOOLS})"
 
-    ####cp ../../scripts/$ARCH/tix-8.4.3.4-VC12.patch Python-3.6.5 || _die "Failed to copy the tix build patch tix-8.4.3.4-VC12.patch"
+    pushd perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL}/win32
+        if [ "$ARCH" = "windows-x32" ];
+        then
+            # Perl related changes - x32
+            sed -i 's/^#WIN64\t\t= undef/WIN64\t\t= undef/g' Makefile
+        fi
+	sed -i "s|^INST_DRV\t=.*|INST_DRV\t= ${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}|" Makefile
+	sed -i "s|INST_TOP\t=.*$|INST_TOP\t= \$(INST_DRV)\\\Perl-${PG_VERSION_PERL}|" Makefile
+        sed -i 's/^#CCTYPE\t\t= MSVC141/CCTYPE\t\t= MSVC141/g' Makefile
+    popd
 
-    if [ "$ARCH" = "windows-x32" ];
-    then
-        # Perl related changes - x32
-        cd perl-5.26.2/win32
-        sed -i "s/^INST_DRV\t= c:/INST_DRV\t= $PG_LANGUAGEPACK_INSTALL_DIR_WIN/g" Makefile
-        sed -i 's/^INST_TOP\t= $(INST_DRV)\\perl/INST_TOP\t= $(INST_DRV)\\Perl-5.26/g' Makefile
-        sed -i 's/^CCTYPE\t\t= MSVC60/CCTYPE\t\t= MSVC120/g' Makefile
-        sed -i 's/^#WIN64\t\t= undef/WIN64\t\t= undef/g' Makefile
-        sed -i 's/^BUILDOPT\t= $(BUILDOPT) -DUSE_SITECUSTOMIZE/BUILDOPT\t= $(BUILDOPT) -D_USE_32BIT_TIME_T/g' Makefile
-        sed -i '/^DEFINES\t\t= $(DEFINES) -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE/s/^/#/g' Makefile
-
-        # Python related changes - x32
-        cd $WD/languagepack/source/languagepack.$ARCH/Python-3.6.5/PCbuild
-        sed -i '/{E5B04CC0-EB4C-42AB-B4DC-18EF95F864B0}.Release|Win32.Build.0/d' pcbuild.sln || _die "Failed to disable OpenSSL build which comes with Python"
-        sed -i 's/liblzma.a/liblzma.lib/g' _lzma.vcxproj || _die "Failed to change liblzma.a to liblzma.lib in _lzma.vcxproj"
-        sed -i 's/inc32/include/g;s/out32/lib/g' _hashlib.vcxproj || _die "Failed to change inc32 to include and out32 to lib for OpenSSL libs in _hashlib.vcxproj"
-        sed -i 's/inc32/include/g;s/out32/lib/g' _ssl.vcxproj || _die "Failed to change inc32 to include and out32 to lib for OpenSSL libs in _ssl.vcxproj"
-        ##sed -i 's/<SubSystem>NotSet<\/SubSystem>/<SubSystem>Windows<\/SubSystem>/g' _ctypes.vcxproj || _die "Failed to update _ctypes.vcxproj"
-        ##sed -i 's/<SubSystem>NotSet<\/SubSystem>/<SubSystem>Windows<\/SubSystem>/g' _decimal.vcxproj || _die "Failed to update _decimal.vcxproj"
-        ##sed -i '26,37d' ../Tools/buildbot/external-common.bat || _die "Failed to remove OpenSSL and Tck/Tk checkout in external-common.bat"
-
-        ##echo "extraction Pillow binaries into languagepack.$ARCH source folder."
-        ##cd $WD/languagepack/source/languagepack.$ARCH
-        ##extract_file $WD/../tarballs/Pillow-3.4.2.win32 || _die "Failed to extract Pillow binaries."
-
-    else
-        # Perl related changes - x64
-        cd perl-5.26.2/win32
-        sed -i "s/^INST_DRV\t= c:/INST_DRV\t= $PG_LANGUAGEPACK_INSTALL_DIR_WIN/g" Makefile
-        sed -i 's/^INST_TOP\t= $(INST_DRV)\\perl/INST_TOP\t= $(INST_DRV)\\Perl-5.26/g' Makefile
-        sed -i 's/^CCTYPE\t\t= MSVC60/CCTYPE\t\t= MSVC141/g' Makefile
-        ####sed -i '/^BUILDOPT\t= $(BUILDOPTEXTRA)/a BUILDOPT\t= $(BUILDOPT) -DUSE_SITECUSTOMIZE' Makefile
-        ####sed -i '/^DEFINES\t\t= $(DEFINES) -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE/s/^/#/g' Makefile
-
-        # Python related changes - x64
-        ####cd $WD/languagepack/source/languagepack.$ARCH/Python-3.6.5/PCbuild
-        ####sed -i '/{E5B04CC0-EB4C-42AB-B4DC-18EF95F864B0}.Release|x64.Build.0/d' pcbuild.sln || _die "Failed to disable OpenSSL build which comes with Python"
-        ####sed -i 's/inc64/include/g;s/out64/lib/g' _hashlib.vcxproj || _die "Failed to change inc32 to include and out32 to lib for OpenSSL libs in _hashlib.vcxproj"
-        ####sed -i 's/inc64/include/g;s/out64/lib/g' _ssl.vcxproj || _die "Failed to change inc32 to include and out32 to lib for OpenSSL libs in _ssl.vcxproj"
-        ##sed -i 's/<SubSystem>NotSet<\/SubSystem>/<SubSystem>Console<\/SubSystem>/g' _ctypes.vcxproj || _die "Failed to update _ctypes.vcxproj"
-        ##sed -i 's/<SubSystem>NotSet<\/SubSystem>/<SubSystem>Console<\/SubSystem>/g' _decimal.vcxproj || _die "Failed to update _decimal.vcxproj"
-        ##sed -i '26,37d' ../Tools/buildbot/external-common.bat || _die "Failed to remove OpenSSL and Tck/Tk checkout in external-common.bat"
-
-        ##echo "extraction Pillow binaries into languagepack.$ARCH source folder."
-        ##cd $WD/languagepack/source/languagepack.$ARCH
-        ##extract_file $WD/../tarballs/Pillow-3.4.2.win-amd64 || _die "Failed to extract Pillow binaries."
-    fi
-
-    #Python related changes - x32/x64
-    ####cd $WD/languagepack/source/languagepack.$ARCH/Python-3.6.5
-    ####sed -i "s|<opensslDir>\$(externalsDir).*|<opensslDir>${PG_PGBUILD_WIN}</opensslDir>|g" PCbuild/pyproject.props || _die "Failed to update pyproject.props"
-    ####sed -i 's/#if _MSC_VER >= 1800/#if _MSC_VER > 1800/g' PC/pyconfig.h || _die "Failed to update pyconfig.h"
-    ####sed -i "s/VS100COMNTOOLS/VS120COMNTOOLS/g" PCbuild/env.bat || _die "Failed to update env.bat"
-
+    # Python 3.9 vesion has issue with not finding tcl.h for _tkinter.c 
+    # Fixing in _tkinter.vcxproj
+    sed -i "s|\$(tcltkDir)include|\$(tcltkDir)\\\include|" Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}/PCbuild/_tkinter.vcxproj
     cd $WD/languagepack/source
     echo "Archiving languagepack sources"
-    zip -r languagepack.$ARCH.zip languagepack.$ARCH || _die "Failed to zip the languagepack source"
+    zip -qr languagepack.$ARCH.zip languagepack.$ARCH || _die "Failed to zip the languagepack source"
     chmod -R ugo+w languagepack.$ARCH || _die "Couldn't set the permissions on the source directory"
 
     # Remove any existing staging/install directory that might exist, and create a clean one
@@ -118,13 +76,12 @@ _prep_languagepack_windows() {
     mkdir -p $WD/languagepack/staging/$ARCH || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/languagepack/staging/$ARCH || _die "Couldn't set the permissions on the staging directory"
 
-    ##ssh $PG_SSH_WIN "cd $PG_PATH_WIN; cmd /c rd /S /Q languagepack.$ARCH"
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN; cmd /c del /S /Q languagepack.$ARCH.zip"
     
     echo "Copying languagepack sources to Windows VM"
-    rsync -av languagepack.$ARCH.zip $PG_SSH_WIN:$PG_CYGWIN_PATH_WINDOWS || _die "Couldn't copy the languagepack archive to windows VM (languagepack.$ARCH.zip)"
-    scp $WD/../PEM/requirements.txt $PG_SSH_WIN:$PG_CYGWIN_PATH_WINDOWS\\\\requirements.txt || _die "Couldn't copy PEM requirements.txt to windows VM (languagepack.$ARCH.zip)"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN; cmd /c rd /S /Q languagepack.$ARCH; unzip languagepack.$ARCH.zip" || _die "Couldn't extract languagepack archive on windows VM (languagepack.$ARCH.zip)"
+    rsync -av languagepack.$ARCH.zip $PG_SSH_WIN:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Couldn't copy the languagepack archive to windows VM (languagepack.$ARCH.zip)"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN; cmd /c unzip -qq -o languagepack.$ARCH.zip" || _die "Couldn't extract languagepack archive on windows VM (languagepack.$ARCH.zip)"
+
 
     echo "END PREP languagepack Windows"
 }
@@ -142,7 +99,7 @@ _build_languagepack_windows() {
        PG_SSH_WIN=$PG_SSH_WINDOWS
        PG_PATH_WIN=$PG_PATH_WINDOWS
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS
-       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\i386"
+       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}"
        CYGWIN_HOME="C:\\\\cygwin32"
        PG_PATH_PSYCOPG=$PG_BINARY_PATH
     else
@@ -150,70 +107,29 @@ _build_languagepack_windows() {
        PG_SSH_WIN=$PG_SSH_WINDOWS_X64
        PG_PATH_WIN=$PG_PATH_WINDOWS_X64
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS_X64
-       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}\\\\x64"
+       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}"
        CYGWIN_HOME="C:\\\\cygwin64"
        PG_PATH_PSYCOPG=$PG_BINARY_PATH_X64
     fi
 
-    cd $WD/languagepack/scripts/$ARCH
-    cat <<EOT > "Python_Build_Dependencies.bat"
-@ECHO OFF
-
-CALL "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
-
-SET vPythonBuildDir=%1
-SET vXZDir=%2
-
-ECHO vPythonBuildDir ----  %vPythonBuildDir%
-ECHO vXZDir ----  %vXZDir%
-
-ECHO Executing batch file %vPythonBuildDir%\PCbuild\get_externals.bat
-CD %vPythonBuildDir%\PCbuild
-CALL %vPythonBuildDir%\PCbuild\get_externals.bat
-
-ECHO Applying patch %vPythonBuildDir%\tix-8.4.3.4-VC12.patch
-CD %vPythonBuildDir%
-$CYGWIN_HOME\bin\patch -p1 < tix-8.4.3.4-VC12.patch
-
-ECHO Changing Directory to %vXZDir%\bin_i486
-CD %vXZDir%\bin_i486
-dumpbin /exports liblzma.dll > liblzma.def
-EOT
-
     # Tcl/Tk Build
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-8.6; cmd /c Tcl_Tk_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\tcl8.6.8 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-8.6 $PG_PATH_WIN\\\\languagepack.$ARCH\\\\tk8.6.8"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-${PG_VERSION_TCL}; cmd /c Tcl_Tk_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\tcl${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-${PG_VERSION_TCL} $PG_PATH_WIN\\\\languagepack.$ARCH\\\\tk${PG_VERSION_TK}.${PG_MINOR_VERSION_TK}"
 
     # Perl Build
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.26.2 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26 $PG_PATH_WIN\\\\output PERL"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.26.2 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26 $PG_PATH_WIN\\\\output DBI"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL} $PG_PATH_WIN\\\\output PERL"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL} $PG_PATH_WIN\\\\output DBI"
     # Install cpanm to exclude running test cases when installing IPC and DBD as one of test cases stucks
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.26.2 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26 $PG_PATH_WIN\\\\output CPANMINUS"
-    ####ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.26.2 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26 $PG_PATH_WIN\\\\output DBD"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.26.2 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26 $PG_PATH_WIN\\\\output IPC"
-   ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.26.2 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26 $PG_PATH_WIN\\\\output WIN32PROCESS"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL} $PG_PATH_WIN\\\\output CPANMINUS"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL} $PG_PATH_WIN\\\\output IPC"
+   ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL} $PG_PATH_WIN\\\\output WIN32PROCESS"
     # install.pm gets installed as part of IPC installation. Uninstall it as postgres installation fails because of it.
-  ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-5.26.2 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-5.26 $PG_PATH_WIN\\\\output INSTALL"
+  ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL} $PG_PATH_WIN\\\\output INSTALL"
 
     # Python Build
     cd $WD/languagepack/scripts/$ARCH
-    ####scp Python_Build_Dependencies.bat $PG_SSH_WIN:$PG_PATH_WIN\\\\languagepack.$ARCH || _die "Failed to copy the Python_Build_Dependencies.bat to the windows build host"
-    ####ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.6.5; cmd /c ..\\\\Python_Build_Dependencies.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.6.5 $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.6.5\\\\externals\\\\xz-5.0.5"
 
-    # Generating/Updating liblzma.def file for Python Build
-    ####if [ "$ARCH" = "windows-x32" ];
-    ####then
-    ####    scp $PG_SSH_WIN:$PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.6.5\\\\externals\\\\xz-5.0.5\\\\bin_i486\\\\liblzma.def $WD/languagepack/scripts/$ARCH/liblzma.def || _die "Failed to get liblzma.def from windows build host"
-    ####    LinesBefore=$(grep -n "ordinal .*hint .*RVA .*name" liblzma.def | cut -d":" -f1)
-    ####    sed -i "1,$(expr $LinesBefore)d" liblzma.def
-    ####    TotalLines=$(grep -n "^[[:space:]]*Summary[[:space:]]*$" liblzma.def | cut -d":" -f1)
-    ####    head -$(expr $TotalLines - 2) liblzma.def | awk -F" " '{print $4}' | sed '1 s/.*/EXPORTS/' > temp.def && mv temp.def liblzma.def
-    ####    dos2unix liblzma.def
-    ####    scp liblzma.def $PG_SSH_WIN:$PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.6.5\\\\externals\\\\xz-5.0.5\\\\bin_i486 || _die "Failed to copy liblzma.def to the windows build host"
-    ####fi
-
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.6; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.6.5 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.6 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PGBUILD_WIN BUILD"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.6; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-3.6.5 $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.6 $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PGBUILD_WIN INSTALL"
-    ####ssh $PG_SSH_WIN "sed -i 's/import winrandom/from Crypto.Random.OSRNG import winrandom/' $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-3.6\\\\Lib\\\\site-packages\\\\Crypto\\\\Random\\\\OSRNG\\\\nt.py"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-${PG_VERSION_PYTHON}; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-${PG_VERSION_PYTHON} $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PGBUILD_WIN BUILD"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-${PG_VERSION_PYTHON}; cmd /c Python_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Python-${PG_VERSION_PYTHON} $PG_PATH_WIN\\\\languagepack.$ARCH $PG_PGBUILD_WIN INSTALL"
 
     echo "Removing last successful staging directory ($PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging)"
     ssh $PG_SSH_WIN "cmd /c if EXIST $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging rd /S /Q $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging" || _die "Couldn't remove the last successful staging directory directory"
@@ -243,14 +159,14 @@ _postprocess_languagepack_windows() {
        PG_SSH_WIN=$PG_SSH_WINDOWS
        PG_PATH_WIN=$PG_PATH_WINDOWS
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS
-       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_CYG_PATH}/i386"
+       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_CYG_PATH}"
     else
        ARCH="windows-x64"
        OS=$ARCH
        PG_SSH_WIN=$PG_SSH_WINDOWS_X64
        PG_PATH_WIN=$PG_PATH_WINDOWS_X64
        PG_PGBUILD_WIN=$PG_PGBUILD_WINDOWS_X64
-       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_CYG_PATH}/x64"
+       PG_LANGUAGEPACK_INSTALL_DIR_WIN="${PG_LANGUAGEPACK_CYG_PATH}"
     fi
 
     # Remove any existing staging/install directory that might exist, and create a clean one
@@ -264,28 +180,30 @@ _postprocess_languagepack_windows() {
     mkdir -p $WD/languagepack/staging/$ARCH || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/languagepack/staging/$ARCH || _die "Couldn't set the permissions on the staging directory"
 
-    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging; zip -r Tcl-8.6.zip Tcl-8.6; zip -r Perl-5.26.zip Perl-5.26; zip -r Python-3.6.zip Python-3.6" || _die "Failed to create Tcl-8.6.zip;Perl-5.26.zip;Python-3.6.zip on  windows buildhost"
-    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/Tcl-8.6.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Tcl-8.6.zip"
-    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/Perl-5.26.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Perl-5.26.zip"
-    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/Python-3.6.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Python-3.6.zip"
+    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging; zip -r Tcl-${PG_VERSION_TCL}.zip Tcl-${PG_VERSION_TCL}; zip -r Perl-${PG_VERSION_PERL}.zip Perl-${PG_VERSION_PERL}; zip -r Python-${PG_VERSION_PYTHON}.zip Python-${PG_VERSION_PYTHON}" || _die "Failed to create Tcl-${PG_VERSION_TCL}.zip;Perl-${PG_VERSION_PERL}.zip;Python-${PG_VERSION_PYTHON}.zip on  windows buildhost"
+    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/Tcl-${PG_VERSION_TCL}.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Tcl-${PG_VERSION_TCL}.zip"
+    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/Perl-${PG_VERSION_PERL}.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Perl-${PG_VERSION_PERL}.zip"
+    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/Python-${PG_VERSION_PYTHON}.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Python-${PG_VERSION_PYTHON}.zip"
     rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/versions-${ARCH}.sh  $WD/languagepack/staging/$ARCH || _die "Failed to copy versions-${ARCH}.sh"
 
-    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging; rm -f Tcl-8.6.zip Perl-5.26.zip Python-3.6.zip " || _die "Failed to remove  Tcl-8.6.zip;Perl-5.26.zip; Python-3.6.zip on  windows buildhost"
+    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging; rm -f Tcl-${PG_VERSION_TCL}.zip Perl-${PG_VERSION_PERL}.zip Python-${PG_VERSION_PYTHON}.zip " || _die "Failed to remove  Tcl-${PG_VERSION_TCL}.zip;Perl-${PG_VERSION_PERL}.zip; Python-${PG_VERSION_PYTHON}.zip on  windows buildhost"
 
     cd $WD/languagepack/staging/$ARCH/
-    unzip Tcl-8.6.zip ||_die "Failed to unzip Tcl-8.6.zip"
-    unzip Perl-5.26.zip || _die "Failed to unzip Perl-5.26.zip"
-    unzip Python-3.6.zip || _die "Failed to unzip Python-3.6.zip"
-    rm -f Tcl-8.6.zip Perl-5.26.zip Python-3.6.zip || _die "Failed to remove the Tcl-8.6.zip;Perl-5.26.zip;Python-3.6.zip"
+    unzip -qq -o Tcl-${PG_VERSION_TCL}.zip ||_die "Failed to unzip Tcl-${PG_VERSION_TCL}.zip"
+    unzip -qq -o Perl-${PG_VERSION_PERL}.zip || _die "Failed to unzip Perl-${PG_VERSION_PERL}.zip"
+    unzip -qq -o Python-${PG_VERSION_PYTHON}.zip || _die "Failed to unzip Python-${PG_VERSION_PYTHON}.zip"
+    rm -f Tcl-${PG_VERSION_TCL}.zip Perl-${PG_VERSION_PERL}.zip Python-${PG_VERSION_PYTHON}.zip || _die "Failed to remove the Tcl-${PG_VERSION_TCL}.zip;Perl-${PG_VERSION_PERL}.zip;Python-${PG_VERSION_PYTHON}.zip"
 
     dos2unix $WD/languagepack/staging/$ARCH/versions-${ARCH}.sh || _die "Failed to convert format of versions-${ARCH}.sh from dos to unix"
     source $WD/languagepack/staging/$ARCH/versions-${ARCH}.sh
     PG_BUILD_LANGUAGEPACK=$(expr $PG_BUILD_LANGUAGEPACK + $SKIPBUILD)
 
-    ####mv $WD/languagepack/staging/$ARCH/Python-3.6/pip_packages_list.txt $WD/languagepack/staging/$ARCH || _die "Failed to move pip_packages_list.txt to $WD/languagepack/staging/$ARCH"
-
     cd $WD/languagepack
     pushd staging/$ARCH
+
+    # DBSCM-385, Remove pyw.exe from staging as it's detected Trojan Virus.
+    find . -name "pyw.exe" | xargs rm -f {} \; || _die "Failed to clear pyw.exe from staging/$ARCHD"
+
     generate_3rd_party_license "languagepack"
     popd
 
