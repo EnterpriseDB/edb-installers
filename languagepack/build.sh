@@ -200,7 +200,7 @@ _postprocess_languagepack() {
     # Replace placeholder for Python batch script
     if [ -f $WD/languagepack/scripts/windows-x64/Python_Build.bat ];
     then
-        rm -rf $WD/languagepack/scripts/windows-x64/Python_Build.bat
+        rm -f $WD/languagepack/scripts/windows-x64/Python_Build.bat
     fi
     cp $WD/languagepack/scripts/windows-x64/Python_Build.bat.in $WD/languagepack/scripts/windows-x64/Python_Build.bat || || _die "Failed to copy Python_Build.bat"
 

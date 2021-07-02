@@ -63,7 +63,8 @@ PG_VERSION_LANGUAGEPACK=$PG_LP_VERSION
 PG_VERSION_PYTHON_SETUPTOOLS=57.0.0
 VCREDIST_VERSION=14.15.26706
 
-# This is required TCL and Tk Compiling for external tools
+# This is required TCL and Tk Compiling for external tools.
+# As this come from source code, we need to use it from the vcproj file
 PG_PYTHON_TCL_TK=8.6.9.0
 PG_PYTHON_TIX=8.4.3
 
