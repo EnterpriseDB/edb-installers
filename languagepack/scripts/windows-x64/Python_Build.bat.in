@@ -1,6 +1,6 @@
 @ECHO OFF
 
-CALL "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64 8.1
+CALL "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
 SET vPythonBuildDir=%1
 SET vPythonInstallDir=%2
@@ -55,8 +55,8 @@ mkdir %vPythonInstallDir%\Lib
 ECHO copying Files %vPythonBuildDir%\Lib\* to %vPythonInstallDir%\Lib\
 XCOPY /s /e /f /h %vPythonBuildDir%\Lib\* %vPythonInstallDir%\Lib\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\* to %vPythonInstallDir%\Lib\
-XCOPY /s /e /f /h %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\* %vPythonInstallDir%\Lib\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk-PG_PYTHON_TCL_TK\amd64\lib\* to %vPythonInstallDir%\Lib\
+XCOPY /s /e /f /h %vPythonBuildDir%\externals\tcltk-PG_PYTHON_TCL_TK\amd64\lib\* %vPythonInstallDir%\Lib\
 
 ECHO making DIR %vPythonInstallDir%\Tools
 mkdir %vPythonInstallDir%\Tools
@@ -73,17 +73,17 @@ mkdir %vPythonInstallDir%\libs
 ECHO copying Files %vPythonBuildDir%\PCbuild\amd64\*.lib to %vPythonInstallDir%\libs\
 XCOPY /f /y %vPythonBuildDir%\PCbuild\amd64\*.lib %vPythonInstallDir%\libs\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\*.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\*.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk-PG_PYTHON_TCL_TK\amd64\lib\*.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcltk-PG_PYTHON_TCL_TK\amd64\lib\*.lib %vPythonInstallDir%\libs\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\tix8.4.3\*.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\tix8.4.3\*.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk-PG_PYTHON_TCL_TK\amd64\lib\tixPG_PYTHON_TIX\*.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcltk-PG_PYTHON_TCL_TK\amd64\lib\tixPG_PYTHON_TIX\*.lib %vPythonInstallDir%\libs\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\dde1.4\tcldde14.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\dde1.4\tcldde14.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk-PG_PYTHON_TCL_TK\amd64\lib\dde1.4\tcldde14.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcltk-PG_PYTHON_TCL_TK\amd64\lib\dde1.4\tcldde14.lib %vPythonInstallDir%\libs\
 
-ECHO copying Files %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\reg1.3\tclreg13.lib to %vPythonInstallDir%\libs\
-XCOPY /f /y %vPythonBuildDir%\externals\tcltk-8.6.9.0\amd64\lib\\reg1.3\tclreg13.lib %vPythonInstallDir%\libs\
+ECHO copying Files %vPythonBuildDir%\externals\tcltk-PG_PYTHON_TCL_TK\amd64\lib\reg1.3\tclreg13.lib to %vPythonInstallDir%\libs\
+XCOPY /f /y %vPythonBuildDir%\externals\tcltk-PG_PYTHON_TCL_TK\amd64\lib\\reg1.3\tclreg13.lib %vPythonInstallDir%\libs\
 
 ECHO making DIR %vPythonInstallDir%\DLLs
 mkdir %vPythonInstallDir%\DLLs

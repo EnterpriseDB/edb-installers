@@ -63,6 +63,10 @@ PG_VERSION_LANGUAGEPACK=$PG_LP_VERSION
 PG_VERSION_PYTHON_SETUPTOOLS=57.0.0
 VCREDIST_VERSION=14.15.26706
 
+# This is required TCL and Tk Compiling for external tools
+PG_PYTHON_TCL_TK=8.6.9.0
+PG_PYTHON_TIX=8.4.3
+
 # Miscellaneous options
 
 # PostgreSQL jdbc jar version used by PostGIS

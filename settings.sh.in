@@ -142,5 +142,5 @@ KEYCHAIN_PASSWD="XXXXXX"
 DEVELOPER_ID="Developer ID Application: EnterpriseDB Corporation"
 
 # LanguagePack Variables
-PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack\\\\v1"
-PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/edb/languagepack/v1"
+PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack\\\\v2"
+PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/edb/languagepack/v2"
