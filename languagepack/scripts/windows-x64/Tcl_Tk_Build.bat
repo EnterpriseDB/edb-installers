@@ -1,6 +1,6 @@
 @ECHO off
 
-CALL "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64 8.1
+CALL "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
 SET vTcl_SRC_Dir=%1
 SET vTcl_INST_Dir=%2

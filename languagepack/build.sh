@@ -197,7 +197,16 @@ _postprocess_languagepack() {
     _replace EDB_BUILDNUM_LANGUAGEPACK $PG_BUILDNUM_LANGUAGEPACK installer.xml || _die "Failed to set the buildnumber in the installer project file (languagepack/installer.xml)"
     _replace EDB_MAJOR_VERSION $LP_VERSION installer.xml || _die "Failed to set the version in the installer project file (languagepack/installer.xml)"
     
-   
+    # Replace placeholder for Python batch script
+    if [ -f $WD/languagepack/scripts/windows-x64/Python_Build.bat ];
+    then
+        rm -f $WD/languagepack/scripts/windows-x64/Python_Build.bat
+    fi
+    cp $WD/languagepack/scripts/windows-x64/Python_Build.bat.in $WD/languagepack/scripts/windows-x64/Python_Build.bat || || _die "Failed to copy Python_Build.bat"
+
+    _replace PG_PYTHON_TCL_TK $PG_PYTHON_TCL_TK $WD/languagepack/scripts/windows-x64/Python_Build.bat || die "Failed to set PG_PYTHON_TCL_TK Version"
+    _replace PG_PYTHON_TIX $PG_PYTHON_TIX $WD/languagepack/scripts/windows-x64/Python_Build.bat || die "Failed to set PG_PYTHON_TIX Version"
+
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
