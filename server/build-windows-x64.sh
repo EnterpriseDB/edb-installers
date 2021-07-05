@@ -646,6 +646,7 @@ _postprocess_server_windows_x64() {
    mv $PGSERVER_STAGING_WINDOWS_X64/bin/reindexdb.exe     $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move reindexdb.exe"
    mv $PGSERVER_STAGING_WINDOWS_X64/bin/pgbench.exe     $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move pgbench.exe"
    mv $PGSERVER_STAGING_WINDOWS_X64/bin/vacuumlo.exe     $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move vacuumlo.exe"
+   mv $PGSERVER_STAGING_WINDOWS_X64/bin/liblz4.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move liblz4.dll"
    mkdir -p $CLT_STAGING_WINDOWS_X64/scripts/images || _die "Couldn't create the staging directory $CLT_STAGING_WINDOWS_X64/scripts/images"
    cp $WD/server/resources/pg-psql.ico  $CLT_STAGING_WINDOWS_X64/scripts/images/ || _die "Failed to move scripts/images/pg-psql.ico"
    cp $WD/server/scripts/windows/runpsql.bat  $CLT_STAGING_WINDOWS_X64/scripts/ || _die "Failed to move runpsql.bat"
