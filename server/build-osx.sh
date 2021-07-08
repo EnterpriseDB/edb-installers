@@ -221,6 +221,7 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cp -r /opt/local/Current/include/libxslt $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_OSX "cp /opt/local/Current/include/iconv.h $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_OSX "cp /opt/local/Current/include/zlib.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_OSX "cp /opt/local/Current/include/lz4*.h $PG_STAGING/include" || _die "Failed to copy the required header"
 
     # Copy Lz4 libs to staging
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/liblz4*.dylib $PG_STAGING/lib/" || _die "Failed to copy the LZ4 libs to staging"
