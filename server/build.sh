@@ -176,6 +176,12 @@ _prep_server() {
         _prep_server_osx 
     fi
 
+    # Windows x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
+    then
+        _prep_server_windows_x64
+    fi
+
     # Linux
     if [ $PG_ARCH_LINUX = 1 ];
     then
@@ -199,12 +205,6 @@ _prep_server() {
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
         _prep_server_windows 
-    fi
-
-    # Windows x64
-    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
-    then
-        _prep_server_windows_x64 
     fi
 
     # Solaris x64
