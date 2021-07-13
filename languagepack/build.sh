@@ -202,7 +202,7 @@ _postprocess_languagepack() {
     then
         rm -f $WD/languagepack/scripts/windows-x64/Python_Build.bat
     fi
-    cp $WD/languagepack/scripts/windows-x64/Python_Build.bat.in $WD/languagepack/scripts/windows-x64/Python_Build.bat || || _die "Failed to copy Python_Build.bat"
+    cp $WD/languagepack/scripts/windows-x64/Python_Build.bat.in $WD/languagepack/scripts/windows-x64/Python_Build.bat || _die "Failed to copy Python_Build.bat"
 
     _replace PG_PYTHON_TCL_TK $PG_PYTHON_TCL_TK $WD/languagepack/scripts/windows-x64/Python_Build.bat || die "Failed to set PG_PYTHON_TCL_TK Version"
     _replace PG_PYTHON_TIX $PG_PYTHON_TIX $WD/languagepack/scripts/windows-x64/Python_Build.bat || die "Failed to set PG_PYTHON_TIX Version"
