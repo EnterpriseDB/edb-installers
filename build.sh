@@ -110,21 +110,6 @@ else
 fi
 
 # Check the VMs
-if [ $PG_ARCH_LINUX = 1 ];
-then
-    _check_unix_vm $PG_SSH_LINUX $PG_PATH_LINUX
-fi
-
-if [ $PG_ARCH_LINUX_X64 = 1 ];
-then
-    _check_unix_vm $PG_SSH_LINUX_X64 $PG_PATH_LINUX_X64
-fi
-
-if [ $PG_ARCH_WINDOWS = 1 ];
-then
-    _check_windows_vm $PG_SSH_WINDOWS $PG_PATH_WINDOWS
-fi
-
 if [ $PG_ARCH_WINDOWS_X64 = 1 ];
 then
     _check_windows_vm $PG_SSH_WINDOWS_X64 $PG_PATH_WINDOWS_X64

@@ -8,46 +8,10 @@ then
     source $WD/server/build-osx.sh
 fi
 
-# Linux
-if [ $PG_ARCH_LINUX = 1 ];
-then
-    source $WD/server/build-linux.sh
-fi
-
-# Linux x64
-if [ $PG_ARCH_LINUX_X64 = 1 ];
-then
-    source $WD/server/build-linux-x64.sh
-fi
-
-# Linux ppc64
-if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-then
-    source $WD/server/build-linux-ppc64.sh
-fi
-
-# Windows
-if [ $PG_ARCH_WINDOWS = 1 ];
-then
-    source $WD/server/build-windows.sh
-fi
-
 # Windows x64
 if [ $PG_ARCH_WINDOWS_X64 = 1 ];
 then
     source $WD/server/build-windows-x64.sh
-fi
-    
-# Solaris x64
-if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-then
-    source $WD/server/build-solaris-x64.sh
-fi
-
-# Solaris sparc
-if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
-then
-    source $WD/server/build-solaris-sparc.sh
 fi
     
 ################################################################################
@@ -172,47 +136,10 @@ _prep_server() {
         _prep_server_osx 
     fi
 
-    # Linux
-    if [ $PG_ARCH_LINUX = 1 ];
-    then
-        _prep_server_linux 
-    fi
-
-    # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-        _prep_server_linux_x64 
-    fi
-
-    # Linux ppc64
-    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-    then
-        #_prep_server_linux_ppc64 
-        echo "Linux-PPC64 build pre-process is not part of build framework yet."
-    fi
-
-    # Windows
-    if [ $PG_ARCH_WINDOWS = 1 ];
-    then
-        _prep_server_windows 
-    fi
-
     # Windows x64
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
         _prep_server_windows_x64 
-    fi
-
-    # Solaris x64
-    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-    then
-        _prep_server_solaris_x64 
-    fi
-
-    # Solaris sparc
-    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
-    then
-        _prep_server_solaris_sparc 
     fi
 }
 
@@ -249,47 +176,10 @@ _build_server() {
         _build_server_osx 
     fi
 
-    # Linux 
-    if [ $PG_ARCH_LINUX = 1 ];
-    then
-        _build_server_linux 
-    fi
-
-    # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-        _build_server_linux_x64 
-    fi
-
-    # Linux ppc64
-    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-    then
-        #_build_server_linux_ppc64 
-        echo "Linux-PPC64 build process is not part of build framework yet."
-    fi
-
-    # Windows
-    if [ $PG_ARCH_WINDOWS = 1 ];
-    then
-        _build_server_windows 
-    fi
-
     # Windows x64
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
         _build_server_windows_x64 
-    fi
-
-    # Solaris x64
-    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-    then
-        _build_server_solaris_x64 
-    fi
-
-    # Solaris sparc
-    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
-    then
-        _build_server_solaris_sparc 
     fi
 }
 
@@ -389,46 +279,10 @@ _postprocess_server() {
         _postprocess_server_osx 
     fi
 
-    # Linux
-    if [ $PG_ARCH_LINUX = 1 ];
-    then
-        _postprocess_server_linux 
-    fi
-
-    # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-        _postprocess_server_linux_x64 
-    fi
-
-    # Linux ppc64
-    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-    then
-        _postprocess_server_linux_ppc64 
-    fi
-
-    # Windows
-    if [ $PG_ARCH_WINDOWS = 1 ];
-    then
-        _postprocess_server_windows 
-    fi
-
     # Windows x64
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
         _postprocess_server_windows_x64 
-    fi
-
-    # Solaris x64
-    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-    then
-        _postprocess_server_solaris_x64 
-    fi
-
-    # Solaris sparc
-    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
-    then
-        _postprocess_server_solaris_sparc 
     fi
 }
 

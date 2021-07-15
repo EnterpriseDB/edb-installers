@@ -1,7 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Type=Directory
-Name=Documentation
-Comment=Documentation for PostgreSQL & bundled applications
-Encoding=UTF-8
-Icon=pg-postgresql-PG_VERSION_STR.png
