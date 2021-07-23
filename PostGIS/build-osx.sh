@@ -76,6 +76,9 @@ _prep_PostGIS_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/PostGIS/source; tar -jxvf postgis.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/PostGIS; tar -jxvf scripts.tar.bz2"
 
+    echo "Creating staging directory on remote server"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/PostGIS/staging/osx" || _die "Couldn't create the last successful staging directory"
+
     cd $WD
 
     echo "END PREP PostGIS OSX"
