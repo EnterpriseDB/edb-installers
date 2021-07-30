@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Encoding=UTF-8
-Name=JDBC Docs
-Exec="INSTALL_DIR/PostGIS/scripts/launchJDBCDocs.sh"
-Icon=pg-launchPostGISJDBCDocs-POSTGIS_VERSION_STR-PG_VERSION_STR.png
-Terminal=false
-Type=Application

@@ -8,30 +8,6 @@ then
    source $WD/pgAgent/build-osx.sh
 fi
 
-# Linux
-if [ $PG_ARCH_LINUX = 1 ];
-then
-    source $WD/pgAgent/build-linux.sh
-fi
-
-# Linux x64
-if [ $PG_ARCH_LINUX_X64 = 1 ];
-then
-   source $WD/pgAgent/build-linux-x64.sh
-fi
-
-# Linux ppc64
-if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-then
-   source $WD/pgAgent/build-linux-ppc64.sh
-fi
-
-# Windows
-if [ $PG_ARCH_WINDOWS = 1 ];
-then
-    source $WD/pgAgent/build-windows.sh
-fi
-
 # Windows-x64
 if [ $PG_ARCH_WINDOWS_X64 = 1 ];
 then
@@ -74,31 +50,6 @@ _prep_pgAgent() {
        _prep_pgAgent_osx 
     fi
 
-    # Linux
-    if [ $PG_ARCH_LINUX = 1 ];
-    then
-        _prep_pgAgent_linux 
-    fi
-
-    # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-       _prep_pgAgent_linux_x64 
-    fi
-
-    # Linux ppc64
-    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-    then
-       #_prep_pgAgent_linux_ppc64 
-       echo "Linux-PPC64 build pre-process is not part of build framework yet."
-    fi
-
-    # Windows
-    if [ $PG_ARCH_WINDOWS = 1 ];
-    then
-        _prep_pgAgent_windows 
-    fi
-
     # Windows_x64
     if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
@@ -117,31 +68,6 @@ _build_pgAgent() {
     if [ $PG_ARCH_OSX = 1 ]; 
     then
        _build_pgAgent_osx 
-    fi
-
-    # Linux 
-    if [ $PG_ARCH_LINUX = 1 ];
-    then
-        _build_pgAgent_linux 
-    fi
-
-    # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-      _build_pgAgent_linux_x64 
-    fi
-
-    # Linux ppc64
-    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-    then
-      #_build_pgAgent_linux_ppc64 
-      echo "Linux-PPC64 build process is not part of build framework yet."
-    fi
-
-    # Windows
-    if [ $PG_ARCH_WINDOWS = 1 ];
-    then
-        _build_pgAgent_windows 
     fi
 
     # Windows_x64
@@ -187,30 +113,6 @@ _postprocess_pgAgent() {
     if [ $PG_ARCH_OSX = 1 ]; 
     then
        _postprocess_pgAgent_osx 
-    fi
-
-    # Linux
-    if [ $PG_ARCH_LINUX = 1 ];
-    then
-        _postprocess_pgAgent_linux 
-    fi
-
-    # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-      _postprocess_pgAgent_linux_x64 
-    fi
-    
-    # Linux ppc64
-    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-    then
-      _postprocess_pgAgent_linux_ppc64 
-    fi
-    
-    # Windows
-    if [ $PG_ARCH_WINDOWS = 1 ];
-    then
-        _postprocess_pgAgent_windows 
     fi
 
     # Windows_x64
