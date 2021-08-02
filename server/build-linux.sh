@@ -221,6 +221,7 @@ _build_server_linux() {
     ssh $PG_SSH_LINUX "cp /opt/local/Current/include/zlib.h $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_LINUX "cp /opt/local/Current/include/krb5.h $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/ncurses $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_LINUX "cp -r /opt/local/Current/include/unicode $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_LINUX "cp /opt/local/Current/include/gssapi.h $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_LINUX "cp /opt/local/Current/include/ldap*.h $PG_STAGING/include" || _die "Failed to copy the required header"
 
