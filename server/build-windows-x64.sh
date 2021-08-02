@@ -465,6 +465,9 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\libxslt\"" || _die "Failed to create libxslt directory"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\libxslt\\\\*.h $PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\libxslt" || _die "Failed to copy third party headers on the windows-x64 build host"
 
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\unicode\"" || _die "Failed to create unicode directory"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\unicode\\\\*.h $PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\unicode" || _die "Failed to copy third party headers on the windows-x64 build host"
+
     # Copy the wxWidgets libraries
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxbase313ud_net_vc_x64_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_WXWIN_WINDOWS_X64\\\\lib\\\\vc_x64_dll\\\\wxbase313u_vc_x64_custom.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
