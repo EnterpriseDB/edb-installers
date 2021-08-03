@@ -386,6 +386,9 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output.build\\\\include\\\\libxslt\"" || _die "Failed to create libxslt directory"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\include\\\\libxslt\\\\*.h $PG_PATH_WINDOWS\\\\output.build\\\\include\\\\libxslt" || _die "Failed to copy third party headers on the windows build host"
 
+    ssh $PG_SSH_WINDOWS "cmd /c mkdir \"$PG_PATH_WINDOWS\\\\output.build\\\\include\\\\unicode\"" || _die "Failed to create unicode directory"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\include\\\\unicode\\\\*.h $PG_PATH_WINDOWS\\\\output.build\\\\include\\\\unicode" || _die "Failed to copy third party headers on the windows-x64 build host"
+
     # Copy the wxWidgets libraries    
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_WXWIN_WINDOWS\\\\lib\\\\vc_dll\\\\wxbase28u_net_vc_custom.dll $PG_PATH_WINDOWS\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (wxbase28u_net_vc_custom.dll)"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_WXWIN_WINDOWS\\\\lib\\\\vc_dll\\\\wxbase28u_vc_custom.dll $PG_PATH_WINDOWS\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows build host (wxbase28u_vc_custom.dll)"
