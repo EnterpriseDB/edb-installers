@@ -340,7 +340,7 @@ cat <<EOT-PGADMIN > $WD/server/build-pgadmin.sh
     # throws ImportError "ELF load command address/offset not properly aligned for _psycopg.so"
     pip uninstall -y psycopg2
     PYSITEPACKAGES="$PG_PATH_LINUX/server/source/pgadmin.linux/linux-build/venv/lib/python\$PYTHON_VERSION/site-packages"
-    LDFLAGS="-Wl,--rpath,\$PYSITEPACKAGES/psycopg2/.libs" pip install -v --no-cache-dir --no-binary :all: psycopg2
+    LDFLAGS="-Wl,--rpath,\$PYSITEPACKAGES/psycopg2/.libs" pip install -v --no-cache-dir --no-binary :all: psycopg2==2.8.6
     DEPLIBS="\`ldd \$PYSITEPACKAGES/psycopg2/_psycopg*.so  | awk '{print \$1}'\`"
     # copy the dependent libs and change the rpath
     mkdir -p \$PYSITEPACKAGES/psycopg2/.libs
