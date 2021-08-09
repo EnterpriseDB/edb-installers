@@ -189,6 +189,7 @@ _postprocess_PEM-HTTPD_windows() {
     mkdir $WD/PEM-HTTPD/staging/windows/apache || _die "Failed to create directory for apache"
     echo "Copying apache built tree to Unix host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\vcredist\\\\vcredist_x86.exe $PG_PATH_WINDOWS\\\\apache.staging" || _die "Failed to copy the VC++ runtimes on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\vcredist\\\\vc_redist.x86_2015.exe  $PG_PATH_WINDOWS\\\\apache.staging" || _die "Failed to copy the VC++ runtimes on the windows build host"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache-staging.zip del /S /Q apache-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache-staging.zip on Windows VM"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\apache.staging; cmd /c zip -r ..\\\\apache-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache.staging)"
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache-staging.zip $WD/PEM-HTTPD/staging/windows/apache || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache-staging.zip)"
@@ -238,7 +239,15 @@ _postprocess_PEM-HTTPD_windows() {
     mkdir -p staging/windows/apache/www/images || _die "Failed to create a directory for the images"
 
     cp staging/windows/apache/vcredist_x86.exe staging/windows/installer/PEM-HTTPD 
-    rm -f staging/windows/apache/vcredist_x86.exe
+    cp staging/windows/apache/vc_redist.x86_2015.exe staging/windows/installer/PEM-HTTPD/vcredist_x86_2015.exe
+
+    if [ -f staging/windows/apache/vcredist_x86.exe ]; then
+      rm -f staging/windows/apache/vcredist_x86.exe
+    fi
+
+    if [ -f staging/windows/apache/vc_redist.x86_2015.exe ]; then
+      rm -f staging/windows/apache/vc_redist.x86_2015.exe
+    fi
 
     cp scripts/windows/start-apache.bat staging/windows/installer/PEM-HTTPD/start-apache.bat || _die "Failed to copy the start-apache script (scripts/windows/start-apache.bat)"
     cp scripts/windows/install-apache.bat staging/windows/installer/PEM-HTTPD/install-apache.bat || _die "Failed to copy the install-apache script (scripts/windows/install-apache.bat)"

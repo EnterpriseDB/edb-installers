@@ -939,6 +939,49 @@ EOF
       </ruleList>
     </actionGroup>
 
+    <actionGroup>
+      <actionList>
+         <!-- Unpacking the Script file to temporary directory -->
+         <unpackFile>
+           <component>PEMHTTPD</component>
+           <destination>${system_temp_directory}\vcredist_x86_2015.exe</destination>
+           <folder>programfileswindows</folder>
+           <origin>installer/PEM-HTTPD/vcredist_x86_2015.exe</origin>
+         </unpackFile>
+         <!-- Running VC Dist file | WIN  -->
+         <runProgram>
+            <program>${system_temp_directory}\vcredist_x86_2015.exe</program>
+            <programArguments>/q /norestart</programArguments>
+            <workingDirectory>${system_temp_directory}</workingDirectory>
+            <showMessageOnError>0</showMessageOnError>
+            <abortOnError>0</abortOnError>
+           <!-- <customErrorMessage>${msg(error.installing.runtimes)}</customErrorMessage> -->
+         </runProgram>
+         <throwError text="${msg(error.installing.runtimes)}">
+	  <ruleList>
+	    <compareText logic="equals" text="${program_exit_code}" value="127"/>
+	  </ruleList>
+	</throwError>
+	<actionGroup>
+	  <actionList>
+	    <logMessage text="${msg(warning.reboot.machine)}"/>
+	    <setInstallerVariable name="rebootRequired" value="1"/>
+	  </actionList>
+	  <ruleList>
+	    <compareText logic="equals" text="${program_exit_code}" value="3010"/>
+	  </ruleList>
+        </actionGroup>
+      </actionList>
+      <ruleList>
+         <compareText>
+            <logic>equals</logic>
+            <text>${platform_name}</text>
+            <value>windows</value>
+         </compareText>
+         <isTrue value="${install_runtimes}"/>
+      </ruleList>
+    </actionGroup>
+
     <!-- Stopping apache if already started - Windows  -->
     <runProgram>
       <program>${env(WINDIR)}\System32\wscript</program>
