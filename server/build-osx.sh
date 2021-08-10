@@ -171,7 +171,7 @@ _build_server_osx() {
 
     # Configure the source tree
     echo "Configuring the postgres source tree for universal binary support"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -O2' LDFLAGS=\"-L/opt/local/Current/lib\" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/lib/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl XML2_CONFIG=/opt/local/Current/bin/xml2-config ICU_LIBS=\"-L/opt/local/Current/lib -licuuc -licudata -licui18n\" ICU_CFLAGS=\"-I/opt/local/Current/include\" ./configure --with-icu --enable-debug  --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --enable-thread-safety --with-libxml --with-uuid=e2fs --with-includes=/opt/local/Current/include/libxml2:/opt/local/Current/include:/opt/local/Current/include/security:/opt/local/Current/include/openssl/ --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi" || _die "Failed to configure postgres for universal support"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -O2' LDFLAGS=\"-L/opt/local/Current/lib\" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/lib/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl XML2_CONFIG=/opt/local/Current/bin/xml2-config ICU_LIBS=\"-L/opt/local/Current/lib -licuuc -licudata -licui18n\" ICU_CFLAGS=\"-I/opt/local/Current/include\" LZ4_CFLAGS=\"-I/opt/local/Current/include\" LZ4_LIBS=\"-L/opt/local/Current/lib\" ./configure --with-icu --enable-debug  --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --enable-thread-safety --with-libxml --with-uuid=e2fs --with-includes=/opt/local/Current/include/libxml2:/opt/local/Current/include:/opt/local/Current/include/security:/opt/local/Current/include/openssl/ --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi --with-lz4" || _die "Failed to configure postgres for universal support"
 
     echo "Building postgres"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -O2' make -j4" || _die "Failed to build postgres"
@@ -222,6 +222,10 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cp -r /opt/local/Current/include/unicode $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_OSX "cp /opt/local/Current/include/iconv.h $PG_STAGING/include" || _die "Failed to copy the required header"
     ssh $PG_SSH_OSX "cp /opt/local/Current/include/zlib.h $PG_STAGING/include" || _die "Failed to copy the required header"
+    ssh $PG_SSH_OSX "cp /opt/local/Current/include/lz4*.h $PG_STAGING/include" || _die "Failed to copy the required header"
+
+    # Copy Lz4 libs to staging
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/liblz4*.dylib $PG_STAGING/lib/" || _die "Failed to copy the LZ4 libs to staging"
 
     #cd $WD/server/staging/osx
     # Copy libxml2 as System's libxml can be old.

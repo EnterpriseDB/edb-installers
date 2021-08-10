@@ -284,7 +284,8 @@ our \$config = {
     iconv=>'$PG_PGBUILD_WINDOWS_X64',
     zlib=>'$PG_PGBUILD_WINDOWS_X64',        # --with-zlib=<path>
     icu=>'$PG_PGBUILD_WINDOWS_X64',        # --with-icu=<path>
-    uuid=>'$PG_PGBUILD_WINDOWS_X64'       # --with-uuid-ossp
+    uuid=>'$PG_PGBUILD_WINDOWS_X64',       # --with-uuid-ossp
+    lz4=>'$PG_PGBUILD_WINDOWS_X64'        # --with-lz4=<path>
 };
 
 1;
@@ -441,7 +442,9 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib1.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libcurl.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\icu*.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-   
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\liblz4.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\liblz4.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libssl.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libcrypto.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\iconv.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
@@ -464,6 +467,7 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\libxml\\\\*.h $PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\libxml" || _die "Failed to copy third party headers on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\libxslt\"" || _die "Failed to create libxslt directory"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\libxslt\\\\*.h $PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\libxslt" || _die "Failed to copy third party headers on the windows-x64 build host"
+    sh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\lz4*.h $PG_PATH_WINDOWS_X64\\\\output.build\\\\include" || _die "Failed to copy third party headers on the windows-x64 build host"
 
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\unicode\"" || _die "Failed to create unicode directory"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\include\\\\unicode\\\\*.h $PG_PATH_WINDOWS_X64\\\\output.build\\\\include\\\\unicode" || _die "Failed to copy third party headers on the windows-x64 build host"
@@ -647,6 +651,7 @@ _postprocess_server_windows_x64() {
    mv $PGSERVER_STAGING_WINDOWS_X64/bin/reindexdb.exe     $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move reindexdb.exe"
    mv $PGSERVER_STAGING_WINDOWS_X64/bin/pgbench.exe     $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move pgbench.exe"
    mv $PGSERVER_STAGING_WINDOWS_X64/bin/vacuumlo.exe     $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move vacuumlo.exe"
+   mv $PGSERVER_STAGING_WINDOWS_X64/bin/liblz4.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move liblz4.dll"
    mkdir -p $CLT_STAGING_WINDOWS_X64/scripts/images || _die "Couldn't create the staging directory $CLT_STAGING_WINDOWS_X64/scripts/images"
    cp $WD/server/resources/pg-psql.ico  $CLT_STAGING_WINDOWS_X64/scripts/images/ || _die "Failed to move scripts/images/pg-psql.ico"
    cp $WD/server/scripts/windows/runpsql.bat  $CLT_STAGING_WINDOWS_X64/scripts/ || _die "Failed to move runpsql.bat"
