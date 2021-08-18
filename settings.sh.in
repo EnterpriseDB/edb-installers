@@ -82,7 +82,7 @@ PGADMIN_KRB5_DIR="C:\\\\Program Files\\\\MIT\\\\Kerberos"
 YARN_HOME="C:\\\\pgBuild64\\\\Yarn"
 NODEJS_HOME="C:\\\\pgBuild64\\\\node-v14.16.0-win-x64"
 
-PG_SSH_OSX=buildfarm@buckmore.ox.uk.enterprisedb.com
+PG_SSH_OSX=buildfarm@battersea-park.ox.uk.enterprisedb.com
 PG_PATH_OSX=/opt/pginstaller_14.auto
 PG_SSH_OSX_SIGN=buildfarm@mors.ox.uk.enterprisedb.com
 #PG_SSH_OSX_SIGN=buildfarm@bf-osx-sign.ox.uk.enterprisedb.com
@@ -95,7 +95,7 @@ PG_MAVEN_HOME_OSX=/opt/local
 PG_DOCBOOK_OSX=/usr/local/docbook-xsl-1.77.1
 PG_JAVA_HOME_OSX=/Library/Java/JavaVirtualMachines/jdk1.8.0_291.jdk/Contents/Home
 PG_CMAKE_OSX=/Applications/CMake.app/Contents/bin/cmake
-PG_PERL_OSX=/Library/edb/languagepack/v2/Perl-5.32
+PG_PERL_OSX=/Library/edb/languagepack/v2/Perl-5.34
 PG_PYTHON_OSX=/Library/edb/languagepack/v2/Python-3.9
 PGADMIN_PYTHON_OSX=/Library/edb/languagepack/v2/Python-3.9
 PG_TCL_OSX=/Library/edb/languagepack/v2/Tcl-8.6
