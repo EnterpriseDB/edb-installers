@@ -91,7 +91,7 @@ PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_14.auto
 PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_14.notary
 PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging_cache/osx
-PG_MAVEN_HOME_OSX=/opt/local
+PG_MAVEN_HOME_OSX=/opt/local/Current/apache-maven-3.8.2
 PG_DOCBOOK_OSX=/usr/local/docbook-xsl-1.77.1
 PG_JAVA_HOME_OSX=/Library/Java/JavaVirtualMachines/jdk1.8.0_291.jdk/Contents/Home
 PG_CMAKE_OSX=/Applications/CMake.app/Contents/bin/cmake
@@ -107,6 +107,7 @@ CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
 PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/14
 YARN_HOME_OSX=/opt/local/Current/yarn
 NODEJS_HOME_OSX=/opt/local/Current/nodejs
+IMAGEMAGICK_HOME_OSX=/opt/local/Current/ImageMagick
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the
