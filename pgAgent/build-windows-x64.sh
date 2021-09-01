@@ -117,7 +117,7 @@ EOT
     scp vc-build-x64.bat $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64 || _die "Failed to copy the vc-build-x64.bat to the windows-x64 build host (vcbuild.bat)"
 
     echo "Configuring pgAgent sources"
-    ssh $PG_SSH_WINDOWS_X64 "cd $SOURCE_DIR; PGDIR=$PG_PATH_WINDOWS_X64/output BOOST_ROOT=$PG_BOOST_WINDOWS_X64 $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"${CMAKE_BUILD_GENERATOR_X64} Win64\" -DSTATIC_BUILD=NO -DCMAKE_INSTALL_PREFIX=$OUTPUT_DIR -D CMAKE_CXX_FLAGS=\" /EHsc\" ." || _die "Couldn't configure the pgAgent sources"
+    ssh $PG_SSH_WINDOWS_X64 "cd $SOURCE_DIR; PGDIR=$PG_PATH_WINDOWS_X64/output BOOST_ROOT=$PG_BOOST_WINDOWS_X64 $PG_CMAKE_WINDOWS_X64/bin/cmake -G \"${CMAKE_BUILD_GENERATOR_WINDOWS_X64} Win64\" -DSTATIC_BUILD=NO -DCMAKE_INSTALL_PREFIX=$OUTPUT_DIR -D CMAKE_CXX_FLAGS=\" /EHsc\" ." || _die "Couldn't configure the pgAgent sources"
     echo "Building pgAgent"
     ssh $PG_SSH_WINDOWS_X64 "cd $SOURCE_DIR; export PGDIR=$PG_PATH_WINDOWS_X64/output ; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat pgagent.vcxproj RELEASE" || _die "Failed to build pgAgent on the build host"
 
