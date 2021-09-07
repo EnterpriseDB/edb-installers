@@ -3648,6 +3648,10 @@ EOF
                     <username>${serviceaccount}</username>
                 </createOSXService>
 
+		<startOSXService>
+                    <serviceName>${servicename}</serviceName>
+		</startOSXService>
+
                 <runProgram>
                     <program>${env(WINDIR)}\System32\cscript</program>
                     <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword.password}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
