@@ -157,7 +157,6 @@ EOF
                 <stringParameter name="destDir" allowEmptyValue="0" />
             </parameterList>
             <actionList>
-            <createTempDir dirPrefix="postgresql_installer"/>
             <runProgram>
                 <program>${env(WINDIR)}\System32\icacls</program>
                 <programArguments>. /save "${system_temp_directory}/postgresql_installer_${random_number}/aclfile"</programArguments>
