@@ -230,7 +230,7 @@ use warnings;
 
 our \$config = {
     asserts=>0,                         # --enable-cassert
-    nls=>'$PG_PGBUILD_WINDOWS_X64',        # --enable-nls=<path>
+    nls=>'$PG_PGBUILD_GETTEXT_WINDOWS_X64',        # --enable-nls=<path>
     perl=>'$PG_PERL_WINDOWS_X64',             # --with-perl
     python=>'$PG_PYTHON_WINDOWS_X64',         # --with-python=<path>
     tcl=>'$PG_TCL_WINDOWS_X64',            # --with-tls=<path>
@@ -238,7 +238,7 @@ our \$config = {
     openssl=>'$PG_PGBUILD_OPENSSL_WINDOWS_X64',     # --with-ssl=<path>
     xml=>'$PG_PGBUILD_WINDOWS_X64',
     xslt=>'$PG_PGBUILD_WINDOWS_X64',
-    iconv=>'$PG_PGBUILD_WINDOWS_X64',
+    iconv=>'$PG_PGBUILD_GETTEXT_WINDOWS_X64',
     zlib=>'$PG_PGBUILD_WINDOWS_X64',        # --with-zlib=<path>
     icu=>'$PG_PGBUILD_WINDOWS_X64',        # --with-icu=<path>
     uuid=>'$PG_PGBUILD_WINDOWS_X64'       # --with-uuid-ossp
@@ -263,6 +263,7 @@ use warnings;
     '$PG_MSBUILDDIR_WINDOWS_X64\bin',
     '$PG_DEVENVDIR_WINDOWS_X64',
     '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.14.26428\bin\HostX64\x64',
+    '$PG_PGBUILD_GETTEXT_WINDOWS_X64\bin',
     '$PG_PGBUILD_WINDOWS_X64\bin',
     '$PG_PGBUILD_OPENSSL_WINDOWS_X64\bin',
     '$PG_PERL_WINDOWS_X64\bin',
@@ -276,6 +277,7 @@ use warnings;
     ';',
     '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.14.26428\ATLMFC\INCLUDE',
     '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.14.26428\INCLUDE',
+    '$PG_PGBUILD_GETTEXT_WINDOWS_X64\include',
     '$PG_PGBUILD_WINDOWS_X64\include',
     '$PG_PGBUILD_OPENSSL_WINDOWS_X64\include',
     \$ENV{INCLUDE}
@@ -286,6 +288,7 @@ use warnings;
     ';',
     '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.14.26428\ATLMFC\LIB',
     '$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Tools\MSVC\14.14.26428\LIB\onecore\x64',
+    '$PG_PGBUILD_GETTEXT_WINDOWS_X64\lib',
     '$PG_PGBUILD_WINDOWS_X64\lib',
     '$PG_PGBUILD_OPENSSL_WINDOWS_X64\lib',
     \$ENV{LIB}
@@ -394,9 +397,9 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vcredist_x86.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_OPENSSL_WINDOWS_X64\\\\bin\\\\libssl-1_1-x64.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_OPENSSL_WINDOWS_X64\\\\bin\\\\libcrypto-1_1-x64.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libiconv-2.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-8.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libwinpthread-1.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\bin\\\\libiconv-2.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\bin\\\\libintl-9.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\bin\\\\libwinpthread-1.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxml2.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libxslt.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib1.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
@@ -405,8 +408,8 @@ EOT
    
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_OPENSSL_WINDOWS_X64\\\\lib\\\\libssl.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_OPENSSL_WINDOWS_X64\\\\lib\\\\libcrypto.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\iconv.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libintl.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\lib\\\\iconv.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\lib\\\\libintl.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libxml2.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\lib\\\\libxslt.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\zlib.lib $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy a dependency lib on the windows-x64 build host"
@@ -465,8 +468,8 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\win-build\\\\python \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\python\"" || _die "Failed to copy pgAdmin python"
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\win-build\\\\runtime \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy pgAdmin bin"
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\win-build\\\\web \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\web\"" || _die "Failed to copy pgAdmin web"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libiconv-2.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libiconv-2.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libintl-8.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libintl-8.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\bin\\\\libiconv-2.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libiconv-2.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\bin\\\\libintl-9.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libintl-9.dll"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\libpq.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libpq.dll"
 
 
@@ -610,7 +613,7 @@ _postprocess_server_windows_x64() {
    cp $PGSERVER_STAGING_WINDOWS_X64/bin/libssl-1_1-x64.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libssl-1_1-x64.dll"
    cp $PGSERVER_STAGING_WINDOWS_X64/bin/libcrypto-1_1-x64.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libcrypto-1_1-x64.dll"
    cp $PGSERVER_STAGING_WINDOWS_X64/bin/libiconv-2.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libiconv-2.dll"
-   cp $PGSERVER_STAGING_WINDOWS_X64/bin/libintl-8.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libintl-8.dll"
+   cp $PGSERVER_STAGING_WINDOWS_X64/bin/libintl-9.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libintl-9.dll"
 
 
     cd $WD/server
