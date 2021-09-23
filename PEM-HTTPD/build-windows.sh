@@ -117,8 +117,6 @@ SET INCLUDE=$PEM_PYTHON_WINDOWS\include;$PG_PATH_WINDOWS\apache.windows\srclib\z
 SET PATH=$PG_PATH_WINDOWS;$PG_PGBUILD_WINDOWS\bin;$PG_PERL_WINDOWS\bin;$PEM_PYTHON_WINDOWS;$PG_TCL_WINDOWS\bin;%PATH%;C:\cygwin\bin
 perl Configure VC-WIN32 no-asm --prefix=%CD% --openssldir=%CD%\openssl.build
 nmake
-nmake test
-nmake install 
 
 REM Building apache
 cd $PG_PATH_WINDOWS
@@ -140,19 +138,7 @@ build-win32-VC10.bat
 EOT
 
     scp build-apache.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
-    APACHE_BUILT=0
-    APACHE_WIN_BUILT_COUNT=0
-    while [ $APACHE_BUILT == 0 ]; do
-        # We will stop trying, if the count is more than 3
-        if [ $APACHE_WIN_BUILT_COUNT -gt 2 ];
-        then
-            _die "Failed to build Apache on Windows VM"
-        fi
-        APACHE_BUILT=1
-        ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-apache.bat" || APACHE_BUILT=0
-        APACHE_WIN_BUILT_COUNT=`expr $APACHE_WIN_BUILT_COUNT + 1`
-    done
-
+    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-apache.bat" ||  _die "Failed to build apache server"
     echo "Removing last successful staging directory ($PG_PATH_WINDOWS\\\\apache.staging)"
     ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache.staging rd /S /Q apache.staging" || _die "Couldn't remove the last successful staging directory directory"
     ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\apache.staging" || _die "Couldn't create the last successful staging directory"
