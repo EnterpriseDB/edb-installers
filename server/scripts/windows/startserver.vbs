@@ -54,4 +54,3 @@ WScript.Sleep(5000)
 
 WScript.Echo "startserver.vbs ran to completion"
 WScript.Quit 0
-
