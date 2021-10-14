@@ -3626,20 +3626,30 @@ EOF
                     <progressText>${msg(progress.text.configuring.startup)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
                     <ruleList>
                         <compareText>
                             <logic>contains</logic>
                             <text>solaris</text>
                             <value>${platform_name}</value>
                         </compareText>
-                        <compareText>
-                            <logic>contains</logic>
-                            <text>osx</text>
-                            <value>${platform_name}</value>
-                        </compareText>
                     </ruleList>
                 </runProgram>
+
+                <createOSXService>
+                    <abandonProcessGroup>0</abandonProcessGroup>
+                    <groupname></groupname>
+                    <keepAlive>0</keepAlive>
+                    <program>${installdir}/bin/postmaster</program>
+                    <programArguments>-D ${datadir}</programArguments>
+                    <progressText>${msg(progress.text.configuring.startup)}</progressText>
+                    <scope>system</scope>
+                    <serviceName>${servicename}</serviceName>
+                    <username>${serviceaccount}</username>
+                </createOSXService>
+
+		<startOSXService>
+                    <serviceName>${servicename}</serviceName>
+		</startOSXService>
 
                 <runProgram>
                     <program>${env(WINDIR)}\System32\cscript</program>
