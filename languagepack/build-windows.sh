@@ -1,6 +1,6 @@
 #!/bin/bash
 
-    
+
 ################################################################################
 # Build Preparation
 ################################################################################
@@ -39,18 +39,18 @@ _prep_languagepack_windows() {
     cd $WD/languagepack/source/languagepack.$ARCH
     extract_file $WD/../tarballs/tcl${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src || _die "Failed to extract tcl/tk source (tcl-${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src.tar.gz)"
     extract_file $WD/../tarballs/tk${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src || _die "Failed to extract tcl/tk source (tk-${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL}-src.tar.gz)"
-    extract_file $WD/../tarballs/perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} || _die "Failed to extract perl source (perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL}.tar.gz)"
+    extract_file $WD/../tarballs/perl-${PG_VERSION_PERL_WINDOWS64}.${PG_MINOR_VERSION_PERL_WINDOWS64} || _die "Failed to extract perl source (perl-${PG_VERSION_PERL_WINDOWS64}.${PG_MINOR_VERSION_PERL_WINDOWS64}.tar.gz)"
     extract_file $WD/../tarballs/Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON} || _die "Failed to extract python source (Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}.tgz)"
     extract_file $WD/../tarballs/setuptools-${PG_VERSION_PYTHON_SETUPTOOLS} || _die "Failed to extract python source (setuptools-${PG_VERSION_PYTHON_SETUPTOOLS})"
 
-    pushd perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL}/win32
+    pushd perl-${PG_VERSION_PERL_WINDOWS64}.${PG_MINOR_VERSION_PERL_WINDOWS64}/win32
         if [ "$ARCH" = "windows-x32" ];
         then
             # Perl related changes - x32
             sed -i 's/^#WIN64\t\t= undef/WIN64\t\t= undef/g' Makefile
         fi
 	sed -i "s|^INST_DRV\t=.*|INST_DRV\t= ${PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS}|" Makefile
-	sed -i "s|INST_TOP\t=.*$|INST_TOP\t= \$(INST_DRV)\\\Perl-${PG_VERSION_PERL}|" Makefile
+	sed -i "s|INST_TOP\t=.*$|INST_TOP\t= \$(INST_DRV)\\\Perl-${PG_VERSION_PERL_WINDOWS64}|" Makefile
         sed -i 's/^#CCTYPE\t\t= MSVC141/CCTYPE\t\t= MSVC141/g' Makefile
     popd
 
@@ -116,14 +116,14 @@ _build_languagepack_windows() {
     ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-${PG_VERSION_TCL}; cmd /c Tcl_Tk_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\tcl${PG_VERSION_TCL}.${PG_MINOR_VERSION_TCL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Tcl-${PG_VERSION_TCL} $PG_PATH_WIN\\\\languagepack.$ARCH\\\\tk${PG_VERSION_TK}.${PG_MINOR_VERSION_TK}"
 
     # Perl Build
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL} $PG_PATH_WIN\\\\output PERL"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL} $PG_PATH_WIN\\\\output DBI"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL_WINDOWS64}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL_WINDOWS64}.${PG_MINOR_VERSION_PERL_WINDOWS64} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL_WINDOWS64} $PG_PATH_WIN\\\\output PERL"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL_WINDOWS64}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL_WINDOWS64}.${PG_MINOR_VERSION_PERL_WINDOWS64} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL_WINDOWS64} $PG_PATH_WIN\\\\output DBI"
     # Install cpanm to exclude running test cases when installing IPC and DBD as one of test cases stucks
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL} $PG_PATH_WIN\\\\output CPANMINUS"
-    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL} $PG_PATH_WIN\\\\output IPC"
-   ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL} $PG_PATH_WIN\\\\output WIN32PROCESS"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL_WINDOWS64}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL_WINDOWS64}.${PG_MINOR_VERSION_PERL_WINDOWS64} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL_WINDOWS64} $PG_PATH_WIN\\\\output CPANMINUS"
+    ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL_WINDOWS64}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL_WINDOWS64}.${PG_MINOR_VERSION_PERL_WINDOWS64} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL_WINDOWS64} $PG_PATH_WIN\\\\output IPC"
+   ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL_WINDOWS64}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL_WINDOWS64}.${PG_MINOR_VERSION_PERL_WINDOWS64} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL_WINDOWS64} $PG_PATH_WIN\\\\output WIN32PROCESS"
     # install.pm gets installed as part of IPC installation. Uninstall it as postgres installation fails because of it.
-  ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL}.${PG_MINOR_VERSION_PERL} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL} $PG_PATH_WIN\\\\output INSTALL"
+  ssh $PG_SSH_WIN "cd $PG_PATH_WIN\\\\languagepack.$ARCH; mkdir -p $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL_WINDOWS64}; cmd /c Perl_Build.bat $PG_PATH_WIN\\\\languagepack.$ARCH\\\\perl-${PG_VERSION_PERL_WINDOWS64}.${PG_MINOR_VERSION_PERL_WINDOWS64} $PG_LANGUAGEPACK_INSTALL_DIR_WIN\\\\Perl-${PG_VERSION_PERL_WINDOWS64} $PG_PATH_WIN\\\\output INSTALL"
 
     # Python Build
     cd $WD/languagepack/scripts/$ARCH
@@ -180,19 +180,19 @@ _postprocess_languagepack_windows() {
     mkdir -p $WD/languagepack/staging/$ARCH || _die "Couldn't create the staging directory"
     chmod ugo+w $WD/languagepack/staging/$ARCH || _die "Couldn't set the permissions on the staging directory"
 
-    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging; zip -r Tcl-${PG_VERSION_TCL}.zip Tcl-${PG_VERSION_TCL}; zip -r Perl-${PG_VERSION_PERL}.zip Perl-${PG_VERSION_PERL}; zip -r Python-${PG_VERSION_PYTHON}.zip Python-${PG_VERSION_PYTHON}" || _die "Failed to create Tcl-${PG_VERSION_TCL}.zip;Perl-${PG_VERSION_PERL}.zip;Python-${PG_VERSION_PYTHON}.zip on  windows buildhost"
+    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging; zip -r Tcl-${PG_VERSION_TCL}.zip Tcl-${PG_VERSION_TCL}; zip -r Perl-${PG_VERSION_PERL_WINDOWS64}.zip Perl-${PG_VERSION_PERL_WINDOWS64}; zip -r Python-${PG_VERSION_PYTHON}.zip Python-${PG_VERSION_PYTHON}" || _die "Failed to create Tcl-${PG_VERSION_TCL}.zip;Perl-${PG_VERSION_PERL_WINDOWS64}.zip;Python-${PG_VERSION_PYTHON}.zip on  windows buildhost"
     rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/Tcl-${PG_VERSION_TCL}.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Tcl-${PG_VERSION_TCL}.zip"
-    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/Perl-${PG_VERSION_PERL}.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Perl-${PG_VERSION_PERL}.zip"
+    rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/Perl-${PG_VERSION_PERL_WINDOWS64}.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Perl-${PG_VERSION_PERL_WINDOWS64}.zip"
     rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/Python-${PG_VERSION_PYTHON}.zip  $WD/languagepack/staging/$ARCH || _die "Failed to copy Python-${PG_VERSION_PYTHON}.zip"
     rsync -av $PG_SSH_WIN:$PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging/versions-${ARCH}.sh  $WD/languagepack/staging/$ARCH || _die "Failed to copy versions-${ARCH}.sh"
 
-    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging; rm -f Tcl-${PG_VERSION_TCL}.zip Perl-${PG_VERSION_PERL}.zip Python-${PG_VERSION_PYTHON}.zip " || _die "Failed to remove  Tcl-${PG_VERSION_TCL}.zip;Perl-${PG_VERSION_PERL}.zip; Python-${PG_VERSION_PYTHON}.zip on  windows buildhost"
+    ssh $PG_SSH_WIN "cd $PG_LANGUAGEPACK_INSTALL_DIR_WIN.staging; rm -f Tcl-${PG_VERSION_TCL}.zip Perl-${PG_VERSION_PERL_WINDOWS64}.zip Python-${PG_VERSION_PYTHON}.zip " || _die "Failed to remove  Tcl-${PG_VERSION_TCL}.zip;Perl-${PG_VERSION_PERL_WINDOWS64}.zip; Python-${PG_VERSION_PYTHON}.zip on  windows buildhost"
 
     cd $WD/languagepack/staging/$ARCH/
     unzip -qq -o Tcl-${PG_VERSION_TCL}.zip ||_die "Failed to unzip Tcl-${PG_VERSION_TCL}.zip"
-    unzip -qq -o Perl-${PG_VERSION_PERL}.zip || _die "Failed to unzip Perl-${PG_VERSION_PERL}.zip"
+    unzip -qq -o Perl-${PG_VERSION_PERL_WINDOWS64}.zip || _die "Failed to unzip Perl-${PG_VERSION_PERL_WINDOWS64}.zip"
     unzip -qq -o Python-${PG_VERSION_PYTHON}.zip || _die "Failed to unzip Python-${PG_VERSION_PYTHON}.zip"
-    rm -f Tcl-${PG_VERSION_TCL}.zip Perl-${PG_VERSION_PERL}.zip Python-${PG_VERSION_PYTHON}.zip || _die "Failed to remove the Tcl-${PG_VERSION_TCL}.zip;Perl-${PG_VERSION_PERL}.zip;Python-${PG_VERSION_PYTHON}.zip"
+    rm -f Tcl-${PG_VERSION_TCL}.zip Perl-${PG_VERSION_PERL_WINDOWS64}.zip Python-${PG_VERSION_PYTHON}.zip || _die "Failed to remove the Tcl-${PG_VERSION_TCL}.zip;Perl-${PG_VERSION_PERL_WINDOWS64}.zip;Python-${PG_VERSION_PYTHON}.zip"
 
     dos2unix $WD/languagepack/staging/$ARCH/versions-${ARCH}.sh || _die "Failed to convert format of versions-${ARCH}.sh from dos to unix"
     source $WD/languagepack/staging/$ARCH/versions-${ARCH}.sh

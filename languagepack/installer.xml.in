@@ -831,7 +831,7 @@ EOF
           <platforms>windows</platforms>
           <distributionFileList>
             <distributionDirectory>
-              <origin>staging/windows/Perl-EDB_VERSION_PERL</origin>
+              <origin>staging/windows/Perl-WINDOWS64_PERL</origin>
             </distributionDirectory>
             <distributionDirectory>
               <origin>staging/windows/Python-EDB_VERSION_PYTHON</origin>
@@ -855,7 +855,7 @@ EOF
           <platforms>osx</platforms>
           <distributionFileList>
             <distributionDirectory>
-              <origin>staging/osx/Perl-EDB_VERSION_PERL</origin>
+              <origin>staging/osx/Perl-OSX_PERL</origin>
             </distributionDirectory>
 	    <distributionDirectory>
               <origin>staging/osx/Python-EDB_VERSION_PYTHON</origin>

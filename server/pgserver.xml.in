@@ -2659,6 +2659,20 @@
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </iniFileGet>
+
+		<substitute>
+		    <files>${installdir}/etc/sysconfig/plLanguages.config</files>
+		    <substitutionList>
+			<substitution>
+			    <pattern>PERL_INSTALL_PATH</pattern>
+			    <value>${languagepack_installdir}/Perl-PERL_PACKAGE_VERSION_WINDOWS64</value>
+		        </substitution>
+		    </substitutionList>
+		    <ruleList>
+                        <platformTest type="windows-x64"/>
+                    </ruleList>
+		</substitute>
+
                 <substitute>
                     <files>${installdir}/etc/sysconfig/plLanguages.config</files>
                     <substitutionList>

@@ -239,6 +239,7 @@ _prepare_server_xml() {
                 _replace PG_CATALOG_VERSION $PG_CATALOG_VERSION $filename || _die "Failed to set catalog version number in $filename"
                 _replace PG_CONTROL_VERSION $PG_CONTROL_VERSION $filename || _die "Failed to set catalog version number in $filename"
                 _replace PERL_PACKAGE_VERSION $PG_VERSION_PERL  $filename || _die "Failed to set PERL version in $filename"
+                _replace PERL_PACKAGE_VERSION_WINDOWS64 $PG_VERSION_PERL_WINDOWS64  $filename || _die "Failed to set PERL version in $filename"
                 _replace PYTHON_PACKAGE_VERSION $PG_VERSION_PYTHON $filename || _die "Failed to set PYTHON version in $filename"
                 _replace TCL_PACKAGE_VERSION $PG_VERSION_TCL $filename || _die "Failed to set TCL version in $filename"
                 _replace PG_VERSION_PGADMIN $PG_VERSION_PGADMIN $filename || _die "Failed to set pgAdmin version in $filename"

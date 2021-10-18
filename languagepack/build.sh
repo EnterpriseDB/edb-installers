@@ -82,6 +82,8 @@ _postprocess_languagepack() {
     echo "Extract the number from the $PG_LP_VERSION"
     LP_VERSION=`echo $PG_LP_VERSION | cut -f1 -d "."`
 
+    _replace WINDOWS64_PERL $PG_VERSION_PERL_WINDOWS64 installer.xml || _die "Failed to set the version in the installer project file (languagepack/installer.xml)"
+    _replace OSX_PERL $PG_VERSION_PERL installer.xml || _die "Failed to set the version in the installer project file (languagepack/installer.xml)"
     _replace EDB_VERSION_PERL $PG_VERSION_PERL installer.xml || _die "Failed to set the version in the installer project file (languagepack/installer.xml)"
     _replace EDB_VERSION_TCL $PG_VERSION_TCL installer.xml || _die "Failed to set the version in the installer project file (languagepack/installer.xml)"
     _replace EDB_VERSION_PYTHON $PG_VERSION_PYTHON installer.xml || _die "Failed to set the version in the installer project file (languagepack/installer.xml)"
