@@ -1986,7 +1986,7 @@ EOF
                         <addTextToFile file="${installdir}${slash}installation_summary.log" insertAt="end">
                             <text>
 ${msg(summary.installation.directory)}: ${installdir}
-${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}
+${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Installationlogfile}
 ===== Installation completed at: ${timestamp} =====
                             </text>
                             <ruleList>
@@ -3309,7 +3309,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}
             <title>${msg(preinstall.summary)}</title>
             <explanation>${msg(preinstall.exp)}:</explanation>
             <value>${msg(summary.installation.directory)}: ${installdir}
-${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}</value>
+${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Installationlogfile}</value>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
@@ -3319,6 +3319,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}</value>
                 <setInstallerVariable name="sbsummary" value=""/>
                 <setInstallerVariable name="dbsummary" value=""/>
                 <setInstallerVariable name="pgadminsummary" value=""/>
+                <setInstallerVariable name="Installationlogfile" value="${system_temp_directory}${slash}install-${product_shortname}.log"/>
                 <setInstallerVariable name="dbsummary" value="${msg(summary.server.installation.directory)}: ${installdir}&#10;${msg(summary.data.directory)}: ${datadir}&#10;${msg(summary.database.port)}: ${serverport}&#10;${msg(summary.database.superuser)}: ${superaccount}&#10;${msg(summary.serviceaccount)}: ${serviceaccount}&#10;${msg(summary.databaseservice)}: ${servicename}&#10;">
                     <ruleList>
                         <isTrue value="${component(server).selected}"/>
