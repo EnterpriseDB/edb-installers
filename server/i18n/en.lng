@@ -120,6 +120,7 @@ summary.clt.installation.directory=Command Line Tools Installation Directory
 summary.pgadmin.installation.directory=pgAdmin4 Installation Directory
 summary.sbp.installation.directory=Stack Builder Installation Directory
 summary.data.directory=Data Directory
+summary.installation.logfile=Installation Log
 summary.database.port=Database Port
 summary.database.superuser=Database Superuser
 summary.serviceaccount=Operating System Account
