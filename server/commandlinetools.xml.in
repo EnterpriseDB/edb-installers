@@ -39,51 +39,6 @@
                 </compareText>
             </ruleList>
         </folder>
-        <!-- LINUX_X64: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfileslinux-x64</name>
-            <platforms>linux-x64</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/commandlinetools/lib</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/commandlinetools/bin</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/commandlinetools/share</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/commandlinetools/installer</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/commandlinetools/scripts</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>staging/linux-x64/commandlinetools/commandlinetools_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
-        <!-- LINUX_PPC64: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfileslinux-ppc64</name>
-            <platforms>linux-ppc</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/linux-ppc64/pgAdmin 4</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>../resources/license.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/linux-ppc64/server_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
         <!-- MAC: Program files -->
         <folder>
             <description>Program Files</description>
@@ -132,42 +87,6 @@
                 </distributionDirectory>
                 <distributionFile>
                     <origin>staging/@@WINDIR@@/commandlinetools/commandlinetools_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
-        <!-- SOLARIS_X64: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfilessolaris-x64</name>
-            <platforms>solaris-intel</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/solaris-x64/pgAdmin 4</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>../resources/license.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/solaris-x64/server_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
-        <!-- SOLARIS_SPARC: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfilessolaris-sparc</name>
-            <platforms>solaris-sparc</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/solaris-sparc/pgAdmin 4</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>../resources/license.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/solaris-sparc/server_3rd_party_licenses.txt</origin>
                 </distributionFile>
             </distributionFileList>
         </folder>
