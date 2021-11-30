@@ -744,8 +744,6 @@ EOF
     </initializationActionList>
 
 
-    <readyToInstallActionList/>
-
     <installationAbortedActionList>
         <deleteFile path="${system_temp_directory}/postgresql_installer_${random_number}" abortOnError="0" showMessageOnError="0">
             <ruleList>
@@ -1263,21 +1261,6 @@ EOF
                     <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>linux</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </unpackFile>
-        <unpackFile>
-            <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
-            <folder>defaultlinux-x64</folder>
-            <origin>prerun_checks.sh</origin>
-            <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-x64</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
@@ -2080,28 +2063,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                     <ruleList>
                         <compareText>
                             <logic>does_not_equal</logic>
-                            <text>${platform_name}</text>
-                            <value>linux-x64</value>
-                        </compareText>
-                    </ruleList>
-                </folder>
-                <!-- LINUX-X64: files for default component -->
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/installer/server</destination>
-                    <name>defaultlinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/server/installer/prerun_checks.sh</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/server/scripts</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                    <ruleList>
-                        <compareText>
-                            <logic>contains</logic>
                             <text>${platform_name}</text>
                             <value>linux-x64</value>
                         </compareText>
