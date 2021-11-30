@@ -1280,34 +1280,6 @@ EOF
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </unpackFile>
-        <unpackFile>
-            <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
-            <folder>programfilessolaris-x64</folder>
-            <origin>server/installer/prerun_checks.sh</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>solaris-intel</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </unpackFile>
-        <unpackFile>
-            <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
-            <folder>programfilessolaris-sparc</folder>
-            <origin>server/installer/prerun_checks.sh</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>solaris-sparc</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </unpackFile>
 
          <actionGroup>
             <actionList>
