@@ -46,75 +46,6 @@
                 </compareText>
             </ruleList>
         </folder>
-        <!-- LINUX_X64: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfileslinux-x64</name>
-            <platforms>linux-x64</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/server/bin</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/server/doc</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/server/include</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/server/installer</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/server/scripts</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/server/share</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/server/etc</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>staging/linux-x64/server/server_license.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
-        <!-- LINUX_PPC64: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfileslinux-ppc64</name>
-            <platforms>linux-ppc</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/linux-ppc64/bin</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-ppc64/doc</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-ppc64/include</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-ppc64/installer</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-ppc64/lib</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-ppc64/scripts</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-ppc64/share</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>../resources/license.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/linux-ppc64/server_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
         <!-- MAC: Program files -->
         <folder>
             <description>Program Files</description>
@@ -181,81 +112,7 @@
                 </distributionFile>
             </distributionFileList>
         </folder>
-        <!-- SOLARIS_X64: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfilessolaris-x64</name>
-            <platforms>solaris-intel</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/solaris-x64/bin</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/solaris-x64/doc</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/solaris-x64/include</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/solaris-x64/installer</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/solaris-x64/lib</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/solaris-x64/scripts</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/solaris-x64/share</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>../resources/license.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/solaris-x64/server_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
         <!-- SOLARIS_SPARC: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfilessolaris-sparc</name>
-            <platforms>solaris-sparc</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/solaris-sparc/bin</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/solaris-sparc/doc</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/solaris-sparc/include</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/solaris-sparc/installer</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/solaris-sparc/lib</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/solaris-sparc/scripts</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/solaris-sparc/stackbuilder</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/solaris-sparc/share</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>../resources/license.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/solaris-sparc/server_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
     </folderList>
     <componentSelectionValidationActionList>
         <throwError>
@@ -1444,34 +1301,6 @@
         </unpackFile>
         <unpackFile>
             <component>server</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
-            <folder>programfileslinux-x64</folder>
-            <origin>installer/server/getlocales</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-x64</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </unpackFile>
-        <unpackFile>
-            <component>server</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
-            <folder>programfileslinux-ppc64</folder>
-            <origin>installer/server/getlocales</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-ppc</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </unpackFile>
-        <unpackFile>
-            <component>server</component>
             <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales.exe</destination>
             <folder>programfileswindows</folder>
             <origin>installer/server/getlocales.exe</origin>
@@ -1480,34 +1309,6 @@
                     <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>windows</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </unpackFile>
-        <unpackFile>
-            <component>server</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
-            <folder>programfilessolaris-x64</folder>
-            <origin>installer/server/getlocales</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>solaris-intel</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </unpackFile>
-        <unpackFile>
-            <component>server</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
-            <folder>programfilessolaris-sparc</folder>
-            <origin>installer/server/getlocales</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>solaris-sparc</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
@@ -1553,124 +1354,6 @@
                     <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>linux</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </actionGroup>
-
-        <actionGroup>
-            <actionList>
-                <unpackFile>
-                    <component>server</component>
-                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
-                    <folder>programfileslinux-x64</folder>
-                    <origin>bin/pg_controldata</origin>
-                </unpackFile>
-                <unpackFile>
-                    <component>server</component>
-                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
-                    <folder>programfileslinux-x64</folder>
-                    <origin>installer/server/runpgcontroldata.sh</origin>
-                </unpackFile>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-x64</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </actionGroup>
-
-        <actionGroup>
-            <actionList>
-                <unpackFile>
-                    <component>server</component>
-                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
-                    <folder>programfileslinux-ppc64</folder>
-                    <origin>bin/pg_controldata</origin>
-                </unpackFile>
-                <unpackFile>
-                    <component>server</component>
-                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
-                    <folder>programfileslinux-ppc64</folder>
-                    <origin>installer/server/runpgcontroldata.sh</origin>
-                </unpackFile>
-                <unpackDirectory>
-                    <component>server</component>
-                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/</destination>
-                    <folder>programfileslinux-ppc64</folder>
-                    <origin>lib</origin>
-                </unpackDirectory>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-ppc</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </actionGroup>
-
-        <actionGroup>
-            <actionList>
-                <unpackFile>
-                    <component>server</component>
-                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
-                    <folder>programfilessolaris-x64</folder>
-                    <origin>bin/pg_controldata</origin>
-                </unpackFile>
-                <unpackFile>
-                    <component>server</component>
-                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
-                    <folder>programfilessolaris-x64</folder>
-                    <origin>installer/server/runpgcontroldata.sh</origin>
-                </unpackFile>
-                <unpackDirectory>
-                    <component>server</component>
-                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/</destination>
-                    <folder>programfilessolaris-x64</folder>
-                    <origin>lib</origin>
-                </unpackDirectory>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>solaris-intel</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </actionGroup>
-
-        <actionGroup>
-            <actionList>
-                <unpackFile>
-                    <component>server</component>
-                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/pg_controldata</destination>
-                    <folder>programfilessolaris-sparc</folder>
-                    <origin>bin/pg_controldata</origin>
-                </unpackFile>
-                <unpackFile>
-                    <component>server</component>
-                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</destination>
-                    <folder>programfilessolaris-sparc</folder>
-                    <origin>installer/server/runpgcontroldata.sh</origin>
-                </unpackFile>
-                <unpackDirectory>
-                    <component>server</component>
-                    <destination>${system_temp_directory}/postgresql_installer_${random_number}/</destination>
-                    <folder>programfilessolaris-sparc</folder>
-                    <origin>lib</origin>
-                </unpackDirectory>
-            </actionList>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>solaris-sparc</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
