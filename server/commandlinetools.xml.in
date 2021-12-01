@@ -152,8 +152,6 @@
             <type>regexp</type>
             <substitutionList>
                 <substitution pattern="Cflags:.*include" value="Cflags: -I${installdir}/include"/>
-            </substitutionList>
-            <substitutionList>
                 <substitution pattern="Libs:.*lib" value="Libs: -L${installdir}/lib"/>
             </substitutionList>
             <ruleList>
