@@ -1417,7 +1417,7 @@
                 <unpackFile>
                     <component>default</component>
                     <destination>${system_temp_directory}\postgresql_installer_${random_number}\vcredist_x64.exe</destination>
-                    <folder>defaultwindows-x64</folder>
+                    <folder>defaultwindows64</folder>
                     <origin>vcredist_x64.exe</origin>
                     <ruleList>
                         <compareValues value1="@@WINDIR@@" value2="windows-x64" logic="equals"/>
