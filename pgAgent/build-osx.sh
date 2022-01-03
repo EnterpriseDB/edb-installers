@@ -59,7 +59,10 @@ _prep_pgAgent_osx() {
     echo "Extracting the archives"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/pgAgent/source; tar -jxvf pgagent.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/pgAgent; tar -jxvf scripts.tar.bz2"
-    
+
+    # Create staging directory while preparing for build. PPS-182
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/pgAgent/staging/osx" || _die "Couldn't create the staging directory"
+
     echo "END PREP pgAgent OSX"
 
 }
