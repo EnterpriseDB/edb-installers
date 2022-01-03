@@ -112,6 +112,9 @@ _prep_languagepack_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/languagepack/source; tar -jxvf tcl.tar.bz2" || _die "Failed to extract tcl archive on build VM"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/languagepack/source; tar -jxvf setuptools-python.tar.bz2" || _die "Failed to extract setuptools-python archive on build VM"
 
+    # Create staging directory while preparing for build. PPS-418
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/languagepack/staging/osx" || _die "Couldn't create the staging directory"
+
     # Create staging directory while preparing for build. # PPS-184
     ssh $PG_SSH_OSX "mkdir -p $PG_LANGUAGEPACK_OSX.staging" || _die "Couldn't create the staging directory"
 
