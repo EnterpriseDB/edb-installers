@@ -67,7 +67,10 @@ _prep_Slony_osx() {
     echo "Extracting the archives"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/Slony/source; tar -jxvf slony.osx.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/Slony; tar -jxvf scripts.tar.bz2"
-    
+
+    # Create staging directory while preparing for build. PPS-437
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/Slony/staging/osx" || _die "Couldn't create the staging directory"
+
     cd $WD
     echo "END PREP Slony OSX"
 }
