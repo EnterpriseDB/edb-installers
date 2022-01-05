@@ -92,7 +92,7 @@ cat <<EOT-PGAGENT > $WD/pgAgent/build-pgagent.sh
 
     echo "Building pgAgent sources"
     cd \$SOURCE_DIR
-    BOOST_ROOT=/opt/local/boost PGDIR=$PG_PGHOME_OSX /opt/local/bin/cmake -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${MACOSX_MIN_VERSION}  -DCMAKE_INSTALL_PREFIX=\$PG_STAGING/pgAgent -DSTATIC_BUILD=NO -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CFLAGS='$PG_ARCH_OSX_CFLAGS  -arch x86_64 -O2' CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
+    BOOST_ROOT=/opt/local/Current/boost PGDIR=$PG_PGHOME_OSX /opt/local/bin/cmake -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${MACOSX_MIN_VERSION}  -DCMAKE_INSTALL_PREFIX=\$PG_STAGING/pgAgent -DSTATIC_BUILD=NO -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CFLAGS='$PG_ARCH_OSX_CFLAGS  -arch x86_64 -O2' CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
     echo "Compiling pgAgent"
     cd \$SOURCE_DIR
     make || _die "Couldn't compile the pgAgent sources"
@@ -101,13 +101,13 @@ cat <<EOT-PGAGENT > $WD/pgAgent/build-pgagent.sh
     mkdir -p \$PG_STAGING/pgAgent/lib
 
     
-    cp -pR /opt/local/boost/lib/libboost_filesystem.dylib \$PG_STAGING/pgAgent/lib
-    cp -pR /opt/local/boost/lib/libboost_system.dylib \$PG_STAGING/pgAgent/lib
-    cp -pR /opt/local/boost/lib/libboost_thread.dylib \$PG_STAGING/pgAgent/lib
-    cp -pR /opt/local/boost/lib/libboost_chrono.dylib \$PG_STAGING/pgAgent/lib
-    cp -pR /opt/local/boost/lib/libboost_regex.dylib \$PG_STAGING/pgAgent/lib
-    cp -pR /opt/local/boost/lib/libboost_date_time.dylib \$PG_STAGING/pgAgent/lib
-    cp -pR /opt/local/boost/lib/libboost_atomic.dylib \$PG_STAGING/pgAgent/lib
+    cp -pR /opt/local/Current/boost/lib/libboost_filesystem.dylib \$PG_STAGING/pgAgent/lib
+    cp -pR /opt/local/Current/boost/lib/libboost_system.dylib \$PG_STAGING/pgAgent/lib
+    cp -pR /opt/local/Current/boost/lib/libboost_thread.dylib \$PG_STAGING/pgAgent/lib
+    cp -pR /opt/local/Current/boost/lib/libboost_chrono.dylib \$PG_STAGING/pgAgent/lib
+    cp -pR /opt/local/Current/boost/lib/libboost_regex.dylib \$PG_STAGING/pgAgent/lib
+    cp -pR /opt/local/Current/boost/lib/libboost_date_time.dylib \$PG_STAGING/pgAgent/lib
+    cp -pR /opt/local/Current/boost/lib/libboost_atomic.dylib \$PG_STAGING/pgAgent/lib
 
     mkdir -p \$PG_STAGING/pgAgent/share/extension
     mv \$PG_STAGING/pgAgent/share/*.sql \$PG_STAGING/pgAgent/share/extension
