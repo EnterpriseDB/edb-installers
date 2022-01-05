@@ -108,9 +108,9 @@ PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_13.notary
 PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner-new
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging_cache/osx
 PG_ANT_HOME_OSX=/usr
-PG_MAVEN_HOME_OSX=/opt/local/share/java/maven3
+PG_MAVEN_HOME_OSX=/opt/local/Current/apache-maven-3.8.2
 PG_DOCBOOK_OSX=/usr/local/docbook-xsl-1.77.1
-PG_JAVA_HOME_OSX=/Library/Java/JavaVirtualMachines/jdk1.7.0_67.jdk/Contents/Home
+PG_JAVA_HOME_OSX=/Library/Java/JavaVirtualMachines/jdk1.8.0_291.jdk/Contents/Home
 PG_CMAKE_OSX=/Applications/CMake.app/Contents/bin/cmake
 PG_PERL_OSX=/Library/edb/languagepack/v1/Perl-5.26
 PG_PYTHON_OSX=/Library/edb/languagepack/v1/Python-3.7
@@ -126,6 +126,7 @@ CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
 PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/13
 YARN_HOME_OSX=/opt/local/Current/yarn
 NODEJS_HOME_OSX=/opt/local/Current/node-v14.16.1-darwin-x64
+IMAGEMAGICK_HOME_OSX=/opt/local/Current/ImageMagick
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the
