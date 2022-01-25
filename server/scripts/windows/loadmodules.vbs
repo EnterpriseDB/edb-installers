@@ -1,4 +1,4 @@
-' Copyright (c) 2012-2021, EnterpriseDB Corporation.  All rights reserved
+' Copyright (c) 2012-2022, EnterpriseDB Corporation.  All rights reserved
 On Error Resume Next
 ' PostgreSQL server module load script for Windows
 
