@@ -43,6 +43,7 @@ _create_python_env() {
 		"${BUILD_ROOT}/relocatable_python/make_relocatable_python_framework.py" \
 		--upgrade-pip \
 		--python-version ${PGADMIN_PYTHON_VERSION} \
+		--os-version=11 \
 		--pip-requirements "${SOURCE_DIR}/requirements.txt" \
 		--destination "${BUNDLE_DIR}/Contents/Frameworks/"
 
@@ -190,7 +191,7 @@ _fixup_imports() {
 				for LIB in $(
 					otool -L ${TODO_OBJ} | \
 					sed -n 's|^.*[[:space:]]\([^[:space:]]*\.dylib\).*$|\1|p' | \
-					egrep -v '^(/usr/lib)|(/System)|@executable_path' \
+					egrep -v '^(/usr/lib)|(/System)|@executable_path|@loader_path|/DLC/PIL/' \
 					); do
 						# Copy in any required dependencies
 						LIB_BN="$(basename "${LIB}")" ;
