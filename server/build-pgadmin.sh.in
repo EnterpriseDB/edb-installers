@@ -41,7 +41,7 @@ _create_python_env() {
 	echo "Creating the Python environment..."
 	LD_LIBRARY_PATH=${PGBUILD}/lib:${LD_LIBRARY_PATH}
 
-	git clone git://github.com/gregneagle/relocatable-python.git "${BUILD_ROOT}/relocatable_python"
+	git clone https://github.com/gregneagle/relocatable-python.git "${BUILD_ROOT}/relocatable_python"
 	LDFLAGS="-L${PGBUILD}/lib" CFLAGS="-I${PGBUILD}/include" PATH=${PGBUILD_BIN}:${PATH} ${PGADMIN_PYTHON_DIR}/bin/python3 \
 		"${BUILD_ROOT}/relocatable_python/make_relocatable_python_framework.py" \
 		--upgrade-pip \
