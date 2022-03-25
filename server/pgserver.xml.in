@@ -3593,7 +3593,7 @@ export MANPATH=$MANPATH:${installdir}/share/man
                             <text>@ECHO OFF
 REM The script sets environment variables helpful for PostgreSQL
 
-@SET PATH="${installdir}\bin";%PATH%
+@SET PATH=${installdir}\bin;%PATH%
 @SET PGDATA=${datadir}
 @SET PGDATABASE=postgres
 @SET PGUSER=${superaccount}
