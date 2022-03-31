@@ -94,6 +94,8 @@ EOT
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libevent*.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\bin" || _die "Failed to build pgbouncer on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libssl-1_1.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\bin" || _die "Failed to build pgbouncer on the windows build host"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libcrypto-1_1.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\bin" || _die "Failed to build pgbouncer on the windows build host"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\mingw-binaries\\\\libwinpthread-1.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\bin" || _die "Failed to copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libwinpthread-1.dll into $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\bin"
+    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\mingw-binaries\\\\libgcc_s_dw2-1.dll $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\bin" || _die "Failed to copy $PG_PGBUILD_WINDOWS\\\\bin\\\\libgcc_s_dw2-1.dll into $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\bin"
     ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\share\\\\doc\\\\pgbouncer\\\\pgbouncer.ini $PG_PATH_WINDOWS\\\\pgbouncer.staging.build\\\\share" || _die "Failed to copy  pgbouncer ini to share dir"
 
     # Copy psql and dependent libraries
