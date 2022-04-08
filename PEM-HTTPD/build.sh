@@ -69,9 +69,17 @@ _prep_PEM-HTTPD() {
         extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB 
         extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL 
         extract_file ../../tarballs/pcre-836-win32-binaries 
+        extract_file ../../tarballs/apr-$PG_VERSION_APACHE_APR-win32-src
+        extract_file ../../tarballs/apr-util-$PG_VERSION_APACHE_APR_UTIL-win32-src
+        extract_file ../../tarballs/apr-iconv-$PG_VERSION_APACHE_APR_ICONV-win32-src
+        extract_file ../../tarballs/expat-$PG_VERSION_APACHE_EXPAT
+
 	mv pcre-836-win32-binaries httpd-$PG_VERSION_APACHE/srclib/pcre 
         mv httpd-$PG_VERSION_APACHE apache.windows || _die "Couldn't move httpd-$PG_VERSION_APACHE as apache.windows"
-
+        mv apr-$PG_VERSION_APACHE_APR apache.windows/srclib/apr || _die "Couldn't move apr-$PG_VERSION_APACHE_APR as apache.windows/srclib/apr-util"
+        mv apr-util-$PG_VERSION_APACHE_APR_UTIL apache.windows/srclib/apr-util || _die "Couldn't move apr-util-$PG_VERSION_APACHE_APR_UTIL as apache.windows/srclib/apr-util"
+        mv apr-iconv-$PG_VERSION_APACHE_APR_ICONV apache.windows/srclib/apr-iconv || _die "Couldn't move apr-iconv-$PG_VERSION_APACHE_APR_UTIL as apache.windows/srclib/apr-iconv"
+        mv expat-$PG_VERSION_APACHE_EXPAT apache.windows/srclib/apr-util/xml/expat || _die "Couldn't move apr-iconv-$PG_VERSION_APACHE_APR_UTIL as apache.windows/srclib/expat"
     fi
 
     if [[ $PG_ARCH_LINUX = 1 || $PG_ARCH_LINUX_X64 = 1 || $PG_ARCH_OSX = 1 ]];

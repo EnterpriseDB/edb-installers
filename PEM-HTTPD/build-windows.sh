@@ -24,6 +24,14 @@ _prep_PEM-HTTPD_windows() {
     fi
     cd ..
 
+    if [ -f $WD/tarballs/apr-${PG_VERSION_APACHE_APR}.patch ];
+    then
+      echo "Applying apr patch..."
+      cd $WD/PEM-HTTPD/source/apache.windows/srclib/apr
+      patch -p1 < "$WD/tarballs/apr-${PG_VERSION_APACHE_APR}.patch"
+      cd ../../../
+    fi
+
     cd $WD/PEM-HTTPD/source
 
     mkdir -p apache.windows/mod_wsgi || _die "Couldn't create the mod_wsgi directory"
@@ -31,6 +39,7 @@ _prep_PEM-HTTPD_windows() {
 
     # Patches to build the correct version
     cd apache.windows/mod_wsgi/win32
+    echo "Applying mod_wsgi patch..."
     cp ap24py34-win32-VC10.mk ap24py37-win32-VC10.mk
     sed -i 's/Python34/Python37/g' ap24py37-win32-VC10.mk
     sed -i 's/34/37/g' ap24py37-win32-VC10.mk
@@ -46,7 +55,6 @@ _prep_PEM-HTTPD_windows() {
     sed -i "s/^PYTHON_ROOTDIR =\(.*\)$/PYTHON_ROOTDIR=$PEM_PYTHON_WINDOWS/g" ${MOD_WSGI_MAKEFILE}
 
     cd $WD/PEM-HTTPD/source
-
 
     if [ -e apache.zip ]; then
         echo "Removing old zip of apache source"
@@ -104,19 +112,21 @@ REM Setting Visual Studio Environment
 CALL "$PG_VS14INSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 
 @SET PGBUILD=$PG_PGBUILD_WINDOWS
-REM Building zlib first
+echo ON
+@echo Building zlib first
 cd $PG_PATH_WINDOWS\apache.windows\srclib\zlib
 nmake -f win32\Makefile.msc
 nmake -f win32\Makefile.msc test
 if EXIST "$PG_PATH_WINDOWS\apache.windows\srclib\zlib\zlib.lib" copy "$PG_PATH_WINDOWS\apache.windows\srclib\zlib\zlib.lib" "$PG_PATH_WINDOWS\apache.windows\srclib\zlib\zlib1.lib"
 
-REM Building openssl
+@echo Building openssl
 cd $PG_PATH_WINDOWS\apache.windows\srclib\openssl
 SET LIB=$PEM_PYTHON_WINDOWS\Lib;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;$PG_PGBUILD_WINDOWS\lib;%LIB%
-SET INCLUDE=$PEM_PYTHON_WINDOWS\include;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;$PG_PGBUILD_WINDOWS\include\openssl;%INCLUDE%;$PG_PGBUILD_WINDOWS\include
+SET INCLUDE=$PEM_PYTHON_WINDOWS\include;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;%INCLUDE%;$PG_PGBUILD_WINDOWS\include
 SET PATH=$PG_PATH_WINDOWS;$PG_PGBUILD_WINDOWS\bin;$PG_PERL_WINDOWS\bin;$PEM_PYTHON_WINDOWS;$PG_TCL_WINDOWS\bin;%PATH%;C:\cygwin\bin
 perl Configure VC-WIN32 no-asm --prefix=%CD% --openssldir=%CD%\openssl.build
 nmake
+SET INCLUDE=$PG_PATH_WINDOWS\apache.windows\srclib\openssl\include;%INCLUDE%
 
 REM Building apache
 cd $PG_PATH_WINDOWS
@@ -125,9 +135,23 @@ cd $PG_PATH_WINDOWS\apache.windows
 perl srclib\apr\build\lineends.pl
 perl srclib\apr\build\fixwin32mak.pl
 
-REM Compiling Apache with Standard configuration
-nmake -f Makefile.win PORT=8080 NO_EXTERNAL_DEPS=1 _buildr || exit 1
-nmake -f Makefile.win PORT=8080 INSTDIR="%STAGING_DIR%\apache.staging.build" NO_EXTERNAL_DEPS=1 installr || exit 1
+cd $PG_PATH_WINDOWS\apache.windows\srclib\apr-util\xml\expat
+cmake -G "NMake Makefiles" -D BUILD_shared=OFF -DCMAKE_BUILD_TYPE=Release .
+nmake
+
+SET XML_OPTIONS="/D XML_STATIC"
+SET XML_PARSER=libexpat
+SET LIB=$PG_PATH_WINDOWS\apache.windows\srclib\apr-util\xml\expat;%LIB%
+
+cd $PG_PATH_WINDOWS\apache.windows
+devenv /Upgrade Apache.dsw
+devenv Apache.sln /useenv /build Release /project libhttpd
+
+cd "$PG_PATH_WINDOWS\apache.windows"
+
+@echo Compiling Apache with Standard configuration
+REM apr-iconv fails to build as apr.h does not exists in first round, as apr build runs later. Hence - run the build twrice to resolve that issue.
+nmake -f Makefile.win PORT=8080 NO_EXTERNAL_DEPS=1 INSTDIR="%STAGING_DIR%\apache.staging.build" NO_EXTERNAL_DEPS=1 _buildr installr || exit 1
 
 SET INCLUDE=$PEM_PYTHON_WINDOWS\include;$PG_PATH_WINDOWS\apache.staging.build\include;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;$PG_PGBUILD_WINDOWS\include\openssl;%INCLUDE%
 
