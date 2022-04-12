@@ -152,6 +152,7 @@ cd "$PG_PATH_WINDOWS\apache.windows"
 @echo Compiling Apache with Standard configuration
 REM apr-iconv fails to build as apr.h does not exists in first round, as apr build runs later. Hence - run the build twrice to resolve that issue.
 nmake -f Makefile.win PORT=8080 NO_EXTERNAL_DEPS=1 INSTDIR="%STAGING_DIR%\apache.staging.build" NO_EXTERNAL_DEPS=1 _buildr installr || exit 1
+copy "$PG_PATH_WINDOWS\apache.windows\srclib\apr-util\xml\expat\libexpat.dll" "%STAGING_DIR%\apache.staging.build\bin"
 
 SET INCLUDE=$PEM_PYTHON_WINDOWS\include;$PG_PATH_WINDOWS\apache.staging.build\include;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;$PG_PGBUILD_WINDOWS\include\openssl;%INCLUDE%
 
