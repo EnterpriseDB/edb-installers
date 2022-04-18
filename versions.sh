@@ -2,7 +2,7 @@
 
 # Source tarball versions
 
-PG_TARBALL_POSTGRESQL=14.2
+PG_TARBALL_POSTGRESQL=15beta1
 PG_TARBALL_PGADMIN=6.7
 PG_TARBALL_DEBUGGER=0.93
 PG_TARBALL_PLJAVA=1.4.0
@@ -29,8 +29,8 @@ PG_BUILDNUM_PEMHTTPD=1
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build.
 
-PG_MAJOR_VERSION=14
-PG_MINOR_VERSION=2.2
+PG_MAJOR_VERSION=15
+PG_MINOR_VERSION=0.beta1
 
 # Other package versions
 PG_VERSION_APACHE=2.4.39
