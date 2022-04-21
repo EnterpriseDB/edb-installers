@@ -97,3 +97,5 @@ project_unixODBC	libodbc
 project_boost	libboost_system libboost_thread libboost_chrono libboost_regex libboost_date_time libboost_atomic boost_filesystem-vc141-mt-x64-1_66.dll boost_system-vc141-mt-x64-1_66.dll boost_thread-vc141-mt-x64-1_66.dll boost_chrono-vc141-mt-x64-1_66.dll
 
 project_liblz4	liblz4.dll liblz4.1.9.3 liblz4.1 liblz4
+
+project_libzstd	libzstd.1.5.2 libzstd.1 libzstd
