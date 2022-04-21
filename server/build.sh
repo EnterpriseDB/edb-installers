@@ -112,7 +112,7 @@ _prep_server() {
     if [ ! -e $WD/server/source/system_stats ]; then
         echo "Cloning the system_stats source tree..."
         cd $WD/server/source
-        git clone git://github.com/EnterpriseDB/system_stats
+        git clone https://github.com/EnterpriseDB/system_stats
     else
         echo "Updating the System_stats source tree..."
         cd $WD/server/source/system_stats

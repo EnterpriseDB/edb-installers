@@ -106,9 +106,9 @@ PGADMIN_STAGING_OSX=$PWD/server/staging/osx/pgadmin4
 SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
 CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
 PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/15
-YARN_HOME_OSX=/opt/local/Current/yarn
-NODEJS_HOME_OSX=/opt/local/Current/nodejs
-IMAGEMAGICK_HOME_OSX=/opt/local/Current/ImageMagick
+YARN_HOME_OSX=/opt/local/Current_v15/yarn
+NODEJS_HOME_OSX=/opt/local/Current_v15/nodejs
+IMAGEMAGICK_HOME_OSX=/opt/local/Current_v15/ImageMagick
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the

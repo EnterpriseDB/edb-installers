@@ -33,3 +33,4 @@ json2_license.txt	project_json2
 pgAdmin_license.txt	project_pgAdmin
 boost_license.txt       project_boost	
 liblz4_license.txt	project_liblz4
+libzstd_license.txt	project_libzstd
