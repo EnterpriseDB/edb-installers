@@ -39,7 +39,7 @@ _create_python_env() {
 	LD_LIBRARY_PATH=${PGBUILD}/lib:${LD_LIBRARY_PATH}
 
 	git clone https://github.com/gregneagle/relocatable-python.git "${BUILD_ROOT}/relocatable_python"
-	LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" ${PGADMIN_PYTHON_DIR}/bin/python3 \
+	LDFLAGS="-L/opt/local/Current_v15/lib" CFLAGS="-I/opt/local/Current_v15/include" ${PGADMIN_PYTHON_DIR}/bin/python3 \
 		"${BUILD_ROOT}/relocatable_python/make_relocatable_python_framework.py" \
 		--upgrade-pip \
 		--python-version ${PGADMIN_PYTHON_VERSION} \
@@ -88,7 +88,8 @@ _build_docs() {
 	${PGADMIN_PYTHON_DIR}/bin/python3 -m venv "${BUILD_ROOT}/venv"
 	source "${BUILD_ROOT}/venv/bin/activate"
 	pip3 install --upgrade pip
-	LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" pip3 install -r "${SOURCE_DIR}/requirements.txt"
+	pip3 cache remove psycopg2
+	LDFLAGS="-L/opt/local/Current_v15/lib" CFLAGS="-I/opt/local/Current_v15/include" pip3 install -r "${SOURCE_DIR}/requirements.txt"
 	pip3 install sphinx
 
 	cd "${SOURCE_DIR}"
@@ -285,7 +286,7 @@ _complete_bundle() {
 		yarn install
 		yarn run bundle
 
-		cp /opt/local/Current/certs/cacert.pem .
+		cp /opt/local/Current_v15/certs/cacert.pem .
 	popd > /dev/null
 
 	# copy the web directory to the bundle as it is required by runtime
