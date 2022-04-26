@@ -285,7 +285,8 @@ our \$config = {
     zlib=>'$PG_PGBUILD_WINDOWS_X64',        # --with-zlib=<path>
     icu=>'$PG_PGBUILD_WINDOWS_X64',        # --with-icu=<path>
     uuid=>'$PG_PGBUILD_WINDOWS_X64',       # --with-uuid-ossp
-    lz4=>'$PG_PGBUILD_WINDOWS_X64'        # --with-lz4=<path>
+    lz4=>'$PG_PGBUILD_WINDOWS_X64',        # --with-lz4=<path>
+    zstd=>'$PG_PGBUILD_WINDOWS_X64'        # --with-zstd=<path>
 };
 
 1;
