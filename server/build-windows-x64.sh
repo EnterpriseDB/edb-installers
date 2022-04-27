@@ -436,8 +436,8 @@ EOT
     # Copy the various support files into place
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vcredist_x64.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\vcredist\\\\vcredist_x86.exe $PG_PATH_WINDOWS_X64\\\\output.build\\\\installer" || _die "Failed to copy the VC++ runtimes on the windows build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libssl-1_1-x64.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libcrypto-1_1-x64.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libssl-*-x64.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_WINDOWS_X64\\\\bin\\\\libcrypto-*-x64.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\bin\\\\libiconv-2.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\bin\\\\libintl-9.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\bin\\\\libwinpthread-1.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin" || _die "Failed to copy a dependency DLL on the windows-x64 build host"
@@ -669,8 +669,8 @@ _postprocess_server_windows_x64() {
    mv $PGSERVER_STAGING_WINDOWS_X64/bin/wx*.dll $SB_STAGING_WINDOWS_X64/bin || _die "Failed to move wx*dlls"
    mv $PGSERVER_STAGING_WINDOWS_X64/bin/libcurl.dll $SB_STAGING_WINDOWS_X64/bin || _die "Failed to move libcurl.dll"
    cp -r $WD/server/staging_cache/windows-x64/StackBuilder/share $SB_STAGING_WINDOWS_X64/ ||  _die "Failed to copy $WD/server/staging_cache/windows-x64/stackbuilder/share"
-   cp $PGSERVER_STAGING_WINDOWS_X64/bin/libssl-1_1-x64.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libssl-1_1-x64.dll"
-   cp $PGSERVER_STAGING_WINDOWS_X64/bin/libcrypto-1_1-x64.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libcrypto-1_1-x64.dll"
+   cp $PGSERVER_STAGING_WINDOWS_X64/bin/libssl-*-x64.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libssl-*-x64.dll"
+   cp $PGSERVER_STAGING_WINDOWS_X64/bin/libcrypto-*-x64.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libcrypto-*-x64.dll"
    cp $PGSERVER_STAGING_WINDOWS_X64/bin/libiconv-2.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libiconv-2.dll"
    cp $PGSERVER_STAGING_WINDOWS_X64/bin/libintl-9.dll $CLT_STAGING_WINDOWS_X64/bin || _die "Failed to move libintl-9.dll"
 
