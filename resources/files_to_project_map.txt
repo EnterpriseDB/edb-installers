@@ -98,4 +98,4 @@ project_boost	libboost_system libboost_thread libboost_chrono libboost_regex lib
 
 project_liblz4	liblz4.dll liblz4.1.9.3 liblz4.1 liblz4
 
-project_libzstd	libzstd.1.5.2 libzstd.1 libzstd
+project_libzstd	libzstd.dll libzstd.1.5.2 libzstd.1 libzstd
