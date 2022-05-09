@@ -3650,10 +3650,10 @@ REM The script sets environment variables helpful for PostgreSQL
 	<!-- Deleting older zlib version library -->
         <deleteFile>
             <path>"${installdir}/lib/libz.1.2.11.dylib"</path>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
-                <platformTest>
-                    <type>osx/type>
-                </platformTest>
+		<compareText logic="equals" text="${installer_ui}" value="gui"/>
+		<compareText logic="equals" text="${installer_ui}" value="unattended"/>
             </ruleList>
         </deleteFile>
 
