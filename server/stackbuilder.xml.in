@@ -296,6 +296,16 @@
             </ruleList>
         </runProgram>
         <setInstallerVariable name="stackbuilder_installation_done" value="1" persist="1"/>
+
+	<!-- Deleting older zlib version library -->
+        <deleteFile>
+            <path>"${installdir}/stackbuilder.app/Contents/Frameworks/libz.1.2.11.dylib"</path>
+            <ruleList>
+                <platformTest>
+                    <type>osx/type>
+                </platformTest>
+            </ruleList>
+        </deleteFile>
     </postInstallationActionList>
 
     <preUninstallationActionList>
