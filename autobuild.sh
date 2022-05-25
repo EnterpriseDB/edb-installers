@@ -73,8 +73,8 @@ then
 else
         SKIPPVTPACKAGES=""
 	# Make sure, we always do a full private build
-	if [ -f pvt_settings.sh.full.REL-14 ]; then
-		cp -f pvt_settings.sh.full.REL-14 pvt_settings.sh.REL-14
+	if [ -f pvt_settings.sh.full.REL-15 ]; then
+		cp -f pvt_settings.sh.full.REL-15 pvt_settings.sh.REL-15
 	fi
 fi
 
@@ -146,7 +146,7 @@ else
 fi
 
 # Generic mail variables
-log_location="/home/buildfarm/pginstaller13.auto/output"
+log_location="/home/buildfarm/pginstaller15.auto/output"
 header_fail="Autobuild failed with the following error (last 20 lines of the log):
 ###################################################################################"
 footer_fail="###################################################################################"
@@ -254,23 +254,23 @@ DATE=`date +'%Y-%m-%d'`
 echo "Cleaning up old output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
 
-# Switch to REL-14 branch
-echo "Switching to REL-14 branch" >> autobuild.log
+# Switch to REL-15 branch
+echo "Switching to REL-15 branch" >> autobuild.log
 git reset --hard >> autobuild.log 2>&1
-git checkout REL-14 >> autobuild.log 2>&1
+git checkout REL-15 >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
-if [ -f settings.sh.full.REL-14 ]; then
-   cp -f settings.sh.full.REL-14 settings.sh
+if [ -f settings.sh.full.REL-15 ]; then
+   cp -f settings.sh.full.REL-15 settings.sh
 fi
 
 # Self update
-echo "Updating REL-14 branch build system" >> autobuild.log
+echo "Updating REL-15 branch build system" >> autobuild.log
 git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
-echo "Running the build (REL-14) " >> autobuild.log
-./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-13.log
+echo "Running the build (REL-15) " >> autobuild.log
+./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-15.log
 
 VERSION_NUMBER=`cat versions.sh | grep PG_MAJOR_VERSION= | cut -f 2 -d '='`
 STR_VERSION_NUMBER=`echo $VERSION_NUMBER | sed 's/\.//'`
@@ -327,7 +327,7 @@ GetPemDirName(){
 }
 declare -a PEM_PKG_ARR=(pem sqlprofiler php_edbpem)
 #------------------
-_mail_status "build-13.log" "build-pvt.log" "13"
+_mail_status "build-15.log" "build-pvt.log" "15"
 #------------------
 CopyToBuilds(){
         PACKAGE_NAME=$1
