@@ -2126,9 +2126,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                             <origin>staging/@@WINDIR@@/server/installer/prerun_checks.vbs</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/server/installer/vcredist_x86_2013.exe</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
                             <origin>staging/@@WINDIR@@/server/installer/vcredist_x86.exe</origin>
                         </distributionDirectory>
                     </distributionFileList>
