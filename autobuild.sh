@@ -146,7 +146,7 @@ else
 fi
 
 # Generic mail variables
-log_location="/home/buildfarm/pginstaller13.auto/output"
+log_location="/home/buildfarm/pginstaller14.auto/output"
 header_fail="Autobuild failed with the following error (last 20 lines of the log):
 ###################################################################################"
 footer_fail="###################################################################################"
@@ -270,7 +270,7 @@ git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
 echo "Running the build (REL-14) " >> autobuild.log
-./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-13.log
+./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-14.log
 
 VERSION_NUMBER=`cat versions.sh | grep PG_MAJOR_VERSION= | cut -f 2 -d '='`
 STR_VERSION_NUMBER=`echo $VERSION_NUMBER | sed 's/\.//'`
@@ -327,7 +327,7 @@ GetPemDirName(){
 }
 declare -a PEM_PKG_ARR=(pem sqlprofiler php_edbpem)
 #------------------
-_mail_status "build-13.log" "build-pvt.log" "13"
+_mail_status "build-14.log" "build-pvt.log" "14"
 #------------------
 CopyToBuilds(){
         PACKAGE_NAME=$1
