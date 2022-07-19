@@ -65,7 +65,7 @@ _prep_MigrationToolKit() {
       echo "Fetching MigrationToolKit sources from the repo..."
       mkdir -p EDB-MTK
       cd EDB-MTK
-          git clone ssh://pginstaller@cvs.enterprisedb.com/git/MTK .
+          git clone https://github.com/EnterpriseDB/migration-toolkit.git .
           git checkout $PG_TAG_MIGRATIONTOOLKIT
     else  
       cd $WD/MigrationToolKit/source/EDB-MTK
