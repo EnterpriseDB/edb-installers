@@ -55,7 +55,7 @@ _prep_updatemonitor() {
 
     # UpdateMonitor
     if [ ! -e SS-UPDATEMANAGER ]; then
-        git clone ssh://pginstaller@cvs.enterprisedb.com/git/SS-UPDATEMANAGER -b solution-pack
+        git clone https://github.com/EnterpriseDB/pg-updatemanager.git -b solution-pack
     else
         cd $WD/UpdateMonitor/source/SS-UPDATEMANAGER
         git checkout solution-pack
