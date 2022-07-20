@@ -126,6 +126,14 @@ _prep_server() {
     then
         echo "Updating debugger source..."
         cd pldebugger
+
+	# Checking if .git/conf file refer to older git servers i.e, gitub.ox.uk / github.pn.in if yes then replace it with github.com/EnterpriseDB
+        remote_url=$(git config --get remote.origin.url)
+        if [[ "$remote_url" == *"uk"* || "$remote_url" == *"pn"* ]];
+        then
+            git remote set-url origin https://github.com/EnterpriseDB/pldebugger.git
+        fi
+
         git pull || _die "Failed to update the pldebugger code"
         cd ..
     else
@@ -157,6 +165,14 @@ _prep_server() {
         echo "Updating the StackBuilder source tree..."
         cd $WD/server/source/stackbuilder
         git reset HEAD --hard && git clean -dfx
+
+        # Checking if .git/conf file refer to older git servers i.e, gitub.ox.uk / github.pn.in if yes then replace it with github.com/EnterpriseDB
+        remote_url=$(git config --get remote.origin.url)
+        if [[ "$remote_url" == *"uk"* || "$remote_url" == *"pn"* ]];
+        then
+            git remote set-url origin https://github.com/EnterpriseDB/stackbuilder.git
+        fi
+
         git pull
     fi
     
