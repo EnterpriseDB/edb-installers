@@ -77,7 +77,16 @@ _prep_MigrationToolKit() {
       else
         git checkout $PG_TAG_MIGRATIONTOOLKIT
       fi
+
+      # Checking if .git/conf file refer to older git servers i.e, gitub.ox.uk / github.pn.in if yes then replace it with github.com/EnterpriseDB
+      remote_url=$(git config --get remote.origin.url)
+      if [[ "$remote_url" == *"uk"* || "$remote_url" == *"pn"* ]];
+      then
+          git remote set-url origin https://github.com/EnterpriseDB/migration-toolkit.git
+      fi
+
       git pull
+
     fi
 
     if [ -e $WD/MigrationToolKit/source/pgJDBC-$PG_VERSION_PGJDBC ];

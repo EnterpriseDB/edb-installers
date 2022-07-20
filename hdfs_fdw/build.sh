@@ -58,6 +58,14 @@ _prep_hdfs_fdw() {
       cd hdfs_fdw
       git reset HEAD --hard
       echo "Updating HDFS_FDW sources from the repo..."
+
+      # Checking if .git/conf file refer to older git servers i.e, gitub.ox.uk / github.pn.in if yes then replace it with github.com/EnterpriseDB
+      remote_url=$(git config --get remote.origin.url)
+      if [[ "$remote_url" == *"uk"* || "$remote_url" == *"pn"* ]];
+      then
+          git remote set-url origin https://github.com/EnterpriseDB/hdfs_fdw.git
+      fi
+
       git branch | head -1 | grep "no branch" > /dev/null
       if [ "$?" -ne "0" ]; then
         git pull || _die "Failed to pull HDFS_FDW source"
