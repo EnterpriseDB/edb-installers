@@ -60,8 +60,6 @@ _prep_server() {
         fi
     fi
 
-    cd $WD/server/source/postgresql-$PG_TARBALL_POSTGRESQL
-    patch -p0 < ~/tarballs/pg15beta1-win.patch || exit 1
     cd $WD/server/source
 
     # Debugger
