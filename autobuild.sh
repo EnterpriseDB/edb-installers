@@ -353,7 +353,7 @@ EOF
                 then
                     build_user="${build_user// /.}"
                 fi
-                remote_location="$remote_location/custom/$build_user/installer/$PLATFORM_NAME/$DATE/$BUILD_NUMBER"
+                remote_location="$remote_location/custom/$build_user/$DATE/$BUILD_NUMBER/installers/$PLATFORM_NAME"
         fi
         # Create a remote directory if not present
         platInstallerName=`echo $PLATFORM_NAME | sed 's/_/-/'`
