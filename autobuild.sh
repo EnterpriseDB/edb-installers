@@ -10,7 +10,7 @@ declare -a PACKAGES_ARR=(SERVER PGJDBC PSQLODBC POSTGIS SLONY NPGSQL PGAGENT PGM
 declare -a PLATFORMS_ARR=(LINUX LINUX_X64 WINDOWS WINDOWS_X64 OSX)
 declare -a ENABLED_PKG_ARR=()
 declare -a ENABLED_PLAT_ARR=()
-declare -a DECOUPLED_ARR=(PGJDBC PSQLODBC NPGSQL PGBOUNCER PGAGENT PEMHTTPD LANGUAGEPACK PEM)
+declare -a DECOUPLED_ARR=(PGJDBC PSQLODBC NPGSQL PGBOUNCER PEMHTTPD LANGUAGEPACK PEM)
 # Any changes to this file should be made to all the git branches.
 
 usage()
@@ -21,6 +21,7 @@ usage()
         echo "      [-skippvtpkg boolean]" boolean value may be either "1" or "0"
         echo "      [-platforms list]  list of platforms. It may include the list of supported platforms separated by comma or all" 
         echo "      [-packages list]   list of packages. It may include the list of supported platforms separated by comma or all"
+        echo "      [-releasebuild boolean] Used to distinguish between daily builds and release builds. A boolean value may be either true or false"
         echo "    Examples:"
         echo "     $BASENAME -skipbuild 0 -platforms "linux, linux_64, windows, windows_x64, osx" -packages "server, pemhttpd, pgjdbc, psqlodbc, slony, postgis, npgsql, pgagent, pgmemcache, pgbouncer, sqlprotect""
         echo "     $BASENAME -skipbuild 1 -platforms "all" -packages "all""
@@ -39,6 +40,7 @@ while [ "$#" -gt "0" ]; do
                 -platforms) PLATFORMS=$2; shift 2;;
                 -packages) PACKAGES=$2; shift 2;;
                 -skippvtpkg) SKIPPVTPACKAGES=$2; shift 2;;
+                -releasebuild) RELEASEBUILD=$2; shift 2;;
                 -help|-h) usage;;
                 *) echo -e "error: no such option $1. -h for help"; exit 1;;
         esac
@@ -315,31 +317,14 @@ GetInstallerName(){
         echo ${installerName,,}
 }
 #------------------
-GetPemDirName(){
-        PEM_VERSION_FILE="${DIRNAME}/pvt_packages/PEM/common/version.h"
-        if [ -f ${PEM_VERSION_FILE} ]; then
-                PEM_CURRENT_VERSION="$(grep "VERSION_PACKAGE" ${PEM_VERSION_FILE} | awk '{print $3}' | cut -f1,2 -d".")"
-        else
-                PEM_CURRENT_VERSION=unknownversion
-        fi
-        p_name=pem/${PEM_CURRENT_VERSION}
-        echo ${p_name,,}
-}
-declare -a PEM_PKG_ARR=(pem sqlprofiler php_edbpem)
-#------------------
 _mail_status "build-15.log" "build-pvt.log" "15"
 #------------------
 CopyToBuilds(){
         PACKAGE_NAME=$1
         PLATFORM_NAME=${2,,}
         country=${country,,}
-        if [[ ${PACKAGE_NAME,,} == *"pem"* ]]; then
-                PKG_NAME=$(GetPemDirName)
-                remote_location="/mnt/builds/daily-builds/$country/edb/$PKG_NAME"
-        else
-                PKG_NAME=$(GetPkgDirName $PACKAGE_NAME)
-                remote_location="/mnt/builds/daily-builds/$country/pg/$PKG_NAME"
-        fi
+        PKG_NAME=$(GetPkgDirName $PACKAGE_NAME)
+        remote_location="/mnt/builds/daily-builds/$country/pg/$PKG_NAME"
         echo "Purging old builds from the builds server" >> autobuild.log
 
        ssh builds.enterprisedb.com <<EOF
@@ -363,7 +348,12 @@ EOF
                 remote_location="$remote_location/$DATE/installer/$PLATFORM_NAME"
         else
                 build_user=$BUILD_USER
-                remote_location="$remote_location/custom/$build_user/installer/$PLATFORM_NAME/$DATE/$BUILD_NUMBER"
+                # Search for any possible spaces from user name and replace them with a Dot (.)
+                if [[ $build_user = *" "*  ]];
+                then
+                    build_user="${build_user// /.}"
+                fi
+                remote_location="$remote_location/custom/$build_user/$DATE/$BUILD_NUMBER/installers/$PLATFORM_NAME"
         fi
         # Create a remote directory if not present
         platInstallerName=`echo $PLATFORM_NAME | sed 's/_/-/'`
@@ -373,17 +363,14 @@ EOF
 		platInstallerName=${platInstallerName}.*
 	fi
 	installername=$( GetInstallerName $PACKAGE_NAME )
+        if $RELEASEBUILD ; then
+		remote_location="/mnt/builds/builds-for-qmg/pg/$PKG_NAME"
+        fi
+
         echo "Creating $remote_location on the builds server" >> autobuild.log
         ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
         echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-	if [[ ${PACKAGE_NAME,,} == *"pem"* ]]; then
-		for pempkg in "${PEM_PKG_ARR[@]}"; do
-			scp -rp output/*${pempkg}*${platInstallerName} buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
-		done
-		scp -rp output/build-pvt* buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
-	else
-		scp -rp output/*${installername}*${platInstallerName} buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
-	fi
+        scp -r output/*${installername}*${platInstallerName} output/3rd_party_libraries_list output/symbols output/build-15.log buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
 }
 # Copy Installers to Build
 for PLAT in "${ENABLED_PLAT_ARR[@]}";
