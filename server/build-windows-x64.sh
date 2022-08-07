@@ -56,7 +56,7 @@ _prep_server_windows_x64() {
     fi
     
     # Cleanup the build host
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q postgres-win64.zip"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; rm -rf postgres-win64.zip"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q pgadmin-win64.zip"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q stackbuilder-win64.zip"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q scripts.zip"
@@ -65,9 +65,9 @@ _prep_server_windows_x64() {
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q vc-build-doc.bat"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c del /S /Q build-pgadmin4.bat"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q output.build"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; rm -rf output.build"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q postgres.windows-x64"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q pgadmin.windows-x64"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; rm -rf pgadmin.windows-x64"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q stackbuilder.windows-x64"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q createuser"    
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c rd /S /Q getlocales"    
@@ -490,11 +490,11 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cmd /c rd $PG_PATH_WINDOWS_X64\\\\output.build\\\\StackBuilder\\\\bin" || _die "Failed to remove the stackbuilder bin directory on the build host"
 
     echo "Removing last successful staging directory ($PG_PATH_WINDOWS_X64\\\\output)"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c if EXIST output rd /S /Q output" || _die "Couldn't remove the last successful staging directory directory"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; rm -rf output" || _die "Couldn't remove the last successful staging directory directory"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c mkdir $PG_PATH_WINDOWS_X64\\\\output" || _die "Couldn't create the last successful staging directory"
 
     echo "Copying the complete build to the successful staging directory"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c xcopy /E /Q /Y output.build\\\\* output\\\\" || _die "Couldn't copy the existing staging directory"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cp -r output.build/* output" || _die "Couldn't copy the existing staging directory"
 
     ssh $PG_SSH_WINDOWS_X64 "cmd /c echo PG_MAJOR_VERSION=$PG_MAJOR_VERSION > $PG_PATH_WINDOWS_X64\\\\output/versions-windows-x64.sh" || _die "Failed to write server version number into versions-windows-x64.sh"
     ssh $PG_SSH_WINDOWS_X64 "cmd /c echo PG_MINOR_VERSION=$PG_MINOR_VERSION >> $PG_PATH_WINDOWS_X64\\\\output/versions-windows-x64.sh" || _die "Failed to write server build number into versions-windows-x64.sh"
