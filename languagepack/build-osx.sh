@@ -164,15 +164,15 @@ _build_languagepack_osx() {
     
      cd $PG_PATH_OSX/languagepack/source/python.osx
  
-     export LDFLAGS="-L/opt/local/Current/lib -L\$TCL_TK_INSTALL_PATH/lib"
-     export CFLAGS="-I/opt/local/Current/include -I\$TCL_TK_INSTALL_PATH/include"
+     export LDFLAGS="-L/opt/local/Current_v15/lib -L\$TCL_TK_INSTALL_PATH/lib"
+     export CFLAGS="-I/opt/local/Current_v15/include -I\$TCL_TK_INSTALL_PATH/include"
      export CPPFLAGS=\$CFLAGS
      export LD_LIBRARY_PATH="\$TCL_TK_INSTALL_PATH/lib:\$LD_LIBRARY_PATH"
      export LD_RUN_PATH="\$PYTHON_INSTALL_PATH/lib"
      export MACOSX_DEPLOYMENT_TARGET=\$MACOSX_MIN_VERSION
      export PYTHONHOME="\$PYTHON_INSTALL_PATH"
 
-     CC='clang' CFLAGS="\$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current/lib \$PG_ARCH_OSX_LDFLAGS" ./configure --prefix=\$PYTHON_INSTALL_PATH --enable-shared --with-openssl=/opt/local/Current || _die "Failed to configure Python"
+     CC='clang' CFLAGS="\$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current_v15/lib \$PG_ARCH_OSX_LDFLAGS" ./configure --prefix=\$PYTHON_INSTALL_PATH --enable-shared --with-openssl=/opt/local/Current_v15 || _die "Failed to configure Python"
      echo "-----------------------------------------------------"
      echo "out put of Python Make started"
      echo "-----------------------------------------------------"
@@ -196,11 +196,11 @@ _build_languagepack_osx() {
      ln -s ../../libpython\$PG_VERSION_PYTHON\m.dylib libpython\$PG_VERSION_PYTHON\m.dylib
      echo "================end========================"
      chmod 755 \$PYTHON_INSTALL_PATH/lib/libpython*dylib
-     cp -pR /opt/local/Current/lib/libiconv* \$PYTHON_INSTALL_PATH/lib/
-     cp -pR /opt/local/Current/lib/libintl* \$PYTHON_INSTALL_PATH/lib/
-     cp -pR /opt/local/Current/lib/libssl* \$PYTHON_INSTALL_PATH/lib/
-     cp -pR /opt/local/Current/lib/libcrypto* \$PYTHON_INSTALL_PATH/lib/
-     cp -pR /opt/local/Current/lib/libz* \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current_v15/lib/libiconv* \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current_v15/lib/libintl* \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current_v15/lib/libssl* \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current_v15/lib/libcrypto* \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current_v15/lib/libz* \$PYTHON_INSTALL_PATH/lib/
 
      _rewrite_so_refs \$PYTHON_INSTALL_PATH bin @loader_path/..
      _rewrite_so_refs \$PYTHON_INSTALL_PATH lib @loader_path/..
@@ -215,7 +215,7 @@ _build_languagepack_osx() {
      echo "============PATH Varaibles=========="
      export PYTHONHOME="\$PYTHON_INSTALL_PATH"
      export PATH="\$PYTHON_INSTALL_PATH/bin:\$PATH"
-     export LD_LIBRARY_PATH="/opt/local/Current/lib:\$LD_LIBRARY_PATH"
+     export LD_LIBRARY_PATH="/opt/local/Current_v15/lib:\$LD_LIBRARY_PATH"
 
      python -m pip install --upgrade pip
      pip3 install --upgrade setuptools
