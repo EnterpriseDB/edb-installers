@@ -202,7 +202,7 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
 
     # Configure the source tree
     echo "Configuring the PostGIS source"
-    PATH=$PATH:$IMAGEMAGICK_HOME_OSX/bin LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current/lib" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PATH=/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH ./configure --enable-debug --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current --without-protobuf || _die "Failed to configure PostGIS"
+    PATH=$PATH:$IMAGEMAGICK_HOME_OSX/bin LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS" CFLAGS="$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current/lib" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PATH=/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH ./configure --enable-debug --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current --without-protobuf || _die "Failed to configure PostGIS"
 
     echo "Building PostGIS"
     LDFLAGS="-L/opt/local/Current/lib" CFLAGS="$PG_ARCH_OSX_CFLAGS" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make || _die "Failed to build PostGIS"
