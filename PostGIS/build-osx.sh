@@ -209,6 +209,8 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
     echo "Building comments"
     make comments || _die "Failed to build comments"
     echo "Installing PostGIS"
+    echo "workaround: Patching topology Makefile to comment out the problematic lines"
+    sed -i '' '/top_builddir/,+3 s/^/#/' topology/Makefile
     make install PGXSOVERRIDE=0 DESTDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bindir=/bin pkglibdir=/lib/postgresql datadir=/share REGRESS=1 PGSQL_DOCDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/doc PGSQL_MANDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/man PGSQL_SHAREDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/share/postgresql || _die "Failed to install PostGIS"
     echo "Installing comments"
     make comments-install PGXSOVERRIDE=0 DESTDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/doc PGSQL_MANDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/man PGSQL_SHAREDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/share/postgresql || _die "Failed to install PostGIS comments"
