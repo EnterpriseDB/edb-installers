@@ -196,11 +196,11 @@ _build_languagepack_osx() {
      ln -s ../../libpython\$PG_VERSION_PYTHON\m.dylib libpython\$PG_VERSION_PYTHON\m.dylib
      echo "================end========================"
      chmod 755 \$PYTHON_INSTALL_PATH/lib/libpython*dylib
-     cp -pR /opt/local/Current_v15/lib/libiconv* \$PYTHON_INSTALL_PATH/lib/
-     cp -pR /opt/local/Current_v15/lib/libintl* \$PYTHON_INSTALL_PATH/lib/
-     cp -pR /opt/local/Current_v15/lib/libssl* \$PYTHON_INSTALL_PATH/lib/
-     cp -pR /opt/local/Current_v15/lib/libcrypto* \$PYTHON_INSTALL_PATH/lib/
-     cp -pR /opt/local/Current_v15/lib/libz* \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current_v15/lib/libiconv*dylib \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current_v15/lib/libintl*dylib \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current_v15/lib/libssl*dylib \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current_v15/lib/libcrypto*dylib \$PYTHON_INSTALL_PATH/lib/
+     cp -pR /opt/local/Current_v15/lib/libz*dylib \$PYTHON_INSTALL_PATH/lib/
 
      _rewrite_so_refs \$PYTHON_INSTALL_PATH bin @loader_path/..
      _rewrite_so_refs \$PYTHON_INSTALL_PATH lib @loader_path/..
