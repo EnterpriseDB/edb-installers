@@ -19,7 +19,7 @@ _die() {
 # Create the user account if required
 if [ "x`dscl . -list /users|cut -f2 -d' '|grep ^$1\$`" != "x" ];
 then
-    HOME_DIR=`su $1 -c "echo \\\$HOME"`
+    HOME_DIR=`sudo -u $1 echo "$HOME"`
     if [ -e $HOME_DIR ]; then     
         echo "User account '$1' already exists"
         exit 0
@@ -31,7 +31,7 @@ then
         count=0
         while [ $count -le 15 ]
         do
-            HOME_DIR=`su $1 -c "echo \\\$HOME"`
+            HOME_DIR=`sudo -u $1 echo "$HOME"`
             if [ -e $HOME_DIR ]; then
                exit 0
             fi 
