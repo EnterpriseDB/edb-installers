@@ -52,9 +52,9 @@ chown $OSUSERNAME:daemon "$DATADIR" || _die "Failed to set the ownership of the 
 # Initialise the database cluster. Specify the encoding if we're using the default locale, otherwise we'll probably get ASCII
 if [ $LOCALE = "DEFAULT" ];
 then
-    su - $OSUSERNAME -c "$INSTALLDIR/bin/initdb --pwfile $INSTALLDIR/installer/server/initdbpw.$$ --encoding=utf8 -A scram-sha-256 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+    sudo -u $OSUSERNAME "$INSTALLDIR"/bin/initdb --pwfile "$INSTALLDIR"/installer/server/initdbpw.$$ --encoding=utf8 -A scram-sha-256 -U "$SUPERNAME" -D "$DATADIR" || _die "Failed to initialise the database cluster with initdb"
 else
-    su - $OSUSERNAME -c "$INSTALLDIR/bin/initdb --pwfile $INSTALLDIR/installer/server/initdbpw.$$ --locale=$LOCALE -A scram-sha-256 -U \"$SUPERNAME\" -D \"$DATADIR\"" || _die "Failed to initialise the database cluster with initdb"
+    sudo -u $OSUSERNAME "$INSTALLDIR"/bin/initdb --pwfile "$INSTALLDIR"/installer/server/initdbpw.$$ --locale=$LOCALE -A scram-sha-256 -U "$SUPERNAME" -D "$DATADIR" || _die "Failed to initialise the database cluster with initdb"
 fi	
 	
 if [ ! -d "$DATADIR/log" ];
@@ -71,13 +71,13 @@ rm $INSTALLDIR/installer/server/initdbpw.$$ || _warn "Failed to remove the initd
 #      log_destination = 'stderr'
 #      logging_collector = on
 #      log_line_prefix = '%t '
-su - $OSUSERNAME -c "sed -e \"s@\#listen_addresses = 'localhost'@listen_addresses = '*'@g\" \
-                        -e \"s@\#port = 5432@port = $PORT@g\" \
-                        -e \"s@\#log_destination = 'stderr'@log_destination = 'stderr'@g\" \
-                        -e \"s@\#logging_collector = off@logging_collector = on@g\" \
-                        -e \"s@\#log_line_prefix = ''@log_line_prefix = '%t '@g\" \
-                        $DATADIR/postgresql.conf > $DATADIR/postgresql.conf.$$" || _warn "Failed to modify the postgresql.conf file ($DATADIR/postgresql.conf)"
-su - $OSUSERNAME -c "mv $DATADIR/postgresql.conf.$$ $DATADIR/postgresql.conf" || _warn "Failed to update the postgresql.conf file ($DATADIR/postgresql.conf)"
+sudo -u $OSUSERNAME sed -e "s@\#listen_addresses = 'localhost'@listen_addresses = '*'@g" \
+                        -e "s@\#port = 5432@port = $PORT@g" \
+                        -e "s@\#log_destination = 'stderr'@log_destination = 'stderr'@g" \
+                        -e "s@\#logging_collector = off@logging_collector = on@g" \
+                        -e "s@\#log_line_prefix = ''@log_line_prefix = '%t '@g" \
+                        "$DATADIR"/postgresql.conf > "$DATADIR"/postgresql.conf.$$ || _warn "Failed to modify the postgresql.conf file ($DATADIR/postgresql.conf)"
+sudo -u $OSUSERNAME mv "$DATADIR"/postgresql.conf.$$ "$DATADIR"/postgresql.conf || _warn "Failed to update the postgresql.conf file ($DATADIR/postgresql.conf)"
 
 echo "$0 ran to completion"
 exit $WARN
