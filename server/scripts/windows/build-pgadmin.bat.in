@@ -131,6 +131,7 @@ REM Main build sequence Ends
     ECHO Building docs...
 
     CALL pip install sphinx || EXIT /B 1
+    CALL pip install sphinxcontrib-youtube || EXIT /B 1
 
     MKDIR "%BUILDROOT%\docs\en_US\html"
     CD "%PGADMIN_SRC_DIR%\docs\en_US"
