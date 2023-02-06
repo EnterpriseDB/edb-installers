@@ -90,6 +90,7 @@ _build_docs() {
 	pip3 install --upgrade pip
 	LDFLAGS="-L/opt/local/Current/lib" CFLAGS="-I/opt/local/Current/include" pip3 install -r "${SOURCE_DIR}/requirements.txt"
 	pip3 install sphinx
+	pip3 install sphinxcontrib-youtube
 
 	cd "${SOURCE_DIR}"
 	make docs
