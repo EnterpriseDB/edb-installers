@@ -101,7 +101,7 @@ _prep_server() {
             echo "Patching pgAdmin source"
             patch -p0 < ~/tarballs/pgadmin-psutil.patch || _die "failed to apply pgadmin-psutil.patch"
         fi
-
+    fi
     cd $WD/server/source
 
     # Debugger
