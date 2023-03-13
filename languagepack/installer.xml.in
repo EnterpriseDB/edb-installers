@@ -384,39 +384,31 @@ EOF
     </setInstallerVariableFromRegEx>
   </initializationActionList>
   <readyToInstallActionList>
+   <!--WIN: in fresh mode, create installdir and fix ACLs-->
     <actionGroup>
       <actionList>
         <createDirectory path="${default_installdir}"/>
-      </actionList>
-      <ruleList>
-        <compareText logic ="contains" text="${platform_name}" value="windows" />
-        <fileTest path="${default_installdir}" condition="not_exists" />
-      </ruleList>
-    </actionGroup>
-    <actionGroup>
-      <actionList>
         <copyAcl sourceDir="${windows_folder_program_files}" destDir="${default_installdir}"/>
       </actionList>
       <ruleList>
-        <compareVersions logic="less_or_equal" version1="${product_version}" version2="3.0-4"/>
+        <isFalse value="${extract_mode}"/>
+        <compareVersions logic="equals" version1="${languagepackversion}" version2=""/>
         <compareText logic ="contains" text="${platform_name}" value="windows" />
-        <fileTest path="${default_installdir}" condition="exists" />
         <compareText text="${default_installdir}" logic="does_not_contain" value="${windows_folder_program_files}"/>
       </ruleList>
     </actionGroup>
 
-   <!--WIN: in upgrade mode, fix the ACLs for installdir if it's outside Program Files -->
+   <!--WIN: in upgrade mode, fix the ACLs for installdir where fix was not available -->
     <actionGroup>
       <actionList>
         <logMessage text="Fixing the ACLs on install directory"/>
         <copyAcl sourceDir="${windows_folder_program_files}" destDir="${default_installdir}"/>
       </actionList>
       <ruleList>
-        <isTrue value="${IsUpgrade}"/>
         <isFalse value="${extract_mode}"/>
         <fileExists path="${default_installdir}" />
         <fileTest path="${default_installdir}" condition="is_not_empty" />
-        <compareVersions logic="less_or_equal" version1="${product_version}" version2="3.0-4"/>
+        <compareVersions logic="less_or_equal" version1="${product_version}" version2="3.0-3"/>
         <compareText logic ="contains" text="${platform_name}" value="windows" />
         <compareText text="${default_installdir}" logic="does_not_contain" value="${windows_folder_program_files}"/>
       </ruleList>
