@@ -210,12 +210,6 @@ EOF
       </ruleList>
     </setInstallerVariable>
 
-    <!-- Upgrading? -->
-    <setInstallerVariable>
-      <name>IsUpgrade</name>
-      <value>0</value>
-    </setInstallerVariable>
-
     <!-- WIN : Set the default installation directory for win64 -->
     <setInstallerVariable>
       <name>default_installdir</name>
@@ -398,7 +392,7 @@ EOF
         <copyAcl sourceDir="${windows_folder_program_files}" destDir="${default_installdir}"/>
       </actionList>
       <ruleList>
-        <compareVersions logic="less_or_equal" version1="${product_version}" version2="2.1-2"/>
+        <compareVersions logic="does_not_equal" version1="${languagepackversion}" version2="2.1-2"/>
         <compareText logic ="contains" text="${platform_name}" value="windows" />
         <fileTest path="${default_installdir}" condition="exists" />
         <compareText text="${default_installdir}" logic="does_not_contain" value="${windows_folder_program_files}"/>
@@ -416,7 +410,7 @@ EOF
         <isFalse value="${extract_mode}"/>
         <fileExists path="${default_installdir}" />
         <fileTest path="${default_installdir}" condition="is_not_empty" />
-        <compareVersions logic="less_or_equal" version1="${product_version}" version2="2.1-2"/>
+        <compareVersions logic="does_not_equal" version1="${languagepackversion}" version2="2.1-2"/>
         <compareText logic ="contains" text="${platform_name}" value="windows" />
         <compareText text="${default_installdir}" logic="does_not_contain" value="${windows_folder_program_files}"/>
       </ruleList>
