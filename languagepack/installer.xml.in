@@ -117,6 +117,32 @@ EOF
          <stringParameter name="dirPrefix" allowEmptyValue="0"/>
        </parameterList>
      </actionDefinition>
+        <!-- copyAcl: To copy ACLs from one directory and apply to another -->
+        <actionDefinition name="copyAcl">
+            <parameterList>
+                <stringParameter name="sourceDir" allowEmptyValue="0" />
+                <stringParameter name="destDir" allowEmptyValue="0" />
+            </parameterList>
+            <actionList>
+            <logMessage text="Fixing ACL on ${destDir}"/>
+            <runProgram>
+                <program>${env(WINDIR)}\System32\icacls</program>
+                <programArguments>. /save "${system_temp_directory}/languagepack_${random_number}/aclfile"</programArguments>
+                <progressText></progressText>
+                <workingDirectory>${sourceDir}</workingDirectory>
+            </runProgram>
+            <copyFile origin="${system_temp_directory}/languagepack_${random_number}/aclfile" destination="${destDir}"/>
+            <!-- <deleteFile path="${sourceDir}/aclfile"/> -->
+            <runProgram>
+                <program>${env(WINDIR)}\System32\icacls</program>
+                <programArguments>. /restore "${system_temp_directory}/languagepack_${random_number}/aclfile"</programArguments>
+                <progressText></progressText>
+                <workingDirectory>${destDir}</workingDirectory>
+            </runProgram>
+            <deleteFile path="${destDir}/aclfile"/>
+            <deleteFile path="${system_temp_directory}/languagepack_${random_number}/aclfile"/>
+            </actionList>
+        </actionDefinition>
     <actionDefinition name="checkSolarisVersion">
       <actionList>
         <globalVariables names="solaris_version"/>
@@ -183,6 +209,7 @@ EOF
         <compareText logic="equals" text="${platform_name}" value="windows"/>
       </ruleList>
     </setInstallerVariable>
+
     <!-- WIN : Set the default installation directory for win64 -->
     <setInstallerVariable>
       <name>default_installdir</name>
@@ -350,6 +377,38 @@ EOF
       </ruleList>
     </setInstallerVariableFromRegEx>
   </initializationActionList>
+  <readyToInstallActionList>
+   <!--WIN: in fresh mode, create installdir and fix ACLs-->
+    <actionGroup>
+      <actionList>
+        <createDirectory path="${default_installdir}"/>
+        <copyAcl sourceDir="${windows_folder_program_files}" destDir="${default_installdir}"/>
+      </actionList>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+        <compareVersions logic="equals" version1="${languagepackversion}" version2=""/>
+        <compareText logic ="contains" text="${platform_name}" value="windows" />
+        <compareText text="${default_installdir}" logic="does_not_contain" value="${windows_folder_program_files}"/>
+      </ruleList>
+    </actionGroup>
+
+   <!--WIN: in upgrade mode, fix the ACLs for installdir where fix was not available -->
+    <actionGroup>
+      <actionList>
+        <logMessage text="Fixing the ACLs on install directory"/>
+        <copyAcl sourceDir="${windows_folder_program_files}" destDir="${default_installdir}"/>
+      </actionList>
+      <ruleList>
+        <isFalse value="${extract_mode}"/>
+        <fileExists path="${default_installdir}" />
+        <fileTest path="${default_installdir}" condition="is_not_empty" />
+        <compareVersions logic="less_or_equal" version1="${product_version}" version2="3.0-3"/>
+        <compareText logic ="contains" text="${platform_name}" value="windows" />
+        <compareText text="${default_installdir}" logic="does_not_contain" value="${windows_folder_program_files}"/>
+      </ruleList>
+    </actionGroup>
+
+  </readyToInstallActionList>
   <preInstallationActionList>
     <!-- Creating a temporary directory -->
     <!-- Setting defaultUnixGroup and defaultUnixOwner -->
