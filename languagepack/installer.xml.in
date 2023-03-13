@@ -395,7 +395,6 @@ EOF
    <!--WIN: in upgrade mode, fix the ACLs for installdir where the fix was not available -->
     <actionGroup>
       <actionList>
-        <logMessage text="Fixing the ACLs on install directory"/>
         <copyAcl sourceDir="${windows_folder_program_files}" destDir="${default_installdir}"/>
       </actionList>
       <ruleList>
