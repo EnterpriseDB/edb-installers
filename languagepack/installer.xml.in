@@ -210,12 +210,6 @@ EOF
       </ruleList>
     </setInstallerVariable>
 
-    <!-- Upgrading? -->
-    <setInstallerVariable>
-      <name>IsUpgrade</name>
-      <value>0</value>
-    </setInstallerVariable>
-
     <!-- WIN : Set the default installation directory for win64 -->
     <setInstallerVariable>
       <name>default_installdir</name>
