@@ -3646,5 +3646,15 @@ REM The script sets environment variables helpful for PostgreSQL
             <showMessageOnError>0</showMessageOnError>
         </deleteFile>
         <setInstallerVariable name="server_installation_done" value="1" persist="1"/>
+
+        <!-- Deleting older zlib version library -->
+        <deleteFile>
+            <path>"${installdir}/lib/libz.1.2.11.dylib"</path>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+            <ruleList>
+		<compareText logic="equals" text="${installer_ui}" value="gui"/>
+		<compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            </ruleList>
+        </deleteFile>
     </postInstallationActionList>
 </component>
