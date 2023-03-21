@@ -218,12 +218,12 @@ then
     PG_BUILD_PEMHTTPD=0
     if [ $SKIPBUILD = 0 ];
     then
-        (_prep_PEM-HTTPD && _build_PEM-HTTPD)
+        (_prep_PEM_HTTPD && _build_PEM_HTTPD)
         if [ $? == 0 ]; then
            PG_BUILD_PEMHTTPD=1
         fi
     fi
-    (_postprocess_PEM-HTTPD)
+    (_postprocess_PEM_HTTPD)
 fi
 
 # Package: phppgadmin

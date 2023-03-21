@@ -32,7 +32,7 @@ fi
 # Build preparation
 ################################################################################
 
-_prep_PEM-HTTPD() {
+_prep_PEM_HTTPD() {
 
     # Create the source directory if required
     if [ ! -e $WD/PEM-HTTPD/source ];
@@ -65,7 +65,7 @@ _prep_PEM-HTTPD() {
         if [ -e apache.windows ]; then
             rm -rf apache.windows || _die "Couldn't remove the existing apache.windows source directory (source/apache.windows)"
         fi
-        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE-win32-src 
+        extract_file ../../tarballs/httpd-$PG_VERSION_APACHE
         extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB 
         extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL 
         extract_file ../../tarballs/pcre-836-win32-binaries 
@@ -114,7 +114,7 @@ _prep_PEM-HTTPD() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _prep_PEM-HTTPD_windows 
+        _prep_PEM_HTTPD_windows
     fi
     
 }
@@ -123,7 +123,7 @@ _prep_PEM-HTTPD() {
 # Build PEM-HTTPD
 ################################################################################
 
-_build_PEM-HTTPD() {
+_build_PEM_HTTPD() {
 
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
@@ -148,7 +148,7 @@ _build_PEM-HTTPD() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _build_PEM-HTTPD_windows 
+        _build_PEM_HTTPD_windows
     fi
 }
 
@@ -158,7 +158,7 @@ _build_PEM-HTTPD() {
 #
 # Note that this is the only step run if we're executed with -skipbuild so it must
 # be possible to run this against a pre-built tree.
-_postprocess_PEM-HTTPD() {
+_postprocess_PEM_HTTPD() {
 
     cd $WD/PEM-HTTPD
 

@@ -18,9 +18,9 @@ _prep_PEM-HTTPD_windows() {
     mv zlib-$PG_TARBALL_ZLIB apache.windows/srclib/zlib
 
     cd $WD/PEM-HTTPD/source/apache.windows
-    if [ -f $WD/tarballs/apache_win_$PG_VERSION_APACHE.patch ];
+    if [ -f $WD/PEM-HTTPD/resources/apache_win.patch ];
     then
-      patch -p1 < $WD/tarballs/apache_win_$PG_VERSION_APACHE.patch
+      patch -p1 < $WD/PEM-HTTPD/resources/apache_win.patch || _die "Failed to build the patch for windows (PEM-HTTPD)..."
     fi
     cd ..
 
@@ -99,7 +99,7 @@ _prep_PEM-HTTPD_windows() {
 # PEM-HTTPD Build
 ################################################################################
 
-_build_PEM-HTTPD_windows() {
+_build_PEM_HTTPD_windows() {
     echo "BEGIN BUILD PEM-HTTPD Windows"
 
     cd $WD/PEM-HTTPD/staging/windows
@@ -183,7 +183,7 @@ EOT
 # PEM-HTTPD Postprocess
 ################################################################################
 
-_postprocess_PEM-HTTPD_windows() {
+_postprocess_PEM_HTTPD_windows() {
 
     echo "BEGIN POST PEM-HTTPD Windows"
 
