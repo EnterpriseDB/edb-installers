@@ -5,7 +5,7 @@
 # Build preparation
 ################################################################################
 
-_prep_PEM-HTTPD_windows() {
+_prep_PEM_HTTPD_windows() {
     # Following echo statement for Jenkins Console Section output
     echo "BEGIN PREP PEM-HTTPD Windows"
 
@@ -24,11 +24,11 @@ _prep_PEM-HTTPD_windows() {
     fi
     cd ..
 
-    if [ -f $WD/tarballs/apr-${PG_VERSION_APACHE_APR}.patch ];
+    if [ -f $WD/PEM-HTTPD/patches/apr-${PG_VERSION_APACHE_APR}.patch ];
     then
       echo "Applying apr patch..."
       cd $WD/PEM-HTTPD/source/apache.windows/srclib/apr
-      patch -p1 < "$WD/tarballs/apr-${PG_VERSION_APACHE_APR}.patch"
+      patch -p1 < "$WD/PEM-HTTPD/patches/apr-${PG_VERSION_APACHE_APR}.patch"
       cd ../../../
     fi
 
@@ -44,11 +44,11 @@ _prep_PEM-HTTPD_windows() {
     sed -i 's/Python34/Python37/g' ap24py37-win32-VC10.mk
     sed -i 's/34/37/g' ap24py37-win32-VC10.mk
     sed -i 's/ap24py34-win32-VC10.mk/ap24py37-win32-VC10.mk/g' build-win32-VC10.bat
-    patch -p0 < $WD/tarballs/mod_wsgi_psapi.patch
+    patch -p0 < $WD/PEM-HTTPD/patches/mod_wsgi_psapi.patch
 
     # For PEM7, apachehttpd needs to be built with python3.4 (LP10)
     PEM_PYTHON_WINDOWS=$PEM_PYTHON_WINDOWS
-    patch -p0 < $WD/tarballs/apache-build-win32.patch
+    patch -p0 < $WD/PEM-HTTPD/patches/apache-build-win32.patch
     MOD_WSGI_MAKEFILE=ap24py37-win32-VC10.mk
 
     sed -i "s/^APACHE_ROOTDIR =\(.*\)$/APACHE_ROOTDIR=$PG_PATH_WINDOWS\\\\apache.staging.build/g" ${MOD_WSGI_MAKEFILE}

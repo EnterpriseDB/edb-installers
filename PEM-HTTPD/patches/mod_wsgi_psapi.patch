@@ -1,0 +1,30 @@
+--- common-VC10.mk	2015-06-14 12:02:33.000000000 +0100
++++ common-VC10.mk.upd	2015-11-06 05:14:54.716420302 +0000
+@@ -2,7 +2,8 @@
+  /DWIN32 \
+  /DNDEBUG \
+  /I"$(APACHE_ROOTDIR)\include" \
+- /I"$(PYTHON_ROOTDIR)\include"
++ /I"$(PYTHON_ROOTDIR)\include" \
++ /I"$(PGBUILD)\include"
+ 
+ CFLAGS = \
+  /MD \
+@@ -17,6 +18,7 @@
+  /link \
+  /LIBPATH:$(APACHE_ROOTDIR)\lib \
+  /LIBPATH:$(PYTHON_ROOTDIR)\libs \
++ /LIBPATH:$(PGBUILD)\lib \
+  /OPT:REF \
+  /OPT:ICF=2 \
+  /RELEASE \
+@@ -26,7 +28,8 @@
+  python$(PYTHON_VERSION).lib \
+  libhttpd.lib \
+  libapr-1.lib \
+- libaprutil-1.lib
++ libaprutil-1.lib \
++ Psapi.Lib
+ 
+ SRCFILES = ..\src\server\*.c
+ 

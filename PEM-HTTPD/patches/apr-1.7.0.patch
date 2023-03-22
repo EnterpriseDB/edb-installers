@@ -1,0 +1,20 @@
+diff -crN apr-1.7.0/include/apr.hw apr/include/apr.hw
+*** apr-1.7.0/include/apr.hw	2019-03-21 00:41:37.000000000 +0000
+--- apr/include/apr.hw	2022-04-06 09:13:23.314082274 +0000
+***************
+*** 86,92 ****
+  
+  /* Restrict the server to a subset of Windows XP header files by default
+   */
+! #define _WIN32_WINNT 0x0501
+  #endif
+  #ifndef NOUSER
+  #define NOUSER
+--- 86,92 ----
+  
+  /* Restrict the server to a subset of Windows XP header files by default
+   */
+! #define _WIN32_WINNT 0x0600
+  #endif
+  #ifndef NOUSER
+  #define NOUSER

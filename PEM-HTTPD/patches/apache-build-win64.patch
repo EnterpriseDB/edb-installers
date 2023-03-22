@@ -1,0 +1,18 @@
+*** build-win32-VC10.bat.orig	2021-02-01 11:12:49.000000000 +0000
+--- build-win32-VC10.bat	2021-02-01 11:17:28.079213450 +0000
+***************
+*** 4,12 ****
+  )
+  
+  nmake -f common-VC10.mk clean
+! nmake -f ap24py33-win32-VC10.mk install
+! 
+! nmake -f common-VC10.mk clean
+! nmake -f ap24py34-win32-VC10.mk install
+! 
+! nmake -f common-VC10.mk clean
+--- 4,7 ----
+  )
+  
+  nmake -f common-VC10.mk clean
+! nmake -f ap24py37-win64-VC10.mk install

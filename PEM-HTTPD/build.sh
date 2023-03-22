@@ -34,6 +34,9 @@ fi
 
 _prep_PEM_HTTPD() {
 
+    # Download source packages
+    _download_sources
+
     # Create the source directory if required
     if [ ! -e $WD/PEM-HTTPD/source ];
     then
@@ -119,6 +122,47 @@ _prep_PEM_HTTPD() {
     
 }
 
+
+################################################################################
+# Download source packages for PEM-HTTPD
+################################################################################
+
+_download_sources() {
+
+    rm -rf $WD/tarballs
+    mkdir -p $WD/tarballs
+
+    # mod_wsgi
+    wget https://github.com/GrahamDumpleton/mod_wsgi/archive/refs/tags/$PG_VERSION_APACHE.tar.gz -O $WD/tarballs/mod_wsgi-$PG_VERSION_WSGI.tar.gz
+
+    # httpd
+    wget http://archive.apache.org/dist/httpd/httpd-$PG_VERSION_APACHE.tar.gz -O $WD/tarballs/httpd-$PG_VERSION_APACHE.tar.gz
+
+    # zlib
+    wget https://www.zlib.net/zlib-$PG_TARBALL_ZLIB.tar.gz -O $WD/tarballs/zlib-$PG_TARBALL_ZLIB.tar.gz
+
+    # openssl
+    OPENSSL_FOLDER=`echo $PG_TARBALL_OPENSSL|sed -e 's/\./_/g'`
+    wget https://github.com/openssl/openssl/releases/download/OpenSSL_$OPENSSL_FOLDER/openssl-PG_TARBALL_OPENSSL.tar.gz -O $WD/tarballs/openssl-$PG_TARBALL_OPENSSL.tar.gz
+
+    # pcre
+    cp $WD/PEM-HTTPD/prebuilts/pcre-836-win32-binaries.zip $WD/tarballs/
+
+    # apr
+    wget https://archive.apache.org/dist/apr/apr-$PG_VERSION_APACHE_APR-win32-src.zip -O $WD/tarballs/apr-$PG_VERSION_APACHE_APR-win32-src.zip
+
+    # apr-util
+    wget https://archive.apache.org/dist/apr/apr-util-$PG_VERSION_APACHE_APR_UTIL-win32-src.zip -O $WD/tarballs/api-util-$PG_VERSION_APACHE_APR_UTIL-win32-src.zip
+
+    # apr-iconv
+    wget https://archive.apache.org/dist/apr/apr-iconv-$PG_VERSION_APACHE_APR_ICONV-win32-src.zip -O $WD/tarballs/apr-iconv-$PG_VERSION_APACHE_APR_ICONV-win32-src.zip
+
+    # expat
+    EXPAT_FOLDER=`echo $PG_VERSION_APACHE_EXPAT|sed -e 's/\./_/g'`
+    wget https://github.com/libexpat/libexpat/releases/download/R_$EXPAT_FOLDER/expat-$PG_VERSION_APACHE_EXPAT.tar.gz -O $WD/tarballs/expat-$PG_VERSION_APACHE_EXPAT.tar.gz
+}
+
+
 ################################################################################
 # Build PEM-HTTPD
 ################################################################################
@@ -196,6 +240,6 @@ _postprocess_PEM_HTTPD() {
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
     then
-        _postprocess_PEM-HTTPD_windows 
+        _postprocess_PEM_HTTPD_windows
     fi
 }
