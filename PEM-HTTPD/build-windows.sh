@@ -109,7 +109,7 @@ _build_PEM_HTTPD_windows() {
     cat <<EOT > "build-apache.bat"
 
 REM Setting Visual Studio Environment
-CALL "$PG_VS14INSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
+CALL "$PG_VS17INSTALLDIR_WINDOWS\vcvarsall.bat" x86
 
 @SET PGBUILD=$PG_PGBUILD_WINDOWS
 echo ON

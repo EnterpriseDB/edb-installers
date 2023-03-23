@@ -133,7 +133,7 @@ _download_sources() {
     mkdir -p $WD/tarballs
 
     # mod_wsgi
-    wget https://github.com/GrahamDumpleton/mod_wsgi/archive/refs/tags/$PG_VERSION_APACHE.tar.gz -O $WD/tarballs/mod_wsgi-$PG_VERSION_WSGI.tar.gz
+    wget https://github.com/GrahamDumpleton/mod_wsgi/archive/refs/tags/$PG_VERSION_WSGI.tar.gz -O $WD/tarballs/mod_wsgi-$PG_VERSION_WSGI.tar.gz
 
     # httpd
     wget http://archive.apache.org/dist/httpd/httpd-$PG_VERSION_APACHE.tar.gz -O $WD/tarballs/httpd-$PG_VERSION_APACHE.tar.gz
@@ -152,7 +152,7 @@ _download_sources() {
     wget https://archive.apache.org/dist/apr/apr-$PG_VERSION_APACHE_APR-win32-src.zip -O $WD/tarballs/apr-$PG_VERSION_APACHE_APR-win32-src.zip
 
     # apr-util
-    wget https://archive.apache.org/dist/apr/apr-util-$PG_VERSION_APACHE_APR_UTIL-win32-src.zip -O $WD/tarballs/api-util-$PG_VERSION_APACHE_APR_UTIL-win32-src.zip
+    wget https://archive.apache.org/dist/apr/apr-util-$PG_VERSION_APACHE_APR_UTIL-win32-src.zip -O $WD/tarballs/apr-util-$PG_VERSION_APACHE_APR_UTIL-win32-src.zip
 
     # apr-iconv
     wget https://archive.apache.org/dist/apr/apr-iconv-$PG_VERSION_APACHE_APR_ICONV-win32-src.zip -O $WD/tarballs/apr-iconv-$PG_VERSION_APACHE_APR_ICONV-win32-src.zip
