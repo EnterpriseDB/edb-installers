@@ -51,7 +51,7 @@ _prep_PEM_HTTPD_windows() {
     patch -p0 < $WD/PEM-HTTPD/patches/apache-build-win32.patch
     MOD_WSGI_MAKEFILE=ap24py37-win32-VC10.mk
 
-    sed -i "s/^APACHE_ROOTDIR =\(.*\)$/APACHE_ROOTDIR=$PG_PATH_WINDOWS\\\\apache.staging.build/g" ${MOD_WSGI_MAKEFILE}
+    sed -i "s/^APACHE_ROOTDIR =\(.*\)$/APACHE_ROOTDIR=$PG_PATH_WINDOWS\\\\PEM-HTTPD\\\\apache.staging.build/g" ${MOD_WSGI_MAKEFILE}
     sed -i "s/^PYTHON_ROOTDIR =\(.*\)$/PYTHON_ROOTDIR=$PEM_PYTHON_WINDOWS/g" ${MOD_WSGI_MAKEFILE}
 
     cd $WD/PEM-HTTPD/source
@@ -79,18 +79,18 @@ _prep_PEM_HTTPD_windows() {
     
     #Remove existing staging directory on Windows VM
     echo "Removing existing directory on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache.zip del /S /Q apache.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache.zip on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache-staging.zip del /S /Q apache-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache-staging.zip on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST build-apache.bat del /S /Q build-apache.bat" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache-build.bat on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache.windows rd /S /Q apache.windows" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache.windows directory on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache.staging.build rd /S /Q apache.staging.build" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache.staging.build directory on Windows VM"
+    REDUX_ROOT=/c/redux-build
+    rm -rf $REDUX_ROOT/PEM-HTTPD
 
-    # Copy sources on windows VM
     echo "Copying apache sources to Windows VM"
-    scp apache.zip $PG_SSH_WINDOWS:$PG_PATH_WINDOWS || _die "Couldn't copy the apache archieve to windows VM (apache.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c unzip apache.zip" || _die "Couldn't extract apache archieve on windows VM (apache.zip)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; mkdir apache.staging.build; chmod -R a+wrx apache.staging.build" || _die "Couldn't give full rights to apache windows directory on windows VM (apache.windows)"
+    mkdir -p $REDUX_ROOT/PEM-HTTPD
+    cp apache.zip $REDUX_ROOT/PEM-HTTPD/
+    cd $REDUX_ROOT/PEM-HTTPD
+    unzip apache.zip
+    mkdir apache.staging.build
+    chmod -R a+wrx apache.staging.build
 
+    cd $WD
     echo "END PREP PEM-HTTPD Windows"
 }
 
@@ -114,65 +114,69 @@ CALL "$PG_VS14INSTALLDIR_WINDOWS\VC\vcvarsall.bat" x86
 @SET PGBUILD=$PG_PGBUILD_WINDOWS
 echo ON
 @echo Building zlib first
-cd $PG_PATH_WINDOWS\apache.windows\srclib\zlib
+cd $PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\zlib
 nmake -f win32\Makefile.msc
 nmake -f win32\Makefile.msc test
-if EXIST "$PG_PATH_WINDOWS\apache.windows\srclib\zlib\zlib.lib" copy "$PG_PATH_WINDOWS\apache.windows\srclib\zlib\zlib.lib" "$PG_PATH_WINDOWS\apache.windows\srclib\zlib\zlib1.lib"
+if EXIST "$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\zlib\zlib.lib" copy "$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\zlib\zlib.lib" "$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\zlib\zlib1.lib"
 
 @echo Building openssl
-cd $PG_PATH_WINDOWS\apache.windows\srclib\openssl
-SET LIB=$PEM_PYTHON_WINDOWS\Lib;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;$PG_PGBUILD_WINDOWS\lib;%LIB%
-SET INCLUDE=$PEM_PYTHON_WINDOWS\include;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;%INCLUDE%;$PG_PGBUILD_WINDOWS\include
-SET PATH=$PG_PATH_WINDOWS;$PG_PGBUILD_WINDOWS\bin;$PG_PERL_WINDOWS\bin;$PEM_PYTHON_WINDOWS;$PG_TCL_WINDOWS\bin;%PATH%;C:\cygwin\bin
+cd $PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\openssl
+SET LIB=$PEM_PYTHON_WINDOWS\Lib;$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\zlib;$PG_PGBUILD_WINDOWS\lib;%LIB%
+SET INCLUDE=$PEM_PYTHON_WINDOWS\include;$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\zlib;%INCLUDE%;$PG_PGBUILD_WINDOWS\include
+SET PATH=$PG_PATH_WINDOWS\PEM-HTTPD;$PG_PGBUILD_WINDOWS\bin;$PG_PERL_WINDOWS\bin;$PEM_PYTHON_WINDOWS;$PG_TCL_WINDOWS\bin;%PATH%;C:\cygwin\bin
 perl Configure VC-WIN32 no-asm --prefix=%CD% --openssldir=%CD%\openssl.build
 nmake
-SET INCLUDE=$PG_PATH_WINDOWS\apache.windows\srclib\openssl\include;%INCLUDE%
+SET INCLUDE=$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\openssl\include;%INCLUDE%
 
 REM Building apache
-cd $PG_PATH_WINDOWS
+cd $PG_PATH_WINDOWS\PEM-HTTPD
 SET STAGING_DIR=%CD%
-cd $PG_PATH_WINDOWS\apache.windows
+cd $PG_PATH_WINDOWS\PEM-HTTPD\apache.windows
 perl srclib\apr\build\lineends.pl
 perl srclib\apr\build\fixwin32mak.pl
 
-cd $PG_PATH_WINDOWS\apache.windows\srclib\apr-util\xml\expat
+cd $PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\apr-util\xml\expat
 cmake -G "NMake Makefiles" -D BUILD_shared=OFF -DCMAKE_BUILD_TYPE=Release .
 nmake
 
 SET XML_OPTIONS="/D XML_STATIC"
 SET XML_PARSER=libexpat
-SET LIB=$PG_PATH_WINDOWS\apache.windows\srclib\apr-util\xml\expat;%LIB%
+SET LIB=$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\apr-util\xml\expat;%LIB%
 
-cd $PG_PATH_WINDOWS\apache.windows
+cd $PG_PATH_WINDOWS\PEM-HTTPD\apache.windows
 devenv /Upgrade Apache.dsw
 devenv Apache.sln /useenv /build Release /project libhttpd
 
-cd "$PG_PATH_WINDOWS\apache.windows"
+cd "$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows"
 
 @echo Compiling Apache with Standard configuration
 REM apr-iconv fails to build as apr.h does not exists in first round, as apr build runs later. Hence - run the build twrice to resolve that issue.
 nmake -f Makefile.win PORT=8080 NO_EXTERNAL_DEPS=1 INSTDIR="%STAGING_DIR%\apache.staging.build" NO_EXTERNAL_DEPS=1 _buildr installr || exit 1
-copy "$PG_PATH_WINDOWS\apache.windows\srclib\apr-util\xml\expat\libexpat.dll" "%STAGING_DIR%\apache.staging.build\bin"
+copy "$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\apr-util\xml\expat\libexpat.dll" "%STAGING_DIR%\apache.staging.build\bin"
 
-SET INCLUDE=$PEM_PYTHON_WINDOWS\include;$PG_PATH_WINDOWS\apache.staging.build\include;$PG_PATH_WINDOWS\apache.windows\srclib\zlib;$PG_PGBUILD_WINDOWS\include\openssl;%INCLUDE%
+SET INCLUDE=$PEM_PYTHON_WINDOWS\include;$PG_PATH_WINDOWS\PEM-HTTPD\apache.staging.build\include;$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\zlib;$PG_PGBUILD_WINDOWS\include\openssl;%INCLUDE%
 
 REM Building mod_wsgi
-cd $PG_PATH_WINDOWS\apache.windows\mod_wsgi\win32
+cd $PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\mod_wsgi\win32
 build-win32-VC10.bat
 
 EOT
 
-    scp build-apache.bat $PG_SSH_WINDOWS:$PG_PATH_WINDOWS
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c build-apache.bat" ||  _die "Failed to build apache server"
-    echo "Removing last successful staging directory ($PG_PATH_WINDOWS\\\\apache.staging)"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache.staging rd /S /Q apache.staging" || _die "Couldn't remove the last successful staging directory directory"
-    ssh $PG_SSH_WINDOWS "cmd /c mkdir $PG_PATH_WINDOWS\\\\apache.staging" || _die "Couldn't create the last successful staging directory"
+    REDUX_ROOT=/c/redux-build/PEM-HTTPD
+    cp build-apache.bat $REDUX_ROOT
+    cd $REDUX_ROOT
+    chmod ugo+x build-apache.bat
+    ./build-apache.bat
+
+    echo "Removing last successful staging directory"
+    rm -rf $REDUX_ROOT/apache.staging
+    mkdir -p $REDUX_ROOT/apache.staging
 
     echo "Copying the complete build to the successful staging directory"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c xcopy /E /Q /Y apache.staging.build\\\\* apache.staging\\\\" || _die "Couldn't copy the existing staging directory"
+    cp -a $REDUX_ROOT/apache.staging.build/* $REDUX_ROOT/apache.staging/
 
-    ssh $PG_SSH_WINDOWS "cmd /c echo PG_VERSION_APACHE=$PG_VERSION_APACHE > $PG_PATH_WINDOWS\\\\apache.staging/versions-windows.sh" || _die "Failed to write server version number into versions-windows.sh"
-    ssh $PG_SSH_WINDOWS "cmd /c echo PG_BUILDNUM_PEMHTTPD=$PG_BUILDNUM_PEMHTTPD >> $PG_PATH_WINDOWS\\\\apache.staging/versions-windows.sh" || _die "Failed to write server build number into versions-windows.sh"
+    echo "PG_VERSION_APACHE=$PG_VERSION_APACHE" > $REDUX_ROOT/apache.staging/versions-windows.sh
+    echo "PG_BUILDNUM_PEMHTTPD=$PG_BUILDNUM_PEMHTTPD" >> $REDUX_ROOT/apache.staging/versions-windows.sh
 
     echo "END BUILD PEM-HTTPD Windows"
 }
@@ -198,12 +202,14 @@ _postprocess_PEM_HTTPD_windows() {
 
     # Zip up the installed code, copy it back here, and unpack.
     mkdir $WD/PEM-HTTPD/staging/windows/apache || _die "Failed to create directory for apache"
-    echo "Copying apache built tree to Unix host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\vcredist\\\\vcredist_x86.exe $PG_PATH_WINDOWS\\\\apache.staging" || _die "Failed to copy the VC++ runtimes on the windows build host"
-    ssh $PG_SSH_WINDOWS "cmd /c copy $PG_PGBUILD_WINDOWS\\\\vcredist\\\\vc_redist.x86_2015.exe  $PG_PATH_WINDOWS\\\\apache.staging" || _die "Failed to copy the VC++ runtimes on the windows build host"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS; cmd /c if EXIST apache-staging.zip del /S /Q apache-staging.zip" || _die "Couldn't remove the $PG_PATH_WINDOWS\\apache-staging.zip on Windows VM"
-    ssh $PG_SSH_WINDOWS "cd $PG_PATH_WINDOWS\\\\apache.staging; cmd /c zip -r ..\\\\apache-staging.zip *" || _die "Failed to pack the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache.staging)"
-    scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache-staging.zip $WD/PEM-HTTPD/staging/windows/apache || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache-staging.zip)"
+    echo "Copying apache built tree to staging folder"
+    cp /c/pgBuild32/vcredist/vcredist_x86.exe  /c/redux-build/PEM-HTTPD/apache.staging/ || _die "Failed to copy the VC++ runtimes on the windows build host"              
+    cp /c/pgBuild32/vcredist/vc_redist_x86_2015.exe  /c/redux-build/PEM-HTTPD/apache.staging/ || _die "Failed to copy the VC++ runtimes on the windows build host"              
+    rm -rf /c/redux-build/PEM-HTTPD/apache-staging.zip
+    cd /c/redux-build/PEM-HTTPD/apache.staging
+    zip -r ../apache-staging.zip *
+
+    cp /c/redux-build/PEM-HTTPD/apache-staging $WD/PEM-HTTPD/staging/windows/apache || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache-staging.zip)"
     unzip $WD/PEM-HTTPD/staging/windows/apache/apache-staging.zip -d $WD/PEM-HTTPD/staging/windows/apache || _die "Failed to unpack the built source tree ($WD/staging/windows/apache-staging.zip)"
     mv $WD/PEM-HTTPD/staging/windows/apache/versions-windows.sh $WD/PEM-HTTPD/staging/windows || _die "Failed to move versions-windows.sh"
     rm $WD/PEM-HTTPD/staging/windows/apache/apache-staging.zip
