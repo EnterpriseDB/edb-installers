@@ -28,7 +28,8 @@ _prep_PEM_HTTPD_windows() {
     then
       echo "Applying apr patch..."
       cd $WD/PEM-HTTPD/source/apache.windows/srclib/apr
-      patch -p1 < "$WD/PEM-HTTPD/patches/apr-${PG_VERSION_APACHE_APR}.patch"
+      dos2unix $WD/PEM-HTTPD/patches/apr-$PG_VERSION_APACHE_APR.patch
+      patch -p1 < $WD/PEM-HTTPD/patches/apr-$PG_VERSION_APACHE_APR.patch
       cd ../../../
     fi
 

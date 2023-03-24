@@ -1,0 +1,141 @@
+Working patch for 2.4.53 onwards
+diff -rcwb a/Makefile.win b/Makefile.win
+*** a/Makefile.win	2019-03-26 02:25:50.000000000 +0000
+--- b/Makefile.win	2022-04-07 16:33:18.574858806 +0000
+***************
+*** 404,410 ****
+  	@$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   _build
+  
+  installr: 
+! 	@$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release _build _install
+  
+  installd: 
+  	@$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   _build _install
+--- 404,410 ----
+  	@$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   _build
+  
+  installr: 
+! 	@$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release _install
+  
+  installd: 
+  	@$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   _build _install
+***************
+*** 773,788 ****
+  _copybin:
+  	copy $(LONG)\httpd.$(src_exe) 				"$(inst_exe)" <.y
+  	copy $(LONG)\libhttpd.$(src_dll) 			"$(inst_dll)" <.y
+! 	copy srclib\apr\$(LONG)\libapr-1.$(src_dll) 		"$(inst_dll)" <.y
+  !IF EXIST("srclib\apr-util")
+! 	copy srclib\apr-iconv\$(LONG)\libapriconv-1.$(src_dll) 	"$(inst_dll)" <.y
+! 	copy srclib\apr-util\$(LONG)\libaprutil-1.$(src_dll) 	"$(inst_dll)" <.y
+! 	copy srclib\apr-util\ldap\$(LONG)\apr_ldap-1.$(src_dll) "$(inst_dll)" <.y
+  !ENDIF
+! 	for %d in (odbc $(DBD_LIST)) do ( \
+  	  copy srclib\$(UTILDIR)\dbd\$(LONG)\apr_dbd_%d-1.$(src_dll) "$(inst_dll)" <.y \
+  	)
+! 	for %d in ($(DBM_LIST) x) do if not %d == x ( \
+  	  copy srclib\$(UTILDIR)\dbm\$(LONG)\apr_dbm_%d-1.$(src_dll) "$(inst_dll)" <.y \
+  	)
+  !IF "$(SHORT)" == "D"
+--- 773,788 ----
+  _copybin:
+  	copy $(LONG)\httpd.$(src_exe) 				"$(inst_exe)" <.y
+  	copy $(LONG)\libhttpd.$(src_dll) 			"$(inst_dll)" <.y
+! 	-copy srclib\apr\$(LONG)\libapr-1.$(src_dll) 		"$(inst_dll)" <.y
+  !IF EXIST("srclib\apr-util")
+! 	-copy srclib\apr-iconv\$(LONG)\libapriconv-1.$(src_dll) 	"$(inst_dll)" <.y
+! 	-copy srclib\apr-util\$(LONG)\libaprutil-1.$(src_dll) 	"$(inst_dll)" <.y
+! 	-copy srclib\apr-util\ldap\$(LONG)\apr_ldap-1.$(src_dll) "$(inst_dll)" <.y
+  !ENDIF
+! 	-for %d in (odbc $(DBD_LIST)) do ( \
+  	  copy srclib\$(UTILDIR)\dbd\$(LONG)\apr_dbd_%d-1.$(src_dll) "$(inst_dll)" <.y \
+  	)
+! 	-for %d in ($(DBM_LIST) x) do if not %d == x ( \
+  	  copy srclib\$(UTILDIR)\dbm\$(LONG)\apr_dbm_%d-1.$(src_dll) "$(inst_dll)" <.y \
+  	)
+  !IF "$(SHORT)" == "D"
+***************
+*** 1255,1280 ****
+  		modules\ssl\mod_ssl.h \
+  		modules\ssl\mod_ssl_openssl.h \
+            ) do \
+! 	    @copy %f "$(INSTDIR)\include" < .y > nul
+  	copy srclib\apr\Lib$(SHORT)\apr-1.lib		"$(INSTDIR)\lib" <.y
+  	copy srclib\apr\Lib$(SHORT)\apr-1.pdb		"$(INSTDIR)\lib" <.y
+  	copy srclib\apr\$(LONG)\libapr-1.lib 		"$(INSTDIR)\lib" <.y
+  	copy srclib\apr\$(LONG)\libapr-1.exp 		"$(INSTDIR)\lib" <.y
+  !IF EXIST("srclib\apr-util")
+! 	copy srclib\apr-util\Lib$(SHORT)\aprutil-1.lib	"$(INSTDIR)\lib" <.y
+! 	copy srclib\apr-util\Lib$(SHORT)\aprutil-1.pdb	"$(INSTDIR)\lib" <.y
+! 	copy srclib\apr-util\$(EXPAT)\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib" <.y
+! 	copy srclib\apr-util\$(EXPAT)\Lib$(SHORT)\xml.pdb "$(INSTDIR)\lib" <.y
+! 	copy srclib\apr-util\$(LONG)\libaprutil-1.lib 	"$(INSTDIR)\lib" <.y
+! 	copy srclib\apr-util\$(LONG)\libaprutil-1.exp 	"$(INSTDIR)\lib" <.y
+! 	copy srclib\apr-iconv\$(LONG)\libapriconv-1.lib	"$(INSTDIR)\lib" <.y
+! 	copy srclib\apr-iconv\$(LONG)\libapriconv-1.exp "$(INSTDIR)\lib" <.y
+! !ELSE
+! 	copy srclib\expat\win32\$(LONG)\libexpatMT.lib  "$(INSTDIR)\lib" <.y
+! 	copy srclib\expat\win32\$(LONG)\libexpatMT.exp  "$(INSTDIR)\lib" <.y
+! 	copy srclib\expat\win32\$(LONG)\libexpat.lib    "$(INSTDIR)\lib" <.y
+! 	copy srclib\expat\win32\$(LONG)\libexpat.exp    "$(INSTDIR)\lib" <.y
+! 	copy srclib\expat\win32\$(LONG)\libexpat.dll    "$(INSTDIR)\bin" <.y
+  !ENDIF
+  	copy $(LONG)\libhttpd.exp 			"$(INSTDIR)\lib" <.y
+  	copy $(LONG)\libhttpd.lib 			"$(INSTDIR)\lib" <.y
+--- 1255,1280 ----
+  		modules\ssl\mod_ssl.h \
+  		modules\ssl\mod_ssl_openssl.h \
+            ) do \
+! 	    copy %f "$(INSTDIR)\include" < .y > nul
+  	copy srclib\apr\Lib$(SHORT)\apr-1.lib		"$(INSTDIR)\lib" <.y
+  	copy srclib\apr\Lib$(SHORT)\apr-1.pdb		"$(INSTDIR)\lib" <.y
+  	copy srclib\apr\$(LONG)\libapr-1.lib 		"$(INSTDIR)\lib" <.y
+  	copy srclib\apr\$(LONG)\libapr-1.exp 		"$(INSTDIR)\lib" <.y
+  !IF EXIST("srclib\apr-util")
+! 	-copy srclib\apr-util\Lib$(SHORT)\aprutil-1.lib	"$(INSTDIR)\lib" <.y
+! 	-copy srclib\apr-util\Lib$(SHORT)\aprutil-1.pdb	"$(INSTDIR)\lib" <.y
+! 	-copy srclib\apr-util\$(EXPAT)\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib" <.y
+! 	-copy srclib\apr-util\$(EXPAT)\Lib$(SHORT)\xml.pdb "$(INSTDIR)\lib" <.y
+! 	-copy srclib\apr-util\$(LONG)\libaprutil-1.lib 	"$(INSTDIR)\lib" <.y
+! 	-copy srclib\apr-util\$(LONG)\libaprutil-1.exp 	"$(INSTDIR)\lib" <.y
+! 	-copy srclib\apr-iconv\$(LONG)\libapriconv-1.lib	"$(INSTDIR)\lib" <.y
+! 	-copy srclib\apr-iconv\$(LONG)\libapriconv-1.exp "$(INSTDIR)\lib" <.y
+! !ELSE
+! 	-copy srclib\expat\win32\$(LONG)\libexpatMT.lib  "$(INSTDIR)\lib" <.y
+! 	-copy srclib\expat\win32\$(LONG)\libexpatMT.exp  "$(INSTDIR)\lib" <.y
+! 	-copy srclib\expat\win32\$(LONG)\libexpat.lib    "$(INSTDIR)\lib" <.y
+! 	-copy srclib\expat\win32\$(LONG)\libexpat.exp    "$(INSTDIR)\lib" <.y
+! 	-copy srclib\expat\win32\$(LONG)\libexpat.dll    "$(INSTDIR)\bin" <.y
+  !ENDIF
+  	copy $(LONG)\libhttpd.exp 			"$(INSTDIR)\lib" <.y
+  	copy $(LONG)\libhttpd.lib 			"$(INSTDIR)\lib" <.y
+***************
+*** 1282,1288 ****
+  	copy modules\dav\main\$(LONG)\mod_dav.lib 	"$(INSTDIR)\lib" <.y
+  	for %f in ( charset.conv magic mime.types ) do ( \
+  	  copy docs\conf\%f "$(INSTDIR)\conf\original\%f" <.y )
+! 	awk -f build\installwinconf.awk $(DOMAINNAME) $(SERVERNAME) \
+  	    $(SERVERADMIN) $(PORT) $(SSLPORT) "$(INSTDIR) " docs/conf/ 
+  	copy "support\dbmmanage.in" "$(INSTDIR)\bin\dbmmanage.pl"
+  	-awk -f <<script.awk "support/dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
+--- 1282,1288 ----
+  	copy modules\dav\main\$(LONG)\mod_dav.lib 	"$(INSTDIR)\lib" <.y
+  	for %f in ( charset.conv magic mime.types ) do ( \
+  	  copy docs\conf\%f "$(INSTDIR)\conf\original\%f" <.y )
+! 	-awk -f build\installwinconf.awk $(DOMAINNAME) $(SERVERNAME) \
+  	    $(SERVERADMIN) $(PORT) $(SSLPORT) "$(INSTDIR) " docs/conf/ 
+  	copy "support\dbmmanage.in" "$(INSTDIR)\bin\dbmmanage.pl"
+  	-awk -f <<script.awk "support/dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
+diff -rcwb a/support/win32/ApacheMonitor.rc b/support/win32/ApacheMonitor.rc
+*** a/support/win32/ApacheMonitor.rc	2009-07-20 08:34:36.000000000 +0000
+--- b/support/win32/ApacheMonitor.rc	2022-04-07 12:17:49.665241921 +0000
+***************
+*** 26,32 ****
+  IDI_APSRVMON            ICON    DISCARDABLE     "ApacheMonitor.ico"
+  IDI_ICOSTOP             ICON    DISCARDABLE     "apstop.ico"
+  IDI_ICORUN              ICON    DISCARDABLE     "aprun.ico"
+- CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST  "ApacheMonitor.manifest"
+  
+  IDD_DLGSERVICES DIALOGEX 0, 0, 350, 192
+  STYLE DS_MODALFRAME | DS_SETFOREGROUND | WS_MINIMIZEBOX | WS_VISIBLE | 
+--- 26,31 ----

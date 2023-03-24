@@ -79,7 +79,7 @@ _prep_PEM_HTTPD() {
 
 	mv pcre-836-win32-binaries httpd-$PG_VERSION_APACHE/srclib/pcre 
         mv httpd-$PG_VERSION_APACHE apache.windows || _die "Couldn't move httpd-$PG_VERSION_APACHE as apache.windows"
-        mv apr-$PG_VERSION_APACHE_APR apache.windows/srclib/apr || _die "Couldn't move apr-$PG_VERSION_APACHE_APR as apache.windows/srclib/apr-util"
+        mv apr-$PG_VERSION_APACHE_APR apache.windows/srclib/apr || _die "Couldn't move apr-$PG_VERSION_APACHE_APR as apache.windows/srclib/apr"
         mv apr-util-$PG_VERSION_APACHE_APR_UTIL apache.windows/srclib/apr-util || _die "Couldn't move apr-util-$PG_VERSION_APACHE_APR_UTIL as apache.windows/srclib/apr-util"
         mv apr-iconv-$PG_VERSION_APACHE_APR_ICONV apache.windows/srclib/apr-iconv || _die "Couldn't move apr-iconv-$PG_VERSION_APACHE_APR_UTIL as apache.windows/srclib/apr-iconv"
         mv expat-$PG_VERSION_APACHE_EXPAT apache.windows/srclib/apr-util/xml/expat || _die "Couldn't move apr-iconv-$PG_VERSION_APACHE_APR_UTIL as apache.windows/srclib/expat"
@@ -143,7 +143,7 @@ _download_sources() {
 
     # openssl
     OPENSSL_FOLDER=`echo $PG_TARBALL_OPENSSL|sed -e 's/\./_/g'`
-    wget https://github.com/openssl/openssl/releases/download/OpenSSL_$OPENSSL_FOLDER/openssl-PG_TARBALL_OPENSSL.tar.gz -O $WD/tarballs/openssl-$PG_TARBALL_OPENSSL.tar.gz
+    wget https://github.com/openssl/openssl/releases/download/OpenSSL_$OPENSSL_FOLDER/openssl-$PG_TARBALL_OPENSSL.tar.gz -O $WD/tarballs/openssl-$PG_TARBALL_OPENSSL.tar.gz
 
     # pcre
     cp $WD/PEM-HTTPD/prebuilts/pcre-836-win32-binaries.zip $WD/tarballs/
