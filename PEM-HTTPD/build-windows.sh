@@ -128,6 +128,7 @@ SET PATH=$PG_PATH_WINDOWS\PEM-HTTPD;$PG_PGBUILD_WINDOWS\bin;$PG_PERL_WINDOWS\bin
 perl Configure VC-WIN32 no-asm --prefix=%CD% --openssldir=%CD%\openssl.build
 nmake
 SET INCLUDE=$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\openssl\include;%INCLUDE%
+SET LIB=$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\openssl;%LIB%
 
 REM Building apache
 cd $PG_PATH_WINDOWS\PEM-HTTPD
@@ -205,12 +206,12 @@ _postprocess_PEM_HTTPD_windows() {
     mkdir $WD/PEM-HTTPD/staging/windows/apache || _die "Failed to create directory for apache"
     echo "Copying apache built tree to staging folder"
     cp /c/pgBuild32/vcredist/vcredist_x86.exe  /c/redux-build/PEM-HTTPD/apache.staging/ || _die "Failed to copy the VC++ runtimes on the windows build host"              
-    cp /c/pgBuild32/vcredist/vc_redist_x86_2015.exe  /c/redux-build/PEM-HTTPD/apache.staging/ || _die "Failed to copy the VC++ runtimes on the windows build host"              
+    cp /c/pgBuild32/vcredist/vc_redist.x86_2015.exe  /c/redux-build/PEM-HTTPD/apache.staging/ || _die "Failed to copy the VC++ runtimes on the windows build host"
     rm -rf /c/redux-build/PEM-HTTPD/apache-staging.zip
     cd /c/redux-build/PEM-HTTPD/apache.staging
     zip -r ../apache-staging.zip *
 
-    cp /c/redux-build/PEM-HTTPD/apache-staging $WD/PEM-HTTPD/staging/windows/apache || _die "Failed to copy the built source tree ($PG_SSH_WINDOWS:$PG_PATH_WINDOWS/apache-staging.zip)"
+    cp /c/redux-build/PEM-HTTPD/apache-staging.zip $WD/PEM-HTTPD/staging/windows/apache || _die "Failed to copy the built source tree (apache-staging.zip)"
     unzip $WD/PEM-HTTPD/staging/windows/apache/apache-staging.zip -d $WD/PEM-HTTPD/staging/windows/apache || _die "Failed to unpack the built source tree ($WD/staging/windows/apache-staging.zip)"
     mv $WD/PEM-HTTPD/staging/windows/apache/versions-windows.sh $WD/PEM-HTTPD/staging/windows || _die "Failed to move versions-windows.sh"
     rm $WD/PEM-HTTPD/staging/windows/apache/apache-staging.zip
