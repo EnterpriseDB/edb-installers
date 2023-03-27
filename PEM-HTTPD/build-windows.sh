@@ -120,6 +120,11 @@ nmake -f win32\Makefile.msc
 nmake -f win32\Makefile.msc test
 if EXIST "$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\zlib\zlib.lib" copy "$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\zlib\zlib.lib" "$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\zlib\zlib1.lib"
 
+@echo Building pcre
+cd $PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\pcre
+cmake -G "NMake Makefiles" -D BUILD_shared=OFF -DCMAKE_BUILD_TYPE=Release .
+nmake
+
 @echo Building openssl
 cd $PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\openssl
 SET LIB=$PEM_PYTHON_WINDOWS\Lib;$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\zlib;$PG_PGBUILD_WINDOWS\lib;%LIB%

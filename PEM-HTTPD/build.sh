@@ -71,13 +71,13 @@ _prep_PEM_HTTPD() {
         extract_file ../../tarballs/httpd-$PG_VERSION_APACHE
         extract_file ../../tarballs/zlib-$PG_TARBALL_ZLIB 
         extract_file ../../tarballs/openssl-$PG_TARBALL_OPENSSL 
-        extract_file ../../tarballs/pcre-836-win32-binaries 
+        extract_file ../../tarballs/pcre-$PG_VERSION_APACHE_PCRE
         extract_file ../../tarballs/apr-$PG_VERSION_APACHE_APR-win32-src
         extract_file ../../tarballs/apr-util-$PG_VERSION_APACHE_APR_UTIL-win32-src
         extract_file ../../tarballs/apr-iconv-$PG_VERSION_APACHE_APR_ICONV-win32-src
         extract_file ../../tarballs/expat-$PG_VERSION_APACHE_EXPAT
 
-	mv pcre-836-win32-binaries httpd-$PG_VERSION_APACHE/srclib/pcre 
+	mv pcre-$PG_VERSION_APACHE_PCRE httpd-$PG_VERSION_APACHE/srclib/pcre
         mv httpd-$PG_VERSION_APACHE apache.windows || _die "Couldn't move httpd-$PG_VERSION_APACHE as apache.windows"
         mv apr-$PG_VERSION_APACHE_APR apache.windows/srclib/apr || _die "Couldn't move apr-$PG_VERSION_APACHE_APR as apache.windows/srclib/apr"
         mv apr-util-$PG_VERSION_APACHE_APR_UTIL apache.windows/srclib/apr-util || _die "Couldn't move apr-util-$PG_VERSION_APACHE_APR_UTIL as apache.windows/srclib/apr-util"
@@ -146,7 +146,7 @@ _download_sources() {
     wget https://github.com/openssl/openssl/releases/download/OpenSSL_$OPENSSL_FOLDER/openssl-$PG_TARBALL_OPENSSL.tar.gz -O $WD/tarballs/openssl-$PG_TARBALL_OPENSSL.tar.gz
 
     # pcre
-    cp $WD/PEM-HTTPD/prebuilts/pcre-836-win32-binaries.zip $WD/tarballs/
+    wget https://sourceforge.net/projects/pcre/files/pcre/$PG_VERSION_APACHE_PCRE/pcre-$PG_VERSION_APACHE_PCRE.tar.gz/download -O $WD/tarballs/pcre-$PG_VERSION_APACHE_PCRE.tar.gz
 
     # apr
     wget https://archive.apache.org/dist/apr/apr-$PG_VERSION_APACHE_APR-win32-src.zip -O $WD/tarballs/apr-$PG_VERSION_APACHE_APR-win32-src.zip
