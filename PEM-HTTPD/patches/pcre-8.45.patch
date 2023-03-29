@@ -1,0 +1,14 @@
+diff -crB pcre-8.45/CMakeLists.txt pcre-8.45.new/CMakeLists.txt
+*** pcre-8.45/CMakeLists.txt	Mon Jun 14 02:33:37 2021
+--- pcre-8.45.new/CMakeLists.txt	Tue Mar 28 18:04:48 2023
+***************
+*** 125,130 ****
+--- 125,133 ----
+  # (Note: CMakeSetup displays these in alphabetical order, regardless of
+  # the order we use here)
+  
++ SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
++ SET(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF")
++ 
+  SET(BUILD_SHARED_LIBS OFF CACHE BOOL
+      "Build shared libraries instead of static ones.")

@@ -33,6 +33,14 @@ _prep_PEM_HTTPD_windows() {
       cd ../../../
     fi
 
+    if [ -f $WD/PEM-HTTPD/patches/pcre-${PG_VERSION_APACHE_PCRE}.patch ];
+    then
+      echo "Applying pcre patch..."
+      cd $WD/PEM-HTTPD/source/apache.windows/srclib/pcre
+      patch -p1 < $WD/PEM-HTTPD/patches/pcre-$PG_VERSION_APACHE_PCRE.patch
+      cd ../../../
+    fi
+
     cd $WD/PEM-HTTPD/source
 
     mkdir -p apache.windows/mod_wsgi || _die "Couldn't create the mod_wsgi directory"
@@ -122,7 +130,7 @@ if EXIST "$PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\zlib\zlib.lib" copy "
 
 @echo Building pcre
 cd $PG_PATH_WINDOWS\PEM-HTTPD\apache.windows\srclib\pcre
-cmake -G "NMake Makefiles" -D BUILD_shared=OFF -DCMAKE_BUILD_TYPE=Release .
+cmake -G "NMake Makefiles" -D BUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release .
 nmake
 
 @echo Building openssl
@@ -173,6 +181,8 @@ EOT
     cp build-apache.bat $REDUX_ROOT
     cd $REDUX_ROOT
     chmod ugo+x build-apache.bat
+    unset TMP
+    unset TEMP
     ./build-apache.bat
 
     echo "Removing last successful staging directory"
