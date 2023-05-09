@@ -260,7 +260,7 @@
         </startMenuShortcut>
     </startMenuShortcutList>
 
-    <!-- delete wxWidgets 2.8 libs in upgrade mode -->
+    <!-- delete wxWidgets 3.1.3 libs in upgrade mode -->
     <readyToInstallActionList>
         <actionGroup>
             <actionList>
@@ -268,7 +268,7 @@
             </actionList>
             <ruleList>
                 <compareText logic="equals" text="${platform_name}" value="osx"/>
-                <compareVersions logic="equals" version1="${brandingVer}" version2="12.0-1"/>
+                <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="15.2-1"/>
             </ruleList>
         </actionGroup>
     </readyToInstallActionList>
