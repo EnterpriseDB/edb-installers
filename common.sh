@@ -419,14 +419,10 @@ sign_bundles()
             ENTITLEMENTS="--entitlements $2"
         fi
         security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain
-        for i in `find $1 -type f`
+        for i in `find $1 -name "*.so"`
         do
-           file $i | grep -E "Mach-O 64-bit bundle"
-           if [ $? -eq 0 ];
-           then
-                echo "Signing module $i (${ENTITLEMENTS})"
-                codesign -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime ${ENTITLEMENTS}  $i
-           fi
+            echo "Signing module $i (${ENTITLEMENTS})"
+            codesign -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime ${ENTITLEMENTS}  $i
         done
 }
 
