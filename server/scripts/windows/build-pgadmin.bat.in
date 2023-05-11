@@ -1,13 +1,15 @@
+CALL "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64
 ECHO Setting variables
 @SET PGADMIN_SRC_DIR=
 @SET PGADMIN_PYTHON_DIR=
 @SET PGBUILD=
+@SET PGADMIN_POSTGRES_DIR=
 @SET PGADMIN_KRB5_DIR=
 @SET YARN_HOME=
 @SET NODEJS_HOME=
 @SET BUILDROOT=%PGADMIN_SRC_DIR%\win-build
 @SET TMPDIR=%PGADMIN_SRC_DIR%\win-temp
-@SET PATH=%YARN_HOME%\\\\bin;%NODEJS_HOME%;%PGBUILD%\\\\bin;%PATH%;
+@SET PATH=%YARN_HOME%\\\\bin;%NODEJS_HOME%;%PGBUILD%\\\\bin;%PGADMIN_POSTGRES_DIR%\\\\bin;%PATH%;
 
 REM get Python version for the runtime build ex. 3.8.1 will be 38
 FOR /f "tokens=1 DELims=." %%G IN ('%PGADMIN_PYTHON_DIR%/python.exe -c "import sys; print(sys.version.split(' ')[0])"') DO SET PYTHON_MAJOR=%%G
@@ -39,13 +41,14 @@ REM Main build sequence Ends
 	REM Note that we must use virtualenv.exe here, as the venv module doesn't allow python.exe to relocate.
 	"%PGADMIN_PYTHON_DIR%\Scripts\virtualenv.exe" venv
 
+	XCOPY /S /I /E /H /Y "%PGADMIN_PYTHON_DIR%\DLLs" "%TMPDIR%\venv\DLLs" > nul || EXIT /B 1
+	XCOPY /S /I /E /H /Y "%PGADMIN_PYTHON_DIR%\Lib" "%TMPDIR%\venv\Lib" > nul || EXIT /B 1
+
 	ECHO Activating virtual environment -  %TMPDIR%\venv...
 	CALL "%TMPDIR%\venv\Scripts\activate" || EXIT /B 1
 
 	ECHO Installing dependencies...
 	CALL python -m pip install --upgrade pip || EXIT /B 1
-	CALL python -m pip install --upgrade setuptools || EXIT /B 1
-
 	CALL pip install --only-binary=cryptography -r "%PGADMIN_SRC_DIR%\requirements.txt" || EXIT /B 1
 
 	CD %WD%
@@ -126,10 +129,7 @@ REM Main build sequence Ends
     ECHO } >> "%BUILDROOT%\web\config_distro.py"
     ECHO UPGRADE_CHECK_KEY = 'edb-pgadmin4' >> "%BUILDROOT%\web\config_distro.py"
 
-    ECHO Activating virtual environment -  %TMPDIR%\venv...
-    CALL "%TMPDIR%\venv\Scripts\activate" || EXIT /B 1
     ECHO Building docs...
-
     CALL pip install sphinx || EXIT /B 1
     CALL pip install sphinxcontrib-youtube || EXIT /B 1
 
@@ -137,8 +137,6 @@ REM Main build sequence Ends
     CD "%PGADMIN_SRC_DIR%\docs\en_US"
     CALL "%TMPDIR%\venv\Scripts\python.exe" build_code_snippet.py || EXIT /B 1
     CALL "%TMPDIR%\venv\Scripts\sphinx-build.exe" "%PGADMIN_SRC_DIR%\docs\en_US" "%BUILDROOT%\docs\en_US\html" || EXIT /B 1
-
-    CALL pip uninstall -y sphinx || EXIT /B 1
 
     REM Remove unnecessary doc files
     DEL /q "%BUILDROOT%\docs\en_US\html\_static\*.png" 1> nul 2>&1
