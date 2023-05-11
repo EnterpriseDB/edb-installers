@@ -244,7 +244,7 @@
         <startMenuShortcut>
             <name>pgAdmin 4</name>
             <runInTerminal>0</runInTerminal>
-            <windowsExec>${installdir}\pgAdmin 4\bin\pgAdmin4.exe</windowsExec>
+            <windowsExec>${installdir}\pgAdmin 4\runtime\pgAdmin4.exe</windowsExec>
             <windowsIcon>${installdir}\scripts\images\pgAdmin4.ico</windowsIcon>
             <ruleList>
                 <isTrue value="${create_shortcuts}" />
@@ -359,6 +359,11 @@
                  <deleteFile path="${installdir}/pgAdmin 4/bin">
                      <ruleList>
                          <fileExists path="${installdir}/pgAdmin 4/bin"/>
+                     </ruleList>
+                 </deleteFile>
+                 <deleteFile path="${installdir}/pgAdmin 4/runtime">
+                     <ruleList>
+                         <fileExists path="${installdir}/pgAdmin 4/runtime"/>
                      </ruleList>
                  </deleteFile>
            </actionList>
