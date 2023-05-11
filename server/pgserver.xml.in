@@ -1164,6 +1164,10 @@
             <validateInstallDir  installdir="${installdir}">
                 <ruleList>
                    <isFalse value="${extract_mode}"/>
+                   <stringTest>
+                      <text>${iBaseDirectory}</text>
+                      <type>empty</type>
+                   </stringTest>
                 </ruleList>
                 </validateInstallDir>
 
@@ -1179,6 +1183,10 @@
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+                        <stringTest>
+                          <text>${iDataDirectory}</text>
+                          <type>empty</type>
+                        </stringTest>
                         <isFalse value="${extract_mode}"/>
                     </ruleList>
                 </throwError>
@@ -1195,6 +1203,10 @@
                             <text>${platform_name}</text>
                             <value>windows</value>
                         </compareText>
+                        <stringTest>
+                          <text>${iDataDirectory}</text>
+                          <type>empty</type>
+                        </stringTest>
                         <isFalse value="${extract_mode}"/>
                     </ruleList>
                 </throwError>
