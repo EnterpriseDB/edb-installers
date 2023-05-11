@@ -381,6 +381,7 @@ EOT
     _replace PGADMIN_KRB5_DIR= "PGADMIN_KRB5_DIR=${PGADMIN_KRB5_DIR}" $WD/server/scripts/windows/build-pgadmin.bat || _die "Failed to replace PGADMIN_KRB5_DIR in build-pgadmin.bat"
     _replace YARN_HOME= "YARN_HOME=${YARN_HOME}" $WD/server/scripts/windows/build-pgadmin.bat || _die "Failed to replace YARN_HOME in build-pgadmin.bat"
     _replace NODEJS_HOME= "NODEJS_HOME=${NODEJS_HOME}" $WD/server/scripts/windows/build-pgadmin.bat || _die "Failed to replace NODEJS_HOME in build-pgadmin.bat"
+    _replace PGADMIN_POSTGRES_DIR= "PGADMIN_POSTGRES_DIR=${PG_PATH_WINDOWS_X64}\\\\output" $WD/server/scripts/windows/build-pgadmin.bat || _die "Failed to replace NODEJS_HOME in build-pgadmin.bat"
 
     # Zip up the scripts directories and copy them to the build host, then unzip
     cd $WD/server/scripts/windows/
@@ -506,11 +507,19 @@ EOT
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/pgadmin.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\build-pgadmin.bat" || _die "Failed to build pgadmin"
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\win-build\\\\docs \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\docs\"" || _die "Failed to copy pgAdmin doc"
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\win-build\\\\python \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\python\"" || _die "Failed to copy pgAdmin python"
-    ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\win-build\\\\runtime \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy pgAdmin bin"
+    ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\win-build\\\\runtime \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\runtime\"" || _die "Failed to copy pgAdmin runtime"
     ssh $PG_SSH_WINDOWS_X64 "cp -R $PG_PATH_WINDOWS_X64\\\\pgadmin.windows-x64\\\\win-build\\\\web \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\web\"" || _die "Failed to copy pgAdmin web"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\bin\\\\libiconv-2.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libiconv-2.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\bin\\\\libintl-9.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libintl-9.dll"
-    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\libpq.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\bin\"" || _die "Failed to copy libpq.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\bin\\\\libiconv-2.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\runtime\"" || _die "Failed to copy libiconv-2.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PGBUILD_GETTEXT_WINDOWS_X64\\\\bin\\\\libintl-9.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\runtime\"" || _die "Failed to copy libintl-9.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\libpq.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\runtime\"" || _die "Failed to copy libpq.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\pg_dump.exe \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\runtime\"" || _die "Failed to copy pg_dump.exe"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\pg_dumpall.exe \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\runtime\"" || _die "Failed to copy pg_dumpall.exe"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\pg_restore.exe \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\runtime\"" || _die "Failed to copy pg_restore.exe"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\psql.exe \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\runtime\"" || _die "Failed to copy psql.exe"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\libwinpthread-1.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\runtime\"" || _die "Failed to copy libwinpthread-1.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\zlib1.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\runtime\"" || _die "Failed to copy zlib1.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\libssl-*-x64.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\runtime\"" || _die "Failed to copy libssl-*-x64.dll"
+    ssh $PG_SSH_WINDOWS_X64 "cmd /c copy $PG_PATH_WINDOWS_X64\\\\output.build\\\\bin\\\\libcrypto-*-x64.dll \"$PG_PATH_WINDOWS_X64\\\\output.build\\\\pgAdmin 4\\\\runtime\"" || _die "Failed to copy libcrypto-*-x64.dll"
 
 
     ##################################
