@@ -8,42 +8,12 @@ then
     source $WD/pgbouncer/build-osx.sh
 fi
 
-# Linux
-if [ $PG_ARCH_LINUX = 1 ];
+# Windows-x64
+if [ $PG_ARCH_WINDOWS_X64 = 1 ];
 then
-    source $WD/pgbouncer/build-linux.sh
-fi
-
-# Linux x64
-if [ $PG_ARCH_LINUX_X64 = 1 ];
-then
-    source $WD/pgbouncer/build-linux-x64.sh
-fi
-
-# Linux ppc64
-if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-then
-    source $WD/pgbouncer/build-linux-ppc64.sh
-fi
-
-# Windows
-if [ $PG_ARCH_WINDOWS = 1 ];
-then
-    source $WD/pgbouncer/build-windows.sh
+    source $WD/pgbouncer/build-windows-x64.sh
 fi
     
-# Solaris x64
-if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-then
-    source $WD/pgbouncer/build-solaris-x64.sh
-fi
-
-## Solaris sparc
-#if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
-#then
-#    source $WD/pgbouncer/build-solaris-sparc.sh
-#fi
-
 ################################################################################
 # Build preparation
 ################################################################################
@@ -69,9 +39,6 @@ _prep_pgbouncer() {
     echo "Unpacking pgbouncer source..."
     extract_file ../../tarballs/pgbouncer-$PG_VERSION_PGBOUNCER 
 
-    cd $WD/pgbouncer/source/pgbouncer-$PG_VERSION_PGBOUNCER
-    patch -p0 < $WD/tarballs/pgbouncer-1.7-configure.patch
-
     # Per-platform prep
     cd $WD
     
@@ -81,42 +48,12 @@ _prep_pgbouncer() {
         _prep_pgbouncer_osx 
     fi
 
-    # Linux
-    if [ $PG_ARCH_LINUX = 1 ];
+    # Windows-x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
-        _prep_pgbouncer_linux 
-    fi
-
-    # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-        _prep_pgbouncer_linux_x64 
-    fi
-
-    # Linux ppc64
-    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-    then
-        #_prep_pgbouncer_linux_ppc64 
-        echo "Linux-PPC64 build pre-process is not part of build framework yet."
-    fi
-
-    # Windows
-    if [ $PG_ARCH_WINDOWS = 1 ];
-    then
-        _prep_pgbouncer_windows 
+        _prep_pgbouncer_windows_x64 
     fi
     
-    # Solaris x64
-    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-    then
-        _prep_pgbouncer_solaris_x64 
-    fi
-
-#    # Solaris sparc
-#    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
-#    then
-#        _prep_pgbouncer_solaris_sparc 
-#    fi
 }
 
 ################################################################################
@@ -131,42 +68,12 @@ _build_pgbouncer() {
         _build_pgbouncer_osx 
     fi
 
-    # Linux 
-    if [ $PG_ARCH_LINUX = 1 ];
+    # Windows-x64
+    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
     then
-        _build_pgbouncer_linux 
+        _build_pgbouncer_windows_x64  
     fi
 
-    # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-       _build_pgbouncer_linux_x64 
-    fi
-
-    # Linux ppc64
-    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-    then
-       #_build_pgbouncer_linux_ppc64 
-       echo "Linux-PPC64 build process is not part of build framework yet."
-    fi
-
-    # Windows
-    if [ $PG_ARCH_WINDOWS = 1 ];
-    then
-        _build_pgbouncer_windows 
-    fi
-
-    # Solaris x64
-    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-    then
-       _build_pgbouncer_solaris_x64 
-    fi
-
-     # Solaris sparc
-#    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
-#    then
-#       _build_pgbouncer_solaris_sparc 
-#    fi
 }
 
 
@@ -197,39 +104,9 @@ _postprocess_pgbouncer() {
         _postprocess_pgbouncer_osx 
     fi
 
-    # Linux
-    if [ $PG_ARCH_LINUX = 1 ];
-    then
-        _postprocess_pgbouncer_linux 
+   # Windows-x64
+   if [ $PG_ARCH_WINDOWS_X64 = 1 ]; 
+   then
+       _postprocess_pgbouncer_windows_x64 
     fi
-
-    # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-        _postprocess_pgbouncer_linux_x64 
-    fi
-    
-    # Linux ppc64
-    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-    then
-        _postprocess_pgbouncer_linux_ppc64 
-    fi
-    
-    # Windows
-    if [ $PG_ARCH_WINDOWS = 1 ];
-    then
-       _postprocess_pgbouncer_windows 
-    fi
-
-    # Solaris x64
-    if [ $PG_ARCH_SOLARIS_X64 = 1 ];
-    then
-        _postprocess_pgbouncer_solaris_x64 
-    fi
-
-#    # Solaris sparc
-#    if [ $PG_ARCH_SOLARIS_SPARC = 1 ];
-#    then
-#        _postprocess_pgbouncer_solaris_sparc 
-#    fi
 }
