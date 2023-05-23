@@ -45,16 +45,16 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            We can also specify additional directorys to include in the path.
 
 PG_SSH_SIGN_WINDOWS=buildfarm@bf-sign-server-windows.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS=D:\\\\pginstaller_15.auto
-PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller_15.auto
+PG_PATH_WINDOWS=D:\\\\pginstaller_16.auto
+PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller_16.auto
 
 PG_SSH_WINDOWS_X64=buildfarm@bf14-windows-x64.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS_X64=D:\\\\pginstaller_15.auto
-PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller_15.auto
+PG_PATH_WINDOWS_X64=D:\\\\pginstaller_16.auto
+PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller_16.auto
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017"
 PG_MSBUILDDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017\\\\Professional\\\\MSBuild\\\\15.0"
 PG_DEVENVDIR_WINDOWS_X64="$PG_VSINSTALLDIR_WINDOWS_X64\\\\Professional\\\\Common7\\\\IDE"
-PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild64_v15"
+PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild64_v16"
 PG_PGBUILD_GETTEXT_WINDOWS_X64="C:\\\\pgBuild64-gettext-0198"
 PG_PGBUILD_OPENSSL_WINDOWS_X64="C:\\\\pgBuild64"
 PG_BOOST_WINDOWS_X64="C:\\\\pgBuild64\\\\Boost"
@@ -65,7 +65,7 @@ PG_CMAKE_WINDOWS_X64="C:\\\\cmake-x64"
 PG_PERL24_WINDOWS_X64=C:\\\\pgBuild64\\\\edb\\\\languagepack\\\\v1\\\\Perl-5.26
 PG_PERL_WINDOWS_X64=C:\\\\edb\\\\languagepack\\\\v3\\\\Perl-5.36
 PG_PYTHON_WINDOWS_X64=C:\\\\edb\\\\languagepack\\\\v3\\\\Python-3.10
-PGADMIN_PYTHON_WINDOWS_X64=C:\\\\pgBuild64_v15\\\\python\\\\Current
+PGADMIN_PYTHON_WINDOWS_X64=C:\\\\pgBuild64_v16\\\\python\\\\Current
 PGADMIN_PYTHON_DLL_WINDOWS_X64=$PGADMIN_PYTHON_WINDOWS_X64\\\\python310.dll
 PG_TCL_WINDOWS_X64=C:\\\\edb\\\\languagepack\\\\v3\\\\Tcl-8.6
 PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
@@ -84,12 +84,12 @@ YARN_HOME="C:\\\\pgBuild64\\\\Yarn"
 NODEJS_HOME="C:\\\\pgBuild64\\\\node-v18.16.0-win-x64"
 
 PG_SSH_OSX=buildfarm@battersea-park.ox.uk.enterprisedb.com
-PG_PATH_OSX=/opt/pginstaller_15.auto
+PG_PATH_OSX=/opt/pginstaller_16.auto
 PG_SSH_OSX_SIGN=buildfarm@mors.ox.uk.enterprisedb.com
 #PG_SSH_OSX_SIGN=buildfarm@bf-osx-sign.ox.uk.enterprisedb.com
 PG_SSH_OSX_NOTARY=buildfarm@mors.ox.uk.enterprisedb.com
-PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_15.auto
-PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_15.notary
+PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_16.auto
+PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_16.notary
 PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging_cache/osx
 PG_MAVEN_HOME_OSX=/opt/local/Current/apache-maven-3.8.2
@@ -105,7 +105,7 @@ PGSERVER_STAGING_OSX=$PWD/server/staging/osx/server
 PGADMIN_STAGING_OSX=$PWD/server/staging/osx/pgadmin4
 SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
 CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
-PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/15
+PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/16
 YARN_HOME_OSX=/opt/local/Current_v15/yarn
 NODEJS_HOME_OSX=/opt/local/Current_v15/nodejs
 IMAGEMAGICK_HOME_OSX=/opt/local/Current_v15/ImageMagick
@@ -116,7 +116,7 @@ IMAGEMAGICK_HOME_OSX=/opt/local/Current_v15/ImageMagick
 
 MACOSX_MIN_VERSION=10.15
 ARCHFLAGS="-arch x86_64 -arch arm64"
-SDK_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk
+SDK_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk
 PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
 PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
 PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
