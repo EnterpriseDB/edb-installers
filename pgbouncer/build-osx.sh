@@ -90,24 +90,8 @@ cat<<PGBOUNCER > $WD/pgbouncer/build-pgbouncer.sh
 
     cd $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/
     
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -O2" LDFLAGS="-arch x86_64" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION LIBEVENT_LIBS="-L/opt/local/Current_v15/lib -levent" LIBEVENT_CFLAGS="-I/opt/local/Current_v15/include" ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer --with-openssl=/opt/local/Current_v15 || _die "Failed to configure pgbouncer"
-    mv lib/usual/config.h lib/usual/config_x86_64.h || _die "Failed to rename config.h"
+    CFLAGS="$PG_ARCH_OSX_CFLAGS -O2" LDFLAGS="$ARCHFLAGS" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION LIBEVENT_LIBS="-L/opt/local/Current_v15/lib -levent" LIBEVENT_CFLAGS="-I/opt/local/Current_v15/include" ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer --with-openssl=/opt/local/Current_v15 || _die "Failed to configure pgbouncer"
 
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch arm64 -O2" LDFLAGS="-arch arm64" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION LIBEVENT_LIBS="-L/opt/local/Current_v15/lib -levent" LIBEVENT_CFLAGS="-I/opt/local/Current_v15/include" ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer --with-openssl=/opt/local/Current_v15 || _die "Failed to configure pgbouncer"
-    mv lib/usual/config.h lib/usual/config_arm64.h || _die "Failed to rename config.h"
-
-    CFLAGS="$PG_ARCH_OSX_CFLAGS -arch x86_64 -arch arm64 -O2" LDFLAGS="-arch x86_64 -arch arm64" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION LIBEVENT_LIBS="-L/opt/local/Current_v15/lib -levent" LIBEVENT_CFLAGS="-I/opt/local/Current_v15/include" ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer --with-openssl=/opt/local/Current_v15 || _die "Failed to configure pgbouncer"
-
-    echo "#ifdef __BIG_ENDIAN__" > lib/usual/config.h
-    echo "  #error \"Do not support ppc architecture\"" >> lib/usual/config.h
-    echo "#else" >> lib/usual/config.h
-    echo "  #ifdef __LP64__" >> lib/usual/config.h
-    echo "    #include \"config_x86_64.h\"" >> lib/usual/config.h
-    echo "  #else" >> lib/usual/config.h
-    echo "    #include \"config_arm64.h\"" >> lib/usual/config.h
-    echo "  #endif" >> lib/usual/config.h
-    echo "#endif" >> lib/usual/config.h
- 
     MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make || _die "Failed to build pgbouncer"
     ln -s $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/install-sh $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/doc/install-sh
     make install || _die "Failed to install pgbouncer"
