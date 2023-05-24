@@ -3011,7 +3011,7 @@
                     <abandonProcessGroup>0</abandonProcessGroup>
                     <groupname></groupname>
                     <keepAlive>0</keepAlive>
-                    <program>${installdir}/bin/postmaster</program>
+                    <program>${installdir}/bin/postgres</program>
                     <programArguments>-D ${datadir}</programArguments>
                     <progressText>${msg(progress.text.configuring.startup)}</progressText>
                     <scope>system</scope>
@@ -3019,9 +3019,27 @@
                     <username>${serviceaccount}</username>
                 </createOSXService>
 
+		<runProgram>
+		    <program>launchctl</program>
+                    <programArguments>load /Library/LaunchDaemons/com.edb.launchd.${servicename}.plist</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>osx</value>
+                        </compareText>
+                        <isFalse value="${extract_mode}"/>
+                    </ruleList>
+                </runProgram>
+
+		<!--
 		<startOSXService>
                     <serviceName>${servicename}</serviceName>
+                    <showMessageOnError>1</showMessageOnError>
 		</startOSXService>
+		-->
 
                 <runProgram>
                     <program>${env(WINDIR)}\System32\cscript</program>
