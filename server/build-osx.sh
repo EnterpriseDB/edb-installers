@@ -199,8 +199,7 @@ _build_server_osx() {
     # Building 'System_stats' extention and bundled the required files with posgresql
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/system_stats.osx; PATH="$PG_STAGING/bin:$PATH" make USE_PGXS=1; PATH="$PG_STAGING/bin:$PATH" make install USE_PGXS=1" || _die "Failed to build System Status"
 
-    #ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/system_stats.osx/; cp system_stats--*.sql system_stats.control $PG_STAGING/share/postgresql/extension; cp system_stats.so $PG_STAGING/lib/postgresql " || _die "Failed to bundle system_stats extension files"
-     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/system_stats.osx/; cp system_stats--*.sql system_stats.control $PG_STAGING/share/postgresql/extension " || _die "Failed to bundle system_stats extension files"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/system_stats.osx/; cp system_stats--*.sql system_stats.control $PG_STAGING/share/postgresql/extension; cp system_stats.dylib $PG_STAGING/lib/postgresql " || _die "Failed to bundle system_stats extension files"
 
     # Stackbuilder
     #cd $WD/server/source/stackbuilder.osx
@@ -247,11 +246,7 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libkrb5*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libkrb5"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libgss*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libgssapi"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libk5*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libk5"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libverto*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libverto"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libcom*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libcom"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libkdb5*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libkdb5"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libkadm5*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libkadm5"
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libkrad*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libkrad"
 
     ssh $PG_SSH_OSX "mkdir -p $PG_STAGING/stackbuilder.app/Contents/Frameworks" || _die "Failed to create $PG_STAGING/stackbuilder/Frameworks"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libwx_osx_cocoau_xrc-*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libwx"

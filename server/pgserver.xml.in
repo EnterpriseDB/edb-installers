@@ -325,7 +325,7 @@
         <!-- MAC: Stop the server -->
         <runProgram>
             <program>su</program>
-            <programArguments>- ${serviceaccount} -c "\"${installdir}/bin/postgres\" stop -m fast -w -D \"${datadir}\""</programArguments>
+            <programArguments>- ${serviceaccount} -c "\"${installdir}/bin/pg_ctl\" stop -m fast -w -D \"${datadir}\""</programArguments>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
