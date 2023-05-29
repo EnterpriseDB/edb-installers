@@ -120,7 +120,7 @@ IMAGEMAGICK_HOME_OSX=/opt/local/Current_v15/ImageMagick
 
 MACOSX_MIN_VERSION=10.15
 ARCHFLAGS="-arch x86_64 -arch arm64"
-SDK_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk
+SDK_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk
 PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
 PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
 PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
