@@ -20,7 +20,7 @@ _prep_sqlprotect_osx() {
 
     # create a copy of the sqlprotect tree
 	cd postgres.osx/contrib
-    git clone https://github.com/EnterpriseDB/edb-sql-protect.git SQLPROTECT
+    git clone git@github.com:EnterpriseDB/edb-sql-protect.git SQLPROTECT
 
     tar -jcvf sqlprotect.tar.bz2 SQLPROTECT
 	
