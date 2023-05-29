@@ -241,6 +241,10 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libicudata*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libicudata"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libicuuc*dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libicuuc"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libiconv*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libiconv"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libkrb5*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libkrb5"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libgss*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libgssapi"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libk5*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libk5"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libcom*.dylib $PG_STAGING/lib/" || _die "Failed to copy the latest libcom"
 
     ssh $PG_SSH_OSX "mkdir -p $PG_STAGING/stackbuilder.app/Contents/Frameworks" || _die "Failed to create $PG_STAGING/stackbuilder/Frameworks"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libwx_osx_cocoau_xrc-*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libwx"
