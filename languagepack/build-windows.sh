@@ -57,7 +57,8 @@ _prep_languagepack_windows() {
     # Changes to build Python with openssl-3.0.5 external binaries
     sed -i '0,/rmdir/s//rem rmdir/' Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}/PCbuild/get_externals.bat
     sed -i 's/-1_1/-3-x64/' Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}/PCbuild/openssl.props
-    mkdir -p Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}/externals/openssl-bin-1.1.1q/amd64/include
+    sed -i 's/-1.1.1[a-z]//' Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}/PCbuild/python.props
+    mkdir -p Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}/externals/openssl-bin/amd64/include
 
     # Python 3.9 vesion has issue with not finding tcl.h for _tkinter.c 
     # Fixing in _tkinter.vcxproj
@@ -132,13 +133,13 @@ _build_languagepack_windows() {
 
     # Python Build
 
-    # Copying Openssl 3.x files to openssl-bin-1.1.1q directory structure.
-    ssh $PG_SSH_WIN "cmd /c copy $PG_PGBUILD_WIN\\\\lib\\\\libssl* $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}\\\\externals\\\\openssl-bin-1.1.1q\\\\amd64" || _die "Failed to copy libssl from lib folder to external openssl folder"
-    ssh $PG_SSH_WIN "cmd /c copy $PG_PGBUILD_WIN\\\\lib\\\\libcrypto* $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}\\\\externals\\\\openssl-bin-1.1.1q\\\\amd64" || _die "Failed to copy libcrypto from lib folder to external openssl folder"
-    ssh $PG_SSH_WIN "cmd /c copy $PG_PGBUILD_WIN\\\\bin\\\\libssl* $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}\\\\externals\\\\openssl-bin-1.1.1q\\\\amd64" || _die "Failed to copy libssl from bin folder to external openssl folder"
-    ssh $PG_SSH_WIN "cmd /c copy $PG_PGBUILD_WIN\\\\bin\\\\libcrypto* $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}\\\\externals\\\\openssl-bin-1.1.1q\\\\amd64" || _die "Failed to copy libcrypto from bin folder to external openssl folder"
-    ssh $PG_SSH_WIN "cmd /c copy $PG_PGBUILD_WIN\\\\include\\\\openssl\\\\applink.c $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}\\\\externals\\\\openssl-bin-1.1.1q\\\\amd64\\\\include" || _die "Failed to copy applink.c from include folder to external openssl folder"
-    ssh $PG_SSH_WIN "cp -R $PG_PGBUILD_WIN\\\\include\\\\openssl $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}\\\\externals\\\\openssl-bin-1.1.1q\\\\amd64\\\\include" || _die "Failed to copy openssl from include folder to external openssl folder"
+    # Copying Openssl 3.x files to openssl-bin directory structure.
+    ssh $PG_SSH_WIN "cmd /c copy $PG_PGBUILD_WIN\\\\lib\\\\libssl* $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}\\\\externals\\\\openssl-bin\\\\amd64" || _die "Failed to copy libssl from lib folder to external openssl folder"
+    ssh $PG_SSH_WIN "cmd /c copy $PG_PGBUILD_WIN\\\\lib\\\\libcrypto* $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}\\\\externals\\\\openssl-bin\\\\amd64" || _die "Failed to copy libcrypto from lib folder to external openssl folder"
+    ssh $PG_SSH_WIN "cmd /c copy $PG_PGBUILD_WIN\\\\bin\\\\libssl* $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}\\\\externals\\\\openssl-bin\\\\amd64" || _die "Failed to copy libssl from bin folder to external openssl folder"
+    ssh $PG_SSH_WIN "cmd /c copy $PG_PGBUILD_WIN\\\\bin\\\\libcrypto* $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}\\\\externals\\\\openssl-bin\\\\amd64" || _die "Failed to copy libcrypto from bin folder to external openssl folder"
+    ssh $PG_SSH_WIN "cmd /c copy $PG_PGBUILD_WIN\\\\include\\\\openssl\\\\applink.c $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}\\\\externals\\\\openssl-bin\\\\amd64\\\\include" || _die "Failed to copy applink.c from include folder to external openssl folder"
+    ssh $PG_SSH_WIN "cp -R $PG_PGBUILD_WIN\\\\include\\\\openssl $PG_PATH_WIN\\\\languagepack.$ARCH\\\\Python-${PG_VERSION_PYTHON}.${PG_MINOR_VERSION_PYTHON}\\\\externals\\\\openssl-bin\\\\amd64\\\\include" || _die "Failed to copy openssl from include folder to external openssl folder"
 
     cd $WD/languagepack/scripts/$ARCH
 
