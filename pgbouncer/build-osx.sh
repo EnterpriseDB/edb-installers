@@ -102,6 +102,10 @@ cat<<PGBOUNCER > $WD/pgbouncer/build-pgbouncer.sh
     cp -pR /opt/local/Current_v15/lib/libevent-*.dylib $PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer/lib
     cp -pR /opt/local/Current_v15/lib/libssl*.dylib $PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer/lib
     cp -pR /opt/local/Current_v15/lib/libcrypto*.dylib $PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer/lib
+    cp -pR /opt/local/Current_v15/lib/libcom_err*.dylib $PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer/lib
+    cp -pR /opt/local/Current_v15/lib/libgssapi_krb5*.dylib $PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer/lib
+    cp -pR /opt/local/Current_v15/lib/libk5crypto*.dylib $PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer/lib
+    cp -pR /opt/local/Current_v15/lib/libkrb5*.dylib $PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer/lib
  
     _rewrite_so_refs $PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer bin @loader_path/..
     _rewrite_so_refs $PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer lib @loader_path/
@@ -115,6 +119,10 @@ cat<<PGBOUNCER > $WD/pgbouncer/build-pgbouncer.sh
     cp -pR $PG_PGHOME_OSX/lib/libssl* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libssl in instscripts"
     cp -pR $PG_PGHOME_OSX/lib/libcrypto* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libcrypto in instscripts"
     cp -pR $PG_PGHOME_OSX/lib/libxml2* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libxml2 in instscripts"
+    cp -pR $PG_PGHOME_OSX/lib/libcom_err* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libcom_err in instscripts"
+    cp -pR $PG_PGHOME_OSX/lib/libgssapi_krb5* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libgssapi_krb5 in instscripts"
+    cp -pR $PG_PGHOME_OSX/lib/libk5crypto* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libk5crypto in instscripts"
+    cp -pR $PG_PGHOME_OSX/lib/libkrb5* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libkrb5 in instscripts"
     cp -pR $PG_PGHOME_OSX/bin/psql $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/bin || _die "Failed to copy psql in instscripts"
 
     install_name_tool -change "@loader_path//lib/libcrypto.3.dylib" "@loader_path/libcrypto.3.dylib" $PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer/lib/libssl.3.dylib
