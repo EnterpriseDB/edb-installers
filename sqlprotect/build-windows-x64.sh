@@ -20,7 +20,7 @@ _prep_sqlprotect_windows_x64() {
 
     # create a copy of the sqlprotect tree
     cd postgres.windows-x64/contrib
-    git clone https://github.com/EnterpriseDB/edb-sql-protect.git SQLPROTECT
+    git clone git@github.com:EnterpriseDB/edb-sql-protect.git SQLPROTECT
 
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/sqlprotect/staging/windows-x64 ];
