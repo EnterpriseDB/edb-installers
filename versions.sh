@@ -21,7 +21,7 @@ PG_BUILDNUM_SQLPROTECT=2
 #                     Minor version is revision.build.
 
 PG_MAJOR_VERSION=12
-PG_MINOR_VERSION=15.2
+PG_MINOR_VERSION=15.3
 
 # Other package versions
 PG_VERSION_POSTGIS=2.5.5
