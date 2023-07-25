@@ -30,7 +30,7 @@ PG_BUILDNUM_PEMHTTPD=1
 #                     Minor version is revision.build.
 
 PG_MAJOR_VERSION=15
-PG_MINOR_VERSION=3.3
+PG_MINOR_VERSION=3.4
 
 # Other package versions
 PG_VERSION_APACHE=2.4.39
