@@ -120,7 +120,7 @@ _build_runtime() {
 	# WGET:
 	NW_VERSION=$(yarn info nw | grep latest | awk -F "'" '{ print $2}')
 	# A quick hack to use NWjs version 0.55.0 because latest NWjs version is causing some issues to launch pgAdmin-5.7 on macOS Catalina and BigSur
-	export NW_VERSION=0.77.0
+	export NW_VERSION=0.78.0
 	pushd "${BUILD_ROOT}" > /dev/null
 		while true;do
 			curl -OL https://dl.nwjs.io/v${NW_VERSION}/nwjs-v${NW_VERSION}-osx-x64.zip && break
