@@ -339,7 +339,7 @@
         </runProgram>
         <runProgram>
             <program>launchctl</program>
-            <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.${servicename}.plist</programArguments>
+            <programArguments>unload /Library/LaunchDaemons/${servicename}.plist</programArguments>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
             <ruleList>
@@ -1315,7 +1315,7 @@
                     <text>Duplicate Service Exists</text>
                     <ruleList>
                         <compareText logic="contains" text="${platform_name}" value="osx"/>
-                        <fileExists path="/Library/LaunchDaemons/com.edb.launchd.${servicename}.plist"/>
+                        <fileExists path="/Library/LaunchDaemons/${servicename}.plist"/>
                     </ruleList>
                 </throwError>
 
@@ -2432,12 +2432,12 @@
             <actionList>
                 <runProgram>
                     <program>launchctl</program>
-                    <programArguments>unload /Library/LaunchDaemons/com.edb.launchd.${servicename}.plist</programArguments>
+                    <programArguments>unload /Library/LaunchDaemons/${servicename}.plist</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
                 <deleteFile>
-                    <path>/Library/LaunchDaemons/com.edb.launchd.${servicename}.plist</path>
+                    <path>/Library/LaunchDaemons/${servicename}.plist</path>
                 </deleteFile>
             </actionList>
             <ruleList>
