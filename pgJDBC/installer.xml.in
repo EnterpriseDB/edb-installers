@@ -472,7 +472,7 @@ EOF
                             <variable>installdir</variable>
                         </registryGet>
                         <runProgram>
-                          <program>cmd</program>
+                          <program>${env(WINDIR)}\System32\cmd</program>
                           <programArguments>/c del "${installdir}\*.jar"</programArguments>
                           <abortOnError>0</abortOnError>
                           <showMessageOnError>0</showMessageOnError>
@@ -694,12 +694,12 @@ EOF
                         <distributionFile>
                             <origin>staging/linux/postgresql-PG_VERSION_PGJDBC.jar</origin>
                         </distributionFile>
-                        <distributionFile>
+                        <!-- <distributionFile>
                             <origin>staging/linux/postgresql-PG_VERSION_PGJDBC.jre6.jar</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>staging/linux/postgresql-PG_VERSION_PGJDBC.jre7.jar</origin>
-                        </distributionFile>
+                        </distributionFile>-->
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -734,12 +734,12 @@ EOF
                         <distributionFile>
                             <origin>staging/linux-x64/postgresql-PG_VERSION_PGJDBC.jar</origin>
                         </distributionFile>
-                        <distributionFile>
+                        <!--<distributionFile>
                             <origin>staging/linux-x64/postgresql-PG_VERSION_PGJDBC.jre6.jar</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>staging/linux-x64/postgresql-PG_VERSION_PGJDBC.jre7.jar</origin>
-                        </distributionFile>
+                        </distributionFile>-->
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -774,12 +774,12 @@ EOF
                         <distributionFile>
                             <origin>staging/linux-ppc64/postgresql-PG_VERSION_PGJDBC.jar</origin>
                         </distributionFile>
-                        <distributionFile>
+                        <!--<distributionFile>
                             <origin>staging/linux-ppc64/postgresql-PG_VERSION_PGJDBC.jre6.jar</origin>
                         </distributionFile>
 			<distributionFile>
                             <origin>staging/linux-ppc64/postgresql-PG_VERSION_PGJDBC.jre7.jar</origin>
-			</distributionFile>
+			</distributionFile>-->
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -814,12 +814,12 @@ EOF
                         <distributionFile>
                             <origin>staging/osx/postgresql-PG_VERSION_PGJDBC.jar</origin>
                         </distributionFile>
-                        <distributionFile>
+                        <!--<distributionFile>
                             <origin>staging/osx/postgresql-PG_VERSION_PGJDBC.jre6.jar</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>staging/osx/postgresql-PG_VERSION_PGJDBC.jre7.jar</origin>
-                        </distributionFile>
+                        </distributionFile>-->
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -854,12 +854,12 @@ EOF
                         <distributionFile>
                             <origin>staging/windows/postgresql-PG_VERSION_PGJDBC.jar</origin>
                         </distributionFile>
-                        <distributionFile>
+                        <!--<distributionFile>
                             <origin>staging/windows/postgresql-PG_VERSION_PGJDBC.jre6.jar</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>staging/windows/postgresql-PG_VERSION_PGJDBC.jre7.jar</origin>
-                        </distributionFile>
+                        </distributionFile>-->
                     </distributionFileList>
                 </folder>
                 <folder>
