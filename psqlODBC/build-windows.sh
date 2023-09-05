@@ -140,14 +140,12 @@ _postprocess_psqlODBC_windows() {
     PG_BUILD_PSQLODBC=$(expr $PG_BUILD_PSQLODBC + $SKIPBUILD)
 
     scp $PG_SSH_WINDOWS:$PG_PATH_WINDOWS/output/lib/libpq.dll $WD/psqlODBC/staging/windows/bin || _die "Failed to copy the dependent dll" 
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/ssleay32.dll $WD/psqlODBC/staging/windows/bin || _die "Failed to copy the dependent dll" 
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libeay32.dll $WD/psqlODBC/staging/windows/bin || _die "Failed to copy the dependent dll" 
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_OPENSSL_WINDOWS/bin/libssl-1_1.dll $WD/psqlODBC/staging/windows/bin || _die "Failed to copy the dependent dll" 
+    scp $PG_SSH_WINDOWS:$PG_PGBUILD_OPENSSL_WINDOWS/bin/libcrypto-1_1.dll $WD/psqlODBC/staging/windows/bin || _die "Failed to copy the dependent dll" 
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libintl-8.dll $WD/psqlODBC/staging/windows/bin || _die "Failed to copy the dll (libintl-8.dll)"
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/bin/libiconv-2.dll $WD/psqlODBC/staging/windows/bin || _die "Failed to copy the dll (libiconv-2.dll)"
 
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/lib/engines/capi.dll $WD/psqlODBC/staging/windows/bin || _die "Failed to copy the dll (capi.dll)"
 
-    scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/ssl/openssl.cnf $WD/psqlODBC/staging/windows/etc || _die "Failed to copy the openssl.cnf"
     scp $PG_SSH_WINDOWS:$PG_PGBUILD_WINDOWS/vcredist/vcredist_x86.exe $WD/psqlODBC/staging/windows/ || _die "Failed to copy the vcredist"
  
     cd $WD/psqlODBC
