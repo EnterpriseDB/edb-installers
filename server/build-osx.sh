@@ -286,7 +286,7 @@ _build_server_osx() {
      ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging_cache/osx.build/plperl.so $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plperl.so"
 
     # Changing loader path of plpython3.so
-     ssh $PG_SSH_OSX "install_name_tool -change /lib/libpython${PG_VERSION_PYTHON}.dylib $PG_PYTHON_OSX/lib/libpython${PG_VERSION_PYTHON}.dylib $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plpython3.so"
+     ssh $PG_SSH_OSX "install_name_tool -change /lib/libpython${PG_VERSION_PYTHON}.dylib $PG_PYTHON_OSX/lib/libpython${PG_VERSION_PYTHON}.dylib $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plpython3.dylib"
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/scripts/osx/getlocales; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -o getlocales.osx -O0 getlocales.c"  || _die "Failed to build getlocales utility"
 
