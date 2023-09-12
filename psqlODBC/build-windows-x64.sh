@@ -70,7 +70,7 @@ _build_psqlODBC_windows_x64() {
 
     cat <<EOT > "build-psqlODBC.bat"
 
-CALL "$PG_VSINSTALLDIR_WINDOWS_X64\VC\vcvarsall.bat" amd64
+CALL "$PG_VSINSTALLDIR_WINDOWS_X64\Professional\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
 @SET OPENSSL_PATH=$PG_PGBUILD_WINDOWS_X64
 @SET PG_HOME_PATH=$PG_PATH_WINDOWS_X64\output
@@ -135,8 +135,8 @@ _postprocess_psqlODBC_windows_x64() {
     PG_BUILD_PSQLODBC=$(expr $PG_BUILD_PSQLODBC + $SKIPBUILD)
 
     scp $PG_SSH_WINDOWS_X64:$PG_PATH_WINDOWS_X64/output/lib/libpq.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dependent dll" 
-    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_OPENSSL_WINDOWS_X64/bin/libssl-1_1-x64.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dependent dll" 
-    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_OPENSSL_WINDOWS_X64/bin/libcrypto-1_1-x64.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dependent dll" 
+    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_OPENSSL_WINDOWS_X64/bin/libssl-3-x64.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dependent dll"
+    scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_OPENSSL_WINDOWS_X64/bin/libcrypto-3-x64.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dependent dll"
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libintl-8.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dll (libintl.dll)"
     scp $PG_SSH_WINDOWS_X64:$PG_PGBUILD_WINDOWS_X64/bin/libiconv-2.dll $WD/psqlODBC/staging/windows-x64/bin || _die "Failed to copy the dll (libiconv-2.dll)"
 

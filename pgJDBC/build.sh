@@ -9,22 +9,22 @@ then
 fi
 
 # Linux
-if [ $PG_ARCH_LINUX = 1 ];
-then
-    source $WD/pgJDBC/build-linux.sh
-fi
-
-# Linux x64
-if [ $PG_ARCH_LINUX_X64 = 1 ];
-then
-    source $WD/pgJDBC/build-linux-x64.sh
-fi
-
-# Linux ppc64
-if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-then
-    source $WD/pgJDBC/build-linux-ppc64.sh
-fi
+#if [ $PG_ARCH_LINUX = 1 ];
+#then
+#    source $WD/pgJDBC/build-linux.sh
+#fi
+#
+## Linux x64
+#if [ $PG_ARCH_LINUX_X64 = 1 ];
+#then
+#    source $WD/pgJDBC/build-linux-x64.sh
+#fi
+#
+## Linux ppc64
+#if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+#then
+#    source $WD/pgJDBC/build-linux-ppc64.sh
+#fi
 
 # Windows
 if [ $PG_ARCH_WINDOWS = 1 ];
@@ -67,22 +67,22 @@ _prep_pgJDBC() {
     fi
 
     # Linux
-    if [ $PG_ARCH_LINUX = 1 ];
-    then
-        _prep_pgJDBC_linux 
-    fi
+    #if [ $PG_ARCH_LINUX = 1 ];
+    #then
+    #    _prep_pgJDBC_linux
+    #fi
 
-    # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-        _prep_pgJDBC_linux_x64 
-    fi
+    ## Linux x64
+    #if [ $PG_ARCH_LINUX_X64 = 1 ];
+    #then
+    #    _prep_pgJDBC_linux_x64
+    #fi
 
-    # Linux ppc64
-    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-    then
-        _prep_pgJDBC_linux_ppc64 
-    fi
+    ## Linux ppc64
+    #if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    #then
+    #    _prep_pgJDBC_linux_ppc64
+    #fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
@@ -105,22 +105,22 @@ _build_pgJDBC() {
     fi
 
     # Linux 
-    if [ $PG_ARCH_LINUX = 1 ];
-    then
-        _build_pgJDBC_linux 
-    fi
+    #if [ $PG_ARCH_LINUX = 1 ];
+    #then
+    #    _build_pgJDBC_linux
+    #fi
 
-    # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-       _build_pgJDBC_linux_x64 
-    fi
+    ## Linux x64
+    #if [ $PG_ARCH_LINUX_X64 = 1 ];
+    #then
+    #   _build_pgJDBC_linux_x64
+    #fi
 
-    # Linux ppc64
-    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-    then
-       _build_pgJDBC_linux_ppc64 
-    fi
+    ## Linux ppc64
+    #if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    #then
+    #   _build_pgJDBC_linux_ppc64
+    #fi
 
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
@@ -157,22 +157,22 @@ _postprocess_pgJDBC() {
     fi
 
     # Linux
-    if [ $PG_ARCH_LINUX = 1 ];
-    then
-        _postprocess_pgJDBC_linux 
-    fi
+    #if [ $PG_ARCH_LINUX = 1 ];
+    #then
+    #    _postprocess_pgJDBC_linux
+    #fi
 
-    # Linux x64
-    if [ $PG_ARCH_LINUX_X64 = 1 ];
-    then
-        _postprocess_pgJDBC_linux_x64 
-    fi
-    
-    # Linux ppc64
-    if [ $PG_ARCH_LINUX_PPC64 = 1 ];
-    then
-        _postprocess_pgJDBC_linux_ppc64 
-    fi
+    ## Linux x64
+    #if [ $PG_ARCH_LINUX_X64 = 1 ];
+    #then
+    #    _postprocess_pgJDBC_linux_x64
+    #fi
+    #
+    ## Linux ppc64
+    #if [ $PG_ARCH_LINUX_PPC64 = 1 ];
+    #then
+    #    _postprocess_pgJDBC_linux_ppc64
+    #fi
     
     # Windows
     if [ $PG_ARCH_WINDOWS = 1 ];
