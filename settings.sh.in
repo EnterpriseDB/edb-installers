@@ -18,7 +18,7 @@ _set_config()
 
 _set_config PG_ARCH_OSX 1
 _set_config PG_ARCH_WINDOWS_X64 1
-
+_set_config PG_ARCH_WINDOWS 1
 # Packages. Set to 1 to enable a specific packages. Note that many packages will be interdependent
 #           so you must ensure that all the required dependencies are enabled.
 
@@ -113,6 +113,7 @@ PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/15
 YARN_HOME_OSX=/opt/local/Current_v15/yarn
 NODEJS_HOME_OSX=/opt/local/Current_v15/nodejs
 IMAGEMAGICK_HOME_OSX=/opt/local/Current_v15/ImageMagick
+IODBC_HOME_OSX=/opt/local/Current/iODBC
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the
