@@ -20,7 +20,7 @@ _prep_sqlprotect_osx() {
 
     # create a copy of the sqlprotect tree
 	cd postgres.osx/contrib
-    git clone https://github.com/EnterpriseDB/edb-sql-protect.git SQLPROTECT
+    git clone git@github.com:EnterpriseDB/edb-sql-protect.git SQLPROTECT
 
     tar -jcvf sqlprotect.tar.bz2 SQLPROTECT
 	
@@ -64,7 +64,7 @@ _build_sqlprotect_osx() {
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/sqlprotect/staging/osx.build/share" || _die "Failed to create staging/osx/share"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/sqlprotect/staging/osx.build/doc" || _die "Failed to create staging/osx/doc"
 
-    ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.so $PG_PATH_OSX/sqlprotect/staging/osx.build/lib/postgresql/" || _die "Failed to copy sqlprotect.so to staging directory"
+    ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.dylib $PG_PATH_OSX/sqlprotect/staging/osx.build/lib/postgresql/" || _die "Failed to copy sqlprotect.dylib to staging directory"
     ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_OSX/sqlprotect/staging/osx.build/share/" || _die "Failed to copy sqlprotect.sql to staging directory"
     ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_OSX/sqlprotect/staging/osx.build/doc/" || _die "Failed to copy README-sqlprotect.txt to staging directory"
 

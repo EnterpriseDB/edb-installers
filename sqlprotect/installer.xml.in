@@ -530,7 +530,7 @@ EOF
                             <key>Version</key>
                             <value>${product_version}</value>
                         </iniFileSet>
-                        <changePermissions files="${pglibdir}/sqlprotect.so" permissions="755"/>
+                        <changePermissions files="${pglibdir}/sqlprotect.dylib" permissions="755"/>
                     </actionList>
                     <ruleList>
                         <compareText>
@@ -698,7 +698,7 @@ EOF
                     <name>libfilesosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-                        <distributionFile origin="staging/osx/lib/postgresql/sqlprotect.so"/>
+                        <distributionFile origin="staging/osx/lib/postgresql/sqlprotect.dylib"/>
                     </distributionFileList>
                 </folder>
                 <folder>
