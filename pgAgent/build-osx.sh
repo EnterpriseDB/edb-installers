@@ -26,7 +26,7 @@ _prep_pgAgent_osx() {
     mkdir -p $WD/pgAgent/source/pgAgent.osx || _die "Couldn't create the pgAgent.osx directory"
 	
     # Grab a copy of the source tree
-    cp -R pgAgent-$PG_VERSION_PGAGENT-Source/* pgAgent.osx || _die "Failed to copy the source code (source/pgAgent-$PG_VERSION_PGAGENT)"
+    cp -R pgagent-$PG_VERSION_PGAGENT/* pgAgent.osx || _die "Failed to copy the source code (source/pgAgent-$PG_VERSION_PGAGENT)"
     tar -jcvf pgagent.tar.bz2 pgAgent.osx
 
     # Remove any existing staging directory that might exist, and create a clean one
