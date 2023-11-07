@@ -348,7 +348,7 @@ _postprocess_server_osx() {
     scp $PG_SSH_OSX_PGADMIN:$PG_STAGING_PGADMIN/pgadmin.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to scp pgadmin4 staging_cache"
 
     # Copy the required files to signing server
-    scp $WD/common.sh $WD/settings.sh $WD/versions.sh $WD/resources/entitlements-server.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
+    scp $WD/common.sh $WD/settings.sh $WD/versions.sh $WD/resources/entitlements-server.xml $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy commons.sh and settings.sh on notary server"
     # sign the getlocales binary
     scp $WD/server/scripts/osx/getlocales/getlocales.osx $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy getlocales binary to  signing server"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime getlocales.osx" || _die "Failed to sign the getlocales binary"
@@ -647,7 +647,6 @@ _postprocess_server_osx() {
     scp $PG_SSH_OSX:$PG_PATH_OSX/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.* $WD/output || _die "Failed to copy installers to $WD/output."
 
     # Notarize the OS X installer
-    ssh $PG_SSH_OSX_NOTARY "mkdir -p $PG_PATH_OSX_NOTARY; cp $PG_PATH_OSX_SIGN/settings.sh $PG_PATH_OSX_NOTARY; cp $PG_PATH_OSX_SIGN/common.sh $PG_PATH_OSX_NOTARY" || _die "Failed to create $PG_PATH_OSX_NOTARY"
     ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf postgresql-*.dmg; rm -rf postgresql-*.zip" || _die "Failed to remove the installer and zip from notarization installer directory"
     scp $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.zip $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installer and zip to $PG_PATH_OSX_NOTARY"
     scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
