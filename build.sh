@@ -48,6 +48,7 @@ _init() {
 
     # Set the package versions string
     PG_PACKAGE_VERSION=$PG_MAJOR_VERSION.`echo $PG_MINOR_VERSION | sed -e 's/\./-/'`
+    PG_PACKAGE_MINOR_VERSION=`echo $PG_MINOR_VERSION | awk -F'.' '{print $1}'`
 
     # Setup CVS
     export CVS_RSH=ssh
