@@ -535,7 +535,7 @@ EOT
     rsync -av system_stats-win64.zip $PG_SSH_WINDOWS_X64:$PG_CYGWIN_PATH_WINDOWS_X64 || _die "Failed to copy the source tree to the windows-x64 build host (system_stats-win64.zip)"
     ssh -v $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64; cmd /c unzip -o system_stats-win64.zip" || _die "Failed to unpack the source tree on the windows-x64 build host (system_stats-win64.zip)"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\system_stats.windows-x64; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-sys-stat.bat system_stats.vcxproj Release $PLATFORM_TOOLSET" || _die "Failed to build system_stats on the build host"
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\system_stats.windows-x64; cmd /c copy system_stats--*.sql $PG_PATH_WINDOWS_X64\\\\output.build\\\\share\\\\extension" || _die "Failed to copy system_stats--*.sql in output.build/share/extension"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\system_stats.windows-x64; cmd /c copy \"system_stats--*.sql\" $PG_PATH_WINDOWS_X64\\\\output.build\\\\share\\\\extension" || _die "Failed to copy system_stats--*.sql in output.build/share/extension"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\system_stats.windows-x64; cmd /c copy system_stats.control $PG_PATH_WINDOWS_X64\\\\output.build\\\\share\\\\extension" || _die "Failed to copy system_stats.control in output.build/share/extension"
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64\\\\system_stats.windows-x64\\\\x64\\\\Release; cmd /c copy system_stats.dll $PG_PATH_WINDOWS_X64\\\\output.build\\\\lib" || _die "Failed to copy system_stats.dll output.build/lib"
     
