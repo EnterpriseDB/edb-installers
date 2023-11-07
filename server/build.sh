@@ -348,6 +348,7 @@ _prepare_server_xml() {
                 _replace PG_MAJOR_VERSION $PG_MAJOR_VERSION $filename || _die "Failed to set major version in $filename"
                 _replace PG_MINOR_VERSION $PG_MINOR_VERSION $filename || _die "Failed to set minor version in $filename"
                 _replace PG_PACKAGE_VERSION $PG_PACKAGE_VERSION $filename || _die "Failed to set package version in $filename"
+		_replace PG_PACKAGE_MINOR_VERSION $PG_PACKAGE_MINOR_VERSION $filename || _die "Failed to set package minor version in $filename"
                 _replace PG_STAGING_DIR $WD/server/staging $filename || _die "Failed to set staging directory in $filename"
                 _replace PG_CATALOG_VERSION $PG_CATALOG_VERSION $filename || _die "Failed to set catalog version number in $filename"
                 _replace PG_CONTROL_VERSION $PG_CONTROL_VERSION $filename || _die "Failed to set catalog version number in $filename"

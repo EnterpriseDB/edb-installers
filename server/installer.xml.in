@@ -905,6 +905,14 @@ EOF
     </preUninstallationActionList>
 
     <!-- Post-uninstall actions -->
+    <postUninstallerCreationActionList>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Uninstall\${project.windowsARPRegistryPrefix}</key>
+            <name>MinorVersion</name>
+            <value>PG_PACKAGE_MINOR_VERSION</value>
+        </registrySet>
+    </postUninstallerCreationActionList>
+
     <postUninstallationActionList>
         <actionGroup>
               <actionList>
