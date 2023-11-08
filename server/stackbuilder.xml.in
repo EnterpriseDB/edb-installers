@@ -91,82 +91,6 @@
                 </compareText>
             </ruleList>
         </folder>
-        <!-- LINUX_X64: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfileslinux-x64</name>
-            <platforms>linux-x64</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/stackbuilder/scripts</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>staging/linux-x64/stackbuilder/StackBuilder_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}/stackbuilder</destination>
-            <name>programfileslinux-x64_1</name>
-            <platforms>linux-x64</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/stackbuilder/bin</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/stackbuilder/lib</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/stackbuilder/share</origin>
-                </distributionDirectory>
-            </distributionFileList>
-        </folder>
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}/stackbuilder/installer</destination>
-            <name>programfileslinux-x64_2</name>
-            <platforms>linux-x64</platforms>
-            <distributionFileList>
-                <distributionDirectory allowWildcards="1">
-                    <excludeFiles>*/server</excludeFiles>
-                    <origin>staging/linux-x64/stackbuilder/installer/*</origin>
-                </distributionDirectory>
-            </distributionFileList>
-        </folder>
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}/installer/server</destination>
-            <name>programfileslinux-x64_3</name>
-            <platforms>linux-x64</platforms>
-            <distributionFileList>
-                <distributionFile>
-                    <origin>staging/linux-x64/stackbuilder/installer/server/createshortcuts_sb.sh</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/linux-x64/stackbuilder/installer/server/removeshortcuts_sb.sh</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
-        <!-- LINUX_PPC64: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfileslinux-ppc64</name>
-            <platforms>linux-ppc</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/linux-ppc64/stackbuilder</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>../resources/license.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/linux-ppc64/server_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
         <!-- MAC: Program files -->
         <folder>
             <description>Program Files</description>
@@ -209,43 +133,7 @@
                 </distributionFile>
             </distributionFileList>
         </folder>
-        <!-- SOLARIS_X64: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfilessolaris-x64</name>
-            <platforms>solaris-intel</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/solaris-x64/stackbuilder</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>../resources/license.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/solaris-x64/server_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
-        <!-- SOLARIS_SPARC: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfilessolaris-sparc</name>
-            <platforms>solaris-sparc</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/solaris-sparc/stackbuilder</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>../resources/license.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/solaris-sparc/server_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
-    </folderList>
+   </folderList>
 
     <!-- WIN: Start Menu -->
     <startMenuShortcutList>
