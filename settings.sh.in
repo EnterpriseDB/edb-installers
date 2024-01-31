@@ -105,8 +105,8 @@ PGADMIN_KRB5_DIR="C:\\\\Program Files\\\\MIT\\\\Kerberos"
 YARN_HOME="C:\\\\pgBuild64\\\\Yarn"
 NODEJS_HOME="C:\\\\pgBuild64\\\\node-v18.16.0-win-x64"
 
-PG_SSH_OSX=buildfarm@bf11-osx.ox.uk.enterprisedb.com
-PG_PATH_OSX=/mnt/hgfs/pginstaller_12.auto
+PG_SSH_OSX=buildfarm@bishopscourt.ox.uk.enterprisedb.com
+PG_PATH_OSX=/opt/pginstaller_12.auto
 PG_SSH_OSX_SIGN=buildfarm@mors.ox.uk.enterprisedb.com
 PG_SSH_OSX_NOTARY=buildfarm@cadwell.ox.uk.enterprisedb.com
 PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_12.auto
@@ -117,9 +117,9 @@ PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_12.notary
 PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner-new
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging_cache/osx
 PG_ANT_HOME_OSX=/usr
-PG_MAVEN_HOME_OSX=/opt/local/apache-maven-3.5.4
+#PG_MAVEN_HOME_OSX=/opt/local/apache-maven-3.5.4
 PG_DOCBOOK_OSX=/usr/local/docbook-xsl-1.77.1
-PG_JAVA_HOME_OSX=/Library/Java/JavaVirtualMachines/jdk1.7.0_67.jdk/Contents/Home
+PG_JAVA_HOME_OSX=/Library/Java/JavaVirtualMachines/jdk1.8.0_291.jdk/Contents/Home
 PG_PERL_OSX=/Library/edb/languagepack/v1/Perl-5.26
 PG_PYTHON_OSX=/Library/edb/languagepack/v1/Python-3.7
 PGADMIN_PYTHON_OSX=/Library/Frameworks/Python.framework/Versions/Current
@@ -133,14 +133,15 @@ PGADMIN_STAGING_OSX=$PWD/server/staging/osx/pgadmin4
 SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
 CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
 YARN_HOME_OSX=/opt/local/Current/yarn
-NODEJS_HOME_OSX=/opt/local/Current/nodejs
+NODEJS_HOME_OSX=/opt/local/Current/node-v14.16.1-darwin-x64
+IMAGEMAGICK_HOME_OSX=/opt/local/Current/ImageMagick
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the
 # oldest supported
 
-MACOSX_MIN_VERSION=10.9
-SDK_PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk
+MACOSX_MIN_VERSION=10.13
+SDK_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk
 PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
 PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
 PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
