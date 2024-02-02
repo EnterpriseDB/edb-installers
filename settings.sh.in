@@ -85,8 +85,8 @@ NODEJS_HOME="C:\\\\pgBuild64\\\\node-v18.16.0-win-x64"
 
 PG_SSH_OSX=buildfarm@battersea-park.ox.uk.enterprisedb.com
 PG_PATH_OSX=/opt/pginstaller_16.auto
-PG_SSH_OSX_SIGN=buildfarm@mors.ox.uk.enterprisedb.com
-PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_16.auto
+PG_SSH_OSX_SIGN=buildfarm@cadwell.ox.uk.enterprisedb.com
+PG_PATH_OSX_SIGN=/Users/buildfarm/pginstaller_16.auto
 PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
 PG_SSH_OSX_NOTARY=buildfarm@cadwell.ox.uk.enterprisedb.com
 PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_16.notary
