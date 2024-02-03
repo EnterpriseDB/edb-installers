@@ -7,8 +7,7 @@
 _set_config()
 {
 	VAR=$1	
-	if [ "${!VAR}" = "" ]
-	then
+	if [ "$(eval "echo \${$VAR}")" = "" ]; then
 		#echo "${VAR} value not set in the environment"
 		eval $1=$2
 	fi
