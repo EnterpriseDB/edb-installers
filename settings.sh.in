@@ -7,7 +7,7 @@
 _set_config()
 {
 	VAR=$1	
-	if [ "${!VAR}" = "" ]
+	if [ "$(eval "echo \${$VAR}")" = "" ]
 	then
 		#echo "${VAR} value not set in the environment"
 		eval $1=$2
@@ -89,8 +89,8 @@ NODEJS_HOME="C:\\\\pgBuild64\\\\node-v18.16.0-win-x64"
 
 PG_SSH_OSX=buildfarm@battersea-park.ox.uk.enterprisedb.com
 PG_PATH_OSX=/opt/pginstaller_15.auto
-PG_SSH_OSX_SIGN=buildfarm@mors.ox.uk.enterprisedb.com
-PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_15.auto
+PG_SSH_OSX_SIGN=buildfarm@cadwell.ox.uk.enterprisedb.com
+PG_PATH_OSX_SIGN=/Users/buildfarm/pginstaller_15.auto
 PG_SSH_OSX_NOTARY=buildfarm@cadwell.ox.uk.enterprisedb.com
 PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_15.notary
 PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
