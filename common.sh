@@ -397,7 +397,7 @@ sign_binaries()
 {
         if [ ! -z $2 ]
         then
-            ENTITLEMENTS="--entitlements $2"
+            ENTITLEMENTS="--entitlements"
         fi
         security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain
         for i in `find $1 -type f`
@@ -405,8 +405,8 @@ sign_binaries()
            file $i | grep -E "Mach-O executable|Mach-O 64-bit executable"
            if [ $? -eq 0 ];
            then
-                echo "Signing binary $i (${ENTITLEMENTS})"
-                codesign -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime ${ENTITLEMENTS} $i
+                echo "Signing binary $i (${ENTITLEMENTS} $2)"
+                codesign -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime ${ENTITLEMENTS} $2 $i
            fi
         done
 }
@@ -416,13 +416,13 @@ sign_bundles()
 {
         if [ ! -z $2 ]
         then
-            ENTITLEMENTS="--entitlements $2"
+            ENTITLEMENTS="--entitlements"
         fi
         security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain
         for i in `find $1 -name "*.so"`
         do
-            echo "Signing module $i (${ENTITLEMENTS})"
-            codesign -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime ${ENTITLEMENTS}  $i
+            echo "Signing module $i (${ENTITLEMENTS} $2)"
+            codesign -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime ${ENTITLEMENTS} $2 $i
         done
 }
 
@@ -431,13 +431,13 @@ sign_libraries()
 {
         if [ ! -z $2 ]
         then
-            ENTITLEMENTS="--entitlements $2"
+            ENTITLEMENTS="--entitlements"
         fi
         security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain
         for i in `find $1 -type f -name "*.dylib*" -o -name "Qt*" -o -name "Python" -o -name ".Python"`
         do
-            echo "Signing library $i (${ENTITLEMENTS})"
-            codesign -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime ${ENTITLEMENTS} $i
+            echo "Signing library $i (${ENTITLEMENTS} $2)"
+            codesign -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime ${ENTITLEMENTS} $2 $i
         done
 }
 
