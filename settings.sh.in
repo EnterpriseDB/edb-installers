@@ -6,8 +6,8 @@
 # Check if the variable passed is already defined in the environment. If no, then set the value else skip it.
 _set_config()
 {
-	VAR=$1	
-	if [ "${!VAR}" = "" ]
+	VAR=$1
+	if [ "$(eval "echo \${$VAR}")" = "" ]
 	then
 		#echo "${VAR} value not set in the environment"
 		eval $1=$2
@@ -107,9 +107,9 @@ NODEJS_HOME="C:\\\\pgBuild64\\\\node-v18.16.0-win-x64"
 
 PG_SSH_OSX=buildfarm@bishopscourt.ox.uk.enterprisedb.com
 PG_PATH_OSX=/opt/pginstaller_12.auto
-PG_SSH_OSX_SIGN=buildfarm@mors.ox.uk.enterprisedb.com
+PG_SSH_OSX_SIGN=buildfarm@cadwell.ox.uk.enterprisedb.com
 PG_SSH_OSX_NOTARY=buildfarm@cadwell.ox.uk.enterprisedb.com
-PG_PATH_OSX_SIGN=/mnt/hgfs/pginstaller_12.auto
+PG_PATH_OSX_SIGN=/Users/buildfarm/pginstaller_12.auto
 PG_SSH_OSX_PGADMIN=buildfarm@bishopscourt.ox.uk.enterprisedb.com  # Build pgAdmin4-5.0 on this server to avoid building on older OSX versions
 PG_PATH_OSX_PGADMIN=/opt/pginstaller_12.auto # Directory to build pgAdmin4-5.x on bishopscourt
 PG_BUILD_PGADMIN=/opt/local/Current2  # Variable used in building pgAdmin4 on bishopscourt (with minimum osx support 10.10)
