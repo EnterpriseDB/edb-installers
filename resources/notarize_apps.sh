@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 export DEVELOPER_TEAM_ID=26QKX55P9K
 export DEVELOPER_USER=sandeep.thakkar@enterprisedb.com
@@ -59,7 +60,7 @@ fi
 # Staple the notarization
 echo "Stapling the notarization to the ${PACKAGE_NAME}..."
 if [[ "${PACKAGE_NAME##*.}" == "zip" ]]; then
-        xcrun stapler staple ${PRIMAY_BUNDLE_ID}.app
+        xcrun stapler staple ${PRIMARY_BUNDLE_ID}.app
         ditto -c -k --keepParent ${PRIMARY_BUNDLE_ID}.app ${PACKAGE_NAME}
 else
         xcrun stapler staple ${PACKAGE_NAME}
