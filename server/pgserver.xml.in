@@ -3444,7 +3444,7 @@
                 <setInstallerVariableFromRegEx>
                     <name>actuallocale</name>
                     <text>${serverconfig}</text>
-                    <pattern>^.*lc_messages\s*=\s*'([^']+)'\s+.*$</pattern>
+                    <pattern>^.*lc_messages\s*=\s*'?(([^ \t'])+)'?\s+.*$</pattern>
                     <substitution>\1</substitution>
                 </setInstallerVariableFromRegEx>
 
