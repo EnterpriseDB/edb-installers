@@ -1,4 +1,4 @@
-
+#!/bin/bash
     
 ################################################################################
 # PostGIS Build Preparation
@@ -202,7 +202,7 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
 
     # Configure the source tree
     echo "Configuring the PostGIS source"
-    PATH=$PATH:$IMAGEMAGICK_HOME_OSX/bin LD_LIBRARY_PATH=/opt/local/Current_v15/lib:$LD_LIBRARY_PATH; CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS" CFLAGS="$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current_v15/lib" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PATH=/opt/local/Current_v15/bin:$PG_PERL_OSX/bin:$PATH ./configure --disable-extension-upgrades-install --enable-debug --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current_v15/bin/geos-config --with-projdir=/opt/local/Current_v15 --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current_v15/bin/gdal-config --with-xml2config=/opt/local/Current_v15/bin/xml2-config --with-libiconv=/opt/local/Current_v15 --with-jsondir=/opt/local/Current_v15 --without-protobuf --with-pcredir=/opt/local/Current_v15 || _die "Failed to configure PostGIS"
+    PATH=$IMAGEMAGICK_HOME_OSX/bin:/opt/local/bin:/opt/local/Current_v15/bin:$PG_PERL_OSX/bin:$PATH LD_LIBRARY_PATH=/opt/local/Current_v15/lib:$LD_LIBRARY_PATH; CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS" CFLAGS="$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current_v15/lib" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PROJ_CFLAGS="-I/opt/local/Current_v15/include" PROJ_LIBS="-L/opt/local/Current_v15/lib -lproj" ./configure --disable-extension-upgrades-install --enable-debug --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current_v15/bin/geos-config --with-projdir=/opt/local/Current_v15 --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current_v15/bin/gdal-config --with-xml2config=/opt/local/Current_v15/bin/xml2-config --with-libiconv=/opt/local/Current_v15 --with-jsondir=/opt/local/Current_v15 --without-protobuf --with-pcredir=/opt/local/Current_v15 --with-gettext=/opt/local/Current_v15 --with-address_standardizer || _die "Failed to configure PostGIS"
 
     echo "Building PostGIS"
     echo "workaround: Patching topology Makefile to comment out the problematic lines"
@@ -290,6 +290,8 @@ cat <<EOT-POSTGIS >> $WD/PostGIS/build-postgis.sh
     cp -pR /opt/local/Current_v15/lib/libtiff.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (libtiff) libraries"
     cp -pR /opt/local/Current_v15/lib/libjpeg.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (libjpeg) libraries"
     cp -pR /opt/local/Current_v15/lib/libpng*.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (libpng) libraries"
+    cp -pR /opt/local/Current_v15/lib/libexpat*.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (expat) libraries"
+    cp -pR /opt/local/Current_v15/lib/libsqlite*.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (sqlite) libraries"
 
     _rewrite_so_refs $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bin @loader_path/..
     _rewrite_so_refs $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS lib @loader_path/..
