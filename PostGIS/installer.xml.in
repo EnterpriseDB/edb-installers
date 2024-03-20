@@ -1053,7 +1053,7 @@ EOF
                     <distributionFileList>
                         <distributionFile>
                             <allowWildcards>1</allowWildcards>
-                            <origin>staging/osx/PostGIS/share/extension/postgis*.control</origin>
+                            <origin>staging/osx/PostGIS/share/extension/address_standardizer*.*</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
