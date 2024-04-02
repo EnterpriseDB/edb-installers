@@ -730,10 +730,6 @@ _postprocess_server_windows_x64() {
     cp scripts/windows/prerun_checks.vbs $PGSERVER_STAGING_WINDOWS_X64/installer/prerun_checks.vbs || _die "Failed to copy the prerun_checks.vbs script ($WD/scripts/windows-x64/prerun_checks.vbs)"
     cp scripts/windows/initcluster.vbs $PGSERVER_STAGING_WINDOWS_X64/installer/server/initcluster.vbs || _die "Failed to copy the loadmodules script (scripts/windows/initcluster.vbs)"
     cp scripts/windows/startupcfg.vbs $PGSERVER_STAGING_WINDOWS_X64/installer/server/startupcfg.vbs || _die "Failed to copy the startupcfg script (scripts/windows/startupcfg.vbs)"
-    cp scripts/windows/createshortcuts_server.vbs $PGSERVER_STAGING_WINDOWS_X64/installer/server/createshortcuts_server.vbs || _die "Failed to copy the createshortcuts script (scripts/windows/createshortcuts_server.vbs)"
-    cp scripts/windows/createshortcuts_clt.vbs $CLT_STAGING_WINDOWS_X64/installer/server/createshortcuts_clt.vbs || _die "Failed to copy the createshortcuts script (scripts/windows/createshortcuts_clt.vbs)"
-    cp scripts/windows/startserver.vbs $PGSERVER_STAGING_WINDOWS_X64/installer/server/startserver.vbs || _die "Failed to copy the startserver script (scripts/windows/startserver.vbs)"
-    cp scripts/windows/loadmodules.vbs $PGSERVER_STAGING_WINDOWS_X64/installer/server/loadmodules.vbs || _die "Failed to copy the loadmodules script (scripts/windows/loadmodules.vbs)"
     
     # Copy in the menu pick images and XDG items
     mkdir -p $PGSERVER_STAGING_WINDOWS_X64/scripts/images || _die "Failed to create a directory for the menu pick images"
