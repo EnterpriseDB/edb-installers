@@ -928,6 +928,14 @@ EOF
         </registrySet>
     </postUninstallerCreationActionList>
 
+    <postUninstallerCreationActionList>
+        <registrySet>
+            <key>HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Uninstall\${project.windowsARPRegistryPrefix}</key>
+            <name>DisplayVersion</name>
+            <value>PG_PACKAGE_VERSION</value>
+        </registrySet>
+    </postUninstallerCreationActionList>
+
     <postUninstallationActionList>
         <actionGroup>
               <actionList>
