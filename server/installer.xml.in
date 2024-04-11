@@ -925,14 +925,17 @@ EOF
             <key>HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Uninstall\${project.windowsARPRegistryPrefix}</key>
             <name>MinorVersion</name>
             <value>PG_PACKAGE_MINOR_VERSION</value>
+	    <ruleList>
+		<compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
         </registrySet>
-    </postUninstallerCreationActionList>
-
-    <postUninstallerCreationActionList>
         <registrySet>
             <key>HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Uninstall\${project.windowsARPRegistryPrefix}</key>
             <name>DisplayVersion</name>
             <value>PG_PACKAGE_VERSION</value>
+	    <ruleList>
+		<compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
         </registrySet>
     </postUninstallerCreationActionList>
 
