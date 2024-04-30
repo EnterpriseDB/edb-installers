@@ -23,17 +23,10 @@ _set_config PG_ARCH_WINDOWS_X64 0
 
 
 _set_config PG_PACKAGE_SERVER 1
-_set_config PG_PACKAGE_PGJDBC 0
-_set_config PG_PACKAGE_PSQLODBC 0
 _set_config PG_PACKAGE_POSTGIS 1
-_set_config PG_PACKAGE_SLONY 0
-_set_config PG_PACKAGE_NPGSQL 0
 _set_config PG_PACKAGE_PGAGENT 1
-_set_config PG_PACKAGE_PGMEMCACHE 0
-_set_config PG_PACKAGE_PGBOUNCER 0
 _set_config PG_PACKAGE_SQLPROTECT 1
 _set_config PG_PACKAGE_LANGUAGEPACK 1
-_set_config PG_PACKAGE_PEMHTTPD 0
 
 # Path for the build machine (/opt/... must be at the end!)
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
@@ -56,7 +49,6 @@ PG_DEVENVDIR_WINDOWS_X64="$PG_VSINSTALLDIR_WINDOWS_X64\\\\Professional\\\\Common
 PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild64_v16"
 PG_PGBUILD_GETTEXT_WINDOWS_X64="C:\\\\pgBuild64-gettext-0198"
 PG_PGBUILD_OPENSSL_WINDOWS_X64="C:\\\\pgBuild64"
-PG_BOOST_WINDOWS_X64="C:\\\\pgBuild64\\\\Boost"
 PG_BINARY_PATH_X64="D:\\\\pg-languagepack-x64"
 PG_WXWIN_WINDOWS_X64="D:\\\\pgBuild64\\\\wxWidgets-3.1.7"
 PG_JAVA_HOME_WINDOWS_X64="C:\\\\Program Files\\\\Java\\\\jdk1.7.0_51"
@@ -69,10 +61,6 @@ PGADMIN_PYTHON_DLL_WINDOWS_X64=$PGADMIN_PYTHON_WINDOWS_X64\\\\python311.dll
 PG_TCL_WINDOWS_X64=C:\\\\edb\\\\languagepack\\\\v4\\\\Tcl-8.6
 PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
 PG_SIGNTOOL_WINDOWS="C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\signtool.exe"
-PG_QTPATH_WINDOWS_X64="D:\\\\Qt\\\\Qt5.14.2\\\\5.14.2\\\\msvc2017_64"
-PG_QMAKE_WINDOWS_X64="$PG_QTPATH_WINDOWS_X64\\\\bin\\\\qmake.exe"
-PG_MINGW_QTPATH_WINDOWS_X64="D:\\\\pgBuild64\\\\Qt5.9.1\\\\5.9.1\\\\mingw53_32"
-PG_MINGW_QMAKE_WINDOWS_X64="$PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\qmake.exe"
 PGSERVER_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/server
 PGADMIN_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/pgadmin4
 SB_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/stackbuilder
@@ -92,7 +80,6 @@ PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_16.notary
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging_cache/osx
 PG_MAVEN_HOME_OSX=/opt/local/Current/apache-maven-3.8.2
 PG_DOCBOOK_OSX=/usr/local/docbook-xsl-1.77.1
-PG_JAVA_HOME_OSX=/Library/Java/JavaVirtualMachines/jdk1.8.0_291.jdk/Contents/Home
 PG_CMAKE_OSX=/Applications/CMake.app/Contents/bin/cmake
 PG_PERL_OSX=/Library/edb/languagepack/v4/Perl-5.38
 PG_PYTHON_OSX=/Library/edb/languagepack/v4/Python-3.11
