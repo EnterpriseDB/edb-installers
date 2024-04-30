@@ -3100,12 +3100,14 @@
                 </showWarning>
 
                 <!-- we aren't require to pass ${serviceaccount} to createshortcuts in windows -->
-                <runProgram>
-                    <program>${env(WINDIR)}\System32\cscript</program>
-                    <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts_server.vbs" ${product_version} "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
-                    <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
+                <substitute>
+                    <files>${installdir}\scripts\runpsql.bat</files>
+                    <type>exact</type>
+                    <substitutionList>
+                        <substitution pattern="PG_USERNAME" value="${superaccount}" />
+                        <substitution pattern="PG_PORT" value="${serverport}" />
+                        <substitution pattern="PG_INSTALLDIR" value="${installdir}" />
+                    </substitutionList>
                     <ruleList>
                         <compareText>
                             <logic>equals</logic>
@@ -3118,7 +3120,28 @@
                             <value>windows</value>
                         </compareText>
                     </ruleList>
-                </runProgram>
+                </substitute>
+                <substitute>
+                    <files>${installdir}\scripts\serverctl.vbs</files>
+                    <type>exact</type>
+                    <substitutionList>
+                        <substitution pattern="PG_DATADIR" value="${datadir}" />
+                        <substitution pattern="PG_SERVICENAME" value="${servicename}" />
+		        <substitution pattern="PG_INSTALLDIR" value="${installdir}" />
+                    </substitutionList>
+                    <ruleList>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${create_shortcuts}</text>
+                            <value>1</value>
+                        </compareText>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>${platform_name}</text>
+                            <value>windows</value>
+                        </compareText>
+                    </ruleList>
+                </substitute>
                 <runProgram>
                     <program>${installdir}/installer/server/createshortcuts_server.sh</program>
                     <programArguments>${product_version} "${serviceaccount}" "${superaccount}" ${serverport} "${branding}" "${installdir}" "${datadir}" "${servicename}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
@@ -3202,20 +3225,10 @@
                     </ruleList>
                 </linuxServiceAction>
 
-                <runProgram>
-                    <program>${env(WINDIR)}\System32\cscript</program>
-                    <programArguments>//NoLogo "${installdir}\installer\server\startserver.vbs" ${servicename}</programArguments>
-                    <progressText>${msg(progress.text.starting.server)}</progressText>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </runProgram>
+                <startWindowsService>
+                    <serviceName>${servicename}</serviceName>
+                    <delay>5000</delay>
+		</startWindowsService>
 
                 <runProgram>
                     <program>svcadm</program>
