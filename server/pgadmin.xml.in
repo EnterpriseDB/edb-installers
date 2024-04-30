@@ -348,7 +348,7 @@
     </preUninstallationActionList>
 
    <readyToInstallActionList>
-       <!-- Always remove the old web/pgadmin bin in upgrade if <= 4.30 -->
+       <!-- Always remove the old web/pgadmin bin in upgrade if <= 7.1 -->
        <actionGroup>
            <actionList>
                  <deleteFile path="${installdir}/pgAdmin 4/venv">
@@ -366,10 +366,15 @@
                          <fileExists path="${installdir}/pgAdmin 4/runtime"/>
                      </ruleList>
                  </deleteFile>
+                 <deleteFile path="${installdir}/pgAdmin 4/python">
+                     <ruleList>
+                         <fileExists path="${installdir}/pgAdmin 4/python"/>
+                     </ruleList>
+                 </deleteFile>
            </actionList>
            <ruleList>
                <compareVersions logic="less_or_equal"
-                   version1="${pgAdmin_Version}" version2="4.30" />
+                   version1="${pgAdmin_Version}" version2="7.1" />
                <isTrue value="${component(pgAdmin).selected}"/>
                <isFalse value="${extract_mode}"/>
 	       <isTrue value="${IsUpgrade}"/>
