@@ -1047,13 +1047,35 @@ EOF
                 </folder>
                 <folder>
                     <description>Program Files</description>
+                    <destination>${sharedir}</destination>
+                    <name>programfilesgdalosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/PostGIS/share/gdal</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${sharedir}</destination>
+                    <name>programfilesprojosx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionDirectory>
+                            <origin>staging/osx/PostGIS/share/proj</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
                     <destination>${sharedir}/extension</destination>
                     <name>programfilesshareosxextn1</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionFile>
                             <allowWildcards>1</allowWildcards>
-                            <origin>staging/osx/PostGIS/share/extension/postgis*.control</origin>
+                            <origin>staging/osx/PostGIS/share/extension/address_standardizer*.*</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>

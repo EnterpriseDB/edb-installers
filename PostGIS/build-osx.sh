@@ -1,4 +1,4 @@
-
+#!/bin/bash
     
 ################################################################################
 # PostGIS Build Preparation
@@ -81,107 +81,6 @@ _prep_PostGIS_osx() {
 
 }
 
-
-#########################################################################################
-#Change so reference --Copy of common.sh's _rewrite_so_reference modified to suit postgis
-#########################################################################################
-
-_change_so_refs() {
-
-    BASE_PATH=$1
-    FILE_PATH=$BASE_PATH/$2
-    LOADER_PATH=$3
-
-    FLIST=`ls $FILE_PATH`
-
-    for FILE in $FLIST; do
-
-            IS_EXECUTABLE=`file $FILE_PATH/$FILE | grep "Mach-O executable" | wc -l`
-            IS_SHAREDLIB=`file $FILE_PATH/$FILE | grep -E "(Mach-O\ dynamically\ linked\ shared\ library|Mach-O\ bundle)" | wc -l`
-
-               if [ $IS_EXECUTABLE -ne 0 -o $IS_SHAREDLIB -ne 0 ]; then
-
-                    # We need to ignore symlinks
-                    IS_SYMLINK=`file $FILE_PATH/$FILE | grep "symbolic link" | wc -l`
-
-                    if [ $IS_SYMLINK -eq 0 ]; then
-
-                            if [ $IS_EXECUTABLE -ne 0 ]; then
-                                    echo "Post-processing executable: $FILE_PATH/$FILE"
-                            else
-                                    echo "Post-processing shared library: $FILE_PATH/$FILE"
-                            fi
-
-                            if [ $IS_SHAREDLIB -ne 0 ]; then
-                                    # Change the library ID
-                                    ID=`otool -D $FILE_PATH/$FILE | grep $BASE_PATH | grep -v ":"`
-                                    ID1=`otool -D $FILE_PATH/$FILE | grep "$PG_CACHING/proj-$PG_TARBALL_PROJ.osx" | grep -v ":"`
-                                    ID2=`otool -D $FILE_PATH/$FILE | grep "$PG_CACHING/geos-$PG_TARBALL_GEOS.osx" | grep -v ":"`
-                                   
-                                    for DLL in $ID; do
-                                            echo "    - rewriting ID: $DLL"
-
-                                            NEW_DLL=`echo $DLL | sed -e "s^$FILE_PATH/^^g"`
-                                            echo "                to: $NEW_DLL"
-
-                                            install_name_tool -id "$NEW_DLL" "$FILE_PATH/$FILE" 
-                                    done
-
-                                    for DLL in $ID1; do
-                                            echo "    - rewriting ID: $DLL"
-                                            NEW_DLL=`echo $DLL | sed -e "s^$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/lib/^^g"`
-                                            echo "                to: $NEW_DLL"
-
-                                            install_name_tool -id "$NEW_DLL" "$FILE_PATH/$FILE"
-                                    done
-                                    
-                                    for DLL in $ID2; do
-                                            echo "    - rewriting ID: $DLL"
-                                            NEW_DLL=`echo $DLL | sed -e "s^$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/lib/^^g"`
-                                            echo "                to: $NEW_DLL"
-
-                                            install_name_tool -id "$NEW_DLL" "$FILE_PATH/$FILE"
-                                    done
-                                    
-                            fi
-
-                            # Now change the referenced libraries
-                            DLIST=`otool -L $FILE_PATH/$FILE | grep $BASE_PATH | grep -v ":" | awk '{ print $1 }'`
-                            DLIST1=`otool -L $FILE_PATH/$FILE | grep "$PG_CACHING/proj-$PG_TARBALL_PROJ.osx" | grep -v ":" | awk '{ print $1 }'`
-                            DLIST2=`otool -L $FILE_PATH/$FILE | grep "$PG_CACHING/geos-$PG_TARBALL_GEOS.osx" | grep -v ":" | awk '{ print $1 }'`
-
-                            for DLL in $DLIST; do
-                                    echo "    - rewriting ref: $DLL"
-
-                                    NEW_DLL=`echo $DLL | sed -e "s^$BASE_PATH/^^g"`
-                                    echo "                 to: $LOADER_PATH/$NEW_DLL"
-
-                                    install_name_tool -change "$DLL" "$LOADER_PATH/$NEW_DLL" "$FILE_PATH/$FILE" 
-                            done
-
-                            for DLL in $DLIST1; do
-                                    echo "    - rewriting ref: $DLL"
-
-                                    NEW_DLL=`echo $DLL | sed -e "s^$PG_CACHING/proj-$PG_TARBALL_PROJ.osx/^^g"`
-                                    echo "                 to: $LOADER_PATH/$NEW_DLL"
-
-                                    install_name_tool -change "$DLL" "$LOADER_PATH/$NEW_DLL" "$FILE_PATH/$FILE" 
-                            done
-
-                            for DLL in $DLIST2; do
-                                    echo "    - rewriting ref: $DLL"
-
-                                    NEW_DLL=`echo $DLL | sed -e "s^$PG_CACHING/geos-$PG_TARBALL_GEOS.osx/^^g"`
-                                    echo "                 to: $LOADER_PATH/$NEW_DLL"
-
-                                    install_name_tool -change "$DLL" "$LOADER_PATH/$NEW_DLL" "$FILE_PATH/$FILE" 
-                            done
-                    fi
-            fi
-    done
-}
-
-
 ################################################################################
 # PostGIS compilation and installation in the staging directory 
 ################################################################################
@@ -202,7 +101,7 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
 
     # Configure the source tree
     echo "Configuring the PostGIS source"
-    PATH=$PATH:$IMAGEMAGICK_HOME_OSX/bin LD_LIBRARY_PATH=/opt/local/Current_v15/lib:$LD_LIBRARY_PATH; CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS" CFLAGS="$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current_v15/lib" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PATH=/opt/local/Current_v15/bin:$PG_PERL_OSX/bin:$PATH ./configure --disable-extension-upgrades-install --enable-debug --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current_v15/bin/geos-config --with-projdir=/opt/local/Current_v15 --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current_v15/bin/gdal-config --with-xml2config=/opt/local/Current_v15/bin/xml2-config --with-libiconv=/opt/local/Current_v15 --with-jsondir=/opt/local/Current_v15 --without-protobuf --with-pcredir=/opt/local/Current_v15 || _die "Failed to configure PostGIS"
+    PATH=$IMAGEMAGICK_HOME_OSX/bin:/opt/local/bin:/opt/local/Current_v15/bin:$PG_PERL_OSX/bin:$PATH LD_LIBRARY_PATH=/opt/local/Current_v15/lib:$LD_LIBRARY_PATH; CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS" CFLAGS="$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current_v15/lib" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PROJ_CFLAGS="-I/opt/local/Current_v15/include" PROJ_LIBS="-L/opt/local/Current_v15/lib -lproj" ./configure --disable-extension-upgrades-install --enable-debug --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current_v15/bin/geos-config --with-projdir=/opt/local/Current_v15 --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current_v15/bin/gdal-config --with-xml2config=/opt/local/Current_v15/bin/xml2-config --with-libiconv=/opt/local/Current_v15 --with-jsondir=/opt/local/Current_v15 --without-protobuf --with-pcredir=/opt/local/Current_v15 --with-address_standardizer || _die "Failed to configure PostGIS"
 
     echo "Building PostGIS"
     echo "workaround: Patching topology Makefile to comment out the problematic lines"
@@ -290,6 +189,10 @@ cat <<EOT-POSTGIS >> $WD/PostGIS/build-postgis.sh
     cp -pR /opt/local/Current_v15/lib/libtiff.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (libtiff) libraries"
     cp -pR /opt/local/Current_v15/lib/libjpeg.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (libjpeg) libraries"
     cp -pR /opt/local/Current_v15/lib/libpng*.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (libpng) libraries"
+    cp -pR /opt/local/Current_v15/lib/libexpat*.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (expat) libraries"
+    cp -pR /opt/local/Current_v15/lib/libsqlite*.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (sqlite) libraries"
+    cp -pR /opt/local/Current_v15/share/proj staging/osx.build/PostGIS/share/ || _die "Failed to copy share/proj"
+    cp -pR /opt/local/Current_v15/share/gdal staging/osx.build/PostGIS/share/ || _die "Failed to copy share/gdal"
 
     _rewrite_so_refs $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bin @loader_path/..
     _rewrite_so_refs $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS lib @loader_path/..
