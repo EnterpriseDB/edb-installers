@@ -348,7 +348,7 @@
     </preUninstallationActionList>
 
    <readyToInstallActionList>
-       <!-- Always remove the old web/pgadmin bin in upgrade if <= 4.30 -->
+       <!-- Always remove the old web/pgadmin bin in upgrade if <= 7.1 -->
        <actionGroup>
            <actionList>
                  <deleteFile path="${installdir}/pgAdmin 4/venv">
