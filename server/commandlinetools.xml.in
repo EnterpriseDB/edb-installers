@@ -186,12 +186,14 @@
     </startMenuShortcutList>
     <postInstallationActionList>
         <createTempDir dirPrefix="postgresql_installer"/>
-        <runProgram>
-            <program>${env(WINDIR)}\System32\cscript</program>
-            <programArguments>//NoLogo "${installdir}\installer\server\createshortcuts_clt.vbs" "${branding}" "${installdir}"</programArguments>
-            <progressText>${msg(progress.text.creating.shortcuts)}</progressText>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>0</showMessageOnError>
+        <substitute>
+            <files>${installdir}\scripts\runpsql.bat</files>
+            <type>exact</type>
+            <substitutionList>
+                <substitution pattern="PG_USERNAME" value="postgres" />
+                <substitution pattern="PG_PORT" value="5432" />
+		<substitution pattern="PG_INSTALLDIR" value="${installdir}" />
+            </substitutionList>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
@@ -204,7 +206,7 @@
                     <value>windows</value>
                 </compareText>
             </ruleList>
-        </runProgram>
+        </substitute>
         <runProgram>
             <program>${installdir}/installer/server/createshortcuts_clt.sh</program>
             <programArguments>${product_version} "${branding}" "${installdir}" "${system_temp_directory}/postgresql_installer_${random_number}"</programArguments>
