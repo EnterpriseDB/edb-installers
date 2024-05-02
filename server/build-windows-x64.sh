@@ -275,7 +275,7 @@ our \$config = {
     asserts=>0,                         # --enable-cassert
     nls=>'$PG_PGBUILD_GETTEXT_WINDOWS_X64',        # --enable-nls=<path>
     perl=>'$PG_PERL_WINDOWS_X64',             # --with-perl
-    py=>'$PG_PYTHON_WINDOWS_X64',         # --with-python=<path>
+    python=>'$PG_PYTHON_WINDOWS_X64',         # --with-python=<path>
     tcl=>'$PG_TCL_WINDOWS_X64',            # --with-tls=<path>
     ldap=>1,                # --with-ldap
     openssl=>'$PG_PGBUILD_WINDOWS_X64',     # --with-ssl=<path>
@@ -424,9 +424,9 @@ EOT
 
 
     # Build the code and install into a temporary directory
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin:$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin; export M4=$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin/m4.exe; export VisualStudioVersion=15.0; ./build.bat RELEASE" || _die "Failed to build postgres on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL24_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin:$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin; export M4=$PG_CYGWIN_PGBUILD_WINDOWS_X64/bin/m4.exe; export VisualStudioVersion=15.0; ./build.bat RELEASE" || _die "Failed to build postgres on the windows-x64 build host"
 
-    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin; ./install.bat $PG_PATH_WINDOWS_X64\\\\output.build" || _die "Failed to install postgres on the windows-x64 build host"
+    ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/src/tools/msvc; export PATH=\$PATH:$PG_CYGWIN_PERL24_WINDOWS_X64/bin:$PG_CYGWIN_PYTHON_WINDOWS_X64:$PG_CYGWIN_TCL_WINDOWS_X64/bin; ./install.bat $PG_PATH_WINDOWS_X64\\\\output.build" || _die "Failed to install postgres on the windows-x64 build host"
     
     # Build the debugger plugins
     ssh $PG_SSH_WINDOWS_X64 "cd $PG_PATH_WINDOWS_X64/postgres.windows-x64/contrib/pldebugger; cmd /c $PG_PATH_WINDOWS_X64\\\\vc-build-x64.bat pldebugger.proj" || _die "Failed to build the pldebugger plugin"
