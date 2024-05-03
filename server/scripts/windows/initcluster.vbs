@@ -67,42 +67,6 @@ strProgramFiles = objShell.ExpandEnvironmentStrings("%PROGRAMFILES%")
 strSystemDrive = objShell.ExpandEnvironmentStrings("%SYSTEMDRIVE%")
 strWinDir = objShell.ExpandEnvironmentStrings("%WINDIR%")
 
-' Is this Vista or above?
-Function IsVistaOrNewer()
-    WScript.Echo "Called IsVistaOrNewer()..."
-    Set objWMI = GetObject("winmgmts:\\.\root\cimv2")
-    If objWMI Is Nothing Then
-        WScript.Echo "    Couldn't create 'winmgmts:\\.\root\cimv2' object"
-        IsVistaOrNewer=false
-    ElseIf IsObject(objWMI) Then
-        WScript.Echo "    'winmgmts' object initialized..."
-    Else
-        WScript.Echo "    'winmgmts' object not initialized..."
-    End If
-    Set colItems = objWMI.ExecQuery("Select * from Win32_OperatingSystem",,48)
-
-    For Each objItem In colItems
-        strVersion = Left(objItem.Version, 3)
-    Next
-    WScript.Echo "    Version:" & strVersion
-
-    If InStr(strVersion, ".") > 0 Then
-        majorVersion = CInt(Left(strVersion,  InStr(strVersion, ".") - 1))
-    ElseIf InStr(strVersion, ",") > 0 Then
-        majorVersion = CInt(Left(strVersion,  InStr(strVersion, ",") - 1))
-    Else
-        majorVersion = CInt(strVersion)
-    End If
-
-    WScript.Echo "    MajorVersion:" & majorVersion
-
-    If majorVersion >= 6.0 Then
-        IsVistaOrNewer = True
-    Else
-        IsVistaOrNewer = False
-    End If
-End Function
-
 ' Execute a command
 Function DoCmd(strCmd)
     Dim objBatchFile
@@ -204,7 +168,6 @@ Sub AclCheck(strThisDir, userName, index)
         WScript.Echo "Skipping the ACL check on " & strThisDir
         iRet = 0
     Else
-        If IsVistaOrNewer() = True Then
             WScript.Echo "Executing icacls to ensure the " & userName & " account can read the path " & strThisDir
             If index <> 0 Then
                iRet = DoCmd("""" & strWinDir & "\System32\icacls"" """ & strThisDir & """ /grant """ & userName & ":(NP)(RX)""")
@@ -213,14 +176,6 @@ Sub AclCheck(strThisDir, userName, index)
                ' "icacls" fails on the drives with (NP) flag
                iRet = DoCmd("""" & strWinDir & "\System32\icacls"" """ & strThisDir & """\ /grant """ & userName & ":(NP)(RX)""")
             End If
-        Else
-            WScript.Echo "Executing cacls to ensure the " & userName & " account can read the path " & strThisDir
-            If index <> 0 Then
-                iRet = DoCmd("echo y|cacls """ & strThisDir & """ /E /G """ & userName & """:R")
-            Else
-                iRet = DoCmd("echo y|cacls " & strThisDir & "\ /E /G """ & userName & """:R")
-            End If
-        End If
     End If
     if iRet <> 0 Then
         WScript.Echo "Failed to ensure the path " * strThisDir & " is readable"
@@ -260,14 +215,8 @@ End If
 Call AclCheck(strDataDir,loggedInUser,1)
 
 If boolCheckAcl Then
-    If IsVistaOrNewer() = True Then
         WScript.Echo "Granting the " & loggedInUser & " permissions on " & strInstallDir
-        
         iRet = DoCmd("""" & strWinDir & "\System32\icacls"" """ & strInstallDir & """ /T /grant:r """ & loggedInUser & ":(OI)(CI)(RX)""")
-    Else
-        
-        iRet = DoCmd("echo y|cacls """ & strInstallDir & """ /E /T /G """ & loggedInUser & """:F")
-    End If
     if iRet <> 0 Then
         WScript.Echo "Failed to ensure the Install directory is accessible (" & strInstallDir & ")"
     End If
@@ -275,45 +224,32 @@ End If
 
 
 ' Grant ACLs for specific users on data directory'
-If IsVistaOrNewer() = True Then
     WScript.Echo "Ensuring we can write to the data directory (using icacls) to  " & loggedInUser & ":"
     iRet = DoCmd("""" & strWinDir & "\System32\icacls"" """ & strDataDir & """ /T /grant:r """ & loggedInUser & ":(OI)(CI)F""")
-Else
-    WScript.Echo "Ensuring we can write to the data directory (using cacls):"
-    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /G """ & loggedIUser & """:F")
-End If
 if iRet <> 0 Then
     WScript.Echo "Failed to ensure the data directory is accessible (" & strDataDir & ")"
 End If
 
-If IsVistaOrNewer() = True Then
     WScript.Echo "Granting full access to ("& strOSUsername & ") on (" & strDataDir & ")"
     iRet = DoCmd("""" & strWinDir & "\System32\icacls"" """ & strDataDir & """ /grant """ & strOSUsername & ":(OI)(CI)F""")
-End If
 if iRet <> 0 Then
     WScript.Echo "Failed to grant access to ("& strOSUsername & ") on (" & strDataDir & ")"
 End If
 
-If IsVistaOrNewer() = True Then
     WScript.Echo "Granting full access to CREATOR OWNER on (" & strDataDir & ")"
     iRet = DoCmd("""" & strWinDir & "\System32\icacls"" """ & strDataDir & """ /grant ""*S-1-3-0"":(OI)(CI)F")
-End If
 if iRet <> 0 Then
     WScript.Echo "Failed to grant access to CREATOR OWNER on (" & strDataDir & ")"
 End If
 
-If IsVistaOrNewer() = True Then
     WScript.Echo "Granting full access to SYSTEM on (" & strDataDir & ")"
     iRet = DoCmd("""" & strWinDir & "\System32\icacls"" """ & strDataDir & """ /grant ""*S-1-5-18"":(OI)(CI)F")
-End If
 if iRet <> 0 Then
     WScript.Echo "Failed to grant access to SYSTEM on (" & strDataDir & ")"
 End If
 
-If IsVistaOrNewer() = True Then
     WScript.Echo "Granting full access to Administrators on (" & strDataDir & ")"
     iRet = DoCmd("""" & strWinDir & "\System32\icacls"" """ & strDataDir & """ /grant ""*S-1-5-32-544"":(OI)(CI)F")
-End If
 if iRet <> 0 Then
     WScript.Echo "Failed to grant access to Administrators on (" & strDataDir & ")"
 End If
@@ -386,14 +322,9 @@ End If
 Call AclCheck(strDataDir,strOSUsername,1)
 
 If boolCheckAcl Then
-    If IsVistaOrNewer() = True Then
         WScript.Echo "Granting " & strOSUsername & " permissions on " & strInstallDir
         
         iRet = DoCmd("""" & strWinDir & "\System32\icacls"" """ & strInstallDir & """ /T /grant:r """ & strOSUsername & """:(OI)(CI)(RX)")
-    Else
-        
-        iRet = DoCmd("echo y|cacls """ & strInstallDir & """ /E /T /G """ & strOSUsername & """:F")
-    End If
     if iRet <> 0 Then
         WScript.Echo "Failed to ensure the Install directory is accessible (" & strInstallDir & ")"
     End If
@@ -406,13 +337,8 @@ If  Not objFso.FolderExists(strDataDir & "\log") Then
 End If
 
 ' Secure the data directory
-If IsVistaOrNewer() = True Then
     WScript.Echo "Granting service account access to the data directory (using icacls) to " & strOSUsername & ":"
     iRet = DoCmd("""" & strWinDir & "\System32\icacls"" """ & strDataDir & """ /T /C /grant """ & strOSUsername & """:(OI)(CI)(F)")
-Else
-    WScript.Echo "Granting service account access to the data directory (using cacls):"
-    iRet = DoCmd("echo y|cacls """ & strDataDir & """ /E /T /C /G """ & strOSUsername & """:F")
-End If
 if iRet <> 0 Then
     Warn "Failed to grant service account access to the data directory (" & strDataDir & ")"
 End If
