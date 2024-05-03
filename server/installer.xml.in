@@ -1226,12 +1226,11 @@ EOF
             </ruleList>
 	</actionGroup>
 
-	<!-- WIN: Remove Wxwidgets 2.8.12 files in upgrade -->
+	<!-- WIN: Remove Wxwidgets 3.1.7 files in upgrade -->
 	<actionGroup>
             <actionList>
                 <logMessage text="${msg(info.wxwidgets.remove)}" />
-               <deleteFile path="${installdir}${slash}bin${slash}wx*28*.dll" />
-               <deleteFile path="${installdir}${slash}lib${slash}wx*28*.lib" />
+               <deleteFile path="${installdir}${slash}bin${slash}wx*317*.dll" />
              </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="contains" value="windows" />
