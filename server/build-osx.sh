@@ -205,7 +205,7 @@ _build_server_osx() {
     #cd $WD/server/source/stackbuilder.osx
 
     echo "Configuring the StackBuilder"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; PATH=/opt/local/Current/bin:$PATH $PG_CMAKE_OSX -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.14 -D CURL_ROOT:PATH=/opt/local/Current -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D WX_VERSION=3.1 -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=\"x86_64;arm64\" ."  || _die "Failed to configure StackBuilder"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; PATH=/opt/local/Current/bin:$PATH $PG_CMAKE_OSX -D CMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.14 -D CURL_ROOT:PATH=/opt/local/Current -D CMAKE_BUILD_TYPE:STRING=Release -D WX_CONFIG_PATH:FILEPATH=/opt/local/Current/bin/wx-config -D WX_DEBUG:BOOL=OFF -D WX_STATIC:BOOL=OFF -D WX_VERSION=3.2 -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CMAKE_OSX_ARCHITECTURES:STRING=\"x86_64;arm64\" ."  || _die "Failed to configure StackBuilder"
     echo "Building the StackBuilder"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; make all" || _die "Failed to build StackBuilder"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs" || _die "Failed to create certs directory"
@@ -265,7 +265,7 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libiconv*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libiconv"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libpng16*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libpng16"
 
-    ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libexpat*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libexpat"
+    #ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libexpat*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libexpat"
 
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
     ssh $PG_SSH_OSX "cp -f $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plperl.so $PG_PATH_OSX/server/staging_cache/osx.build/"
