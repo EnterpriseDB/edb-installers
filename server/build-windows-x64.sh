@@ -275,7 +275,7 @@ our \$config = {
     asserts=>0,                         # --enable-cassert
     nls=>'$PG_PGBUILD_GETTEXT_WINDOWS_X64',        # --enable-nls=<path>
     perl=>'$PG_PERL_WINDOWS_X64',             # --with-perl
-    py=>'$PG_PYTHON_WINDOWS_X64',         # --with-python=<path>
+    python=>'$PG_PYTHON_WINDOWS_X64',         # --with-python=<path>
     tcl=>'$PG_TCL_WINDOWS_X64',            # --with-tls=<path>
     ldap=>1,                # --with-ldap
     openssl=>'$PG_PGBUILD_WINDOWS_X64',     # --with-ssl=<path>
