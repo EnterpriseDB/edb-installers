@@ -116,14 +116,6 @@ EOF
                 </actionGroup>
                 <!-- Windows -->
                 <!-- BUG #16341 Windows: System account -->
-                <setInstallerVariableFromScriptOutput>
-                <exec>${env(WINDIR)}\System32\whoami</exec>
-                <execArgs></execArgs>
-                <name>whoami</name>
-                    <ruleList>
-                        <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </setInstallerVariableFromScriptOutput>
                 <actionGroup>
                     <actionList>
                         <generateRandomValue length="10" variable="random_number"/>
@@ -136,7 +128,7 @@ EOF
                         </runProgram>
                         <runProgram>
                           <program>${env(WINDIR)}\System32\icacls</program>
-                          <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /T /Q /grant "${whoami}:(OI)(CI)F"</programArguments>
+                          <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /T /Q /grant "${system_username}:(OI)(CI)F"</programArguments>
                           <showMessageOnError>1</showMessageOnError>
                         </runProgram>
                         <setInstallerVariable name="random_number" value="${random_number}"/>
