@@ -89,7 +89,7 @@ CLT_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/commandlinetools
 CMAKE_BUILD_GENERATOR_X64="Visual Studio 15 2017" #used for pgAgent
 PGADMIN_KRB5_DIR="C:\\\\Program Files\\\\MIT\\\\Kerberos"
 YARN_HOME="C:\\\\pgBuild64\\\\Yarn"
-NODEJS_HOME="C:\\\\pgBuild64\\\\node-v18.16.0-win-x64"
+NODEJS_HOME="C:\\\\pgBuild64\\\\node-v21.7.3-win-x64"
 
 PG_SSH_OSX=buildfarm@bishopscourt.ox.uk.enterprisedb.com
 PG_PATH_OSX=/opt/pginstaller_13.auto
