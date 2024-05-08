@@ -119,7 +119,7 @@ PGADMIN_STAGING_OSX=$PWD/server/staging/osx/pgadmin4
 SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
 CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
 YARN_HOME_OSX=/opt/local/Current/yarn
-NODEJS_HOME_OSX=/opt/local/Current/node-v14.16.1-darwin-x64
+NODEJS_HOME_OSX=/opt/local/Current/nodejs
 IMAGEMAGICK_HOME_OSX=/opt/local/Current/ImageMagick
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
