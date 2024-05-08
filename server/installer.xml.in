@@ -2869,8 +2869,8 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                         <setInstallerVariableFromRegEx>
                             <name>serverport</name>
                             <text>${serverconfig}</text>
-                            <pattern>^.*port\s*=\s*([\d]+)\s+.*$</pattern>
-                            <substitution>\1</substitution>
+                            <pattern>(^|.*\n)\s*port\s*=\s*([\d]+)\s+.*$</pattern>
+                            <substitution>\2</substitution>
                         </setInstallerVariableFromRegEx>
                     </actionList>
                     <ruleList>
