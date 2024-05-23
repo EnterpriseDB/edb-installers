@@ -177,6 +177,10 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current_v15/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -O2' make -j4" || _die "Failed to build postgres"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; make install" || _die "Failed to install postgres"
 
+    echo "Building docs"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/doc; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make" || _die "Failed to build the postgres docs"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/doc; make install" || _die "Failed to install the postgres docs"
+
     echo "Building contrib modules"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make" || _die "Failed to build the postgres contrib modules"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; make install" || _die "Failed to install the postgres contrib modules"
@@ -392,14 +396,14 @@ _postprocess_server_osx() {
     # Install the PostgreSQL docs
     mkdir -p $WD/server/staging_cache/osx/doc/postgresql/html || _die "Failed to create the doc directory"
     cd $WD/server/staging_cache/osx/doc/postgresql/html || _die "Failed to change to the doc directory"
-    cp -pR $WD/server/source/postgres.osx/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
+    #cp -pR $WD/server/source/postgres.osx/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
 
     # Install the PostgreSQL man pages
     mkdir -p $WD/server/staging_cache/osx/share/man || _die "Failed to create the man directory"
-    cd $WD/server/staging_cache/osx/share/man || _die "Failed to change to the man directory"
-    cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (osx)"
-    cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (osx)"
-    cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (osx)"
+    #cd $WD/server/staging_cache/osx/share/man || _die "Failed to change to the man directory"
+    #cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (osx)"
+    #cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (osx)"
+    #cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (osx)"
 
     source $WD/server/staging_cache/osx/versions-osx.sh
     PG_BUILD_SERVER=$(expr $PG_BUILD_SERVER + $SKIPBUILD)
