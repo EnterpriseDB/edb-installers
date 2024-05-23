@@ -3277,59 +3277,6 @@
                     </ruleList>
                 </throwError>
 
-                <!-- If this is an installation, load the various database modules -->
-                <actionGroup>
-                    <actionList>
-                        <logMessage text="Installing the adminpack module in the postgres database..."/>
-                        <!-- Set variable psql_path -->
-                        <setInstallerVariable name="psql_path" value="${installdir}/bin/psql">
-                            <ruleList>
-                                <compareText>
-                                    <logic>does_not_equal</logic>
-                                    <text>${platform_name}</text>
-                                    <value>windows</value>
-                                </compareText>
-                            </ruleList>
-                        </setInstallerVariable>
-                        <setInstallerVariable name="psql_path" value="${installdir}\bin\psql.exe">
-                            <ruleList>
-                                <compareText>
-                                    <logic>equals</logic>
-                                    <text>${platform_name}</text>
-                                    <value>windows</value>
-                                </compareText>
-                            </ruleList>
-                        </setInstallerVariable>
-                        <!-- Set Environment variable PGHOST, PGUSER, PGPASSWORD, PGPORT, PGDATABASE
-                        on all the platform & LD_LIBRARY_PATH on linux/linux-x64 -->
-                        <setEnvironmentVariable name="PGHOST" value="localhost"/>
-                        <setEnvironmentVariable name="PGUSER" value="${superaccount}"/>
-                        <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}"/>
-                        <setEnvironmentVariable name="PGPORT" value="${serverport}"/>
-                        <setEnvironmentVariable name="LD_LIBRARY_PATH" value="${installdir}/lib">
-                            <ruleList>
-                                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                            </ruleList>
-                        </setEnvironmentVariable>
-                        <runProgram>
-                            <abortOnError>0</abortOnError>
-                            <program>${psql_path}</program>
-                            <programArguments>-c "CREATE EXTENSION adminpack" -d postgres</programArguments>
-                            <showMessageOnError>1</showMessageOnError>
-                            <customErrorMessage>${msg(error.could.not.load.modules)}</customErrorMessage>
-                            <workingDirectory>${installdir}/bin</workingDirectory>
-                        </runProgram>
-                    </actionList>
-                    <!-- Only appropriate for installs -->
-                    <ruleList>
-                        <compareValues>
-                            <value1>${IsUpgrade}</value1>
-                            <logic>equals</logic>
-                            <value2>0</value2>
-                        </compareValues>
-                    </ruleList>
-                </actionGroup>
-
                 <!-- Register the message formatting DLL on Windows -->
                 <registrySet>
                     <key>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application\PostgreSQL</key>

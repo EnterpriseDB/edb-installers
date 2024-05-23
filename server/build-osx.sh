@@ -393,11 +393,6 @@ _postprocess_server_osx() {
     mkdir -p $WD/server/staging_cache/osx/doc || _die "Failed to create the doc directory"
     cp $WD/server/source/postgres.osx/contrib/pldebugger/README.pldebugger $WD/server/staging_cache/osx/doc || _die "Failed to copy the debugger README into the staging_cache directory"
 
-    # Install the PostgreSQL docs
-    mkdir -p $WD/server/staging_cache/osx/doc/postgresql/html || _die "Failed to create the doc directory"
-    cd $WD/server/staging_cache/osx/doc/postgresql/html || _die "Failed to change to the doc directory"
-    #cp -pR $WD/server/source/postgres.osx/doc/src/sgml/html/* . || _die "Failed to copy the PostgreSQL documentation"
-
     # Install the PostgreSQL man pages
     mkdir -p $WD/server/staging_cache/osx/share/man || _die "Failed to create the man directory"
     #cd $WD/server/staging_cache/osx/share/man || _die "Failed to change to the man directory"
