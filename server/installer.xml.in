@@ -129,41 +129,41 @@ EOF
                     <actionList>
                         <generateRandomValue length="10" variable="random_number"/>
                         <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
-                        <runProgram>
-                          <program>${env(WINDIR)}\System32\icacls</program>
-                          <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /inheritance:r</programArguments>
-                          <showMessageOnError>1</showMessageOnError>
-                          <progressText></progressText>
-                        </runProgram>
-                        <runProgram>
-                          <program>${env(WINDIR)}\System32\icacls</program>
-                          <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /T /Q /grant "${whoami}:(OI)(CI)F"</programArguments>
-                          <showMessageOnError>1</showMessageOnError>
-                        </runProgram>
-                        <setInstallerVariable name="random_number" value="${random_number}"/>
+                        <clearWindowsACL>
+                            <files>${system_temp_directory}/${dirPrefix}_${random_number}</files>
+                            <showMessageOnError>1</showMessageOnError>
+                            <progressText></progressText>
+                        </clearWindowsACL>
+                        <setWindowsACL>
+                            <action>allow</action>
+                            <files>${system_temp_directory}/${dirPrefix}_${random_number}</files>
+                            <permissions>generic_all</permissions>
+                            <users>${whoami}</users>
+                        </setWindowsACL>
+			<setInstallerVariable name="random_number" value="${random_number}"/>
                     </actionList>
                     <ruleList>
                          <compareText logic="equals" text="${platform_name}" value="windows"/>
 			 <compareText logic="equals" text="${whoami}" value="nt authority\system"/>
                     </ruleList>
                 </actionGroup>
-		<!-- Use 'system_username' to work with normal user names and chinese user names as 'whoami' is not working with chinese users-->
+		<!-- Use 'system_username' to work with local administrator accounts -->
 		<actionGroup>
                     <actionList>
                         <generateRandomValue length="10" variable="random_number"/>
                         <createDirectory path="${system_temp_directory}/${dirPrefix}_${random_number}"/>
-                        <runProgram>
-                          <program>${env(WINDIR)}\System32\icacls</program>
-                          <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /inheritance:r</programArguments>
-                          <showMessageOnError>1</showMessageOnError>
-                          <progressText></progressText>
-                        </runProgram>
-                        <runProgram>
-                          <program>${env(WINDIR)}\System32\icacls</program>
-                          <programArguments>"${system_temp_directory}/${dirPrefix}_${random_number}" /T /Q /grant "${system_username}:(OI)(CI)F"</programArguments>
-                          <showMessageOnError>1</showMessageOnError>
-                        </runProgram>
-                        <setInstallerVariable name="random_number" value="${random_number}"/>
+                        <clearWindowsACL>
+                            <files>${system_temp_directory}/${dirPrefix}_${random_number}</files>
+                            <showMessageOnError>1</showMessageOnError>
+                            <progressText></progressText>
+                        </clearWindowsACL>
+                        <setWindowsACL>
+                            <action>allow</action>
+                            <files>${system_temp_directory}/${dirPrefix}_${random_number}</files>
+                            <permissions>generic_all</permissions>
+                            <users>${system_username}</users>
+                        </setWindowsACL>
+			<setInstallerVariable name="random_number" value="${random_number}"/>
                     </actionList>
                     <ruleList>
                          <compareText logic="equals" text="${platform_name}" value="windows"/>
