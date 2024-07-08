@@ -12,17 +12,17 @@ _prep_sqlprotect_osx() {
     cd $WD/server/source
 	
     # Remove any existing sqlprotect directory that might exist, in server
-    if [ -e postgres.osx/contrib/SQLPROTECT ];
+    if [ -e postgres.osx/contrib/edb-sql-protect ];
     then
       echo "Removing existing sqlprotect directory"
-      rm -rf postgres.osx/contrib/SQLPROTECT || _die "Couldn't remove the existing sqlprotect directory"
+      rm -rf postgres.osx/contrib/edb-sql-protect || _die "Couldn't remove the existing sqlprotect directory"
     fi
 
     # create a copy of the sqlprotect tree
 	cd postgres.osx/contrib
-    git clone git@github.com:EnterpriseDB/edb-sql-protect.git SQLPROTECT
+    git clone git@github.com-edb-sql-protect:EnterpriseDB/edb-sql-protect.git
 
-    tar -jcvf sqlprotect.tar.bz2 SQLPROTECT
+    tar -jcvf sqlprotect.tar.bz2 edb-sql-protect
 	
     # Remove any existing staging directory that might exist, and create a clean one
     if [ -e $WD/sqlprotect/staging/osx ];
@@ -37,10 +37,10 @@ _prep_sqlprotect_osx() {
 
     # Remove existing source and staging directories
     ssh $PG_SSH_OSX "if [ -d $PG_PATH_OSX/sqlprotect ]; then rm -rf $PG_PATH_OSX/sqlprotect/staging/osx.build; fi" || _die "Couldn't remove sqlprotect/staging/osx.build on OS X build server"
-    ssh $PG_SSH_OSX "if [ -d $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT ]; then rm -rf $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT; fi" || _die "Couldn't remove the existing files on OS X build server"
+    ssh $PG_SSH_OSX "if [ -d $PG_PATH_OSX/server/source/postgres.osx/contrib/edb-sql-protect ]; then rm -rf $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT; fi" || _die "Couldn't remove the existing files on OS X build server"
 
     echo "Copy the sources to the build VM"
-    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT" || _die "Failed to create the source dircetory on the build VM"
+    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source/postgres.osx/contrib/edb-sql-protect" || _die "Failed to create the source dircetory on the build VM"
     scp $WD/server/source/postgres.osx/contrib/sqlprotect.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server/source/postgres.osx/contrib/ || _die "Failed to copy the source archives to build VM"
     scp $WD/versions.sh $WD/common.sh $WD/settings.sh $WD/resources/create_debug_symbols.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
 
@@ -58,15 +58,15 @@ _build_sqlprotect_osx() {
     
     echo "BEGIN BUILD sqlprotect OSX"    
 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/; make distclean ; make" || _die "Failed to build sqlprotect"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/edb-sql-protect/; make distclean ; make" || _die "Failed to build sqlprotect"
 	
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/sqlprotect/staging/osx.build/lib/postgresql" || _die "Failed to create staging/osx/lib/postgresql"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/sqlprotect/staging/osx.build/share" || _die "Failed to create staging/osx/share"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/sqlprotect/staging/osx.build/doc" || _die "Failed to create staging/osx/doc"
 
-    ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.dylib $PG_PATH_OSX/sqlprotect/staging/osx.build/lib/postgresql/" || _die "Failed to copy sqlprotect.dylib to staging directory"
-    ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/sqlprotect.sql $PG_PATH_OSX/sqlprotect/staging/osx.build/share/" || _die "Failed to copy sqlprotect.sql to staging directory"
-    ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/SQLPROTECT/README-sqlprotect.txt $PG_PATH_OSX/sqlprotect/staging/osx.build/doc/" || _die "Failed to copy README-sqlprotect.txt to staging directory"
+    ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/edb-sql-protect/sqlprotect.dylib $PG_PATH_OSX/sqlprotect/staging/osx.build/lib/postgresql/" || _die "Failed to copy sqlprotect.dylib to staging directory"
+    ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/edb-sql-protect/sqlprotect.sql $PG_PATH_OSX/sqlprotect/staging/osx.build/share/" || _die "Failed to copy sqlprotect.sql to staging directory"
+    ssh $PG_SSH_OSX "cp $PG_PATH_OSX/server/source/postgres.osx/contrib/edb-sql-protect/README-sqlprotect.txt $PG_PATH_OSX/sqlprotect/staging/osx.build/doc/" || _die "Failed to copy README-sqlprotect.txt to staging directory"
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_PATH_OSX/sqlprotect/staging/osx.build" || _die "Failed to execute create_debug_symbols.sh"
 
