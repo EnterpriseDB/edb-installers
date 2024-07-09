@@ -20,7 +20,7 @@ _prep_sqlprotect_osx() {
 
     # create a copy of the sqlprotect tree
 	cd postgres.osx/contrib
-      git clone git@github.com:EnterpriseDB/edb-sql-protect.git SQLPROTECT
+      git clone git@github.com-edb-sql-protect:EnterpriseDB/edb-sql-protect.git SQLPROTECT
 
     tar -jcvf sqlprotect.tar.bz2 SQLPROTECT
 	
@@ -143,7 +143,6 @@ _postprocess_sqlprotect_osx() {
 
     # Scp the app bundle to the signing machine for signing
     tar -jcvf edb-sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-${BUILD_FAILED}osx.app.tar.bz2 edb-sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-${BUILD_FAILED}osx.app || _die "Failed to create the archive."
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf apache*" || _die "Failed to clean the $PG_PATH_OSX_SIGN/output directory on sign server."
     scp edb-sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-${BUILD_FAILED}osx.app.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/ || _die "Failed to copy the archive to sign server."
     rm -fr edb-sqlprotect-$PG_VERSION_SQLPROTECT-$PG_BUILDNUM_SQLPROTECT-${BUILD_FAILED}osx.app* || _die "Failed to clean the output directory."
 
