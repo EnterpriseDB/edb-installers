@@ -1,4 +1,4 @@
-WD="$PWD"
+WD="$(dirname "$PWD")"
 
 # $1 - Component Name
 generate_3rd_party_license()
@@ -99,12 +99,14 @@ generate_3rd_party_license()
     fi
 }
 
+pushd $PWD/installer/server/staging/windows-x64/commandlinetools
 generate_3rd_party_license "commandlinetools"
+popd
 
-pushd $PWD/server/staging/windows-x64/stackbuilder
+pushd $PWD/installer/server/staging/windows-x64/stackbuilder
 generate_3rd_party_license "StackBuilder"
 popd
 
-pushd $PWD/server/staging/windows-x64/pgadmin4
+pushd $PWD/installer/server/staging/windows-x64/pgadmin4
 generate_3rd_party_license "pgAdmin"
 popd

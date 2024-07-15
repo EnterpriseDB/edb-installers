@@ -9,7 +9,7 @@ mkdir -p packaging-config/installer/server/staging/windows-x64/server/share/exte
 mkdir -p packaging-config/installer/server/staging/windows-x64/server/debug_symbols
 mkdir -p packaging-config/installer/server/staging/windows-x64/scripts
 mkdir -p packaging-config/installer/server/staging/windows-x64/resources
-cp -R packaging-config/installer/resources/license.txt packaging-config/installer/server/staging/windows-x64/server/server_license.txt
+cp -R packaging-config/resources/license.txt packaging-config/installer/server/staging/windows-x64/server/server_license.txt
 
 # server 
 cp -r pgsql/bin/* packaging-config/installer/server/staging/windows-x64/server/bin
@@ -30,35 +30,32 @@ cp -r pgsql/lib/* packaging-config/installer/server/staging/windows-x64/server/l
 
 #system_stats 
 cp -r pgsql/share packaging-config/installer/server/staging/windows-x64/server
-cp -r packaging-config/installer/server/i18n packaging-config/installer/server/staging/windows-x64/server/share
+cp -r packaging-config/server/i18n packaging-config/installer/server/staging/windows-x64/server/share
 cp -r $(PWD)/system_stats/system_stats--*.sql packaging-config/installer/server/staging/windows-x64/server/share/extension
 cp -r $(PWD)/system_stats/system_stats.control packaging-config/installer/server/staging/windows-x64/server/share/extension
 
-cp -r packaging-config/installer/server/i18n packaging-config/installer/server/staging/windows-x64/
+cp -r packaging-config/server/i18n packaging-config/installer/server/staging/windows-x64/
 
 mkdir -p packaging-config/installer/server/staging/windows-x64/server/installer/server
-mkdir -p packaging-config/installer/server/staging/windows-x64/commandlinetools/installer/server/
-cp -r packaging-config/installer/server/scripts/windows/prerun_checks.vbs packaging-config/installer/server/staging/windows-x64/server/installer/prerun_checks.vbs 
-cp -r packaging-config/installer/server/scripts/windows/initcluster.vbs packaging-config/installer/server/staging/windows-x64/server/installer/server/initcluster.vbs 
-cp -r packaging-config/installer/server/scripts/windows/startupcfg.vbs packaging-config/installer/server/staging/windows-x64/server/installer/server/startupcfg.vbs 
+cp -r packaging-config/server/scripts/windows/prerun_checks.vbs packaging-config/installer/server/staging/windows-x64/server/installer/prerun_checks.vbs 
+cp -r packaging-config/server/scripts/windows/initcluster.vbs packaging-config/installer/server/staging/windows-x64/server/installer/server/initcluster.vbs 
+cp -r packaging-config/server/scripts/windows/startupcfg.vbs packaging-config/installer/server/staging/windows-x64/server/installer/server/startupcfg.vbs 
 cp -R "$VCToolsRedistDir"vc_redist.x86.exe packaging-config/installer/server/staging/windows-x64/server/installer/vcredist_x86.exe
 cp -R "$VCToolsRedistDir"vc_redist.x64.exe packaging-config/installer/server/staging/windows-x64/server/installer/vcredist_x64.exe
 
 cp -R pgsql/doc packaging-config/installer/server/staging/windows-x64/server
-cp -R packaging-config/installer/server/resources/installation-notes.html packaging-config/installer/server/staging/windows-x64/server/doc
+cp -R packaging-config/server/resources/installation-notes.html packaging-config/installer/server/staging/windows-x64/server/doc
 
-cp packaging-config/installer/server/scripts/windows/initcluster.vbs packaging-config/installer/server/staging/windows-x64/server/installer/server/initcluster.vbs 
-cp packaging-config/installer/server/scripts/windows/startupcfg.vbs packaging-config/installer/server/staging/windows-x64/server/installer/server/startupcfg.vbs 
 cp -r pgsql/symbols/* packaging-config/installer/server/staging/windows-x64/server/debug_symbols
-cp -r packaging-config/installer/server/scripts/windows/getlocales/packaging-config/installer/server/scripts/windows/getlocales/x64/Release/getlocales.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/getlocales.exe
-cp -r packaging-config/installer/server/scripts/windows/validateuser/packaging-config/installer/server/scripts/windows/validateuser/x64/Release/validateuser.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/validateuser.exe
-cp -r packaging-config/installer/server/scripts/windows/createuser/packaging-config/installer/server/scripts/windows/createuser/x64/Release/createuser.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/createuser.exe
+cp -r packaging-config/installer/server/scripts/windows/getlocales/x64/Release/getlocales.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/getlocales.exe
+cp -r packaging-config/installer/server/scripts/windows/validateuser/x64/Release/validateuser.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/validateuser.exe
+cp -r packaging-config/installer/server/scripts/windows/createuser/x64/Release/createuser.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/createuser.exe
 # Copy the launch scripts
 mkdir -p packaging-config/installer/server/staging/windows-x64/server/scripts/images
-cp packaging-config/installer/server/scripts/windows/serverctl.vbs packaging-config/installer/server/staging/windows-x64/server/scripts/serverctl.vbs      
-cp packaging-config/installer/server/scripts/windows/runpsql.bat packaging-config/installer/server/staging/windows-x64/server/scripts/runpsql.bat 
-cp packaging-config/installer/server/resources/pg-help.ico packaging-config/installer/server/staging/windows-x64/server/scripts/images
-cp packaging-config/installer/server/resources/pg-reload.ico packaging-config/installer/server/staging/windows-x64/server/scripts/images
+cp packaging-config/server/scripts/windows/serverctl.vbs packaging-config/installer/server/staging/windows-x64/server/scripts/serverctl.vbs      
+cp packaging-config/server/scripts/windows/runpsql.bat packaging-config/installer/server/staging/windows-x64/server/scripts/runpsql.bat 
+cp packaging-config/server/resources/pg-help.ico packaging-config/installer/server/staging/windows-x64/server/scripts/images
+cp packaging-config/server/resources/pg-reload.ico packaging-config/installer/server/staging/windows-x64/server/scripts/images
 # commanlinetools 
 mkdir -p packaging-config/installer/server/staging/windows-x64/commandlinetools/installer/server
 
@@ -75,20 +72,20 @@ cp -r pgsql/lib/* packaging-config/installer/server/staging/windows-x64/commandl
 cp -r packaging-config/installer/server/system_stats.dll packaging-config/installer/server/staging/windows-x64/commandlinetools/lib/system_stats.dll
 
 mkdir -p packaging-config/installer/server/staging/windows-x64/commandlinetools/scripts/images
-cp packaging-config/installer/server/resources/pg-psql.ico  packaging-config/installer/server/staging/windows-x64/commandlinetools/scripts/images/
-cp packaging-config/installer/server/scripts/windows/runpsql.bat  packaging-config/installer/server/staging/windows-x64/commandlinetools/scripts/
-cp packaging-config/installer/resources/edb-side.png  packaging-config/installer/server/staging/windows-x64/resources
-cp packaging-config/installer/resources/pg-splash.png  packaging-config/installer/server/staging/windows-x64/resources
-cp packaging-config/installer/resources/pg-side.png  packaging-config/installer/server/staging/windows-x64/resources
+cp packaging-config/server/resources/pg-psql.ico  packaging-config/installer/server/staging/windows-x64/commandlinetools/scripts/images/
+cp packaging-config/server/scripts/windows/runpsql.bat  packaging-config/installer/server/staging/windows-x64/commandlinetools/scripts/
+cp packaging-config/resources/edb-side.png  packaging-config/installer/server/staging/windows-x64/resources
+cp packaging-config/resources/pg-splash.png  packaging-config/installer/server/staging/windows-x64/resources
+cp packaging-config/resources/pg-side.png  packaging-config/installer/server/staging/windows-x64/resources
 
-cp packaging-config/installer/server/installer.xml.in packaging-config/installer/server/installer.xml
-cp packaging-config/installer/server/commandlinetools.xml.in packaging-config/installer/server/commandlinetools-windows-x64.xml
-cp packaging-config/installer/server/pgadmin.xml.in packaging-config/installer/server/pgadmin-windows-x64.xml
-cp packaging-config/installer/server/pgserver.xml.in packaging-config/installer/server/pgserver-windows-x64.xml
-cp packaging-config/installer/server/commandlinetools.xml.in packaging-config/installer/server/staging/windows-x64/commandlinetools-windows-x64.xml
-cp packaging-config/installer/server/pgserver.xml.in packaging-config/installer/server/staging/windows-x64/pgserver-windows-x64.xml
-cp packaging-config/installer/server/stackbuilder.xml.in packaging-config/installer/server/staging/windows-x64/stackbuilder-windows-x64.xml
-cp packaging-config/installer/server/pgadmin.xml.in packaging-config/installer/server/staging/windows-x64/pgadmin-windows-x64.xml
+cp packaging-config/server/installer.xml.in packaging-config/installer/server/installer.xml
+cp packaging-config/server/commandlinetools.xml.in packaging-config/installer/server/commandlinetools-windows-x64.xml
+cp packaging-config/server/pgadmin.xml.in packaging-config/installer/server/pgadmin-windows-x64.xml
+cp packaging-config/server/pgserver.xml.in packaging-config/installer/server/pgserver-windows-x64.xml
+cp packaging-config/server/commandlinetools.xml.in packaging-config/installer/server/staging/windows-x64/commandlinetools-windows-x64.xml
+cp packaging-config/server/pgserver.xml.in packaging-config/installer/server/staging/windows-x64/pgserver-windows-x64.xml
+cp packaging-config/server/stackbuilder.xml.in packaging-config/installer/server/staging/windows-x64/stackbuilder-windows-x64.xml
+cp packaging-config/server/pgadmin.xml.in packaging-config/installer/server/staging/windows-x64/pgadmin-windows-x64.xml
 
 # stackbuilder
 mkdir -p packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
@@ -101,5 +98,5 @@ cp -r $(PWD)/Stackbuilder/share packaging-config/installer/server/staging/window
 mkdir -p "packaging-config/installer/server/staging/windows-x64/pgadmin4/pgAdmin 4"
 mv $(PWD)/pgAdmin4-binaries/pgAdmin_license.txt packaging-config/installer/server/staging/windows-x64/pgadmin4/
 mv $(PWD)/pgAdmin4-binaries/scripts packaging-config/installer/server/staging/windows-x64/pgadmin4/
-cp packaging-config/installer/server/resources/pg-help.ico packaging-config/installer/server/staging/windows-x64/pgadmin4/scripts/images/pgadmin-help.ico
+cp packaging-config/server/resources/pg-help.ico packaging-config/installer/server/staging/windows-x64/pgadmin4/scripts/images/pgadmin-help.ico
 cp -r $(PWD)/pgAdmin4-binaries/* "packaging-config/installer/server/staging/windows-x64/pgadmin4/pgAdmin 4/"

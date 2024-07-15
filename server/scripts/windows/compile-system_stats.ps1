@@ -1,7 +1,7 @@
 # Powershell script to compile system_stats
 
 # Setting variables
-$vc_bat_file="$(pwd)\packaging-config\installer\server\scripts\windows\vc-build-x64.bat"
+$vc_bat_file="$(pwd)\packaging-config\server\scripts\windows\vc-build-x64.bat"
 $project_file="$(pwd)\system_stats\system_stats.vcxproj"
 $out_dir="$(pwd)\system_stats\x64\Release\"
 
