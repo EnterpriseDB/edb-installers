@@ -1,0 +1,3 @@
+postgresql=16.2
+pgadmin4=8.7
+languagepack=4.2-1

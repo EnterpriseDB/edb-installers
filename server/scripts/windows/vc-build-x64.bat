@@ -1,0 +1,20 @@
+ECHO Setting variables
+
+@SET PROJECT_FILE=%1
+@SET CONFIGURATION=%2
+@SET PLATFORM=%3
+@SET OUTDIR=%4
+@SET TOOLSET=%5
+@SET ADDITIONAL_OPTIONS=%6
+
+IF "%CONFIGURATION%" == "UPGRADE" GOTO upgrade
+IF "%TOOLSET%" == "" ( SET TOOLSET=v143
+)
+
+msbuild %PROJECT_FILE% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% /p:OutDir=%OUTDIR% /p:PlatformToolset=%TOOLSET% %ADDITIONAL_OPTIONS%  || EXIT /B 1
+GOTO end
+
+:upgrade
+devenv /upgrade %PROJECT_FILE%
+
+:end
