@@ -69,7 +69,7 @@ cp -R pgsql/bin/* packaging-config/installer/server/staging/windows-x64/commandl
 mkdir -p packaging-config/installer/server/staging/windows-x64/commandlinetools/lib
 
 cp -r pgsql/lib/* packaging-config/installer/server/staging/windows-x64/commandlinetools/lib
-cp -r packaging-config/installer/server/system_stats.dll packaging-config/installer/server/staging/windows-x64/commandlinetools/lib/system_stats.dll
+cp -r packaging-config/server/system_stats.dll packaging-config/installer/server/staging/windows-x64/commandlinetools/lib/system_stats.dll
 
 mkdir -p packaging-config/installer/server/staging/windows-x64/commandlinetools/scripts/images
 cp packaging-config/server/resources/pg-psql.ico  packaging-config/installer/server/staging/windows-x64/commandlinetools/scripts/images/

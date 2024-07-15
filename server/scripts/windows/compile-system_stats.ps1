@@ -10,4 +10,4 @@ Invoke-Expression -Command "$vc_bat_file $project_file Release x64 $out_dir v143
 
 # Copy system-stats dlls to correct place
 Copy-Item "$(pwd)\system_stats\x64\Release\system_stats.dll" "$(pwd)\binaries-archive\pgsql\lib"
-Copy-Item "$(pwd)\system_stats\x64\Release\system_stats.dll" "$(pwd)\packaging-config\installer\server"
+Copy-Item "$(pwd)\system_stats\x64\Release\system_stats.dll" "$(pwd)\packaging-config\server"
