@@ -1,7 +1,6 @@
 # Powershell script to compile PostgreSQL
 
 param([string]$source_directory,
-    [string]$iconv_directory,
     [string]$xml_directory,
     [string]$xslt_directory,
     [string]$openssl_directory,
@@ -28,11 +27,6 @@ $temporary_data_location = "temp_pgdata"
 # Check for source parameters
 if (-Not $source_directory) {
     Write-Host "Missing source directory parameter"
-    exit 1
-}
-
-if (-Not $iconv_directory) {
-    Write-Host "Missing iconv directory parameter"
     exit 1
 }
 
@@ -169,7 +163,6 @@ $python_directory = ([IO.Path]::GetFullPath($python_directory))
 $openssl_directory = ([IO.Path]::GetFullPath($openssl_directory))
 $xml_directory = ([IO.Path]::GetFullPath($xml_directory))
 $xslt_directory = ([IO.Path]::GetFullPath($xslt_directory))
-$iconv_directory = ([IO.Path]::GetFullPath($iconv_directory))
 $zlib_directory = ([IO.Path]::GetFullPath($zlib_directory))
 $installation_directory = ([IO.Path]::GetFullPath($installation_directory))
 $uuid_directory = ([IO.Path]::GetFullPath($uuid_directory))
@@ -203,9 +196,9 @@ Set-Acl $temporary_data_location $Acl
 # So far, so good. Let's start compiling
 # Perl needs to be in the Path
 $env:Path = "$perl_directory\bin;$env:Path"
-$env:Path = "$python_directory\bin;$openssl_directory\bin;$xml_directory\bin;$xslt_directory\bin;$uuid_directory\bin;$iconv_directory\bin;$zlib_directory\bin;$lz4_directory\bin;$zstd_directory\bin;$icu_directory\bin;$gettext_directory\bin;$tcl_directory\bin;$env:Path"
-$env:Path = "$python_directory\lib;$openssl_directory\lib;$xml_directory\lib;$xslt_directory\lib;$uuid_directory\lib;$iconv_directory\lib;$zlib_directory\lib;$lz4_directory\lib;$zstd_directory\lib;$gettext_directory\lib;$tcl_directory\lib;$env:Path"
-$env:Path = "$python_directory\include;$openssl_directory\include;$xml_directory\include;$xslt_directory\include;$uuid_directory\include;$iconv_directory\include;$zlib_directory\include;$lz4_directory\include;$zstd_directory\include;$gettext_directory\include;$tcl_directory\include;$env:Path"
+$env:Path = "$python_directory\bin;$openssl_directory\bin;$xml_directory\bin;$xslt_directory\bin;$uuid_directory\bin;$zlib_directory\bin;$lz4_directory\bin;$zstd_directory\bin;$icu_directory\bin;$gettext_directory\bin;$tcl_directory\bin;$env:Path"
+$env:Path = "$python_directory\lib;$openssl_directory\lib;$xml_directory\lib;$xslt_directory\lib;$uuid_directory\lib;$zlib_directory\lib;$lz4_directory\lib;$zstd_directory\lib;$gettext_directory\lib;$tcl_directory\lib;$env:Path"
+$env:Path = "$python_directory\include;$openssl_directory\include;$xml_directory\include;$xslt_directory\include;$uuid_directory\include;$zlib_directory\include;$lz4_directory\include;$zstd_directory\include;$gettext_directory\include;$tcl_directory\include;$env:Path"
 # Let's create an appropriate configuration file
 $configuration = (Get-Content $source_directory/src/tools/msvc/config_default.pl)
 $configuration = $configuration -replace 'icu => undef', "icu       => '$icu_directory'"
@@ -219,7 +212,6 @@ $configuration = $configuration -replace 'openssl => undef', "openssl   => '$ope
 $configuration = $configuration -replace 'uuid => undef', "uuid      => '$uuid_directory'"
 $configuration = $configuration -replace 'xml => undef', "xml       => '$xml_directory'"
 $configuration = $configuration -replace 'xslt => undef', "xslt      => '$xslt_directory'"
-$configuration = $configuration -replace 'iconv => undef', "iconv     => '$iconv_directory'"
 $configuration = $configuration -replace 'zlib => undef', "zlib      => '$zlib_directory'"
 Set-Content $source_directory/src/tools/msvc/config.pl $configuration
 
@@ -246,39 +238,39 @@ Copy-Item $icu_directory/bin/*.dll $installation_directory\bin
 Copy-Item $openssl_directory/bin/*.dll $installation_directory\bin
 Copy-Item $xml_directory/bin/*.dll $installation_directory\bin
 Copy-Item $xslt_directory/bin/libxslt.dll $installation_directory\bin
-Copy-Item $iconv_directory/bin/libiconv-2.dll $installation_directory\bin
-Copy-Item $iconv_directory/bin/libwinpthread-1.dll $installation_directory\bin
+Copy-Item $gettext_directory/bin/libiconv-2.dll $installation_directory\bin
+Copy-Item $gettext_directory/bin/libwinpthread-1.dll $installation_directory\bin
 Copy-Item $zlib_directory/bin/*.dll $installation_directory\bin
 Copy-Item $zstd_directory/bin/*.dll $installation_directory\bin
 Copy-Item $lz4_directory/bin/*.dll $installation_directory\bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase317ud_net_vc_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase317u_vc_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase317u_xml_vc_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw317u_adv_vc_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw317ud_aui_vc_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw317u_core_vc_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw317ud_html_vc_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw317ud_xrc_vc_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase324u_net_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase324u_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase324u_xml_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw324u_adv_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw324u_aui_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw324u_core_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw324u_html_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw324u_xrc_vc_x64_custom.dll $installation_directory/bin
 
 # Manually copy some libraries to the installation directory
 Copy-Item $lz4_directory/lib/liblz4.lib $installation_directory\lib
 Copy-Item $openssl_directory/lib/libssl.lib $installation_directory\lib
 Copy-Item $openssl_directory/lib/libcrypto.lib $installation_directory\lib
-Copy-Item $iconv_directory/lib/iconv.lib $installation_directory\lib
+Copy-Item $gettext_directory/lib/iconv.lib $installation_directory\lib
 Copy-Item $gettext_directory/lib/libintl.lib $installation_directory\lib
 Copy-Item $xml_directory/lib/libxml2.lib $installation_directory\lib
 Copy-Item $xslt_directory/lib/libxslt.lib $installation_directory\lib
 Copy-Item $zlib_directory/bin/zlib.lib $installation_directory\lib
 Copy-Item $zstd_directory/lib/* $installation_directory/lib
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase31ud_net.lib $installation_directory\lib
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase31ud.lib $installation_directory\lib
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase31ud_xml.lib $installation_directory\lib
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw31ud_adv.lib $installation_directory\lib
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw31ud_aui.lib $installation_directory\lib
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw31ud_core.lib $installation_directory\lib
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw31ud_html.lib $installation_directory\lib
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw31ud_xrc.lib $installation_directory\lib
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw31u_adv.lib $installation_directory\lib
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase32u_net.lib $installation_directory\lib
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase32u.lib $installation_directory\lib
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase32u_xml.lib $installation_directory\lib
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw32u_adv.lib $installation_directory\lib
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw32u_aui.lib $installation_directory\lib
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw32u_core.lib $installation_directory\lib
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw32u_html.lib $installation_directory\lib
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw32u_xrc.lib $installation_directory\lib
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw32u_adv.lib $installation_directory\lib
 
 Copy-Item $lz4_directory/include/*.h $installation_directory/include
 Copy-Item -Path $openssl_directory/include/* -Destination $installation_directory/include -Recurse
@@ -289,7 +281,6 @@ Copy-Item -Path $icu_directory/include/* -Destination $installation_directory/in
 Copy-Item $uuid_directory/include/*.h $installation_directory/include
 Copy-Item $zlib_directory/include/*.h $installation_directory/include
 Copy-Item $zstd_directory/include/*.h $installation_directory/include
-Copy-Item $iconv_directory/include/*.h $installation_directory/include
 
 
 
