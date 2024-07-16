@@ -15,27 +15,8 @@ shift
 shift
 shift
 
-rem Initialize ADDITIONAL_OPTIONS as an empty variable
-@SET ADDITIONAL_OPTIONS=
-
-rem Loop to collect all additional options into ADDITIONAL_OPTIONS
-:loop
-if "%~1"=="" goto done
-@SET ADDITIONAL_OPTIONS=!ADDITIONAL_OPTIONS! %1
-shift
-goto loop
-
-:done
-
-rem Remove double quotes if any
-if not "%~1"=="" @SET ADDITIONAL_OPTIONS=%ADDITIONAL_OPTIONS:"=%
-
-IF "%CONFIGURATION%" == "UPGRADE" GOTO upgrade
-IF "%TOOLSET%" == "" ( SET TOOLSET=v143
-)
-
 rem Run msbuild with all parameters and additional options
-msbuild %PROJECT_FILE% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% /p:OutDir=%OUTDIR% /p:PlatformToolset=%TOOLSET% %ADDITIONAL_OPTIONS%  || EXIT /B 1
+msbuild %PROJECT_FILE% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% /p:OutDir=%OUTDIR% /p:PlatformToolset=%TOOLSET% %~1  || EXIT /B 1
 GOTO end
 
 :upgrade
