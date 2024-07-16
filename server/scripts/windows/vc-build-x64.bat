@@ -20,8 +20,8 @@ rem Initialize ADDITIONAL_OPTIONS as an empty variable
 
 rem Loop to collect all additional options into ADDITIONAL_OPTIONS
 :loop
-if "%1"=="" goto done
-@SET ADDITIONAL_OPTIONS=!ADDITIONAL_OPTIONS! %~1
+if "%~1"=="" goto done
+@SET ADDITIONAL_OPTIONS=!ADDITIONAL_OPTIONS! %1
 shift
 goto loop
 
