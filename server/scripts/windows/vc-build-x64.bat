@@ -21,11 +21,14 @@ rem Initialize ADDITIONAL_OPTIONS as an empty variable
 rem Loop to collect all additional options into ADDITIONAL_OPTIONS
 :loop
 if "%1"=="" goto done
-set ADDITIONAL_OPTIONS=!ADDITIONAL_OPTIONS! %~1
+@SET ADDITIONAL_OPTIONS=!ADDITIONAL_OPTIONS! %~1
 shift
 goto loop
 
 :done
+
+rem Remove double quotes
+@SET ADDITIONAL_OPTIONS=%ADDITIONAL_OPTIONS:"=% 
 
 IF "%CONFIGURATION%" == "UPGRADE" GOTO upgrade
 IF "%TOOLSET%" == "" ( SET TOOLSET=v143
