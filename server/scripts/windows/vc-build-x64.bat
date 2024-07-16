@@ -28,7 +28,7 @@ goto loop
 :done
 
 rem Remove double quotes if any
-if not %ADDITIONAL_OPTIONS%=="" @SET ADDITIONAL_OPTIONS=%ADDITIONAL_OPTIONS:"=%
+if not "%~1"=="" @SET ADDITIONAL_OPTIONS=%ADDITIONAL_OPTIONS:"=%
 
 IF "%CONFIGURATION%" == "UPGRADE" GOTO upgrade
 IF "%TOOLSET%" == "" ( SET TOOLSET=v143
