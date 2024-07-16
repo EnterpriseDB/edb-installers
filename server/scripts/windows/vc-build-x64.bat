@@ -29,9 +29,7 @@ goto loop
 
 rem Remove double quotes if any
 echo %ADDITIONAL_OPTIONS% | find """"
-if %errorlevel% equ 0 (
-    @SET ADDITIONAL_OPTIONS=%ADDITIONAL_OPTIONS:"=%
-) 
+if %errorlevel% equ 0 @SET ADDITIONAL_OPTIONS=%ADDITIONAL_OPTIONS:"=%
 
 IF "%CONFIGURATION%" == "UPGRADE" GOTO upgrade
 IF "%TOOLSET%" == "" ( SET TOOLSET=v143
