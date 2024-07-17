@@ -47,9 +47,9 @@ cp -R pgsql/doc packaging-config/installer/server/staging/windows-x64/server
 cp -R packaging-config/server/resources/installation-notes.html packaging-config/installer/server/staging/windows-x64/server/doc
 
 cp -r pgsql/symbols/* packaging-config/installer/server/staging/windows-x64/server/debug_symbols
-cp -r packaging-config/installer/server/scripts/windows/getlocales/x64/Release/getlocales.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/getlocales.exe
-cp -r packaging-config/installer/server/scripts/windows/validateuser/x64/Release/validateuser.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/validateuser.exe
-cp -r packaging-config/installer/server/scripts/windows/createuser/x64/Release/createuser.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/createuser.exe
+cp -r packaging-config/server/scripts/windows/getlocales/x64/Release/getlocales.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/getlocales.exe
+cp -r packaging-config/server/scripts/windows/validateuser/x64/Release/validateuser.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/validateuser.exe
+cp -r packaging-config/server/scripts/windows/createuser/x64/Release/createuser.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/createuser.exe
 # Copy the launch scripts
 mkdir -p packaging-config/installer/server/staging/windows-x64/server/scripts/images
 cp packaging-config/server/scripts/windows/serverctl.vbs packaging-config/installer/server/staging/windows-x64/server/scripts/serverctl.vbs      
@@ -89,10 +89,10 @@ cp packaging-config/server/pgadmin.xml.in packaging-config/installer/server/stag
 
 # stackbuilder
 mkdir -p packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
-cp -r $(PWD)/Stackbuilder/bin/stackbuilder.exe packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
+cp -r $(PWD)/stackbuilder*.exe packaging-config/installer/server/staging/windows-x64/stackbuilder/bin/stackbuilder.exe
 cp -r packaging-config/installer/server/staging/windows-x64/server/bin/wx*.dll packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
 cp -r ./curl/bin/libcurl.dll packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
-cp -r $(PWD)/Stackbuilder/share packaging-config/installer/server/staging/windows-x64/stackbuilder
+cp -r $(PWD)/SB/share packaging-config/installer/server/staging/windows-x64/stackbuilder
 
 #pgAdmin4
 mkdir -p "packaging-config/installer/server/staging/windows-x64/pgadmin4/pgAdmin 4"
