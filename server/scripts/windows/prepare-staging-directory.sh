@@ -82,7 +82,7 @@ cp packaging-config/resources/edb-side.png  packaging-config/installer/server/st
 cp packaging-config/resources/pg-splash.png  packaging-config/installer/server/staging/windows-x64/resources
 cp packaging-config/resources/pg-side.png  packaging-config/installer/server/staging/windows-x64/resources
 
-cp packaging-config/server/installer.xml packaging-config/installer/server/staging/windows-x64/installer.xml
+cp packaging-config/server/installer.xml.in packaging-config/installer/server/staging/windows-x64/installer.xml
 cp packaging-config/server/commandlinetools.xml.in packaging-config/installer/server/staging/windows-x64/commandlinetools-windows-x64.xml
 cp packaging-config/server/pgserver.xml.in packaging-config/installer/server/staging/windows-x64/pgserver-windows-x64.xml
 cp packaging-config/server/stackbuilder.xml.in packaging-config/installer/server/staging/windows-x64/stackbuilder-windows-x64.xml
