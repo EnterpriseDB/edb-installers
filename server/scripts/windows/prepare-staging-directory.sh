@@ -56,6 +56,10 @@ cp packaging-config/server/scripts/windows/serverctl.vbs packaging-config/instal
 cp packaging-config/server/scripts/windows/runpsql.bat packaging-config/installer/server/staging/windows-x64/server/scripts/runpsql.bat 
 cp packaging-config/server/resources/pg-help.ico packaging-config/installer/server/staging/windows-x64/server/scripts/images
 cp packaging-config/server/resources/pg-reload.ico packaging-config/installer/server/staging/windows-x64/server/scripts/images
+
+cp packaging-config/scripts/determineLinuxInitSystem.xml packaging-config/installer/server/staging/windows-x64/scripts/determineLinuxInitSystem.xml
+cp packaging-config/scripts/linuxServiceAction.xml packaging-config/installer/server/staging/windows-x64/scripts/linuxServiceAction.xml
+
 # commanlinetools 
 mkdir -p packaging-config/installer/server/staging/windows-x64/commandlinetools/installer/server
 
@@ -82,6 +86,7 @@ cp packaging-config/server/installer.xml.in packaging-config/installer/server/in
 cp packaging-config/server/commandlinetools.xml.in packaging-config/installer/server/commandlinetools-windows-x64.xml
 cp packaging-config/server/pgadmin.xml.in packaging-config/installer/server/pgadmin-windows-x64.xml
 cp packaging-config/server/pgserver.xml.in packaging-config/installer/server/pgserver-windows-x64.xml
+cp  packaging-config/installer/server/installer.xml packaging-config/installer/server/staging/windows-x64/installer.xml
 cp packaging-config/server/commandlinetools.xml.in packaging-config/installer/server/staging/windows-x64/commandlinetools-windows-x64.xml
 cp packaging-config/server/pgserver.xml.in packaging-config/installer/server/staging/windows-x64/pgserver-windows-x64.xml
 cp packaging-config/server/stackbuilder.xml.in packaging-config/installer/server/staging/windows-x64/stackbuilder-windows-x64.xml
