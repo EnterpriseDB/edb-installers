@@ -8,15 +8,8 @@ rem Set fixed parameters from the command line arguments
 @SET OUTDIR=%4
 @SET TOOLSET=%5
 
-rem Shift the fixed parameters to process additional options
-shift
-shift
-shift
-shift
-shift
-
 rem Run msbuild with all parameters and additional options
-msbuild %PROJECT_FILE% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% /p:OutDir=%OUTDIR% /p:PlatformToolset=%TOOLSET% %~1  || EXIT /B 1
+msbuild %PROJECT_FILE% /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM% /p:OutDir=%OUTDIR% /p:PlatformToolset=%TOOLSET% %~6 || EXIT /B 1
 GOTO end
 
 :upgrade
