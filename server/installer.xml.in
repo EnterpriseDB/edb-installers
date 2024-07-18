@@ -1826,6 +1826,30 @@ EOF
     </preInstallationActionList>
 
     <postInstallationActionList>
+    <!-- Delete Add/Remove Programs Entry From Old Windows Installation -->
+        <actionGroup>
+          <actionList>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${project.fullName} 16.1</key>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${project.fullName} 16.2</key>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+          </actionList>
+          <ruleList>
+            <compareText>
+                <logic>equals</logic>
+                <text>${platform_name}</text>
+                <value>windows</value>
+            </compareText>
+            <isTrue value="${IsUpgrade}"/>
+          </ruleList>
+        </actionGroup>
+        
     <!-- Remove the pg_log directory in upgrademode -->
         <actionGroup>
            <actionList>
