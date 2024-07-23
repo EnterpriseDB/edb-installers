@@ -11,5 +11,3 @@ wxwidgets-3.2.4-windows-x64.tar.bz2
 gettext-0.19.8-windows-x64.tar.bz2
 openssl-3.0.14-windows-x64.tar.bz2
 libwinpthread-1.0.0-windows-x64.tar.bz2
-stackbuilder-4.2.1-windows-x64.exe
-stackbuilder_share-4.2.1-windows-x64.tar.bz2
