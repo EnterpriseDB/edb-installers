@@ -1266,12 +1266,16 @@ EOF
             </ruleList>
 	</actionGroup>
 
-	<!-- WIN: Remove Wxwidgets 3.1.7 files in upgrade -->
+	<!-- WIN: Remove Wxwidgets files in upgrade -->
 	<actionGroup>
             <actionList>
                 <logMessage text="${msg(info.wxwidgets.remove)}" />
-               <deleteFile path="${installdir}${slash}bin${slash}wx*317*.dll" />
+               <deleteFile path="${installdir}${slash}bin${slash}wx*.dll" />
              </actionList>
+             <actionList>
+                <logMessage text="${msg(info.wxwidgets.remove)}" />
+                <deleteFile path="${installdir}${slash}lib${slash}wx*.lib" />
+            </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="contains" value="windows" />
                 <isTrue value="${IsUpgrade}"/>
@@ -1822,6 +1826,25 @@ EOF
     </preInstallationActionList>
 
     <postInstallationActionList>
+    <!-- Delete Add/Remove Programs Entry From Old Windows Installation -->
+        <actionGroup>
+          <actionList>
+            <registryDelete>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${project.fullName} 14.11</key>
+                <showMessageOnError>0</showMessageOnError>
+                <abortOnError>0</abortOnError>
+            </registryDelete>
+          </actionList>
+          <ruleList>
+            <compareText>
+                <logic>equals</logic>
+                <text>${platform_name}</text>
+                <value>windows</value>
+            </compareText>
+            <isTrue value="${IsUpgrade}"/>
+          </ruleList>
+        </actionGroup>
+        
     <!-- Remove the pg_log directory in upgrademode -->
         <actionGroup>
            <actionList>
