@@ -1830,12 +1830,7 @@ EOF
         <actionGroup>
           <actionList>
             <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${project.fullName} 16.1</key>
-                <showMessageOnError>0</showMessageOnError>
-                <abortOnError>0</abortOnError>
-            </registryDelete>
-            <registryDelete>
-                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${project.fullName} 16.2</key>
+                <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${project.fullName} 15.6</key>
                 <showMessageOnError>0</showMessageOnError>
                 <abortOnError>0</abortOnError>
             </registryDelete>
