@@ -9,7 +9,6 @@ param([string]$source_directory,
     [string]$uuid_directory,
     [string]$perl_directory,
     [string]$lz4_directory,
-    [string]$zstd_directory,
     [string]$icu_directory,
     [string]$gettext_directory,
     [string]$tcl_directory,
@@ -70,11 +69,6 @@ if (-Not $lz4_directory) {
     exit 1
 }
 
-if (-Not $zstd_directory) {
-    Write-Host "Missing zstd directory parameter"
-    exit 1
-}
-
 if (-Not $icu_directory) {
     Write-Host "Missing icu directory parameter"
     exit 1
@@ -128,12 +122,7 @@ if (-Not (Test-Path $perl_directory -PathType Container)) {
     exit 1
 }
 if (-Not (Test-Path $lz4_directory -PathType Container)) {
-    Write-Host "zstd distribution ($lz4_directory) doesn't exist or isn't a directory"
-    exit 1
-}
-
-if (-Not (Test-Path $zstd_directory -PathType Container)) {
-    Write-Host "zstd distribution ($zstd_directory) doesn't exist or isn't a directory"
+    Write-Host "lz4 distribution ($lz4_directory) doesn't exist or isn't a directory"
     exit 1
 }
 
@@ -168,7 +157,6 @@ $installation_directory = ([IO.Path]::GetFullPath($installation_directory))
 $uuid_directory = ([IO.Path]::GetFullPath($uuid_directory))
 $perl_directory = ([IO.Path]::GetFullPath($perl_directory))
 $lz4_directory = ([IO.Path]::GetFullPath($lz4_directory))
-$zstd_directory = ([IO.Path]::GetFullPath($zstd_directory))
 $icu_directory = ([IO.Path]::GetFullPath($icu_directory))
 $gettext_directory = ([IO.Path]::GetFullPath($gettext_directory))
 $tcl_directory = ([IO.Path]::GetFullPath($tcl_directory))
@@ -196,14 +184,13 @@ Set-Acl $temporary_data_location $Acl
 # So far, so good. Let's start compiling
 # Perl needs to be in the Path
 $env:Path = "$perl_directory\bin;$env:Path"
-$env:Path = "$python_directory\bin;$openssl_directory\bin;$xml_directory\bin;$xslt_directory\bin;$uuid_directory\bin;$zlib_directory\bin;$lz4_directory\bin;$zstd_directory\bin;$icu_directory\bin;$gettext_directory\bin;$tcl_directory\bin;$env:Path"
-$env:Path = "$python_directory\lib;$openssl_directory\lib;$xml_directory\lib;$xslt_directory\lib;$uuid_directory\lib;$zlib_directory\lib;$lz4_directory\lib;$zstd_directory\lib;$gettext_directory\lib;$tcl_directory\lib;$env:Path"
-$env:Path = "$python_directory\include;$openssl_directory\include;$xml_directory\include;$xslt_directory\include;$uuid_directory\include;$zlib_directory\include;$lz4_directory\include;$zstd_directory\include;$gettext_directory\include;$tcl_directory\include;$env:Path"
+$env:Path = "$python_directory\bin;$openssl_directory\bin;$xml_directory\bin;$xslt_directory\bin;$uuid_directory\bin;$zlib_directory\bin;$lz4_directory\bin;$icu_directory\bin;$gettext_directory\bin;$tcl_directory\bin;$env:Path"
+$env:Path = "$python_directory\lib;$openssl_directory\lib;$xml_directory\lib;$xslt_directory\lib;$uuid_directory\lib;$zlib_directory\lib;$lz4_directory\lib;$gettext_directory\lib;$tcl_directory\lib;$env:Path"
+$env:Path = "$python_directory\include;$openssl_directory\include;$xml_directory\include;$xslt_directory\include;$uuid_directory\include;$zlib_directory\include;$lz4_directory\include;$gettext_directory\include;$tcl_directory\include;$env:Path"
 # Let's create an appropriate configuration file
 $configuration = (Get-Content $source_directory/src/tools/msvc/config_default.pl)
 $configuration = $configuration -replace 'icu => undef', "icu       => '$icu_directory'"
 $configuration = $configuration -replace 'lz4 => undef', "lz4       =>  '$lz4_directory'"
-$configuration = $configuration -replace 'zstd => undef', "zstd      => '$zstd_directory'"
 $configuration = $configuration -replace 'nls => undef', "nls       => '$gettext_directory'"
 $configuration = $configuration -replace 'tcl => undef', "tcl       => '$tcl_directory'"
 $configuration = $configuration -replace 'perl => undef', "perl      => '$perl_directory'"
@@ -241,7 +228,6 @@ Copy-Item $xslt_directory/bin/libxslt.dll $installation_directory\bin
 Copy-Item $gettext_directory/bin/libiconv-2.dll $installation_directory\bin
 Copy-Item $gettext_directory/bin/libwinpthread-1.dll $installation_directory\bin
 Copy-Item $zlib_directory/bin/*.dll $installation_directory\bin
-Copy-Item $zstd_directory/bin/*.dll $installation_directory\bin
 Copy-Item $lz4_directory/bin/*.dll $installation_directory\bin
 Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase324u_net_vc_x64_custom.dll $installation_directory/bin
 Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase324u_vc_x64_custom.dll $installation_directory/bin
@@ -261,7 +247,6 @@ Copy-Item $gettext_directory/lib/libintl.lib $installation_directory\lib
 Copy-Item $xml_directory/lib/libxml2.lib $installation_directory\lib
 Copy-Item $xslt_directory/lib/libxslt.lib $installation_directory\lib
 Copy-Item $zlib_directory/bin/zlib.lib $installation_directory\lib
-Copy-Item $zstd_directory/lib/* $installation_directory/lib
 Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase32u_net.lib $installation_directory\lib
 Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase32u.lib $installation_directory\lib
 Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase32u_xml.lib $installation_directory\lib
@@ -280,7 +265,6 @@ Copy-Item $gettext_directory/include/*.h $installation_directory/include
 Copy-Item -Path $icu_directory/include/* -Destination $installation_directory/include  -Recurse
 Copy-Item $uuid_directory/include/*.h $installation_directory/include
 Copy-Item $zlib_directory/include/*.h $installation_directory/include
-Copy-Item $zstd_directory/include/*.h $installation_directory/include
 
 
 
