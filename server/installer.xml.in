@@ -1251,12 +1251,16 @@ EOF
             </ruleList>
 	</actionGroup>
 
-	<!-- WIN: Remove Wxwidgets 3.1.7 files in upgrade -->
+	<!-- WIN: Remove Wxwidgets files in upgrade -->
 	<actionGroup>
             <actionList>
                 <logMessage text="${msg(info.wxwidgets.remove)}" />
-               <deleteFile path="${installdir}${slash}bin${slash}wx*317*.dll" />
+               <deleteFile path="${installdir}${slash}bin${slash}wx*.dll" />
              </actionList>
+             <actionList>
+                <logMessage text="${msg(info.wxwidgets.remove)}" />
+                <deleteFile path="${installdir}${slash}lib${slash}wx*.lib" />
+            </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="contains" value="windows" />
                 <isTrue value="${IsUpgrade}"/>
@@ -1806,7 +1810,7 @@ EOF
         </actionGroup>
     </preInstallationActionList>
 
-    <postInstallationActionList>
+    <postInstallationActionList>    
     <!-- Remove the pg_log directory in upgrademode -->
         <actionGroup>
            <actionList>
