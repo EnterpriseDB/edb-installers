@@ -1,6 +1,6 @@
 curl-8.9.0-windows-x64.tar.bz2
 zstd-1.5.6-windows-x64.tar.bz2
-lz4-1.9.5-windows-x64.tar.bz2
+lz4-1.10.0-windows-x64.tar.bz2
 libxml2-2.11.9-windows-x64.tar.bz2
 libxslt-1.1.42-windows-x64.tar.bz2
 iconv-1.17-windows-x64.tar.bz2
