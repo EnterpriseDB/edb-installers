@@ -1,6 +1,6 @@
 pg_major_version=17
 pg_minor_version=0
-package_revision=beta2
+package_revision=1
 pgadmin4=8.7
 python=3.12.3
 stackbuilder=4.2.1
