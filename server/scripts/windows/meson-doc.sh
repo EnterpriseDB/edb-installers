@@ -17,5 +17,5 @@ meson setup /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation
 
 cd /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta2/meson-build-doc
 ninja docs
-ls -l /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta2/meson-build-doc/doc/src/sgml/html/a*.html
-
+mv /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta2/meson-build-doc/doc /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta2/meson-install/
+ls -l /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta2/meson-install/doc/src/sgml/html/a*.html

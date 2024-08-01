@@ -167,13 +167,12 @@ Set-Acl $temporary_data_location $Acl
 
 
 # So far, so good. Let's start compiling
-#Write-Host "Executing meson bat file"
-#Start-Process -FilePath packaging-config/server/scripts/windows/meson.bat -Wait -NoNewWindow
+Write-Host "Executing meson bat file"
+Start-Process -FilePath packaging-config/server/scripts/windows/meson.bat -Wait -NoNewWindow
 
 Write-Host " Executing Doc Script "
 C:\msys64\usr\bin\sh.exe packaging-config/server/scripts/windows/meson-doc.sh
 Write-Host "Meson doc Script execution completed"
-exit 1
 
 Write-Host "copying meson-install content to $installation_directory"
 Copy-Item -Path "$source_directory\meson-install\*" -Destination $installation_directory/ -Recurse
