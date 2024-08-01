@@ -6,6 +6,9 @@ pacman -S libxml2 libxslt
 echo "==== Installing docbook-xml and docbook-xsl using pacman ===="
 pacman -S docbook-xml docbook-xsl
 
+echo "==== Rename the link.exe ===="
+mv /c/msys64/usr/bin/link.exe /c/msys64/usr/bin/link.exe_bk
+
 export PATH=/C/hostedtoolcache/windows/Python/3.12.3/x64:/C/hostedtoolcache/windows/Python/3.12.3/x64/Scripts:$PATH
 
 mkdir /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta2/meson-build-doc
