@@ -391,7 +391,7 @@ _postprocess_server_osx() {
     rm -f server-staging.tar.bz2
 
     mkdir -p $WD/server/staging_cache/osx/doc || _die "Failed to create the doc directory"
-    cp $WD/server/source/postgres.osx/contrib/pldebugger/README.pldebugger $WD/server/staging_cache/osx/doc || _die "Failed to copy the debugger README into the staging_cache directory"
+    cp $WD/server/source/postgres.osx/contrib/pldebugger/README-pldebugger.md $WD/server/staging_cache/osx/doc || _die "Failed to copy the debugger README into the staging_cache directory"
 
     # Install the PostgreSQL man pages
     mkdir -p $WD/server/staging_cache/osx/share/man || _die "Failed to create the man directory"
