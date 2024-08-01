@@ -8,5 +8,5 @@ icu-67-1-windows-x64.tar.bz2
 uuid-1.6.2-windows-x64.tar.bz2	
 wxwidgets-3.2.5-windows-x64.tar.bz2
 gettext-0.19.8-windows-x64.tar.bz2
-openssl-3.0.14-windows-x64.tar.bz2
+openssl-1.1.1x-windows-x64.tar.bz2
 libwinpthread-1.0.0-windows-x64.tar.bz2
