@@ -161,7 +161,7 @@ EOF
                             <action>allow</action>
                             <files>${system_temp_directory}/${dirPrefix}_${random_number}</files>
                             <permissions>generic_all</permissions>
-                            <users>${system_username}</users>
+                            <users>${env(USERDOMAIN)}\${system_username}</users>
                         </setWindowsACL>
 			<setInstallerVariable name="random_number" value="${random_number}"/>
                     </actionList>
