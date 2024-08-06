@@ -148,7 +148,7 @@ else
 fi
 
 # Generic mail variables
-log_location="/home/buildfarm/pginstaller.auto/output"
+log_location="/home/buildfarm/pginstaller12.auto/output"
 header_fail="Autobuild failed with the following error (last 20 lines of the log):
 ###################################################################################"
 footer_fail="###################################################################################"
