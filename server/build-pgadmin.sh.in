@@ -122,7 +122,7 @@ _build_runtime() {
 
 	pushd "${BUILD_ROOT}" > /dev/null || exit
         while true;do
-            wget "https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/electron-v${ELECTRON_VERSION}-darwin-${ELECTRON_ARCH}.zip" && break
+            curl -OL "https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/electron-v${ELECTRON_VERSION}-darwin-${ELECTRON_ARCH}.zip" && break
             rm "electron-v${ELECTRON_VERSION}-darwin-${ELECTRON_ARCH}.zip"
         done
         unzip "electron-v${ELECTRON_VERSION}-darwin-${ELECTRON_ARCH}.zip"
