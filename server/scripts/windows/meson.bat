@@ -9,7 +9,8 @@ mkdir D:\a\postgresql-packaging-foundation\postgresql-packaging-foundation\postg
 
 SET BASE_PATH=D:\a\postgresql-packaging-foundation\postgresql-packaging-foundation
 
-SET PATH=C:\hostedtoolcache\windows\Python\3.12.3\x64;C:\hostedtoolcache\windows\Python\3.12.3\x64\Scripts;%BASE_PATH%\pkg-config-lite-0.28-1\bin;C:\Strawberry\perl\bin;%BASE_PATH%\openssl\bin;%BASE_PATH%\zlib\bin;%BASE_PATH%\libxml2\bin;%BASE_PATH%\zstd\bin;%BASE_PATH%\1z4\bin;%BASE_PATH%\libxslt\bin;%BASE_PATH%\icu\bin;%PATH%
+SET
+PATH=C:\hostedtoolcache\windows\Python\3.12.3\x64;C:\hostedtoolcache\windows\Python\3.12.3\x64\Scripts;%BASE_PATH%\pkg-config-lite-0.28-1\bin;%BASE_PATH%\strawberry-perl-5.38.2.2-64bit-portable\perl\bin;%BASE_PATH%\openssl\bin;%BASE_PATH%\zlib\bin;%BASE_PATH%\libxml2\bin;%BASE_PATH%\zstd\bin;%BASE_PATH%\1z4\bin;%BASE_PATH%\libxslt\bin;%BASE_PATH%\icu\bin;%PATH%
 
 SET PKG_CONFIG_PATH=%BASE_PATH%\zlib\lib\pkgconfig;%BASE_PATH%\libxml2\lib\pkgconfig;%BASE_PATH%\zstd\lib\pkgconfig;%BASE_PATH%\lz4\lib\pkgconfig;%BASE_PATH%\libxslt\lib\pkgconfig;%BASE_PATH%\icu\lib\pkgconfig;C:\Users\runneradmin\AppData\Local\Apps\Tcl86\lib\pkgconfig;%BASE_PATH%\uuid\lib\pkgconfig
 
