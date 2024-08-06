@@ -75,8 +75,8 @@ then
 else
         SKIPPVTPACKAGES=""
 	# Make sure, we always do a full private build
-	if [ -f pvt_settings.sh.full.REL-16 ]; then
-		cp -f pvt_settings.sh.full.REL-16 pvt_settings.sh.REL-16
+	if [ -f pvt_settings.sh.full.REL-17 ]; then
+		cp -f pvt_settings.sh.full.REL-17 pvt_settings.sh.REL-17
 	fi
 fi
 
@@ -148,7 +148,7 @@ else
 fi
 
 # Generic mail variables
-log_location="/home/buildfarm/pginstaller16.auto/output"
+log_location="/home/buildfarm/pginstaller17.auto/output"
 header_fail="Autobuild failed with the following error (last 20 lines of the log):
 ###################################################################################"
 footer_fail="###################################################################################"
@@ -256,23 +256,23 @@ DATE=`date +'%Y-%m-%d'`
 echo "Cleaning up old output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
 
-# Switch to REL-16 branch
-echo "Switching to REL-16 branch" >> autobuild.log
+# Switch to REL-17 branch
+echo "Switching to REL-17 branch" >> autobuild.log
 git reset --hard >> autobuild.log 2>&1
-git checkout REL-16 >> autobuild.log 2>&1
+git checkout REL-17 >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
-if [ -f settings.sh.full.REL-16 ]; then
-   cp -f settings.sh.full.REL-16 settings.sh
+if [ -f settings.sh.full.REL-17 ]; then
+   cp -f settings.sh.full.REL-17 settings.sh
 fi
 
 # Self update
-echo "Updating REL-16 branch build system" >> autobuild.log
+echo "Updating REL-17 branch build system" >> autobuild.log
 git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
-echo "Running the build (REL-16) " >> autobuild.log
-./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-16.log
+echo "Running the build (REL-17) " >> autobuild.log
+./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-17.log
 
 VERSION_NUMBER=`cat versions.sh | grep PG_MAJOR_VERSION= | cut -f 2 -d '='`
 STR_VERSION_NUMBER=`echo $VERSION_NUMBER | sed 's/\.//'`
@@ -317,7 +317,7 @@ GetInstallerName(){
         echo ${installerName,,}
 }
 #------------------
-_mail_status "build-16.log" "build-pvt.log" "16"
+_mail_status "build-17.log" "build-pvt.log" "17"
 #------------------
 CopyToBuilds(){
         PACKAGE_NAME=$1
@@ -370,7 +370,7 @@ EOF
         echo "Creating $remote_location on the builds server" >> autobuild.log
         ssh buildfarm@builds.enterprisedb.com mkdir -p $remote_location >> autobuild.log 2>&1
         echo "Uploading output to $remote_location on the builds server" >> autobuild.log
-        scp -r output/*${installername}*${platInstallerName} output/3rd_party_libraries_list output/symbols output/build-16.log buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
+        scp -r output/*${installername}*${platInstallerName} output/3rd_party_libraries_list output/symbols output/build-17.log buildfarm@builds.enterprisedb.com:$remote_location >> autobuild.log 2>&1
 }
 # Copy Installers to Build
 for PLAT in "${ENABLED_PLAT_ARR[@]}";

@@ -37,12 +37,12 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            We can also specify additional directorys to include in the path.
 
 PG_SSH_SIGN_WINDOWS=buildfarm@bf-sign-server-windows.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS=D:\\\\pginstaller_16.auto
-PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller_16.auto
+PG_PATH_WINDOWS=D:\\\\pginstaller_17.auto
+PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller_17.auto
 
 PG_SSH_WINDOWS_X64=buildfarm@bf14-windows-x64.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS_X64=D:\\\\pginstaller_16.auto
-PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller_16.auto
+PG_PATH_WINDOWS_X64=D:\\\\pginstaller_17.auto
+PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller_17.auto
 PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017"
 PG_MSBUILDDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017\\\\Professional\\\\MSBuild\\\\15.0"
 PG_DEVENVDIR_WINDOWS_X64="$PG_VSINSTALLDIR_WINDOWS_X64\\\\Professional\\\\Common7\\\\IDE"
@@ -71,12 +71,12 @@ YARN_HOME="C:\\\\pgBuild64\\\\Yarn"
 NODEJS_HOME="C:\\\\pgBuild64\\\\node-v18.18.2-win-x64"
 
 PG_SSH_OSX=buildfarm@battersea-park.ox.uk.enterprisedb.com
-PG_PATH_OSX=/opt/pginstaller_16.auto
+PG_PATH_OSX=/opt/pginstaller_17.auto
 PG_SSH_OSX_SIGN=buildfarm@cadwell.ox.uk.enterprisedb.com
-PG_PATH_OSX_SIGN=/Users/buildfarm/pginstaller_16.auto
+PG_PATH_OSX_SIGN=/Users/buildfarm/pginstaller_17.auto
 PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
 PG_SSH_OSX_NOTARY=buildfarm@cadwell.ox.uk.enterprisedb.com
-PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_16.notary
+PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_17.notary
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging_cache/osx
 PG_MAVEN_HOME_OSX=/opt/local/Current/apache-maven-3.8.2
 PG_DOCBOOK_OSX=/usr/local/docbook-xsl-1.77.1
@@ -90,7 +90,7 @@ PGSERVER_STAGING_OSX=$PWD/server/staging/osx/server
 PGADMIN_STAGING_OSX=$PWD/server/staging/osx/pgadmin4
 SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
 CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
-PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/16
+PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/17
 YARN_HOME_OSX=/opt/local/Current_v15/yarn
 NODEJS_HOME_OSX=/opt/local/Current_v15/nodejs
 IMAGEMAGICK_HOME_OSX=/opt/local/Current_v15/ImageMagick
