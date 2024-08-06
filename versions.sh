@@ -2,7 +2,7 @@
 
 # Source tarball versions
 
-PG_TARBALL_POSTGRESQL=13.15
+PG_TARBALL_POSTGRESQL=13.16
 PG_TARBALL_PGADMIN=8.10
 
 # Build nums
@@ -21,7 +21,7 @@ PG_BUILDNUM_LANGUAGEPACK=beta1-2
 #                     Minor version is revision.build.
 
 PG_MAJOR_VERSION=13
-PG_MINOR_VERSION=15.2
+PG_MINOR_VERSION=16.1
 
 # Other package versions
 PG_VERSION_PGJDBC=42.2.16
