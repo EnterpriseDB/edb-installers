@@ -24,6 +24,7 @@ _setup_env() {
 	BUNDLE_DIR="${BUILD_ROOT}/${APP_NAME}.app"
 
 	PGADMIN_PYTHON_VERSION=$(${PGADMIN_PYTHON_DIR}/bin/python3 -c "import sys; print(sys.version.split(' ')[0])")
+        export PATH=${PGBUILD_BIN}:${YARN_HOME}/bin:${NODEJS_HOME}/bin:$PATH
 }
 
 
