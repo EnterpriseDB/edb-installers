@@ -177,9 +177,9 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current_v15/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -O2' make -j4" || _die "Failed to build postgres"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; make install" || _die "Failed to install postgres"
 
-    echo "Building docs"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/doc; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make" || _die "Failed to build the postgres docs"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/doc; make install" || _die "Failed to install the postgres docs"
+    #echo "Building docs"
+    #ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/doc; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make" || _die "Failed to build the postgres docs"
+    #ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/doc; make install" || _die "Failed to install the postgres docs"
 
     echo "Building contrib modules"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make" || _die "Failed to build the postgres contrib modules"
