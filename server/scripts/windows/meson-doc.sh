@@ -6,9 +6,6 @@ pacman -S libxml2 libxslt
 echo "==== Installing docbook-xml and docbook-xsl using pacman ===="
 pacman -S docbook-xml docbook-xsl
 
-ECHO pg source = $SOURCE_DIR
-ECHO python version = $PYTHON_VERSION
-
 export PATH=/C/hostedtoolcache/windows/Python/$PYTHON_VERSION/x64:/C/hostedtoolcache/windows/Python/$PYTHON_VERSION/x64/Scripts:$PATH
 
 mkdir /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/$SOURCE_DIR/meson-build-doc

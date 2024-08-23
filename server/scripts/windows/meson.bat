@@ -2,11 +2,6 @@
 
 CALL "C:\\Program Files\\Microsoft Visual Studio\\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
 
-ECHO pg source = %SOURCE_DIR%
-ECHO python version = %PYTHON_VERSION%
-ECHO perl version = %PERL_VERSION%
-ECHO pkgconfig version = %PKGCONFIG_VERSION%
-
 ECHO Creating build and install dirs...
 
 mkdir D:\a\postgresql-packaging-foundation\postgresql-packaging-foundation\%SOURCE_DIR%\meson-build
