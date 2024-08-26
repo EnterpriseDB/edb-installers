@@ -3,4 +3,7 @@ pg_minor_version=0
 package_revision=beta3
 pgadmin4=8.10
 python=3.12.3
+perl=5.38.2.2
+pkg-config=0.28-1
+tcl=8.6.14
 stackbuilder=4.2.1

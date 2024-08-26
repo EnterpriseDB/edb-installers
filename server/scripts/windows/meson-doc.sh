@@ -6,13 +6,15 @@ pacman -S libxml2 libxslt
 echo "==== Installing docbook-xml and docbook-xsl using pacman ===="
 pacman -S docbook-xml docbook-xsl
 
-export PATH=/C/hostedtoolcache/windows/Python/3.12.3/x64:/C/hostedtoolcache/windows/Python/3.12.3/x64/Scripts:$PATH
+export PATH=/C/hostedtoolcache/windows/Python/$PYTHON_VERSION/x64:/C/hostedtoolcache/windows/Python/$PYTHON_VERSION/x64/Scripts:$PATH
 
-mkdir /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta3/meson-build-doc
+export BASE_PATH=/D/a/postgresql-packaging-foundation/postgresql-packaging-foundation
 
-meson setup /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta3 /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta3/meson-build-doc --prefix=/D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta3/meson-build/meson-install
+mkdir $BASE_PATH/$SOURCE_DIR/meson-build-doc
 
-cd /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta3/meson-build-doc
+meson setup $BASE_PATH/$SOURCE_DIR $BASE_PATH/$SOURCE_DIR/meson-build-doc --prefix=$BASE_PATH/$SOURCE_DIR/meson-build/meson-install
+
+cd $BASE_PATH/$SOURCE_DIR/meson-build-doc
 ninja docs
-mv /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta3/meson-build-doc/doc /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta3/meson-install/
-ls -l /D/a/postgresql-packaging-foundation/postgresql-packaging-foundation/postgresql-17beta3/meson-install/doc/src/sgml/html/a*.html
+mv $BASE_PATH/$SOURCE_DIR/meson-build-doc/doc $BASE_PATH/$SOURCE_DIR/meson-install/
+ls -l $BASE_PATH/$SOURCE_DIR/meson-install/doc/src/sgml/html/a*.html
