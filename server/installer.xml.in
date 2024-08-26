@@ -2061,6 +2061,43 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
+
+        <!-- WIN: Remove pldebugger readme file in upgrade -->
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${installdir}${slash}doc${slash}/README.pldebugger">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}doc${slash}/README.pldebugger" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}${slash}installer${slash}server${slash}/createshortcuts_clt.vbs">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}installer${slash}server${slash}/createshortcuts_clt.vbs" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}${slash}installer${slash}server${slash}/createshortcuts_server.vbs">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}installer${slash}server${slash}/createshortcuts_server.vbs" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}${slash}installer${slash}server${slash}/loadmodules.vbs">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}installer${slash}server${slash}/loadmodules.vbs" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}${slash}installer${slash}server${slash}/startserver.vbs">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}installer${slash}server${slash}/startserver.vbs" />
+                    </ruleList>
+                </deleteFile>
+            </actionList>
+
+            <ruleList>
+                <compareText text="${platform_name}" logic="contains" value="windows" />
+                <isTrue value="${IsUpgrade}"/>
+            </ruleList>
+        </actionGroup>
+        
     </postInstallationActionList>
 
     <!-- Components. Most components will be separate packages, so expect just one entry here most of the time -->
