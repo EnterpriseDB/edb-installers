@@ -1282,15 +1282,19 @@ EOF
             </ruleList>
         </actionGroup>
 
-        <!-- WIN: Remove include/libxml2 files in upgrade -->
+        <!-- WIN: Remove mac format files in upgrade -->
         <actionGroup>
             <actionList>
                 <deleteFile path="${installdir}${slash}include${slash}/libxml${slash}._*.h" />
+                <deleteFile path="${installdir}${slash}include${slash}/libxslt${slash}._*.h" />
+                <deleteFile path="${installdir}${slash}include${slash}/unicode${slash}._*.h" />
+                <deleteFile path="${installdir}${slash}include${slash}/openssl${slash}._*.h" />
                 <deleteFile path="${installdir}${slash}include${slash}._*.h" />
+                <deleteFile path="${installdir}${slash}share" />
             </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="contains" value="windows" />
-                <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="16.3-1" />
+                <compareVersions logic="less" version1="${brandingVer}" version2="16.4-1" />
                 <isTrue value="${IsUpgrade}"/>
             </ruleList>
         </actionGroup>
@@ -2120,6 +2124,26 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                 <deleteFile path="${installdir}${slash}doc${slash}/README.pldebugger">
                     <ruleList>
                         <fileExists path="${installdir}${slash}doc${slash}/README.pldebugger" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}${slash}installer${slash}server${slash}/createshortcuts_clt.vbs">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}installer${slash}server${slash}/createshortcuts_clt.vbs" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}${slash}installer${slash}server${slash}/createshortcuts_server.vbs">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}installer${slash}server${slash}/createshortcuts_server.vbs" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}${slash}installer${slash}server${slash}/loadmodules.vbs">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}installer${slash}server${slash}/loadmodules.vbs" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}${slash}installer${slash}server${slash}/startserver.vbs">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}installer${slash}server${slash}/startserver.vbs" />
                     </ruleList>
                 </deleteFile>
             </actionList>
