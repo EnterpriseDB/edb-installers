@@ -1282,6 +1282,23 @@ EOF
             </ruleList>
         </actionGroup>
 
+        <!-- WIN: Remove mac format files in upgrade -->
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${installdir}${slash}include${slash}/libxml${slash}._*.h" />
+                <deleteFile path="${installdir}${slash}include${slash}/libxslt${slash}._*.h" />
+                <deleteFile path="${installdir}${slash}include${slash}/unicode${slash}._*.h" />
+                <deleteFile path="${installdir}${slash}include${slash}/openssl${slash}._*.h" />
+                <deleteFile path="${installdir}${slash}include${slash}._*.h" />
+                <deleteFile path="${installdir}${slash}share" />
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="contains" value="windows" />
+                <compareVersions logic="less" version1="${brandingVer}" version2="15.8-1" />
+                <isTrue value="${IsUpgrade}"/>
+            </ruleList>
+        </actionGroup>
+
     </readyToInstallActionList>
 
     <preInstallationActionList>
@@ -2093,6 +2110,42 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             </actionList>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- WIN: Remove pldebugger readme file in upgrade -->
+        <actionGroup>
+            <actionList>
+                <deleteFile path="${installdir}${slash}doc${slash}/README.pldebugger">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}doc${slash}/README.pldebugger" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}${slash}installer${slash}server${slash}/createshortcuts_clt.vbs">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}installer${slash}server${slash}/createshortcuts_clt.vbs" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}${slash}installer${slash}server${slash}/createshortcuts_server.vbs">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}installer${slash}server${slash}/createshortcuts_server.vbs" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}${slash}installer${slash}server${slash}/loadmodules.vbs">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}installer${slash}server${slash}/loadmodules.vbs" />
+                    </ruleList>
+                </deleteFile>
+                <deleteFile path="${installdir}${slash}installer${slash}server${slash}/startserver.vbs">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}installer${slash}server${slash}/startserver.vbs" />
+                    </ruleList>
+                </deleteFile>
+            </actionList>
+
+            <ruleList>
+                <compareText text="${platform_name}" logic="contains" value="windows" />
+                <isTrue value="${IsUpgrade}"/>
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
