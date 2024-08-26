@@ -1282,23 +1282,6 @@ EOF
             </ruleList>
         </actionGroup>
 
-        <!-- WIN: Remove mac format files in upgrade -->
-        <actionGroup>
-            <actionList>
-                <deleteFile path="${installdir}${slash}include${slash}/libxml${slash}._*.h" />
-                <deleteFile path="${installdir}${slash}include${slash}/libxslt${slash}._*.h" />
-                <deleteFile path="${installdir}${slash}include${slash}/unicode${slash}._*.h" />
-                <deleteFile path="${installdir}${slash}include${slash}/openssl${slash}._*.h" />
-                <deleteFile path="${installdir}${slash}include${slash}._*.h" />
-                <deleteFile path="${installdir}${slash}share" />
-            </actionList>
-            <ruleList>
-                <compareText text="${platform_name}" logic="contains" value="windows" />
-                <compareVersions logic="less" version1="${brandingVer}" version2="15.8-1" />
-                <isTrue value="${IsUpgrade}"/>
-            </ruleList>
-        </actionGroup>
-
     </readyToInstallActionList>
 
     <preInstallationActionList>
