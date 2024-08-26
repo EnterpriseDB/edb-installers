@@ -1294,7 +1294,7 @@ EOF
             </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="contains" value="windows" />
-                <compareVersions logic="less" version1="${brandingVer}" version2="15.8-1" />
+                <compareVersions logic="less" version1="${brandingVer}" version2="14.13-1" />
                 <isTrue value="${IsUpgrade}"/>
             </ruleList>
         </actionGroup>
