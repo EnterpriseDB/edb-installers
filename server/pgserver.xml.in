@@ -287,7 +287,7 @@
                 <startMenuLinkShortcut>
                     <name>PostgreSQL documentation</name>
                     <runInTerminal>0</runInTerminal>
-                    <url>file://${installdir}/doc/postgresql/html/index.html</url>
+                    <url>file://${installdir}/doc/src/sgml/html/index.html</url>
                     <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
                     <ruleList>
                         <isTrue value="${create_shortcuts}" />
@@ -298,7 +298,7 @@
                 <startMenuLinkShortcut>
                     <name>PostgreSQL release notes</name>
                     <runInTerminal>0</runInTerminal>
-                    <url>file://${installdir}/doc/postgresql/html/release.html</url>
+                    <url>file://${installdir}/doc/src/sgml/html/release.html</url>
                     <windowsIcon>${installdir}\scripts\images\pg-help.ico</windowsIcon>
                     <ruleList>
                         <isTrue value="${create_shortcuts}" />

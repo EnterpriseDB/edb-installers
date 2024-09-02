@@ -8,11 +8,11 @@
 <body>
 
 <center>
-<h1>PostgreSQL 16</h1></p>
+<h1>PostgreSQL 17</h1></p>
 <h2>Installation Notes</h2>
 </center>
 
-<p>Welcome to the PostgreSQL 16 Installation Wizard.</p>
+<p>Welcome to the PostgreSQL 17 Installation Wizard.</p>
 
 <h3>Legal Bits</h3>
 
@@ -31,9 +31,9 @@
 <p>The procedural languages pl/Perl, pl/Python and pl/Tcl are included in this distribution of PostgreSQL on Windows. The server has been built using the community upstream distributions of those language interpreters. To use any of the these languages from within PostgreSQL, download and install the appropriate interpreters and ensure they are included in the PATH variable under which the database server will be started. The versions used are shown below - newer minor (bugfix) releases may also work, but have not been tested:</p>
 
 <ul>
-  <li>Perl 5.38 : https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_53822_64bit/strawberry-perl-5.38.2.2-64bit-portable.zip </li>
-  <li>Python 3.12 : https://www.python.org/ftp/python/3.12.3/python-3.12.3-amd64.exe </li>
-  <li>Tcl 8.6 : https://sourceforge.net/projects/magicsplat/files/latest/download</li>
+  <li>Perl 5.40.0 : https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_54001_64bit_UCRT/strawberry-perl-5.40.0.1-64bit.msi </li>
+  <li>Python 3.12.5 : https://www.python.org/ftp/python/3.12.5/python-3.12.5-amd64.exe </li>
+  <li>Tcl 8.6.14 : https://sourceforge.net/projects/magicsplat/files/latest/download </li>
 </ul>
 
 <p>The current pl/Python is dynamically linked with Python's shared library in the LanguagePack v4.x installers. Some distributions of Python interpreters (including ActivePython) on Linux do not carry a dynamic library of Python. Such interpreters would no longer be functional with pl/Python.We strongly recommend the users to use LanguagePack installers for pl/Perl, pl/Python and pl/Tcl on macOS.</p>
@@ -55,7 +55,7 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <h3>Important Note with regards to ICU</h3>
 
-<p>PostgreSQL Server 16 is compiled with ICU 67.x. The server versions upto v12 used either ICU 53.x or  57.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes.</p>
+<p>PostgreSQL Server 17 is compiled with ICU 67.x. The server versions upto v12 used either ICU 53.x or  57.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes.</p>
 
 <h3>Technical Support</h3>
 
