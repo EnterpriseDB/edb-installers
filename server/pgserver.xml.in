@@ -3046,18 +3046,18 @@
         <setInstallerVariable>
             <name>programArgs</name>
             <value>register -N "${servicename}" -U "${serviceaccount}" -D "${datadir}" -w</value>
-			<ruleList>
-			    <compareText logic="equals" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
-				<compareText logic="equals" text="${platform_name}" value="windows"/>
-			</ruleList>
+            <ruleList>
+	         <compareText logic="equals" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
         </setInstallerVariable>
         <setInstallerVariable>
             <name>programArgs</name>
             <value>register -N "${servicename}" -U "${serviceaccount}" -P "${servicepassword.password}" -D "${datadir}" -w</value>
-			<ruleList>
-			    <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
-				<compareText logic="equals" text="${platform_name}" value="windows"/>
-			</ruleList>
+            <ruleList>
+	          <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+	          <compareText logic="equals" text="${platform_name}" value="windows"/>
+            </ruleList>
         </setInstallerVariable>
 
         <!-- Create Windows Service -->
