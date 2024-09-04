@@ -316,7 +316,6 @@
             <windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
             <ruleList>
                 <isTrue value="${create_shortcuts}" />
-                <compareText logic ="contains" text="${platform_name}" value="windows" />
             </ruleList>
         </startMenuShortcut>
     </startMenuShortcutList>
