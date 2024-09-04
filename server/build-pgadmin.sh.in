@@ -4,13 +4,11 @@ echo "Setting variables"
 SOURCE_DIR=
 PGADMIN_PYTHON_DIR=
 PGBUILD=
-YARN_HOME=
-NODEJS_HOME=
 BUILD_ROOT=${SOURCE_DIR}/mac-build
 TEMP_DIR=${SOURCE_DIR}/mac-temp
 
 _setup_env() {
-	export PATH=${YARN_HOME}/bin:${NODEJS_HOME}:${PGBUILD}/bin:${PATH}:/opt/local/bin:
+	export PATH=/usr/local/opt/node\@20/bin:${PGBUILD}/bin:/usr/local/bin:${PATH}
 	APP_RELEASE=`grep "^APP_RELEASE" ${SOURCE_DIR}/web/version.py | cut -d"=" -f2 | sed 's/ //g'`
 	APP_REVISION=`grep "^APP_REVISION" ${SOURCE_DIR}/web/version.py | cut -d"=" -f2 | sed 's/ //g'`
 	APP_NAME=`grep "^APP_NAME" ${SOURCE_DIR}/web/branding.py | cut -d"=" -f2 | sed "s/'//g" | sed 's/^ //'`
@@ -24,7 +22,6 @@ _setup_env() {
 	BUNDLE_DIR="${BUILD_ROOT}/${APP_NAME}.app"
 
 	PGADMIN_PYTHON_VERSION=$(${PGADMIN_PYTHON_DIR}/bin/python3 -c "import sys; print(sys.version.split(' ')[0])")
-	export PATH=${PGBUILD}/bin:${YARN_HOME}/bin:${NODEJS_HOME}/bin:$PATH
 }
 
 
@@ -41,11 +38,13 @@ _create_python_env() {
 	git clone https://github.com/gregneagle/relocatable-python.git "${BUILD_ROOT}/relocatable_python"
 	LDFLAGS="-L/opt/local/Current_v15/lib" CFLAGS="-I/opt/local/Current_v15/include" ${PGADMIN_PYTHON_DIR}/bin/python3 \
 		"${BUILD_ROOT}/relocatable_python/make_relocatable_python_framework.py" \
-		--upgrade-pip \
 		--python-version ${PGADMIN_PYTHON_VERSION} \
 		--os-version=11 \
 		--pip-requirements "${SOURCE_DIR}/requirements.txt" \
 		--destination "${BUNDLE_DIR}/Contents/Frameworks/"
+
+        "${BUNDLE_DIR}/Contents/Frameworks/Python.framework/Versions/Current/bin/python3" -m ensurepip --upgrade || exit 1
+        "${BUNDLE_DIR}/Contents/Frameworks/Python.framework/Versions/Current/bin/pip3" install -r "${SOURCE_DIR}/requirements.txt" || exit 1
 
 	# Make sure all the .so's in the Python env have the executable bit set
 	# so they get properly signed later
@@ -88,9 +87,8 @@ _build_docs() {
 	${PGADMIN_PYTHON_DIR}/bin/python3 -m venv "${BUILD_ROOT}/venv"
 	source "${BUILD_ROOT}/venv/bin/activate"
 	pip3 install --upgrade pip
-	pip3 cache remove psycopg2
 	LDFLAGS="-L/opt/local/Current_v15/lib" CFLAGS="-I/opt/local/Current_v15/include" pip3 install -r "${SOURCE_DIR}/requirements.txt"
-	pip3 install sphinx
+	pip3 install sphinx==6.1.3
 	pip3 install sphinxcontrib-youtube
 
 	cd "${SOURCE_DIR}"
@@ -109,23 +107,23 @@ _build_runtime() {
 	echo "Assembling the runtime environment..."
 	test -d "${BUILD_ROOT}" || mkdir "${BUILD_ROOT}"
 
-	# YARN:
-	# yarn add --cwd "${BUILDROOT}" nw
-	# YARN END
-
 	ELECTRON_ARCH="x64"
          if [ "$(uname -m)" == "arm64" ]; then
          ELECTRON_ARCH="arm64"
          fi
 
-        ELECTRON_VERSION=$(yarn info electron | grep latest | awk -F "'" '{ print $2}')
+        ELECTRON_VERSION=$(npm info electron version)
+        if [ "${ELECTRON_VERSION}" -eq "" ]; then
+               echo "ELECTRON_VERSION variable value is NULL"
+               exit 1
+        fi
 
 	pushd "${BUILD_ROOT}" > /dev/null || exit
         while true;do
-            curl -OL "https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/electron-v${ELECTRON_VERSION}-darwin-${ELECTRON_ARCH}.zip" && break
-            rm "electron-v${ELECTRON_VERSION}-darwin-${ELECTRON_ARCH}.zip"
+            wget "https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/electron-v${ELECTRON_VERSION}-darwin-${ELECTRON_ARCH}.zip" && break
+            rm -f "electron-v${ELECTRON_VERSION}-darwin-${ELECTRON_ARCH}.zip"
         done
-        unzip "electron-v${ELECTRON_VERSION}-darwin-${ELECTRON_ARCH}.zip"
+        unzip "electron-v${ELECTRON_VERSION}-darwin-${ELECTRON_ARCH}.zip" || exit 1
     popd > /dev/null || exit
     # WGET END
 
@@ -137,9 +135,16 @@ _build_runtime() {
 	cp -R "${SOURCE_DIR}/runtime/assets" "${BUNDLE_DIR}/Contents/Resources/app/"
 	cp -R "${SOURCE_DIR}/runtime/src" "${BUNDLE_DIR}/Contents/Resources/app/"
 	cp "${SOURCE_DIR}/runtime/package.json" "${BUNDLE_DIR}/Contents/Resources/app/"
+        cp "${SOURCE_DIR}/runtime/.yarnrc.yml" "${BUNDLE_DIR}/Contents/Resources/app/"
 
 	# Install the runtime node_modules, then replace the package.json
-	yarn --cwd "${BUNDLE_DIR}/Contents/Resources/app/" install --production=true
+        pushd "${BUNDLE_DIR}/Contents/Resources/app/" > /dev/null || exit
+        yarn set version berry
+        yarn set version 3
+        yarn plugin import workspace-tools
+        yarn workspaces focus --production
+
+        popd > /dev/null || exit
 }
 
 _fixup_imports() {
@@ -155,7 +160,7 @@ _fixup_imports() {
 			uniq)
 
 		# Add anything in the site-packages Python directory
-		TODO+=$(file `find ./Contents/Frameworks/Python.framework/Versions/Current/lib/python*/site-packages -perm +0111 -type f` | \
+                TODO+=$(find ./Contents/Frameworks/Python.framework/Versions/Current/lib/python*/site-packages -perm +0111 -type f -exec file "{}" \; | \
 				grep -E "Mach-O 64-bit" | \
 				awk -F ':| ' '{ORS=" "; print $1}' | \
 				uniq)
@@ -185,7 +190,7 @@ _fixup_imports() {
 				for LIB in $(
 					otool -L ${TODO_OBJ} | \
 					sed -n 's|^.*[[:space:]]\([^[:space:]]*\.dylib\).*$|\1|p' | \
-					egrep -v '^(/usr/lib)|(/System)|@executable_path|@loader_path|/DLC/PIL/' \
+					grep -E -v '^(/usr/lib)|(/System)|@executable_path|@loader_path|/DLC/PIL/' \
 					); do
 						# Copy in any required dependencies
 						LIB_BN="$(basename "${LIB}")" ;
@@ -193,21 +198,12 @@ _fixup_imports() {
 							TARGET_FILE=""
 							TARGET_PATH=""
 							echo "Adding symlink: ${LIB_BN} (because of: ${TODO_OBJ})"
-							if echo ${LIB} | grep loader_path > /dev/null ; then
-								cp -pR ${PGBUILD}/lib/${LIB_BN} "Contents/Frameworks/${LIB_BN}"
-							else
-								cp -pR "${LIB}" "Contents/Frameworks/${LIB_BN}"
-							fi
+                                                        cp -pR "${LIB}" "Contents/Frameworks/${LIB_BN}"
 							if ! test -L "Contents/Frameworks/${LIB_BN}"; then
 								chmod 755 "Contents/Frameworks/${LIB_BN}"
 							else
-								if echo ${LIB} | grep loader_path > /dev/null ; then
-									TARGET_FILE=$(readlink "${PGBUILD}/lib/${LIB_BN}")
-									TARGET_PATH=$(dirname "${PGBUILD}/lib/${LIB_BN}")/${TARGET_FILE}
-								else
-									TARGET_FILE=$(readlink "${LIB}")
-									TARGET_PATH=$(dirname "${LIB}")/${TARGET_FILE}
-								fi
+								TARGET_FILE=$(readlink "${LIB}")
+								TARGET_PATH=$(dirname "${LIB}")/${TARGET_FILE}
 								echo "Adding symlink target: ${TARGET_PATH}"
 								cp "${TARGET_PATH}" "Contents/Frameworks/${TARGET_FILE}"
 								chmod 755 "Contents/Frameworks/${TARGET_FILE}"
@@ -284,20 +280,23 @@ _complete_bundle() {
 	_fixup_imports "${BUNDLE_DIR}"
 
 	# Build node modules
-	pushd "${SOURCE_DIR}/web" > /dev/null
+	pushd "${SOURCE_DIR}/web" > /dev/null || exit
+                yarn set version berry
+                yarn set version 3
 		yarn install
 		yarn run bundle
 
 		cp /opt/local/Current_v15/certs/cacert.pem .
-	popd > /dev/null
+	popd > /dev/null || exit
 
 	# copy the web directory to the bundle as it is required by runtime
 	cp -r "${SOURCE_DIR}/web" "${BUNDLE_DIR}/Contents/Resources/"
 	cd "${BUNDLE_DIR}/Contents/Resources/web"
 	rm -f pgadmin4.db config_local.*
-	rm -rf karma.conf.js package.json node_modules/ regression/ tools/ pgadmin/static/js/generated/.cache
+	rm -rf jest.config.js babel.* package.json .yarn* yarn* .editorconfig .eslint*  node_modules/ regression/ tools/ pgadmin/static/js/generated/.cache
 	find . -name "tests" -type d -print0 | xargs -0 rm -rf
 	find . -name "feature_tests" -type d -print0 | xargs -0 rm -rf
+        find . -name "__pycache__" -type d -print0 | xargs -0 rm -rf
 	find . -name ".DS_Store" -print0 | xargs -0 rm -f
 
 	echo "SERVER_MODE = False" > config_distro.py
