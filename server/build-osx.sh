@@ -177,9 +177,9 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current_v15/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -O2' make -j4" || _die "Failed to build postgres"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; make install" || _die "Failed to install postgres"
 
-    #echo "Building docs"
-    #ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/doc; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make" || _die "Failed to build the postgres docs"
-    #ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/doc; make install" || _die "Failed to install the postgres docs"
+    echo "Building docs"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/doc; export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make" || _die "Failed to build the postgres docs"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/doc; make install" || _die "Failed to install the postgres docs"
 
     echo "Building contrib modules"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make" || _die "Failed to build the postgres contrib modules"
@@ -270,7 +270,7 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libtiff*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libtiff"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libiconv*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libiconv"
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libpng16*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libpng16"
-    #ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libexpat*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libexpat"
+    ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libexpat*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libexpat"
 
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
     ssh $PG_SSH_OSX "cp -f $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plperl.so $PG_PATH_OSX/server/staging_cache/osx.build/"

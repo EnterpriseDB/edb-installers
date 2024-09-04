@@ -33,44 +33,9 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 
 # VM config. For each VM we need to know the SSH connection details and the path to the
 #            shared firectory on the host machine containing this file.
-#            On Windows we don't have a shared directory, so specify a build directory
 #            We can also specify additional directorys to include in the path.
 
-PG_SSH_SIGN_WINDOWS=buildfarm@bf-sign-server-windows.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS=D:\\\\pginstaller_17.auto
-PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller_17.auto
-
-PG_SSH_WINDOWS_X64=buildfarm@bf14-windows-x64.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS_X64=D:\\\\pginstaller_17.auto
-PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller_17.auto
-PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017"
-PG_MSBUILDDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017\\\\Professional\\\\MSBuild\\\\15.0"
-PG_DEVENVDIR_WINDOWS_X64="$PG_VSINSTALLDIR_WINDOWS_X64\\\\Professional\\\\Common7\\\\IDE"
-PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild64_v16"
-PG_PGBUILD_GETTEXT_WINDOWS_X64="C:\\\\pgBuild64-gettext-0198"
-PG_PGBUILD_OPENSSL_WINDOWS_X64="C:\\\\pgBuild64"
-PG_BINARY_PATH_X64="D:\\\\pg-languagepack-x64"
-PG_WXWIN_WINDOWS_X64="C:\\\\pgBuild64\\\\wxWidgets-3.2.4"
-PG_JAVA_HOME_WINDOWS_X64="C:\\\\Program Files\\\\Java\\\\jdk1.7.0_51"
-PG_CMAKE_WINDOWS_X64="C:\\\\cmake-x64"
-PG_PERL24_WINDOWS_X64=C:\\\\pgBuild64\\\\edb\\\\languagepack\\\\v1\\\\Perl-5.26
-PG_PERL_WINDOWS_X64=C:\\\\edb\\\\languagepack\\\\v4\\\\Perl-5.38
-PG_PYTHON_WINDOWS_X64=C:\\\\edb\\\\languagepack\\\\v4\\\\Python-3.11
-PGADMIN_PYTHON_WINDOWS_X64=C:\\\\pgBuild64_v16\\\\python\\\\Current
-PGADMIN_PYTHON_DLL_WINDOWS_X64=$PGADMIN_PYTHON_WINDOWS_X64\\\\python311.dll
-PG_TCL_WINDOWS_X64=C:\\\\edb\\\\languagepack\\\\v4\\\\Tcl-8.6
-PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
-PG_SIGNTOOL_WINDOWS="C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\signtool.exe"
-PGSERVER_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/server
-PGADMIN_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/pgadmin4
-SB_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/stackbuilder
-CLT_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/commandlinetools
-CMAKE_BUILD_GENERATOR_WINDOWS_X64="Visual Studio 15 2017" #used for pgAgent
-PGADMIN_KRB5_DIR="C:\\\\Program Files\\\\MIT\\\\Kerberos"
-YARN_HOME="C:\\\\pgBuild64\\\\Yarn"
-NODEJS_HOME="C:\\\\pgBuild64\\\\node-v18.18.2-win-x64"
-
-PG_SSH_OSX=buildfarm@battersea-park.ox.uk.enterprisedb.com
+PG_SSH_OSX=buildfarm@macbuildfarm-prod-cyt-3.edbcorp.net
 PG_PATH_OSX=/opt/pginstaller_17.auto
 PG_SSH_OSX_SIGN=buildfarm@cadwell.ox.uk.enterprisedb.com
 PG_PATH_OSX_SIGN=/Users/buildfarm/pginstaller_17.auto
@@ -78,30 +43,26 @@ PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
 PG_SSH_OSX_NOTARY=buildfarm@cadwell.ox.uk.enterprisedb.com
 PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_17.notary
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging_cache/osx
-PG_MAVEN_HOME_OSX=/opt/local/Current/apache-maven-3.8.2
-PG_DOCBOOK_OSX=/usr/local/docbook-xsl-1.77.1
 PG_CMAKE_OSX=/Applications/CMake.app/Contents/bin/cmake
-PG_PERL_OSX=/Library/edb/languagepack/v4/Perl-5.38
-PG_PYTHON_OSX=/Library/edb/languagepack/v4/Python-3.11
+PG_PERL_OSX=/Library/edb/languagepack/v5/Perl-5.40
+PG_PYTHON_OSX=/Library/edb/languagepack/v5/Python-3.12
 PGADMIN_PYTHON_OSX=/Library/Frameworks/Python.framework/Versions/Current
-PG_TCL_OSX=/Library/edb/languagepack/v4/Tcl-8.6
-PG_LANGUAGEPACK_OSX=/Library/edb/languagepack/v4
+PG_TCL_OSX=/Library/edb/languagepack/v5/Tcl-8.6
+PG_LANGUAGEPACK_OSX=/Library/edb/languagepack/v5
 PGSERVER_STAGING_OSX=$PWD/server/staging/osx/server
 PGADMIN_STAGING_OSX=$PWD/server/staging/osx/pgadmin4
 SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
 CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
 PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/17
-YARN_HOME_OSX=/opt/local/Current_v15/yarn
-NODEJS_HOME_OSX=/opt/local/Current_v15/nodejs
 IMAGEMAGICK_HOME_OSX=/opt/local/Current_v15/ImageMagick
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the
 # oldest supported
 
-MACOSX_MIN_VERSION=10.15
+MACOSX_MIN_VERSION=12
 ARCHFLAGS="-arch x86_64 -arch arm64"
-SDK_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX11.sdk
+SDK_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk
 PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
 PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
 PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
@@ -111,7 +72,3 @@ PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSIO
 PG_INSTALLBUILDER_BIN="/opt/installbuilder-23.11.0/bin/builder"
 KEYCHAIN_PASSWD="XXXXXX"
 DEVELOPER_ID="Developer ID Application: EnterpriseDB Corporation"
-
-# LanguagePack Variables
-PG_LANGUAGEPACK_INSTALL_DIR_WINDOWS="C:\\\\edb\\\\languagepack\\\\v4"
-PG_LANGUAGEPACK_CYG_PATH="/cygdrive/c/edb/languagepack/v4"
