@@ -311,11 +311,12 @@
         <startMenuShortcut>
             <name>Reload Configuration</name>
             <runInTerminal>0</runInTerminal>
-            <windowsExec>${env(WINDIR)}\System32\cscript</windowsExec>
-            <windowsExecArgs>//NoLogo "${installdir}\scripts\serverctl.vbs" reload wait</windowsExecArgs>
+            <windowsExec>${installdir}\bin\pg_ctl.exe</windowsExec>
+            <windowsExecArgs>-D "${datadir}" reload</windowsExecArgs>
             <windowsIcon>${installdir}\scripts\images\pg-reload.ico</windowsIcon>
             <ruleList>
                 <isTrue value="${create_shortcuts}" />
+                <compareText logic ="contains" text="${platform_name}" value="windows" />
             </ruleList>
         </startMenuShortcut>
     </startMenuShortcutList>
@@ -3041,9 +3042,28 @@
 		</startOSXService>
 		-->
 
+        <!-- Setting arguments to create Windows Service -->
+        <setInstallerVariable>
+            <name>programArgs</name>
+            <value>register -N "${servicename}" -U "${serviceaccount}" -D "${datadir}" -w</value>
+			<ruleList>
+			    <compareText logic="equals" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+				<compareText logic="equals" text="${platform_name}" value="windows"/>
+			</ruleList>
+        </setInstallerVariable>
+        <setInstallerVariable>
+            <name>programArgs</name>
+            <value>register -N "${servicename}" -U "${serviceaccount}" -P "${servicepassword.password}" -D "${datadir}" -w</value>
+			<ruleList>
+			    <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+				<compareText logic="equals" text="${platform_name}" value="windows"/>
+			</ruleList>
+        </setInstallerVariable>
+
+        <!-- Create Windows Service -->
                 <runProgram>
-                    <program>${env(WINDIR)}\System32\cscript</program>
-                    <programArguments>//NoLogo "${installdir}\installer\server\startupcfg.vbs" ${product_version} "${serviceaccount}" "${servicepassword.password}" "${installdir}" "${datadir}" "${servicename}"</programArguments>
+                    <program>${env(WINDIR)}\System32\cmd.exe</program>
+                    <programArguments>/c "${installdir}\bin\pg_ctl.exe" ${programArgs}</programArguments>
                     <progressText>${msg(progress.text.configuring.startup)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -3055,6 +3075,13 @@
                         </compareText>
                     </ruleList>
                 </runProgram>
+
+        <registrySet>
+            <key>HKLM\SYSTEM\CurrentControlSet\Services\${servicename}</key>
+            <name>DisplayName</name>
+            <value>${servicename} - PostgreSQL Server ${product_version}</value>
+            <type>REG_SZ</type>
+        </registrySet>
 
                 <setInstallerVariable>
                     <name>didError</name>
@@ -3107,27 +3134,6 @@
                         <substitution pattern="PG_USERNAME" value="${superaccount}" />
                         <substitution pattern="PG_PORT" value="${serverport}" />
                         <substitution pattern="PG_INSTALLDIR" value="${installdir}" />
-                    </substitutionList>
-                    <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${create_shortcuts}</text>
-                            <value>1</value>
-                        </compareText>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
-                    </ruleList>
-                </substitute>
-                <substitute>
-                    <files>${installdir}\scripts\serverctl.vbs</files>
-                    <type>exact</type>
-                    <substitutionList>
-                        <substitution pattern="PG_DATADIR" value="${datadir}" />
-                        <substitution pattern="PG_SERVICENAME" value="${servicename}" />
-		        <substitution pattern="PG_INSTALLDIR" value="${installdir}" />
                     </substitutionList>
                     <ruleList>
                         <compareText>
