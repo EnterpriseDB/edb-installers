@@ -39,7 +39,6 @@ cp -r packaging-config/server/i18n packaging-config/installer/server/staging/win
 mkdir -p packaging-config/installer/server/staging/windows-x64/server/installer/server
 cp -r packaging-config/server/scripts/windows/prerun_checks.vbs packaging-config/installer/server/staging/windows-x64/server/installer/prerun_checks.vbs 
 cp -r packaging-config/server/scripts/windows/initcluster.vbs packaging-config/installer/server/staging/windows-x64/server/installer/server/initcluster.vbs 
-cp -r packaging-config/server/scripts/windows/startupcfg.vbs packaging-config/installer/server/staging/windows-x64/server/installer/server/startupcfg.vbs 
 cp -R "$VCToolsRedistDir"vc_redist.x86.exe packaging-config/installer/server/staging/windows-x64/server/installer/vcredist_x86.exe
 cp -R "$VCToolsRedistDir"vc_redist.x64.exe packaging-config/installer/server/staging/windows-x64/server/installer/vcredist_x64.exe
 
@@ -52,7 +51,6 @@ cp -r packaging-config/server/scripts/windows/validateuser/x64/Release/validateu
 cp -r packaging-config/server/scripts/windows/createuser/x64/Release/createuser.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/createuser.exe
 # Copy the launch scripts
 mkdir -p packaging-config/installer/server/staging/windows-x64/server/scripts/images
-cp packaging-config/server/scripts/windows/serverctl.vbs packaging-config/installer/server/staging/windows-x64/server/scripts/serverctl.vbs      
 cp packaging-config/server/scripts/windows/runpsql.bat packaging-config/installer/server/staging/windows-x64/server/scripts/runpsql.bat 
 cp packaging-config/server/resources/pg-help.ico packaging-config/installer/server/staging/windows-x64/server/scripts/images
 cp packaging-config/server/resources/pg-reload.ico packaging-config/installer/server/staging/windows-x64/server/scripts/images
