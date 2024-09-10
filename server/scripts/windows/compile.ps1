@@ -165,6 +165,9 @@ $AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule("ever
 $Acl.AddAccessRule($AccessRule)
 Set-Acl $temporary_data_location $Acl
 
+Write-Host " Copy meson.build file "
+Copy-Item packaging-config/server/scripts/windows/meson.build $source_directory
+Select-String -Pattern "DNO_THREAD_SAFE_LOCALE" -Path "$source_directory/meson.build"
 
 # So far, so good. Let's start compiling
 Write-Host "Executing meson bat file"
