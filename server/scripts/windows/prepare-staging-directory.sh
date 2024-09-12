@@ -38,6 +38,7 @@ cp -r packaging-config/server/i18n packaging-config/installer/server/staging/win
 
 mkdir -p packaging-config/installer/server/staging/windows-x64/server/installer/server
  
+cp -r packaging-config/server/scripts/windows/initcluster.vbs packaging-config/installer/server/staging/windows-x64/server/installer/server/initcluster.vbs 
 cp -R "$VCToolsRedistDir"vc_redist.x86.exe packaging-config/installer/server/staging/windows-x64/server/installer/vcredist_x86.exe
 cp -R "$VCToolsRedistDir"vc_redist.x64.exe packaging-config/installer/server/staging/windows-x64/server/installer/vcredist_x64.exe
 
