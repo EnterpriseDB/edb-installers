@@ -769,8 +769,6 @@ EOF
     </initializationActionList>
 
 
-    <readyToInstallActionList/>
-
     <installationAbortedActionList>
         <deleteFile path="${system_temp_directory}/postgresql_installer_${random_number}" abortOnError="0" showMessageOnError="0">
             <ruleList>
@@ -1348,21 +1346,6 @@ EOF
         <unpackFile>
             <component>default</component>
             <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
-            <folder>defaultlinux-x64</folder>
-            <origin>prerun_checks.sh</origin>
-            <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-x64</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </unpackFile>
-        <unpackFile>
-            <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
             <folder>defaultmacosx</folder>
             <origin>prerun_checks.sh</origin>
             <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
@@ -1371,34 +1354,6 @@ EOF
                     <logic>equals</logic>
                     <text>${platform_name}</text>
                     <value>osx</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </unpackFile>
-        <unpackFile>
-            <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
-            <folder>programfilessolaris-x64</folder>
-            <origin>server/installer/prerun_checks.sh</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>solaris-intel</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </unpackFile>
-        <unpackFile>
-            <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
-            <folder>programfilessolaris-sparc</folder>
-            <origin>server/installer/prerun_checks.sh</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>solaris-sparc</value>
                 </compareText>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
@@ -2218,28 +2173,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                         </compareText>
                     </ruleList>
                 </folder>
-                <!-- LINUX-X64: files for default component -->
-                <folder>
-                    <description>Program Files</description>
-                    <destination>${installdir}/installer/server</destination>
-                    <name>defaultlinux-x64</name>
-                    <platforms>linux-x64</platforms>
-                    <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/server/installer/prerun_checks.sh</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>staging/linux-x64/server/scripts</origin>
-                        </distributionDirectory>
-                    </distributionFileList>
-                    <ruleList>
-                        <compareText>
-                            <logic>contains</logic>
-                            <text>${platform_name}</text>
-                            <value>linux-x64</value>
-                        </compareText>
-                    </ruleList>
-                </folder>
                 <!-- MacOSX: files for default component -->
                 <folder>
                     <description>Program Files</description>
@@ -2281,7 +2214,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}/installer</destination>
-                    <name>defaultwindows-x64</name>
+                    <name>defaultwindows64</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionDirectory>
@@ -2411,15 +2344,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             <cliOptionName>prefix</cliOptionName>
             <width>30</width>
             <mustBeWritable>yes</mustBeWritable>
-            <ruleList>
-                <stringTest>
-                    <text>${iBaseDirectory}</text>
-                    <type>empty</type>
-                </stringTest>
-            </ruleList>
-            <postShowPageActionList>
-                <wow64FsRedirection action="disable" />
-            </postShowPageActionList>
 
             <validationActionList>
                 <validateInstallDir  installdir="${installdir}">
@@ -2430,6 +2354,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             </validationActionList>
 
             <postShowPageActionList>
+                <wow64FsRedirection action="disable" />
                 <actionGroup>
                     <actionList>
                         <actionGroup>
@@ -2485,6 +2410,10 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             </postShowPageActionList>
             <ruleList>
                    <isTrue  value="${component(server).selected}"/>
+                   <stringTest>
+                       <text>${iBaseDirectory}</text>
+                       <type>empty</type>
+                   </stringTest>
             </ruleList>
         </directoryParameter>
 
@@ -2530,16 +2459,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             <cliOptionName>datadir</cliOptionName>
             <width>30</width>
             <mustBeWritable>yes</mustBeWritable>
-            <ruleList>
-                <stringTest>
-                    <text>${iDataDirectory}</text>
-                    <type>empty</type>
-                </stringTest>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-            <postShowPageActionList>
-                <wow64FsRedirection action="disable" />
-            </postShowPageActionList>
 
             <!-- Check the directory selected. If it's a valid data directory, change to upgrade mode -->
 
@@ -2547,6 +2466,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             <!-- to some odd behaviour in InstallBuilder in the way <allowEmptyValue> -->
             <!-- interacts with default values, on the advice of tech support         -->
             <postShowPageActionList>
+                <wow64FsRedirection action="disable" />
                 <!-- !WIN: Always check if the data directory path looks valid and is writeable -->
                 <actionGroup>
                     <!-- We need this because this isn't a validateActionList> -->
@@ -2867,9 +2787,8 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                                 </compareText>
                             </ruleList>
                         </actionGroup>
-                    </actionList>
-                    <!-- Switch to upgrade mode -->
-                    <actionList>
+
+                        <!-- Switch to upgrade mode -->
                         <setInstallerVariable>
                             <name>IsUpgrade</name>
                             <value>1</value>
@@ -2889,7 +2808,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                             <pattern>^.*port\s*=\s*([\d]+)\s+.*$</pattern>
                             <substitution>\1</substitution>
                         </setInstallerVariableFromRegEx>
-                     </actionList>
+                    </actionList>
 
                      <!-- We only check the data directory if it exists and isn't empty -->
                      <ruleList>
@@ -2936,6 +2855,11 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                 </actionGroup>
             </postShowPageActionList>
             <ruleList>
+                <stringTest>
+                    <text>${iDataDirectory}</text>
+                    <type>empty</type>
+                </stringTest>
+                <isFalse value="${extract_mode}"/>
                 <isTrue  value="${component(server).selected}"/>
             </ruleList>
         </directoryParameter>
@@ -3433,8 +3357,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                 <isTrue  value="${component(server).selected}"/> 
             </ruleList>
         </parameterGroup>
-    </parameterList>
-    <parameterList>
+
         <infoParameter>
             <name>preinstallsummary</name>
             <title>${msg(preinstall.summary)}</title>
