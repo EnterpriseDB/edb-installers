@@ -296,6 +296,7 @@ _complete_bundle() {
 	rm -rf jest.config.js babel.* package.json .yarn* yarn* .editorconfig .eslint* node_modules/ regression/ tools/ pgadmin/static/js/generated/.cache
 	find . -name "tests" -type d -print0 | xargs -0 rm -rf
 	find . -name "feature_tests" -type d -print0 | xargs -0 rm -rf
+        find . -name "__pycache__" -type d -print0 | xargs -0 rm -rf
 	find . -name ".DS_Store" -print0 | xargs -0 rm -f
 
 	echo "SERVER_MODE = False" > config_distro.py
