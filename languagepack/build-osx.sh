@@ -169,7 +169,6 @@ _build_languagepack_osx() {
      export CPPFLAGS=\$CFLAGS
      export LD_LIBRARY_PATH="\$TCL_TK_INSTALL_PATH/lib:\$LD_LIBRARY_PATH"
      export LD_RUN_PATH="\$PYTHON_INSTALL_PATH/lib"
-     export MACOSX_DEPLOYMENT_TARGET=\$MACOSX_MIN_VERSION
      export PYTHONHOME="\$PYTHON_INSTALL_PATH"
 
      CC='clang' CFLAGS="\$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current_v15/lib \$PG_ARCH_OSX_LDFLAGS" ./configure --prefix=\$PYTHON_INSTALL_PATH --enable-shared --with-openssl=/opt/local/Current_v15 || _die "Failed to configure Python"
