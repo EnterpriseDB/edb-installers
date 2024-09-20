@@ -189,10 +189,6 @@ _build_server() {
         fi
     fi
 
-    # Set PYTHON_VERSION variable required for pgadmin build
-    export PYTHON_HOME=/System/Library/Frameworks/Python.framework/Versions/2.7
-    export PYTHON_VERSION="27"
-
     # Mac OSX
     if [ $PG_ARCH_OSX = 1 ]; 
     then
