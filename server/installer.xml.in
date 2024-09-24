@@ -1301,21 +1301,6 @@ EOF
         <unpackFile>
             <component>default</component>
             <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
-            <folder>defaultwindows</folder>
-            <origin>prerun_checks.vbs</origin>
-            <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </unpackFile>
-        <unpackFile>
-            <component>default</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}</destination>
             <folder>defaultlinux</folder>
             <origin>prerun_checks.sh</origin>
             <customErrorMessage>${msg(error.writing.temp)}</customErrorMessage>
@@ -1389,15 +1374,6 @@ EOF
 
          <actionGroup>
             <actionList>
-                <runProgram>
-                <program>${env(WINDIR)}\System32\cscript</program>
-                <programArguments>//NoLogo "${system_temp_directory}\postgresql_installer_${random_number}\prerun_checks.vbs"</programArguments>
-                <abortOnError>0</abortOnError>
-                <showMessageOnError>0</showMessageOnError>
-                    <ruleList>
-                        <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </runProgram>
                 <runProgram program="${system_temp_directory}/postgresql_installer_${random_number}/prerun_checks.sh">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -2198,9 +2174,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                     <name>defaultwindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
-                        <distributionDirectory>
-                            <origin>staging/@@WINDIR@@/server/installer/prerun_checks.vbs</origin>
-                        </distributionDirectory>
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/server/installer/vcredist_x86.exe</origin>
                         </distributionDirectory>

@@ -37,8 +37,7 @@ cp -r $(PWD)/system_stats/system_stats.control packaging-config/installer/server
 cp -r packaging-config/server/i18n packaging-config/installer/server/staging/windows-x64/
 
 mkdir -p packaging-config/installer/server/staging/windows-x64/server/installer/server
-
-cp -r packaging-config/server/scripts/windows/prerun_checks.vbs packaging-config/installer/server/staging/windows-x64/server/installer/prerun_checks.vbs 
+ 
 cp -r packaging-config/server/scripts/windows/initcluster.vbs packaging-config/installer/server/staging/windows-x64/server/installer/server/initcluster.vbs 
 cp -R "$VCToolsRedistDir"vc_redist.x86.exe packaging-config/installer/server/staging/windows-x64/server/installer/vcredist_x86.exe
 cp -R "$VCToolsRedistDir"vc_redist.x64.exe packaging-config/installer/server/staging/windows-x64/server/installer/vcredist_x64.exe
