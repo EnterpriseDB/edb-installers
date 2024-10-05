@@ -125,9 +125,8 @@ EOF
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
 
-                 <action type="getOutput" command="whoami /user">
-                     <setInstallerVariableFromScriptOutput variable="first_three_sid" value="$stdout" regex="(S-\d+-\d+-\d+-\d+)" />
-                </action>
+                <action type="getOutput" command="whoami /user" variable="full_sid_output" />
+                <action type="property" name="first_three_sid" value="$full_sid_output" regex="(S-\d+-\d+-\d+)" />
 
                 <showInfo>
                   <text>${first_three_sid}</text>
