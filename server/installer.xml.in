@@ -124,6 +124,15 @@ EOF
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
+
+                 <action type="getOutput" command="whoami /user">
+                     <setInstallerVariableFromScriptOutput variable="first_three_sid" value="$stdout" regex="(S-\d+-\d+-\d+-\d+)" />
+                </action>
+
+                <showInfo>
+                  <text>${first_three_sid}</text>
+                </showInfo>
+
 		<!-- Use 'whoami' to work with "NT AUTHORITY\SYSTEM" user as 'system_username' not working-->
                 <actionGroup>
                     <actionList>
@@ -144,7 +153,7 @@ EOF
                     </actionList>
                     <ruleList>
                          <compareText logic="equals" text="${platform_name}" value="windows"/>
-			 <compareText logic="equals" text="${whoami}" value="nt authority\system"/>
+                         <compareText logic="contains" text="${first_three_sid}" value="S-1-5-18"/>
                     </ruleList>
                 </actionGroup>
 		<!-- Use 'system_username' to work with local administrator accounts -->
@@ -167,7 +176,7 @@ EOF
                     </actionList>
                     <ruleList>
                          <compareText logic="equals" text="${platform_name}" value="windows"/>
-                         <compareText logic="does_not_equal" text="${whoami}" value="nt authority\system"/>
+                         <compareText logic="does_not_equal" text="${first_three_sid}" value="S-1-5-18"/>
                     </ruleList>
                </actionGroup>
             </actionList>
