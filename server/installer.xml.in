@@ -125,13 +125,23 @@ EOF
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
 
-                <action type="execute" command="whoami /user">
-                  <setInstallerVariableFromScriptOutput variable="full_sid_output" />
-                </action>
+                
+                <setInstallerVariableFromScriptOutput>
+                <exec>${env(WINDIR)}\System32\whoami</exec>
+                <execArgs>/user</execArgs>
+                <name>full_sid_output</name>
+                </setInstallerVariableFromScriptOutput>
 
-                <action type="execute" command="echo $full_sid_output | sed 's/\([S-0-9]*\).*/\1/'">
-                   <setInstallerVariableFromScriptOutput variable="first_three_sid" />
-                </action>
+                <showInfo>
+                  <text>${full_sid_output}</text>
+                </showInfo>
+
+                <setInstallerVariableFromScriptOutput>
+                <exec>for /f &quot;tokens=2 delims= &quot; %%i in ('$full_sid_output') do echo %%i | findstr /r &quot;^S-[0-9]*-[0-9]*-[0-9]*&quot;</exec>
+                <execArgs></execArgs>
+                <name>first_three_sid</name>
+                </setInstallerVariableFromScriptOutput>
+         
 
                 <showInfo>
                   <text>${first_three_sid}</text>
