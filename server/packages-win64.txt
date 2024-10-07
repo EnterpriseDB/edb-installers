@@ -1,4 +1,4 @@
-curl-8.9.0-windows-x64.tar.bz2
+curl-8.10.1-windows-x64.tar.bz2
 zstd-1.5.6-windows-x64.tar.bz2
 lz4-1.10.0-windows-x64.tar.bz2
 libxml2-2.11.9-windows-x64.tar.bz2
@@ -7,6 +7,6 @@ iconv-1.17-windows-x64.tar.bz2
 zlib-1.3.1-windows-x64.tar.bz2
 icu-67-1-windows-x64.tar.bz2
 uuid-1.6.2-windows-x64.tar.bz2	
-wxwidgets-3.2.5-windows-x64.tar.bz2
+wxwidgets-3.2.6-windows-x64.tar.bz2
 gettext-0.19.8-windows-x64.tar.bz2
 openssl-3.0.15-windows-x64.tar.bz2
