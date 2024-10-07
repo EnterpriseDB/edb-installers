@@ -137,8 +137,8 @@ EOF
                 </showInfo>
 
                 <setInstallerVariableFromScriptOutput>
-                <exec>"for /f &quot;tokens=2 delims= &quot; %%i in ('$full_sid_output') do echo %%i | findstr /r &quot;^S-[0-9]*-[0-9]*-[0-9]*&quot;"</exec>
-                <execArgs></execArgs>
+                <exec>${env(WINDIR)}\System32\cmd.exe</exec>
+                <execArgs>/c echo ${full_sid_output} | findstr /r "^S-[0-9]*-[0-9]*-[0-9]*"</execArgs>
                 <name>first_three_sid</name>
                 </setInstallerVariableFromScriptOutput>
          
