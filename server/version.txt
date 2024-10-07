@@ -1,6 +1,6 @@
 pg_major_version=15
 pg_minor_version=8
-package_revision=1
-pgadmin4=8.10
+package_revision=2
+pgadmin4=8.12
 languagepack=3.4-1
 stackbuilder=4.2.1
