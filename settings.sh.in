@@ -55,6 +55,7 @@ SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
 CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
 PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/17
 IMAGEMAGICK_HOME_OSX=/opt/local/Current_v15/ImageMagick
+PG_DOCBOOK_OSX=/usr/local/Cellar/docbook-xsl/1.79.2_1/docbook-xsl
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
 # where we may need to use non-default SDKs if we're building on a platform newer than the
