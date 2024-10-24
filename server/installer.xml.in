@@ -2060,7 +2060,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="contains" value="windows" />
-                <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="17.1-1" />
+                <compareVersions logic="equals" version1="${brandingVer}" version2="17.0-1" />
                 <isTrue value="${IsUpgrade}"/>
             </ruleList>
         </actionGroup>
