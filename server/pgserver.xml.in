@@ -436,7 +436,7 @@
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                     <ruleList>
-                            <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+                            <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="S-1-5-20"/>
                     </ruleList>
                 </runProgram>
                 <throwError>
@@ -571,7 +571,7 @@
                     <abortOnError>1</abortOnError>
                     <showMessageOnError>1</showMessageOnError>
                     <ruleList>
-                        <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+                        <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="S-1-5-20"/>
                     </ruleList>
                 </runProgram>
                 <throwError>
@@ -729,9 +729,9 @@
 
     <!-- Preinstallation actions -->
     <preInstallationActionList>
-        <!-- Set the service account value to NT AUTHORITY\NetworkService if platform is windows 
+        <!-- Set the service account value to S-1-5-20 if platform is windows 
         And if the service account value is not specified on the command line -->
-        <setInstallerVariable name="serviceaccount" value="NT AUTHORITY\NetworkService" >
+        <setInstallerVariable name="serviceaccount" value="S-1-5-20" >
             <ruleList>
                 <compareText>
                     <text>${platform_name}</text>
@@ -3046,7 +3046,7 @@
             <name>programArgs</name>
             <value>register -N "${servicename}" -U "${serviceaccount}" -D "${datadir}" -w</value>
             <ruleList>
-	         <compareText logic="equals" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+	         <compareText logic="equals" nocase="1" text="${serviceaccount}" value="S-1-5-20"/>
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
@@ -3054,7 +3054,7 @@
             <name>programArgs</name>
             <value>register -N "${servicename}" -U "${serviceaccount}" -P "${servicepassword.password}" -D "${datadir}" -w</value>
             <ruleList>
-	          <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
+	          <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="S-1-5-20"/>
 	          <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </setInstallerVariable>
