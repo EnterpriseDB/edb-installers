@@ -1045,7 +1045,7 @@ EOF
         <showWarning>
             <text>${msg(info.datadirectory.user.kept)}</text>
             <ruleList>
-                <compareText text="${serviceaccount}" logic="does_not_equal" value="S-1-5-20" />
+                <compareText text="${serviceaccount}" logic="does_not_equal" value="*S-1-5-20" />
                 <isTrue  value="${component(server).selected}"/>
             </ruleList>
         </showWarning>
@@ -1053,7 +1053,7 @@ EOF
             <text>${msg(info.datadirectory.kept)}</text>
             <ruleList>
                 <compareText text="${platform_name}" logic="equals" value="windows" />
-                <compareText text="${serviceaccount}" logic="equals" value="S-1-5-20" />
+                <compareText text="${serviceaccount}" logic="equals" value="*S-1-5-20" />
                 <isTrue  value="${component(server).selected}"/>
             </ruleList>
         </showWarning>
@@ -2922,7 +2922,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                             <logic>does_not_equal</logic>
                             <nocase>1</nocase>
                             <value>${serviceaccount}</value>
-                            <text>S-1-5-20</text>
+                            <text>*S-1-5-20</text>
                         </compareText>
                     </ruleList>
                 </setInstallerVariable>
@@ -3047,7 +3047,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                             <ruleList>
-                                <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="S-1-5-20"/>
+                                <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="*S-1-5-20"/>
                             </ruleList>
                         </runProgram>
 
@@ -3186,7 +3186,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                             <ruleList>
-                                <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="S-1-5-20"/>
+                                <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="*S-1-5-20"/>
                             </ruleList>
                         </runProgram>
                         <throwError>
@@ -3229,7 +3229,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                         <isFalse value="${IsUpgrade}"/>
                         <ruleGroup>
                             <ruleList>
-                                <compareText logic="does_not_equal" nocase="1" value="${serviceaccount}" text="S-1-5-20" />
+                                <compareText logic="does_not_equal" nocase="1" value="${serviceaccount}" text="*S-1-5-20" />
                                 <compareText logic="equals" text="${platform_name}" value="windows" />
                             </ruleList>
                         </ruleGroup>
