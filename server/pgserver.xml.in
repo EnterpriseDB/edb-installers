@@ -173,9 +173,6 @@
                 <distributionDirectory>
                     <origin>staging/@@WINDIR@@/server/share</origin>
                 </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/@@WINDIR@@/server/debug_symbols</origin>
-                </distributionDirectory>
                 <distributionFile>
                     <origin>staging/@@WINDIR@@/server/server_license.txt</origin>
                 </distributionFile>

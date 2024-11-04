@@ -6,7 +6,6 @@ mkdir -p packaging-config/installer/server/staging/windows-x64/server
 mkdir -p packaging-config/installer/server/staging/windows-x64/server/bin
 mkdir -p packaging-config/installer/server/staging/windows-x64/server/lib
 mkdir -p packaging-config/installer/server/staging/windows-x64/server/share/extension
-mkdir -p packaging-config/installer/server/staging/windows-x64/server/debug_symbols
 mkdir -p packaging-config/installer/server/staging/windows-x64/scripts
 mkdir -p packaging-config/installer/server/staging/windows-x64/resources
 cp -R packaging-config/resources/license.txt packaging-config/installer/server/staging/windows-x64/server/server_license.txt
@@ -45,7 +44,6 @@ cp -R "$VCToolsRedistDir"vc_redist.x64.exe packaging-config/installer/server/sta
 cp -R pgsql/doc packaging-config/installer/server/staging/windows-x64/server
 cp -R packaging-config/server/resources/installation-notes.html packaging-config/installer/server/staging/windows-x64/server/doc
 
-cp -r pgsql/symbols/* packaging-config/installer/server/staging/windows-x64/server/debug_symbols
 cp -r packaging-config/server/scripts/windows/getlocales/x64/Release/getlocales.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/getlocales.exe
 cp -r packaging-config/server/scripts/windows/validateuser/x64/Release/validateuser.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/validateuser.exe
 cp -r packaging-config/server/scripts/windows/createuser/x64/Release/createuser.exe packaging-config/installer/server/staging/windows-x64/server/installer/server/createuser.exe
