@@ -2071,6 +2071,11 @@
             <ruleList>
                 <isFalse value="${IsUpgrade}"/>
                 <isFalse value="${extract_mode}"/>
+                <compareText>
+                    <text>${locale}</text>
+                    <value/>
+                    <logic>equals</logic>
+                </compareText>
             </ruleList>
         </actionGroup>
         <throwError>

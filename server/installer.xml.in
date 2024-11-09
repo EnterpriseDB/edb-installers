@@ -2241,6 +2241,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <booleanParameter name="showLaunchStackBuilderOption" cliOptionName="launch-stackbuilder" default="1" ask="0" cliOptionShow="0"/>
+        <stringParameter name="locale" cliOptionName="locale" default="" ask="0" cliOptionShow="1"/>
 
         <stringParameter name="superaccount" ask="1" cliOptionShow="1" cliOptionName="superaccount" default="postgres"
         description="${msg(superaccount.description)}" />
