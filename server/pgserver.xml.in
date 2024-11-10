@@ -2073,7 +2073,7 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-        <throwError>
+        <!-- <throwError>
             <text>${msg(locale.error)}</text>
             <ruleList>
                 <compareText>
@@ -2101,14 +2101,14 @@
                     <value/>
                     <logic>does_not_equal</logic>
                 </compareText>
-                <!--<compareText>
+                <compareText>
                     <text>${program_stdout}</text>
                     <value>${locale}</value>
                     <logic>does_not_contain</logic>
-                </compareText> -->
+                </compareText>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
-        </throwError>
+        </throwError> -->
 
         <!-- Set the default locale if needed. -->
         <actionGroup>
