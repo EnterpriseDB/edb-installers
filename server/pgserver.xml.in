@@ -2154,6 +2154,7 @@
             </ruleList>
         </actionGroup>
 
+        <!--
         <!-- Convert the locale value to something the choiceParameter will like -->
         <setInstallerVariableFromRegEx>
             <text>${locale}</text>
@@ -2202,7 +2203,7 @@
             <substitution>xxCOMMAxx</substitution>
             <name>locale</name>
             <pattern>,</pattern>
-        </setInstallerVariableFromRegEx>
+        </setInstallerVariableFromRegEx> -->
 
         <!-- In fresh installation, check the server port value provided on the command line -->
         <actionGroup>
@@ -2871,7 +2872,7 @@
                     </ruleList>
                 </runProgram>
 
-
+                <!--
                 <!-- Initialise the cluster if this is an installation -->
                 <actionGroup>
                     <actionList>
@@ -2923,7 +2924,7 @@
                             <substitution>,</substitution>
                             <name>reallocale</name>
                             <pattern>xxCOMMAxx</pattern>
-                        </setInstallerVariableFromRegEx>
+                        </setInstallerVariableFromRegEx> -->
 
                         <!-- Initdb -->
                         <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}">
