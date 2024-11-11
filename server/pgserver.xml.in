@@ -2078,6 +2078,29 @@
                 </compareText>
             </ruleList>
         </actionGroup>
+        <!-- Get the locales passed on command line-->
+        <actionGroup>
+            <actionList>
+                <addChoiceOptions>
+                    <name>locale</name>
+                    <optionList>
+                        <option>
+                            <value>${local}</value>
+                            <text>${locale}</text>
+                        </option>
+                    </optionList>
+                </addChoiceOptions>
+            </actionList>
+            <ruleList>
+                <isFalse value="${IsUpgrade}"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText>
+                    <text>${locale}</text>
+                    <value/>
+                    <logic>does_not_equal</logic>
+                </compareText>
+            </ruleList>
+        </actionGroup>
         <!-- <throwError>
             <text>${msg(locale.error)}</text>
             <ruleList>
