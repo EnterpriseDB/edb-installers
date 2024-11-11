@@ -2871,10 +2871,10 @@
                     </ruleList>
                 </runProgram>
 
-                <!-- Initialise the cluster if this is an installation
+                <!-- Initialise the cluster if this is an installation -->
                 <actionGroup>
                     <actionList>
-                        Convert the locale into something understandable
+                        <!-- Convert the locale into something understandable
                         <setInstallerVariableFromRegEx>
                             <text>${locale}</text>
                             <substitution>_</substitution>
