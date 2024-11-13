@@ -2057,11 +2057,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             <actionList>
                 <deleteFile path="${installdir}${slash}bin${slash}*.pdb" />
                 <deleteFile path="${installdir}${slash}lib${slash}*.pdb" />
-                <deleteFile path="${installdir}${slash}lib${slash}pgxs">
-                    <ruleList>
-                        <fileExists path="${installdir}${slash}pgxs" />
-                    </ruleList>
-                </deleteFile>
                 <deleteFile path="${installdir}${slash}debug_symbols">
                     <ruleList>
                         <fileExists path="${installdir}${slash}debug_symbols" />
