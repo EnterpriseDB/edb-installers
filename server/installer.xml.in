@@ -2123,6 +2123,18 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                 <compareText text="${platform_name}" logic="contains" value="windows" />
                 <isTrue value="${IsUpgrade}"/>
             </ruleList>
+            <actionList>
+                <deleteFile path="${installdir}${slash}debug_symbols">
+                    <ruleList>
+                        <fileExists path="${installdir}${slash}debug_symbols" />
+                    </ruleList>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="contains" value="windows" />
+                <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="15.8-2" />
+                <isTrue value="${IsUpgrade}"/>
+            </ruleList>
         </actionGroup>
     </postInstallationActionList>
 
