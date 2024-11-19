@@ -622,7 +622,7 @@ _postprocess_server_osx() {
     scp server.img.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output || _die "Failed to copy the archive to sign server."
 
     # Copy the versions file to signing server
-    scp ../versions.sh ../resources/entitlements-server.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
+    scp ../versions.sh ../settings.sh ../resources/entitlements-server.xml ../resources/entitlements-pgadmin.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
 
     # sign the .app, create the DMG
     echo "Signing the installer"
