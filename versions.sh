@@ -14,7 +14,7 @@ PG_BUILDNUM_NPGSQL=1
 PG_BUILDNUM_PGAGENT=1
 PG_BUILDNUM_PGBOUNCER=1
 PG_BUILDNUM_SQLPROTECT=1
-PG_BUILDNUM_LANGUAGEPACK=1
+PG_BUILDNUM_LANGUAGEPACK=2
 
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build.
