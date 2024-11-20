@@ -359,7 +359,7 @@ _postprocess_server_osx() {
     scp $PG_SSH_OSX:$PG_PATH_OSX/server/scripts/osx/getlocales/getlocales.osx $WD/server/scripts/osx/getlocales/ || _die "Failed to scp getlocales.osx"
 
     # Copy the required files to signing server
-    scp $WD/common.sh $WD/settings.sh $WD/versions.sh $WD/resources/entitlements-server.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
+    scp $WD/common.sh $WD/settings.sh $WD/versions.sh $WD/resources/entitlements-server.xml $WD/resources/entitlements-pgadmin.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
     scp $WD/common.sh $WD/settings.sh $WD/versions.sh $WD/resources/entitlements-server.xml $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy commons.sh and settings.sh on notary server"
     # sign the getlocales binary
     scp $WD/server/scripts/osx/getlocales/getlocales.osx $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy getlocales binary to  signing server"
@@ -378,6 +378,8 @@ _postprocess_server_osx() {
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_bundles staging/lib/postgresql entitlements-server.xml" || _die "Failed to sign bundle with entitlements"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging/bin entitlements-server.xml" || _die "Failed to do binaries signing with entitlements"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/staging; source $PG_PATH_OSX_SIGN/versions.sh; source $PG_PATH_OSX_SIGN/settings.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements-pgadmin.xml pgAdmin4.app;" || _die "Failed to sign the pgAdmin4.app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/staging; source $PG_PATH_OSX_SIGN/versions.sh; source $PG_PATH_OSX_SIGN/settings.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements-server.xml stackbuilder.app;" || _die "Failed to sign the stackbuilder.app"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging; mv pgAdmin4.app pgAdmin\ 4.app; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create server-staging tar on signing server"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/staging/server-staging.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to copy server-staging to controller vm"
 
@@ -621,7 +623,7 @@ _postprocess_server_osx() {
     scp server.img.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output || _die "Failed to copy the archive to sign server."
 
     # Copy the versions file to signing server
-    scp ../versions.sh ../resources/entitlements-server.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
+    scp ../versions.sh ../settings.sh ../resources/entitlements-server.xml ../resources/entitlements-pgadmin.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
 
     # sign the .app, create the DMG
     echo "Signing the installer"
