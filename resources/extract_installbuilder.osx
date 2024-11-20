@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 os_version=`uname -r`
 machine_platform=`uname -p`
 machine_arch=`uname -m`
