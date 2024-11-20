@@ -10,7 +10,7 @@ PG_LP_VERSION=4.4
 PG_BUILDNUM_POSTGIS=1
 PG_BUILDNUM_PGAGENT=1
 PG_BUILDNUM_SQLPROTECT=2
-PG_BUILDNUM_LANGUAGEPACK=1
+PG_BUILDNUM_LANGUAGEPACK=2
 
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build.
