@@ -17,7 +17,7 @@ _set_config()
 # Platforms. Set to 1 to enable a specific platform
 
 _set_config PG_ARCH_OSX 1
-_set_config PG_ARCH_WINDOWS_X64 1
+_set_config PG_ARCH_WINDOWS_X64 0
 
 # Packages. Set to 1 to enable a specific packages. Note that many packages will be interdependent
 #           so you must ensure that all the required dependencies are enabled.
@@ -34,64 +34,9 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 
 # VM config. For each VM we need to know the SSH connection details and the path to the
 #            shared firectory on the host machine containing this file.
-#            On Windows we don't have a shared directory, so specify a build directory
 #            We can also specify additional directorys to include in the path.
 
-PG_SSH_SIGN_WINDOWS=buildfarm@bf-sign-server-windows.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS=D:\\\\pginstaller_13.auto
-PG_CYGWIN_PATH_WINDOWS=/cygdrive/d/pginstaller_13.auto
-PG_FRAMEWORKDIR_WINDOWS="C:\\\\WINDOWS\\\\Microsoft.NET\\\\Framework"
-PG_FRAMEWORKVERSION_WINDOWS=v4.0.30319
-PG_FRAMEWORKSDKDIR_WINDOWS="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio 12.0\\\\SDK\\\\v3.5"
-PG_ANT_WINDOWS="C:\\\\apache-ant-1.8.4"
-PG_NUGET_WINDOWS="C:\\\\nuget-3.5.0"
-PG_MINGW_WINDOWS=C:\\\\MinGW\\\\mingw-w64\\\\mingw32
-PG_MSYS_WINDOWS=C:\\\\MinGW\\\\msys\\\\1.0
-PG_MINGW_WINDOWS_PGBOUNCER=$PG_MINGW_WINDOWS
-PG_MSYS_WINDOWS_PGBOUNCER=$PG_MSYS_WINDOWS
-PG_QTPATH_WINDOWS_UM=C:\\\\QtSDK
-PLATFORM_TOOLSET_VALUE=
-CMAKE_BUILD_GENERATOR="Visual Studio 15 2017" #used for SB and pgAgent
-PLATFORM_TOOLSET=
-PG_MINGW_MAKE_WINDOWS="D:\\\\pgBuild32\\\\Qt5.9.1\\\\Tools\\\\mingw530_32\\\\bin\\\\mingw32-make"
-PG_MINGW_QTTOOLS_WINDOWS="D:\\\\pgBuild32\\\\Qt5.9.1\\\\Tools\\\\mingw530_32"
-
-PG_SSH_WINDOWS_X64=buildfarm@bf13-windows-x64.ox.uk.enterprisedb.com
-PG_PATH_WINDOWS_X64=D:\\\\pginstaller_13.auto
-PG_CYGWIN_PATH_WINDOWS_X64=/cygdrive/d/pginstaller_13.auto
-PG_VSINSTALLDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017"
-PG_MSBUILDDIR_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft Visual Studio\\\\2017\\\\Professional\\\\MSBuild\\\\15.0"
-PG_DEVENVDIR_WINDOWS_X64="$PG_VSINSTALLDIR_WINDOWS_X64\\\\Professional\\\\Common7\\\\IDE"
-PG_PGBUILD_WINDOWS_X64="C:\\\\pgBuild64"
-PG_PGBUILD_GETTEXT_WINDOWS_X64="C:\\\\pgBuild64-gettext-0198"
-PG_PGBUILD_OPENSSL_WINDOWS_X64="C:\\\\pgBuild64"
-PG_BOOST_WINDOWS_X64="D:\\\\pgBuild64\\\\Boost"
-PG_BINARY_PATH_X64="D:\\\\pg-languagepack-x64"
-PG_WXWIN_WINDOWS_X64="C:\\\\pgBuild64\\\\wxWidgets-3.2.4"
-PG_JAVA_HOME_WINDOWS_X64="C:\\\\Program Files\\\\Java\\\\jdk1.7.0_51"
-PG_CMAKE_WINDOWS_X64="C:\\\\cmake-x64"
-PG_PERL24_WINDOWS_X64=C:\\\\pgBuild64\\\\edb\\\\languagepack-10\\\\x64\\\\Perl-5.24
-PG_PERL_WINDOWS_X64=C:\\\\pgBuild64\\\\edb\\\\languagepack\\\\v1\\\\Perl-5.26
-PG_PYTHON_WINDOWS_X64=C:\\\\pgBuild64\\\\edb\\\\languagepack\\\\v1\\\\Python-3.7
-PGADMIN_PYTHON_WINDOWS_X64=C:\\\\pgBuild64\\\\python\\\\Current
-PGADMIN_PYTHON_DLL_WINDOWS_X64=$PGADMIN_PYTHON_WINDOWS_X64\\\\python311.dll
-PG_TCL_WINDOWS_X64=C:\\\\pgBuild64\\\\edb\\\\languagepack\\\\v1\\\\Tcl-8.6
-PG_SDK_WINDOWS_X64="C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A"
-PG_SIGNTOOL_WINDOWS="C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64\signtool.exe"
-PG_QTPATH_WINDOWS_X64="D:\\\\Qt\\\\Qt5.14.2\\\\5.14.2\\\\msvc2017_64"
-PG_QMAKE_WINDOWS_X64="$PG_QTPATH_WINDOWS_X64\\\\bin\\\\qmake.exe"
-PG_MINGW_QTPATH_WINDOWS_X64="D:\\\\pgBuild64\\\\Qt5.9.1\\\\5.9.1\\\\mingw53_32"
-PG_MINGW_QMAKE_WINDOWS_X64="$PG_MINGW_QTPATH_WINDOWS_X64\\\\bin\\\\qmake.exe"
-PGSERVER_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/server
-PGADMIN_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/pgadmin4
-SB_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/stackbuilder
-CLT_STAGING_WINDOWS_X64=$PWD/server/staging/windows-x64/commandlinetools
-CMAKE_BUILD_GENERATOR_X64="Visual Studio 15 2017" #used for pgAgent
-PGADMIN_KRB5_DIR="C:\\\\Program Files\\\\MIT\\\\Kerberos"
-YARN_HOME="C:\\\\pgBuild64\\\\Yarn"
-NODEJS_HOME="C:\\\\pgBuild64\\\\node-v18.18.2-win-x64"
-
-PG_SSH_OSX=buildfarm@bishopscourt.ox.uk.enterprisedb.com
+PG_SSH_OSX=buildfarm@macbuildfarm-prod-cyt-3.edbcorp.net
 PG_PATH_OSX=/opt/pginstaller_13.auto
 PG_SSH_OSX_SIGN=buildfarm@cadwell.ox.uk.enterprisedb.com
 PG_PATH_OSX_SIGN=/Users/buildfarm/pginstaller_13.auto
@@ -116,8 +61,6 @@ PGADMIN_STAGING_OSX=$PWD/server/staging/osx/pgadmin4
 SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
 CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
 PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/13
-YARN_HOME_OSX=/opt/local/Current/yarn
-NODEJS_HOME_OSX=/opt/local/Current/nodejs
 IMAGEMAGICK_HOME_OSX=/opt/local/Current/ImageMagick
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
@@ -125,7 +68,7 @@ IMAGEMAGICK_HOME_OSX=/opt/local/Current/ImageMagick
 # oldest supported
 
 MACOSX_MIN_VERSION=10.13
-SDK_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk
+SDK_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk
 PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
 PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
 PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
