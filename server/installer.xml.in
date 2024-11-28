@@ -124,6 +124,23 @@ EOF
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
+                <showInfo>
+                    <text>${whoami}</text>
+                </showInfo>
+                <!-- Windows: System account SID -->
+                <runProgram>
+                    <program>whoami</program>
+                     <programArguments>/USER /nh</programArguments>
+                </runProgram>
+                <setInstallerVariableFromRegEx>
+                    <name>whoami_sid</name>
+                    <pattern>^.*\s+(S-[0-9-]+)\s*$</pattern>
+                    <substitution>\1</substitution>
+                    <text>${program_stdout}</text>
+                </setInstallerVariableFromRegEx>
+                <showInfo>
+                    <text>${whoami_sid}</text>
+                </showInfo>
 		<!-- Use 'whoami' to work with "NT AUTHORITY\SYSTEM" user as 'system_username' not working-->
 		 <actionGroup>
                     <actionList>
@@ -144,7 +161,7 @@ EOF
                     </actionList>
                     <ruleList>
                          <compareText logic="equals" text="${platform_name}" value="windows"/>
-			 <compareText logic="equals" text="${whoami}" value="nt authority\system"/>
+			 <compareText logic="equals" text="${whoami_sid}" value="S-1-5-18"/>
                     </ruleList>
                 </actionGroup>
                 <!-- Use 'system_username' to work with local administrator accounts -->
@@ -167,7 +184,7 @@ EOF
                     </actionList>
                     <ruleList>
                          <compareText logic="equals" text="${platform_name}" value="windows"/>
-                         <compareText logic="does_not_equal" text="${whoami}" value="nt authority\system"/>
+                         <compareText logic="does_not_equal" text="${whoami_sid}" value="S-1-5-18"/>
                     </ruleList>
                </actionGroup>
             </actionList>
