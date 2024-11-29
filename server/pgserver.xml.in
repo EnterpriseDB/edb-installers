@@ -2071,9 +2071,37 @@
             <ruleList>
                 <isFalse value="${IsUpgrade}"/>
                 <isFalse value="${extract_mode}"/>
+                <compareText>
+                    <text>${locale}</text>
+                    <value/>
+                    <logic>equals</logic>
+                </compareText>
             </ruleList>
         </actionGroup>
-        <throwError>
+        <!-- Get the locales passed on command line-->
+        <actionGroup>
+            <actionList>
+                <addChoiceOptions>
+                    <name>locale</name>
+                    <optionList>
+                        <option>
+                            <value>${local}</value>
+                            <text>${locale}</text>
+                        </option>
+                    </optionList>
+                </addChoiceOptions>
+            </actionList>
+            <ruleList>
+                <isFalse value="${IsUpgrade}"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText>
+                    <text>${locale}</text>
+                    <value/>
+                    <logic>does_not_equal</logic>
+                </compareText>
+            </ruleList>
+        </actionGroup>
+        <!-- <throwError>
             <text>${msg(locale.error)}</text>
             <ruleList>
                 <compareText>
@@ -2108,7 +2136,7 @@
                 </compareText>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
-        </throwError>
+        </throwError> -->
 
         <!-- Set the default locale if needed. -->
         <actionGroup>
@@ -2126,7 +2154,7 @@
             </ruleList>
         </actionGroup>
 
-        <!-- Convert the locale value to something the choiceParameter will like -->
+        <!-- Convert the locale value to something the choiceParameter will like
         <setInstallerVariableFromRegEx>
             <text>${locale}</text>
             <substitution>xxUSxx</substitution>
@@ -2174,7 +2202,7 @@
             <substitution>xxCOMMAxx</substitution>
             <name>locale</name>
             <pattern>,</pattern>
-        </setInstallerVariableFromRegEx>
+        </setInstallerVariableFromRegEx> -->
 
         <!-- In fresh installation, check the server port value provided on the command line -->
         <actionGroup>
@@ -2847,7 +2875,7 @@
                 <!-- Initialise the cluster if this is an installation -->
                 <actionGroup>
                     <actionList>
-                        <!-- Convert the locale into something understandable -->
+                        <!-- Convert the locale into something understandable
                         <setInstallerVariableFromRegEx>
                             <text>${locale}</text>
                             <substitution>_</substitution>
@@ -2895,7 +2923,7 @@
                             <substitution>,</substitution>
                             <name>reallocale</name>
                             <pattern>xxCOMMAxx</pattern>
-                        </setInstallerVariableFromRegEx>
+                        </setInstallerVariableFromRegEx> -->
 
                         <!-- Initdb -->
                         <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}">
@@ -2919,9 +2947,12 @@
                             </ruleList>
                         </runProgram>
 
+                        <showInfo>
+                            <text>${locale}</text>
+                        </showInfo>
                         <runProgram>
                             <program>${env(WINDIR)}\System32\cscript</program>
-                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${system_temp_directory}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${reallocale}" ${enable_aclcheck}</programArguments>
+                            <programArguments>//NoLogo "${installdir}/installer/server/initcluster.vbs" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${system_temp_directory}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>

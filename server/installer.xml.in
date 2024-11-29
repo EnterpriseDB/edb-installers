@@ -124,9 +124,6 @@ EOF
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
-                <showInfo>
-                    <text>${whoami}</text>
-                </showInfo>
                 <!-- Windows: System account SID -->
                 <runProgram>
                     <program>whoami</program>
@@ -138,9 +135,6 @@ EOF
                     <substitution>\1</substitution>
                     <text>${program_stdout}</text>
                 </setInstallerVariableFromRegEx>
-                <showInfo>
-                    <text>${whoami_sid}</text>
-                </showInfo>
 		<!-- Use 'whoami' to work with "NT AUTHORITY\SYSTEM" user as 'system_username' not working-->
 		 <actionGroup>
                     <actionList>
@@ -3350,6 +3344,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                     <description>${msg(config.locale.description)}</description>
                     <explanation>${msg(config.locale.explanation)}</explanation>
                     <cliOptionName>locale</cliOptionName>
+                    <cliOptionShow>1</cliOptionShow>
                     <ask>yes</ask>
                     <validationActionList>
                         <throwError>
