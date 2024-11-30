@@ -124,10 +124,10 @@ EOF
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </setInstallerVariableFromScriptOutput>
-                <showInfo>
-                    <text>${whoami}</text>
-                </showInfo>
-                <!-- Windows: System account SID -->
+                <logMessage>
+                    <text>"whoami: ${whoami}"</text>
+                </logMessage>
+                <!-- Windows: System account SID so that ruleList works for non-English language -->
                 <runProgram>
                     <program>whoami</program>
                      <programArguments>/USER /nh</programArguments>
@@ -138,9 +138,10 @@ EOF
                     <substitution>\1</substitution>
                     <text>${program_stdout}</text>
                 </setInstallerVariableFromRegEx>
-                <showInfo>
-                    <text>${whoami_sid}</text>
-                </showInfo>
+                <logMessage>
+                    <text>"whoami_sid: ${whoami_sid}"</text>
+                </logMessage>
+
 		<!-- Use 'whoami' to work with "NT AUTHORITY\SYSTEM" user as 'system_username' not working-->
 		 <actionGroup>
                     <actionList>
