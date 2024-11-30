@@ -129,7 +129,7 @@ EOF
                 </logMessage>
                 <!-- Windows: System account SID so that ruleList works for non-English language -->
                 <runProgram>
-                    <program>whoami</program>
+                    <program>${env(WINDIR)}\System32\whoami</program>
                      <programArguments>/USER /nh</programArguments>
                 </runProgram>
                 <setInstallerVariableFromRegEx>
