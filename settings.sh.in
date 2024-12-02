@@ -41,9 +41,9 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 
 PG_SSH_OSX=buildfarm@macbuildfarm-prod-cyt-3.edbcorp.net
 PG_PATH_OSX=/opt/pginstaller_15.auto
-PG_SSH_OSX_SIGN=buildfarm@cadwell.ox.uk.enterprisedb.com
+PG_SSH_OSX_SIGN=buildfarm@macbuildfarm-prod-cyt-1.edbcorp.net
 PG_PATH_OSX_SIGN=/Users/buildfarm/pginstaller_15.auto
-PG_SSH_OSX_NOTARY=buildfarm@cadwell.ox.uk.enterprisedb.com
+PG_SSH_OSX_NOTARY=buildfarm@macbuildfarm-prod-cyt-1.edbcorp.net
 PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_15.notary
 PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging_cache/osx
