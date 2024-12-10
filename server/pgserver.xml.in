@@ -2054,6 +2054,7 @@
                         </compareText>
                     </ruleList>
                 </runProgram>
+        <showInfo text="getlocales-stdout=${program_stdout}"/>
 
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
@@ -2116,6 +2117,7 @@
         <!-- Set the default locale if needed. -->
         <actionGroup>
             <actionList>
+        <showInfo text="locale4=${locale}"/>
                 <setInstallerVariable>
                     <name>locale</name>
                     <value>DEFAULT</value>
@@ -2182,6 +2184,7 @@
         <!-- In fresh installation, check the server port value provided on the command line -->
         <actionGroup>
             <actionList>
+        <showInfo text="locale5=${locale}"/>
                 <throwError>
                     <text>${msg(config.port.invalid)}</text>
                     <ruleList>
@@ -2850,7 +2853,7 @@
                 <!-- Initialise the cluster if this is an installation -->
                 <actionGroup>
                     <actionList>
-        <showInfo text="locale4=${locale}"/>
+        <showInfo text="locale6=${locale}"/>
                         <!-- Convert the locale into something understandable -->
                         <setInstallerVariableFromRegEx>
                             <text>${locale}</text>
