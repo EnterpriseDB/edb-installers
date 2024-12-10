@@ -2010,6 +2010,7 @@
         <!-- Get the locales available -->
         <actionGroup>
             <actionList>
+        <showInfo text="locale1=${locale}"/>
                 <addChoiceOptions>
                     <name>locale</name>
                     <optionList>
@@ -2042,6 +2043,7 @@
                     </ruleList>
                 </runProgram>
 
+        <showInfo text="locale2=${locale}"/>
                 <runProgram>
                     <program>${system_temp_directory}\postgresql_installer_${random_number}\getlocales.exe</program>
                     <ruleList>
@@ -2067,6 +2069,7 @@
                     <name>locale</name>
                     <text>${program_stdout}</text>
                 </addChoiceOptionsFromText>
+        <showInfo text="locale3=${locale}"/>
             </actionList>
             <ruleList>
                 <isFalse value="${IsUpgrade}"/>
@@ -2847,6 +2850,7 @@
                 <!-- Initialise the cluster if this is an installation -->
                 <actionGroup>
                     <actionList>
+        <showInfo text="locale4=${locale}"/>
                         <!-- Convert the locale into something understandable -->
                         <setInstallerVariableFromRegEx>
                             <text>${locale}</text>
