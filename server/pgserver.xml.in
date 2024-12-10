@@ -2900,6 +2900,7 @@
                             <name>reallocale</name>
                             <pattern>xxCOMMAxx</pattern>
                         </setInstallerVariableFromRegEx>
+        <showInfo text="reallocale=${reallocale}"/>
 
                         <!-- Initdb -->
                         <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}">
