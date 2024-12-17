@@ -25,8 +25,8 @@ _prep_PostGIS_osx() {
     mkdir -p postgis.osx || _die "Couldn't create the postgis.osx directory"
     chmod ugo+w postgis.osx || _die "Couldn't set the permissions on the source directory"
     
-    echo "Copying pgJDBC jar files.."
-    cp postgresql-$PG_VERSION_PGJDBC*.jar postgis.osx || _die "Failed to copy pgJDBC jar files."
+    #echo "Copying pgJDBC jar files.."
+    #cp postgresql-$PG_VERSION_PGJDBC*.jar postgis.osx || _die "Failed to copy pgJDBC jar files."
 
     # Grab a copy of the postgis source tree
     cp -R postgis-$PG_VERSION_POSTGIS/* postgis.osx || _die "Failed to copy the source code (PostGIS/source/postgis-$PG_VERSION_POSTGIS)"
@@ -202,20 +202,22 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
 
     # Configure the source tree
     echo "Configuring the PostGIS source"
-    PATH=$PATH:$IMAGEMAGICK_HOME_OSX/bin LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CFLAGS="$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current/lib" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PATH=/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH ./configure --enable-debug --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current --without-protobuf || _die "Failed to configure PostGIS"
+    PATH=$IMAGEMAGICK_HOME_OSX/bin:/opt/local/bin:/opt/local/Current/bin:$PG_PERL_OSX/bin:$PATH LD_LIBRARY_PATH=/opt/local/Current/lib:$LD_LIBRARY_PATH; CXXFLAGS="$PG_ARCH_OSX_CXXFLAGS" CFLAGS="$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current/lib" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION PROJ_CFLAGS="-I/opt/local/Current/include" PROJ_LIBS="-L/opt/local/Current/lib -lproj" ./configure --disable-extension-upgrades-install --enable-debug --with-pgconfig=$PG_PGHOME_OSX/bin/pg_config --with-geosconfig=/opt/local/Current/bin/geos-config --with-projdir=/opt/local/Current --with-xsldir=$PG_DOCBOOK_OSX --with-gdalconfig=/opt/local/Current/bin/gdal-config --with-xml2config=/opt/local/Current/bin/xml2-config --with-libiconv=/opt/local/Current --with-jsondir=/opt/local/Current --without-protobuf --with-pcredir=/opt/local/Current --with-address_standardizer || _die "Failed to configure PostGIS"
 
     echo "Building PostGIS"
+    echo "workaround: Patching topology Makefile to comment out the problematic lines"
+    sed -i '' '/prefix = /,+2 s/^/#/' topology/Makefile
     LDFLAGS="-L/opt/local/Current/lib" CFLAGS="$PG_ARCH_OSX_CFLAGS" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make || _die "Failed to build PostGIS"
-    echo "Building comments"
-    make comments || _die "Failed to build comments"
+    #echo "Building comments"
+    #make comments || _die "Failed to build comments"
     echo "Installing PostGIS"
     make install PGXSOVERRIDE=0 DESTDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bindir=/bin pkglibdir=/lib/postgresql datadir=/share REGRESS=1 PGSQL_DOCDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/doc PGSQL_MANDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/man PGSQL_SHAREDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/share/postgresql || _die "Failed to install PostGIS"
-    echo "Installing comments"
-    make comments-install PGXSOVERRIDE=0 DESTDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/doc PGSQL_MANDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/man PGSQL_SHAREDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/share/postgresql || _die "Failed to install PostGIS comments"
+    #echo "Installing comments"
+    #make comments-install PGXSOVERRIDE=0 DESTDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bindir=/bin pkglibdir=/lib datadir=/share REGRESS=1 PGSQL_DOCDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/doc PGSQL_MANDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/man PGSQL_SHAREDIR=$PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/share/postgresql || _die "Failed to install PostGIS comments"
 
     echo "Building postgis-doc"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc/html/image_src;
-    make clean
+    #cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc/html/image_src;
+    #make clean
     LDFLAGS="-L/opt/local/Current/lib" CFLAGS="$PG_ARCH_OSX_CFLAGS" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make|| _die "Failed to build postgis-doc"
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/doc; 
     LDFLAGS="-L/opt/local/Current/lib" CFLAGS="$PG_ARCH_OSX_CFLAGS" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make html || _die "Failed to build postgis-doc"
@@ -225,7 +227,7 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
     mkdir -p staging/osx.build/PostGIS/doc/postgis/
     cp -pR source/postgis.osx/doc/html/images staging/osx.build/PostGIS/doc/postgis/
     cp -pR source/postgis.osx/doc/html/postgis.html staging/osx.build/PostGIS/doc/postgis/
-    cp -pR source/postgis.osx/java/jdbc/src/main/javadoc/overview.html staging/osx.build/PostGIS/doc/postgis/
+    #cp -pR source/postgis.osx/java/jdbc/src/main/javadoc/overview.html staging/osx.build/PostGIS/doc/postgis/
     cp -pR source/postgis.osx/doc/postgis-$PG_VERSION_POSTGIS.pdf staging/osx.build/PostGIS/doc/postgis/
 
     mkdir -p staging/osx.build/PostGIS/man
@@ -236,16 +238,16 @@ cat <<EOT-POSTGIS > $WD/PostGIS/build-postgis.sh
     cd $PG_PATH_OSX/PostGIS/source/postgis.osx/utils
     cp *.pl $PG_STAGING/PostGIS/utils || _die "Failed to copy the utilities "
 
-    echo "Building postgis-jdbc"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc
-    CLASSPATH=$PG_PATH_OSX/PostGIS/source/postgis.osx/postgresql-$PG_JAR_POSTGRESQL.jar:\$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_OSX $PG_MAVEN_HOME_OSX/bin/mvn -U clean install || _die "Failed to build postgis-jdbc jar."
+    #echo "Building postgis-jdbc"
+    #cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java/jdbc
+    #CLASSPATH=$PG_PATH_OSX/PostGIS/source/postgis.osx/postgresql-$PG_JAR_POSTGRESQL.jar:\$CLASSPATH JAVA_HOME=$PG_JAVA_HOME_OSX $PG_MAVEN_HOME_OSX/bin/mvn -U clean install || _die "Failed to build postgis-jdbc jar."
 
-    mkdir -p $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/java/jdbc
+    #mkdir -p $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/java/jdbc
 
-    echo "Copying postgis-jdbc"
-    cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java
-    cp jdbc/target/postgis*.jar $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/java/jdbc || _die "Failed to copy postgis jars into postgis-jdbc"
-    cp -R ejb2 ejb3 $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/java/ || _die "Failed to copy ejb2, ejb3 into postgis-java"
+    #echo "Copying postgis-jdbc"
+    #cd $PG_PATH_OSX/PostGIS/source/postgis.osx/java
+    #cp jdbc/target/postgis*.jar $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/java/jdbc || _die "Failed to copy postgis jars into postgis-jdbc"
+    #cp -R ejb2 ejb3 $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS/java/ || _die "Failed to copy ejb2, ejb3 into postgis-java"
 
 EOT-POSTGIS
 
@@ -282,11 +284,15 @@ cat <<EOT-POSTGIS >> $WD/PostGIS/build-postgis.sh
     cp -pR /opt/local/Current/lib/libproj*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent libraries"
     cp -pR /opt/local/Current/lib/libgdal*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent libraries"
     cp -pR /opt/local/Current/lib/libcurl*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent libraries"
-    cp -pR /opt/local/Current/lib/libpcre.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent libraries"
+    cp -pR /opt/local/Current/lib/libpcre2*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent libraries"
     cp -pR /opt/local/Current/lib/libjson-c.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (libjson-c) libraries"
     cp -pR /opt/local/Current/lib/libtiff.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (libtiff) libraries"
     cp -pR /opt/local/Current/lib/libjpeg.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (libjpeg) libraries"
     cp -pR /opt/local/Current/lib/libpng*.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (libpng) libraries"
+    cp -pR /opt/local/Current_v15/lib/libexpat*.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (expat) libraries"
+    cp -pR /opt/local/Current_v15/lib/libsqlite*.*dylib staging/osx.build/PostGIS/lib || _die "Failed to copy dependent (sqlite) libraries"
+    cp -pR /opt/local/Current_v15/share/proj staging/osx.build/PostGIS/share/ || _die "Failed to copy share/proj"
+    cp -pR /opt/local/Current_v15/share/gdal staging/osx.build/PostGIS/share/ || _die "Failed to copy share/gdal"
 
     _rewrite_so_refs $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS bin @loader_path/..
     _rewrite_so_refs $PG_PATH_OSX/PostGIS/staging/osx.build/PostGIS lib @loader_path/..
