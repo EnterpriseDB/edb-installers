@@ -155,6 +155,7 @@ EOF
                         <setWindowsACL>
                             <action>allow</action>
                             <files>${system_temp_directory}/${dirPrefix}_${random_number}</files>
+                            <recurseObjects>1</recurseObjects>
                             <permissions>generic_all</permissions>
                             <users>${whoami}</users>
                         </setWindowsACL>
@@ -178,6 +179,7 @@ EOF
                         <setWindowsACL>
                             <action>allow</action>
                             <files>${system_temp_directory}/${dirPrefix}_${random_number}</files>
+                            <recurseObjects>1</recurseObjects>
                             <permissions>generic_all</permissions>
                             <users>${env(USERDOMAIN)}\${system_username}</users>
                         </setWindowsACL>
