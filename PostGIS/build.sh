@@ -45,9 +45,9 @@ _prep_PostGIS() {
 
     cd $WD/PostGIS/source  
 
-    echo "Extracting the postgresql jar file..."
-    extract_file  ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC  
-    mv pgJDBC-$PG_VERSION_PGJDBC/*.jar .
+    #echo "Extracting the postgresql jar file..."
+    #extract_file  ../../tarballs/pgJDBC-$PG_VERSION_PGJDBC  
+    #mv pgJDBC-$PG_VERSION_PGJDBC/*.jar .
 
     # Per-platform prep
     cd $WD
