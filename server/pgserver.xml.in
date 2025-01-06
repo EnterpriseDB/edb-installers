@@ -2131,6 +2131,12 @@
             </ruleList>
         </actionGroup>
 
+        <actionGroup>
+            <actionList>
+        <showInfo text="locale5=${locale}"/>
+            </actionList>
+        </actionGroup>
+
         <!-- Convert the locale value to something the choiceParameter will like -->
         <setInstallerVariableFromRegEx>
             <text>${locale}</text>
@@ -2181,10 +2187,16 @@
             <pattern>,</pattern>
         </setInstallerVariableFromRegEx>
 
+        <actionGroup>
+            <actionList>
+        <showInfo text="locale6=${locale}"/>
+            </actionList>
+        </actionGroup>
+
         <!-- In fresh installation, check the server port value provided on the command line -->
         <actionGroup>
             <actionList>
-        <showInfo text="locale5=${locale}"/>
+        <showInfo text="locale7=${locale}"/>
                 <throwError>
                     <text>${msg(config.port.invalid)}</text>
                     <ruleList>
@@ -2853,7 +2865,7 @@
                 <!-- Initialise the cluster if this is an installation -->
                 <actionGroup>
                     <actionList>
-        <showInfo text="locale6=${locale}"/>
+        <showInfo text="locale7=${locale}"/>
                         <!-- Convert the locale into something understandable -->
                         <setInstallerVariableFromRegEx>
                             <text>${locale}</text>
