@@ -51,85 +51,6 @@
                 </compareText>
             </ruleList>
         </folder>
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}/server/scripts</destination>
-            <name>scriptfileslinux_2</name>
-            <platforms>linux4</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/linux/pgadmin4/scripts/xdg</origin>
-                </distributionDirectory>
-            </distributionFileList>
-            <ruleList>
-                <compareText>
-                    <logic>does_not_equal</logic>
-                    <text>${platform_name}</text>
-                    <value>linux-x64</value>
-                </compareText>
-            </ruleList>
-        </folder>
-        <!-- LINUX_X64: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfileslinux-x64</name>
-            <platforms>linux-x64</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/pgadmin4/pgAdmin 4</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>staging/linux-x64/pgadmin4/pgAdmin_3rd_party_licenses.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/linux-x64/pgadmin4/pgAdmin_license.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
-        <folder>
-            <description>Script Files</description>
-            <destination>${installdir}</destination>
-            <name>scriptfileslinux-x64</name>
-            <platforms>linux-x64</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/pgadmin4/scripts</origin>
-                </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/pgadmin4/installer</origin>
-                </distributionDirectory>
-            </distributionFileList>
-        </folder>
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}/server/scripts</destination>
-            <name>scriptfileslinux-x64_2</name>
-            <platforms>linux-x64</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/linux-x64/pgadmin4/scripts/xdg</origin>
-                </distributionDirectory>
-            </distributionFileList>
-        </folder>
-        <!-- LINUX_PPC64: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfileslinux-ppc64</name>
-            <platforms>linux-ppc</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/linux-ppc64/pgAdmin 4</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>../resources/license.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/linux-ppc64/server_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
         <!-- MAC: Program files -->
         <folder>
             <description>Program Files</description>
@@ -175,42 +96,6 @@
                 </distributionFile>
             </distributionFileList>
 </folder>
-        <!-- SOLARIS_X64: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfilessolaris-x64</name>
-            <platforms>solaris-intel</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/solaris-x64/pgAdmin 4</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>../resources/license.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/solaris-x64/server_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
-        <!-- SOLARIS_SPARC: Program files -->
-        <folder>
-            <description>Program Files</description>
-            <destination>${installdir}</destination>
-            <name>programfilessolaris-sparc</name>
-            <platforms>solaris-sparc</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/solaris-sparc/pgAdmin 4</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>../resources/license.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/solaris-sparc/server_3rd_party_licenses.txt</origin>
-                </distributionFile>
-            </distributionFileList>
-        </folder>
     </folderList>
     <componentSelectionValidationActionList>
         <throwError>
