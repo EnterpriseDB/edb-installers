@@ -34,23 +34,80 @@ function Warn {
 function DoCmd {
     param ([string]$Command)
     Write-Host "Executing: $Command"
-    $output = cmd.exe /c $Command 2>&1
+    $output = $env:WINDIR\System32\cmd.exe /c $Command 2>&1
     if ($LASTEXITCODE -ne 0) {
         Die "Command failed: $Command`n$output"
     }
     $output
 }
 
-# Convert the string CheckACL to a Boolean
-$CheckACL = if ($CheckACL -eq 'true' -or $CheckACL -eq '1') { $true } else { $false }
+# Function to Clear ACL
+function Clear-Acl {
+    param (
+        [string]$DirectoryPath
+    )
+    Write-Host "Called Clear-Acl ($DirectoryPath)..."
+    $iRet = & "$env:WINDIR\System32\icacls" $DirectoryPath
+    Write-Host "Removing inherited ACLs on ($DirectoryPath)..."
+    $iRet = & "$env:WINDIR\System32\icacls" $DirectoryPath /inheritance:r
+    if ($iRet -ne 0) {
+        Write-Host "Failed to remove inherited ACLs on ($DirectoryPath)"
+        return $iRet
+    }
+    return 0
+}
+
+# Function to check and modify ACLs for a directory
+# Function to check and set ACLs on the given directory
+function AclCheck {
+    param (
+        [string]$DirectoryPath,
+        [string]$UserName,
+        [int]$Index
+    )
+    Write-Host "Called AclCheck($strThisDir)"
+    
+    if ($DirectoryPath -eq $env:PROGRAMFILES) {
+        Write-Host "Skipping the ACL check on $DirectoryPath"
+        return 0
+    } elseif ($DirectoryPath -eq $env:SYSTEMDRIVE) {
+        Write-Host "Skipping the ACL check on $DirectoryPath"
+        return 0
+    } else {
+        Write-Host "Executing icacls to ensure the $UserName account can read the path $DirectoryPath"
+        
+        if ($Index -ne 0) {
+            # For directories other than the root drive, grant permissions (NP)(RX)
+            $command = "$env:WINDIR\System32\icacls \"$DirectoryPath\" /grant \"$UserName:(NP)(RX)\""
+        } else {
+            # Drive letter must not be surronded by double-quotes and ends with slash (\)
+            # "icacls" fails on the drives with (NP) flag
+            $command = "$env:WINDIR\System32\icacls \"$DirectoryPath\"\\ /grant \"$UserName:(NP)(RX)\""
+        }
+        # Execute the command
+        $iRet = DoCmd $command
+
+        if ($iRet -ne 0) {
+            Write-Host "Failed to ensure the path $DirectoryPath is readable"
+        }
+    }
+}
 
 # Validate input arguments
-if (-not $OSUsername -or -not $SuperUsername -or -not $Password -or -not $PasswordDir -or -not $InstallDir -or -not $DataDir -or -not $Port -or -not $Locale) {
+if (-not $OSUsername -or -not $SuperUsername -or -not $Password -or -not $PasswordDir -or -not $InstallDir -or -not $DataDir -or -not $Port -or -not $Locale -or -not $CheckACL) {
     Die "All parameters are required."
 }
 
+# Convert the string CheckACL to a Boolean
+$boolCheckACL = if ($CheckACL -eq 'true' -or $CheckACL -eq '1') { $true } else { $false }
+
 # Normalize DataDir path
 $DataDir = $DataDir.TrimEnd('\')
+
+# Change the current directory to the installation directory
+# This is important, because initdb will drop Administrative
+# permissions and may lose access to the current working directory
+Set-Location -Path $InstallDir
 
 # Ensure DataDir exists
 if (-not (Test-Path $DataDir)) {
@@ -58,16 +115,92 @@ if (-not (Test-Path $DataDir)) {
     New-Item -ItemType Directory -Path $DataDir -Force | Out-Null
 }
 
-# Clear and set ACLs if required
-if ($CheckACL) {
-    Write-Host "Setting ACLs for $DataDir"
-    DoCmd "icacls \"$DataDir\" /inheritance:r"
-    DoCmd "icacls \"$DataDir\" /grant \"${OSUsername}:`(OI`)`(CI`)F\" /grant SYSTEM:(OI)(CI)F /grant \"CREATOR OWNER:`(OI`)`(CI`)F\" /grant Administrators:(OI)(CI)F"
+# Create temporary password file
+$randomFileName = -join ((65..90) + (97..122) + (48..57) | Get-Random -Count 6 | ForEach-Object { [char]$_ }) + ".txt"
+$passwordFile = Join-Path $PasswordDir  $randomFileName
+Set-Content -Path $passwordFile -Value $Password -Force
+
+# Remove inherited ACLs
+$iRet = Clear-Acl -DirectoryPath $DataDir
+if ($iRet -ne 0) {
+    Die "Failed to reset the ACL ($strDataDir)"
 }
 
-# Create temporary password file
-$passwordFile = Join-Path $PasswordDir "pwfile.txt"
-Set-Content -Path $passwordFile -Value $Password -Force
+# Get parent dir of Data dir
+$ParentOfDataDir = [System.IO.Path]::GetDirectoryName($DataDir)
+Write-Host "Parent of Data Directory: $ParentOfDataDir"
+
+# Get logged-in user
+$LoggedInUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+Write-Host "Logged in user: $LoggedInUser"
+
+if ($boolCheckAcl) {
+    # Split the parent directory path into an array
+    $arrDirs = $ParentOfDataDir.Split('\')
+    $nDirs = $arrDirs.Length - 1
+    Write-Host "Number of directories: $nDirs"
+    
+    $strThisDir = ""
+    
+    # Loop through each directory and apply ACL checks
+    for ($d = 0; $d -le $nDirs; $d++) {
+        $strThisDir = $strThisDir + $arrDirs[$d]
+        AclCheck -DirectoryPath $strThisDir -UserName $LoggedInUser -Index $d
+        $strThisDir = $strThisDir + "\"
+    }
+    
+    Write-Host "Parent of Data Directory: $ParentOfDataDir"
+    Write-Host "Install Directory: $InstallDir"
+}
+
+# Apply ACL for the data directory
+AclCheck -DirectoryPath $DataDir -UserName $LoggedInUser -Index 1
+
+# If ACL check is enabled, grant permissions on the install directory
+if ($boolCheckAcl) {
+    Write-Host "Granting the $LoggedInUser permissions on $InstallDir"
+    $icaclsCommand = "$env:WINDIR\System32\icacls \"$InstallDir\" /T /grant:r \"$LoggedInUser:(OI)(CI)(RX)\""
+    $iRet = DoCmd -Command $icaclsCommand
+    if ($iRet -ne 0) {
+        Write-Host "Failed to ensure the Install directory is accessible ($InstallDir)"
+    }
+}
+
+# Grant ACLs for specific users on data directory
+Write-Host "Ensuring we can write to the data directory (using icacls) for $LoggedInUser:"
+$icaclsCommand = "$env:WINDIR\System32\icacls \"$DataDir\" /T /grant:r \"$LoggedInUser:(OI)(CI)F\""
+$iRet = DoCmd -Command $icaclsCommand
+if ($iRet -ne 0) {
+    Write-Host "Failed to ensure the data directory is accessible ($DataDir)"
+}
+
+Write-Host "Granting full access to $OSUsername on $DataDir"
+$icaclsCommand = "$env:WINDIR\System32\icacls \"$DataDir\" /grant \"$OSUsername:(OI)(CI)F\""
+$iRet = DoCmd -Command $icaclsCommand
+if ($iRet -ne 0) {
+    Write-Host "Failed to grant access to $OSUsername on $DataDir"
+}
+
+Write-Host "Granting full access to CREATOR OWNER on $DataDir"
+$icaclsCommand = "$env:WINDIR\System32\icacls \"$DataDir\" /grant \"*S-1-3-0:(OI)(CI)F\""
+$iRet = DoCmd -Command $icaclsCommand
+if ($iRet -ne 0) {
+    Write-Host "Failed to grant access to CREATOR OWNER on $DataDir"
+}
+
+Write-Host "Granting full access to SYSTEM on $DataDir"
+$icaclsCommand = "$env:WINDIR\System32\icacls \"$DataDir\" /grant \"*S-1-5-18:(OI)(CI)F\""
+$iRet = DoCmd -Command $icaclsCommand
+if ($iRet -ne 0) {
+    Write-Host "Failed to grant access to SYSTEM on $DataDir"
+}
+
+Write-Host "Granting full access to Administrators on $DataDir"
+$icaclsCommand = "$env:WINDIR\System32\icacls \"$DataDir\" /grant \"*S-1-5-32-544:(OI)(CI)F\""
+$iRet = DoCmd -Command $icaclsCommand
+if ($iRet -ne 0) {
+    Write-Host "Failed to grant access to Administrators on $DataDir"
+}
 
 # Run initdb
 # If the Locale is set to "DEFAULT", fetch the system's locale dynamically
@@ -87,7 +220,10 @@ else {
 }	
 $initdbCmd = "`"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$LocaleName`" --pwfile=`"$passwordFile`" --auth=scram-sha-256"
 Write-Host "Initializing PostgreSQL database cluster..."
-DoCmd $initdbCmd
+$iRet = DoCmd -Command $initdbCmd
+if ($iRet -ne 0) {
+    Die "Failed to initialise the database cluster with initdb"
+}
 
 # Delete the password file
 if (Test-Path $passwordFile) {
@@ -101,16 +237,55 @@ if (-not (Test-Path $configFile)) {
 }
 
 Write-Host "Updating postgresql.conf"
-(gc $configFile) -replace "^#?listen_addresses =.*", "listen_addresses = '*'" -replace "^#?port =.*", "port = $Port" -replace "^#?logging_collector =.*", "logging_collector = on" | Set-Content -Path $configFile
+(gc $configFile) -replace "^#?listen_addresses =.*", "listen_addresses = '*'" `
+                 -replace "^#?port =.*", "port = $Port" `
+                 -replace "^#?log_destination =.*", "log_destination = 'stderr'" `
+                 -replace "^#?logging_collector =.*", "logging_collector = on" `
+                 -replace "^#?log_line_prefix =.*", "log_line_prefix = '%t '" | 
+    Set-Content -Path $configFile
 
-# Ensure service account has full access
-DoCmd "icacls \"$DataDir\" /grant \"${OSUsername}:`(OI`)`(CI`)F\""
+if ($boolCheckAcl) {
+    # Loop up the directory path, and ensure the service account has read permissions
+    # on the entire path leading to the data directory
+    $arrDirs = $ParentOfDataDir.Split('\')
+    $nDirs = $arrDirs.Length - 1
+    Write-Host "Number of directories: $nDirs"
+     
+    $strThisDir = ""
+      
+    # Loop through each directory and apply ACL checks
+    for ($d = 0; $d -le $nDirs; $d++) {
+        $strThisDir = $strThisDir + $arrDirs[$d]
+        AclCheck -DirectoryPath $strThisDir -UserName $OSUsername -Index $d
+        $strThisDir = $strThisDir + "\"
+    }
+}  
 
-# Create log directory
+AclCheck -DirectoryPath $DataDir -UserName $OSUsername -Index 1
+
+if ($boolCheckAcl) {
+    Write-Host "Granting $OSUsername permissions on $InstallDir"
+    $icaclsCommand = "$env:WINDIR\System32\icacls \"$InstallDir\" /T /grant:r \"$OSUsername:(OI)(CI)(RX)\""
+    $iRet = DoCmd -Command $icaclsCommand
+    if ($iRet -ne 0) {
+        Write-Host "Failed to ensure the Install directory is accessible ($InstallDir)"
+    }
+}
+
+# Create the <DATA_DIR>\log directory (if not exists)
+# Create it before updating the permissions, so that it will also get affected
 $logDir = Join-Path $DataDir "log"
 if (-not (Test-Path $logDir)) {
     Write-Host "Creating log directory: $logDir"
     New-Item -ItemType Directory -Path $logDir -Force | Out-Null
+}
+
+# Secure the data directory
+Write-Host "Granting service account access to the data directory (using icacls) to $OSUsername"
+$icaclsCommand = "$env:WINDIR\System32\icacls \"$DataDir\" /T /C /grant \"$OSUsername:(OI)(CI)F\""
+iRet = DoCmd -Command $icaclsCommand
+if ($iRet -ne 0) {
+    Write-Host "Failed to grant service account access to the data directory ($DataDir)"
 }
 
 Write-Host "PostgreSQL cluster initialized successfully."
