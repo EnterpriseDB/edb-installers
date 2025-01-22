@@ -42,11 +42,11 @@ function DoCmd {
 }
 
 # Function to Clear ACL
-function Clear-Acl {
+function ClearAcl {
     param (
         [string]$DirectoryPath
     )
-    Write-Host "`nCalled Clear-Acl ("$DirectoryPath")..."
+    Write-Host "`nCalled ClearAcl ("$DirectoryPath")..."
     & "$env:WINDIR\System32\icacls" $DirectoryPath
     Write-Host "`nRemoving inherited ACLs on ("$DirectoryPath")..."
     & "$env:WINDIR\System32\icacls" $DirectoryPath /inheritance:r
@@ -119,7 +119,7 @@ $passwordFile = Join-Path "$PasswordDir"  $randomFileName
 Set-Content -Path "$passwordFile" -Value $Password -Force
 
 # Remove inherited ACLs
-Clear-Acl -DirectoryPath $DataDir
+ClearAcl -DirectoryPath $DataDir
 if ($LASTEXITCODE -ne 0) {
     Die "Failed to reset the ACL ($DataDir)"
 }
