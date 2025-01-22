@@ -209,10 +209,10 @@ if ($Locale -eq "DEFAULT") {
 else {
 	if ($Locale -match '\(') {
 		# String contains a parenthesis, move the closing parenthesis to the end
-		$Locale = $Locale -replace '\), ', ', ' -replace '$', ')'
+		$Locale = $Locale -replace '\),\s*', ', ' -replace '$', ')' -replace '\(', ' ('
 	} else {
 		# String does not contain a parenthesis, transform it normally
-		$Locale = $Locale -replace ', ', ' (' -replace '$', ')'
+		$Locale = $Locale -replace ',\s*', ' (' -replace '$', ')'
 	}
 	$LocaleName = [System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.EnglishName -like "$Locale" } | Select-Object -ExpandProperty Name
 }	
