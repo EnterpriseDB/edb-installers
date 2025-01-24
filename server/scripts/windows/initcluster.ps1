@@ -114,7 +114,7 @@ if (-not (Test-Path "$DataDir")) {
 }
 
 # Create temporary password file
-$randomFileName = -join ((65..90) + (97..122) + (48..57) | Get-Random -Count 6 | ForEach-Object { [char]$_ }) + ".txt"
+$randomFileName = -join ((65..90) + (97..122) + (48..57) | Get-Random -Count 8 | ForEach-Object { [char]$_ }) + ".tmp"
 $passwordFile = Join-Path "$PasswordDir"  $randomFileName
 Set-Content -Path "$passwordFile" -Value $Password -Force
 
