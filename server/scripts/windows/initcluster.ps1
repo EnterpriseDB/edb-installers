@@ -13,6 +13,16 @@ param (
     [string]$CheckACL
 )
 
+# Validate input arguments
+if (-not $OSUsername -or -not $SuperUsername -or -not $Password -or -not $PasswordDir -or -not $InstallDir -or -not $DataDir -or -not $Port -or -not $Locale -or -not $CheckACL) {
+    Write-Host "Usage: initcluster.vbs <OSUsername> <SuperUsername> <Password> <PasswordDir> <Install dir> <Data dir> <Port> <Locale> <CheckACL>"
+	exit 1
+}
+
+# Create a temporary batch file
+$batchFileName = [System.IO.Path]::GetRandomFileName() -replace '\..*$', '.bat'
+$outputFile = [System.IO.Path]::GetTempFileName()
+	
 # Function to log and terminate the script with an error message
 function Die {
     param ([string]$Message)
@@ -33,13 +43,38 @@ function Warn {
 # Function to execute commands
 function DoCmd {
     param ([string]$Command)
-    #Write-Host "`nExecuting: $Command"
-    $output = & "$env:WINDIR\System32\cmd.exe" /c "$Command" 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        Die "Command failed: $Command`n$output"
+
+	$batchFile = Join-Path ([System.IO.Path]::GetTempPath()) $batchFileName
+    # Write command to the batch file
+    Set-Content -Path $batchFile -Value "@ECHO OFF"
+    Add-Content -Path $batchFile -Value "CHCP $([System.Text.Encoding]::Default.CodePage) > nul"
+    Add-Content -Path $batchFile -Value "$Command > `"$outputFile`" 2>&1"
+    Add-Content -Path $batchFile -Value "EXIT /B %ERRORLEVEL%"
+
+    Write-Host "Executing batch file '$batchFileName'..."
+    
+    # Execute the batch file
+    $process = Start-Process -FilePath "$env:WINDIR\System32\cmd.exe" -ArgumentList "/c `"$batchFile`"" -NoNewWindow -Wait -PassThru
+    $exitCode = $process.ExitCode
+
+    # Display output file content if exists
+    if (Test-Path $outputFile) {
+        Get-Content $outputFile | Write-Host
+        Remove-Item $outputFile -Force
+    } else {
+        Write-Host "Output file does not exist..."
     }
-    $output
+
+    # Cleanup
+    if (Test-Path $batchFile) {
+        Remove-Item $batchFile -Force
+    } else {
+        Write-Host "Batch file '$batchFileName' does not exist..."
+    }
+
+    return $exitCode
 }
+
 
 # Function to Clear ACL
 function ClearAcl {
@@ -83,17 +118,12 @@ function AclCheck {
             $command = "$env:WINDIR\System32\icacls `"$DirectoryPath\\`" /grant `"$UserName`:(NP)(RX)`""
         }
         # Execute the command
-        DoCmd "$command"
+        $iRet = DoCmd "$command"
 
-        if ($LASTEXITCODE -ne 0) {
+        if ($iRet -ne 0) {
             Write-Host "`nFailed to ensure the path $DirectoryPath is readable"
         }
     }
-}
-
-# Validate input arguments
-if (-not $OSUsername -or -not $SuperUsername -or -not $Password -or -not $PasswordDir -or -not $InstallDir -or -not $DataDir -or -not $Port -or -not $Locale -or -not $CheckACL) {
-    Die "All parameters are required."
 }
 
 # Convert the string CheckACL to a Boolean
@@ -112,11 +142,6 @@ if (-not (Test-Path "$DataDir")) {
     Write-Host "`nCreating data directory: $DataDir"
     New-Item -ItemType Directory -Path "$DataDir" -Force | Out-Null
 }
-
-# Create temporary password file
-$randomFileName = -join ((65..90) + (97..122) + (48..57) | Get-Random -Count 8 | ForEach-Object { [char]$_ }) + ".tmp"
-$passwordFile = Join-Path "$PasswordDir"  $randomFileName
-Set-Content -Path "$passwordFile" -Value $Password -Force
 
 # Remove inherited ACLs
 ClearAcl -DirectoryPath $DataDir
@@ -158,8 +183,8 @@ AclCheck -DirectoryPath "$DataDir" -UserName $LoggedInUser -Index 1
 if ($boolCheckAcl) {
     Write-Host "`nGranting the $LoggedInUser permissions on $InstallDir"
     $icaclsCommand = "$env:WINDIR\System32\icacls `"$InstallDir`" /T /grant:r `"$LoggedInUser`:(OI)(CI)(RX)`""
-    DoCmd -Command "$icaclsCommand"
-    if ($LASTEXITCODE -ne 0) {
+    $iRet = DoCmd -Command "$icaclsCommand"
+    if ($iRet -ne 0) {
         Write-Host "`nFailed to ensure the Install directory is accessible ($InstallDir)"
     }
 }
@@ -167,40 +192,40 @@ if ($boolCheckAcl) {
 # Grant ACLs for specific users on data directory
 Write-Host "`nEnsuring we can write to the data directory (using icacls) for ${LoggedInUser}:"
 $icaclsCommand = "$env:WINDIR\System32\icacls `"$DataDir`" /T /grant:r `"$LoggedInUser`:(OI)(CI)F`""
-DoCmd -Command "$icaclsCommand"
-if ($LASTEXITCODE -ne 0) {
+$iRet = DoCmd -Command "$icaclsCommand"
+if ($iRet -ne 0) {
     Write-Host "`nFailed to ensure the data directory is accessible ($DataDir)"
 }
 
 Write-Host "`nGranting full access to $OSUsername on $DataDir"
 $icaclsCommand = "$env:WINDIR\System32\icacls `"$DataDir`" /grant `"$OSUsername`:(OI)(CI)F`""
-DoCmd -Command "$icaclsCommand"
-if ($LASTEXITCODE -ne 0) {
+$iRet = DoCmd -Command "$icaclsCommand"
+if ($iRet -ne 0) {
     Write-Host "`nFailed to grant access to $OSUsername on $DataDir"
 }
 
 Write-Host "`nGranting full access to CREATOR OWNER on $DataDir"
 $icaclsCommand = "$env:WINDIR\System32\icacls `"$DataDir`" /grant `"*S-1-3-0:(OI)(CI)F`""
-DoCmd -Command "$icaclsCommand"
-if ($LASTEXITCODE -ne 0) {
+$iRet = DoCmd -Command "$icaclsCommand"
+if ($iRet -ne 0) {
     Write-Host "`nFailed to grant access to CREATOR OWNER on $DataDir"
 }
 
 Write-Host "`nGranting full access to SYSTEM on $DataDir"
 $icaclsCommand = "$env:WINDIR\System32\icacls `"$DataDir`" /grant `"*S-1-5-18:(OI)(CI)F`""
-DoCmd -Command "$icaclsCommand"
-if ($LASTEXITCODE -ne 0) {
+$iRet = DoCmd -Command "$icaclsCommand"
+if ($iRet -ne 0) {
     Write-Host "`nFailed to grant access to SYSTEM on $DataDir"
 }
 
 Write-Host "`nGranting full access to Administrators on $DataDir"
 $icaclsCommand = "$env:WINDIR\System32\icacls `"$DataDir`" /grant `"*S-1-5-32-544:(OI)(CI)F`""
-DoCmd -Command "$icaclsCommand"
-if ($LASTEXITCODE -ne 0) {
+$iRet = DoCmd -Command "$icaclsCommand"
+if ($iRet -ne 0) {
     Write-Host "`nFailed to grant access to Administrators on $DataDir"
 }
 
-# Run initdb
+# Get Locale Name from Locale
 # If the Locale is set to "DEFAULT", fetch the system's locale dynamically
 if ($Locale -eq "DEFAULT") {
 	$LocaleName = (Get-WinSystemLocale).Name
@@ -215,11 +240,18 @@ else {
 		$Locale = $Locale -replace ',\s*', ' (' -replace '$', ')'
 	}
 	$LocaleName = [System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.EnglishName -like "$Locale" } | Select-Object -ExpandProperty Name
-}	
+}
+
+# Create temporary password file
+$randomFileName = [System.IO.Path]::GetRandomFileName() -replace '\..*$', '.tmp'
+$passwordFile = Join-Path "$PasswordDir"  $randomFileName
+Set-Content -Path "$passwordFile" -Value $Password -Force
+
+# Run initdb
 $initdbCmd = "`"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$LocaleName`" --pwfile=`"$passwordFile`" --auth=scram-sha-256"
 Write-Host "`nInitializing PostgreSQL database cluster..."
-DoCmd -Command "$initdbCmd"
-if ($LASTEXITCODE -ne 0) {
+$iRet = DoCmd -Command "$initdbCmd"
+if ($iRet -ne 0) {
     Die "Failed to initialise the database cluster with initdb"
 }
 
@@ -264,8 +296,8 @@ AclCheck -DirectoryPath "$DataDir" -UserName $OSUsername -Index 1
 if ($boolCheckAcl) {
     Write-Host "`nGranting $OSUsername permissions on $InstallDir"
     $icaclsCommand = "$env:WINDIR\System32\icacls `"$InstallDir`" /T /grant:r `"$OSUsername`:(OI)(CI)(RX)`""
-    DoCmd -Command "$icaclsCommand"
-    if ($LASTEXITCODE -ne 0) {
+    $iRet = DoCmd -Command "$icaclsCommand"
+    if ($iRet -ne 0) {
         Write-Host "`nFailed to ensure the Install directory is accessible ($InstallDir)"
     }
 }
@@ -281,8 +313,8 @@ if (-not (Test-Path "$logDir")) {
 # Secure the data directory
 Write-Host "`nGranting service account access to the data directory (using icacls) to $OSUsername"
 $icaclsCommand = "$env:WINDIR\System32\icacls `"$DataDir`" /T /C /grant `"$OSUsername`:(OI)(CI)F`""
-DoCmd -Command "$icaclsCommand"
-if ($LASTEXITCODE -ne 0) {
+$iRet = DoCmd -Command "$icaclsCommand"
+if ($iRet -ne 0) {
     Write-Host "`nFailed to grant service account access to the data directory ($DataDir)"
 }
 
