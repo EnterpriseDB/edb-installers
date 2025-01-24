@@ -16,7 +16,7 @@ param (
 # Validate input arguments
 if (-not $OSUsername -or -not $SuperUsername -or -not $Password -or -not $PasswordDir -or -not $InstallDir -or -not $DataDir -or -not $Port -or -not $Locale -or -not $CheckACL) {
     Write-Host "Usage: initcluster.vbs <OSUsername> <SuperUsername> <Password> <PasswordDir> <Install dir> <Data dir> <Port> <Locale> <CheckACL>"
-	exit 1
+    exit 1
 }
 
 # Create a temporary batch file
@@ -44,7 +44,7 @@ function Warn {
 function DoCmd {
     param ([string]$Command)
 
-	$batchFile = Join-Path ([System.IO.Path]::GetTempPath()) $batchFileName
+    $batchFile = Join-Path ([System.IO.Path]::GetTempPath()) $batchFileName
     # Write command to the batch file
     Set-Content -Path $batchFile -Value "@ECHO OFF"
     Add-Content -Path $batchFile -Value "CHCP $([System.Text.Encoding]::Default.CodePage) > nul"
