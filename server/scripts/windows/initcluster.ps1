@@ -1,5 +1,5 @@
 # PowerShell Script for PostgreSQL Cluster Initialization
-# Copyright (c) 2012-2022, EnterpriseDB Corporation.  All rights reserved
+# Copyright (c) 2025, EnterpriseDB Corporation.  All rights reserved
 
 param (
     [string]$OSUsername,
@@ -161,7 +161,6 @@ if ($boolCheckAcl) {
     # Split the parent directory path into an array
     $arrDirs = $ParentOfDataDir.Split('\')
     $nDirs = $arrDirs.Length - 1
-    Write-Host "`nNumber of directories: $nDirs"
     
     $strThisDir = ""
     
@@ -239,7 +238,12 @@ else {
 		# String does not contain a parenthesis, transform it normally
 		$Locale = $Locale -replace ',\s*', ' (' -replace '$', ')'
 	}
+    # Get the BCP-47 code for locale
 	$LocaleName = [System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.EnglishName -like "$Locale" } | Select-Object -ExpandProperty Name
+}
+
+if (-not $LocaleName) {
+    Die "Failed to get the Locale Name in BCP-47 code"
 }
 
 # Create temporary password file
@@ -279,7 +283,6 @@ if ($boolCheckAcl) {
     # on the entire path leading to the data directory
     $arrDirs = $ParentOfDataDir.Split('\')
     $nDirs = $arrDirs.Length - 1
-    Write-Host "`nNumber of directories: $nDirs"
      
     $strThisDir = ""
       
