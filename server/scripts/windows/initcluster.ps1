@@ -225,21 +225,14 @@ if ($iRet -ne 0) {
 }
 
 # Get Locale Name from Locale
-# If the Locale is set to "DEFAULT", fetch the system's locale dynamically
+# fetch system's locale name in BCP-47 code dynamically
 if ($Locale -eq "DEFAULT") {
 	$LocaleName = (Get-WinSystemLocale).Name
 }
-# Convert "language, country" to "language (country)"
+# Fetch locale name in BCP-47 code for non-default locale
 else {
-	if ($Locale -match '\(') {
-		# String contains a parenthesis, move the closing parenthesis to the end
-		$Locale = $Locale -replace '\),\s*', ', ' -replace '$', ')' -replace '\(', ' ('
-	} else {
-		# String does not contain a parenthesis, transform it normally
-		$Locale = $Locale -replace ',\s*', ' (' -replace '$', ')'
-	}
-    # Get the BCP-47 code for locale
-	$LocaleName = [System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.EnglishName -like "$Locale" } | Select-Object -ExpandProperty Name
+	$Locale = $Locale -replace '[\s,()]', ''
+	$LocaleName = [System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { ($_.EnglishName -replace '[\s,()]', '') -like "$Locale" } | Select-Object -ExpandProperty Name
 }
 
 if (-not $LocaleName) {
