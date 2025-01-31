@@ -2029,13 +2029,13 @@
                 </runProgram>
 
                 <setInstallerVariableFromScriptOutput>
-                <name>choiceText</name>
-                <exec>cmd.exe</exec>
-                <execArgs>/c "${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -Command "[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object DisplayName | ForEach-Object { $_.Name + '=' + $_.DisplayName }"</execArgs>
-                <workingDirectory>${env(WINDIR)}\System32</workingDirectory>
-                <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
-                </ruleList>
+                    <name>choiceText</name>
+                    <exec>cmd.exe</exec>
+                    <execArgs>/c "${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -Command "[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object DisplayName | ForEach-Object { $_.Name + '=' + $_.DisplayName }"</execArgs>
+                    <workingDirectory>${env(WINDIR)}\System32</workingDirectory>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
                 </setInstallerVariableFromScriptOutput>
 
                 <throwError>
