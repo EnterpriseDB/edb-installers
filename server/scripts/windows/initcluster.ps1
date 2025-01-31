@@ -227,16 +227,7 @@ if ($iRet -ne 0) {
 # Get Locale Name from Locale
 # fetch system's locale name in BCP-47 code dynamically
 if ($Locale -eq "DEFAULT") {
-	$LocaleName = (Get-WinSystemLocale).Name
-}
-# Fetch locale name in BCP-47 code for non-default locale
-else {
-	$Locale = $Locale -replace '[\s,()]', ''
-	$LocaleName = [System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { ($_.EnglishName -replace '[\s,()]', '') -like "$Locale" } | Select-Object -ExpandProperty Name
-}
-
-if (-not $LocaleName) {
-    Die "Failed to get the Locale Name in BCP-47 code"
+	$Locale = (Get-WinSystemLocale).Name
 }
 
 # Create temporary password file
@@ -245,7 +236,7 @@ $passwordFile = Join-Path "$PasswordDir"  $randomFileName
 Set-Content -Path "$passwordFile" -Value $Password -Force
 
 # Run initdb
-$initdbCmd = "`"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$LocaleName`" --pwfile=`"$passwordFile`" --auth=scram-sha-256"
+$initdbCmd = "`"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$Locale`" --pwfile=`"$passwordFile`" --auth=scram-sha-256"
 Write-Host "`nInitializing PostgreSQL database cluster..."
 $iRet = DoCmd -Command "$initdbCmd"
 if ($iRet -ne 0) {
