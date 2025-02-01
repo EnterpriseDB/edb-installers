@@ -2028,15 +2028,26 @@
                     </ruleList>
                 </runProgram>
 
-                <setInstallerVariableFromScriptOutput>
-                    <name>choiceText</name>
-                    <exec>cmd.exe</exec>
-                    <execArgs>/c "${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -Command "[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object DisplayName | ForEach-Object { $_.Name + '=' + $_.DisplayName }"</execArgs>
-                    <workingDirectory>${env(WINDIR)}\System32</workingDirectory>
+                <setInstallerVariable>
+                    <name>localeCommand</name>
+                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath "${system_temp_directory}/locales.txt" -Encoding UTF8</value>
+                </setInstallerVariable>
+				
+				<runProgram>
+                    <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
+                    <programArguments>-ExecutionPolicy Bypass -Command "${localeCommand}"</programArguments>
+					<wrapInScript>1</wrapInScript>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
-                </setInstallerVariableFromScriptOutput>
+                </runProgram>
+				
+				<readFile>
+				    <name>choiceText</name>
+					<path>${system_temp_directory}\locales.txt</path>
+					<encoding>utf-8</encoding>
+				</readFile>
+				<deleteFile path="${system_temp_directory}\locales.txt"/>
 
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
@@ -2110,56 +2121,6 @@
                 </stringTest>
             </ruleList>
         </actionGroup>
-
-        <!-- Convert the locale value to something the choiceParameter will like -->
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxUSxx</substitution>
-            <name>locale</name>
-            <pattern>_</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxDOTxx</substitution>
-            <name>locale</name>
-            <pattern>\.</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxDASHxx</substitution>
-            <name>locale</name>
-            <pattern>-</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxATxx</substitution>
-            <name>locale</name>
-            <pattern>@</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxSPxx</substitution>
-            <name>locale</name>
-            <pattern>\s</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxOBxx</substitution>
-            <name>locale</name>
-            <pattern>\(</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-        <substitution>xxCBxx</substitution>
-            <name>locale</name>
-            <pattern>\)</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxCOMMAxx</substitution>
-            <name>locale</name>
-            <pattern>,</pattern>
-        </setInstallerVariableFromRegEx>
 
         <!-- In fresh installation, check the server port value provided on the command line -->
         <actionGroup>
