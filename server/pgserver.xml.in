@@ -2032,22 +2032,22 @@
                     <name>localeCommand</name>
                     <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath "${system_temp_directory}/locales.txt" -Encoding UTF8</value>
                 </setInstallerVariable>
-				
-				<runProgram>
+                
+                <runProgram>
                     <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
                     <programArguments>-ExecutionPolicy Bypass -Command "${localeCommand}"</programArguments>
-					<wrapInScript>1</wrapInScript>
+                    <wrapInScript>1</wrapInScript>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
-				
-				<readFile>
-				    <name>choiceText</name>
-					<path>${system_temp_directory}\locales.txt</path>
-					<encoding>utf-8</encoding>
-				</readFile>
-				<deleteFile path="${system_temp_directory}\locales.txt"/>
+                
+                <readFile>
+                    <name>choiceText</name>
+                    <path>${system_temp_directory}\locales.txt</path>
+                    <encoding>utf-8</encoding>
+                </readFile>
+                <deleteFile path="${system_temp_directory}\locales.txt"/>
 
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
