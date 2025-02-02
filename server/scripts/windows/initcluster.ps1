@@ -224,6 +224,11 @@ if ($iRet -ne 0) {
     Write-Host "`nFailed to grant access to Administrators on $DataDir"
 }
 
+# Create temporary password file
+$randomFileName = [System.IO.Path]::GetRandomFileName() -replace '\..*$', '.tmp'
+$passwordFile = Join-Path "$PasswordDir"  $randomFileName
+Set-Content -Path "$passwordFile" -Value $Password -Force
+
 # Set initdb command according to locale
 if ($Locale -eq "DEFAULT") {
 	$initdbCmd = "`"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --pwfile=`"$passwordFile`" --auth=scram-sha-256"
@@ -231,11 +236,6 @@ if ($Locale -eq "DEFAULT") {
 else {
     $initdbCmd = "`"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$Locale`" --pwfile=`"$passwordFile`" --auth=scram-sha-256"
 }
-
-# Create temporary password file
-$randomFileName = [System.IO.Path]::GetRandomFileName() -replace '\..*$', '.tmp'
-$passwordFile = Join-Path "$PasswordDir"  $randomFileName
-Set-Content -Path "$passwordFile" -Value $Password -Force
 
 # Run initdb
 Write-Host "`nInitializing PostgreSQL database cluster..."
