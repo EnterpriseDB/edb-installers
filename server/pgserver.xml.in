@@ -2028,9 +2028,10 @@
                     </ruleList>
                 </runProgram>
 
+                <!--Get the list of locales in the format BCP-47_Code=English_Name-->
                 <setInstallerVariable>
                     <name>localeCommand</name>
-                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath "${system_temp_directory}/locales.txt" -Encoding UTF8</value>
+                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath "${system_temp_directory}/postgresql_installer_${random_number}/locales.txt" -Encoding UTF8</value>
                 </setInstallerVariable>
                 
                 <runProgram>
@@ -2044,13 +2045,13 @@
                 
                 <readFile>
                     <name>program_stdout</name>
-                    <path>${system_temp_directory}\locales.txt</path>
+                    <path>${system_temp_directory}\postgresql_installer_${random_number}\locales.txt</path>
                     <encoding>utf-8</encoding>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </readFile>
-                <deleteFile path="${system_temp_directory}\locales.txt"/>
+                <deleteFile path="${system_temp_directory}\postgresql_installer_${random_number}\locales.txt"/>
 
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
@@ -2796,56 +2797,6 @@
                 <!-- Initialise the cluster if this is an installation -->
                 <actionGroup>
                     <actionList>
-                        <!-- Convert the locale into something understandable -->
-                        <setInstallerVariableFromRegEx>
-                            <text>${locale}</text>
-                            <substitution>_</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxUSxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution>.</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxDOTxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution>-</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxDASHxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution>@</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxATxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution></substitution>
-                            <name>reallocale</name>
-                            <pattern>xxSPxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution>(</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxOBxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution>)</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxCBxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution>,</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxCOMMAxx</pattern>
-                        </setInstallerVariableFromRegEx>
-
                         <!-- Initdb -->
                         <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}">
                             <ruleList>
