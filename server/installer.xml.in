@@ -131,6 +131,9 @@ EOF
                 <runProgram>
                     <program>${env(WINDIR)}\System32\whoami</program>
                      <programArguments>/USER /nh</programArguments>
+		     <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
                 </runProgram>
                 <setInstallerVariableFromRegEx>
                     <name>whoami_sid</name>
