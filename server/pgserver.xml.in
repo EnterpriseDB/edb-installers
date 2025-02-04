@@ -2043,9 +2043,12 @@
                 </runProgram>
                 
                 <readFile>
-                    <name>choiceText</name>
+                    <name>program_stdout</name>
                     <path>${system_temp_directory}\locales.txt</path>
                     <encoding>utf-8</encoding>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
                 </readFile>
                 <deleteFile path="${system_temp_directory}\locales.txt"/>
 
@@ -2061,7 +2064,7 @@
                 </throwError>
                 <addChoiceOptionsFromText>
                     <name>locale</name>
-                    <text>${choiceText}</text>
+                    <text>${program_stdout}</text>
                 </addChoiceOptionsFromText>
             </actionList>
             <ruleList>
@@ -2098,7 +2101,7 @@
                     <logic>does_not_equal</logic>
                 </compareText>
                 <compareText>
-                    <text>${choiceText}</text>
+                    <text>${program_stdout}</text>
                     <value>${locale}</value>
                     <logic>does_not_contain</logic>
                 </compareText>
