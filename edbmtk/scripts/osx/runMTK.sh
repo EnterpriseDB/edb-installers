@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 # --
-# -- Copyright (c) 2004-2022 - EnterpriseDB Corporation.  All Rights Reserved.
+# -- Copyright (c) 2004-2025 - EnterpriseDB Corporation.  All Rights Reserved.
 # --
 # ----------------------------------------------------------------------------
 
