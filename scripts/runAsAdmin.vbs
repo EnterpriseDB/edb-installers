@@ -1,4 +1,4 @@
-' Copyright (c) 2012, EnterpriseDB Corporation.  All rights reserved
+' Copyright (c) 2025, EnterpriseDB Corporation.  All rights reserved
 ' Postgres Plus installer script (extract-only mode) for windows
 
 'Initialization
