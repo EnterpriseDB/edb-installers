@@ -1481,20 +1481,6 @@
         </unpackFile>
         <unpackFile>
             <component>server</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales.exe</destination>
-            <folder>programfileswindows</folder>
-            <origin>installer/server/getlocales.exe</origin>
-            <ruleList>
-                <compareText>
-                    <logic>equals</logic>
-                    <text>${platform_name}</text>
-                    <value>windows</value>
-                </compareText>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </unpackFile>
-        <unpackFile>
-            <component>server</component>
             <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales</destination>
             <folder>programfilessolaris-x64</folder>
             <origin>installer/server/getlocales</origin>
@@ -2042,16 +2028,30 @@
                     </ruleList>
                 </runProgram>
 
+                <!--Get the list of locales in the format BCP-47_Code=English_Name-->
+                <setInstallerVariable>
+                    <name>localeCommand</name>
+                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath "${system_temp_directory}/postgresql_installer_${random_number}/locales.txt" -Encoding UTF8</value>
+                </setInstallerVariable>
+                
                 <runProgram>
-                    <program>${system_temp_directory}\postgresql_installer_${random_number}\getlocales.exe</program>
+                    <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
+                    <programArguments>-ExecutionPolicy Bypass -Command "${localeCommand}"</programArguments>
+                    <wrapInScript>1</wrapInScript>
                     <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
+                
+                <readFile>
+                    <name>program_stdout</name>
+                    <path>${system_temp_directory}\postgresql_installer_${random_number}\locales.txt</path>
+                    <encoding>utf-8</encoding>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </readFile>
+                <deleteFile path="${system_temp_directory}\postgresql_installer_${random_number}\locales.txt"/>
 
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
@@ -2125,56 +2125,6 @@
                 </stringTest>
             </ruleList>
         </actionGroup>
-
-        <!-- Convert the locale value to something the choiceParameter will like -->
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxUSxx</substitution>
-            <name>locale</name>
-            <pattern>_</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxDOTxx</substitution>
-            <name>locale</name>
-            <pattern>\.</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxDASHxx</substitution>
-            <name>locale</name>
-            <pattern>-</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxATxx</substitution>
-            <name>locale</name>
-            <pattern>@</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxSPxx</substitution>
-            <name>locale</name>
-            <pattern>\s</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxOBxx</substitution>
-            <name>locale</name>
-            <pattern>\(</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-        <substitution>xxCBxx</substitution>
-            <name>locale</name>
-            <pattern>\)</pattern>
-        </setInstallerVariableFromRegEx>
-        <setInstallerVariableFromRegEx>
-            <text>${locale}</text>
-            <substitution>xxCOMMAxx</substitution>
-            <name>locale</name>
-            <pattern>,</pattern>
-        </setInstallerVariableFromRegEx>
 
         <!-- In fresh installation, check the server port value provided on the command line -->
         <actionGroup>
@@ -2833,56 +2783,6 @@
                 <!-- Initialise the cluster if this is an installation -->
                 <actionGroup>
                     <actionList>
-                        <!-- Convert the locale into something understandable -->
-                        <setInstallerVariableFromRegEx>
-                            <text>${locale}</text>
-                            <substitution>_</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxUSxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution>.</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxDOTxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution>-</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxDASHxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution>@</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxATxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution></substitution>
-                            <name>reallocale</name>
-                            <pattern>xxSPxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution>(</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxOBxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution>)</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxCBxx</pattern>
-                        </setInstallerVariableFromRegEx>
-                        <setInstallerVariableFromRegEx>
-                            <text>${reallocale}</text>
-                            <substitution>,</substitution>
-                            <name>reallocale</name>
-                            <pattern>xxCOMMAxx</pattern>
-                        </setInstallerVariableFromRegEx>
-
                         <!-- Initdb -->
                         <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}">
                             <ruleList>
