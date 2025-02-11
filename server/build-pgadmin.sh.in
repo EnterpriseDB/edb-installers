@@ -112,7 +112,7 @@ _build_runtime() {
          ELECTRON_ARCH="arm64"
          fi
 
-        set ELECTRON_VERSION="33.3.2"
+        ELECTRON_VERSION="33.3.2"
         if [ "${ELECTRON_VERSION}" -eq "" ]; then
                echo "ELECTRON_VERSION variable value is NULL"
                exit 1
