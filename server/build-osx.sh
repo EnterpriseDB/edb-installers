@@ -143,8 +143,6 @@ _prep_server_osx() {
     _replace SOURCE_DIR= "SOURCE_DIR=${PG_PATH_OSX}/server/source/pgadmin.osx" $WD/server/build-pgadmin.sh || _die "Failed to replace PGADMIN_SRC_DIR in build-pgadmin.sh"
     _replace PGADMIN_PYTHON_DIR= "PGADMIN_PYTHON_DIR=${PGADMIN_PYTHON_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace PGADMIN_PYTHON_OSX in build-pgadmin.sh"
     _replace PGBUILD= "PGBUILD=${PG_STAGING}" $WD/server/build-pgadmin.sh $WD/server/build-pgadmin.sh || _die "Failed to replace PGBUILD in build-pgadmin.sh"
-    _replace YARN_HOME= "YARN_HOME=${YARN_HOME_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace YARN_HOME in build-pgadmin.sh"
-    _replace NODEJS_HOME= "NODEJS_HOME=${NODEJS_HOME_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace NODEJS_HOME in build-pgadmin.sh"
     chmod 755 $WD/server/build-pgadmin.sh
 
     echo "Creating staging_cache directory on remote server"
