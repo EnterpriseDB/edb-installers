@@ -43,10 +43,10 @@ _create_python_env() {
 		"${BUILD_ROOT}/relocatable_python/make_relocatable_python_framework.py" \
 		--python-version ${PGADMIN_PYTHON_VERSION} \
 		--os-version=11 \
-		--pip-requirements "${SOURCE_DIR}/requirements.txt" \
 		--destination "${BUNDLE_DIR}/Contents/Frameworks/"
 
 	"${BUNDLE_DIR}/Contents/Frameworks/Python.framework/Versions/Current/bin/python3" -m ensurepip --upgrade || exit 1
+        "${BUNDLE_DIR}/Contents/Frameworks/Python.framework/Versions/Current/bin/pip3" cache remove psycopg*
 	"${BUNDLE_DIR}/Contents/Frameworks/Python.framework/Versions/Current/bin/pip3" install -r "${SOURCE_DIR}/requirements.txt" || exit 1
 
 	# Make sure all the .so's in the Python env have the executable bit set
@@ -115,7 +115,7 @@ _build_runtime() {
          ELECTRON_ARCH="arm64"
          fi
 
-	 ELECTRON_VERSION="32.2.0"
+	 ELECTRON_VERSION="33.3.2"
 	if [ "${ELECTRON_VERSION}" -eq "" ]; then
 		echo "ELECTRON_VERSION variable value is NULL"
 		exit 1
