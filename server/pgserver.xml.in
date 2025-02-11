@@ -2126,6 +2126,63 @@
             </ruleList>
         </actionGroup>
 
+        <!-- Convert the locale value to something the choiceParameter will like -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariableFromRegEx>
+                    <text>${locale}</text>
+                    <substitution>xxUSxx</substitution>
+                    <name>locale</name>
+                    <pattern>_</pattern>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${locale}</text>
+                    <substitution>xxDOTxx</substitution>
+                    <name>locale</name>
+                    <pattern>\.</pattern>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${locale}</text>
+                    <substitution>xxDASHxx</substitution>
+                    <name>locale</name>
+                    <pattern>-</pattern>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${locale}</text>
+                    <substitution>xxATxx</substitution>
+                    <name>locale</name>
+                    <pattern>@</pattern>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${locale}</text>
+                    <substitution>xxSPxx</substitution>
+                    <name>locale</name>
+                    <pattern>\s</pattern>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${locale}</text>
+                    <substitution>xxOBxx</substitution>
+                    <name>locale</name>
+                    <pattern>\(</pattern>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${locale}</text>
+                    <substitution>xxCBxx</substitution>
+                    <name>locale</name>
+                    <pattern>\)</pattern>
+                </setInstallerVariableFromRegEx>
+                <setInstallerVariableFromRegEx>
+                    <text>${locale}</text>
+                    <substitution>xxCOMMAxx</substitution>
+                    <name>locale</name>
+                    <pattern>,</pattern>
+                </setInstallerVariableFromRegEx>
+            </actionList>
+            <ruleList>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+            </ruleList>
+        </actionGroup>
+
         <!-- In fresh installation, check the server port value provided on the command line -->
         <actionGroup>
             <actionList>
@@ -2795,6 +2852,62 @@
 
 
                 <!-- Initialise the cluster if this is an installation -->
+                <actionGroup>
+                    <actionList>
+                        <!-- Convert the locale into something understandable -->
+                        <setInstallerVariableFromRegEx>
+                            <text>${locale}</text>
+                            <substitution>_</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxUSxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution>.</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxDOTxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution>-</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxDASHxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution>@</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxATxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution></substitution>
+                            <name>reallocale</name>
+                            <pattern>xxSPxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution>(</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxOBxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution>)</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxCBxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                        <setInstallerVariableFromRegEx>
+                            <text>${reallocale}</text>
+                            <substitution>,</substitution>
+                            <name>reallocale</name>
+                            <pattern>xxCOMMAxx</pattern>
+                        </setInstallerVariableFromRegEx>
+                    </actionList>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </actionGroup>    
                 <actionGroup>
                     <actionList>
                         <!-- Initdb -->
