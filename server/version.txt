@@ -5,5 +5,5 @@ pgadmin4=9.0
 python=3.12.9
 perl=5.40.0.1
 pkg-config=0.28-1
-tcl=8.6.15
+tcl=8.6.16
 stackbuilder=4.2.2
