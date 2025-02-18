@@ -45,7 +45,7 @@ function DoCmd {
     param ([string]$Command)
 
     $scriptFile = Join-Path ([System.IO.Path]::GetTempPath()) $scriptFileName
-	$fullCommand = "$Command | Out-File -FilePath `"$outputFile`" -Encoding UTF8"
+    $fullCommand = "$Command | Out-File -FilePath `"$outputFile`" -Encoding UTF8"
 
     # Write command to the script file
     $utf8BOM = New-Object System.Text.UTF8Encoding $true
