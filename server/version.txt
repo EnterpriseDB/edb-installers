@@ -1,5 +1,5 @@
 pg_major_version=15
-pg_minor_version=11
+pg_minor_version=12
 package_revision=1
 pgadmin4=9.0
 languagepack=3.6-1
