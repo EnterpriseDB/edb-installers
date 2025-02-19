@@ -49,7 +49,7 @@ function DoCmd {
 
     # Write command to the script file
     $utf8BOM = New-Object System.Text.UTF8Encoding $true
-    [System.IO.File]::WriteAllText($scriptFile, $fullCommand, $utf8BOM
+    [System.IO.File]::WriteAllText($scriptFile, $fullCommand, $utf8BOM)
 
     Write-Host "Executing script file '$scriptFileName'..."
     
