@@ -2031,7 +2031,7 @@
                 <!--Get the list of locales in the format BCP-47_Code=English_Name-->
                 <setInstallerVariable>
                     <name>localeCommand</name>
-                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath \"${system_temp_directory}/postgresql_installer_${random_number}/locales.txt\" -Encoding UTF8</value>
+                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath \"${env(TEMP)}/postgresql_installer_${random_number}/locales.txt\" -Encoding UTF8</value>
                 </setInstallerVariable>
                 
                 <runProgram>
@@ -2045,13 +2045,13 @@
                 
                 <readFile>
                     <name>program_stdout</name>
-                    <path>${system_temp_directory}\postgresql_installer_${random_number}\locales.txt</path>
+                    <path>${env(TEMP)}\postgresql_installer_${random_number}\locales.txt</path>
                     <encoding>utf-8</encoding>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </readFile>
-                <deleteFile path="${system_temp_directory}\postgresql_installer_${random_number}\locales.txt"/>
+                <deleteFile path="${env(TEMP)}\postgresql_installer_${random_number}\locales.txt"/>
 
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
@@ -2920,7 +2920,7 @@
 
                         <runProgram>
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
-                            <programArguments>/c "${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -File "${installdir}/installer/server/initcluster.ps1" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${system_temp_directory}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
+                            <programArguments>/c "${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -File "${installdir}/installer/server/initcluster.ps1" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${env(TEMP)}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
