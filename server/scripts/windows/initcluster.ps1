@@ -15,12 +15,12 @@ param (
 
 # Validate input arguments
 if (-not $OSUsername -or -not $SuperUsername -or -not $Password -or -not $PasswordDir -or -not $InstallDir -or -not $DataDir -or -not $Port -or -not $Locale -or -not $CheckACL) {
-    Write-Host "Usage: initcluster.vbs <OSUsername> <SuperUsername> <Password> <PasswordDir> <Install dir> <Data dir> <Port> <Locale> <CheckACL>"
+    Write-Host "Usage: initcluster.ps1 <OSUsername> <SuperUsername> <Password> <PasswordDir> <Install dir> <Data dir> <Port> <Locale> <CheckACL>"
     exit 1
 }
 
-# Create a temporary batch file
-$batchFileName = [System.IO.Path]::GetRandomFileName() -replace '\..*$', '.bat'
+# Create a temporary script file
+$scriptFileName = [System.IO.Path]::GetRandomFileName() -replace '\..*$', '.ps1'
 $outputFile = [System.IO.Path]::GetTempFileName()
 	
 # Function to log and terminate the script with an error message
@@ -44,17 +44,17 @@ function Warn {
 function DoCmd {
     param ([string]$Command)
 
-    $batchFile = Join-Path ([System.IO.Path]::GetTempPath()) $batchFileName
-    # Write command to the batch file
-    Set-Content -Path $batchFile -Value "@ECHO OFF"
-    Add-Content -Path $batchFile -Value "CHCP $([System.Text.Encoding]::Default.CodePage) > nul"
-    Add-Content -Path $batchFile -Value "$Command > `"$outputFile`" 2>&1"
-    Add-Content -Path $batchFile -Value "EXIT /B %ERRORLEVEL%"
+    $scriptFile = Join-Path ([System.IO.Path]::GetTempPath()) $scriptFileName
+    $fullCommand = "$Command | Out-File -FilePath `"$outputFile`" -Encoding UTF8"
 
-    Write-Host "Executing batch file '$batchFileName'..."
+    # Write command to the script file
+    $utf8BOM = New-Object System.Text.UTF8Encoding $true
+    [System.IO.File]::WriteAllText($scriptFile, $fullCommand, $utf8BOM)
+
+    Write-Host "Executing script file '$scriptFileName'..."
     
-    # Execute the batch file
-    $process = Start-Process -FilePath "$env:WINDIR\System32\cmd.exe" -ArgumentList "/c `"$batchFile`"" -NoNewWindow -Wait -PassThru
+    # Execute the script file
+    $process = Start-Process -FilePath "$env:WINDIR\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `"$scriptFile`"" -NoNewWindow -Wait -PassThru
     $exitCode = $process.ExitCode
 
     # Display output file content if exists
@@ -66,10 +66,10 @@ function DoCmd {
     }
 
     # Cleanup
-    if (Test-Path $batchFile) {
-        Remove-Item $batchFile -Force
+    if (Test-Path $scriptFile) {
+        Remove-Item $scriptFile -Force
     } else {
-        Write-Host "Batch file '$batchFileName' does not exist..."
+        Write-Host "Script file '$scriptFileName' does not exist..."
     }
 
     return $exitCode
@@ -235,7 +235,7 @@ $passwordFile = Join-Path "$PasswordDir"  $randomFileName
 Set-Content -Path "$passwordFile" -Value $Password -Force
 
 # Set initdb command to be executed
-$initdbCmd = "`"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$Locale`" --pwfile=`"$passwordFile`" --auth=scram-sha-256"
+$initdbCmd = "& `"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$Locale`" --pwfile=`"$passwordFile`" --auth=scram-sha-256"
 
 # Run initdb
 Write-Host "`nInitializing PostgreSQL database cluster..."
