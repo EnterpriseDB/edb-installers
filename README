@@ -104,7 +104,7 @@ build and install these packages into /usr/local/
 
 - Configure the source with a command such as:
 
-CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch i386 -arch x86_64 -arch ppc" LDFLAGS="-arch i386 -arch ppc -arch x86_64" ./configure --prefix=/usr/local/ --disable-dependency-tracking
+CFLAGS="-mmacosx-version-min=10.5 -arch i386 -arch x86_64 -arch ppc" LDFLAGS="-arch i386 -arch ppc -arch x86_64" PG_SYSROOT="/Developer/SDKs/MacOSX10.5.sdk" ./configure --prefix=/usr/local/ --disable-dependency-tracking
 
 - Build and install:
 
