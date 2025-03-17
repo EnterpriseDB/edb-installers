@@ -30,15 +30,15 @@ _prep_pgAgent() {
     cd $WD/pgAgent/source
 
     # pgAgent
-    if [ -e pgAgent-$PG_VERSION_PGAGENT-Source ];
+    if [ -e pgagent-pgagent-$PG_VERSION_PGAGENT ];
     then
-      echo "Removing existing pgAgent-$PG_VERSION_PGAGENT-Source source directory"
-      rm -rf pgAgent-$PG_VERSION_PGAGENT-Source  || _die "Couldn't remove the existing pgAgent-$PG_VERSION_PGAGENT-Source source directory (source/pgAgent-$PG_VERSION_PGAGENT-Source)"
+      echo "Removing existing pgagent-pgagent-$PG_VERSION_PGAGENT source directory"
+      rm -rf pgagent-pgagent-$PG_VERSION_PGAGENT  || _die "Couldn't remove the existing pgagent-pgagent-$PG_VERSION_PGAGENT source directory (source/pgagent-pgagent-$PG_VERSION_PGAGENT)"
     fi
 
     echo "Unpacking pgAgent source..."
-    extract_file  ../../tarballs/pgAgent-$PG_VERSION_PGAGENT-Source 
-    cd pgAgent-$PG_VERSION_PGAGENT-Source
+    extract_file  ../../tarballs/pgagent-$PG_VERSION_PGAGENT 
+    #cd pgAgent-$PG_VERSION_PGAGENT-Source
     #patch -p1 < $WD/tarballs/pgAgent-Lion.patch # This is not required to build pgAgent3.3.0. Hence, commenting this.
     
     # Per-platform prep
