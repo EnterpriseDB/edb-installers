@@ -30,15 +30,14 @@ _prep_pgAgent() {
     cd $WD/pgAgent/source
 
     # pgAgent
-    if [ -e pgggent-$PG_VERSION_PGAGENT ];
+    if [ -e pgagent-pgagent-$PG_VERSION_PGAGENT ];
     then
-      echo "Removing existing pgagent-$PG_VERSION_PGAGENT source directory"
-      rm -rf pgagent-$PG_VERSION_PGAGENT  || _die "Couldn't remove the existing pgagent-$PG_VERSION_PGAGENT source directory (source/pgagent-$PG_VERSION_PGAGENT)"
+      echo "Removing existing pgagent-pgagent-$PG_VERSION_PGAGENT source directory"
+      rm -rf pgagent-pgagent-$PG_VERSION_PGAGENT  || _die "Couldn't remove the existing pgagent-pgagent-$PG_VERSION_PGAGENT source directory (source/pgagent-pgagent-$PG_VERSION_PGAGENT)"
     fi
 
     echo "Unpacking pgAgent source..."
     extract_file  ../../tarballs/pgagent-$PG_VERSION_PGAGENT
-    cd pgagent-$PG_VERSION_PGAGENT
     
     # Per-platform prep
     cd $WD
