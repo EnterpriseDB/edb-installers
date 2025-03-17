@@ -37,8 +37,8 @@ _prep_pgAgent() {
     fi
 
     echo "Unpacking pgAgent source..."
-    extract_file  ../../tarballs/pgagent-$PG_VERSION_PGAGENT
-    cd pgagent-$PG_VERSION_PGAGENT
+    extract_file  ../../tarballs/pgagent-pgagent-$PG_VERSION_PGAGENT
+    cd pgagent-pgagent-$PG_VERSION_PGAGENT
     
     # Per-platform prep
     cd $WD
