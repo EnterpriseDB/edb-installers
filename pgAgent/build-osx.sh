@@ -26,7 +26,7 @@ _prep_pgAgent_osx() {
     mkdir -p $WD/pgAgent/source/pgAgent.osx || _die "Couldn't create the pgAgent.osx directory"
 	
     # Grab a copy of the source tree
-    cp -R pgAgent-$PG_VERSION_PGAGENT-Source/* pgAgent.osx || _die "Failed to copy the source code (source/pgAgent-$PG_VERSION_PGAGENT)"
+    cp -R pgagent-pgagent-$PG_VERSION_PGAGENT/* pgAgent.osx || _die "Failed to copy the source code (source/pgagent-pgagent-$PG_VERSION_PGAGENT)"
     tar -jcvf pgagent.tar.bz2 pgAgent.osx
 
     # Remove any existing staging directory that might exist, and create a clean one
@@ -92,7 +92,7 @@ cat <<EOT-PGAGENT > $WD/pgAgent/build-pgagent.sh
 
     echo "Building pgAgent sources"
     cd \$SOURCE_DIR
-    BOOST_ROOT=/opt/local/Current/boost PGDIR=$PG_PGHOME_OSX /opt/local/bin/cmake -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${MACOSX_MIN_VERSION}  -DCMAKE_INSTALL_PREFIX=\$PG_STAGING/pgAgent -DSTATIC_BUILD=NO -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CFLAGS='$PG_ARCH_OSX_CFLAGS  -arch x86_64 -O2' CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
+    BOOST_ROOT=/opt/local/Current/boost PGDIR=$PG_PGHOME_OSX $PG_CMAKE_OSX -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${MACOSX_MIN_VERSION}  -DCMAKE_INSTALL_PREFIX=\$PG_STAGING/pgAgent -DSTATIC_BUILD=NO -D CMAKE_OSX_SYSROOT:FILEPATH=$SDK_PATH -D CFLAGS='$PG_ARCH_OSX_CFLAGS  -arch x86_64 -O2' CMakeLists.txt || _die "Couldn't configure the pgAgent sources"
     echo "Compiling pgAgent"
     cd \$SOURCE_DIR
     make || _die "Couldn't compile the pgAgent sources"
