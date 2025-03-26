@@ -37,17 +37,14 @@ is show below.
 ; HKEY_CURRENT_USER\Software on Windows
 [PostgreSQL\17.4]
 Version=17.4
-InstallationDirectory=C:/Program Files/PostgreSQL/17.4
-DataDirectory=C:/Program Files//PostgreSQL/17.4/data
+InstallationDirectory=C:\Program Files\PostgreSQL\17
+DataDirectory=C:\Program Files\PostgreSQL\17\data
 Port=5432
 Superuser=postgres
 
-[PostGIS__3_PG83]
-Version=1.3.2
-
 [pgAdmin4]
 Version=9.0
-InstallationDirectory=/opt/pgAdmin3
+InstallationDirectory=C:\Program Files\PostgreSQL\17\pgAdmin 4
 
 It is up to the uninstaller for each package to leave or clean the data during 
 uninstallation. The version number for a package should *always* be
@@ -65,10 +62,8 @@ lack of reference counting between packages) or desirable to remove everything.
 Build platform
 --------------
 
-The build platform is Mac OS X Snow Leopard. We use OS X because it allows us to run
-all other Intel based OS's on the same machine. All other supported platforms
-are run in VMWare Fusion virtual machines, with the exception of Solaris Sparc
-which obviously must be an external machine. The supported platforms can be set
+The build platform is Mac OS X Sonoma. We use OS X because it allows us to run
+all other Intel based OS's on the same machine. The supported platforms can be set
 as external machines if required by exposing nfs shares from mac.
 
 A number of additional dependencies are required when setting up the system,
@@ -222,10 +217,6 @@ ssh-keygen -t rsa
 
 Copy the resulting id_rsa.pub file to ~/.ssh/authorized_keys on each VM. 
 
-* Linux/Linux-x64
-- Install chrpath utility in order to change the rpath of the installed PostgreSQL binaries in the staging directory.
-  Use the following command to install the chrpath:
-  * yum install chrpath
 
 * Windows
 
@@ -281,7 +272,7 @@ Build Machines as external machines
 -----------------------------------
 In order to set build machines as external machines, Create NFS share pointing to 
 top level 'pginstaller' directory on Mac. For this purpose free tool 'NFS Manager' 
-can be used. On linux side, update /etc/fstab to create nfs mount to this NFS share. 
+can be used.
 
 Build scripts
 -------------
@@ -404,67 +395,6 @@ Additional configuration in the VM's :
       >make
       >sudo make install
 
-* Adding gd module to php in linux
-
-   * Prequisites: (linux/linux-x64)
-
-       1) yum install freetype
-       2) yum install libpng
-         (libjpeg.so should also be present in /usr/lib and /usr/lib64 for linux and linux-x64 respectively)
-
-* Install the latest version of ActiveState Python, Perl & TCL/Tk on all
-  the platforms.
-* Install SPHINX for generating documentation for generating documentations for
-  pgAdmin3.
-  i.e. <PYTHONHOME>/bin/easy_install Sphinx
-       For ActiveState Python 2.6, the PYTHONHOME is '/opt/ActivePython-2.6'
-       For ActiveState Python 3.2, the PYTHONHOME is '/opt/ActivePython-3.2'
-  NOTE: Install the SPHINX as the root user.
-
-Trouble-Shooting:
-* I got this error for ActivePython-3.2 on linux/linux-x64
-    -----------------------------------------------------------------
-      /opt/ActivePython-3.2/bin/python3.2
-    ActivePython 3.2.2.3 (ActiveState Software Inc.) based on
-    Python 3.2.2 (default, Sep  8 2011, 12:20:28) 
-    [GCC 4.0.2 20051125 (Red Hat 4.0.2-8)] on linux2
-    Type "help", "copyright", "credits" or "license" for more information.
-    >>> import hashlib;
-    ERROR:root:code for hash md5 was not found.
-    Traceback (most recent call last):
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 141, in <module>
-        globals()[__func_name] = __get_hash(__func_name)
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 91, in
-    __get_builtin_constructor
-        raise ValueError('unsupported hash type %s' % name)
-    ValueError: unsupported hash type md5
-    ERROR:root:code for hash sha1 was not found.
-    Traceback (most recent call last):
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 141, in <module>
-        globals()[__func_name] = __get_hash(__func_name)
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 91, in
-    __get_builtin_constructor
-        raise ValueError('unsupported hash type %s' % name)
-    ValueError: unsupported hash type sha1
-    ERROR:root:code for hash sha224 was not found.
-    Traceback (most recent call last):
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 141, in <module>
-        globals()[__func_name] = __get_hash(__func_name)
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 91, in
-    __get_builtin_constructor
-        raise ValueError('unsupported hash type %s' % name)
-    ValueError: unsupported hash type sha224
-    ERROR:root:code for hash sha256 was not found.
-    Traceback (most recent call last):
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 141, in <module>
-        globals()[__func_name] = __get_hash(__func_name)
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 91, in
-    __get_builtin_constructor
-        raise ValueError('unsupported hash type %s' % name)
-    -----------------------------------------------------------------
-  In order to resolve the issue, I had to run the following command as 'root'
-  user.
-  chcon -t texrel_shlib_t /opt/ActivePython-3.2/lib/python3.2/lib-dynload/_hashlib.cpython-32m.so
 
 Further info
 ------------
