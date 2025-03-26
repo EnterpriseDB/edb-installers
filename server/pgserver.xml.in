@@ -2031,7 +2031,7 @@
                 <!--Get the list of locales in the format BCP-47_Code=English_Name-->
                 <setInstallerVariable>
                     <name>localeCommand</name>
-                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath \"${env(TEMP)}/postgresql_installer_${random_number}/locales.txt\" -Encoding UTF8</value>
+                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath ([System.IO.Path]::Combine($env:TEMP, 'postgresql_installer_${random_number}', 'locales.txt')) -Encoding UTF8</value>
                 </setInstallerVariable>
                 
                 <runProgram>
