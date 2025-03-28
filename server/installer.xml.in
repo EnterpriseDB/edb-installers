@@ -1313,7 +1313,7 @@ EOF
                 <deleteFile path="${installdir}${slash}include${slash}/unicode${slash}._*.h" />
                 <deleteFile path="${installdir}${slash}include${slash}/openssl${slash}._*.h" />
                 <deleteFile path="${installdir}${slash}include${slash}._*.h" />
-                <deleteFile path="${installdir}${slash}share" />
+                <deleteFile path="${installdir}${slash}share${slash}._*" />
             </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="contains" value="windows" />
