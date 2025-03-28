@@ -2028,10 +2028,25 @@
                     </ruleList>
                 </runProgram>
 
-                <!--Get the list of locales in the format BCP-47_Code=English_Name-->
+                <!--This PowerShell command retrieves the list of all available locales on the system 
+                    and saves them in a text file for use during PostgreSQL installation.  
+
+                    Steps:
+                    1. Get all available cultures (languages/locales) using [System.Globalization.CultureInfo]::GetCultures.
+                    2. Filter out the "Invariant Culture" (LCID = 127), as it is not a valid locale.
+                    3. Sort the locales by their English names for easier readability.
+                    4. Format each locale as "BCP-47_Code=English_Name" (e.g., "en-US=English (United States)").
+                    5. Save the output to a temporary file inside the system's TEMP directory.
+    
+                    Notes:
+                    - [System.IO.Path]::Combine ensures the path is correctly formatted, even if it contains spaces or non-ASCII characters.
+                    - The output file will be stored in:  
+                        C:\Users\<User>\AppData\Local\Temp\postgresql_installer_<random_number>\locales.txt
+                    - This file is later used by the installer to determine available system locales.
+                -->
                 <setInstallerVariable>
                     <name>localeCommand</name>
-                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath \"${env(TEMP)}/postgresql_installer_${random_number}/locales.txt\" -Encoding UTF8</value>
+                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath ([System.IO.Path]::Combine($env:TEMP, 'postgresql_installer_${random_number}', 'locales.txt')) -Encoding UTF8</value>
                 </setInstallerVariable>
                 
                 <runProgram>
