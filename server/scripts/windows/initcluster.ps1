@@ -183,7 +183,7 @@ AclCheck -DirectoryPath "$DataDir" -UserName $LoggedInUserName -UserSid $LoggedI
 # If ACL check is enabled, grant permissions on the install directory
 if ($boolCheckAcl) {
     Write-Host "`nGranting the $LoggedInUserName permissions on $InstallDir"
-    $icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$InstallDir`" /T /grant:r `"$LoggedInUser`:(OI)(CI)(RX)`""
+    $icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$InstallDir`" /T /grant:r `"*$LoggedInUser`:(OI)(CI)(RX)`""
     $iRet = DoCmd -Command "$icaclsCommand"
     if ($iRet -ne 0) {
         Write-Host "`nFailed to ensure the Install directory is accessible ($InstallDir)"
