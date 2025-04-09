@@ -226,18 +226,18 @@ if ($iRet -ne 0) {
     Write-Host "`nFailed to grant access to Administrators on $DataDir"
 }
 
-# fetch system's locale name in BCP-47 code dynamically
-if ($Locale -eq "DEFAULT") {
-	$Locale = (Get-WinSystemLocale).Name
-}
-
 # Create temporary password file
 $randomFileName = ($([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".tmp"
 $passwordFile = Join-Path "$PasswordDir"  $randomFileName
 Set-Content -Path "$passwordFile" -Value $Password -Force
 
 # Set initdb command to be executed
-$initdbCmd = "& `"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$Locale`" --pwfile=`"$passwordFile`" --auth=scram-sha-256"
+if ($Locale -eq "DEFAULT") {
+    $initdbCmd = "& `"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --pwfile=`"$passwordFile`" --auth=scram-sha-256"
+}
+else {
+    $initdbCmd = "& `"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$Locale`" --pwfile=`"$passwordFile`" --auth=scram-sha-256"
+}
 
 # Run initdb
 Write-Host "`nInitializing PostgreSQL database cluster..."

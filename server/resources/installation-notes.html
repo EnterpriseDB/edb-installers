@@ -57,6 +57,15 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <p>PostgreSQL Server 17 is compiled with ICU 67.x. The server versions upto v12 used either ICU 53.x or  57.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes.</p>
 
+<h3>Important Note with regards to locale names</h3>
+
+<p>Starting from PostgreSQL versions 17.4, 16.8, 15.12, 14.17, and 13.20, the Windows installers support specifying locale names in two formats:</p>
+
+<ul>
+  <li>Standard BCP-47 locale names (e.g., en-US, fr-FR). Recommeded, if the locale name contains non-ASCII characters (such as accented characters or regional scripts) </li>
+  <li>Long English locale names (e.g., English_United States, French_France) </li>
+</ul>
+
 <h3>Technical Support</h3>
 
 <p>Issues using the installer can be reported to installer GitHub page at <a href="https://github.com/EnterpriseDB/edb-installers/issues">https://github.com/EnterpriseDB/edb-installers/issues</a></p>  
