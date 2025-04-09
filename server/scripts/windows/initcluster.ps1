@@ -4,6 +4,7 @@
 param (
     [string]$OSUsername,
     [string]$SuperUsername,
+    [string]$LoggedInUser,
     [string]$Password,
     [string]$PasswordDir,
     [string]$InstallDir,
@@ -14,15 +15,15 @@ param (
 )
 
 # Validate input arguments
-if (-not $OSUsername -or -not $SuperUsername -or -not $Password -or -not $PasswordDir -or -not $InstallDir -or -not $DataDir -or -not $Port -or -not $Locale -or -not $CheckACL) {
+if (-not $OSUsername -or -not $SuperUsername -or -not $LoggedInUser -or -not $Password -or -not $PasswordDir -or -not $InstallDir -or -not $DataDir -or -not $Port -or -not $Locale -or -not $CheckACL) {
     Write-Host "Usage: initcluster.ps1 <OSUsername> <SuperUsername> <Password> <PasswordDir> <Install dir> <Data dir> <Port> <Locale> <CheckACL>"
     exit 1
 }
 
 # Create a temporary script file
-$scriptFileName = [System.IO.Path]::GetRandomFileName() -replace '\..*$', '.ps1'
-$outputFile = [System.IO.Path]::GetTempFileName()
-	
+$scriptFileName = ($([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".ps1"
+$outputFile = New-TemporaryFile
+
 # Function to log and terminate the script with an error message
 function Die {
     param ([string]$Message)
@@ -44,15 +45,14 @@ function Warn {
 function DoCmd {
     param ([string]$Command)
 
-    $scriptFile = Join-Path ([System.IO.Path]::GetTempPath()) $scriptFileName
+    $scriptFile = Join-Path $env:TEMP $scriptFileName
     $fullCommand = "$Command | Out-File -FilePath `"$outputFile`" -Encoding UTF8"
 
     # Write command to the script file
-    $utf8BOM = New-Object System.Text.UTF8Encoding $true
-    [System.IO.File]::WriteAllText($scriptFile, $fullCommand, $utf8BOM)
+    Set-Content -Path $scriptFile -Value $fullCommand -Encoding UTF8
 
     Write-Host "Executing script file '$scriptFileName'..."
-    
+
     # Execute the script file
     $process = Start-Process -FilePath "$env:WINDIR\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `"$scriptFile`"" -NoNewWindow -Wait -PassThru
     $exitCode = $process.ExitCode
@@ -82,13 +82,13 @@ function ClearAcl {
         [string]$DirectoryPath
     )
     Write-Host "`nCalled ClearAcl ("$DirectoryPath")..."
-    & "$env:WINDIR\System32\icacls" $DirectoryPath
+    $process = Start-Process -FilePath "$env:WINDIR\System32\icacls.exe" -ArgumentList `"$DirectoryPath`" -NoNewWindow -Wait -PassThru
     Write-Host "`nRemoving inherited ACLs on ("$DirectoryPath")..."
-    & "$env:WINDIR\System32\icacls" $DirectoryPath /inheritance:r
-    if ($LastExitCode -ne 0) {
+    $process = Start-Process -FilePath "$env:WINDIR\System32\icacls.exe" -ArgumentList `"$DirectoryPath`", /inheritance:r -NoNewWindow -Wait -PassThru
+    if ($process.ExitCode -ne 0) {
         Write-Host "`nFailed to remove inherited ACLs on ("$DirectoryPath")"
-        return $LastExitCode
     }
+    return $process.ExitCode
 }
 
 # Function to check and set ACLs on the given directory
@@ -96,10 +96,11 @@ function AclCheck {
     param (
         [string]$DirectoryPath,
         [string]$UserName,
+        [string]$UserSid,
         [int]$Index
     )
     Write-Host "`nCalled AclCheck($DirectoryPath)"
-    
+
     if ($DirectoryPath -eq $env:PROGRAMFILES) {
         Write-Host "`nSkipping the ACL check on $DirectoryPath"
         return 0
@@ -108,14 +109,14 @@ function AclCheck {
         return 0
     } else {
         Write-Host "Executing icacls to ensure the $UserName account can read the path $DirectoryPath"
-        
+
         if ($Index -ne 0) {
             # For directories other than the root drive, grant permissions (NP)(RX)
-            $command = "$env:WINDIR\System32\icacls `"$DirectoryPath`" /grant `"$UserName`:(NP)(RX)`""
+            $command = "$env:WINDIR\System32\icacls.exe `"$DirectoryPath`" /grant `"*$UserSid`:(NP)(RX)`""
         } else {
             # Drive letter must not be surronded by double-quotes and ends with slash (\)
             # "icacls" fails on the drives with (NP) flag
-            $command = "$env:WINDIR\System32\icacls `"$DirectoryPath\\`" /grant `"$UserName`:(NP)(RX)`""
+            $command = "$env:WINDIR\System32\icacls.exe `"$DirectoryPath\\`" /grant `"*$UserSid`:(NP)(RX)`""
         }
         # Execute the command
         $iRet = DoCmd "$command"
@@ -144,18 +145,19 @@ if (-not (Test-Path "$DataDir")) {
 }
 
 # Remove inherited ACLs
-ClearAcl -DirectoryPath $DataDir
-if ($LASTEXITCODE -ne 0) {
+if ((ClearAcl -DirectoryPath $DataDir) -ne 0) {
     Die "Failed to reset the ACL ($DataDir)"
 }
 
 # Get parent dir of Data dir
-$ParentOfDataDir = [System.IO.Path]::GetDirectoryName($DataDir)
+$ParentOfDataDir = Split-Path $DataDir -Parent
 Write-Host "`nParent of Data Directory: $ParentOfDataDir"
 
 # Get logged-in user
-$LoggedInUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-Write-Host "Logged in user: $LoggedInUser"
+$LoggedInUser = $LoggedInUser
+$LoggedInUserName = (whoami)
+Write-Host "Logged in user: $LoggedInUserName"
+Write-Host "Logged in user SID: $LoggedInUser"
 
 if ($boolCheckAcl) {
     # Split the parent directory path into an array
@@ -167,7 +169,7 @@ if ($boolCheckAcl) {
     # Loop through each directory and apply ACL checks
     for ($d = 0; $d -le $nDirs; $d++) {
         $strThisDir = $strThisDir + $arrDirs[$d]
-        AclCheck -DirectoryPath "$strThisDir" -UserName $LoggedInUser -Index $d
+        AclCheck -DirectoryPath "$strThisDir" -UserName $LoggedInUserName -UserSid $LoggedInUser -Index $d
         $strThisDir = $strThisDir + "\"
     }
     
@@ -176,12 +178,12 @@ if ($boolCheckAcl) {
 }
 
 # Apply ACL for the data directory
-AclCheck -DirectoryPath "$DataDir" -UserName $LoggedInUser -Index 1
+AclCheck -DirectoryPath "$DataDir" -UserName $LoggedInUserName -UserSid $LoggedInUser -Index 1
 
 # If ACL check is enabled, grant permissions on the install directory
 if ($boolCheckAcl) {
-    Write-Host "`nGranting the $LoggedInUser permissions on $InstallDir"
-    $icaclsCommand = "$env:WINDIR\System32\icacls `"$InstallDir`" /T /grant:r `"$LoggedInUser`:(OI)(CI)(RX)`""
+    Write-Host "`nGranting the $LoggedInUserName permissions on $InstallDir"
+    $icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$InstallDir`" /T /grant:r `"*$LoggedInUser`:(OI)(CI)(RX)`""
     $iRet = DoCmd -Command "$icaclsCommand"
     if ($iRet -ne 0) {
         Write-Host "`nFailed to ensure the Install directory is accessible ($InstallDir)"
@@ -189,36 +191,36 @@ if ($boolCheckAcl) {
 }
 
 # Grant ACLs for specific users on data directory
-Write-Host "`nEnsuring we can write to the data directory (using icacls) for ${LoggedInUser}:"
-$icaclsCommand = "$env:WINDIR\System32\icacls `"$DataDir`" /T /grant:r `"$LoggedInUser`:(OI)(CI)F`""
+Write-Host "`nEnsuring we can write to the data directory (using icacls) for ${LoggedInUserName}:"
+$icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$DataDir`" /T /grant:r `"*$LoggedInUser`:(OI)(CI)F`""
 $iRet = DoCmd -Command "$icaclsCommand"
 if ($iRet -ne 0) {
     Write-Host "`nFailed to ensure the data directory is accessible ($DataDir)"
 }
 
 Write-Host "`nGranting full access to $OSUsername on $DataDir"
-$icaclsCommand = "$env:WINDIR\System32\icacls `"$DataDir`" /grant `"$OSUsername`:(OI)(CI)F`""
+$icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$DataDir`" /grant `"$OSUsername`:(OI)(CI)F`""
 $iRet = DoCmd -Command "$icaclsCommand"
 if ($iRet -ne 0) {
     Write-Host "`nFailed to grant access to $OSUsername on $DataDir"
 }
 
 Write-Host "`nGranting full access to CREATOR OWNER on $DataDir"
-$icaclsCommand = "$env:WINDIR\System32\icacls `"$DataDir`" /grant `"*S-1-3-0:(OI)(CI)F`""
+$icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$DataDir`" /grant `"*S-1-3-0:(OI)(CI)F`""
 $iRet = DoCmd -Command "$icaclsCommand"
 if ($iRet -ne 0) {
     Write-Host "`nFailed to grant access to CREATOR OWNER on $DataDir"
 }
 
 Write-Host "`nGranting full access to SYSTEM on $DataDir"
-$icaclsCommand = "$env:WINDIR\System32\icacls `"$DataDir`" /grant `"*S-1-5-18:(OI)(CI)F`""
+$icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$DataDir`" /grant `"*S-1-5-18:(OI)(CI)F`""
 $iRet = DoCmd -Command "$icaclsCommand"
 if ($iRet -ne 0) {
     Write-Host "`nFailed to grant access to SYSTEM on $DataDir"
 }
 
 Write-Host "`nGranting full access to Administrators on $DataDir"
-$icaclsCommand = "$env:WINDIR\System32\icacls `"$DataDir`" /grant `"*S-1-5-32-544:(OI)(CI)F`""
+$icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$DataDir`" /grant `"*S-1-5-32-544:(OI)(CI)F`""
 $iRet = DoCmd -Command "$icaclsCommand"
 if ($iRet -ne 0) {
     Write-Host "`nFailed to grant access to Administrators on $DataDir"
@@ -230,7 +232,7 @@ if ($Locale -eq "DEFAULT") {
 }
 
 # Create temporary password file
-$randomFileName = [System.IO.Path]::GetRandomFileName() -replace '\..*$', '.tmp'
+$randomFileName = ($([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".tmp"
 $passwordFile = Join-Path "$PasswordDir"  $randomFileName
 Set-Content -Path "$passwordFile" -Value $Password -Force
 
@@ -268,9 +270,9 @@ if ($boolCheckAcl) {
     # on the entire path leading to the data directory
     $arrDirs = $ParentOfDataDir.Split('\')
     $nDirs = $arrDirs.Length - 1
-     
+
     $strThisDir = ""
-      
+
     # Loop through each directory and apply ACL checks
     for ($d = 0; $d -le $nDirs; $d++) {
         $strThisDir = $strThisDir + $arrDirs[$d]
@@ -283,7 +285,7 @@ AclCheck -DirectoryPath "$DataDir" -UserName $OSUsername -Index 1
 
 if ($boolCheckAcl) {
     Write-Host "`nGranting $OSUsername permissions on $InstallDir"
-    $icaclsCommand = "$env:WINDIR\System32\icacls `"$InstallDir`" /T /grant:r `"$OSUsername`:(OI)(CI)(RX)`""
+    $icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$InstallDir`" /T /grant:r `"$OSUsername`:(OI)(CI)(RX)`""
     $iRet = DoCmd -Command "$icaclsCommand"
     if ($iRet -ne 0) {
         Write-Host "`nFailed to ensure the Install directory is accessible ($InstallDir)"
@@ -300,7 +302,7 @@ if (-not (Test-Path "$logDir")) {
 
 # Secure the data directory
 Write-Host "`nGranting service account access to the data directory (using icacls) to $OSUsername"
-$icaclsCommand = "$env:WINDIR\System32\icacls `"$DataDir`" /T /C /grant `"$OSUsername`:(OI)(CI)F`""
+$icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$DataDir`" /T /C /grant `"$OSUsername`:(OI)(CI)F`""
 $iRet = DoCmd -Command "$icaclsCommand"
 if ($iRet -ne 0) {
     Write-Host "`nFailed to grant service account access to the data directory ($DataDir)"
