@@ -2046,7 +2046,7 @@
                 -->
                 <setInstallerVariable>
                     <name>localeCommand</name>
-                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath ([System.IO.Path]::Combine($env:TEMP, 'postgresql_installer_${random_number}', 'locales.txt')) -Encoding UTF8</value>
+                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath (Join-Path -Path "$env:TEMP\postgresql_installer_${random_number}" -ChildPath "locales.txt") -Encoding UTF8</value>
                 </setInstallerVariable>
                 
                 <runProgram>
@@ -2630,6 +2630,28 @@
         </removeFilesFromUninstaller>
 
         <createTempDir dirPrefix="postgresql_installer"/>
+        <!-- Windows: System account SID so that ruleList works for non-English language -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${env(WINDIR)}\System32\whoami</program>
+                    <programArguments>/USER /nh</programArguments>
+                </runProgram>
+                <setInstallerVariableFromRegEx>
+                    <name>whoami_sid</name>
+                    <pattern>^.*\s+(S-[0-9-]+)\s*$</pattern>
+                    <substitution>\1</substitution>
+                    <text>${program_stdout}</text>
+                </setInstallerVariableFromRegEx>
+                <logMessage>
+                    <text>"whoami_sid: ${whoami_sid}"</text>
+                </logMessage>
+            </actionList>
+                <ruleList>
+                    <compareText logic="equals" text="${platform_name}" value="windows"/>
+                </ruleList>
+        </actionGroup>
+
         <!-- Make the service-name persistent to make it available during uninstallation -->
         <setInstallerVariable>
             <name>servicename</name>
@@ -2949,7 +2971,7 @@
 
                         <runProgram>
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
-                            <programArguments>/c "${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -File "${installdir}/installer/server/initcluster.ps1" "${serviceaccount}" "${superaccount}" "${superpassword.password}" "${env(TEMP)}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
+                            <programArguments>/c "${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -File "${installdir}/installer/server/initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${superpassword.password}" "${env(TEMP)}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
