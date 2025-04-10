@@ -3,6 +3,9 @@
 # pgInstaller auto build script
 # Dave Page, EnterpriseDB
 
+# Package Versions
+source ./versions.sh
+
 BASENAME=`basename $0`
 DIRNAME=`dirname $0`
 
@@ -270,6 +273,8 @@ fi
 echo "Updating REL-17 branch build system" >> autobuild.log
 git pull >> autobuild.log 2>&1
 
+PG_PACKAGE_VERSION=$PG_MAJOR_VERSION.`echo $PG_MINOR_VERSION | sed -e 's/\./-/'`
+
 # Run the build, and dump the output to a log file
 echo "Running the build (REL-17) " >> autobuild.log
 ./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-17.log
@@ -380,6 +385,17 @@ do
                 CopyToBuilds $PKG $PLAT
         done
 done
+# Copy server installers to Cloudsmith
+CopyToCloudsmith(){
+       cd output
+       if [[ $RELEASEBUILD == "false" ]]; then
+               mv postgresql-$PG_PACKAGE_VERSION-osx.dmg postgresql-$PG_PACKAGE_VERSION-snapshot-osx.dmg || _die "Failed to rename the dmg file"
+               mv postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip postgresql-$PG_PACKAGE_VERSION-snapshot-osx-binaries.zip || _die "Failed to rename the binaries.zip file"
+               mv postgresql-$PG_PACKAGE_VERSION-osx.zip postgresql-$PG_PACKAGE_VERSION-snapshot-osx.zip || _die "Failed to rename the zip file"
+       fi
+
+# Calling function to upload server installers to Cloudsmith
+CopyToCloudsmith
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
 echo "#######################################################################" >> autobuild.log
