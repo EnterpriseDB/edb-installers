@@ -2969,9 +2969,21 @@
                             </ruleList>
                         </runProgram>
 
+                        <setInstallerVariable name="escapedPassword" value="${superpassword}" />
+						<!--escaping " with \" before passing it to powershell script -->
+						<setInstallerVariableFromRegEx>
+							<name>escapedPassword</name>
+							<text>${escapedPassword}</text>
+							<pattern>"</pattern>
+							<substitution>\"</substitution>
+							<ruleList>
+								<compareText logic="equals" text="${platform_name}" value="windows"/>
+							</ruleList>
+						</setInstallerVariableFromRegEx>
+
                         <runProgram>
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
-                            <programArguments>/c "${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -File "${installdir}/installer/server/initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" '${superpassword.password}' "${env(TEMP)}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
+                            <programArguments>/c "${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -File "${installdir}/installer/server/initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" '${escapedPassword.password}' "${env(TEMP)}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
