@@ -2050,7 +2050,7 @@
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
-				<writeFile>
+                <writeFile>
                     <text>${program_stdout}</text>
                     <path>${env(TEMP)}\postgresql_installer_${random_number}\locales.txt</path>
                     <encoding>utf-8</encoding>
@@ -2071,11 +2071,11 @@
                     6. Append the output to the same temporary file where BCP names were saved.
                     7. This file is later used by the installer to populate locales drop down in installer.
                 -->
-				<setInstallerVariable>
+                <setInstallerVariable>
                     <name>localeLongNames</name>
                     <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 -and $_.EnglishName -match '^[\x00-\x7F]+$' } | Sort-Object EnglishName | ForEach-Object { $_.EnglishName + '=' + $_.EnglishName }</value>
                 </setInstallerVariable>
-				<runProgram>
+                <runProgram>
                     <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
                     <programArguments>-ExecutionPolicy Bypass -Command "${localeLongNames}"</programArguments>
                     <wrapInScript>1</wrapInScript>
@@ -2083,7 +2083,7 @@
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
-				<addTextToFile>
+                <addTextToFile>
                     <text>${program_stdout}</text>
                     <file>${env(TEMP)}\postgresql_installer_${random_number}\locales.txt</file>
                     <encoding>utf-8</encoding>
@@ -3004,20 +3004,20 @@
                         </runProgram>
 
                         <setInstallerVariable name="escapedPassword" value="${superpassword}" />
-						<!--escaping " with \" before passing it to powershell script -->
-						<setInstallerVariableFromRegEx>
-							<name>escapedPassword</name>
-							<text>${escapedPassword}</text>
-							<pattern>"</pattern>
-							<substitution>\"</substitution>
-							<ruleList>
-								<compareText logic="equals" text="${platform_name}" value="windows"/>
-							</ruleList>
-						</setInstallerVariableFromRegEx>
+                        <!--escaping " with \" before passing it to powershell script -->
+                        <setInstallerVariableFromRegEx>
+                            <name>escapedPassword</name>
+                            <text>${escapedPassword}</text>
+                            <pattern>"</pattern>
+                            <substitution>\"</substitution>
+                            <ruleList>
+                                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                            </ruleList>
+                        </setInstallerVariableFromRegEx>
 
                         <runProgram>
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
-                            <programArguments>/c "${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -File "${installdir}/installer/server/initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" '${escapedPassword.password}' "${env(TEMP)}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
+                            <programArguments>/c "${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -File "${installdir}/installer/server/initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${env(TEMP)}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
