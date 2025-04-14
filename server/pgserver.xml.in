@@ -2063,18 +2063,41 @@
                     and appends them in the same text file where BCP names were saved.  
 
                     Steps:
-                    1. Get all available cultures (languages/locales) using [System.Globalization.CultureInfo]::GetCultures.
-                    2. Filter out the "Invariant Culture" (LCID = 127), as it is not a valid locale.
-                    3. Filter only those locale names which contains non-ASCII characters ($_.EnglishName -match '^[\x00-\x7F]+$').
-                    4. Sort the locales by their English names for easier readability.
-                    5. Format each locale as "English_Name=English_Name" (e.g., "English (United States)=English (United States)"). So the locale passed to script will exactly be same what user selects.
-                    6. Append the output to the same temporary file where BCP names were saved.
-                    7. This file is later used by the installer to populate locales drop down in installer.
+                    1. Write a .ps1 to accomodate and split the complex powershell command.
+                    2. Get all available cultures (languages/locales) using [System.Globalization.CultureInfo]::GetCultures.
+                    3. Filter out the "Invariant Culture" (LCID = 127), as it is not a valid locale.
+                    4. Filter only those locale names which contains non-ASCII characters ($_.EnglishName -match '^[\x00-\x7F]+$').
+                    5. Sort the locales by their English names for easier readability.
+                    6. Format the locales English names in "Language, Region" format. This format is understable by initdb. (e.g., English (United States) will become English, United States)
+                    7. Format each locale as "Formatted_Name=Formatted_Name" (e.g., English, United States=English, United States). So the locale passed to script will exactly be same what user selects.
+                    8. Append the output to the same temporary file where BCP names were saved.
+                    9. This file is later used by the installer to populate locales drop down in installer.
                 -->
-                <setInstallerVariable>
-                    <name>localeLongNames</name>
-                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 -and $_.EnglishName -match '^[\x00-\x7F]+$' } | Sort-Object EnglishName | ForEach-Object { $_.EnglishName + '=' + $_.EnglishName }</value>
-                </setInstallerVariable>
+                <writeFile>
+					<path>${env(TEMP)}\postgresql_installer_${random_number}\getLocalesLongNames.ps1</path>
+					<text>
+						<![CDATA[
+						$cultures = [System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures)
+						$filteredCultures = $cultures | Where-Object { $_.LCID -ne 127 -and $_.EnglishName -match '^[\x00-\x7F]+$' }
+						$sortedCultures = $filteredCultures | Sort-Object EnglishName
+						$localeLines = foreach ($culture in $sortedCultures) {
+						$name = $culture.EnglishName
+						if ($name -match '^([^,]+), ([^(]+) \(([^)]+)\)$') { 
+							$name = "$($matches[1]) ($($matches[2])), $($matches[3])" 
+						} elseif ($name -match '^(.+?) \(([^,]+), (.+?)\)$') { 
+							$name = "$($matches[1]) ($($matches[2])), $($matches[3])" 
+						} elseif ($name -match '^(.+?) \((.+)\)$') { 
+							$name = "$($matches[1]), $($matches[2])" 
+						}
+						"$name=$name"
+						}
+						$localeLines -join "`n"
+						]]>
+					</text>
+					<ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+				</writeFile>
                 <runProgram>
                     <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
                     <programArguments>-ExecutionPolicy Bypass -Command "${localeLongNames}"</programArguments>
