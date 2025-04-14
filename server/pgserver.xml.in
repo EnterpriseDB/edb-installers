@@ -2074,30 +2074,30 @@
                     9. This file is later used by the installer to populate locales drop down in installer.
                 -->
                 <writeFile>
-					<path>${env(TEMP)}\postgresql_installer_${random_number}\getLocalesLongNames.ps1</path>
-					<text>
-						<![CDATA[
-						$cultures = [System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures)
-						$filteredCultures = $cultures | Where-Object { $_.LCID -ne 127 -and $_.EnglishName -match '^[\x00-\x7F]+$' }
-						$sortedCultures = $filteredCultures | Sort-Object EnglishName
-						$localeLines = foreach ($culture in $sortedCultures) {
-						$name = $culture.EnglishName
-						if ($name -match '^([^,]+), ([^(]+) \(([^)]+)\)$') { 
-							$name = "$($matches[1]) ($($matches[2])), $($matches[3])" 
-						} elseif ($name -match '^(.+?) \(([^,]+), (.+?)\)$') { 
-							$name = "$($matches[1]) ($($matches[2])), $($matches[3])" 
-						} elseif ($name -match '^(.+?) \((.+)\)$') { 
-							$name = "$($matches[1]), $($matches[2])" 
-						}
-						"$name=$name"
-						}
-						$localeLines -join "`n"
-						]]>
-					</text>
-					<ruleList>
-                        <compareText logic="equals" text="${platform_name}" value="windows"/>
-                    </ruleList>
-				</writeFile>
+                <path>${env(TEMP)}\postgresql_installer_${random_number}\getLocalesLongNames.ps1</path>
+                <text>
+                    <![CDATA[
+                    $cultures = [System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures)
+                    $filteredCultures = $cultures | Where-Object { $_.LCID -ne 127 -and $_.EnglishName -match '^[\x00-\x7F]+$' }
+                    $sortedCultures = $filteredCultures | Sort-Object EnglishName
+                    $localeLines = foreach ($culture in $sortedCultures) {
+                    $name = $culture.EnglishName
+                    if ($name -match '^([^,]+), ([^(]+) \(([^)]+)\)$') { 
+                        $name = "$($matches[1]) ($($matches[2])), $($matches[3])" 
+                    } elseif ($name -match '^(.+?) \(([^,]+), (.+?)\)$') { 
+                        $name = "$($matches[1]) ($($matches[2])), $($matches[3])" 
+                    } elseif ($name -match '^(.+?) \((.+)\)$') { 
+                        $name = "$($matches[1]), $($matches[2])" 
+                    }
+                    "$name=$name"
+                    }
+                    $localeLines -join "`n"
+                    ]]>
+                </text>
+                <ruleList>
+                    <compareText logic="equals" text="${platform_name}" value="windows"/>
+                </ruleList>
+                </writeFile>
                 <runProgram>
                     <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
                     <programArguments>-ExecutionPolicy Bypass -Command "${localeLongNames}"</programArguments>
