@@ -59,7 +59,7 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <h3>Important Note with regards to locale names</h3>
 
-<p>Windows installers for PostgreSQL versions 17.4-1, 16.8-1, 15.12-1, 14.17-1, and 13.20-1, locales are getting collected in long name format from the installer but they are compulsorily converted to BCP-47 codes before passing on to initdb. So, long name locales are not compatible in these installers.</p>
+<p>Windows installers for PostgreSQL versions 17.4-1, 16.8-1, 15.12-1, 14.17-1, and 13.20-1, convert locale names to BCP-47 compulsorily before passing on to initdb. So, long name locales are not compatible in these installers.</p>
 
 <p>Starting from PostgreSQL versions 17.4-2, 16.8-2, 15.12-2, 14.17-2, and 13.20-2, the Windows installers support specifying locale names in two formats:</p>
 
