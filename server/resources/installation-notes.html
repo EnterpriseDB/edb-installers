@@ -65,6 +65,19 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <p>PostgreSQL Server 14 is compiled with ICU 67.x. The server versions upto v12 used either ICU 53.x or  57.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes.</p>
 
+<h3>Important Note with regards to locale names</h3>
+
+<p>A change was made in the Windows installers for PostgreSQL versions 17.4-1, 16.8-1, 15.12-1, 14.17-1, and 13.20-1, and in the fresh installation the chosen locale name would be converted to BCP-47 name and passed to initdb.exe run as --locale. This change made the pg_upgrade from the PostgreSQL cluster having old locale names to these versions fail.</p>
+
+<p>The change was again made in -2 releases for the same set of postgresql installers. See below section for details.</p>
+
+<p>Starting from PostgreSQL versions 17.4-2, 16.8-2, 15.12-2, 14.17-2, and 13.20-2, the Windows installers support specifying locale names in two formats:</p>
+
+<ul>
+  <li>Standard BCP-47 locale names (e.g., en-US, fr-FR). Recommeded, if the locale name contains non-ASCII characters (such as accented characters or regional scripts) </li>
+  <li>Long English locale names containing only ASCII characters (e.g., English_United States, French_France). So, any non-ASCII character containing locale is not passed to the initdb. </li>
+</ul>
+
 <h3>Technical Support</h3>
 
 <p>Issues using the installer can be reported to installer GitHub page at <a href="https://github.com/EnterpriseDB/edb-installers/issues">https://github.com/EnterpriseDB/edb-installers/issues</a></p>  
