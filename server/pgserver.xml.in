@@ -2028,35 +2028,93 @@
                     </ruleList>
                 </runProgram>
 
-                <!--This PowerShell command retrieves the list of all available locales on the system 
+                <!--This PowerShell command retrieves the list of BCP names of all available locales on the system 
                     and saves them in a text file for use during PostgreSQL installation.  
 
                     Steps:
                     1. Get all available cultures (languages/locales) using [System.Globalization.CultureInfo]::GetCultures.
                     2. Filter out the "Invariant Culture" (LCID = 127), as it is not a valid locale.
-                    3. Sort the locales by their English names for easier readability.
-                    4. Format each locale as "BCP-47_Code=English_Name" (e.g., "en-US=English (United States)").
-                    5. Save the output to a temporary file inside the system's TEMP directory.
-    
-                    Notes:
-                    - [System.IO.Path]::Combine ensures the path is correctly formatted, even if it contains spaces or non-ASCII characters.
-                    - The output file will be stored in:  
-                        C:\Users\<User>\AppData\Local\Temp\postgresql_installer_<random_number>\locales.txt
-                    - This file is later used by the installer to determine available system locales.
+                    3. Sort the locales by their BCP names for easier readability.
+                    4. Format each locale as "BCP-47_Name=BCP-47_Name" (e.g., "en-US=en-US"). So the locale passed to script will exactly be same what user selects.
+                    5. Write the output to a temporary file inside the system's TEMP directory.
                 -->
                 <setInstallerVariable>
-                    <name>localeCommand</name>
-                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }  | Sort-Object EnglishName | ForEach-Object { $_.Name + '=' + $_.EnglishName } | Out-File -FilePath (Join-Path -Path "$env:TEMP\postgresql_installer_${random_number}" -ChildPath "locales.txt") -Encoding UTF8</value>
+                    <name>localeBcpNames</name>
+                    <value>[System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 } | Sort-Object Name | ForEach-Object { $_.Name + '=' + $_.Name }</value>
                 </setInstallerVariable>
-                
                 <runProgram>
                     <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                    <programArguments>-ExecutionPolicy Bypass -Command "${localeCommand}"</programArguments>
+                    <programArguments>-ExecutionPolicy Bypass -Command "${localeBcpNames}"</programArguments>
                     <wrapInScript>1</wrapInScript>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
+                <writeFile>
+                    <text>${program_stdout}</text>
+                    <path>${env(TEMP)}\postgresql_installer_${random_number}\locales.txt</path>
+                    <encoding>utf-8</encoding>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </writeFile>
+				
+                <!--This PowerShell command retrieves the list of English names of locales containing only ASCII characters
+                    and appends them in the same text file where BCP names were saved.  
+
+                    Steps:
+                    1. Write a .ps1 to accomodate and split the complex powershell command.
+                    2. Get all available cultures (languages/locales) using [System.Globalization.CultureInfo]::GetCultures.
+                    3. Filter out the "Invariant Culture" (LCID = 127), as it is not a valid locale.
+                    4. Filter only those locale names which contains non-ASCII characters ($_.EnglishName -match '^[\x00-\x7F]+$').
+                    5. Sort the locales by their English names for easier readability.
+                    6. Format the locales English names in "Language, Region" format. This format is understable by initdb. (e.g., English (United States) will become English, United States)
+                    7. Format each locale as "Formatted_Name=Formatted_Name" (e.g., English, United States=English, United States). So the locale passed to script will exactly be same what user selects.
+                    8. Append the output to the same temporary file where BCP names were saved.
+                    9. This file is later used by the installer to populate locales drop down in installer.
+                    10. Use <![CDATA[ ... ]]> to wrap the PowerShell command below so that special XML characters like & and < do not cause parsing errors. This ensures the entire command is treated as raw text and not misinterpreted by the XML parser.
+                -->
+                <writeFile>
+                <path>${env(TEMP)}\postgresql_installer_${random_number}\getLocalesLongNames.ps1</path>
+                <text>
+                    <![CDATA[
+                    $cultures = [System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures)
+                    $filteredCultures = $cultures | Where-Object { $_.LCID -ne 127 -and $_.EnglishName -match '^[\x00-\x7F]+$' }
+                    $sortedCultures = $filteredCultures | Sort-Object EnglishName
+                    $localeLines = foreach ($culture in $sortedCultures) {
+                    $name = $culture.EnglishName
+                    if ($name -match '^([^,]+), ([^(]+) \(([^)]+)\)$') { 
+                        $name = "$($matches[1]) ($($matches[2])), $($matches[3])" 
+                    } elseif ($name -match '^(.+?) \(([^,]+), (.+?)\)$') { 
+                        $name = "$($matches[1]) ($($matches[2])), $($matches[3])" 
+                    } elseif ($name -match '^(.+?) \((.+)\)$') { 
+                        $name = "$($matches[1]), $($matches[2])" 
+                    }
+                    "$name=$name"
+                    }
+                    $localeLines -join "`n"
+                    ]]>
+                </text>
+                <ruleList>
+                    <compareText logic="equals" text="${platform_name}" value="windows"/>
+                </ruleList>
+                </writeFile>
+                <runProgram>
+                    <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
+                    <programArguments>-ExecutionPolicy Bypass -Command "&amp; { $scriptPath = Join-Path -Path "$env:TEMP\postgresql_installer_${random_number}" -ChildPath "getLocalesLongNames.ps1"; &amp; $scriptPath }"</programArguments>
+                    <wrapInScript>1</wrapInScript>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </runProgram>
+                <addTextToFile>
+                    <text>${program_stdout}</text>
+                    <file>${env(TEMP)}\postgresql_installer_${random_number}\locales.txt</file>
+                    <encoding>utf-8</encoding>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </addTextToFile>
                 
                 <readFile>
                     <name>program_stdout</name>
@@ -2067,6 +2125,7 @@
                     </ruleList>
                 </readFile>
                 <deleteFile path="${env(TEMP)}\postgresql_installer_${random_number}\locales.txt"/>
+                <deleteFile path="{env(TEMP)}\postgresql_installer_${random_number}\getLocalesLongNames.ps1"/>
 
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
@@ -2955,9 +3014,21 @@
                             </ruleList>
                         </runProgram>
 
+                        <setInstallerVariable name="escapedPassword" value="${superpassword}" />
+                        <!--escaping " with \" before passing it to powershell script -->
+                        <setInstallerVariableFromRegEx>
+                            <name>escapedPassword</name>
+                            <text>${escapedPassword}</text>
+                            <pattern>"</pattern>
+                            <substitution>\"</substitution>
+                            <ruleList>
+                                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                            </ruleList>
+                        </setInstallerVariableFromRegEx>
+
                         <runProgram>
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
-                            <programArguments>/c "${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -File "${installdir}/installer/server/initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${superpassword.password}" "${env(TEMP)}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
+                            <programArguments>/c "${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -File "${installdir}/installer/server/initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${env(TEMP)}/postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
