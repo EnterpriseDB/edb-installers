@@ -122,6 +122,7 @@ cat<<PGBOUNCER > $WD/pgbouncer/build-pgbouncer.sh
     cp -pR $PG_PGHOME_OSX/lib/libcom_err* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libcom_err in instscripts"
     cp -pR $PG_PGHOME_OSX/lib/libgssapi_krb5* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libgssapi_krb5 in instscripts"
     cp -pR $PG_PGHOME_OSX/lib/libintl* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libintl in instscripts"
+    cp -pR $PG_PGHOME_OSX/lib/libiconv* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libiconv in instscripts"
     cp -pR $PG_PGHOME_OSX/lib/libk5crypto* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libk5crypto in instscripts"
     cp -pR $PG_PGHOME_OSX/lib/libkrb5* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libkrb5 in instscripts"
     cp -pR $PG_PGHOME_OSX/bin/psql $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/bin || _die "Failed to copy psql in instscripts"
