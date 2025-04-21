@@ -3353,7 +3353,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             <parameterList>
                 <choiceParameter>
                     <name>locale</name>
-                    <title>Locale</title>
                     <description>${msg(config.locale.description)}</description>
                     <explanation>${msg(config.locale.explanation)}</explanation>
                     <cliOptionName>locale</cliOptionName>
