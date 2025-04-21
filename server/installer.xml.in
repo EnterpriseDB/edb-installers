@@ -3356,6 +3356,8 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                     <description>${msg(config.locale.description)}</description>
                     <explanation>${msg(config.locale.explanation)}</explanation>
                     <cliOptionName>locale</cliOptionName>
+                    <cliOptionShow>1</cliOptionShow>
+					<default>DEFAULT</default>
                     <ask>yes</ask>
                     <validationActionList>
                         <throwError>
