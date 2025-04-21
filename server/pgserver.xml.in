@@ -2092,6 +2092,11 @@
                      <value/>
                      <logic>does_not_equal</logic>
                  </compareText>
+                 <compareText>
+                    <text>${program_stdout}</text>
+                    <value>${locale}</value>
+                    <logic>does_not_contain</logic>
+                </compareText>
              </ruleList>
          </actionGroup>
 
