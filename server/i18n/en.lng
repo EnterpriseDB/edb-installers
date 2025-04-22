@@ -81,6 +81,7 @@ config.port.in.use=The specified port number is not available. Please enter a di
 config.advancedoption.title=Advanced Options
 
 config.locale.description=Locale
+config.locale.text=Long name locale, ex: "Engilsh, United States" or BCP47 code, ex: "en-US"
 config.locale.explanation=Select the locale to be used by the new database cluster.
 config.locale.no.locale=You must select a locale to continue.
 
