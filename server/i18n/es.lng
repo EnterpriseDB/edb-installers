@@ -57,6 +57,7 @@ config.port.invalid=El número de puerto debe ser un entero válido entre 1024 y 6
 config.port.in.use=El número de puerto especificado no esta disponible. Por favor ingrese un puerto diferente.
 config.advancedoption.title=Opciones Avanzadas
 config.locale.description=Configuración Regional
+config.locale.text=Long name locale, ex: "Engilsh, United States" or BCP47 code, ex: "en-US"
 config.locale.explanation=Seleccione la configuración regional a ser usada por el nuevo clúster de base de datos.
 config.locale.no.locale=Debe seleccionar una configuración regional para continuar.
 plpgsql.install.description=¿Instalar pl/pgsql en la base de datos template1?
