@@ -1259,7 +1259,6 @@ EOF
                     </ruleList>
                 </runProgram>
         
-                <deleteFile path="${installdir}/instscripts" />
             </actionList>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
@@ -1291,6 +1290,7 @@ EOF
                 <fileExists path="${system_temp_directory}/${product_shortname}_${random_number}" />
             </ruleList>
       </deleteFile>
+      <deleteFile path="${installdir}/instscripts" />
 
     </postInstallationActionList>
     <installationAbortedActionList>
