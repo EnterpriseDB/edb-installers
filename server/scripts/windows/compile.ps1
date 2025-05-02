@@ -216,14 +216,14 @@ Copy-Item $xslt_directory/bin/libxslt.dll $installation_directory\bin
 Copy-Item $gettext_directory/bin/libiconv-2.dll $installation_directory\bin
 Copy-Item $gettext_directory/bin/libwinpthread-1.dll $installation_directory\bin
 Copy-Item $zlib_directory/bin/*.dll $installation_directory\bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase327u_net_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase327u_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase327u_xml_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw327u_adv_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw327u_aui_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw327u_core_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw327u_html_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw327u_xrc_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase328u_net_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase328u_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase328u_xml_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw328u_adv_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw328u_aui_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw328u_core_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw328u_html_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw328u_xrc_vc_x64_custom.dll $installation_directory/bin
 
 # Manually copy some libraries to the installation directory
 Copy-Item $openssl_directory/lib/libssl.lib $installation_directory\lib
