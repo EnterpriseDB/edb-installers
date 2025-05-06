@@ -36,12 +36,12 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/local/bin
 #            We can also specify additional directorys to include in the path.
 
 PG_SSH_OSX=buildfarm@macbuildfarm-prod-cyt-3.edbcorp.net
-PG_PATH_OSX=/opt/pginstaller_17.auto
+PG_PATH_OSX=/opt/pginstaller_18.auto
 PG_SSH_OSX_SIGN=buildfarm@macbuildfarm-prod-cyt-1.edbcorp.net
-PG_PATH_OSX_SIGN=/Users/buildfarm/pginstaller_17.auto
+PG_PATH_OSX_SIGN=/Users/buildfarm/pginstaller_18.auto
 PG_PATH_OSX_SIGNTOOL=/opt/local/bin/osxsigner
 PG_SSH_OSX_NOTARY=buildfarm@macbuildfarm-prod-cyt-1.edbcorp.net
-PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_17.notary
+PG_PATH_OSX_NOTARY=/Users/buildfarm/pginstaller_18.notary
 PG_PGHOME_OSX=$PG_PATH_OSX/server/staging_cache/osx
 PG_CMAKE_OSX=/Applications/CMake.app/Contents/bin/cmake
 PG_PERL_OSX=/Library/edb/languagepack/v5/Perl-5.40
@@ -53,7 +53,7 @@ PGSERVER_STAGING_OSX=$PWD/server/staging/osx/server
 PGADMIN_STAGING_OSX=$PWD/server/staging/osx/pgadmin4
 SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
 CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
-PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/17
+PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/18
 IMAGEMAGICK_HOME_OSX=/opt/local/Current_v15/ImageMagick
 PG_DOCBOOK_OSX=/usr/local/Cellar/docbook-xsl/1.79.2_1/docbook-xsl
 

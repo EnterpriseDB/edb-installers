@@ -1,6 +1,6 @@
-pg_major_version=17
-pg_minor_version=4
-package_revision=2
+pg_major_version=18
+pg_minor_version=0.beta1
+package_revision=1
 pgadmin4=9.3
 python=3.12.10
 perl=5.40.0.1
