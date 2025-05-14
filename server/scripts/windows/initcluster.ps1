@@ -109,7 +109,7 @@ function AclCheck {
         return 0
     } else {
         # Decide whether to use SID or fallback to username
-		$userIdToGrant = if ($UserSid) { "*$UserSid" } else { "$UserName" }
+        $userIdToGrant = if ($UserSid) { "*$UserSid" } else { "$UserName" }
         Write-Host "Executing icacls to ensure the $UserName account can read the path $DirectoryPath"
 
         if ($Index -ne 0) {
