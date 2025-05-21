@@ -121,6 +121,7 @@ cat<<PGBOUNCER > $WD/pgbouncer/build-pgbouncer.sh
     cp -pR $PG_PGHOME_OSX/lib/libxml2* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libxml2 in instscripts"
     cp -pR $PG_PGHOME_OSX/lib/libcom_err* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libcom_err in instscripts"
     cp -pR $PG_PGHOME_OSX/lib/libgssapi_krb5* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libgssapi_krb5 in instscripts"
+    cp -pR $PG_PATH_OSX/pgbouncer/scripts/osx/check-connection.sql $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts || _die "Failed to copy check-connection.sql in instscripts"
     cp -pR $PG_PGHOME_OSX/lib/libintl* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libintl in instscripts"
     cp -pR $PG_PGHOME_OSX/lib/libiconv* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libiconv in instscripts"
     cp -pR $PG_PGHOME_OSX/lib/libk5crypto* $PG_PATH_OSX/pgbouncer/staging/osx.build/instscripts/lib || _die "Failed to copy libk5crypto in instscripts"
@@ -210,7 +211,7 @@ _postprocess_pgbouncer_osx() {
     popd
 
     mkdir -p staging/osx/installer/pgbouncer || _die "Failed to create directory for installer scripts"
-    cp -R scripts/osx/startupcfg.sh staging/osx/installer/pgbouncer/ || _die "Failed to copy the installer script"
+    cp -R scripts/osx/* staging/osx/installer/pgbouncer/ || _die "Failed to copy the installer script"
     chmod ugo+x staging/osx/installer/pgbouncer/startupcfg.sh    
 
     rm -rf staging/osx/pgbouncer/share/doc || _die "Failed to remove the extra doc directory"
@@ -283,7 +284,7 @@ _postprocess_pgbouncer_osx() {
 
     # Notarize the OS X installer
     ssh $PG_SSH_OSX_NOTARY "mkdir -p $PG_PATH_OSX_NOTARY; cp $PG_PATH_OSX_SIGN/settings.sh $PG_PATH_OSX_NOTARY; cp $PG_PATH_OSX_SIGN/common.sh $PG_PATH_OSX_NOTARY" || _die "Failed to create $PG_PATH_OSX_NOTARY"
-    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf pgbouncer$PG_CURRENT_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx*" || _die "Failed to remove the installer from notarization installer directory"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf pgbouncer*-osx*" || _die "Failed to remove the installer from notarization installer directory"
     scp $WD/output/pgbouncer$PG_CURRENT_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.zip $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
     scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
 
