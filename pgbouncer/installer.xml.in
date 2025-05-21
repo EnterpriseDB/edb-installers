@@ -737,8 +737,8 @@ EOF
                   </ruleList>
               </unpackDirectory>
               <unpackFile>
-                  <origin>installer/pgbouncer/check-connection.bat</origin>
-                  <destination>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/check-connection.bat</destination>
+                  <origin>installer/pgbouncer/check-connection.sql</origin>
+                  <destination>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/check-connection.sql</destination>
                   <component>default</component>
                   <folder>installfileswindows-x64</folder>
                   <ruleList>
@@ -772,7 +772,7 @@ EOF
 
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql</exec>
-              <execArgs>-d ${pgdbname} -l </execArgs>
+              <execArgs>-f "${system_temp_directory}/${product_shortname}_${random_number}/instscripts/check-connection.sql" ${pgdbname}</execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/instscripts</workingDirectory>
               <abortOnError>0</abortOnError>
@@ -788,7 +788,7 @@ EOF
             </setInstallerVariable>
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql</exec>
-              <execArgs>-d ${pgdbname} -l </execArgs>
+              <execArgs>-f "${system_temp_directory}/${product_shortname}_${random_number}/instscripts/check-connection.sql" ${pgdbname}</execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/instscripts</workingDirectory>
               <abortOnError>0</abortOnError>
@@ -805,7 +805,7 @@ EOF
             </setInstallerVariable>
             <setInstallerVariableFromScriptOutput>
               <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql</exec>
-              <execArgs>-d ${pgdbname} -l </execArgs>
+              <execArgs>-f "${system_temp_directory}/${product_shortname}_${random_number}/instscripts/check-connection.sql" ${pgdbname}</execArgs>
               <name>connection</name>
               <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/instscripts</workingDirectory>
               <abortOnError>0</abortOnError>
@@ -2040,7 +2040,7 @@ EOF
     
                 <setInstallerVariableFromScriptOutput>
                   <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql</exec>
-                  <execArgs>-d ${pgdbname} -l </execArgs>
+                  <execArgs>-f "${system_temp_directory}/${product_shortname}_${random_number}/instscripts/check-connection.sql" ${pgdbname}</execArgs>
                   <name>connection</name>
                   <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/instscripts</workingDirectory>
                   <abortOnError>0</abortOnError>
@@ -2057,7 +2057,7 @@ EOF
                 </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
                   <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql</exec>
-                  <execArgs>-d ${pgdbname} -l </execArgs>
+                  <execArgs>-f "${system_temp_directory}/${product_shortname}_${random_number}/instscripts/check-connection.sql" ${pgdbname}</execArgs>
                   <name>connection</name>
                   <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/instscripts</workingDirectory>
                   <abortOnError>0</abortOnError>
@@ -2075,7 +2075,7 @@ EOF
                 </setInstallerVariable>
                 <setInstallerVariableFromScriptOutput>
                   <exec>${system_temp_directory}/${product_shortname}_${random_number}/instscripts/bin/psql</exec>
-                  <execArgs>-d ${pgdbname} -l </execArgs>
+                  <execArgs>-f "${system_temp_directory}/${product_shortname}_${random_number}/instscripts/check-connection.sql" ${pgdbname}</execArgs>
                   <name>connection</name>
                   <workingDirectory>${system_temp_directory}/${product_shortname}_${random_number}/instscripts</workingDirectory>
                   <abortOnError>0</abortOnError>
