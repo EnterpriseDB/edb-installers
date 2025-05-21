@@ -211,7 +211,7 @@ _postprocess_pgbouncer_osx() {
     popd
 
     mkdir -p staging/osx/installer/pgbouncer || _die "Failed to create directory for installer scripts"
-    cp -R scripts/osx/* staging/osx/installer/pgbouncer/ || _die "Failed to copy the installer script"
+    cp -R scripts/osx/startupcfg.sh staging/osx/installer/pgbouncer/ || _die "Failed to copy the startupcfg.sh script"
     chmod ugo+x staging/osx/installer/pgbouncer/startupcfg.sh    
 
     rm -rf staging/osx/pgbouncer/share/doc || _die "Failed to remove the extra doc directory"
