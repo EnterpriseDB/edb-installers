@@ -108,15 +108,17 @@ function AclCheck {
         Write-Host "`nSkipping the ACL check on $DirectoryPath"
         return 0
     } else {
+        # Decide whether to use SID or fallback to username
+        $userIdToGrant = if ($UserSid) { "*$UserSid" } else { "$UserName" }
         Write-Host "Executing icacls to ensure the $UserName account can read the path $DirectoryPath"
 
         if ($Index -ne 0) {
             # For directories other than the root drive, grant permissions (NP)(RX)
-            $command = "$env:WINDIR\System32\icacls.exe `"$DirectoryPath`" /grant `"*$UserSid`:(NP)(RX)`""
+            $command = "$env:WINDIR\System32\icacls.exe `"$DirectoryPath`" /grant `"$userIdToGrant`:(NP)(RX)`""
         } else {
             # Drive letter must not be surronded by double-quotes and ends with slash (\)
             # "icacls" fails on the drives with (NP) flag
-            $command = "$env:WINDIR\System32\icacls.exe `"$DirectoryPath\\`" /grant `"*$UserSid`:(NP)(RX)`""
+            $command = "$env:WINDIR\System32\icacls.exe `"$DirectoryPath\\`" /grant `"$userIdToGrant`:(NP)(RX)`""
         }
         # Execute the command
         $iRet = DoCmd "$command"
