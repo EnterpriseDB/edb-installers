@@ -57,6 +57,16 @@ function DoCmd {
     $process = Start-Process -FilePath "$env:WINDIR\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `"$scriptFile`"" -NoNewWindow -Wait -PassThru
     $exitCode = $process.ExitCode
 
+    Write-Host "---------------------debug part starts--------------------"
+    Write-Host "exit code of line #57 = $exitCode"
+
+    Write-Host "content of ps1 scriptfile:"
+    Get-Content $scriptFile | Write-Host
+
+    Write-Host "content of corresponding outputfile:"
+    Get-Content $outputFile | Write-Host
+    Write-Host "---------------------debug part ends--------------------"
+
     # Display output file content if exists
     if (Test-Path $outputFile) {
         Get-Content $outputFile | Write-Host
