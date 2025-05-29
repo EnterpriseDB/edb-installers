@@ -57,16 +57,6 @@ function DoCmd {
     $process = Start-Process -FilePath "$env:WINDIR\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `"$scriptFile`"" -NoNewWindow -Wait -PassThru
     $exitCode = $process.ExitCode
 
-    Write-Host "---------------------debug part starts--------------------"
-    Write-Host "exit code of line #57 = $exitCode"
-
-    Write-Host "content of ps1 scriptfile:"
-    Get-Content $scriptFile | Write-Host
-
-    Write-Host "content of corresponding outputfile:"
-    Get-Content $outputFile | Write-Host
-    Write-Host "---------------------debug part ends--------------------"
-
     # Display output file content if exists
     if (Test-Path $outputFile) {
         Get-Content $outputFile | Write-Host
@@ -243,18 +233,16 @@ $randomFileName = ($([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".tmp"
 $passwordFile = Join-Path "$PasswordDir"  $randomFileName
 Set-Content -Path "$passwordFile" -Value $Password -Force
 
-# Set initdb command to be executed
-if ($Locale -eq "DEFAULT") {
-    $initdbCmd = "& `"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --pwfile=`"$passwordFile`" --auth=scram-sha-256"
-}
-else {
-    $initdbCmd = "& `"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$Locale`" --pwfile=`"$passwordFile`" --auth=scram-sha-256"
-}
-
 # Run initdb
 Write-Host "`nInitializing PostgreSQL database cluster..."
-$iRet = DoCmd -Command "$initdbCmd"
-if ($iRet -ne 0) {
+if ($Locale -eq "DEFAULT") {
+    $initdbProcess = Start-Process -FilePath "$InstallDir\\bin\\initdb.exe" -ArgumentList "--pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --pwfile=`"$passwordFile`" --auth=scram-sha-256" -NoNewWindow -Wait -PassThru
+}
+else {
+    $initdbProcess = Start-Process -FilePath "$InstallDir\\bin\\initdb.exe" -ArgumentList "--pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$Locale`" --pwfile=`"$passwordFile`" --auth=scram-sha-256" -NoNewWindow -Wait -PassThru
+}
+$initdbExitCode = $initdbProcess.ExitCode
+if ($initdbExitCode -ne 0) {
     Die "Failed to initialise the database cluster with initdb"
 }
 
