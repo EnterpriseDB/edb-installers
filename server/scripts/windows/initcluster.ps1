@@ -235,20 +235,25 @@ Set-Content -Path "$passwordFile" -Value $Password -Force
 
 # Run initdb
 Write-Host "`nInitializing PostgreSQL database cluster..."
+# Set initdb arguments
 if ($Locale -eq "DEFAULT") {
-    $initdbProcess = Start-Process -FilePath "$InstallDir\\bin\\initdb.exe" -ArgumentList "--pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --pwfile=`"$passwordFile`" --auth=scram-sha-256" -NoNewWindow -Wait -PassThru
+    $initdbArgs = "--pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --pwfile=`"$passwordFile`" --auth=scram-sha-256"
 }
 else {
-    $initdbProcess = Start-Process -FilePath "$InstallDir\\bin\\initdb.exe" -ArgumentList "--pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$Locale`" --pwfile=`"$passwordFile`" --auth=scram-sha-256" -NoNewWindow -Wait -PassThru
-}
-$initdbExitCode = $initdbProcess.ExitCode
-if ($initdbExitCode -ne 0) {
-    Die "Failed to initialise the database cluster with initdb"
+    $initdbArgs = "--pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$Locale`" --pwfile=`"$passwordFile`" --auth=scram-sha-256"
 }
 
-# Delete the password file
-if (Test-Path $passwordFile) {
-    Remove-Item "$passwordFile"
+# Print the full command
+Write-Host "`nExecuting: Start-Process -FilePath `"$InstallDir\bin\initdb.exe`" -ArgumentList `"$initdbArgs`" -NoNewWindow -Wait -PassThru`n"
+
+# Run the initdb command
+$initdbProcess = Start-Process -FilePath "$InstallDir\bin\initdb.exe" -ArgumentList "$initdbArgs" -NoNewWindow -Wait -PassThru
+$initdbExitCode = $initdbProcess.ExitCode
+
+Write-Host "initdb exit code =" $initdbExitCode
+
+if ($initdbExitCode -ne 0) {
+    Die "Failed to initialise the database cluster with initdb"
 }
 
 # Update postgresql.conf
