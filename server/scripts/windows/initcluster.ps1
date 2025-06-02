@@ -256,6 +256,11 @@ if ($initdbExitCode -ne 0) {
     Die "Failed to initialise the database cluster with initdb"
 }
 
+# Delete the password file
+if (Test-Path $passwordFile) {
+    Remove-Item "$passwordFile"
+}
+
 # Update postgresql.conf
 $configFile = Join-Path "$DataDir" "postgresql.conf"
 if (-not (Test-Path "$configFile")) {
