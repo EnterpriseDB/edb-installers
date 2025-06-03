@@ -244,10 +244,10 @@ else {
 }
 
 # Print the full command
-Write-Host "`nExecuting: Start-Process -FilePath `"$InstallDir\bin\initdb.exe`" -ArgumentList `"$initdbArgs`" -NoNewWindow -Wait -PassThru`n"
+Write-Host "`nExecuting: Start-Process -FilePath `"$InstallDir\bin\initdb.exe`" -ArgumentList $initdbArgs -NoNewWindow -Wait -PassThru`n"
 
 # Run the initdb command
-$initdbProcess = Start-Process -FilePath "$InstallDir\bin\initdb.exe" -ArgumentList "$initdbArgs" -NoNewWindow -Wait -PassThru
+$initdbProcess = Start-Process -FilePath "$InstallDir\bin\initdb.exe" -ArgumentList $initdbArgs -NoNewWindow -Wait -PassThru
 $initdbExitCode = $initdbProcess.ExitCode
 
 Write-Host "initdb exit code =" $initdbExitCode
