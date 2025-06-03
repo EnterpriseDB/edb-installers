@@ -10,3 +10,4 @@ uuid-1.6.2-windows-x64.tar.bz2
 wxwidgets-3.2.8-windows-x64.tar.bz2
 gettext-0.25-windows-x64.tar.bz2
 openssl-3.5.0-windows-x64.tar.bz2
+libwinpthread-1.0.0-windows-x64.tar.bz2
