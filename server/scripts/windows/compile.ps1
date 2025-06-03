@@ -69,6 +69,11 @@ if (-Not $icu_directory) {
     exit 1
 }
 
+if (-Not $iconv_directory) {
+    Write-Host "Missing ICONV directory parameter"
+    exit 1
+}
+
 # Check for MSVC compiler
 if ((Get-Command "cl.exe" -ErrorAction SilentlyContinue) -eq $null) {
     Write-Host "This script requires the MSVC environment variables"
