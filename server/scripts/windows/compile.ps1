@@ -241,6 +241,7 @@ Copy-Item -Path $xslt_directory/include/libxslt -Destination $installation_direc
 Copy-Item $gettext_directory/include/*.h $installation_directory/include
 Copy-Item -Path $icu_directory/include/* -Destination $installation_directory/include  -Recurse
 Copy-Item $uuid_directory/include/*.h $installation_directory/include
+Copy-Item $iconv_directory/include/*.h $installation_directory/include
 Copy-Item $zlib_directory/include/*.h $installation_directory/include
 Copy-Item $zstd_directory/include/*.h $installation_directory/include
 
