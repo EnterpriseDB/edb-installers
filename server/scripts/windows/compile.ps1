@@ -193,7 +193,7 @@ Get-ChildItem -Path "$installation_directory"
 # build directory to the installation directory, since
 # this file is needed to compile plpgsql_check
 #Copy-Item $source_directory/Release/plpgsql/plpgsql.lib $installation_directory/lib
-Copy-Item $gettext_directory/bin/libintl-8.dll $installation_directory\bin
+Copy-Item $gettext_directory/bin/libintl-9.dll $installation_directory\bin
 Copy-Item $icu_directory/bin/*.dll $installation_directory\bin
 Copy-Item $openssl_directory/bin/*.dll $installation_directory\bin
 Copy-Item $xml_directory/bin/*.dll $installation_directory\bin
