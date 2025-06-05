@@ -236,18 +236,22 @@ Set-Content -Path "$passwordFile" -Value $Password -Force
 # Run initdb
 Write-Host "`nInitializing PostgreSQL database cluster..."
 # Set initdb arguments
-if ($Locale -eq "DEFAULT") {
-    $initdbArgs = "--pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --pwfile=`"$passwordFile`" --auth=scram-sha-256"
-}
-else {
-    $initdbArgs = "--pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$Locale`" --pwfile=`"$passwordFile`" --auth=scram-sha-256"
+$initdbArgs = @(
+	"--pgdata=`"$DataDir`"",
+	"--username=$SuperUsername", 
+	"--encoding=UTF8", 
+	"--pwfile=`"$passwordFile`"", 
+	"--auth=scram-sha-256"
+)
+if ($Locale -ne "DEFAULT") {
+    $initdbArgs += "--locale=`"$Locale`""
 }
 
 # Print the full command
-Write-Host "`nExecuting: Start-Process -FilePath `"$InstallDir\bin\initdb.exe`" -ArgumentList $initdbArgs -NoNewWindow -Wait -PassThru`n"
+Write-Host "`nExecuting: `"$InstallDir\bin\initdb.exe`" $initdbArgs `n"
 
 # Run the initdb command
-$initdbProcess = Start-Process -FilePath "$InstallDir\bin\initdb.exe" -ArgumentList $initdbArgs -NoNewWindow -Wait -PassThru
+$initdbProcess = Start-Process -FilePath "$InstallDir\bin\initdb.exe" -ArgumentList "$initdbArgs" -NoNewWindow -Wait -PassThru
 $initdbExitCode = $initdbProcess.ExitCode
 
 Write-Host "initdb exit code =" $initdbExitCode
