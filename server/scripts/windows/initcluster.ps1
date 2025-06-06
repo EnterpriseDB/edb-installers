@@ -238,7 +238,7 @@ Write-Host "`nInitializing PostgreSQL database cluster..."
 # Set initdb arguments
 $initdbArgs = @(
 	"--pgdata=`"$DataDir`"",
-	"--username=$SuperUsername", 
+	"--username=`"$SuperUsername`"", 
 	"--encoding=UTF8", 
 	"--pwfile=`"$passwordFile`"", 
 	"--auth=scram-sha-256"
