@@ -247,16 +247,16 @@ Copy-Item $zstd_directory/include/*.h $installation_directory/include
 
 
 # Now we need to start a temporary instance, to run the contrib tests
-#Push-Location $installation_directory\bin
-#Write-Host "initdb is beginning"
-#.\initdb.exe -D $temporary_data_location --data-checksums -U postgres
-#Write-Host "initdb instance is done"
-#Write-Host "pg_ctl instance is beginning"
-#.\pg_ctl.exe -l $temporary_data_location/logfile -D $temporary_data_location -U postgres start
-#Write-Host "pg_ctl instance is done"
-#Pop-Location
-#Write-Host "start a temporary instance is done"
+Push-Location $installation_directory\bin
+Write-Host "initdb is beginning"
+.\initdb.exe -D $temporary_data_location --data-checksums -U postgres
+Write-Host "initdb instance is done"
+Write-Host "pg_ctl instance is beginning"
+.\pg_ctl.exe -l $temporary_data_location/logfile -D $temporary_data_location -U postgres start
+Write-Host "pg_ctl instance is done"
+Pop-Location
+Write-Host "start a temporary instance is done"
 
-#Push-Location $installation_directory\bin
-#.\pg_ctl.exe -D $temporary_data_location stop
-#Pop-Location
+Push-Location $installation_directory\bin
+.\pg_ctl.exe -D $temporary_data_location stop
+Pop-Location
