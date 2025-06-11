@@ -76,7 +76,7 @@ config.port.in.use=Le numéro de port indiqué n'est pas disponible. Entrez un aut
 config.advancedoption.title=Options avancés
 
 config.locale.description=Locale
-config.locale.text=Long name locale, ex: "Engilsh, United States" or BCP47 code, ex: "en-US"
+config.locale.text=Long name locale, ex: "English, United States" or BCP47 code, ex: "en-US"
 config.locale.explanation=Sélectionnez la locale utilisée par le nouveau cluster de bases de données.
 config.locale.no.locale=Vous devez sélectionner une locale pour continuer.
 
