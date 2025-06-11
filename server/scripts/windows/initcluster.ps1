@@ -46,7 +46,7 @@ function DoCmd {
     param ([string]$Command)
 
     $scriptFile = Join-Path $env:TEMP $scriptFileName
-    $fullCommand = "$Command | Out-File -FilePath `"$outputFile`" -Encoding UTF8"
+    $fullCommand = "$Command | Out-File -FilePath '$($outputFile.FullName)' -Encoding UTF8"
 
     # Write command to the script file
     Set-Content -Path $scriptFile -Value $fullCommand -Encoding UTF8
@@ -233,18 +233,30 @@ $randomFileName = ($([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".tmp"
 $passwordFile = Join-Path "$PasswordDir"  $randomFileName
 Set-Content -Path "$passwordFile" -Value $Password -Force
 
-# Set initdb command to be executed
-if ($Locale -eq "DEFAULT") {
-    $initdbCmd = "& `"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --pwfile=`"$passwordFile`" --auth=scram-sha-256"
-}
-else {
-    $initdbCmd = "& `"$InstallDir\\bin\\initdb.exe`" --pgdata=`"$DataDir`" --username=`"$SuperUsername`" --encoding=UTF8 --locale=`"$Locale`" --pwfile=`"$passwordFile`" --auth=scram-sha-256"
-}
-
 # Run initdb
 Write-Host "`nInitializing PostgreSQL database cluster..."
-$iRet = DoCmd -Command "$initdbCmd"
-if ($iRet -ne 0) {
+# Set initdb arguments
+$initdbArgs = @(
+	"--pgdata=`"$DataDir`"",
+	"--username=`"$SuperUsername`"", 
+	"--encoding=UTF8", 
+	"--pwfile=`"$passwordFile`"", 
+	"--auth=scram-sha-256"
+)
+if ($Locale -ne "DEFAULT") {
+    $initdbArgs += "--locale=`"$Locale`""
+}
+
+# Print the full command
+Write-Host "`nExecuting: `"$InstallDir\bin\initdb.exe`" $initdbArgs `n"
+
+# Run the initdb command
+$initdbProcess = Start-Process -FilePath "$InstallDir\bin\initdb.exe" -ArgumentList "$initdbArgs" -NoNewWindow -Wait -PassThru
+$initdbExitCode = $initdbProcess.ExitCode
+
+Write-Host "initdb exit code =" $initdbExitCode
+
+if ($initdbExitCode -ne 0) {
     Die "Failed to initialise the database cluster with initdb"
 }
 
