@@ -54,7 +54,7 @@ PGADMIN_STAGING_OSX=$PWD/server/staging/osx/pgadmin4
 SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
 CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
 PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/18
-IMAGEMAGICK_HOME_OSX=/opt/local/Current_v15/ImageMagick
+IMAGEMAGICK_HOME_OSX=/opt/local/Current_v18/ImageMagick
 PG_DOCBOOK_OSX=/usr/local/Cellar/docbook-xsl/1.79.2_1/docbook-xsl
 
 # CFLAGS/CPPFLAGS/CXXFLAGS settings for different platforms. The is most important for Mac
