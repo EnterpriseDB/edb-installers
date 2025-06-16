@@ -61,7 +61,7 @@ PG_DOCBOOK_OSX=/usr/local/Cellar/docbook-xsl/1.79.2_1/docbook-xsl
 # where we may need to use non-default SDKs if we're building on a platform newer than the
 # oldest supported
 
-MACOSX_MIN_VERSION=12
+MACOSX_MIN_VERSION=13
 ARCHFLAGS="-arch x86_64 -arch arm64"
 SDK_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk
 PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
