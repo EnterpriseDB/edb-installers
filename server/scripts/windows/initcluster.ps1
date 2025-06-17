@@ -22,7 +22,7 @@ if (-not $OSUsername -or -not $SuperUsername -or -not $LoggedInUser -or -not $Pa
 
 # Create a temporary script file
 $scriptFileName = ($([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".ps1"
-$outputFileName = $([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".tmp"
+$outputFileName = ($([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".tmp"
 
 # Function to log and terminate the script with an error message
 function Die {
