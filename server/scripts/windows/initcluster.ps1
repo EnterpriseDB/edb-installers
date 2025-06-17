@@ -47,7 +47,7 @@ function DoCmd {
 
     $scriptFile = Join-Path $env:TEMP $scriptFileName
     $outputFile = Join-Path $env:TEMP $outputFileName
-    $fullCommand = "$Command | Out-File -FilePath '$($outputFile.FullName)' -Encoding UTF8"
+    $fullCommand = "$Command | Out-File -FilePath '$outputFile' -Encoding UTF8"
 
     # Write command to the script file
     Set-Content -Path $scriptFile -Value $fullCommand -Encoding UTF8
