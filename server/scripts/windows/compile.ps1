@@ -199,9 +199,8 @@ Copy-Item $openssl_directory/bin/*.dll $installation_directory\bin
 Copy-Item $xml_directory/bin/*.dll $installation_directory\bin
 Copy-Item $xslt_directory/bin/libxslt.dll $installation_directory\bin
 Copy-Item $iconv_directory/bin/libiconv-2.dll $installation_directory\bin
-Copy-Item ./libwinpthread-1.dll $installation_directory\bin
 #Copy-Item $gettext_directory/bin/libiconv-2.dll $installation_directory\bin
-#Copy-Item $gettext_directory/bin/libwinpthread-1.dll $installation_directory\bin
+Copy-Item $gettext_directory/bin/libwinpthread-1.dll $installation_directory\bin
 Copy-Item $zlib_directory/bin/*.dll $installation_directory\bin
 Copy-Item $zstd_directory/bin/*.dll $installation_directory\bin
 Copy-Item $lz4_directory/bin/*.dll $installation_directory\bin
