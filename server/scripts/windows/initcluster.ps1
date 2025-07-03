@@ -82,16 +82,23 @@ function ClearAcl {
     param (
         [string]$DirectoryPath
     )
-    Write-Host "`nCalled ClearAcl ("$DirectoryPath")..."
-    # Run icacls to remove inheritance
-    & "$env:WINDIR\System32\icacls.exe" "`"$DirectoryPath`"" /inheritance:r | Out-Null
+    Write-Host "`nCalled ClearAcl (`"$DirectoryPath`")..."
+    # Print current ACL
+    #Write-Host "`nCurrent ACL ("$DirectoryPath"):"
+    $currentAcl = & "$env:WINDIR\System32\icacls.exe" "`"$DirectoryPath`""
+    #$currentAcl | ForEach-Object { Write-Host $_ }
+
+    # Remove inherited ACLs
+    Write-Host "`nRemoving inherited ACLs on (`"$DirectoryPath`")..."
+    $output = & "$env:WINDIR\System32\icacls.exe" "`"$DirectoryPath`"" /inheritance:r
+    #$output | ForEach-Object { Write-Host $_ }
 
     if ($LASTEXITCODE -ne 0) {
         Write-Host "`nFailed to remove inherited ACLs on (`"$DirectoryPath`")"
-        return $false
     } else {
-        return $true
+        Write-Host "`nSuccessfully removed inherited ACLs on (`"$DirectoryPath`")"
     }
+    return $LASTEXITCODE
 }
 
 # Function to check and set ACLs on the given directory
