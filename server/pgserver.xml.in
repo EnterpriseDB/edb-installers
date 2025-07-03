@@ -1481,7 +1481,7 @@
         </unpackFile>
         <unpackFile>
             <component>server</component>
-            <destination>${system_temp_directory}/postgresql_installer_${random_number}/getlocales.ps1</destination>
+            <destination>${env(TEMP)}/postgresql_installer_${random_number}/getlocales.ps1</destination>
             <folder>programfileswindows</folder>
             <origin>installer/server/getlocales.ps1</origin>
             <ruleList>
@@ -2044,7 +2044,7 @@
 
                 <runProgram>
                     <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                    <programArguments>-ExecutionPolicy Bypass -File "${system_temp_directory}/postgresql_installer_${random_number}/getlocales.ps1"</programArguments>
+                    <programArguments>-ExecutionPolicy Bypass -File "${env(TEMP)}/postgresql_installer_${random_number}/getlocales.ps1"</programArguments>
                     <wrapInScript>1</wrapInScript>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
