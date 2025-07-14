@@ -112,7 +112,7 @@ _build_runtime() {
          ELECTRON_ARCH="arm64"
          fi
 
-        ELECTRON_VERSION="33.3.2"
+        ELECTRON_VERSION="35.4.0"
         if [ "${ELECTRON_VERSION}" -eq "" ]; then
                echo "ELECTRON_VERSION variable value is NULL"
                exit 1
@@ -140,8 +140,7 @@ _build_runtime() {
 	# Install the runtime node_modules, then replace the package.json
         pushd "${BUNDLE_DIR}/Contents/Resources/app/" > /dev/null || exit
         yarn set version berry
-        yarn set version 3
-        yarn plugin import workspace-tools
+        yarn set version 4
         yarn workspaces focus --production
 
         popd > /dev/null || exit
@@ -282,7 +281,7 @@ _complete_bundle() {
 	# Build node modules
 	pushd "${SOURCE_DIR}/web" > /dev/null || exit
                 yarn set version berry
-                yarn set version 3
+                yarn set version 4
 		yarn install
 		yarn run bundle
 
@@ -310,7 +309,6 @@ _complete_bundle() {
 
 #	# License files
 #	cp -r ${SOURCE_DIR}/LICENSE "${BUNDLE_DIR}/Contents/"
-#	cp -r ${SOURCE_DIR}/DEPENDENCIES "${BUNDLE_DIR}/Contents/"
 
 	# Remove the .pyc files if any
 	find "${BUNDLE_DIR}" -name "*.pyc" -print0 | xargs -0 rm -f
