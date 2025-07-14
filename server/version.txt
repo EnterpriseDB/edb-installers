@@ -1,7 +1,7 @@
 pg_major_version=18
 pg_minor_version=0
 package_revision=beta1
-pgadmin4=9.3
+pgadmin4=9.5
 python=3.12.10
 perl=5.40.0.1
 pkg-config=0.28-1
