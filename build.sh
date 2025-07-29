@@ -140,15 +140,12 @@ then
     cd $WD
     source ./server/build.sh
 
-    PG_BUILD_SERVER=0
     if [ $SKIPBUILD = 0 ];
     then
-        (_prep_server && _build_server)
-        if [ $? == 0 ]; then
-            PG_BUILD_SERVER=1
-        fi
+        _prep_server || exit 1
+        _build_server || exit 1
+        _postprocess_server || exit 1
     fi
-    (_postprocess_server)
 fi
 
 # Package: LanguagePack
