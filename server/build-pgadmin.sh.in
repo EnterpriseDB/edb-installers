@@ -313,15 +313,12 @@ _complete_bundle() {
 	echo "    'pg':   '\$DIR/../../SharedSupport'," >> config_distro.py
 	echo "    'ppas': ''" >> config_distro.py
 	echo "}" >> config_distro.py
-	echo "MINIFY_HTML = False" >> config_distro.py
-	echo "UPGRADE_CHECK_KEY = 'edb-pgadmin4'" >> config_distro.py
 
 #	# License files
 	cp -r ${SOURCE_DIR}/LICENSE "${BUNDLE_DIR}/Contents/"
 
 	# Remove the .pyc files if any
 	find "${BUNDLE_DIR}" -name "*.pyc" -print0 | xargs -0 rm -f
-	cp -pR "${BUNDLE_DIR}" "${PGBUILD}"
 
         # Update permissions to make sure all users can access installed pgadmin.
         chmod -R og=u "${BUNDLE_DIR}"
