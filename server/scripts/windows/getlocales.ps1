@@ -1,4 +1,4 @@
-# Powershell script to get system locales in their BCP-47 codes 
+﻿# Powershell script to get system locales in their BCP-47 codes
 # followed by the long names minus names with non-ASCII characters.
 
 
