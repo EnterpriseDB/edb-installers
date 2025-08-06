@@ -99,9 +99,9 @@ _prep_server_osx() {
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/resources" || _die "Falied to clean the server/resources directory on Mac OS X VM"
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/*.bz2" || _die "Falied to clean the server/*.bz2 files on Mac OS X VM"
     ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/*.sh" || _die "Falied to clean the server/*.sh scripts on Mac OS X VM"
-    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/staging_cache/osx.build" || _die "Falied to clean the server directory on Mac OS X VM"
+    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/staging_cache/osx" || _die "Falied to clean the server directory on Mac OS X VM"
 
-    echo "Creating staging_cache directory ($WD/server/staging/osx)"
+    echo "Creating staging_cache directory ($WD/server/staging_cache/osx)"
     mkdir -p $WD/server/staging_cache/osx || _die "Couldn't create the staging_cache directory"
 
     echo "Creating staging directory ($WD/server/staging/osx)"
@@ -132,7 +132,8 @@ _prep_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf system_stats.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; tar -jxvf scripts.tar.bz2"
 
-    PG_STAGING=$PG_PATH_OSX/server/staging_cache/osx.build
+    # location where Postgres binaries are installed into
+    PG_STAGING=$PG_PATH_OSX/server/staging_cache/osx
 
     # create pgAdmin script and replace place holder
     if [ -f $WD/server/build-pgadmin.sh ]; then
@@ -144,9 +145,6 @@ _prep_server_osx() {
     _replace PGADMIN_PYTHON_DIR= "PGADMIN_PYTHON_DIR=${PGADMIN_PYTHON_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace PGADMIN_PYTHON_OSX in build-pgadmin.sh"
     _replace PGBUILD= "PGBUILD=${PG_STAGING}" $WD/server/build-pgadmin.sh $WD/server/build-pgadmin.sh || _die "Failed to replace PGBUILD in build-pgadmin.sh"
     chmod 755 $WD/server/build-pgadmin.sh
-
-    echo "Creating staging_cache directory on remote server"
-    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/staging_cache/osx" || _die "Couldn't create staging_cache directory"
 
     echo "END PREP Server OSX"
 }
@@ -192,7 +190,7 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on OSX"
 
     #Fix permission in the staging/osx/share
-    ssh $PG_SSH_OSX "chmod -R a+r $PG_PATH_OSX/server/staging_cache/osx.build/share/postgresql/timezone/*"
+    ssh $PG_SSH_OSX "chmod -R a+r $PG_PATH_OSX/server/staging_cache/osx/share/postgresql/timezone/*"
    
     # Building 'System_stats' extention and bundled the required files with posgresql
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/system_stats.osx; PATH="$PG_STAGING/bin:$PATH" make USE_PGXS=1; PATH="$PG_STAGING/bin:$PATH" make install USE_PGXS=1" || _die "Failed to build System Status"
@@ -211,7 +209,7 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cp /opt/local/Current/certs/cacert.pem $PG_PATH_OSX/server/source/stackbuilder.osx/stackbuilder.app/Contents/Resources/certs/ca-bundle.crt" || _die "Failed to copy certs bundle"
 
     # Copy the StackBuilder app bundle into place
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; cp -pR stackbuilder.app $PG_PATH_OSX/server/staging_cache/osx.build" || _die "Failed to copy StackBuilder into the staging_cache directory"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/stackbuilder.osx; cp -pR stackbuilder.app $PG_PATH_OSX/server/staging_cache/osx" || _die "Failed to copy StackBuilder into the staging_cache directory"
 
     # Copy the third party headers
     ssh $PG_SSH_OSX "cp -r /opt/local/Current/include/openssl $PG_STAGING/include" || _die "Failed to copy the required header"
@@ -266,7 +264,7 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current/lib/libexpat*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libexpat"
 
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
-    ssh $PG_SSH_OSX "cp -f $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plperl.so $PG_PATH_OSX/server/staging_cache/osx.build/"
+    #ssh $PG_SSH_OSX "cp -f $PG_PATH_OSX/server/staging_cache/osx/lib/postgresql/plperl.so $PG_PATH_OSX/server/staging_cache/osx/"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     echo "Rewrite shared library references for stackbuilder.app"
@@ -280,10 +278,10 @@ _build_server_osx() {
         _rewrite_so_refs $PG_STAGING lib/postgresql/plugins @loader_path/../../.."
 
     # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
-     ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging_cache/osx.build/plperl.so $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plperl.so"
+    #ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging_cache/osx/plperl.so $PG_PATH_OSX/server/staging_cache/osx/lib/postgresql/plperl.so"
 
     # Changing loader path of plpython3.so
-     ssh $PG_SSH_OSX "install_name_tool -change /lib/libpython${PG_VERSION_PYTHON}.dylib $PG_PYTHON_OSX/lib/libpython${PG_VERSION_PYTHON}.dylib $PG_PATH_OSX/server/staging_cache/osx.build/lib/postgresql/plpython3.so"
+     ssh $PG_SSH_OSX "install_name_tool -change /lib/libpython${PG_VERSION_PYTHON}.dylib $PG_PYTHON_OSX/lib/libpython${PG_VERSION_PYTHON}.dylib $PG_PATH_OSX/server/staging_cache/osx/lib/postgresql/plpython3.so"
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/scripts/osx/getlocales; gcc -no-cpp-precomp $PG_ARCH_OSX_CFLAGS -o getlocales.osx -O0 getlocales.c"  || _die "Failed to build getlocales utility"
 
@@ -292,25 +290,6 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
 
     ssh $PG_SSH_OSX "cd $PG_STAGING; mv pgAdmin4.app/ pgAdmin\ 4.app"
-
-    # Created /buildfarm/src/test under /opt so that the regression directory can be placed.  #####
-
-    # Delete the old regress dir from regression setup
-    ssh $PG_SSH_OSX "cd /opt/buildfarm/src/test/; rm -rf regress" || _die "Failed to remove the regression regress directory"
-
-    # Copy the regress source to the regression setup 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/src/test/; cp -pR regress /opt/buildfarm/src/test/" || _die "Failed to Copy regress to the regression directory"
-
-    echo "Removing last successful staging directory ($PG_PATH_OSX/server/staging_cache/osx)"
-    ssh $PG_SSH_OSX "rm -rf $PG_PATH_OSX/server/staging_cache/osx" || _die "Couldn't remove the last successful staging_cache directory directory"
-    ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/staging_cache/osx" || _die "Couldn't create the last successful staging_cache directory"
-
-    echo "Copying the complete build to the successful staging_cache directory"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; cp -PR server/staging_cache/osx.build/* server/staging_cache/osx" || _die "Couldn't copy the existing staging_cache directory"
-
-    ssh $PG_SSH_OSX "echo PG_MAJOR_VERSION=$PG_MAJOR_VERSION > $PG_PATH_OSX/server/staging_cache/osx/versions-osx.sh" || _die "Failed to write server version number into versions-osx.sh"
-    ssh $PG_SSH_OSX "echo PG_MINOR_VERSION=$PG_MINOR_VERSION >> $PG_PATH_OSX/server/staging_cache/osx/versions-osx.sh" || _die "Failed to write server build number into versions-osx.sh"
-    ssh $PG_SSH_OSX "echo PG_PACKAGE_VERSION=$PG_PACKAGE_VERSION >> $PG_PATH_OSX/server/staging_cache/osx/versions-osx.sh" || _die "Failed to write server build number into versions-osx.sh"
 
     cd $WD
     echo "END BUILD Server OSX"
@@ -399,16 +378,6 @@ _postprocess_server_osx() {
     cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man1 man1 || _die "Failed to copy the PostgreSQL man pages (osx)"
     cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man3 man3 || _die "Failed to copy the PostgreSQL man pages (osx)"
     cp -pR $WD/server/source/postgres.osx/doc/src/sgml/man7 man7 || _die "Failed to copy the PostgreSQL man pages (osx)"
-
-    source $WD/server/staging_cache/osx/versions-osx.sh
-    PG_BUILD_SERVER=$(expr $PG_BUILD_SERVER + $SKIPBUILD)
-
-    # If build passed empty this variable
-    BUILD_FAILED="build_failed-"
-    if [ $PG_BUILD_SERVER -gt 0 ];
-    then
-        BUILD_FAILED=""
-    fi
 
     echo "Preparing restructured staging for server"
     cp -r $WD/server/staging_cache/osx/bin $PGSERVER_STAGING_OSX  || _die "Failed to copy $WD/server/staging_cache/osx/bin"
@@ -662,12 +631,6 @@ _postprocess_server_osx() {
     ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.zip postgresql" || _die "Failed to notarize the app"
     scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg $WD/output || _die "Failed to copy notarized installer to $WD/output."
     scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy notarized installer to $WD/output."
-
-    # Delete the old installer from regression setup
-    ssh $PG_SSH_OSX "cd /opt/buildfarm/installers; rm -rf postgresql-*.dmg" || _die "Failed to remove the installer from regression installer directory"
-
-    # Copy the installer to regression setup
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; cp -p postgresql-*.dmg /opt/buildfarm/installers/" || _die "Failed to Copy installer to the regression directory"
 
     cd $WD
     echo "END POST Server OSX"
