@@ -45,34 +45,34 @@ function Warn {
 function DoCmd {
     param ([string]$Command)
 
-    $scriptFile = Join-Path $env:TEMP $scriptFileName
-    $outputFile = Join-Path $env:TEMP $outputFileName
-    $fullCommand = "$Command | Out-File -FilePath '$outputFile' -Encoding UTF8"
+    Write-Host "Executing command: $Command"
 
-    # Write command to the script file
-    Set-Content -Path $scriptFile -Value $fullCommand -Encoding UTF8
+    # Use a temporary variable to hold the combined output (stdout and stderr)
+    # The '2>&1' is crucial. It merges the error stream (2) with the output stream (1).
+    # The '( )' ensures the entire command is treated as a single pipeline,
+    # allowing us to capture the output and check $LASTEXITCODE reliably.
+    $output = & "$env:WINDIR\System32\cmd.exe" /c $Command 2>&1
 
-    Write-Host "Executing script file '$scriptFileName'..."
+    # Check the exit code of the last executed native command
+    $exitCode = $LASTEXITCODE
 
-    # Execute the script file
-    $process = Start-Process -FilePath "$env:WINDIR\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `"$scriptFile`"" -NoNewWindow -Wait -PassThru
-    $exitCode = $process.ExitCode
-
-    # Display output file content if exists
-    if (Test-Path $outputFile) {
-        Get-Content $outputFile | Write-Host
-        Remove-Item $outputFile -Force
+    # Display the captured output
+    if ($output) {
+        Write-Host "--- Command Output ---"
+        $output | Write-Host
+        Write-Host "----------------------"
     } else {
-        Write-Host "Output file does not exist..."
+        Write-Host "Command executed, but produced no output."
     }
 
-    # Cleanup
-    if (Test-Path $scriptFile) {
-        Remove-Item $scriptFile -Force
+    # If the command failed, print a clear error message
+    if ($exitCode -ne 0) {
+        Write-Host "`nERROR: Command failed with exit code $exitCode."
     } else {
-        Write-Host "Script file '$scriptFileName' does not exist..."
+        Write-Host "`nSUCCESS: Command completed successfully."
     }
 
+    # Return the exit code for the calling function to use
     return $exitCode
 }
 
