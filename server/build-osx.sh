@@ -265,7 +265,7 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cp -pR /opt/local/Current_v15/lib/libexpat*.dylib $PG_STAGING/stackbuilder.app/Contents/Frameworks/" || _die "Failed to copy the latest libexpat"
 
     # Copying plperl to staging/osx directory as we would not like to update the _rewrite_so_refs for it.
-    #ssh $PG_SSH_OSX "cp -f $PG_PATH_OSX/server/staging_cache/osx/lib/postgresql/plperl.so $PG_PATH_OSX/server/staging_cache/osx/"
+    ssh $PG_SSH_OSX "cp -f $PG_PATH_OSX/server/staging_cache/osx/lib/postgresql/plperl.so $PG_PATH_OSX/server/staging_cache/osx/"
 
     # Rewrite shared library references (assumes that we only ever reference libraries in lib/)
     echo "Rewrite shared library references for stackbuilder.app"
@@ -279,7 +279,7 @@ _build_server_osx() {
         _rewrite_so_refs $PG_STAGING lib/postgresql/plugins @loader_path/../../.."
 
     # Copying back plperl to staging/osx/lib/postgresql directory as we would not like to update the _rewrite_so_refs for it.
-    #ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging_cache/osx/plperl.so $PG_PATH_OSX/server/staging_cache/osx/lib/postgresql/plperl.so"
+    ssh $PG_SSH_OSX "mv -f $PG_PATH_OSX/server/staging_cache/osx/plperl.so $PG_PATH_OSX/server/staging_cache/osx/lib/postgresql/plperl.so"
 
     # Changing loader path of plpython3.so
      ssh $PG_SSH_OSX "install_name_tool -change /lib/libpython${PG_VERSION_PYTHON}.dylib $PG_PYTHON_OSX/lib/libpython${PG_VERSION_PYTHON}.dylib $PG_PATH_OSX/server/staging_cache/osx/lib/postgresql/plpython3.so"
