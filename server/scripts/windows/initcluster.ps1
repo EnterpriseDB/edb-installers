@@ -256,6 +256,10 @@ $initdbArgs = @(
 if ($Locale -ne "DEFAULT") {
     $initdbArgs += "--locale=`"$Locale`""
 }
+# Change English locales: "English, <Country>" → "English_<Country>"
+if ($Locale -match '^English, (.+)$') {
+    $Locale = "English_$($matches[1])"
+}
 
 # Print the full command
 Write-Host "`nExecuting: `"$InstallDir\bin\initdb.exe`" $initdbArgs `n"
