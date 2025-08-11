@@ -1,25 +1,31 @@
 ﻿# Powershell script to get system locales in their BCP-47 codes
 # followed by the long names minus names with non-ASCII characters.
-
+# for English locales: "English, <Country>" → "English_<Country>"
 
 # fetching all system locales
 $cultures = [System.Globalization.CultureInfo]::GetCultures([System.Globalization.CultureTypes]::AllCultures) | Where-Object { $_.LCID -ne 127 }
 
-# formatting BCP names for locales in "key=value" style 
+# formatting BCP names for locales in "key=value" style
 $cultures | Sort-Object Name | ForEach-Object { $_.Name + '=' + $_.Name }
 
-# filter cutlures containing only ASCII characters
+# filter cultures containing only ASCII characters
 $filteredCultures = $cultures | Where-Object { $_.EnglishName -match '^[\x00-\x7F]+$' } | Sort-Object EnglishName
- 
+
 # Formatting locales in a way that is recognizable by initdb
 foreach ($culture in $filteredCultures) {
     $name = $culture.EnglishName
-    if ($name -match '^([^,]+), ([^(]+) \(([^)]+)\)$') { 
-        $name = "$($matches[1]) ($($matches[2])), $($matches[3])" 
-    } elseif ($name -match '^(.+?) \(([^,]+), (.+?)\)$') { 
-        $name = "$($matches[1]) ($($matches[2])), $($matches[3])" 
-    } elseif ($name -match '^(.+?) \((.+)\)$') { 
-        $name = "$($matches[1]), $($matches[2])" 
+    if ($name -match '^([^,]+), ([^(]+) \(([^)]+)\)$') {
+        $name = "$($matches[1]) ($($matches[2])), $($matches[3])"
+    } elseif ($name -match '^(.+?) \(([^,]+), (.+?)\)$') {
+        $name = "$($matches[1]) ($($matches[2])), $($matches[3])"
+    } elseif ($name -match '^(.+?) \((.+)\)$') {
+        $name = "$($matches[1]), $($matches[2])"
     }
-        "$name=$name"
+
+    # Only change English locales: "English, <Country>" → "English_<Country>"
+    if ($name -match '^English, (.+)$') {
+        $name = "English_$($matches[1])"
+    }
+
+    "$name=$name"
 }
