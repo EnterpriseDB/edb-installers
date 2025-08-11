@@ -1,13 +1,13 @@
-# PostgreSQL - Release v17.6-1 (2025-08-14)
+# PostgreSQL installer release 17.6-2 (2025-08-30)
 ## Changes
-- **Dependencies (macOS & windows)**
-    - Updated `pgAdmin4` to version `9.6`.
-    - Updated `libxml2` to version `2.14.5`.
-    - Updated `curl` to version `8.15.0`.
+- **Dependencies (macOS & Windows)**
+    - Update `pgAdmin4` to version `9.6`.
+    - Update `libxml2` to version `2.14.5`.
+    - Update `curl` to version `8.15.0`.
 
-- **Dependencies (macOS)**
-    - Updated `libpng2` to version `1.6.50`.
-    - Updated `e2fsprogs` to version `1.47.3`.
+- **Additional dependencies (macOS)**
+    - Update `libpng2` to version `1.6.50`.
+    - Update `e2fsprogs` to version `1.47.3`.
 
 
 ## Bug Fixes 
