@@ -243,6 +243,11 @@ $randomFileName = ($([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".tmp"
 $passwordFile = Join-Path "$PasswordDir"  $randomFileName
 Set-Content -Path "$passwordFile" -Value $Password -Force
 
+# Change English locales: "English, <Country>" → "English_<Country>"
+if ($Locale -match '^English, (.+)$') {
+    $Locale = "English_$($matches[1])"
+}
+
 # Run initdb
 Write-Host "`nInitializing PostgreSQL database cluster..."
 # Set initdb arguments
@@ -253,6 +258,7 @@ $initdbArgs = @(
 	"--pwfile=`"$passwordFile`"", 
 	"--auth=scram-sha-256"
 )
+
 if ($Locale -ne "DEFAULT") {
     $initdbArgs += "--locale=`"$Locale`""
 }
