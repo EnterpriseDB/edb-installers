@@ -4,7 +4,6 @@
     - Update `pgAdmin4` to version `9.6`.
     - Update `libxml2` to version `2.14.5`.
     - Update `curl` to version `8.15.0`.
-    - Update `openssl` to version `3.0.17`.
 
 - **Additional dependencies (macOS)**
     - Update `libpng2` to version `1.6.50`.
