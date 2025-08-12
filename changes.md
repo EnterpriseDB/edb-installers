@@ -13,6 +13,6 @@
 
 ## Bug Fixes 🐛
 - **Fix:** Improvements in DoCmd function in initcluster script (Issue #347)
-- **Fix:** disable wrapInScript for getlocales.ps1 as it was failing in few conditions (Issue #343)
 - **Fix:** Use call operator to run icacls.exe in the initcluster.ps1 (Issue #332)
 - **Fix:** Update the function in initcluster.ps1 to suppress the warning messages username SID is not available (Issue #318)
+- **Fix:** Update initcluster.ps1 to convert "English, <Country> with English_<Country>" before passing to initdb.exe
