@@ -1,13 +1,3 @@
-# PostgreSQL installer release 17.6-2 (2025-08-30)
-
-## Changes 🛠️
-- [New Features, Enhancements, Dependencies, etc.]
-
-## Bug Fixes 🐛
-- [Fixes for bugs]
-
----
-
 # PostgreSQL installer release 17.6-1 (2025-08-14)
 ## Changes 🛠️
 - **Dependencies (macOS & Windows)**
