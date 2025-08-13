@@ -2,13 +2,14 @@
 ## Changes 🛠️
 - **Dependencies (macOS & Windows)**
     - Update `pgAdmin4` to version `9.6`.
-    - Update `libxml2` to version `2.14.5`.
     - Update `curl` to version `8.15.0`.
     - Update `openssl` to version `3.0.17`.
+    - Applied security patches from libxml2 v2.13 to v2.13.8 to address known vulnerabilities (Windows only).
 
 - **Additional dependencies (macOS)**
     - Update `libpng2` to version `1.6.50`.
     - Update `e2fsprogs` to version `1.47.3`.
+    - Update `libxml2` to version `2.14.5`.
 
 
 ## Bug Fixes 🐛
