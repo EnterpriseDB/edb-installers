@@ -1,17 +1,15 @@
 # PostgreSQL installer release 17.6-1 (2025-08-14)
 ## Changes 🛠️
-- **Dependencies (MacOS & Windows)**
-    - Update `pgAdmin4` to version `9.6`
-    - Update `curl` to version `8.15.0`
-    - Update `openssl` to version `3.0.17`
+- **Dependencies (macOS & Windows)**
+    - Update `pgAdmin4` to version `9.6`.
+    - Update `libxml2` to version `2.14.5`.
+    - Update `curl` to version `8.15.0`.
+    - Update `openssl` to version `3.0.17`.
 
-- **Additional dependencies (MacOS)**
-    - Update `libpng2` to version `1.6.50`
-    - Update `e2fsprogs` to version `1.47.3`
-    - Update `libxml2` to version `2.14.5`
+- **Additional dependencies (macOS)**
+    - Update `libpng2` to version `1.6.50`.
+    - Update `e2fsprogs` to version `1.47.3`.
 
-- **Additional dependencies (Windows)**
-    - Update `libxml2` to version `2.13.8-2`. This includes security patches/commits from HEAD of 2.13 (Upto a489aca8) to 2.13.8 
 
 ## Bug Fixes 🐛
 - **Fix:** Improvements in DoCmd function in initcluster script (Issue #347)
