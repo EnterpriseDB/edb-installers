@@ -144,8 +144,8 @@ then
     then
         _prep_server || exit 1
         _build_server || exit 1
+		fi
         _postprocess_server || exit 1
-    fi
 fi
 
 # Package: LanguagePack
