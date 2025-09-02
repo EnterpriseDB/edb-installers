@@ -2,6 +2,11 @@
 ## Changes 🛠️
 - **Dependencies (macOS & Windows)**
     - Update `pgAdmin4` to version `9.7`
+ 
+- **Additional dependencies (MacOS)**
+    - Update `gettext` to version `0.26`
+    - Update `pcre2` to version `10.46`
+    - Update `krb5` to version `1.22.1`      
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
