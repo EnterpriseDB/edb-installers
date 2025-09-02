@@ -1,3 +1,10 @@
+# PostgreSQL installer release 18rc1 (2025-09-04)
+## Changes 🛠️
+- **Dependencies (macOS & Windows)**
+    - Update `pgAdmin4` to version `9.7`
+
+----------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 18beta3 (2025-08-14)
 ## Changes 🛠️
 - **Dependencies (macOS & Windows)**
