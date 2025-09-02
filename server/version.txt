@@ -4,6 +4,6 @@ package_revision=rc1
 pgadmin4=9.7
 python=3.13.7
 perl=5.40.2.1
-pkg-config=0.29-2
+pkg-config=0.28-1
 tcl=8.6.17
 stackbuilder=4.2.2
