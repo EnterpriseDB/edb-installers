@@ -1,7 +1,7 @@
-PostgreSQL Installer build system \
-=================================\
-\
-This is the PostgreSQL Installer build system. This document attempts to \
+PostgreSQL Installer build system 
+=================================
+
+This is the PostgreSQL Installer build system. This document attempts to 
 describe how the system is architected, how to set it up and how to extend \
 it. It is a work in progress and will no doubt require further refinement\
 over time. There there is one goal however:\
