@@ -78,7 +78,7 @@ Utilities should be installed using MacPorts:
 - Download the installer from http://www.macports.org/ and install the package.
 
 - Add /opt/local/bin:/opt/local/sbin to the *end* of the path. Add the following
-  line to ~/.bash_profile for the buildfarm user:\
+  line to ~/.bash_profile for the buildfarm user:
 
 export PATH=$PATH:/opt/local/bin:/opt/local/sbin
 \
@@ -94,13 +94,13 @@ $ sudo port install ossp-uuid\
 Dependency libraries must be built with a little more control to ensure they 
 use the correct SDK to allow them to be used on Tiger and above. We manually
 build and install these packages into /usr/local/\
-\
+
 - Download the source for each library (eg. libxml2 & libxslt).\
-\
+
 - Unpack the source into /usr/local/src\
-\
+
 - Configure the source with a command such as:\
-\
+
 CFLAGS="-isysroot /Developer/SDKs/MacOSX14.sdk -mmacosx-version-min=13 -arch i386 -arch x86_64 -arch ppc" LDFLAGS="-arch i386 -arch x86_64" ./configure --prefix=/usr/local/ --disable-dependency-tracking\
 \
 - Build and install:\
