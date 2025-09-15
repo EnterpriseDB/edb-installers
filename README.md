@@ -261,27 +261,27 @@ This script must be edited whenever a new module is added to call the appropriat
 functions in the package build script.\
 \
 Directories\
------------\
+------------\
 
 * output/\
 \
-This directory will contain all the completed installers.\
+This directory will contain all the completed installers.
 
 * scripts/
 
-This directory contains miscellaneous scripts that may be useful to multiple\
-modules or the overall build system.\
+This directory contains miscellaneous scripts that may be useful to multiple
+modules or the overall build system.
 
 * resources/
 
-This directory contains installer resources that may be useful to multiple\
-modules or the overall build system.\
+This directory contains installer resources that may be useful to multiple
+modules or the overall build system.
 
 * tarballs/
 
-This directory contains all the tarballs we use for builds\
+This directory contains all the tarballs we use for builds
 
-* <everything else>/
+* <everything else>/\
 
 Each additional directory contains a single package. These may be internally built
 as required, though the interface should remain consistent - ie. a single build
