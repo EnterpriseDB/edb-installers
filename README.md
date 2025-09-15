@@ -54,32 +54,32 @@ uninstallation. The version number for a package should *always* be
 cleared, but other data may be retained. For example, the server package will
 not remove the data directory, thus it is appropriate to leave the 
 DataDirectory, Port and Superuser values intact.\
-\
+
 * Installers:\
 \
-Each package installer should be capable of being silently or interactively \
-installing and uninstalling the package. When uninstalling, as much of the package\
-as possible should be removed, however it is not always possible (through\
+Each package installer should be capable of being silently or interactively 
+installing and uninstalling the package. When uninstalling, as much of the package
+as possible should be removed, however it is not always possible (through
 lack of reference counting between packages) or desirable to remove everything.\
 \
 Build platform\
---------------\
+----------------\
 \
-The build platform is Mac OS X Sonoma. We use OS X because it allows us to run\
+The build platform is Mac OS X Sonoma. We use OS X because it allows us to run
 all other Intel based OS's on the same machine. \
 \
-A number of additional dependencies are required when setting up the system,\
-such as libxml2 and libxslt, as well as useful utilties such as wget. Setting\
-these up correct is essentially to ensuring future Universal binary builds will\
+A number of additional dependencies are required when setting up the system,
+such as libxml2 and libxslt, as well as useful utilties such as wget. Setting
+these up correct is essentially to ensuring future Universal binary builds will
 work as expected on all supported OS X versions (10.5/Leopard and above).\
 \
 Utilities should be installed using MacPorts:\
-\
+
 - Download the installer from http://www.macports.org/ and install the package.\
-\
+
 - Add /opt/local/bin:/opt/local/sbin to the *end* of the path. Add the following\
   line to ~/.bash_profile for the buildfarm user:\
-\
+
 export PATH=$PATH:/opt/local/bin:/opt/local/sbin\
 \
 - Install packages:\
