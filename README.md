@@ -14,14 +14,14 @@ used on Windows (pgInstaller) - it is intended to mirror it's basic functionalit
 however.\
 \
 Modular system design\
----------------------\
+-----------------------\
 \
 The modular system is designed to be as flexible as possible and allow package
 authors as much freedom as possible in the way they design their installers. 
 There are some basic rules about how we design add-on packages however - it 
 remains up  to the individual author to determine whether or not breaking any 
 rules will break their package. They had better not break the system though!
-\
+
 * Registration:\
 \
 A central registry file is used in which packages should register themselves. This
