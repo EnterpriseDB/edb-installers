@@ -93,7 +93,7 @@ $ sudo port install ossp-uuid\
 \
 Dependency libraries must be built with a little more control to ensure they 
 use the correct SDK to allow them to be used on Tiger and above. We manually
-build and install these packages into /usr/local/\
+build and install these packages into /usr/local/
 
 - Download the source for each library (eg. libxml2 & libxslt).
 
@@ -102,7 +102,7 @@ build and install these packages into /usr/local/\
 - Configure the source with a command such as:
 
 CFLAGS="-isysroot /Developer/SDKs/MacOSX14.sdk -mmacosx-version-min=13 -arch i386 -arch x86_64 -arch ppc" LDFLAGS="-arch i386 -arch x86_64" ./configure --prefix=/usr/local/ --disable-dependency-tracking\
-\
+
 - Build and install:\
 \
 make all\
