@@ -113,7 +113,7 @@ libraries, and not the older, system copies. In the case of libxslt, we can
 do this by configuring with --with-libxml-prefix=/usr/local
 
 - Install unix2dos utility:
-$sudo port install unix2dos\
+$sudo port install unix2dos
 
 - Set up DocBook SGML
 
@@ -130,8 +130,8 @@ and then unpack the archive in /opt/local/share/sgml
 
  4) Add a symlink so PostgreSQL can find the stylesheets:
 
-     sudo ln -s  /opt/local/share/sgml/docbook-dsssl-1.79 \\
-                 /usr/local/share/sgml/docbook-dsssl\
+     sudo ln -s  /opt/local/share/sgml/docbook-dsssl-1.79 
+                 /usr/local/share/sgml/docbook-dsssl
 
  5) Download DockBook 4.2 (http://www.docbook.org/sgml/4.2/docbook-4.2.zip) 
    and the ISO 8879 character entities (http://www.oasis-open.org/cover/ISOEnts.zip)
@@ -144,10 +144,10 @@ and then unpack the archive in /opt/local/share/sgml
 
     perl -pi -e 's/iso-(.*).gml/ISO\\1/g' docbook.cat
 
- 9) Create the file /opt/local/share/sgml/catalog, with the following contents:
+ 9) Create the file /opt/local/share/sgml/catalog, with the following contents:\
     CATALOG "openjade/catalog"    \
     CATALOG "docbook-4.2/docbook.cat"\
-    CATALOG "docbook-dsssl-1.79/catalog"\
+    CATALOG "docbook-dsssl-1.79/catalog"
 
  10) Make sure that settings.sh is updated with docbook installation path.
 
