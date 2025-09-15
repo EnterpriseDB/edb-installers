@@ -208,7 +208,7 @@ Note: In case of Windows-64 setup you may get errors related to:
 LINK : fatal error LNK1181: cannot open input file 'bufferoverflowU.lib'^M
 Main reason of this issue is bufferoverflowU.lib file missing in parallel directory structures of VC installation. To reslove this copy said file into parallel structure e.g.:
 cp /cygdrive/c/Program\\ Files\\ \\(x86\\)/Microsoft\\ SDKs/Windows/v5.0/Lib/IA64/bufferoverflowu.lib  /cygdrive/c/Program\\ Files/Microsoft\\ SDKs/Windows/v6.0A/Lib/x64/.
-\
+
 * Mac OS X\
 \
 Creating a new VM for new codepath from an existing VM on the same machine:\
@@ -223,14 +223,14 @@ Creating a new VM for new codepath from an existing VM on the same machine:\
 - Restart the VM
  \
 Build Machines as external machines\
------------------------------------\
+-------------------------------------\
 In order to set build machines as external machines, Create NFS share pointing to 
 top level 'pginstaller' directory on Mac. For this purpose free tool 'NFS Manager' 
 can be used. On linux side, update /etc/fstab to create nfs mount to this NFS share. \
 
 Build scripts\
 -------------\
-\
+
 * settings.sh\
 \
 This script is derived from settings.sh.in which is stored in source control. It
@@ -335,20 +335,20 @@ Additional configuration in the VM's :\
        >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" ./configure --prefix=/usr/local --disable-dependency-tracking\
        >make\
        >sudo make install\
-      \
+      
       2) Install libpng (User only 1.2.x version - php-5.2.1 has not yet include support for 1.4.x version)\
       Download and extract libpng from http://www.libpng.org/pub/png/pngcode.html\
       Compile and install:\
       >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" ./configure --prefix=/usr/local --disable-dependency-tracking\
       >make\
       >sudo make install\
-\
+
       3) Install freetype\
       Download and extract freetype from http://freetype.org/download.html\
       >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" ./configure --prefix=/usr/local --disable-dependency-tracking\
       >make\
       >sudo make install\
-\
+
 * Install the latest version of ActiveState Python, Perl & TCL/Tk on all\
   the platforms.\
 \
