@@ -53,7 +53,7 @@ It is up to the uninstaller for each package to leave or clean the data during
 uninstallation. The version number for a package should *always* be
 cleared, but other data may be retained. For example, the server package will
 not remove the data directory, thus it is appropriate to leave the 
-DataDirectory, Port and Superuser values intact.\
+DataDirectory, Port and Superuser values intact.
 
 * Installers:\
 \
