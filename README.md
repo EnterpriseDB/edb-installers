@@ -291,17 +291,17 @@ _build_< packagename > and _postprocess_< packagename >.
 For a description fo the build system for a single package, see server/README.\
 \
 Additional configuration in the VM's :
---------------------------------------\
+--------------------------------------
 
 * Adding gd module to php in Windows
 
-   * Prequisites:\
+   * Prequisites:
 
-     1) jpeg     (http://nchc.dl.sourceforge.net/sourceforge/gnuwin32/jpeg-6b-4.exe)\
-     2) libpng   (http://nchc.dl.sourceforge.net/sourceforge/gnuwin32/libpng-1.2.36-setup.exe)\
-     3) freetype (http://nchc.dl.sourceforge.net/sourceforge/gnuwin32/freetype-2.3.5-1-setup.exe)\
+     1) jpeg     (http://nchc.dl.sourceforge.net/sourceforge/gnuwin32/jpeg-6b-4.exe)
+     2) libpng   (http://nchc.dl.sourceforge.net/sourceforge/gnuwin32/libpng-1.2.36-setup.exe)
+     3) freetype (http://nchc.dl.sourceforge.net/sourceforge/gnuwin32/freetype-2.3.5-1-setup.exe)
 \
-     Install these in the pgBuild directory as jpeg, libpng and freetype respectively.\
+     Install these in the pgBuild directory as jpeg, libpng and freetype respectively.
 
    * Modifications:
 
@@ -325,7 +325,7 @@ Additional configuration in the VM's :
 \
           jpeg/lib/jpeg.lib to jpeg/lib/libjpeg.lib
 
-\
+
 * Adding gd module to php in osx\
 
    * Prequisites:
