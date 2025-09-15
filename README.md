@@ -211,7 +211,7 @@ cp /cygdrive/c/Program\\ Files\\ \\(x86\\)/Microsoft\\ SDKs/Windows/v5.0/Lib/IA6
 
 * Mac OS X\
 \
-Creating a new VM for new codepath from an existing VM on the same machine:\
+Creating a new VM for new codepath from an existing VM on the same machine:
 - Shutdown the VM
 - Right click the VM and click 'show in finder' and then right click on the bundle to copy to another name
 - Double Click the bundle to power it on and choose "I copied it" when Fusion asks
@@ -221,7 +221,7 @@ Creating a new VM for new codepath from an existing VM on the same machine:\
   sudo scutil --set HostName "newname"
   System Preferences->Users&Groups and Change full name to the new name
 - Restart the VM
- \
+  
 Build Machines as external machines\
 -------------------------------------\
 In order to set build machines as external machines, Create NFS share pointing to 
