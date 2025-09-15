@@ -6,11 +6,11 @@ describe how the system is architected, how to set it up and how to extend
 it. It is a work in progress and will no doubt require further refinement
 over time. There there is one goal however:\
 \
-Build all PostgresSQL & add-on package installers for all supported platforms\
+Build all PostgresSQL & add-on package installers for all supported platforms
 with a single command.\
 \
-Note that this system is not intended to replace the existing installer system \
-used on Windows (pgInstaller) - it is intended to mirror it's basic functionality\
+Note that this system is not intended to replace the existing installer system 
+used on Windows (pgInstaller) - it is intended to mirror it's basic functionality
 however.\
 \
 Modular system design\
