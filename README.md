@@ -1,4 +1,4 @@
-\f0\fs24 \cf0 PostgreSQL Installer build system \
+PostgreSQL Installer build system \
 =================================\
 \
 This is the PostgreSQL Installer build system. This document attempts to \
