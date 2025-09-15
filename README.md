@@ -14,7 +14,7 @@ used on Windows (pgInstaller) - it is intended to mirror it's basic functionalit
 however.\
 \
 Modular system design\
------------------------\
+------------------------\
 \
 The modular system is designed to be as flexible as possible and allow package
 authors as much freedom as possible in the way they design their installers. 
@@ -29,12 +29,12 @@ data will be used by StackBuilder to locate installed packages. The registry
 file is /etc/postgres-reg.ini, and should be considered analagous in function to
 the sections of the Windows registry used for the same purposes on that platform.\
 \
-StackBuilder requires specific entries for the PostgreSQL server, as well as an\
-entry indicating the installed version of each unique package. An example file\
+StackBuilder requires specific entries for the PostgreSQL server, as well as an
+entry indicating the installed version of each unique package. An example file
 is show below.\
 \
-; This section is for a server, and is analagous to the PostgreSQL key under\
-; HKEY_CURRENT_USER\\Software on Windows\
+This section is for a server, and is analagous to the PostgreSQL key under\
+HKEY_CURRENT_USER\\Software on Windows\
 [PostgreSQL\\8.3]\
 Version=8.3.3\
 InstallationDirectory=/opt/PostgreSQL/8.3\
@@ -49,10 +49,10 @@ Version=1.3.2\
 Version=1.8.4\
 InstallationDirectory=/opt/pgAdmin3\
 \
-It is up to the uninstaller for each package to leave or clean the data during \
-uninstallation. The version number for a package should *always* be\
-cleared, but other data may be retained. For example, the server package will\
-not remove the data directory, thus it is appropriate to leave the \
+It is up to the uninstaller for each package to leave or clean the data during 
+uninstallation. The version number for a package should *always* be
+cleared, but other data may be retained. For example, the server package will
+not remove the data directory, thus it is appropriate to leave the 
 DataDirectory, Port and Superuser values intact.\
 \
 * Installers:\
