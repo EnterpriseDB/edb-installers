@@ -174,11 +174,10 @@ generated on the host machine using:
 ssh-keygen -t rsa\
 \
 Copy the resulting id_rsa.pub file to ~/.ssh/authorized_keys on each VM. \
-\
+
 * Windows\
-\
+
 The Windows VM is the most tricky to setup:\
-\
 - Install Windows 7
 - Install Microsoft Sercurity Essentials
 - Install Visual Studio 2008, and update to the latest service pack
@@ -215,15 +214,15 @@ cp /cygdrive/c/Program\\ Files\\ \\(x86\\)/Microsoft\\ SDKs/Windows/v5.0/Lib/IA6
 * Mac OS X\
 \
 Creating a new VM for new codepath from an existing VM on the same machine:\
-- Shutdown the VM\
-- Right click the VM and click 'show in finder' and then right click on the bundle to copy to another name\
-- Double Click the bundle to power it on and choose "I copied it" when Fusion asks\
+- Shutdown the VM
+- Right click the VM and click 'show in finder' and then right click on the bundle to copy to another name
+- Double Click the bundle to power it on and choose "I copied it" when Fusion asks
 - Change the HostName, ComputerName using below commands:\
   sudo scutil --set ComputerName "newname"\
   sudo scutil --set LocalHostName "newname"\
-  sudo scutil --set HostName "newname"\
-  System Preferences->Users&Groups and Change full name to the new name\
-- Restart the VM\
+  sudo scutil --set HostName "newname"
+  System Preferences->Users&Groups and Change full name to the new name
+- Restart the VM
  \
 Build Machines as external machines\
 -----------------------------------\
