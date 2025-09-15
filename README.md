@@ -108,17 +108,16 @@ CFLAGS="-isysroot /Developer/SDKs/MacOSX14.sdk -mmacosx-version-min=13 -arch i38
 make all\
 sudo make install\
 \
-Note that we must make sure all additional libraries link against these\
-libraries, and not the older, system copies. In the case of libxslt, we can\
-do this by configuring with --with-libxml-prefix=/usr/local\
-\
+Note that we must make sure all additional libraries link against these
+libraries, and not the older, system copies. In the case of libxslt, we can
+do this by configuring with --with-libxml-prefix=/usr/local
+
 - Install unix2dos utility:\
 $sudo port install unix2dos\
-\
-- Set up DocBook SGML\
-\
-Configuring DocBook SGML on Mac OS X with MacPorts.
 
+- Set up DocBook SGML\
+
+Configuring DocBook SGML on Mac OS X with MacPorts.
  1) Install the following packages using MacPorts:\
 \
     opensp\
