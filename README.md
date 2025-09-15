@@ -304,7 +304,7 @@ Additional configuration in the VM's :\
      Install these in the pgBuild directory as jpeg, libpng and freetype respectively.\
 \
    * Modifications:\
-\
+
       Freetype:\
 \
        1) Modify the directory structure as:\
@@ -314,17 +314,17 @@ Additional configuration in the VM's :\
           freetype --> include --> freetype\
 \
           (leave the ft2build.h file in include directory as it is.)\
-\
+
        2) Copy the files:\
 \
           freetype/lib/freetype.lib to freetype/lib/freetype2.lib\
 \
       jpeg:\
-\
+
        1) Copy the files:\
 \
           jpeg/lib/jpeg.lib to jpeg/lib/libjpeg.lib\
-\
+
 \
 * Adding gd module to php in osx\
 \
