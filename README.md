@@ -173,11 +173,9 @@ generated on the host machine using:
 \
 ssh-keygen -t rsa\
 \
-Copy the resulting id_rsa.pub file to ~/.ssh/authorized_keys on each VM. \
-
+Copy the resulting id_rsa.pub file to ~/.ssh/authorized_keys on each VM.
 * Windows\
-
-The Windows VM is the most tricky to setup:\
+The Windows VM is the most tricky to setup:
 - Install Windows 7
 - Install Microsoft Sercurity Essentials
 - Install Visual Studio 2008, and update to the latest service pack
