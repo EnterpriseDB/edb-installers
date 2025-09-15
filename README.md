@@ -123,36 +123,34 @@ Configuring DocBook SGML on Mac OS X with MacPorts.
     openjade\
     docbook-xsl\
     docbook2X\
-\
- 2) Download the docbook-dsssl stylesheets from \
+    
+ 3) Download the docbook-dsssl stylesheets from \
 http://sourceforge.net/project/showfiles.php?group_id=21935&package_id=16611 \
 and then unpack the archive in /opt/local/share/sgml\
 
- 3) Add a symlink so PostgreSQL can find the stylesheets:\
+ 4) Add a symlink so PostgreSQL can find the stylesheets:\
 
      sudo ln -s  /opt/local/share/sgml/docbook-dsssl-1.79 \\\
                  /usr/local/share/sgml/docbook-dsssl\
 
- 4) Download DockBook 4.2 (http://www.docbook.org/sgml/4.2/docbook-4.2.zip) \
+ 5) Download DockBook 4.2 (http://www.docbook.org/sgml/4.2/docbook-4.2.zip) \
    and the ISO 8879 character entities (http://www.oasis-open.org/cover/ISOEnts.zip)\
 
- 5) Unzip both archives into /opt/local/share/sgml/docbook-4.2\
+ 6) Unzip both archives into /opt/local/share/sgml/docbook-4.2\
 
- 6) Ensure that all the unpacked files are world readable.\
+ 7) Ensure that all the unpacked files are world readable.\
 
- 7) Run the following command in the docbook-4.2 directory:\
+ 8) Run the following command in the docbook-4.2 directory:\
 
     perl -pi -e 's/iso-(.*).gml/ISO\\1/g' docbook.cat\
 
- 8) Create the file /opt/local/share/sgml/catalog, with the following contents:\
+ 9) Create the file /opt/local/share/sgml/catalog, with the following contents:\
+    CATALOG "openjade/catalog"    \
+    CATALOG "docbook-4.2/docbook.cat"\
+    CATALOG "docbook-dsssl-1.79/catalog"\
 \
-CATALOG "openjade/catalog"    \
-CATALOG "docbook-4.2/docbook.cat"\
-CATALOG "docbook-dsssl-1.79/catalog"\
-\
- 9) Make sure that settings.sh is updated with docbook installation path.\
+ 10) Make sure that settings.sh is updated with docbook installation path.\
 
-\
 Build VMs\
 ---------\
 \
@@ -170,8 +168,8 @@ user in the VM, eg using the following in /etc/fstab:\
 \
 .host:/  /mnt/hgfs  vmhgfs  defaults,ttl=5,uid=500,gid=500     0 0\
 \
-SSH authentication between hosts is achieved using certificates. These can be\
-generated on the host machine using:\
+SSH authentication between hosts is achieved using certificates. These can be
+generated on the host machine using:
 \
 ssh-keygen -t rsa\
 \
@@ -181,38 +179,38 @@ Copy the resulting id_rsa.pub file to ~/.ssh/authorized_keys on each VM. \
 \
 The Windows VM is the most tricky to setup:\
 \
-- Install Windows 7\
-- Install Microsoft Sercurity Essentials\
-- Install Visual Studio 2008, and update to the latest service pack\
-- Create the 'buildfarm' user account, as a limited user.\
-- Install the a basic installation of Cygwin from http://www.cygwin.com/. \
-  Include the OpenSSH package.\
-- Configure sshd with ssh-host-config, using the buildfarm user account as\
-  the service account. Make sure that openssh log file has correct ownership\
-  and permissions. It is absolotely necessary NOT to use default local account\
-  with sshd because compilation will fail when invoked via ssh.\
-- Make sure that port 22/TCP is open in the Windows Firewall configuration.\
-- Install the public ssh key in C:\\Cygwin\\home\\buildfarm\\.ssh\
-- Install zip.exe and unzip.exe into the System32 directory. These utilities\
-  can be found at ftp://ftp.tex.ac.uk/tex-archive/tools/zip/info-zip/WIN32/\
-- Create folder 'c:\\pgBuild'\
-- Depending upon the modules to build, install various utilities in c:\\pgBuild\
-- Install bison, flex, diffutils in c:\\pgBuild (Available from http://gnuwin32.sourceforge.net)\
-- Prebuilt iconv, libxml2, libxslt, openssl and zlib from http://zlatkovic.com/pub/libxml,\
-  install them in c:\\pgBuild\
-- gettext (Please consult developer for specific version for PostgreSQL)\
-- Mingw (gcc and g++). \
-- MSys 1.0 \
-- Compile and install ZLib in Msys using --prefix=/mingw\
-- krb5 in c:\\pgBuild\
-- vcredist in c:\\pgBuild\
-- apache ANT in c:\\pgBuild\
-- wxWidgets in c:\\pgBuild\
+- Install Windows 7
+- Install Microsoft Sercurity Essentials
+- Install Visual Studio 2008, and update to the latest service pack
+- Create the 'buildfarm' user account, as a limited user.
+- Install the a basic installation of Cygwin from http://www.cygwin.com/. 
+  Include the OpenSSH package.
+- Configure sshd with ssh-host-config, using the buildfarm user account as
+  the service account. Make sure that openssh log file has correct ownership
+  and permissions. It is absolotely necessary NOT to use default local account
+  with sshd because compilation will fail when invoked via ssh.
+- Make sure that port 22/TCP is open in the Windows Firewall configuration.
+- Install the public ssh key in C:\\Cygwin\\home\\buildfarm\\.ssh
+- Install zip.exe and unzip.exe into the System32 directory. These utilities
+  can be found at ftp://ftp.tex.ac.uk/tex-archive/tools/zip/info-zip/WIN32/
+- Create folder 'c:\\pgBuild'
+- Depending upon the modules to build, install various utilities in c:\\pgBuild
+- Install bison, flex, diffutils in c:\\pgBuild (Available from http://gnuwin32.sourceforge.net)
+- Prebuilt iconv, libxml2, libxslt, openssl and zlib from http://zlatkovic.com/pub/libxml,
+  install them in c:\\pgBuild
+- gettext (Please consult developer for specific version for PostgreSQL)
+- Mingw (gcc and g++). 
+- MSys 1.0 
+- Compile and install ZLib in Msys using --prefix=/mingw
+- krb5 in c:\\pgBuild
+- vcredist in c:\\pgBuild
+- apache ANT in c:\\pgBuild
+- wxWidgets in c:\\pgBuild
 \
-Note: In case of Windows-64 setup you may get errors related to: \
-LINK : fatal error LNK1181: cannot open input file 'bufferoverflowU.lib'^M\
-Main reason of this issue is bufferoverflowU.lib file missing in parallel directory structures of VC installation. To reslove this copy said file into parallel structure e.g.:\
-cp /cygdrive/c/Program\\ Files\\ \\(x86\\)/Microsoft\\ SDKs/Windows/v5.0/Lib/IA64/bufferoverflowu.lib  /cygdrive/c/Program\\ Files/Microsoft\\ SDKs/Windows/v6.0A/Lib/x64/.\
+Note: In case of Windows-64 setup you may get errors related to: 
+LINK : fatal error LNK1181: cannot open input file 'bufferoverflowU.lib'^M
+Main reason of this issue is bufferoverflowU.lib file missing in parallel directory structures of VC installation. To reslove this copy said file into parallel structure e.g.:
+cp /cygdrive/c/Program\\ Files\\ \\(x86\\)/Microsoft\\ SDKs/Windows/v5.0/Lib/IA64/bufferoverflowu.lib  /cygdrive/c/Program\\ Files/Microsoft\\ SDKs/Windows/v6.0A/Lib/x64/.
 \
 * Mac OS X\
 \
@@ -229,19 +227,19 @@ Creating a new VM for new codepath from an existing VM on the same machine:\
  \
 Build Machines as external machines\
 -----------------------------------\
-In order to set build machines as external machines, Create NFS share pointing to \
-top level 'pginstaller' directory on Mac. For this purpose free tool 'NFS Manager' \
+In order to set build machines as external machines, Create NFS share pointing to 
+top level 'pginstaller' directory on Mac. For this purpose free tool 'NFS Manager' 
 can be used. On linux side, update /etc/fstab to create nfs mount to this NFS share. \
-\
+
 Build scripts\
 -------------\
 \
 * settings.sh\
 \
-This script is derived from settings.sh.in which is stored in source control. It\
-is configured for the specific build machine, and allows us to specify what\
-platforms and modules we're building, and some global configuration options.\
-\
+This script is derived from settings.sh.in which is stored in source control. It
+is configured for the specific build machine, and allows us to specify what
+platforms and modules we're building, and some global configuration options.
+
 This script (_and_ the source version, settings.h.in) must be edited whenever\
 new platforms or packages are added.\
 \
@@ -288,10 +286,10 @@ This directory contains all the tarballs we use for builds\
 \
 * <everything else>/\
 \
-Each additional directory contains a single package. These may be internally built\
-as required, though the interface should remain consistent - ie. a single build\
-script called build.sh, exposing functions called _prep_<packagename>, \
-_build_< packagename > and _postprocess_< packagename >.\
+Each additional directory contains a single package. These may be internally built
+as required, though the interface should remain consistent - ie. a single build
+script called build.sh, exposing functions called _prep_<packagename>, 
+_build_< packagename > and _postprocess_< packagename >.
 \
 For a description fo the build system for a single package, see server/README.\
 \
