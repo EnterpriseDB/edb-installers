@@ -2,7 +2,7 @@ PostgreSQL Installer build system
 =================================
 
 This is the PostgreSQL Installer build system. This document attempts to 
-describe how the system is architected, how to set it up and how to extend \
+describe how the system is architected, how to set it up and how to extend 
 it. It is a work in progress and will no doubt require further refinement\
 over time. There there is one goal however:\
 \
@@ -20,7 +20,7 @@ The modular system is designed to be as flexible as possible and allow package\
 authors as much freedom as possible in the way they design their installers. \
 There are some basic rules about how we design add-on packages however - it \
 remains up  to the individual author to determine whether or not breaking any \
-rules will break their package. They had better not break the system though!\
+rules will break their package. They had better not break the system though!
 \
 * Registration:\
 \
