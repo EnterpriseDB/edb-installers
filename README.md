@@ -73,14 +73,14 @@ such as libxml2 and libxslt, as well as useful utilties such as wget. Setting
 these up correct is essentially to ensuring future Universal binary builds will
 work as expected on all supported OS X versions (10.5/Leopard and above).\
 \
-Utilities should be installed using MacPorts:\
+Utilities should be installed using MacPorts:
 
-- Download the installer from http://www.macports.org/ and install the package.\
+- Download the installer from http://www.macports.org/ and install the package.
 
-- Add /opt/local/bin:/opt/local/sbin to the *end* of the path. Add the following\
+- Add /opt/local/bin:/opt/local/sbin to the *end* of the path. Add the following
   line to ~/.bash_profile for the buildfarm user:\
 
-export PATH=$PATH:/opt/local/bin:/opt/local/sbin\
+export PATH=$PATH:/opt/local/bin:/opt/local/sbin
 \
 - Install packages:\
 \
@@ -91,8 +91,8 @@ $ sudo port install bison\
 $ sudo port install flex\
 $ sudo port install ossp-uuid\
 \
-Dependency libraries must be built with a little more control to ensure they \
-use the correct SDK to allow them to be used on Tiger and above. We manually\
+Dependency libraries must be built with a little more control to ensure they 
+use the correct SDK to allow them to be used on Tiger and above. We manually
 build and install these packages into /usr/local/\
 \
 - Download the source for each library (eg. libxml2 & libxslt).\
