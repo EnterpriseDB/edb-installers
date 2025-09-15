@@ -229,9 +229,9 @@ top level 'pginstaller' directory on Mac. For this purpose free tool 'NFS Manage
 can be used. On linux side, update /etc/fstab to create nfs mount to this NFS share.
 
 Build scripts\
--------------\
+-------------
 
-* settings.sh\
+* settings.sh
 
 This script is derived from settings.sh.in which is stored in source control. It
 is configured for the specific build machine, and allows us to specify what
@@ -240,22 +240,22 @@ platforms and modules we're building, and some global configuration options.
 This script (_and_ the source version, settings.h.in) must be edited whenever\
 new platforms or packages are added.\
 
-* common.sh\
+* common.sh
 
 This script contains common utility functions that may be used throughout the
 build system.\
 
-* build.sh\
+* build.sh
 
 This script is the main build script. To build everything, simply run the
 following command on the build host:\
 \
-sh build.sh\
+sh build.sh
 \
 For quick rebuilds, an option is provided to rebuild just the installers from
 the existing code in the staging directories:\
 \
-sh build.sh -skipbuild\
+sh build.sh -skipbuild
 \
 This script must be edited whenever a new module is added to call the appropriate
 functions in the package build script.\
