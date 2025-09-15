@@ -65,11 +65,8 @@ lack of reference counting between packages) or desirable to remove everything.
 Build platform
 --------------
 
-The build platform is Mac OS X Snow Leopard. We use OS X because it allows us to run
-all other Intel based OS's on the same machine. All other supported platforms
-are run in VMWare Fusion virtual machines, with the exception of Solaris Sparc
-which obviously must be an external machine. The supported platforms can be set
-as external machines if required by exposing nfs shares from mac.
+The build platform is Mac OS X Sonoma. We use OS X because it allows us to run
+all other Intel based OS's on the same machine. 
 
 A number of additional dependencies are required when setting up the system,
 such as libxml2 and libxslt, as well as useful utilties such as wget. Setting
@@ -98,13 +95,13 @@ Dependency libraries must be built with a little more control to ensure they
 use the correct SDK to allow them to be used on Tiger and above. We manually
 build and install these packages into /usr/local/
 
-- Download the source for each library (eg. libuuid, libxml2 & libxslt).
+- Download the source for each library (eg. libxml2 & libxslt).
 
 - Unpack the source into /usr/local/src
 
 - Configure the source with a command such as:
 
-CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch i386 -arch x86_64 -arch ppc" LDFLAGS="-arch i386 -arch ppc -arch x86_64" ./configure --prefix=/usr/local/ --disable-dependency-tracking
+CFLAGS="-isysroot /Developer/SDKs/MacOSX14.sdk -mmacosx-version-min=13 -arch i386 -arch x86_64 -arch ppc" LDFLAGS="-arch i386 -arch x86_64" ./configure --prefix=/usr/local/ --disable-dependency-tracking
 
 - Build and install:
 
@@ -114,10 +111,6 @@ sudo make install
 Note that we must make sure all additional libraries link against these
 libraries, and not the older, system copies. In the case of libxslt, we can
 do this by configuring with --with-libxml-prefix=/usr/local
-
-libuuid will typically link only in the primary architecture of the build
-machine. To fix this, remove the library (libuuid.16.dylib) from .libs/ and
-re-run the final link command, with the addition of appropriate -arch flags.
 
 - Install unix2dos utility:
 $sudo port install unix2dos
@@ -161,42 +154,6 @@ CATALOG "docbook-dsssl-1.79/catalog"
 
 8) Make sure that settings.sh is updated with docbook installation path.
 
-- Fix PAM headers
-
-When building on Snow Leopard, using the Leopard SDK a failure may be seen when
-configuring PostgreSQL for PAM. This is because the PAM header location moved 
-from /usr/include/pam in 10.5 to /usr/include/security in 10.6. The difference between
-the base OS and the SDK confuses configure. To avoid this, it may be necessary
-to move the PAM headers in /usr/include/security/security so configure cannot find them.
-
-- Downgrade Java
-
-Snow Leopard only ships with Java 1.6, but most of our code, as well as pl/java
-should be compiled with 1.5.
-
-1) Download the Jlast Java update for Leopard: 
-   http://support.apple.com/downloads/java_for_Mac_OS_X_10_5_Update_5
-   
-2) Download Pacifist from http://www.charlessoft.com/
-
-3) * IMPORTANT * Delete the symlinks, 1.5 and 1.5.0 from 
-   /System/Library/Frameworks/JavaVM.framework/Versions
-
-4) Open the Java update in Pacifist, and extract the 
-   /System/Library/Frameworks/JavaVM.framework/Versions/1.5.0 directory into
-   the corresponding location on the hard disk. 
-   
-5) Recreate the 1.5 symlink, to point to the 1.5.0 directory.
-
-You can now use Java 1.5, by setting JAVA_HOME to: 
-/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home
-
-NOTE: That this update may have to be repeated following any Java updates from Apple.
-
-Couple of packages needs hacking, while building on snow leopard.
-PHP: http://www.firewing1.com/node/31
-Slony-I: http://www.slony.info/bugzilla/show_bug.cgi?id=109
-
 
 Build VMs
 ---------
@@ -221,11 +178,6 @@ generated on the host machine using:
 ssh-keygen -t rsa
 
 Copy the resulting id_rsa.pub file to ~/.ssh/authorized_keys on each VM. 
-
-* Linux/Linux-x64
-- Install chrpath utility in order to change the rpath of the installed PostgreSQL binaries in the staging directory.
-  Use the following command to install the chrpath:
-  * yum install chrpath
 
 * Windows
 
@@ -404,67 +356,11 @@ Additional configuration in the VM's :
       >make
       >sudo make install
 
-* Adding gd module to php in linux
-
-   * Prequisites: (linux/linux-x64)
-
-       1) yum install freetype
-       2) yum install libpng
-         (libjpeg.so should also be present in /usr/lib and /usr/lib64 for linux and linux-x64 respectively)
-
 * Install the latest version of ActiveState Python, Perl & TCL/Tk on all
   the platforms.
-* Install SPHINX for generating documentation for generating documentations for
-  pgAdmin3.
-  i.e. <PYTHONHOME>/bin/easy_install Sphinx
-       For ActiveState Python 2.6, the PYTHONHOME is '/opt/ActivePython-2.6'
-       For ActiveState Python 3.2, the PYTHONHOME is '/opt/ActivePython-3.2'
-  NOTE: Install the SPHINX as the root user.
 
 Trouble-Shooting:
-* I got this error for ActivePython-3.2 on linux/linux-x64
-    -----------------------------------------------------------------
-      /opt/ActivePython-3.2/bin/python3.2
-    ActivePython 3.2.2.3 (ActiveState Software Inc.) based on
-    Python 3.2.2 (default, Sep  8 2011, 12:20:28) 
-    [GCC 4.0.2 20051125 (Red Hat 4.0.2-8)] on linux2
-    Type "help", "copyright", "credits" or "license" for more information.
-    >>> import hashlib;
-    ERROR:root:code for hash md5 was not found.
-    Traceback (most recent call last):
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 141, in <module>
-        globals()[__func_name] = __get_hash(__func_name)
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 91, in
-    __get_builtin_constructor
-        raise ValueError('unsupported hash type %s' % name)
-    ValueError: unsupported hash type md5
-    ERROR:root:code for hash sha1 was not found.
-    Traceback (most recent call last):
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 141, in <module>
-        globals()[__func_name] = __get_hash(__func_name)
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 91, in
-    __get_builtin_constructor
-        raise ValueError('unsupported hash type %s' % name)
-    ValueError: unsupported hash type sha1
-    ERROR:root:code for hash sha224 was not found.
-    Traceback (most recent call last):
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 141, in <module>
-        globals()[__func_name] = __get_hash(__func_name)
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 91, in
-    __get_builtin_constructor
-        raise ValueError('unsupported hash type %s' % name)
-    ValueError: unsupported hash type sha224
-    ERROR:root:code for hash sha256 was not found.
-    Traceback (most recent call last):
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 141, in <module>
-        globals()[__func_name] = __get_hash(__func_name)
-      File "/opt/ActivePython-3.2/lib/python3.2/hashlib.py", line 91, in
-    __get_builtin_constructor
-        raise ValueError('unsupported hash type %s' % name)
-    -----------------------------------------------------------------
-  In order to resolve the issue, I had to run the following command as 'root'
-  user.
-  chcon -t texrel_shlib_t /opt/ActivePython-3.2/lib/python3.2/lib-dynload/_hashlib.cpython-32m.so
+
 
 Further info
 ------------
