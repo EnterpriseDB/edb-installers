@@ -290,8 +290,8 @@ _build_< packagename > and _postprocess_< packagename >.
 \
 For a description fo the build system for a single package, see server/README.\
 \
-Additional configuration in the VM's :
---------------------------------------
+Additional configuration in the VM's :\
+--------------------------------------\
 
 * Adding gd module to php in Windows
 
