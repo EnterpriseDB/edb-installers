@@ -228,7 +228,7 @@ In order to set build machines as external machines, Create NFS share pointing t
 top level 'pginstaller' directory on Mac. For this purpose free tool 'NFS Manager' 
 can be used. On linux side, update /etc/fstab to create nfs mount to this NFS share.
 
-Build scripts\
+Build scripts
 -------------
 
 * settings.sh
@@ -262,27 +262,27 @@ functions in the package build script.\
 \
 Directories\
 -----------\
-\
+
 * output/\
 \
 This directory will contain all the completed installers.\
-\
-* scripts/\
-\
+
+* scripts/
+
 This directory contains miscellaneous scripts that may be useful to multiple\
 modules or the overall build system.\
-\
-* resources/\
-\
+
+* resources/
+
 This directory contains installer resources that may be useful to multiple\
 modules or the overall build system.\
-\
-* tarballs/\
-\
+
+* tarballs/
+
 This directory contains all the tarballs we use for builds\
-\
-* <everything else>/\
-\
+
+* <everything else>/
+
 Each additional directory contains a single package. These may be internally built
 as required, though the interface should remain consistent - ie. a single build
 script called build.sh, exposing functions called _prep_<packagename>, 
