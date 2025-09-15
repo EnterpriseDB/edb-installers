@@ -119,7 +119,6 @@ $sudo port install unix2dos\
 
 Configuring DocBook SGML on Mac OS X with MacPorts.
  1) Install the following packages using MacPorts:\
-\
     opensp\
     openjade\
     docbook-xsl\
@@ -128,23 +127,23 @@ Configuring DocBook SGML on Mac OS X with MacPorts.
  2) Download the docbook-dsssl stylesheets from \
 http://sourceforge.net/project/showfiles.php?group_id=21935&package_id=16611 \
 and then unpack the archive in /opt/local/share/sgml\
-\
+
  3) Add a symlink so PostgreSQL can find the stylesheets:\
-\
+
      sudo ln -s  /opt/local/share/sgml/docbook-dsssl-1.79 \\\
                  /usr/local/share/sgml/docbook-dsssl\
-\
+
  4) Download DockBook 4.2 (http://www.docbook.org/sgml/4.2/docbook-4.2.zip) \
    and the ISO 8879 character entities (http://www.oasis-open.org/cover/ISOEnts.zip)\
-\
+
  5) Unzip both archives into /opt/local/share/sgml/docbook-4.2\
-\
+
  6) Ensure that all the unpacked files are world readable.\
-\
+
  7) Run the following command in the docbook-4.2 directory:\
-\
+
     perl -pi -e 's/iso-(.*).gml/ISO\\1/g' docbook.cat\
-\
+
  8) Create the file /opt/local/share/sgml/catalog, with the following contents:\
 \
 CATALOG "openjade/catalog"    \
@@ -152,21 +151,21 @@ CATALOG "docbook-4.2/docbook.cat"\
 CATALOG "docbook-dsssl-1.79/catalog"\
 \
  9) Make sure that settings.sh is updated with docbook installation path.\
-\
+
 \
 Build VMs\
 ---------\
 \
-All VMs (and in fact, the host machine) are setup to use user accounts called\
-'buildfarm'. In order to access each, the VMs must be setup with fixed IP\
-addresses which are recorded with an appropriate hostname in DNS. Each hostname \
-is specified in settings.sh. It may be necessary to manually configure VMWare \
+All VMs (and in fact, the host machine) are setup to use user accounts called
+'buildfarm'. In order to access each, the VMs must be setup with fixed IP
+addresses which are recorded with an appropriate hostname in DNS. Each hostname 
+is specified in settings.sh. It may be necessary to manually configure VMWare 
 Fusion to bridge the network adaptor instead of using NAT.\
 \
-The top level 'pginstaller' directory is shared with all the VMs using the VMware\
-shared folders feature. The path to this directory is specified in settings.h\
-for each VM. Note that VMware doesn't map UIDs/GIDs between the host and the VMs\
-so it may be necessary to mount the shared directory using the UID/GID of the\
+The top level 'pginstaller' directory is shared with all the VMs using the VMware
+shared folders feature. The path to this directory is specified in settings.h
+for each VM. Note that VMware doesn't map UIDs/GIDs between the host and the VMs
+so it may be necessary to mount the shared directory using the UID/GID of the
 user in the VM, eg using the following in /etc/fstab:\
 \
 .host:/  /mnt/hgfs  vmhgfs  defaults,ttl=5,uid=500,gid=500     0 0\
