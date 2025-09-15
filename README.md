@@ -331,20 +331,20 @@ Additional configuration in the VM's :
    * Prequisites:
        1) Install jpeg libraries\
        Download and extract jpeg from http://www.ijg.org/\
-       Compile and install: \
+       Compile and install: 
        >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" ./configure --prefix=/usr/local --disable-dependency-tracking\
        >make\
        >sudo make install
       
       2) Install libpng (User only 1.2.x version - php-5.2.1 has not yet include support for 1.4.x version)\
       Download and extract libpng from http://www.libpng.org/pub/png/pngcode.html\
-      Compile and install:\
+      Compile and install:
       >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" ./configure --prefix=/usr/local --disable-dependency-tracking\
       >make\
       >sudo make install
 
       3) Install freetype\
-      Download and extract freetype from http://freetype.org/download.html\
+      Download and extract freetype from http://freetype.org/download.html
       >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" ./configure --prefix=/usr/local --disable-dependency-tracking\
       >make\
       >sudo make install
@@ -358,5 +358,5 @@ Trouble-Shooting:\
 Further info\
 ------------\
 \
-Contact dpage@pgadmin.org for further info.\
+Contact dpage@pgadmin.org for further info.
 
