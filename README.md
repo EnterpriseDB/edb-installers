@@ -112,7 +112,7 @@ Note that we must make sure all additional libraries link against these
 libraries, and not the older, system copies. In the case of libxslt, we can
 do this by configuring with --with-libxml-prefix=/usr/local
 
-- Install unix2dos utility:\
+- Install unix2dos utility:
 $sudo port install unix2dos\
 
 - Set up DocBook SGML\
@@ -122,34 +122,34 @@ Configuring DocBook SGML on Mac OS X with MacPorts.
     opensp\
     openjade\
     docbook-xsl\
-    docbook2X\
+    docbook2X
     
- 3) Download the docbook-dsssl stylesheets from \
-http://sourceforge.net/project/showfiles.php?group_id=21935&package_id=16611 \
-and then unpack the archive in /opt/local/share/sgml\
+ 3) Download the docbook-dsssl stylesheets from 
+http://sourceforge.net/project/showfiles.php?group_id=21935&package_id=16611 
+and then unpack the archive in /opt/local/share/sgml
 
- 4) Add a symlink so PostgreSQL can find the stylesheets:\
+ 4) Add a symlink so PostgreSQL can find the stylesheets:
 
      sudo ln -s  /opt/local/share/sgml/docbook-dsssl-1.79 \\\
                  /usr/local/share/sgml/docbook-dsssl\
 
- 5) Download DockBook 4.2 (http://www.docbook.org/sgml/4.2/docbook-4.2.zip) \
-   and the ISO 8879 character entities (http://www.oasis-open.org/cover/ISOEnts.zip)\
+ 5) Download DockBook 4.2 (http://www.docbook.org/sgml/4.2/docbook-4.2.zip) 
+   and the ISO 8879 character entities (http://www.oasis-open.org/cover/ISOEnts.zip)
 
- 6) Unzip both archives into /opt/local/share/sgml/docbook-4.2\
+ 6) Unzip both archives into /opt/local/share/sgml/docbook-4.2
 
- 7) Ensure that all the unpacked files are world readable.\
+ 7) Ensure that all the unpacked files are world readable.
 
- 8) Run the following command in the docbook-4.2 directory:\
+ 8) Run the following command in the docbook-4.2 directory:
 
-    perl -pi -e 's/iso-(.*).gml/ISO\\1/g' docbook.cat\
+    perl -pi -e 's/iso-(.*).gml/ISO\\1/g' docbook.cat
 
- 9) Create the file /opt/local/share/sgml/catalog, with the following contents:\
+ 9) Create the file /opt/local/share/sgml/catalog, with the following contents:
     CATALOG "openjade/catalog"    \
     CATALOG "docbook-4.2/docbook.cat"\
     CATALOG "docbook-dsssl-1.79/catalog"\
 \
- 10) Make sure that settings.sh is updated with docbook installation path.\
+ 10) Make sure that settings.sh is updated with docbook installation path.
 
 Build VMs\
 ---------\
