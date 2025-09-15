@@ -81,7 +81,7 @@ Utilities should be installed using MacPorts:
   line to ~/.bash_profile for the buildfarm user:
 
 export PATH=$PATH:/opt/local/bin:/opt/local/sbin
-\
+
 - Install packages:\
 \
 $ sudo port install cmake\
@@ -95,11 +95,11 @@ Dependency libraries must be built with a little more control to ensure they
 use the correct SDK to allow them to be used on Tiger and above. We manually
 build and install these packages into /usr/local/\
 
-- Download the source for each library (eg. libxml2 & libxslt).\
+- Download the source for each library (eg. libxml2 & libxslt).
 
-- Unpack the source into /usr/local/src\
+- Unpack the source into /usr/local/src
 
-- Configure the source with a command such as:\
+- Configure the source with a command such as:
 
 CFLAGS="-isysroot /Developer/SDKs/MacOSX14.sdk -mmacosx-version-min=13 -arch i386 -arch x86_64 -arch ppc" LDFLAGS="-arch i386 -arch x86_64" ./configure --prefix=/usr/local/ --disable-dependency-tracking\
 \
