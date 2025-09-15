@@ -115,7 +115,7 @@ do this by configuring with --with-libxml-prefix=/usr/local
 - Install unix2dos utility:
 $sudo port install unix2dos\
 
-- Set up DocBook SGML\
+- Set up DocBook SGML
 
 Configuring DocBook SGML on Mac OS X with MacPorts.
  1) Install the following packages using MacPorts:\
@@ -130,7 +130,7 @@ and then unpack the archive in /opt/local/share/sgml
 
  4) Add a symlink so PostgreSQL can find the stylesheets:
 
-     sudo ln -s  /opt/local/share/sgml/docbook-dsssl-1.79 \\\
+     sudo ln -s  /opt/local/share/sgml/docbook-dsssl-1.79 \\
                  /usr/local/share/sgml/docbook-dsssl\
 
  5) Download DockBook 4.2 (http://www.docbook.org/sgml/4.2/docbook-4.2.zip) 
@@ -148,7 +148,7 @@ and then unpack the archive in /opt/local/share/sgml
     CATALOG "openjade/catalog"    \
     CATALOG "docbook-4.2/docbook.cat"\
     CATALOG "docbook-dsssl-1.79/catalog"\
-\
+
  10) Make sure that settings.sh is updated with docbook installation path.
 
 Build VMs\
