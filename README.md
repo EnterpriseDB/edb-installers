@@ -4,7 +4,7 @@ PostgreSQL Installer build system
 This is the PostgreSQL Installer build system. This document attempts to 
 describe how the system is architected, how to set it up and how to extend 
 it. It is a work in progress and will no doubt require further refinement
-over time. There there is one goal however.\
+over time. There is one goal however.\
 \
 Build all PostgresSQL & add-on package installers for all supported platforms
 with a single command.\
@@ -16,17 +16,17 @@ however.\
 Modular system design\
 ---------------------\
 \
-The modular system is designed to be as flexible as possible and allow package\
-authors as much freedom as possible in the way they design their installers. \
-There are some basic rules about how we design add-on packages however - it \
-remains up  to the individual author to determine whether or not breaking any \
+The modular system is designed to be as flexible as possible and allow package
+authors as much freedom as possible in the way they design their installers. 
+There are some basic rules about how we design add-on packages however - it 
+remains up  to the individual author to determine whether or not breaking any 
 rules will break their package. They had better not break the system though!
 \
 * Registration:\
 \
-A central registry file is used in which packages should register themselves. This\
-data will be used by StackBuilder to locate installed packages. The registry \
-file is /etc/postgres-reg.ini, and should be considered analagous in function to\
+A central registry file is used in which packages should register themselves. This
+data will be used by StackBuilder to locate installed packages. The registry 
+file is /etc/postgres-reg.ini, and should be considered analagous in function to
 the sections of the Windows registry used for the same purposes on that platform.\
 \
 StackBuilder requires specific entries for the PostgreSQL server, as well as an\
