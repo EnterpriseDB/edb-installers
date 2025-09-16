@@ -1,4 +1,4 @@
-PostgreSQL Installer build system 
+The PostgreSQL Installer Framework
 =================================
 
 Welcome to the PostgreSQL Installer Build System! This repository is designed
