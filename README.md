@@ -1,59 +1,64 @@
 PostgreSQL Installer build system 
 =================================
 
-This is the PostgreSQL Installer build system. This document attempts to 
-describe how the system is architected, how to set it up and how to extend 
-it. It is a work in progress and will no doubt require further refinement
-over time. There is one goal however.\
+Welcome to the PostgreSQL Installer Build System! This repository is designed
+to build PostgreSQL and its add-on installers for all supported platforms with
+a single, unified command.\
 \
-Build all PostgresSQL & add-on package installers for all supported platforms
-with a single command.\
+Our primary objective is to create a streamlined, one-command solution for building
+all PostgreSQL and add-on package installers across various platforms.\
 \
-Note that this system is not intended to replace the existing installer system 
-used on Windows (pgInstaller) - it is intended to mirror it's basic functionality
-however.\
+This document describes the system's architecture, setup, and extensibility. It is a
+work in progress and will undergo continuous refinement. This system is not intended 
+to replace the existing Windows installer (pgInstaller), but rather to replicate its
+core functionality in a more unified build environment.\
 \
+
 Modular system design\
 ------------------------\
 \
-The modular system is designed to be as flexible as possible and allow package
-authors as much freedom as possible in the way they design their installers. 
-There are some basic rules about how we design add-on packages however - it 
-remains up  to the individual author to determine whether or not breaking any 
-rules will break their package. They had better not break the system though!
-
+The modular system gives package authors a high degree of flexibility and freedom when 
+designing their installers. While there are some basic guidelines for creating add-on
+packages, authors ultimately decide whether their design choices break these rules. The
+one firm rule is this: do not break the build system itself.\
+\
 * Registration:\
 \
-A central registry file is used in which packages should register themselves. This
-data will be used by StackBuilder to locate installed packages. The registry 
-file is /etc/postgres-reg.ini, and should be considered analagous in function to
-the sections of the Windows registry used for the same purposes on that platform.\
+A central registry file, /etc/postgres-reg.ini, is used for packages to register themselves.
+This data allows StackBuilder to locate installed packages. This file is functionally
+analogous to the sections of the Windows registry used for the same purpose.\
 \
-StackBuilder requires specific entries for the PostgreSQL server, as well as an
-entry indicating the installed version of each unique package. An example file
-is show below.\
+StackBuilder requires a specific entry for the PostgreSQL server and an entry indicating the
+installed version of each unique package.\
 \
-This section is for a server, and is analagous to the PostgreSQL key under\
-HKEY_CURRENT_USER\\Software on Windows\
-[PostgreSQL\\8.3]\
-Version=8.3.3\
-InstallationDirectory=/opt/PostgreSQL/8.3\
-DataDirectory=/opt/PostgreSQL/8.3/data\
+An example of this file is shown below.\
+\
+[PostgreSQL/18]\
+InstallationDirectory=/Library/PostgreSQL/18\
+Version=18.0-rc1\
+Shortcuts=1\
+DataDirectory=/Library/PostgreSQL/18/data\
 Port=5432\
+ServiceID=postgresql-18\
+Locale=C\
 Superuser=postgres\
+Serviceaccount=postgres\
+Description=PostgreSQL 18\
+Branding=PostgreSQL 18\
+SB_Version=4.2.2\
+pgAdmin_Version=9.8\
+CLT_Version=18.0.rc1\
+DisableStackBuilder=\
+[edb_languagepack_v6]\
+Description=Language Pack for EDB Postgres Advanced Server, by EnterpriseDB.\
+InstallationDirectory=/Library/edb/languagepack/v6\
+Version=6.0rc1-1\
 \
-[PostGIS_1_3_PG83]\
-Version=1.3.2\
-\
-[pgAdmin3]\
-Version=1.8.4\
-InstallationDirectory=/opt/pgAdmin3\
-\
-It is up to the uninstaller for each package to leave or clean the data during 
-uninstallation. The version number for a package should *always* be
-cleared, but other data may be retained. For example, the server package will
-not remove the data directory, thus it is appropriate to leave the 
-DataDirectory, Port and Superuser values intact.
+
+Uninstaller for each package can either leave or clean up data during uninstallation.
+While a package's version number should **always** be cleared, other data may be retained.
+For instance, the server package won't remove the data directory, so it's appropriate
+to leave the `DataDirectory`,`Port`, and `Superuser` values intact.
 
 * Installers:\
 \
