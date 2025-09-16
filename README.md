@@ -26,7 +26,8 @@ one firm rule is this: do not break the build system itself.\
 \
 A central registry file, /etc/postgres-reg.ini, is used for packages to register themselves.
 This data allows StackBuilder to locate installed packages. This file is functionally
-analogous to the sections of the Windows registry used for the same purpose.\
+analogous to a central registry used by the operating system to track installed applications
+and their settings.\
 \
 StackBuilder requires a specific entry for the PostgreSQL server and an entry indicating the
 installed version of each unique package.\
@@ -62,27 +63,30 @@ to leave the `DataDirectory`,`Port`, and `Superuser` values intact.
 
 * Installers:\
 \
-Each package installer should be capable of being silently or interactively 
-installing and uninstalling the package. When uninstalling, as much of the package
-as possible should be removed, however it is not always possible (through
-lack of reference counting between packages) or desirable to remove everything.\
+Each package installer must support both silent and interactive modes for installation
+and uninstallation.\
+When uninstalling, the goal is to remove as much of the package as possible. However,
+due to shared dependencies or the need to preserve user data, it may not be possible
+or desirable to remove all files.\
 \
 Build platform\
 ----------------\
 \
-The build platform is Mac OS X Sonoma. We use OS X because it allows us to run
-all other Intel based OS's on the same machine. \
+The build platform is Mac OS X Sonoma. The macOS Sonoma platform is used for building
+because it can efficiently run all other Intel-based operating systems on the same
+machine. This provides a single, centralized environment for developing and testing
+software across a range of operating systems.\
 \
-A number of additional dependencies are required when setting up the system,
-such as libxml2 and libxslt, as well as useful utilties such as wget. Setting
-these up correct is essentially to ensuring future Universal binary builds will
-work as expected on all supported OS X versions (10.5/Leopard and above).\
+To ensure successful Universal binary builds on all supported macOS versions(10.13 and
+above), a number of additional dependencies are required. These include libraries such
+as libxml2 and libxslt, as well as common utilities like wget. Proper installation of these
+dependencies is essential for the build system to function correctly.\
 \
 Utilities should be installed using MacPorts:
 
 - Download the installer from http://www.macports.org/ and install the package.
 
-- Add /opt/local/bin:/opt/local/sbin to the *end* of the path. Add the following
+- Add /opt/local/bin:/opt/local/sbin to the **end** of the path. Add the following
   line to ~/.bash_profile for the buildfarm user:
 
 export PATH=$PATH:/opt/local/bin:/opt/local/sbin
