@@ -122,7 +122,7 @@ _prep_server_osx() {
     cd $WD/server
     tar -jcvf scripts.tar.bz2 scripts/osx resources/complete-bundle.sh resources/framework-config.sh resources/Info.plist-template_Qt5
     scp $WD/server/scripts.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server || _die "Failed to copy the scripts to build VM"
-    scp $WD/versions.sh $WD/common.sh $WD/settings.sh $WD/resources/create_debug_symbols.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
+    scp $WD/versions.sh $WD/common.sh $WD/settings.sh $WD/resources/create_debug_symbols.sh $WD/resources/create_dmg.sh $PG_SSH_OSX:$PG_PATH_OSX/ || _die "Failed to copy the scripts to be sourced to build VM"
     rm -f scripts.tar.bz2 || _die "Couldn't remove the scipts archive (source/scripts.tar.bz2)"    
 
     echo "Extracting the archives"
@@ -595,14 +595,7 @@ _postprocess_server_osx() {
     scp server.img.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/output || _die "Failed to copy server.img.tar.bz2 to $PG_PATH_OSX/output"
     rm -rf server.img* || _die "Failed to remove server.img from output directory."
 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; tar -jxvf server.img.tar.bz2; touch server.img/.Trash; hdiutil create -quiet -anyowners -srcfolder server.img -format UDZO -volname 'PostgreSQL $PG_PACKAGE_VERSION' -ov 'postgresql-$PG_PACKAGE_VERSION-osx.dmg'" || _die "Failed to create the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg)"
-
-    echo "Attach the  disk image, create zip and then detach the image"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; hdiutil detach '/Volumes/PostgreSQL $PG_PACKAGE_VERSION* -force'; hdid postgresql-$PG_PACKAGE_VERSION-osx.dmg" || _die "Failed to open the disk image (postgresql-$PG_PACKAGE_VERSION-osx.dmg in remote host.)"
-
-    ssh $PG_SSH_OSX "cd '/Volumes/PostgreSQL $PG_PACKAGE_VERSION'; zip -r $PG_PATH_OSX/output/postgresql-$PG_PACKAGE_VERSION-osx.zip postgresql-$PG_PACKAGE_VERSION-osx.app" || _die "Failed to create the installer zip file (postgresql-$PG_PACKAGE_VERSION-osx.zip) in remote host."
-
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; sleep 2; echo 'Detaching /Volumes/PostgreSQL $PG_PACKAGE_VERSION...' ; hdiutil detach '/Volumes/PostgreSQL $PG_PACKAGE_VERSION'" || _die "Failed to detach the /Volumes/PostgreSQL $PG_PACKAGE_VERSION in remote host."
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; tar -jxvf server.img.tar.bz2; bash ../create_dmg.sh server.img postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg '"PostgreSQL $PG_PACKAGE_VERSION"'" || _die "create_dmg.sh script failed"
 
     scp $PG_SSH_OSX:$PG_PATH_OSX/output/postgresql-$PG_PACKAGE_VERSION-osx.* $WD/output || _die "Failed to copy installers to $WD/output."
 
