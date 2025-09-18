@@ -47,12 +47,6 @@ echo "Calculating size of app bundle..."
 BUNDLE_SIZE=$(du -sk "${SOURCE_FOLDER}/${APP_BUNDLE}" | awk '{print $1}')
 DMG_SIZE_MB=$((BUNDLE_SIZE / 1024 + 50)) # Add a 50MB buffer
 
-# Check if the temporary DMG is present
-if [ -f "${TEMP_DMG_NAME}" ]; then
-    rm -f ${TEMP_DMG_NAME}
-    echo "Deleted temp.dmg"
-fi
-
 echo "Creating a temporary blank disk image of size ${DMG_SIZE_MB}MB..."
 for i in $(seq 1 ${MAX_CREATE_RETRIES}); do
     if hdiutil create -size "${DMG_SIZE_MB}m" \
