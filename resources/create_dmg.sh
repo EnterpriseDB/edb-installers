@@ -18,7 +18,7 @@ VOLUME_NAME="${4}"
 
 # The name of the temporary read/write DMG created during the process.
 TEMP_DMG_NAME="temp.dmg"
-MAX_CREATE_RETRIES=10
+MAX_CREATE_RETRIES=5
 RETRY_DELAY=2
 
 # --- Main Script ---
@@ -38,14 +38,16 @@ fi
 
 # Step 1: Create a ZIP archive of the app bundle.
 echo "Creating a ZIP archive of the app bundle..."
-zip -r "${APP_BUNDLE}.zip" "${SOURCE_FOLDER}/${APP_BUNDLE}"
+pushd "${SOURCE_FOLDER}"
+zip -r "../${APP_BUNDLE%.*}.zip" "${APP_BUNDLE}"
+popd
 
 # Step 2: Determine the size of the app bundle and create a blank, writable temporary image.
 # This avoids "Resource busy" errors by not reading the source directory during creation.
 echo "Calculating size of app bundle..."
 # Get the size in megabytes and add a buffer
 BUNDLE_SIZE=$(du -sk "${SOURCE_FOLDER}/${APP_BUNDLE}" | awk '{print $1}')
-DMG_SIZE_MB=$((BUNDLE_SIZE / 1024 + 50)) # Add a 50MB buffer
+DMG_SIZE_MB=$((BUNDLE_SIZE / 1024 + 100)) # Add a 100MB buffer
 
 echo "Creating a temporary blank disk image of size ${DMG_SIZE_MB}MB..."
 for i in $(seq 1 ${MAX_CREATE_RETRIES}); do
@@ -99,13 +101,23 @@ hdiutil detach "/Volumes/${VOLUME_NAME}" || {
 # This is the final, distributable file.
 # The `-quiet` flag suppresses the progress bar.
 echo "Converting to a compressed, read-only disk image..."
-hdiutil convert "${TEMP_DMG_NAME}" \
-                -format UDZO \
-                -o "${DMG_NAME}" \
-                -quiet
+for i in $(seq 1 ${MAX_CREATE_RETRIES}); do
+    if hdiutil convert "${TEMP_DMG_NAME}" \
+                      -format UDZO \
+                      -o "${DMG_NAME}" \
+                      -quiet; then
+        echo "Conversion successful."
+        break
+    else
+        echo "Attempt $i of ${MAX_CREATE_RETRIES} failed: hdiutil convert failed. Retrying in ${RETRY_DELAY} seconds..."
+        sleep "${RETRY_DELAY}"
+    fi
+done
 
 # Step 7: Clean up the temporary file.
 echo "Cleaning up temporary files..."
 rm -f "${TEMP_DMG_NAME}"
 
-echo "Done! The final DMG is '${DMG_NAME}'."
+echo "The final DMG is '${DMG_NAME}'."
+echo "The final ZIP is '${APP_BUNDLE%.*}.zip'."
+echo "Done!"
