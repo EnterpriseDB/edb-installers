@@ -3,11 +3,14 @@
 - **Dependencies (macOS & Windows)**
     - Update `pgAdmin4` to version `9.8`
     - Update `openssl` to version `3.5.3`
-    - Update `libxml2` to version `2.14.6`
     - Update `curl` to version `8.16.0`
  
 - **Additional dependencies (MacOS)**
-    - Update `expat` to version `2.7.2`     
+    - Update `expat` to version `2.7.2`
+    - Update `libxml2` to version `2.14.6`
+ 
+- **Additional dependencies (Windows)**
+    - Update `libxml2` to version `2.13.9`
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
