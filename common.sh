@@ -440,3 +440,4 @@ sign_libraries()
             codesign -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime ${ENTITLEMENTS} $2 $i
         done
 }
+
