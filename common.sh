@@ -440,32 +440,3 @@ sign_libraries()
             codesign -f -i "com.edb.postgresql" -s "Developer ID Application: EnterpriseDB Corporation" --options runtime ${ENTITLEMENTS} $2 $i
         done
 }
-# This function is used to check if a binary is Universal
-check_universal_binary() {
-    local binary_path="$1"
-    local expected_archs="$2"
-
-    if [[ ! -f "$binary_path" ]]; then
-        echo "ERROR: Binary not found at $binary_path"
-        return 1
-    fi
-
-    # Get the architectures supported by the binary
-    ARCHS=$(lipo -archs "$binary_path" 2>/dev/null)
-    LIPO_EXIT_CODE=$?
-
-    if [ $LIPO_EXIT_CODE -ne 0 ]; then
-        echo "ERROR: lipo failed on $binary_path. It may not be a valid executable."
-        return 1
-    fi
-
-    # Check if the output contains BOTH expected architectures
-    if [[ "$ARCHS" =~ "x86_64" ]] && [[ "$ARCHS" =~ "arm64" ]]; then
-        echo "SUCCESS: $binary_path is a Universal Binary. Architectures found: $ARCHS"
-        return 0
-    else
-        echo "FAILURE: $binary_path is NOT a Universal Binary."
-        echo "Found: $ARCHS | Expected: $expected_archs"
-        return 1
-    fi
-}
