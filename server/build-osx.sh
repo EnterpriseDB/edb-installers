@@ -330,23 +330,17 @@ _postprocess_server_osx() {
 
     echo "--- Verifying Universal Binary Status ---"
     SERVER_BINARY="$PG_STAGING/bin/postgres"
-    EXPECTED_ARCHS="x86_64 arm64"
+    ARCHS=$(ssh $PG_SSH_OSX "lipo -archs \"$SERVER_BINARY\" 2>/dev/null")
+    echo "$ARCHS" | grep -q 'x86_64' && echo "$ARCHS" | grep -q 'arm64'
+    LIPO_CHECK_STATUS=$?
 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX; \
-        source settings.sh; \
-        source common.sh; \
-        check_universal_binary \"$SERVER_BINARY\" \"$EXPECTED_ARCHS\"; \
-        exit \$?"
-    REMOTE_STATUS=$?
-
-    # Add a check to halt the script if the universal check failed
-    if [ $REMOTE_STATUS -ne 0 ]; then
-      echo "FATAL ERROR: Universal Binary check failed. Halting build process."
+    if [ $LIPO_CHECK_STATUS -ne 0 ]; then
+      echo "FATAL ERROR: Universal Binary check failed. Missing one or both architectures."
       exit 1
+    else
+      echo "SUCCESS: Found: $ARCHS | Universal Binary Verification Completed Successfully"
     fi
-
-    echo "--- Universal Binary Verification Completed Successfully ---"
-
+    
     # Copy the staging to controller to build the installers
     ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create archive of the server staging_cache"
     scp $PG_SSH_OSX:$PG_STAGING/server-staging.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to scp server staging_cache"
