@@ -331,11 +331,18 @@ _postprocess_server_osx() {
     echo "--- Verifying Universal Binary Status ---"
     SERVER_BINARY="$PG_STAGING/bin/postgres"
     ARCHS=$(ssh $PG_SSH_OSX "lipo -archs \"$SERVER_BINARY\" 2>/dev/null")
+    SSH_EXIT_STATUS=$?
+
+    if [ $SSH_EXIT_STATUS -ne 0 ]; then
+      echo "FATAL ERROR: SSH command or remote 'lipo' failed."
+    fi
+    
     echo "$ARCHS" | grep -q 'x86_64' && echo "$ARCHS" | grep -q 'arm64'
     LIPO_CHECK_STATUS=$?
 
     if [ $LIPO_CHECK_STATUS -ne 0 ]; then
       echo "FATAL ERROR: Universal Binary check failed. Missing one or both architectures."
+      echo "Found: $ARCHS"
       exit 1
     else
       echo "SUCCESS: Found: $ARCHS | Universal Binary Verification Completed Successfully"
