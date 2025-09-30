@@ -162,13 +162,10 @@ _build_server_osx() {
     echo "*******************************************************"
 
     # First, build the server
-
     cd $WD/server/source/postgres.osx
-
     # Configure the source tree
     echo "Configuring the postgres source tree for universal binary support"
-    ssh $PG_SSH_OSX "
-    cd $PG_PATH_OSX/server/source/postgres.osx/;\
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/;\
     PG_SYSROOT=$PG_SYSROOT \
     PATH=/opt/local/Current_v18/bin:$PATH \
     LDFLAGS=\"-L/opt/local/Current_v18/lib\" \
