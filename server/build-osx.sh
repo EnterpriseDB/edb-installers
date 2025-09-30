@@ -156,11 +156,9 @@ _prep_server_osx() {
 _build_server_osx() {
 
     echo "BEGIN BUILD Server OSX"
-
     echo "*******************************************************"
     echo " Build : Server (OSX) "
     echo "*******************************************************"
-
     # First, build the server
     cd $WD/server/source/postgres.osx
     # Configure the source tree
