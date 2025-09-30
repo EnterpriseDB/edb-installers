@@ -199,13 +199,13 @@ _build_server_osx() {
        --with-libxml \
        --with-libcurl \
        --with-uuid=e2fs \
-       --with-includes=/opt/local/Current_v18/include/libxml2:/opt/local/Current_v18/include:/opt/local/Current_v18/include/security:/opt/local/Current_v18/include/openssl/ \
        --docdir=$PG_STAGING/doc/postgresql \
        --with-libxslt \
        --with-libedit-preferred \
        --with-gssapi \
        --with-lz4 \
        --with-zstd \
+       --with-includes=/opt/local/Current_v18/include/libxml2:/opt/local/Current_v18/include:/opt/local/Current_v18/include/security:/opt/local/Current_v18/include/openssl/ \
 " || _die "Failed to configure postgres for universal support"
 
     echo "Building postgres"
