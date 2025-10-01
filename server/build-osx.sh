@@ -156,21 +156,55 @@ _prep_server_osx() {
 _build_server_osx() {
 
     echo "BEGIN BUILD Server OSX"
-
     echo "*******************************************************"
     echo " Build : Server (OSX) "
     echo "*******************************************************"
-
     # First, build the server
-
     cd $WD/server/source/postgres.osx
-
     # Configure the source tree
     echo "Configuring the postgres source tree for universal binary support"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PG_SYSROOT=$PG_SYSROOT PATH=/opt/local/Current_v18/bin:$PATH LDFLAGS=\"-L/opt/local/Current_v18/lib\" PYTHON=$PG_PYTHON_OSX/bin/python3 TCL_CONFIG_SH=$PG_TCL_OSX/lib/tclConfig.sh PERL=$PG_PERL_OSX/bin/perl XML2_CONFIG=/opt/local/Current_v18/bin/xml2-config ICU_LIBS=\"-L/opt/local/Current_v18/lib -licuuc -licudata -licui18n\" ICU_CFLAGS=\"-I/opt/local/Current_v18/include\" LZ4_CFLAGS=\"-I/opt/local/Current_v18/include\" LZ4_LIBS=\"-L/opt/local/Current_v18/lib\" ZSTD_CFLAGS=\"-I/opt/local/Current_v18/include\" ZSTD_LIBS=\"-L/opt/local/Current_v18/lib\" LIBCURL_CFLAGS=\"-I/opt/local/Current_v18/include\" LIBCURL_LIBS=\"-L/opt/local/Current_v18/lib\" ./configure --with-icu --enable-debug  --prefix=$PG_STAGING --with-ldap --with-openssl --with-perl --with-python --with-tcl --with-bonjour --with-pam --with-libxml --with-libcurl --with-uuid=e2fs --with-includes=/opt/local/Current_v18/include/libxml2:/opt/local/Current_v18/include:/opt/local/Current_v18/include/security:/opt/local/Current_v18/include/openssl/ --docdir=$PG_STAGING/doc/postgresql --with-libxslt --with-libedit-preferred --with-gssapi --with-lz4 --with-zstd" || _die "Failed to configure postgres for universal support"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/;\
+    PG_SYSROOT=$PG_SYSROOT \
+    PATH=/opt/local/Current_v18/bin:$PATH \
+    LDFLAGS=\"-L/opt/local/Current_v18/lib\" \
+    CFLAGS=\"$PG_ARCH_OSX_CFLAGS -O2\" \
+    PYTHON=$PG_PYTHON_OSX/bin/python3 \
+    TCL_CONFIG_SH=$PG_TCL_OSX/lib/tclConfig.sh \
+    PERL=$PG_PERL_OSX/bin/perl \
+    XML2_CONFIG=/opt/local/Current_v18/bin/xml2-config \
+    ICU_LIBS=\"-L/opt/local/Current_v18/lib -licuuc -licudata -licui18n\" \
+    ICU_CFLAGS=\"-I/opt/local/Current_v18/include\" \
+    LZ4_CFLAGS=\"-I/opt/local/Current_v18/include\" \
+    LZ4_LIBS=\"-L/opt/local/Current_v18/lib\" \
+    ZSTD_CFLAGS=\"-I/opt/local/Current_v18/include\" \
+    ZSTD_LIBS=\"-L/opt/local/Current_v18/lib\" \
+    LIBCURL_CFLAGS=\"-I/opt/local/Current_v18/include\" \
+    LIBCURL_LIBS=\"-L/opt/local/Current_v18/lib\" \
+    ./configure \
+       --with-icu \
+       --enable-debug \
+       --prefix=$PG_STAGING \
+       --with-ldap \
+       --with-openssl \
+       --with-perl \
+       --with-python \
+       --with-tcl \
+       --with-bonjour \
+       --with-pam \
+       --with-libxml \
+       --with-libcurl \
+       --with-uuid=e2fs \
+       --docdir=$PG_STAGING/doc/postgresql \
+       --with-libxslt \
+       --with-libedit-preferred \
+       --with-gssapi \
+       --with-lz4 \
+       --with-zstd \
+       --with-includes=/opt/local/Current_v18/include/libxml2:/opt/local/Current_v18/include:/opt/local/Current_v18/include/security:/opt/local/Current_v18/include/openssl/ \
+" || _die "Failed to configure postgres for universal support"
 
     echo "Building postgres"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current_v18/bin:$PATH CFLAGS='$PG_ARCH_OSX_CFLAGS -O2' make -j4" || _die "Failed to build postgres"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; PATH=/opt/local/Current_v18/bin:$PATH make -j4" || _die "Failed to build postgres"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/; make install" || _die "Failed to install postgres"
 
     echo "Building docs"
@@ -328,6 +362,26 @@ _postprocess_server_osx() {
     mkdir -p $SB_STAGING_OSX || _die "Couldn't create the staging directory $SB_STAGING_OSX"
     mkdir -p $CLT_STAGING_OSX || _die "Couldn't create the staging directory $CLT_STAGING_OSX"
 
+    echo "--- Verifying Universal Binary Status ---"
+    SERVER_BINARY="$PG_STAGING/bin/postgres"
+    ARCHS=$(ssh $PG_SSH_OSX "lipo -archs \"$SERVER_BINARY\" 2>/dev/null")
+    SSH_EXIT_STATUS=$?
+
+    if [ $SSH_EXIT_STATUS -ne 0 ]; then
+      echo "FATAL ERROR: SSH command or remote 'lipo' failed."
+    fi
+    
+    echo "$ARCHS" | grep -q 'x86_64' && echo "$ARCHS" | grep -q 'arm64'
+    LIPO_CHECK_STATUS=$?
+
+    if [ $LIPO_CHECK_STATUS -ne 0 ]; then
+      echo "FATAL ERROR: Universal Binary check failed. Missing one or both architectures."
+      echo "Found: $ARCHS"
+      exit 1
+    else
+      echo "SUCCESS: Found: $ARCHS | Universal Binary Verification Completed Successfully"
+    fi
+    
     # Copy the staging to controller to build the installers
     ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create archive of the server staging_cache"
     scp $PG_SSH_OSX:$PG_STAGING/server-staging.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to scp server staging_cache"
