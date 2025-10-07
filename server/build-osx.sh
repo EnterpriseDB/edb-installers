@@ -617,14 +617,14 @@ _postprocess_server_osx() {
     scp $PG_SSH_OSX:$PG_PATH_OSX/output/postgresql-$PG_PACKAGE_VERSION-osx.* $WD/output || _die "Failed to copy installers to $WD/output."
 
     # Notarize the OS X installer
-    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf postgresql-*.dmg postgresql-*.zip" || _die "Failed to remove the installer from notarization installer directory"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf postgresql-*.dmg postgresql-*.zip"
     scp $WD/output/postgresql-$PG_PACKAGE_VERSION-osx.dmg $WD/output/postgresql-$PG_PACKAGE_VERSION-osx.zip $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
     scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
 
-    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION-osx.dmg postgresql" || _die "Failed to notarize the app"
-    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION-osx.zip postgresql" || _die "Failed to notarize the app"
-    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgresql-$PG_PACKAGE_VERSION-osx.dmg $WD/output || _die "Failed to copy notarized installer to $WD/output."
-    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgresql-$PG_PACKAGE_VERSION-osx.zip $WD/output || _die "Failed to copy notarized installer to $WD/output."
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION-osx.dmg postgresql" || _die "Notarization failed for DMG"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION-osx.zip postgresql" || _die "Notarization failed for ZIP"
+    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgresql-$PG_PACKAGE_VERSION-osx.dmg $WD/output || _die "Failed to copy notarized DMG to $WD/output."
+    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgresql-$PG_PACKAGE_VERSION-osx.zip $WD/output || _die "Failed to copy notarized ZIP to $WD/output."
 
     cd $WD
     echo "END POST Server OSX"
