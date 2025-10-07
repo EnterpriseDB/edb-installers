@@ -575,14 +575,14 @@ _postprocess_server_osx() {
     chmod a+x $WD/output/postgresql-$PG_MAJOR_VERSION-osx-installer.app/Contents/MacOS/installbuilder.sh
 
     # Rename the installer
-    mv $WD/output/postgresql-$PG_MAJOR_VERSION-osx-installer.app $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app || _die "Failed to rename the installer"
+    mv $WD/output/postgresql-$PG_MAJOR_VERSION-osx-installer.app $WD/output/postgresql-$PG_PACKAGE_VERSION-osx.app || _die "Failed to rename the installer"
     # Now we need to turn this into a DMG file
     echo "Creating disk image"
     cd $WD/output
     # Clean existing source image directory if any
     rm -rf server.img*
     mkdir server.img || _die "Failed to create DMG staging directory"
-    mv postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
+    mv postgresql-$PG_PACKAGE_VERSION-osx.app server.img || _die "Failed to copy the installer bundle into the DMG staging directory"
    
     tar -jcvf server.img.tar.bz2 server.img || _die "Failed to create the archive."
     # Clean up the output directory on signing server before copying the image
@@ -594,13 +594,13 @@ _postprocess_server_osx() {
 
     # sign the .app, create the DMG
     echo "Signing the installer"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh;  tar -jxvf server.img.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements-server.xml server.img/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh;  tar -jxvf server.img.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements-server.xml server.img/postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "Failed to sign the code"
 
 
-    #ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output/server.img; rm -rf postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app; mv postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx-signed.app postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
+    #ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output/server.img; rm -rf postgresql-$PG_PACKAGE_VERSION-osx.app; mv postgresql-$PG_PACKAGE_VERSION-osx-signed.app postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "could not move the signed app"
 
     #macOS signing certificate check
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; codesign -vvv server.img/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app | grep "CSSMERR_TP_CERT_EXPIRED" > /dev/null" && _die "macOS signing certificate is expired. Please renew the certs and build again"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; codesign -vvv server.img/postgresql-$PG_PACKAGE_VERSION-osx.app | grep "CSSMERR_TP_CERT_EXPIRED" > /dev/null" && _die "macOS signing certificate is expired. Please renew the certs and build again"
 
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output;rm -rf server.img.tar.bz2; tar -jcvf server.img.tar.bz2 server.img;" || _die "faled to create server.img.tar.bz2 on $PG_SSH_OSX_SIGN"
     # Remove the existing source image archive before copying the signed image
@@ -612,19 +612,19 @@ _postprocess_server_osx() {
     scp server.img.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/output || _die "faled to copy server.img.tar.bz2 to $PG_PATH_OSX/output"
     rm -rf server.img* || _die "Failed to remove server.img from output directory."
 
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; tar -jxvf server.img.tar.bz2; bash ../create_dmg.sh server.img postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.app postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg '"PostgreSQL $PG_PACKAGE_VERSION"'" || _die "create_dmg.sh script failed"
+    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; tar -jxvf server.img.tar.bz2; bash ../create_dmg.sh server.img postgresql-$PG_PACKAGE_VERSION-osx.app postgresql-$PG_PACKAGE_VERSION-osx.dmg '"PostgreSQL $PG_PACKAGE_VERSION"'" || _die "create_dmg.sh script failed"
 
-    scp $PG_SSH_OSX:$PG_PATH_OSX/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.* $WD/output || _die "Failed to copy installers to $WD/output."
+    scp $PG_SSH_OSX:$PG_PATH_OSX/output/postgresql-$PG_PACKAGE_VERSION-osx.* $WD/output || _die "Failed to copy installers to $WD/output."
 
     # Notarize the OS X installer
     ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; rm -rf postgresql-*.dmg postgresql-*.zip" || _die "Failed to remove the installer from notarization installer directory"
-    scp $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg $WD/output/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.zip $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
+    scp $WD/output/postgresql-$PG_PACKAGE_VERSION-osx.dmg $WD/output/postgresql-$PG_PACKAGE_VERSION-osx.zip $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
     scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
 
-    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg postgresql" || _die "Failed to notarize the app"
-    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.zip postgresql" || _die "Failed to notarize the app"
-    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.dmg $WD/output || _die "Failed to copy notarized installer to $WD/output."
-    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgresql-$PG_PACKAGE_VERSION-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy notarized installer to $WD/output."
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION-osx.dmg postgresql" || _die "Failed to notarize the app"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION-osx.zip postgresql" || _die "Failed to notarize the app"
+    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgresql-$PG_PACKAGE_VERSION-osx.dmg $WD/output || _die "Failed to copy notarized installer to $WD/output."
+    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgresql-$PG_PACKAGE_VERSION-osx.zip $WD/output || _die "Failed to copy notarized installer to $WD/output."
 
     cd $WD
     echo "END POST Server OSX"
