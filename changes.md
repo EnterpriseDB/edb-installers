@@ -1,3 +1,19 @@
+# PostgreSQL installer release 14.19-2 (2025-10-09)
+## Changes 🛠️
+- **Dependencies (MacOS & Windows)**
+    - Update `openssl` to version `1.1.1zd`
+    - Update `curl` to version `8.16.0`
+
+ - **Additional dependencies (MacOS)**
+     - Update `pcre2` to version `10.46`
+     - Update `libxml2` to version `2.14.6`
+     - Update `expat` to version `2.7.3`
+       
+ - **Additional dependencies (Windows)**  
+     - Update `libxml2` to version `2.13.9`
+
+--------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 14.19-1 (2025-08-14)
 ## Changes 🛠️
 - **Dependencies (macOS & Windows)**
