@@ -20,7 +20,7 @@ PG_BUILDNUM_LANGUAGEPACK=1
 #                     Minor version is revision.build.
 
 PG_MAJOR_VERSION=15
-PG_MINOR_VERSION=14.1
+PG_MINOR_VERSION=14.2
 
 # Other package versions
 PG_VERSION_PGJDBC=42.7.2
