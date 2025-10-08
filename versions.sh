@@ -21,7 +21,7 @@ PG_BUILDNUM_SQLPROTECT=1
 #                     Minor version is revision.build.
 
 PG_MAJOR_VERSION=13
-PG_MINOR_VERSION=22.1
+PG_MINOR_VERSION=22.2
 
 # Other package versions
 PG_VERSION_PGJDBC=42.2.16
