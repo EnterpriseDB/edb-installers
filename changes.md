@@ -7,7 +7,7 @@
  - **Additional dependencies (MacOS)**
      - Update `pcre2` to version `10.46`
      - Update `libxml2` to version `2.14.6`
-     - Update `expat` to version `2.17.3`
+     - Update `expat` to version `2.7.3`
        
  - **Additional dependencies (Windows)**  
      - Update `libxml2` to version `2.13.9`
