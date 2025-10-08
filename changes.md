@@ -1,6 +1,6 @@
 # PostgreSQL installer release 18.0-2 (2025-10-08)
 ## Changes 🛠️
-- **Dependencies (macOS & Windows)**
+- **Dependencies (MacOS & Windows)**
     - Update `openssl` to version `3.5.4`
 
 - **Additional dependencies (MacOS)**
@@ -13,7 +13,7 @@
 
 # PostgreSQL installer release 18.0-1 (2025-09-25)
 ## Changes 🛠️
-- **Dependencies (macOS & Windows)**
+- **Dependencies (MacOS & Windows)**
     - Update `pgAdmin4` to version `9.8`
     - Update `openssl` to version `3.5.3`
     - Update `curl` to version `8.16.0`
@@ -29,7 +29,7 @@
 
 # PostgreSQL installer release 18rc1 (2025-09-04)
 ## Changes 🛠️
-- **Dependencies (macOS & Windows)**
+- **Dependencies (MacOS & Windows)**
     - Update `pgAdmin4` to version `9.7`
  
 - **Additional dependencies (MacOS)**
@@ -41,7 +41,7 @@
 
 # PostgreSQL installer release 18beta3 (2025-08-14)
 ## Changes 🛠️
-- **Dependencies (macOS & Windows)**
+- **Dependencies (MacOS & Windows)**
     - Update `pgAdmin4` to version `9.6`
     - Update `curl` to version `8.15.0`
     - Update `openssl` to version `3.5.2`
