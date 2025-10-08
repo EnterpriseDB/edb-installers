@@ -1,3 +1,16 @@
+# PostgreSQL installer release 18.0-2 (2025-10-08)
+## Changes 🛠️
+- **Dependencies (macOS & Windows)**
+    - Update `openssl` to version `3.5.4`
+
+- **Additional dependencies (MacOS)**
+    - Update `expat` to version `2.7.3`
+ 
+## Bug Fixes 🐛
+- **Fix:** Restored CFLAGS flag to re-enable Universal Binary (arm64/x86_64) support.
+
+----------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 18.0-1 (2025-09-25)
 ## Changes 🛠️
 - **Dependencies (macOS & Windows)**
