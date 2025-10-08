@@ -7,7 +7,7 @@
     - Update `expat` to version `2.7.3`
  
 ## Bug Fixes 🐛
-- **Fix:** Restored CFLAGS flag to re-enable Universal Binary (arm64/x86_64) support.
+- **Fix:** Restored CFLAGS flag to re-enable Universal Binary (arm64/x86_64) support in MacOS.
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
