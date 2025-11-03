@@ -1754,6 +1754,11 @@
                                 <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\X64</key>
                                 <variable>vcredist_ver</variable>
                         </registryGet>
+
+						<showInfo>
+                        <text>Detected VC Redist Version: ${vcredist_ver}</text>
+                        </showInfo>
+						
                         <setInstallerVariable name="install_runtimes" value="0">
                                 <ruleList>
                                     <stringTest>
