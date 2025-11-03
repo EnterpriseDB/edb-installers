@@ -65,11 +65,11 @@ PG_DOCBOOK_OSX=/usr/local/Cellar/docbook-xsl/1.79.2_1/docbook-xsl
 
 MACOSX_MIN_VERSION=10.14
 ARCHFLAGS="-arch x86_64 -arch arm64"
-SDK_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk
-PG_ARCH_OSX_CFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
-PG_ARCH_OSX_CPPFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION"
-PG_ARCH_OSX_CXXFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
-PG_ARCH_OSX_LDFLAGS="-isysroot $SDK_PATH -mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
+PG_SYSROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk
+PG_ARCH_OSX_CFLAGS="-mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
+PG_ARCH_OSX_CPPFLAGS="-mmacosx-version-min=$MACOSX_MIN_VERSION"
+PG_ARCH_OSX_CXXFLAGS="-mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
+PG_ARCH_OSX_LDFLAGS="-mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
 
 # The InstallBuilder main binary.
 PG_INSTALLBUILDER_BIN="/opt/installbuilder-25.6.0/bin/builder"
