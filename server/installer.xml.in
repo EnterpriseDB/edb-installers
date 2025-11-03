@@ -2075,25 +2075,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-
-        <actionGroup>
-            <actionList>
-                <deleteFile path="${installdir}${slash}bin${slash}*.pdb" />
-                <deleteFile path="${installdir}${slash}lib${slash}*.pdb" />
-                <deleteFile path="${installdir}${slash}lib${slash}pgxs${slash}src${slash}test${slash}isolation${slash}*.pdb" />
-                <deleteFile path="${installdir}${slash}lib${slash}pgxs${slash}src${slash}test${slash}regress${slash}*.pdb" />
-                <deleteFile path="${installdir}${slash}debug_symbols">
-                    <ruleList>
-                        <fileExists path="${installdir}${slash}debug_symbols" />
-                    </ruleList>
-                </deleteFile>
-            </actionList>
-            <ruleList>
-                <compareText text="${platform_name}" logic="contains" value="windows" />
-                <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="17.0-1" />
-                <isTrue value="${IsUpgrade}"/>
-            </ruleList>
-        </actionGroup>
     </postInstallationActionList>
 
     <!-- Components. Most components will be separate packages, so expect just one entry here most of the time -->
