@@ -1760,7 +1760,7 @@
                                         <text>${vcredist_ver}</text>
                                         <type>not_empty</type>
                                     </stringTest>
-                                    <compareVersions logic="greater"
+                                    <compareVersions logic="greater_or_equal"
                                          version1="${vcredist_ver}" version2="@@VCREDIST_BUNDLED_VER@@" />
 			        </ruleList>
 		        </setInstallerVariable>
