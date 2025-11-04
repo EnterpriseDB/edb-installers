@@ -140,9 +140,6 @@
                 <distributionDirectory>
                     <origin>staging/osx/server/share</origin>
                 </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/osx/server/debug_symbols</origin>
-                </distributionDirectory>
                 <distributionFile>
                     <origin>staging/osx/server/server_license.txt</origin>
                 </distributionFile>
