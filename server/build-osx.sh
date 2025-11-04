@@ -324,12 +324,6 @@ _postprocess_server_osx() {
     mkdir -p $SB_STAGING_OSX || _die "Couldn't create the staging directory $SB_STAGING_OSX"
     mkdir -p $CLT_STAGING_OSX || _die "Couldn't create the staging directory $CLT_STAGING_OSX"
 
-    echo "Creating staging directory for debug symbols"
-    mkdir -p $PGSERVER_STAGING_OSX/debug_symbols || _die "Couldn't create the staging directory $PGSERVER_STAGING_OSX/debug_symbols"
-    mkdir -p $PGADMIN_STAGING_OSX/debug_symbols || _die "Couldn't create the staging directory $PGADMIN_STAGING_OSX/debug_symbols"
-    mkdir -p $SB_STAGING_OSX/debug_symbols || _die "Couldn't create the staging directory $SB_STAGING_OSX/debug_symbols"
-
-
     # Copy the staging to controller to build the installers
     ssh $PG_SSH_OSX "cd $PG_STAGING; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create archive of the server staging_cache"
     scp $PG_SSH_OSX:$PG_STAGING/server-staging.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to scp server staging_cache"
@@ -386,7 +380,6 @@ _postprocess_server_osx() {
     cp -r $WD/server/staging_cache/osx/include $PGSERVER_STAGING_OSX || _die "Failed to copy $WD/server/staging_cache/osx/include"
     cp -r $WD/server/staging_cache/osx/doc $PGSERVER_STAGING_OSX || _die "Failed to copy $WD/server/staging_cache/osx/doc"
     cp -r $WD/server/staging_cache/osx/share $PGSERVER_STAGING_OSX || _die "Failed to copy $WD/server/staging_cache/osx/share"
-    cp -r $WD/server/staging_cache/osx/debug_symbols/bin $WD/server/staging_cache/osx/debug_symbols/lib $PGSERVER_STAGING_OSX/debug_symbols/ || _die "Failed to copy $WD/server/staging_cache/osx/share"
 
     echo "Preparing restructured staging for Command Line Tools"
     mkdir -p $CLT_STAGING_OSX/bin || _die "Failed to create the $CLT_STAGING_OSX/bin directory"
@@ -426,14 +419,12 @@ _postprocess_server_osx() {
 
     echo "Preparing restructured staging for pgAdmin"
     cp -pR $WD/server/staging_cache/osx/pgAdmin\ 4.app/  $PGADMIN_STAGING_OSX
-    cp -pR $WD/server/staging_cache/osx/debug_symbols/pgAdmin4.app $PGADMIN_STAGING_OSX/debug_symbols
 
     echo "Preparing restructured staging for stackbuilder"
     mkdir -p $WD/server/staging_cache/osx/stackbuilder
     rm -rf $WD/server/staging_cache/osx/stackbuilder/stackbuilder.app
     mv $WD/server/staging_cache/osx/stackbuilder.app $WD/server/staging_cache/osx/stackbuilder/ || _die "Failed to move stackbuilder.app"
     cp -pR $WD/server/staging_cache/osx/stackbuilder/stackbuilder.app $SB_STAGING_OSX || _die "Failed to copy stackbuilder.app"
-    cp -pR $WD/server/staging_cache/osx/debug_symbols/stackbuilder.app $SB_STAGING_OSX/debug_symbols
 
     cd $WD/server
 
@@ -465,16 +456,9 @@ _postprocess_server_osx() {
 
     rm -rf pgsql || _die "Failed to remove the binaries directory"
 
-    # Remove existing symbols directory in output directory
-    if [ -e $WD/output/symbols/osx/server ];
-    then
-        echo "Removing existing $WD/output/symbols/osx/server directory"
-        rm -rf $WD/output/symbols/osx/server  || _die "Couldn't remove the existing $WD/output/symbols/osx/server directory."
-    fi
-
-    # Move symbols directory in output
-    mkdir -p $WD/output/symbols/osx || _die "Failed to create $WD/output/symbols/osx directory"
-    mv $WD/server/staging_cache/osx/debug_symbols $WD/output/symbols/osx/server || _die "Failed to move $WD/server/staging_cache/osx/debug_symbols to $WD/output/symbols/osx/server directory"
+    #Creating a archive of the debug symbols
+    zip -yrq postgresql-$PG_PACKAGE_VERSION-osx-symbols.zip debug_symbols || _die "Failed to archive the debug_symbols"
+    mv postgresql-$PG_PACKAGE_VERSION-osx-symbols.zip $WD/output/ || _die "Failed to move the debug_symbols archive to output folder"
 
     # Complete the staging and prepare the installer
     #cp $WD/server/staging_cache/osx/server_3rd_party_licenses.txt $PGSERVER_STAGING_OSX/../
@@ -602,14 +586,14 @@ _postprocess_server_osx() {
     #macOS signing certificate check
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; codesign -vvv server.img/postgresql-$PG_PACKAGE_VERSION-osx.app | grep "CSSMERR_TP_CERT_EXPIRED" > /dev/null" && _die "macOS signing certificate is expired. Please renew the certs and build again"
 
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output;rm -rf server.img.tar.bz2; tar -jcvf server.img.tar.bz2 server.img;" || _die "faled to create server.img.tar.bz2 on $PG_SSH_OSX_SIGN"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output;rm -rf server.img.tar.bz2; tar -jcvf server.img.tar.bz2 server.img;" || _die "Failed to create server.img.tar.bz2 on $PG_SSH_OSX_SIGN"
     # Remove the existing source image archive before copying the signed image
     rm server.img.tar.bz2 || _die "Failed to remove the server.img"
-    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/server.img.tar.bz2 $WD/output || _die "faled to copy server.img.tar.bz2 to $WD/output"
+    scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output/server.img.tar.bz2 $WD/output || _die "Failed to copy server.img.tar.bz2 to $WD/output"
 
     # Cleanup the output directory on build machine before copying the image archive
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; rm -rf postgresql* server* " || _die "Failed to clean the remote output directory"
-    scp server.img.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/output || _die "faled to copy server.img.tar.bz2 to $PG_PATH_OSX/output"
+    scp server.img.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/output || _die "Failed to copy server.img.tar.bz2 to $PG_PATH_OSX/output"
     rm -rf server.img* || _die "Failed to remove server.img from output directory."
 
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/output; source $PG_PATH_OSX/versions.sh; tar -jxvf server.img.tar.bz2; bash ../create_dmg.sh server.img postgresql-$PG_PACKAGE_VERSION-osx.app postgresql-$PG_PACKAGE_VERSION-osx.dmg '"PostgreSQL $PG_PACKAGE_VERSION"'" || _die "create_dmg.sh script failed"
