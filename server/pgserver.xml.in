@@ -1755,10 +1755,12 @@
                                 <variable>vcredist_ver</variable>
                         </registryGet>
 
-						<showInfo>
-                        <text>Detected VC Redist Version: ${vcredist_ver}</text>
-                        <text>Bundled VC Redist Version: @@VCREDIST_BUNDLED_VER@@</text>
-                        </showInfo>
+			<logMessage>
+                            <text>Detected VC Redist Version: ${vcredist_ver}</text>
+                        </logMessage>
+			<logMessage>
+                            <text>Bundled VC Redist Version: @@VCREDIST_BUNDLED_VER@@</text>
+                        </logMessage>
 						
                         <setInstallerVariable name="install_runtimes" value="0">
                                 <ruleList>
