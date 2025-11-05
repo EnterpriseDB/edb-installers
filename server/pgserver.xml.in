@@ -1755,13 +1755,9 @@
                                 <variable>vcredist_ver</variable>
                         </registryGet>
 
-			<logMessage>
-                            <text>Detected VC Redist Version: ${vcredist_ver}</text>
-                        </logMessage>
-			<logMessage>
-                            <text>Bundled VC Redist Version: @@VCREDIST_BUNDLED_VER@@</text>
-                        </logMessage>
-						
+			<logMessage text="Installed VC++ runtimes version: ${vcredist_ver} />
+			<logMessage text="Bundled VC++ runtime version: @@VCREDIST_BUNDLED_VER@@ />
+
                         <setInstallerVariable name="install_runtimes" value="0">
                                 <ruleList>
                                     <stringTest>
