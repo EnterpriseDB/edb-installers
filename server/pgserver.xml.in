@@ -1757,6 +1757,7 @@
 
 						<showInfo>
                         <text>Detected VC Redist Version: ${vcredist_ver}</text>
+                        <text>Bundled VC Redist Version: @@VCREDIST_BUNDLED_VER@@</text>
                         </showInfo>
 						
                         <setInstallerVariable name="install_runtimes" value="0">
@@ -1765,7 +1766,7 @@
                                         <text>${vcredist_ver}</text>
                                         <type>not_empty</type>
                                     </stringTest>
-                                    <compareVersions logic="greater_or_equal"
+                                    <compareVersions logic="greater"
                                          version1="${vcredist_ver}" version2="@@VCREDIST_BUNDLED_VER@@" />
 			        </ruleList>
 		        </setInstallerVariable>
