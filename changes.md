@@ -1,10 +1,10 @@
 # PostgreSQL installer release 14.20-1 (2025-11-13)
 ## Changes 🛠️
+- Update `pgAdmin4` to version `9.9`
+
 - **Dependencies (MacOS & Windows)**
-    - Update `pgAdmin4` to version `9.9`
-    - Update `libxslt` to version `2.14.3-2`.
-      This includes security patch CVE-2025-7424, which addresses a type confusion vulnerability in xmlNode.psvi when handling
-      stylesheet and source nodes.
+    - Update `libxslt` to version `1.1.43-2`.
+      This includes security patch CVE-2025-7424, which addresses a type confusion vulnerability in xmlNode.psvi when handling stylesheet and source nodes.
 
 - **Additional dependencies (MacOS)**
     - Update `curl` to version `8.17.0`
@@ -13,8 +13,7 @@
     - Update `krb5` to version `1.22.1`
 
 ## Bug Fixes 🐛
-- **Fix:** Updated dependency checks to ensure the latest required VCRedist package is correctly identified and installed,
-  even if an older version is present on the user's system. (Issue #407)
+- **Fix:** Updated dependency checks to ensure the latest required VCRedist package is correctly identified and installed, even if an older version is present on the user's system. (Issue #407)
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
