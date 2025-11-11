@@ -13,7 +13,7 @@
  
 ## Bug Fixes 🐛
 - **Fix:** Updated dependency checks to ensure the latest required VCRedist package is correctly identified and installed,
-  even if an older version is present on the user's system. (Issue #407)
+           even if an older version is present on the user's system. (Issue #407)
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
