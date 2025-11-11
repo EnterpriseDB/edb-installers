@@ -12,8 +12,9 @@
     - Update `libedit` to version `20251016-3.1`
  
 ## Bug Fixes 🐛
-- **Fix:** Updated dependency checks to ensure the latest required VCRedist package is correctly identified and installed,
-           even if an older version is present on the user's system. (Issue #407)
+- **Fix:** Updated dependency checks to ensure the latest required VCRedist package
+           is correctly identified and installed, even if an older version is present
+           on the user's system. (Issue #407)
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
