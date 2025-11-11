@@ -1,9 +1,8 @@
 # PostgreSQL installer release 18.1-1 (2025-11-13)
 ## Changes 🛠️
-- Update `pgAdmin4` to version `9.9`
+    - Update `pgAdmin4` to version `9.9`
   
 - **Dependencies (MacOS & Windows)**
-    
     - Update `libxslt` to version `2.14.3-2`. This includes security patch CVE-2025-7424, which addresses a type confusion vulnerability in xmlNode.psvi when handling stylesheet and source nodes.
 
 - **Additional dependencies (MacOS)**
