@@ -7,7 +7,7 @@
     - Update `libxml2` to version `2.15.1`
 
 ## Bug Fixes 🐛
-**Critical Security Fixes:** The included update to **libxslt v1.1.45** addresses several vulnerabilities, most notably **CVE-2025-7424** (Type Confusion) and **CVE-2025-11731** (Improper Type Handling), mitigating risks of memory corruption and service crashes.
+**Critical Security Fixes:** The included update to **libxslt v1.1.45** addresses several vulnerabilities, most notably **CVE-2025-7424** (Type Confusion) and **CVE-2025-11731** (Improper Type Handling).
 
 ---------------------------------------------------------------------------------------------------------------------------------
 
