@@ -1,3 +1,16 @@
+# PostgreSQL installer release 17.7-2 (2025-12-11)
+## Changes 🛠️
+- Update `pgAdmin4` to version `9.10`
+
+- **Dependencies (MacOS & Windows)**
+    - Update `libxslt` to version `1.1.45`
+    - Update `libxml2` to version `2.15.1`
+
+## Bug Fixes 🐛
+**Critical Security Fixes:** The included update to **libxslt v1.1.45** addresses several vulnerabilities, most notably **CVE-2025-7424** (Type Confusion) and **CVE-2025-11731** (Improper Type Handling).
+
+----------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 17.7-1 (2025-11-13)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.9`
