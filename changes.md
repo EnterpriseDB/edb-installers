@@ -1,6 +1,6 @@
-# PostgreSQL installer release 15.15-2 (2025-12-11)
+# PostgreSQL installer release 15.15-2 (2025-12-12)
 ## Changes 🛠️
-- Update `pgAdmin4` to version `9.10`
+- Update `pgAdmin4` to version `9.11`
 
 - **Dependencies (MacOS & Windows)**
     - Update `libxslt` to version `1.1.45`
