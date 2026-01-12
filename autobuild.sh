@@ -16,7 +16,6 @@ usage()
         echo "Usage: $BASENAME [Options]\n"
         echo "    Options:"
         echo "      [-skipbuild boolean]" boolean value may be either "1" or "0"
-        echo "      [-skippvtpkg boolean]" boolean value may be either "1" or "0"
         echo "      [-packages list]   list of packages. It may include the list of supported platforms separated by comma or all"
         echo "      [-releasebuild boolean] Used to distinguish between daily builds and release builds. A boolean value may be either true or false"
         echo "    Examples:"
@@ -36,7 +35,6 @@ while [ "$#" -gt "0" ]; do
                 -skipbuild) SKIPBUILD=$2; shift 2;;
                 -platforms) PLATFORMS=$2; shift 2;;
                 -packages) PACKAGES=$2; shift 2;;
-                -skippvtpkg) SKIPPVTPACKAGES=$2; shift 2;;
                 -releasebuild) RELEASEBUILD=$2; shift 2;;
                 -help|-h) usage;;
                 *) echo -e "error: no such option $1. -h for help"; exit 1;;
@@ -56,18 +54,6 @@ then
 	SKIPBUILD="-skipbuild"
 else
 	SKIPBUILD=""
-fi
-
-# required by build.sh
-if $SKIPPVTPACKAGES ;
-then
-        SKIPPVTPACKAGES="-skippvtpkg"
-else
-        SKIPPVTPACKAGES=""
-	# Make sure, we always do a full private build
-	if [ -f pvt_settings.sh.full.REL-18 ]; then
-		cp -f pvt_settings.sh.full.REL-18 pvt_settings.sh.REL-18
-	fi
 fi
 
 _set_config_package()
@@ -200,7 +186,7 @@ git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
 echo "Running the build (REL-18) " >> autobuild.log
-./build.sh $SKIPBUILD $SKIPPVTPACKAGES 2>&1 | tee output/build-18.log
+./build.sh $SKIPBUILD 2>&1 | tee output/build-18.log
 
 VERSION_NUMBER=`cat versions.sh | grep PG_MAJOR_VERSION= | cut -f 2 -d '='`
 STR_VERSION_NUMBER=`echo $VERSION_NUMBER | sed 's/\.//'`
