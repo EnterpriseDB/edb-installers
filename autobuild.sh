@@ -19,12 +19,8 @@ usage()
         echo "      [-packages list]   list of packages. It may include the list of supported platforms separated by comma or all"
         echo "      [-releasebuild boolean] Used to distinguish between daily builds and release builds. A boolean value may be either true or false"
         echo "    Examples:"
-        echo "     $BASENAME -skipbuild 0 -platforms "linux, linux_64, windows, windows_x64, osx" -packages "server, pemhttpd, pgjdbc, psqlodbc, slony, postgis, npgsql, pgagent, pgmemcache, pgbouncer, sqlprotect""
-        echo "     $BASENAME -skipbuild 1 -platforms "all" -packages "all""
-        echo "     $BASENAME -skipbuild 1 -skippvtpkg 1 -platforms "all" -packages "all""
-        echo ""
+        echo "     $BASENAME -skipbuild 0 -packages "server,postgis,pgagent"
         echo "    Note: setting skipbuild to 1 will skip the product build and just create the installer. 'all' option for -packages and -platforms will set all platforms and packages."
-        echo "    Note: setting skippvtpkg to 1 will skip the private package build and installers"
         echo ""
         exit 1;
 }
