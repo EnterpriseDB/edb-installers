@@ -24,10 +24,8 @@ usage()
         echo "Usage: $0 [Options]\n"
         echo "    Options:"
         echo "      [-skipbuild]"
-        echo "      [-skippvtpkg]"
         echo "    Examples:"
-        echo "     $0 -skipbuild -skippvtpkg"
-        echo "     $0 -skippvtpkg"
+        echo "     $0 -skipbuild "
         echo ""
         exit 1;
 }
@@ -90,7 +88,6 @@ _check_windows_vm() {
 while [ "$#" -gt "0" ]; do
         case "$1" in
                 -skipbuild) SKIPBUILD=$1; shift 1;;              
-                -skippvtpkg) SKIPPVTPACKAGES=$1; shift 1;;
                 -h|-help) usage;;
                 *) echo -e "error: no such option $1. -h for help"; exit 1;;
         esac
@@ -101,13 +98,6 @@ then
   SKIPBUILD=1
 else
   SKIPBUILD=0
-fi
-
-if [ "$SKIPPVTPACKAGES" = "-skippvtpkg" ];
-then
-  SKIPPVTPACKAGES=1
-else
-  SKIPPVTPACKAGES=0
 fi
 
 # Check the VMs
@@ -344,16 +334,6 @@ then
         fi
     fi
     (_postprocess_sqlprotect)
-fi
-
-# Check for private builds
-if [ $SKIPPVTPACKAGES = 0 ];
-then
-    if [ -e $WD/pvt_build.sh ];
-    then
-	[ -z "${PVT_BUILD_LOG}" ] && PVT_BUILD_LOG=$WD/output/build-pvt.log
-        source $WD/pvt_build.sh > "${PVT_BUILD_LOG}" 2>&1
-    fi
 fi
 
 # Archive the symbols
