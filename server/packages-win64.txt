@@ -1,4 +1,4 @@
-curl-8.16.0-windows-x64.tar.bz2
+curl-8.18.0-windows-x64.tar.bz2
 zstd-1.5.7-windows-x64.tar.bz2
 lz4-1.10.0-windows-x64.tar.bz2
 libxml2-2.15.1-1-windows-x64.tar.bz2
