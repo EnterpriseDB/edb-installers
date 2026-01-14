@@ -7,12 +7,6 @@ if [ $PG_ARCH_OSX = 1 ];
 then
     source $WD/server/build-osx.sh
 fi
-
-# Windows x64
-if [ $PG_ARCH_WINDOWS_X64 = 1 ];
-then
-    source $WD/server/build-windows-x64.sh
-fi
     
 ################################################################################
 # Build preparation
@@ -158,12 +152,6 @@ _prep_server() {
     then
         _prep_server_osx 
     fi
-
-    # Windows x64
-    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
-    then
-        _prep_server_windows_x64 
-    fi
 }
 
 ################################################################################
@@ -194,12 +182,6 @@ _build_server() {
     then
         _build_server_osx 
     fi
-
-    # Windows x64
-    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
-    then
-        _build_server_windows_x64 
-    fi
 }
 
 _prepare_server_xml() {
@@ -225,24 +207,8 @@ _prepare_server_xml() {
             cp ${file}.xml.in $filename || _die "Failed to copy the installer project file $filename"
         fi
 
-        WIN64MODE="0"
-        SERVICESUFFIX=""
-
         case $PLATFORM in
             osx)
-                ;;
-
-            linux | linux-x64)
-                _replace PG_VERSION_STR "$PG_VERSION_STR" $filename || _die "Failed to replace PG_VERSION_STR in $filename"
-                ;;
-
-            windows | windows-x64)
-                if [[ "$PLATFORM" =~ "-x64" ]]; then
-                    WIN64MODE="1"
-                    SERVICESUFFIX="-x64"
-                fi
-                _replace @@WINDIR@@ $PLATFORM $filename || _die "Failed to replace WINDIR in $filename"
-                _replace @@VCREDIST_BUNDLED_VER@@ $VCREDIST_VERSION $filename || _die "Failed to replace WINDIR in $filename"
                 ;;
 
             *)  #installer.xml which is in server/build.sh
@@ -259,21 +225,12 @@ _prepare_server_xml() {
                 _replace PG_CATALOG_VERSION $PG_CATALOG_VERSION $filename || _die "Failed to set catalog version number in $filename"
                 _replace PG_CONTROL_VERSION $PG_CONTROL_VERSION $filename || _die "Failed to set catalog version number in $filename"
                 _replace PERL_PACKAGE_VERSION $PG_VERSION_PERL  $filename || _die "Failed to set PERL version in $filename"
-                _replace PERL_PACKAGE_VERSION_WINDOWS64 $PG_VERSION_PERL_WINDOWS64  $filename || _die "Failed to set PERL version in $filename"
                 _replace PYTHON_PACKAGE_VERSION $PG_VERSION_PYTHON $filename || _die "Failed to set PYTHON version in $filename"
                 _replace TCL_PACKAGE_VERSION $PG_VERSION_TCL $filename || _die "Failed to set TCL version in $filename"
                 _replace PG_VERSION_PGADMIN $PG_VERSION_PGADMIN $filename || _die "Failed to set pgAdmin version in $filename"
                 _replace PG_VERSION_SB $PG_VERSION_SB $filename || _die "Failed to set stackbuilder version in $filename"
                 ;;
         esac
-
-        if [ ! -z $PLATFORM ]; then
-            PG_DATETIME_SETTING="64-bit integers"
-            _replace @@PG_DATETIME_SETTING@@ "$PG_DATETIME_SETTING" $filename || _die "Failed to replace DATETIME in the $filename"
-            _replace @@WIN64MODE@@ "$WIN64MODE" $filename || _die "Failed to replace WIN64MODE in $filename"
-            _replace @@SERVICE_SUFFIX@@ "$SERVICESUFFIX" $filename || _die "Failed to replace SERVICE_SUFFIX in $filename"
-        fi
-
     done
 }
 
@@ -298,12 +255,6 @@ _postprocess_server() {
     if [ $PG_ARCH_OSX = 1 ]; 
     then
         _postprocess_server_osx 
-    fi
-
-    # Windows x64
-    if [ $PG_ARCH_WINDOWS_X64 = 1 ];
-    then
-        _postprocess_server_windows_x64 
     fi
 }
 
