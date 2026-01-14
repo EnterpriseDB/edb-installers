@@ -70,19 +70,6 @@ _check_unix_vm() {
 }
 
 ################################################################################
-# Check a Windows VM is accessible and can reach the buildfarm directory
-################################################################################
-_check_windows_vm() {
-    RETVAL=`ssh $1 ls $2 2>&1`
-        RESULT1=`echo "$RETVAL" | grep 'No such file or directory' | wc -l`
-        RESULT2=`echo "$RETVAL" | grep 'Operation timed out' | wc -l`
-        if [ "$RESULT1" -ne "0" -o "$RESULT2" -ne "0" ];
-        then
-            _die "The build VM $1 is inaccessible or does not have access to the buildfarm repository at $2"
-        fi
-}
-
-################################################################################
 # Rock 'n' roll
 ################################################################################
 while [ "$#" -gt "0" ]; do
@@ -99,13 +86,6 @@ then
 else
   SKIPBUILD=0
 fi
-
-# Check the VMs
-if [ $PG_ARCH_WINDOWS_X64 = 1 ];
-then
-    _check_windows_vm $PG_SSH_WINDOWS_X64 $PG_PATH_WINDOWS_X64
-fi
-
 
 # Initialise the build system
 _init
@@ -157,60 +137,6 @@ then
     (_postprocess_languagepack)
 fi
 
-# Package: PEM-HTTPD
-if [ $PG_PACKAGE_PEMHTTPD = 1 ];
-then
-    echo "### Package: PEM-HTTPD"
-    cd $WD
-    source ./PEM-HTTPD/build.sh
-
-    PG_BUILD_PEMHTTPD=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_PEM-HTTPD && _build_PEM-HTTPD)
-        if [ $? == 0 ]; then
-           PG_BUILD_PEMHTTPD=1
-        fi
-    fi
-    (_postprocess_PEM-HTTPD)
-fi
-
-# Package: pgJDBC
-if [ $PG_PACKAGE_PGJDBC = 1 ];
-then
-    echo "### Package: pgJDBC"
-    cd $WD
-    source ./pgJDBC/build.sh
-
-    PG_BUILD_PGJDBC=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_pgJDBC && _build_pgJDBC)
-        if [ $? == 0 ]; then
-           PG_BUILD_PGJDBC=1
-        fi
-    fi
-    (_postprocess_pgJDBC)
-fi
-
-# Package: psqlODBC
-if [ $PG_PACKAGE_PSQLODBC = 1 ];
-then
-    echo "### Package: psqlODBC"
-    cd $WD
-    source ./psqlODBC/build.sh
-
-    PG_BUILD_PSQLODBC=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_psqlODBC && _build_psqlODBC)
-        if [ $? == 0 ]; then
-           PG_BUILD_PSQLODBC=1
-        fi
-    fi
-    (_postprocess_psqlODBC)
-fi
-
 # Package: PostGIS
 if [ $PG_PACKAGE_POSTGIS = 1 ];
 then
@@ -227,42 +153,6 @@ then
         fi
     fi
     (_postprocess_PostGIS)
-fi
-
-# Package: Slony
-if [ $PG_PACKAGE_SLONY = 1 ];
-then
-    echo "### Package: Slony"
-    cd $WD
-    source ./Slony/build.sh
-
-    PG_BUILD_SLONY=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_Slony && _build_Slony)
-        if [ $? == 0 ]; then
-           PG_BUILD_SLONY=1
-        fi
-    fi
-    (_postprocess_Slony)
-fi
-
-# Package: Npgsql
-if [ $PG_PACKAGE_NPGSQL = 1 ];
-then
-    echo "### Package: Npgsql"
-    cd $WD
-    source ./Npgsql/build.sh
-
-    PG_BUILD_NPGSQL=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_Npgsql && _build_Npgsql)
-        if [ $? == 0 ]; then
-           PG_BUILD_NPGSQL=1
-        fi
-    fi
-    (_postprocess_Npgsql)
 fi
 
 # Package: pgAgent
@@ -283,24 +173,6 @@ then
     (_postprocess_pgAgent)
 fi
 
-# Package: pgmemcache
-if [ $PG_PACKAGE_PGMEMCACHE = 1 ];
-then
-    echo "### Package: pgmemcache"
-    cd $WD
-    source ./pgmemcache/build.sh
-
-    PG_BUILD_PGMEMCACHE=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_pgmemcache && _build_pgmemcache)
-        if [ $? == 0 ]; then
-           PG_BUILD_PGMEMCACHE=1
-        fi
-    fi
-    (_postprocess_pgmemcache)
-fi
-
 # Package: pgbouncer
 if [ $PG_PACKAGE_PGBOUNCER = 1 ];
 then
@@ -319,22 +191,3 @@ then
     (_postprocess_pgbouncer)
 fi
 
-# Package: SQLPROTECT
-if [ $PG_PACKAGE_SQLPROTECT = 1 ];
-then
-    cd $WD
-    source ./sqlprotect/build.sh
-
-    PG_BUILD_SQLPROTECT=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_sqlprotect && _build_sqlprotect)
-        if [ $? == 0 ]; then
-           PG_BUILD_SQLPROTECT=1
-        fi
-    fi
-    (_postprocess_sqlprotect)
-fi
-
-# Archive the symbols
-_archive_symbols
