@@ -92,66 +92,6 @@ else
         done
 fi
 
-# Generic mail variables
-log_location="/home/buildfarm/pginstaller17.auto/output"
-header_fail="Autobuild failed with the following error (last 20 lines of the log):
-###################################################################################"
-footer_fail="###################################################################################"
-
-# Mail function
-_mail_status()
-{
-        build_filename=$1
-        pvtbuild_filename=$2
-        version=$3
-        build_log_file=$log_location/$build_filename
-        pvtbuild_log_file=$log_location/$pvtbuild_filename
-
-        build_log_content=`tail -20 $build_log_file`
-	build_error_flag=`echo $build_log_content | grep "FATAL ERROR"`
-	
-	if [ -f $pvtbuild_log_file ]
-        then
-           pvtbuild_log_content=`tail -20 $pvtbuild_log_file`
-           pvtbuild_error_flag=`echo $pvtbuild_log_content | grep "FATAL ERROR"`
-
-        fi
-
-        if [ ${#build_error_flag} -gt 0 ]
-        then
-                log_content=$build_log_content
-        elif [ ${#pvtbuild_error_flag} -gt 0 ]
-        then
-                log_content=$pvtbuild_log_content
-        fi
-
-        if [ "x$build_error_flag" = "x" ] && [ "x$pvtbuild_error_flag" = "x" ]
-        then
-                mail_content="Autobuild completed Successfully."
-                build_status="SUCCESS"
-                mail_receipents="sandeep.thakkar@enterprisedb.com"
-        else
-                mail_content="
-$header_fail
-
-$log_content
-
-$footer_fail"
-                build_status="FAILED"
-                if [ ${#build_error_flag} -gt 0 ]
-                then
-                        mail_receipents="-c cm@enterprisedb.com"
-                elif [ ${#pvtbuild_error_flag} -gt 0 ]
-                then
-                        mail_receipents="-c cm@enterprisedb.com"
-                fi
-        fi
-
-        mutt -s "pgInstaller Build $version ($country) - $build_status" $mail_receipents <<EOT
-$mail_content
-EOT
-}
-
 # Run everything from the root of the buld directory
 cd $DIRNAME
 
@@ -219,9 +159,7 @@ GetInstallerName(){
         fi
         echo ${installerName,,}
 }
-#------------------
-_mail_status "build-17.log" "build-pvt.log" "17"
-#------------------
+
 echo "#######################################################################" >> autobuild.log
 echo "Build run completed at `date`" >> autobuild.log
 echo "#######################################################################" >> autobuild.log
