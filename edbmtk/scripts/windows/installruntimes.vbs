@@ -1,4 +1,4 @@
-' Copyright (c) 2012-2025, EnterpriseDB Corporation.  All rights reserved
+' Copyright (c) 2012-2026, EnterpriseDB Corporation.  All rights reserved
 On Error Resume Next
 
 ' VC++ runtime installation script for Windows
