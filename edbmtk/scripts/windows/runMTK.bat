@@ -1,7 +1,7 @@
 @echo off
 @REM ----------------------------------------------------------------------------
 @REM @REM --
-@REM @REM -- Copyright (c) 2004-2025 - EnterpriseDB Corporation.  All Rights Reserved.
+@REM @REM -- Copyright (c) 2004-2026 - EnterpriseDB Corporation.  All Rights Reserved.
 @REM @REM --
 @REM @REM ----------------------------------------------------------------------------
 @REM
