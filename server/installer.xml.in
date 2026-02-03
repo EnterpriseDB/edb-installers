@@ -975,6 +975,7 @@ EOF
             <value>PG_PACKAGE_MINOR_VERSION</value>
 	    <ruleList>
 		<compareText logic="equals" text="${platform_name}" value="windows"/>
+		<isFalse value="${extract_mode}"/>
             </ruleList>
         </registrySet>
         <registrySet>
@@ -983,6 +984,7 @@ EOF
             <value>PG_PACKAGE_VERSION</value>
 	    <ruleList>
 		<compareText logic="equals" text="${platform_name}" value="windows"/>
+		<isFalse value="${extract_mode}"/>
             </ruleList>
         </registrySet>
     </postUninstallerCreationActionList>
