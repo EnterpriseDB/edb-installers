@@ -204,14 +204,14 @@ Copy-Item $gettext_directory/bin/libwinpthread-1.dll $installation_directory\bin
 Copy-Item $zlib_directory/bin/*.dll $installation_directory\bin
 Copy-Item $zstd_directory/bin/*.dll $installation_directory\bin
 Copy-Item $lz4_directory/bin/*.dll $installation_directory\bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase328u_net_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase328u_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase328u_xml_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw328u_adv_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw328u_aui_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw328u_core_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw328u_html_vc_x64_custom.dll $installation_directory/bin
-Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw328u_xrc_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase329u_net_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase329u_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxbase329u_xml_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw329u_adv_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw329u_aui_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw329u_core_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw329u_html_vc_x64_custom.dll $installation_directory/bin
+Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw329u_xrc_vc_x64_custom.dll $installation_directory/bin
 
 # Manually copy some libraries to the installation directory
 Copy-Item $lz4_directory/lib/liblz4.lib $installation_directory\lib
