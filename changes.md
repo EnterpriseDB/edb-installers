@@ -2,15 +2,10 @@
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.12`
 
-- **Dependencies (MacOS & Windows)**
+- **Dependencies (MacOS)**
+    - Update `libpng` to version `1.6.55`
     - Update `wxwidgets` to version `3.2.9`
     - Update `openssl` to version `3.5.5`
- 
--  **Additional dependencies (MacOS)**
-    - Update `libpng` to version `1.6.55`
- 
-## Bug Fixes 🐛
-- **Fix:** Updated the installer to detect the --extract-only flag and resolved a bug where unnecessary registry entries were being created in the Windows Uninstall list during extraction. (Issue #405)
 
 -------------------------------------------------------------------------------------------------------------------------------
 
