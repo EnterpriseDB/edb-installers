@@ -1,3 +1,19 @@
+# PostgreSQL installer release 14.21-1 (2025-02-12)
+## Changes 🛠️
+- Update `pgAdmin4` to version `9.12`
+
+- **Dependencies (MacOS & Windows)**
+    - Update `wxwidgets` to version `3.2.9`
+    - Update `openssl` to version `1.1.1ze`
+ 
+-  **Additional dependencies (MacOS)**
+    - Update `libpng` to version `1.6.55`
+ 
+## Bug Fixes 🐛
+- **Fix:** Updated the installer to detect the --extract-only command line switch to resolve an issue where unnecessary registry entries were being created in the Windows Uninstall list during extraction. (Issue #405)
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 14.20-2 (2025-12-12)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.11`
