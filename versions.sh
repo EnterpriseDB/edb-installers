@@ -16,7 +16,7 @@ PG_BUILDNUM_LANGUAGEPACK=1
 #                     Minor version is revision.build.
 
 PG_MAJOR_VERSION=17
-PG_MINOR_VERSION=8.3
+PG_MINOR_VERSION=8.1
 
 # Other package versions
 PG_VERSION_POSTGIS=3.4.4
