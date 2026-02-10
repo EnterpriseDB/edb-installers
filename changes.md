@@ -2,7 +2,7 @@
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.12`
 
-- **Dependencies (Windows)**
+- **Dependencies (MacOS & Windows)**
     - Update `wxwidgets` to version `3.2.9`
     - Update `openssl` to version `1.1.1ze`
  
