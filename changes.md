@@ -17,7 +17,6 @@
     - Update `wxwidgets` to version `3.2.9`
 
 ## Bug Fixes 🐛
-## Changes 🛠️
 - **Fix:** Updated the installer to detect the --extract-only command line switch to resolve an issue where unnecessary registry entries were being created in the Windows Uninstall list during extraction. (Issue #405)
 
 ----------------------------------------------------------------------------------------------------------------------------------
