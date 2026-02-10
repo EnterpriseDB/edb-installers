@@ -1,13 +1,12 @@
 # PostgreSQL installer release 16.11-3 (2025-02-09)
-
-- **Dependencies (MacOS & Windows)**
 ## Changes 🛠️
+
+- **Dependencies (Windows)**
     - Update `openssl` to version `3.0.19`
     - Update `wxwidgets` to version `3.2.9`
 
 ## Bug Fixes 🐛
-## Changes 🛠️
-- **Fix:** Updated the installer to detect the --extract-only command line switch to resolve an issue where unnecessary registry entries were being created in the Windows Uninstall list during extraction. (Issue #405)
+- **Fix:** Updated the installer to detect the --extract-only command line switch to resolve an issue where unnecessary registry entries were being created in the Windows Uninstall list during extraction (Issue #405)
 
 --------------------------------------------------------------------------------------------------------------------------------
 
