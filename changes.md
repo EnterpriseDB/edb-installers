@@ -1,17 +1,12 @@
 # PostgreSQL installer release 17.8-1 (2025-02-12)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.12`
-
-- **Dependencies (Windows)**
-    - Update `wxwidgets` to version `3.2.9`
-    - Update `openssl` to version `3.0.19`
- 
--  **Additional dependencies (MacOS)**
+   
+-  **Dependencies (MacOS)**
     - Update `libpng` to version `1.6.55`
+    - Update `openssl` to version `3.0.19`
+    - Update `wxwidgets` to version `3.2.9`
  
-## Bug Fixes 🐛
-- **Fix:** Updated the installer to detect the --extract-only command line switch to resolve an issue where unnecessary registry entries were being created in the Windows Uninstall list during extraction. (Issue #405)
-
 -------------------------------------------------------------------------------------------------------------------------------
 
 # PostgreSQL installer release 17.7-3 (2025-02-09)
