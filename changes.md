@@ -1,3 +1,15 @@
+# PostgreSQL installer release 18.2-1 (2025-02-12)
+## Changes 🛠️
+- Update `pgAdmin4` to version `9.12`
+  
+- **Dependencies (MacOS)**
+    - Update `libpng` to version `1.6.55`
+    - Update `openssl` to version `3.5.5`
+    - Update `wxwidgets` to version `3.2.9`
+    
+      
+--------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 18.1-3 (2025-02-09)
 ## Changes 🛠️
 
