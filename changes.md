@@ -1,3 +1,14 @@
+# PostgreSQL installer release 16.11-3 (2025-02-09)
+## Changes 🛠️
+- Update `pgAdmin4` to version `9.11`
+
+- **Dependencies (MacOS & Windows)**
+## Changes 🛠️
+    - Update `openssl` to version `3.0.19`
+    - Update `wxwidgets` to version `3.2.9`
+
+--------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 16.11-2 (2025-12-12)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.11`
