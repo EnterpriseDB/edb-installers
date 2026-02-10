@@ -1,7 +1,7 @@
 # PostgreSQL installer release 18.1-3 (2025-02-09)
 ## Changes 🛠️
 - **Dependencies (Windows)**
-    - Update `openssl` to version `3.0.19`
+    - Update `openssl` to version `3.5.5`
     - Update `wxwidgets` to version `3.2.9`
 
 ## Bug Fixes 🐛
