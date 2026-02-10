@@ -1,6 +1,5 @@
 # PostgreSQL installer release 15.15-3 (2025-09-12)
 ## Changes 🛠️
-- Update `pgAdmin4` to version `9.11`
 
 - **Dependencies (MacOS & Windows)**
     - Update `openssl` to version `3.0.19`
