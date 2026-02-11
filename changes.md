@@ -6,8 +6,10 @@
     - Update `libpng` to version `1.6.55`
     - Update `openssl` to version `3.5.5`
     - Update `wxwidgets` to version `3.2.9`
-    
-      
+ 
+## Bug Fixes 🐛
+- **Fix:** Digitally signed getlocales.ps1 and inicluster.ps1 to resolve PowerShell execution policy errors (UnauthorizedAccess) during PostgreSQL installation on windows machine. (Issue #438) (Issue #452) (Issue #459) (Issue #488)
+        
 --------------------------------------------------------------------------------------------------------------------------------
 
 # PostgreSQL installer release 18.1-3 (2025-02-09)

@@ -1,4 +1,4 @@
-# PowerShell Script for PostgreSQL Cluster Initialization
+﻿# PowerShell Script for PostgreSQL Cluster Initialization
 # Copyright (c) 2025, EnterpriseDB Corporation.  All rights reserved
 
 param (
@@ -243,7 +243,7 @@ $randomFileName = ($([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".tmp"
 $passwordFile = Join-Path "$PasswordDir"  $randomFileName
 Set-Content -Path "$passwordFile" -Value $Password -Force
 
-# Change English locales: "English, <Country>" → "English_<Country>"
+# Change English locales: "English, <Country>" â†’ "English_<Country>"
 if ($Locale -match '^English, (.+)$') {
     $Locale = "English_$($matches[1])"
 }
