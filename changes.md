@@ -11,6 +11,7 @@
  
 ## Bug Fixes 🐛
 - **Fix:** Updated the installer to detect the --extract-only command line switch to resolve an issue where unnecessary registry entries were being created in the Windows Uninstall list during extraction. (Issue #405)
+- **Fix:** Digitally signed getlocales.ps1 and inicluster.ps1 to resolve PowerShell execution policy errors (UnauthorizedAccess) during PostgreSQL installation on windows machine. (Issue #438) (Issue #452) (Issue #459) (Issue #488)
 
 -------------------------------------------------------------------------------------------------------------------------------
 
