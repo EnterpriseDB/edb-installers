@@ -1,4 +1,4 @@
-# PostgreSQL installer release 15.16-1 (2025-02-12)
+# PostgreSQL installer release 15.16-1 (2026-02-12)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.12`
 
@@ -12,7 +12,7 @@
  
 -------------------------------------------------------------------------------------------------------------------------------
 
-# PostgreSQL installer release 15.15-3 (2025-09-12)
+# PostgreSQL installer release 15.15-3 (2026-09-12)
 ## Changes 🛠️
 
 - **Dependencies (MacOS & Windows)**
