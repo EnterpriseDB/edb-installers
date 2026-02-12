@@ -1,4 +1,4 @@
-# PostgreSQL installer release 18.2-1 (2025-02-12)
+# PostgreSQL installer release 18.2-1 (2026-02-12)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.12`
   
@@ -12,7 +12,7 @@
         
 --------------------------------------------------------------------------------------------------------------------------------
 
-# PostgreSQL installer release 18.1-3 (2025-02-09)
+# PostgreSQL installer release 18.1-3 (2026-02-09)
 ## Changes 🛠️
 
 - **Dependencies (Windows)**
