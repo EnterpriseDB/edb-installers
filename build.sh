@@ -24,10 +24,8 @@ usage()
         echo "Usage: $0 [Options]\n"
         echo "    Options:"
         echo "      [-skipbuild]"
-        echo "      [-skippvtpkg]"
         echo "    Examples:"
-        echo "     $0 -skipbuild -skippvtpkg"
-        echo "     $0 -skippvtpkg"
+        echo "     $0 -skipbuild "
         echo ""
         exit 1;
 }
@@ -89,7 +87,6 @@ _check_windows_vm() {
 while [ "$#" -gt "0" ]; do
         case "$1" in
                 -skipbuild) SKIPBUILD=$1; shift 1;;              
-                -skippvtpkg) SKIPPVTPACKAGES=$1; shift 1;;
                 -h|-help) usage;;
                 *) echo -e "error: no such option $1. -h for help"; exit 1;;
         esac
@@ -100,13 +97,6 @@ then
   SKIPBUILD=1
 else
   SKIPBUILD=0
-fi
-
-if [ "$SKIPPVTPACKAGES" = "-skippvtpkg" ];
-then
-  SKIPPVTPACKAGES=1
-else
-  SKIPPVTPACKAGES=0
 fi
 
 # Check the VMs
@@ -166,60 +156,6 @@ then
     (_postprocess_languagepack)
 fi
 
-# Package: PEM-HTTPD
-if [ $PG_PACKAGE_PEMHTTPD = 1 ];
-then
-    echo "### Package: PEM-HTTPD"
-    cd $WD
-    source ./PEM-HTTPD/build.sh
-
-    PG_BUILD_PEMHTTPD=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_PEM-HTTPD && _build_PEM-HTTPD)
-        if [ $? == 0 ]; then
-           PG_BUILD_PEMHTTPD=1
-        fi
-    fi
-    (_postprocess_PEM-HTTPD)
-fi
-
-# Package: pgJDBC
-if [ $PG_PACKAGE_PGJDBC = 1 ];
-then
-    echo "### Package: pgJDBC"
-    cd $WD
-    source ./pgJDBC/build.sh
-
-    PG_BUILD_PGJDBC=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_pgJDBC && _build_pgJDBC)
-        if [ $? == 0 ]; then
-           PG_BUILD_PGJDBC=1
-        fi
-    fi
-    (_postprocess_pgJDBC)
-fi
-
-# Package: psqlODBC
-if [ $PG_PACKAGE_PSQLODBC = 1 ];
-then
-    echo "### Package: psqlODBC"
-    cd $WD
-    source ./psqlODBC/build.sh
-
-    PG_BUILD_PSQLODBC=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_psqlODBC && _build_psqlODBC)
-        if [ $? == 0 ]; then
-           PG_BUILD_PSQLODBC=1
-        fi
-    fi
-    (_postprocess_psqlODBC)
-fi
-
 # Package: PostGIS
 if [ $PG_PACKAGE_POSTGIS = 1 ];
 then
@@ -236,42 +172,6 @@ then
         fi
     fi
     (_postprocess_PostGIS)
-fi
-
-# Package: Slony
-if [ $PG_PACKAGE_SLONY = 1 ];
-then
-    echo "### Package: Slony"
-    cd $WD
-    source ./Slony/build.sh
-
-    PG_BUILD_SLONY=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_Slony && _build_Slony)
-        if [ $? == 0 ]; then
-           PG_BUILD_SLONY=1
-        fi
-    fi
-    (_postprocess_Slony)
-fi
-
-# Package: Npgsql
-if [ $PG_PACKAGE_NPGSQL = 1 ];
-then
-    echo "### Package: Npgsql"
-    cd $WD
-    source ./Npgsql/build.sh
-
-    PG_BUILD_NPGSQL=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_Npgsql && _build_Npgsql)
-        if [ $? == 0 ]; then
-           PG_BUILD_NPGSQL=1
-        fi
-    fi
-    (_postprocess_Npgsql)
 fi
 
 # Package: pgAgent
@@ -292,42 +192,6 @@ then
     (_postprocess_pgAgent)
 fi
 
-# Package: pgmemcache
-if [ $PG_PACKAGE_PGMEMCACHE = 1 ];
-then
-    echo "### Package: pgmemcache"
-    cd $WD
-    source ./pgmemcache/build.sh
-
-    PG_BUILD_PGMEMCACHE=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_pgmemcache && _build_pgmemcache)
-        if [ $? == 0 ]; then
-           PG_BUILD_PGMEMCACHE=1
-        fi
-    fi
-    (_postprocess_pgmemcache)
-fi
-
-# Package: pgbouncer
-if [ $PG_PACKAGE_PGBOUNCER = 1 ];
-then
-    echo "### Package: pgbouncer"
-    cd $WD
-    source ./pgbouncer/build.sh
-
-    PG_BUILD_PGBOUNCER=0
-    if [ $SKIPBUILD = 0 ];
-    then
-        (_prep_pgbouncer && _build_pgbouncer)
-        if [ $? == 0 ]; then
-           PG_BUILD_PGBOUNCER=1
-        fi
-    fi
-    (_postprocess_pgbouncer)
-fi
-
 # Package: SQLPROTECT
 if [ $PG_PACKAGE_SQLPROTECT = 1 ];
 then
@@ -344,16 +208,3 @@ then
     fi
     (_postprocess_sqlprotect)
 fi
-
-# Check for private builds
-if [ $SKIPPVTPACKAGES = 0 ];
-then
-    if [ -e $WD/pvt_build.sh ];
-    then
-	[ -z "${PVT_BUILD_LOG}" ] && PVT_BUILD_LOG=$WD/output/build-pvt.log
-        source $WD/pvt_build.sh > "${PVT_BUILD_LOG}" 2>&1
-    fi
-fi
-
-# Archive the symbols
-_archive_symbols

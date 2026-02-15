@@ -140,9 +140,6 @@
                 <distributionDirectory>
                     <origin>staging/osx/server/share</origin>
                 </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/osx/server/debug_symbols</origin>
-                </distributionDirectory>
                 <distributionFile>
                     <origin>staging/osx/server/server_license.txt</origin>
                 </distributionFile>
@@ -1757,6 +1754,8 @@
                                 <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\X64</key>
                                 <variable>vcredist_ver</variable>
                         </registryGet>
+						<logMessage text="Installed VC++ runtimes version: ${vcredist_ver}" />
+			            <logMessage text="Bundled VC++ runtime version: @@VCREDIST_BUNDLED_VER@@" />
                         <setInstallerVariable name="install_runtimes" value="0">
                                 <ruleList>
                                     <stringTest>

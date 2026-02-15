@@ -975,6 +975,7 @@ EOF
             <value>PG_PACKAGE_MINOR_VERSION</value>
             <ruleList>
 		<compareText logic="equals" text="${platform_name}" value="windows"/>
+		<isFalse value="${extract_mode}"/>
             </ruleList>
         </registrySet>
         <registrySet>
@@ -983,6 +984,7 @@ EOF
             <value>PG_PACKAGE_VERSION</value>
 	    <ruleList>
 		<compareText logic="equals" text="${platform_name}" value="windows"/>
+		<isFalse value="${extract_mode}"/>
             </ruleList>
         </registrySet>
     </postUninstallerCreationActionList>
@@ -2073,25 +2075,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             </actionList>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </actionGroup>
-
-        <actionGroup>
-            <actionList>
-                <deleteFile path="${installdir}${slash}bin${slash}*.pdb" />
-                <deleteFile path="${installdir}${slash}lib${slash}*.pdb" />
-                <deleteFile path="${installdir}${slash}lib${slash}pgxs${slash}src${slash}test${slash}isolation${slash}*.pdb" />
-                <deleteFile path="${installdir}${slash}lib${slash}pgxs${slash}src${slash}test${slash}regress${slash}*.pdb" />
-                <deleteFile path="${installdir}${slash}debug_symbols">
-                    <ruleList>
-                        <fileExists path="${installdir}${slash}debug_symbols" />
-                    </ruleList>
-                </deleteFile>
-            </actionList>
-            <ruleList>
-                <compareText text="${platform_name}" logic="contains" value="windows" />
-                <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="17.0-1" />
-                <isTrue value="${IsUpgrade}"/>
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
