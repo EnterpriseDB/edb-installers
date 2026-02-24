@@ -248,6 +248,9 @@ if ($Locale -match '^English, (.+)$') {
     $Locale = "English_$($matches[1])"
 }
 
+# Prepend the current bin directory to the PATH so initdb finds the correct postgres.exe
+$env:PATH = "$InstallDir\bin;" + $env:PATH
+
 # Run initdb
 Write-Host "`nInitializing PostgreSQL database cluster..."
 # Set initdb arguments
@@ -339,3 +342,4 @@ if ($iRet -ne 0) {
 }
 
 Write-Host "`ninitcluster.ps1 ran to completion."
+
