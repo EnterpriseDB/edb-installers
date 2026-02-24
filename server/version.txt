@@ -1,5 +1,5 @@
 pg_major_version=18
-pg_minor_version=2
+pg_minor_version=3
 package_revision=1
 pgadmin4=9.12
 python=3.13.12
