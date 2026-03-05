@@ -1,4 +1,4 @@
-# PostgreSQL installer release 14.22-2 (2026-03-06)
+# PostgreSQL installer release 15.17-2 (2026-03-06)
 ## Changes 🛠️
 - **Dependencies (MacOS & Windows)**
     - Update `libxml2` version to `2.15.2`
