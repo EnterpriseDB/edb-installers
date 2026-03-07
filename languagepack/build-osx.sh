@@ -153,13 +153,18 @@ _build_languagepack_osx() {
    CFLAGS="$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L\$TCL_TK_INSTALL_PATH/lib" make || _die "Failed to make tcl"
    make install || _die "Failed to make install tcl"
 
-     echo "Setting RPATHs..."
+     echo "Setting RPATHs for tcl..."
 
      cd \$TCL_TK_INSTALL_PATH/bin
-     find * -type f | xargs file | grep ELF | cut -f1 -d":" | xargs -I{} chrpath -r "\$ORIGIN/../lib" {}
+     find * -type f | xargs file | grep "Mach-O" | cut -f1 -d":" | while read -r bin; do
+     install_name_tool -add_rpath "@loader_path/../lib" "$bin" 2>/dev/null
+     done
 
      cd \$TCL_TK_INSTALL_PATH/lib
-     find * -type f | xargs file | grep ELF | cut -f1 -d":" | xargs -I{} chrpath -r "\$ORIGIN" {}
+     find * -type f | xargs file | grep "Mach-O" | cut -f1 -d":" | while read -r bin; do
+     install_name_tool -add_rpath "@loader_path" "$lib" 2>/dev/null
+     done
+     
      echo "Building Python..."
     
      cd $PG_PATH_OSX/languagepack/source/python.osx
@@ -167,33 +172,37 @@ _build_languagepack_osx() {
      export LDFLAGS="-L/opt/local/Current_v15/lib -L\$TCL_TK_INSTALL_PATH/lib"
      export CFLAGS="-I/opt/local/Current_v15/include -I\$TCL_TK_INSTALL_PATH/include"
      export CPPFLAGS=\$CFLAGS
-     export LD_LIBRARY_PATH="\$TCL_TK_INSTALL_PATH/lib:\$LD_LIBRARY_PATH"
-     export LD_RUN_PATH="\$PYTHON_INSTALL_PATH/lib"
      export PYTHONHOME="\$PYTHON_INSTALL_PATH"
 
      CC='clang' CFLAGS="\$PG_ARCH_OSX_CFLAGS" LDFLAGS="-L/opt/local/Current_v15/lib \$PG_ARCH_OSX_LDFLAGS" ./configure --prefix=\$PYTHON_INSTALL_PATH --enable-shared --with-openssl=/opt/local/Current_v15 || _die "Failed to configure Python"
      echo "-----------------------------------------------------"
-     echo "out put of Python Make started"
+     echo "output of Python Make started"
      echo "-----------------------------------------------------"
 
      PYTHONHOME=\$PYTHON_INSTALL_PATH CFLAGS="\$PG_ARCH_OSX_CFLAGS" LDFLAGS="\$PG_ARCH_OSX_LDFLAGS" make || _die "Failed to make Python"
      echo "-----------------------------------------------------"
-     echo "out put of Python Make end"
+     echo "output of Python Make end"
      echo "-----------------------------------------------------"
      make install || _die "Failed to make install Python"
     
-     echo "Setting RPATHs..."
+     echo "Setting RPATHs for python..."
 
      cd \$PYTHON_INSTALL_PATH/bin
-     find * -type f | xargs file | grep ELF | cut -f1 -d":" | xargs -I{} chrpath -r "\$ORIGIN/../lib" {}
+     find * -type f | xargs file | grep "Mach-O" | cut -f1 -d":" | while read -r bin; do
+     install_name_tool -add_rpath "@loader_path/../lib" "$bin" 2>/dev/null
+     done
      ln -sv python3 python
 
      cd \$PYTHON_INSTALL_PATH/lib
-     find * -type f | xargs file | grep ELF | cut -f1 -d":" | xargs -I{} chrpath -r "\$ORIGIN" {}
-     echo "=============creating soft link for libpython3.3m.dylib==================="
-     cd \$PYTHON_INSTALL_PATH/lib/python\$PG_VERSION_PYTHON/config-\$PG_VERSION_PYTHON\m
-     ln -s ../../libpython\$PG_VERSION_PYTHON\m.dylib libpython\$PG_VERSION_PYTHON\m.dylib
+     find * -type f | xargs file | grep "Mach-O" | cut -f1 -d":" | while read -r lib; do
+     install_name_tool -add_rpath "@loader_path" "$lib" 2>/dev/null
+     done
+     
+     echo "=============creating soft link for libpython3.dylib==================="
+     cd \$PYTHON_INSTALL_PATH/lib/python\$PG_VERSION_PYTHON/config-\$PG_VERSION_PYTHON-darwin
+     ln -s ../../libpython\$PG_VERSION_PYTHON.dylib libpython\$PG_VERSION_PYTHON.dylib
      echo "================end========================"
+     
      chmod 755 \$PYTHON_INSTALL_PATH/lib/libpython*dylib
      cp -pR /opt/local/Current_v15/lib/libiconv*dylib \$PYTHON_INSTALL_PATH/lib/
      cp -pR /opt/local/Current_v15/lib/libintl*dylib \$PYTHON_INSTALL_PATH/lib/
@@ -201,58 +210,48 @@ _build_languagepack_osx() {
      cp -pR /opt/local/Current_v15/lib/libcrypto*dylib \$PYTHON_INSTALL_PATH/lib/
      cp -pR /opt/local/Current_v15/lib/libz*dylib \$PYTHON_INSTALL_PATH/lib/
 
-     _rewrite_so_refs \$PYTHON_INSTALL_PATH bin @loader_path/..
-     _rewrite_so_refs \$PYTHON_INSTALL_PATH lib @loader_path/..
-     _rewrite_so_refs \$PYTHON_INSTALL_PATH lib/python\$PG_VERSION_PYTHON/lib-dynload @loader_path/../../..
+     _rewrite_so_refs \$PYTHON_INSTALL_PATH bin @loader_path/.. \$PYTHON_INSTALL_PATH
+     _rewrite_so_refs \$PYTHON_INSTALL_PATH lib @loader_path/.. \$PYTHON_INSTALL_PATH
+     _rewrite_so_refs \$PYTHON_INSTALL_PATH lib/python\$PG_VERSION_PYTHON/lib-dynload @loader_path/../../.. \$PYTHON_INSTALL_PATH
      
      cd \$PYTHON_INSTALL_PATH/lib
      echo "====================install name tool change=================="
-     install_name_tool -change libpython\$PG_VERSION_PYTHON\m.dylib \$PYTHON_INSTALL_PATH/lib/libpython\$PG_VERSION_PYTHON\m.dylib
+     install_name_tool -change libpython\$PG_VERSION_PYTHON\m.dylib \$PYTHON_INSTALL_PATH/lib/libpython\$PG_VERSION_PYTHON\m.dylib \$PYTHON_INSTALL_PATH/lib/libpython\$PG_VERSION_PYTHON.dylib
      echo "=========================end==============="
+     
      echo "Building Python Distribute..."
-     cd $PG_PATH_OSX/languagepack/source/setuptools-python.osx
-     echo "============PATH Varaibles=========="
-     export PYTHONHOME="\$PYTHON_INSTALL_PATH"
+     cd \$PG_PATH_OSX/languagepack/source/setuptools-python.osx
+     echo "============PATH Variables=========="
      export PATH="\$PYTHON_INSTALL_PATH/bin:\$PATH"
-     export LD_LIBRARY_PATH="/opt/local/Current_v15/lib:\$LD_LIBRARY_PATH"
+     PYTHON_BIN="\$PYTHON_INSTALL_PATH/bin/python3"
 
-     python -m pip install --upgrade pip
-     pip3 install --upgrade setuptools
-     pip3 install --upgrade distlib
-     # Update for deprecated HTMLParser.unescape for python >=3.9
-     # ref # https://github.com/coursera-dl/edx-dl/commit/5490a99a98b56f544661c131229ef640ace2b064
-     sed -ie "/unescape = getattr(html, 'unescape', html_parser.HTMLParser().unescape)/d" setuptools/py33compat.py
-     echo "unescape = getattr(html, 'unescape', None)" >> setuptools/py33compat.py
-     echo "if unescape is None:" >> setuptools/py33compat.py
-     echo "    # HTMLParser.unescape is deprecated since Python 3.4, and will be removed" >> setuptools/py33compat.py
-     echo "    # from 3.9." >> setuptools/py33compat.py
-     echo "    unescape = html_parser.HTMLParser().unescape" >> setuptools/py33compat.py
-
-     python setup.py install --prefix=\$PYTHON_INSTALL_PATH 
-
+     \$PYTHON_BIN python -m pip install --upgrade pip setuptools wheel
+     \$PYTHON_BIN -m pip install . --prefix=\$PYTHON_INSTALL_PATH
+    
      cd \$PYTHON_INSTALL_PATH
-     pip list > \$install_path/pip_packages_list.txt
+     \$PYTHON_BIN pip list > \$install_path/pip_packages_list.txt
+
+     echo "Python distribution tools installed successfully."
 
     echo "Building Perl..."
-    cd $PG_PATH_OSX/languagepack/source/perl.osx
-    export LD_RUN_PATH=\$PERL_INSTALL_PATH/lib
+    cd \$PG_PATH_OSX/languagepack/source/perl.osx
 
     LDFLAGS='-L\$PERL_INSTALL_PATH/lib' ./Configure -ders -Dcc=llvm-gcc -Dusethreads -Duseithreads -Uinstallusrbinperl -Ulocincpth= -Uloclibpth= -A ccflags=-DUSE_SITECUSTOMIZE -A ccflags=-DPERL_RELOCATABLE_INCPUSH -A ccflags=-Duselargefiles -Accflags='\$PG_ARCH_OSX_CFLAGS -arch x86_64 -arch arm64  -fno-merge-constants' -Aldflags='-arch x86_64 -arch arm64' -Duseshrplib -Dprefix=\$PERL_INSTALL_PATH -Dprivlib=\$PERL_INSTALL_PATH/lib -Darchlib=\$PERL_INSTALL_PATH/lib -Dsiteprefix=\$PERL_INSTALL_PATH/site -Dsitelib=\$PERL_INSTALL_PATH/site/lib -Dsitearch=\$PERL_INSTALL_PATH/site/lib || _die "Failed to configure Perl"
     make || _die "Failed to Make Perl"
     make install || _die "Failed to make install Perl"
-    echo "Setting RPATHs..."
+    
+    echo "Setting RPATHs for perl..."
     cd \$PERL_INSTALL_PATH/bin
-    find * -type f | xargs file | grep ELF | cut -f1 -d":" | xargs -I{} chrpath -r "\$ORIGIN/../lib/CORE" {}
+    find * -type f | xargs file | grep "Mach-O" | cut -f1 -d":" | while read -r bin; do
+    install_name_tool -add_rpath "@loader_path/../lib/CORE" "$bin" 2>/dev/null
+    done
+    
     cd \$PERL_INSTALL_PATH/lib
-    find * -type f | xargs file | grep ELF | cut -f1 -d":" | xargs -I{} chrpath -r "\$ORIGIN" {}
+    find * -type f | xargs file | grep "Mach-O" | cut -f1 -d":" | while read -r lib; do
+    install_name_tool -add_rpath "@loader_path" "$lib" 2>/dev/null
+    done
     echo "copying Tcl,Python,Perl instalation directories into Staging...."
     
-    #cp -pR \$PYTHON_INSTALL_PATH \$PG_PATH_OSX/languagepack/staging/osx
-    #cp -pR \$PERL_INSTALL_PATH \$PG_PATH_OSX/languagepack/staging/osx
-    #cp -pR \$TCL_TK_INSTALL_PATH \$PG_PATH_OSX/languagepack/staging/osx
-
-    #cd \$install_path
-    #tar -jcvf LanguagePack-$PG_VERSION_LANGUAGEPACK.tar.bz2 *
 
 EOT-LANGUAGEPACK
 
