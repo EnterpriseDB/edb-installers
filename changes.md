@@ -1,3 +1,20 @@
+# PostgreSQL installer release 17.9-2 (2026-03-06)
+## Changes 🛠️
+- **Dependencies (MacOS & Windows)**
+    - Update `libxml2` version to `2.15.2`
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+# PostgreSQL installer release 17.9-1 (2026-02-26)
+## Changes 🛠️
+- **Dependencies (MacOS & Windows)**
+    - Update `zlib` version to `1.3.2`
+ 
+## Bug Fixes 🐛
+- **Fix:** Prioritize local bin directory for database initialization while executing initdb.exe, Modified initcluster.ps1 to create a controlled execution environment by adding the local $InstallDir\bin folder to the start of the PATH variable. This changes the search priority to ensure initdb.exe finds the matching latest version postgres.exe and avoids version mismatch errors from legacy system files. (Issue #407) (Issue #531)
+        
+--------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 17.8-1 (2026-02-12)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.12`
