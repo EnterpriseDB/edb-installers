@@ -22,6 +22,7 @@ dir
 ninja --verbose
 
 ninja src/interfaces/ecpg/test/compat_informix/dec_test.exe
+ninja src/interfaces/ecpg/test/compat_informix/dec_test.exe
 
 ninja install
 dir %BASE_PATH%\%SOURCE_DIR%\meson-install
