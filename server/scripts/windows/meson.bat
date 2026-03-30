@@ -14,7 +14,7 @@ PATH=C:\hostedtoolcache\windows\Python\%PYTHON_VERSION%\x64;C:\hostedtoolcache\w
 
 SET PKG_CONFIG_PATH=%BASE_PATH%\zlib\lib\pkgconfig;%BASE_PATH%\libxml2\lib\pkgconfig;%BASE_PATH%\zstd\lib\pkgconfig;%BASE_PATH%\lz4\lib\pkgconfig;%BASE_PATH%\libxslt\lib\pkgconfig;%BASE_PATH%\icu\lib64\pkgconfig;C:\Users\runneradmin\AppData\Local\Apps\Tcl86\lib\pkgconfig;%BASE_PATH%\uuid\lib\pkgconfig
 
-meson setup %BASE_PATH%\%SOURCE_DIR% %BASE_PATH%\%SOURCE_DIR%\meson-build --prefix=%BASE_PATH%\%SOURCE_DIR%\meson-install -Dnls=enabled -Duuid=ossp -Dplperl=enabled -Dssl=openssl -Dextra_include_dirs=%BASE_PATH%\gettext\include,%BASE_PATH%\openssl\include -Dextra_lib_dirs=%BASE_PATH%\gettext\lib,%BASE_PATH%\openssl\lib
+meson setup %BASE_PATH%\%SOURCE_DIR% %BASE_PATH%\%SOURCE_DIR%\meson-build --prefix=%BASE_PATH%\%SOURCE_DIR%\meson-install -Dnls=enabled -Duuid=ossp -Dplperl=enabled -Dssl=openssl -Dtests=enabled -Dextra_include_dirs=%BASE_PATH%\gettext\include,%BASE_PATH%\openssl\include -Dextra_lib_dirs=%BASE_PATH%\gettext\lib,%BASE_PATH%\openssl\lib
 
 cd %BASE_PATH%\%SOURCE_DIR%\meson-build
 ECHO meson build dir content
@@ -22,18 +22,10 @@ dir
 ninja --verbose
 
 ECHO --- PHASE 1: Generating all C files safely ---
-:: Ask Ninja for every .c target in the ecpg/test folder and build them one by one
-ninja -t targets | findstr "src\\interfaces\\ecpg\\test" | findstr "\.c:" > ecpg_c_targets.txt
-for /F "tokens=1 delims=:" %%T in (ecpg_c_targets.txt) do (
-    ninja "%%T"
-)
+powershell -NoProfile -Command "$lines = ninja -t targets | Select-String 'src/interfaces/ecpg/test.*\.c:'; foreach ($line in $lines) { $target = ($line -split ':')[0]; Write-Host 'Building ' $target; ninja $target }"
 
 ECHO --- PHASE 2: Compiling all EXECUTABLES safely ---
-:: Ask Ninja for every .exe target in the ecpg/test folder and compile them one by one
-ninja -t targets | findstr "src\\interfaces\\ecpg\\test" | findstr "\.exe:" > ecpg_exe_targets.txt
-for /F "tokens=1 delims=:" %%T in (ecpg_exe_targets.txt) do (
-    ninja "%%T"
-)
+powershell -NoProfile -Command "$lines = ninja -t targets | Select-String 'src/interfaces/ecpg/test.*\.exe:'; foreach ($line in $lines) { $target = ($line -split ':')[0]; Write-Host 'Building ' $target; ninja $target }"
 
 ninja install
 dir %BASE_PATH%\%SOURCE_DIR%\meson-install
