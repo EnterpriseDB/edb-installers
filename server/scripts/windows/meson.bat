@@ -14,7 +14,7 @@ PATH=C:\hostedtoolcache\windows\Python\%PYTHON_VERSION%\x64;C:\hostedtoolcache\w
 
 SET PKG_CONFIG_PATH=%BASE_PATH%\zlib\lib\pkgconfig;%BASE_PATH%\libxml2\lib\pkgconfig;%BASE_PATH%\zstd\lib\pkgconfig;%BASE_PATH%\lz4\lib\pkgconfig;%BASE_PATH%\libxslt\lib\pkgconfig;%BASE_PATH%\icu\lib64\pkgconfig;C:\Users\runneradmin\AppData\Local\Apps\Tcl86\lib\pkgconfig;%BASE_PATH%\uuid\lib\pkgconfig
 
-meson setup %BASE_PATH%\%SOURCE_DIR% %BASE_PATH%\%SOURCE_DIR%\meson-build --prefix=%BASE_PATH%\%SOURCE_DIR%\meson-install -Dnls=enabled -Duuid=ossp -Dplperl=enabled -Dssl=openssl -Dtests=enabled -Dextra_include_dirs=%BASE_PATH%\gettext\include,%BASE_PATH%\openssl\include -Dextra_lib_dirs=%BASE_PATH%\gettext\lib,%BASE_PATH%\openssl\lib
+meson setup %BASE_PATH%\%SOURCE_DIR% %BASE_PATH%\%SOURCE_DIR%\meson-build --prefix=%BASE_PATH%\%SOURCE_DIR%\meson-install -Dnls=enabled -Duuid=ossp -Dplperl=enabled -Dssl=openssl -Dextra_include_dirs=%BASE_PATH%\gettext\include,%BASE_PATH%\openssl\include -Dextra_lib_dirs=%BASE_PATH%\gettext\lib,%BASE_PATH%\openssl\lib
 
 cd %BASE_PATH%\%SOURCE_DIR%\meson-build
 ECHO meson build dir content
