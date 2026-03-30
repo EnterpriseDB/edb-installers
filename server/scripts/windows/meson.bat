@@ -21,27 +21,19 @@ ECHO meson build dir content
 dir
 ninja --verbose
 
-ninja src/interfaces/ecpg/test/compat_informix/charfuncs.c
-ninja src/interfaces/ecpg/test/compat_informix/dec_test.c
-ninja src/interfaces/ecpg/test/compat_informix/describe.c
-ninja src/interfaces/ecpg/test/compat_informix/intoasc.c
-ninja src/interfaces/ecpg/test/compat_informix/rfmtdate.c
-ninja src/interfaces/ecpg/test/compat_informix/rfmtlong.c
-ninja src/interfaces/ecpg/test/compat_informix/rnull.c
-ninja src/interfaces/ecpg/test/compat_informix/sqlda.c
-ninja src/interfaces/ecpg/test/compat_informix/test_informix.c
-ninja src/interfaces/ecpg/test/compat_informix/test_informix2.c
+ECHO --- PHASE 1: Generating all C files safely ---
+:: Ask Ninja for every .c target in the ecpg/test folder and build them one by one
+ninja -t targets | findstr "src\\interfaces\\ecpg\\test" | findstr "\.c:" > ecpg_c_targets.txt
+for /F "tokens=1 delims=:" %%T in (ecpg_c_targets.txt) do (
+    ninja "%%T"
+)
 
-ninja src/interfaces/ecpg/test/compat_informix/charfuncs.exe
-ninja src/interfaces/ecpg/test/compat_informix/dec_test.exe
-ninja src/interfaces/ecpg/test/compat_informix/describe.exe
-ninja src/interfaces/ecpg/test/compat_informix/intoasc.exe
-ninja src/interfaces/ecpg/test/compat_informix/rfmtdate.exe
-ninja src/interfaces/ecpg/test/compat_informix/rfmtlong.exe
-ninja src/interfaces/ecpg/test/compat_informix/rnull.exe
-ninja src/interfaces/ecpg/test/compat_informix/sqlda.exe
-ninja src/interfaces/ecpg/test/compat_informix/test_informix.exe
-ninja src/interfaces/ecpg/test/compat_informix/test_informix2.exeg
+ECHO --- PHASE 2: Compiling all EXECUTABLES safely ---
+:: Ask Ninja for every .exe target in the ecpg/test folder and compile them one by one
+ninja -t targets | findstr "src\\interfaces\\ecpg\\test" | findstr "\.exe:" > ecpg_exe_targets.txt
+for /F "tokens=1 delims=:" %%T in (ecpg_exe_targets.txt) do (
+    ninja "%%T"
+)
 
 ninja install
 dir %BASE_PATH%\%SOURCE_DIR%\meson-install
