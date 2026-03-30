@@ -21,43 +21,7 @@ ECHO meson build dir content
 dir
 ninja --verbose
 
-:: ==========================================
-:: 1. BUILD INFORMIX TESTS
-:: ==========================================
-ECHO Generating Informix C files...
-ninja src/interfaces/ecpg/test/compat_informix/charfuncs.c
-ninja src/interfaces/ecpg/test/compat_informix/dec_test.c
-ninja src/interfaces/ecpg/test/compat_informix/describe.c
-ninja src/interfaces/ecpg/test/compat_informix/intoasc.c
-ninja src/interfaces/ecpg/test/compat_informix/rfmtdate.c
-ninja src/interfaces/ecpg/test/compat_informix/rfmtlong.c
-ninja src/interfaces/ecpg/test/compat_informix/rnull.c
-ninja src/interfaces/ecpg/test/compat_informix/sqlda.c
-ninja src/interfaces/ecpg/test/compat_informix/test_informix.c
-ninja src/interfaces/ecpg/test/compat_informix/test_informix2.c
-
-ECHO Compiling Informix EXEs...
-ninja src/interfaces/ecpg/test/compat_informix/charfuncs.exe
-ninja src/interfaces/ecpg/test/compat_informix/dec_test.exe
-ninja src/interfaces/ecpg/test/compat_informix/describe.exe
-ninja src/interfaces/ecpg/test/compat_informix/intoasc.exe
-ninja src/interfaces/ecpg/test/compat_informix/rfmtdate.exe
-ninja src/interfaces/ecpg/test/compat_informix/rfmtlong.exe
-ninja src/interfaces/ecpg/test/compat_informix/rnull.exe
-ninja src/interfaces/ecpg/test/compat_informix/sqlda.exe
-ninja src/interfaces/ecpg/test/compat_informix/test_informix.exe
-ninja src/interfaces/ecpg/test/compat_informix/test_informix2.exe
-
-:: ==========================================
-:: 2. BUILD ORACLE TESTS
-:: ==========================================
-ECHO Generating Oracle C files...
-ninja src/interfaces/ecpg/test/compat_oracle/char_array.c
-ninja src/interfaces/ecpg/test/compat_oracle/sqlda.c
-
-ECHO Compiling Oracle EXEs...
-ninja src/interfaces/ecpg/test/compat_oracle/char_array.exe
-ninja src/interfaces/ecpg/test/compat_oracle/sqlda.exe
+ninja testprep
 
 ninja install
 dir %BASE_PATH%\%SOURCE_DIR%\meson-install
