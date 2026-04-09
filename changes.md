@@ -2,10 +2,10 @@
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.14`
 
-- **Dependencies (MacOS & Windows)**
+- **Dependencies (macOS & Windows)**
     - Update `openssl` version to `3.5.6`
 
-- **Dependencies (Mac)**
+- **Dependencies (macOS)**
     - Update `libpng` to version `1.6.56`
 
 -------------------------------------------------------------------------------------------------------------------------------
@@ -13,21 +13,21 @@
 # PostgreSQL installer release 18.3-3 (2026-03-23)
 ## Changes 🛠️
 
-- **Dependencies (Mac)**
+- **Dependencies (macOS)**
     - Update `curl` to version `8.19.0`
 
 -------------------------------------------------------------------------------------------------------------------------------
 
 # PostgreSQL installer release 18.3-2 (2026-03-06)
 ## Changes 🛠️
-- **Dependencies (MacOS & Windows)**
+- **Dependencies (macOS & Windows)**
     - Update `libxml2` version to `2.15.2`
 
 -------------------------------------------------------------------------------------------------------------------------------
 
 # PostgreSQL installer release 18.3-1 (2026-02-26)
 ## Changes 🛠️
-- **Dependencies (MacOS & Windows)**
+- **Dependencies (macOS & Windows)**
     - Update `zlib` version to `1.3.2`
  
 ## Bug Fixes 🐛
@@ -39,7 +39,7 @@
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.12`
   
-- **Dependencies (MacOS)**
+- **Dependencies (macOS)**
     - Update `libpng` to version `1.6.55`
     - Update `openssl` to version `3.5.5`
     - Update `wxwidgets` to version `3.2.9`
@@ -65,7 +65,7 @@
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.11`
 
-- **Dependencies (MacOS & Windows)**
+- **Dependencies (macOS & Windows)**
     - Update `libxslt` to version `1.1.45`
     - Update `libxml2` to version `2.15.1`
 
@@ -75,11 +75,11 @@
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.9`
 
-- **Dependencies (MacOS & Windows)**
+- **Dependencies (macOS & Windows)**
     - Update `libxslt` to version `1.1.43-2`.
     This includes security patch CVE-2025-7424, which addresses a type confusion vulnerability in xmlNode.psvi when handling stylesheet and source nodes.
   
-- **Additional dependencies (MacOS)**
+- **Additional dependencies (macOS)**
     - Update `curl` to version `8.17.0`
     - Update `pcre` to version `10.47`
     - Update `libedit` to version `20251016-3.1`
@@ -91,10 +91,10 @@
 
 # PostgreSQL installer release 18.0-2 (2025-10-08)
 ## Changes 🛠️
-- **Dependencies (MacOS & Windows)**
+- **Dependencies (macOS & Windows)**
     - Update `openssl` to version `3.5.4`
 
-- **Additional dependencies (MacOS)**
+- **Additional dependencies (macOS)**
     - Update `expat` to version `2.7.3`
  
 ## Bug Fixes 🐛
@@ -104,12 +104,12 @@
 
 # PostgreSQL installer release 18.0-1 (2025-09-25)
 ## Changes 🛠️
-- **Dependencies (MacOS & Windows)**
+- **Dependencies (macOS & Windows)**
     - Update `pgAdmin4` to version `9.8`
     - Update `openssl` to version `3.5.3`
     - Update `curl` to version `8.16.0`
  
-- **Additional dependencies (MacOS)**
+- **Additional dependencies (macOS)**
     - Update `expat` to version `2.7.2`
     - Update `libxml2` to version `2.14.6`
  
@@ -120,10 +120,10 @@
 
 # PostgreSQL installer release 18rc1 (2025-09-04)
 ## Changes 🛠️
-- **Dependencies (MacOS & Windows)**
+- **Dependencies (macOS & Windows)**
     - Update `pgAdmin4` to version `9.7`
  
-- **Additional dependencies (MacOS)**
+- **Additional dependencies (macOS)**
     - Update `gettext` to version `0.26`
     - Update `pcre2` to version `10.46`
     - Update `krb5` to version `1.22.1`      
@@ -132,12 +132,12 @@
 
 # PostgreSQL installer release 18beta3 (2025-08-14)
 ## Changes 🛠️
-- **Dependencies (MacOS & Windows)**
+- **Dependencies (macOS & Windows)**
     - Update `pgAdmin4` to version `9.6`
     - Update `curl` to version `8.15.0`
     - Update `openssl` to version `3.5.2`
  
-- **Additional dependencies (MacOS)**
+- **Additional dependencies (macOS)**
     - Update `libpng2` to version `1.6.50`
     - Update `e2fsprogs` to version `1.47.3`
     - Update `libxml2` to version `2.14.5`
