@@ -1,4 +1,4 @@
-# PostgreSQL installer release 16.13-3 (2026-04-13)
+# PostgreSQL installer release 16.13-3 (2026-04-15)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.14`
   
@@ -6,7 +6,7 @@
     - Update `openssl` version to `3.0.20`
 
 -  **Dependencies (MacOS)**
-    - Update `libpng` version to `1.6.56`
+    - Update `libpng` version to `1.6.57`
 
 -------------------------------------------------------------------------------------------------------------------------------
 
