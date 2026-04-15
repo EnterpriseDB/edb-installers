@@ -4,6 +4,7 @@
   
 - **Dependencies (MacOS & Windows)**
     - Update `openssl` version to `3.0.20`
+    - Update `curl` to version `8.19.0`
 
 -  **Dependencies (MacOS)**
     - Update `libpng` version to `1.6.57`
