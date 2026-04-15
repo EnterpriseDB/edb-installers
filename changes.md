@@ -6,7 +6,7 @@
     - Update `openssl` version to `3.0.20`
  
 -  **Dependencies (MacOS)**
-    - Update `libpng` version to `1.6.56`
+    - Update `libpng` version to `1.6.57`
 
 -------------------------------------------------------------------------------------------------------------------------------
 
