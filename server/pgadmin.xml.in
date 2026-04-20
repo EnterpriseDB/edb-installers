@@ -158,8 +158,13 @@
             <name>programfileswindows</name>
             <platforms>windows</platforms>
             <distributionFileList>
+                <!-- binaries -->
                 <distributionDirectory>
                     <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin 4</origin>
+                </distributionDirectory>
+                <!-- scripts with icons for shortcuts -->
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/pgadmin4/scripts</origin>
                 </distributionDirectory>
             </distributionFileList>
         </folder>
