@@ -152,17 +152,17 @@
             </distributionFileList>
         </folder>
         <!-- WIN: Program files -->
-       <folder>
-         <description>Program Files</description>
-         <destination>${installdir}/pgAdmin 4</destination>
-         <n>programfileswindows</n>
-        <platforms>windows</platforms>
-        <distributionFileList>
-          <distributionDirectory>
-              <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin 4</origin>
-          </distributionDirectory>
-       </distributionFileList>
-      </folder>
+        <folder>
+            <description>Program Files</description>
+            <destination>${installdir}</destination>
+            <name>programfileswindows</name>
+            <platforms>windows</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin 4</origin>
+                </distributionDirectory>
+            </distributionFileList>
+        </folder>
         <!-- SOLARIS_X64: Program files -->
         <folder>
             <description>Program Files</description>
