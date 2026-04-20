@@ -93,5 +93,3 @@ cp -r $(PWD)/SB/share packaging-config/installer/server/staging/windows-x64/stac
 
 #pgAdmin4
 mkdir -p "packaging-config/installer/server/staging/windows-x64/pgadmin4/pgAdmin 4"
-wget https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v9.14/windows/pgadmin4-9.14-x64.exe \
-     -O "packaging-config/installer/server/staging/windows-x64/pgadmin4/pgAdmin 4/pgadmin4-9.14-x64.exe"
