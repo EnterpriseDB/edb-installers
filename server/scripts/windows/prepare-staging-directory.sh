@@ -92,8 +92,6 @@ cp -r ./curl/bin/libcurl.dll packaging-config/installer/server/staging/windows-x
 cp -r $(PWD)/SB/share packaging-config/installer/server/staging/windows-x64/stackbuilder
 
 #pgAdmin4
-mkdir -p "packaging-config/installer/server/staging/windows-x64/pgadmin4/pgAdmin 4"
-mv $(PWD)/pgAdmin4-binaries/pgAdmin_license.txt packaging-config/installer/server/staging/windows-x64/pgadmin4/
-mv $(PWD)/pgAdmin4-binaries/scripts packaging-config/installer/server/staging/windows-x64/pgadmin4/
-cp packaging-config/server/resources/pg-help.ico packaging-config/installer/server/staging/windows-x64/pgadmin4/scripts/images/pgadmin-help.ico
-cp -r $(PWD)/pgAdmin4-binaries/* "packaging-config/installer/server/staging/windows-x64/pgadmin4/pgAdmin 4/"
+mkdir -p packaging-config/installer/server/staging/windows-x64/pgadmin4
+wget https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v9.14/windows/pgadmin4-9.14-x64.exe \
+     -O "packaging-config/installer/server/staging/windows-x64/pgadmin4/pgAdmin 4/pgadmin4-9.14-x64.exe"
