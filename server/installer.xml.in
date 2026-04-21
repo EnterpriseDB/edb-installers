@@ -2273,7 +2273,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                                 "$response = Invoke-WebRequest -Uri 'https://www.postgresql.org/ftp/pgadmin/pgadmin4/' -UseBasicParsing;
                                  $latestVersion = ($response.Links.href | Where-Object { $_ -match 'v[\d.]+' } | ForEach-Object { $_ -replace 'v', '' -replace '/', '' } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1);
                                  $url = 'https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v' + $latestVersion + '/windows/pgadmin4-' + $latestVersion + '-x64.exe';
-                                 Invoke-WebRequest -Uri $url -OutFile '$ENV:TEMP\pgadmin4-latest-x64.exe' -UseBasicParsing"
+                                 Invoke-WebRequest -Uri $url -OutFile $ENV:TEMP\pgadmin4-latest-x64.exe -UseBasicParsing"
                             </programArguments>
                         </runProgram>
                         <!-- Abort if download failed -->
