@@ -158,9 +158,9 @@
             <name>programfileswindows</name>
             <platforms>windows</platforms>
             <distributionFileList>
-                <distributionDirectory>
-                    <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin 4</origin>
-                </distributionDirectory>
+                <distributionFile>
+                    <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin 4/pgadmin4-PG_VERSION_PGADMIN-x64.exe</origin>
+                </distributionFile>
             </distributionFileList>
         </folder>
         <!-- SOLARIS_X64: Program files -->
