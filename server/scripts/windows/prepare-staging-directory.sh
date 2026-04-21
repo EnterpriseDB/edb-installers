@@ -93,7 +93,5 @@ cp -r $(PWD)/SB/share packaging-config/installer/server/staging/windows-x64/stac
 
 #pgAdmin4
 mkdir -p "packaging-config/installer/server/staging/windows-x64/pgadmin4/pgAdmin 4"
-mv $(PWD)/pgAdmin4-binaries/pgAdmin_license.txt packaging-config/installer/server/staging/windows-x64/pgadmin4/
-mv $(PWD)/pgAdmin4-binaries/scripts packaging-config/installer/server/staging/windows-x64/pgadmin4/
-cp packaging-config/server/resources/pg-help.ico packaging-config/installer/server/staging/windows-x64/pgadmin4/scripts/images/pgadmin-help.ico
-cp -r $(PWD)/pgAdmin4-binaries/* "packaging-config/installer/server/staging/windows-x64/pgadmin4/pgAdmin 4/"
+cp $(PWD)/pgAdmin4-binaries/pgadmin4-PG_VERSION_PGADMIN-x64.exe \
+   "packaging-config/installer/server/staging/windows-x64/pgadmin4/pgAdmin 4/pgadmin4-PG_VERSION_PGADMIN-x64.exe"
