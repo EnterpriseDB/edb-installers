@@ -151,27 +151,18 @@
                 </distributionFile>
             </distributionFileList>
         </folder>
-        <!-- WIN: Program files -->
+       <!-- WIN: Bundle pgAdmin community installer .exe -->
         <folder>
             <description>Program Files</description>
-            <destination>${installdir}</destination>
+            <destination>${installdir}/installer/pgAdmin</destination>
             <name>programfileswindows</name>
             <platforms>windows</platforms>
             <distributionFileList>
                 <distributionDirectory>
                     <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin 4</origin>
                 </distributionDirectory>
-                <distributionDirectory>
-                    <origin>staging/@@WINDIR@@/pgadmin4/scripts</origin>
-                </distributionDirectory>
-                <distributionFile>
-                    <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin_3rd_party_licenses.txt</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>staging/@@WINDIR@@/pgadmin4/pgAdmin_license.txt</origin>
-                </distributionFile>
             </distributionFileList>
-</folder>
+        </folder>
         <!-- SOLARIS_X64: Program files -->
         <folder>
             <description>Program Files</description>
@@ -218,38 +209,36 @@
       </throwError>
     </componentSelectionValidationActionList>
 
-    <!-- WIN: Start Menu -->
-    <startMenuShortcutList>
-        <startMenuFolder>
-            <name>Documentation</name>
-            <platforms>windows</platforms>
-            <startMenuShortcutList>
-                <!-- pgAdmin -->
-                <startMenuLinkShortcut>
-                    <name>pgAdmin documentation</name>
-                    <runInTerminal>0</runInTerminal>
-                    <url>file://${installdir}/pgAdmin 4/docs/en_US/html/index.html</url>
-                    <windowsIcon>${installdir}\scripts\images\pgadmin-help.ico</windowsIcon>
-                    <ruleList>
-                        <isTrue value="${create_shortcuts}" />
-                    </ruleList>
-                </startMenuLinkShortcut>
-            </startMenuShortcutList>
-        </startMenuFolder>
-        
-        <!-- pgAdmin -->
-        <startMenuShortcut>
-            <name>pgAdmin 4</name>
-            <runInTerminal>0</runInTerminal>
-            <windowsExec>${installdir}\pgAdmin 4\runtime\pgAdmin4.exe</windowsExec>
-            <windowsIcon>${installdir}\scripts\images\pgAdmin4.ico</windowsIcon>
-            <ruleList>
-                <isTrue value="${create_shortcuts}" />
-            </ruleList>
-        </startMenuShortcut>
-    </startMenuShortcutList>
+    
     <!-- Postinstallation actions -->
     <postInstallationActionList>
+
+        <!-- WIN: Run bundled pgAdmin community installer silently -->
+        <actionGroup>
+            <actionList>
+                <logMessage>
+                    <text>Installing pgAdmin 4 from bundled installer...</text>
+                </logMessage>
+                <setInstallerVariable name="progressText" value="Installing pgAdmin 4..."/>
+                <runProgram>
+                    <program>${installdir}\installer\pgAdmin\pgadmin4-PG_VERSION_PGADMIN-x64.exe</program>
+                    <programArguments>/verysilent /suppressmsgboxes /norestart /allusers</programArguments>
+                </runProgram>
+                <throwError text="pgAdmin 4 installation failed. Exit code: ${program_exit_code}">
+                    <ruleList>
+                        <compareValues value1="${program_exit_code}" logic="does_not_equal" value2="0"/>
+                    </ruleList>
+                </throwError>
+                <deleteFile
+                    path="${installdir}\installer\pgAdmin\pgadmin4-PG_VERSION_PGADMIN-x64.exe"
+                    abortOnError="0"
+                    showMessageOnError="0"/>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                <isTrue value="${component(pgAdmin).selected}"/>
+            </ruleList>
+        </actionGroup>
 
         <createTempDir dirPrefix="postgresql_installer"/>
         <runProgram>
