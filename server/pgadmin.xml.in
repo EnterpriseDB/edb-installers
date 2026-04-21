@@ -157,9 +157,10 @@
             <destination>${installdir}/installer/pgAdmin</destination>
             <name>programfileswindows</name>
             <platforms>windows</platforms>
-            <distributionFile>
-                    <origin>pgadmin4/pgAdmin 4/pgadmin4-PG_VERSION_PGADMIN-x64.exe</origin>
-                </distributionFile>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>staging/@@WINDIR@@/pgadmin4/</origin>
+                </distributionDirectory>
             </distributionFileList>
         </folder>
         <!-- SOLARIS_X64: Program files -->
