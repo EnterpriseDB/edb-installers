@@ -2243,7 +2243,65 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             </componentSelectionValidationActionList>
         </component>
         <include file="pgserver-@@PLATFORM@@.xml"/>
-        <include file="pgadmin-@@PLATFORM@@.xml"/>
+        <component>
+            <name>pgAdmin</name>
+            <description>pgAdmin 4</description>
+            <canBeEdited>1</canBeEdited>
+            <detailedDescription>${msg(pgadmin.desc)}</detailedDescription>
+            <selected>1</selected>
+            <folderList/>
+            <componentSelectionValidationActionList>
+                <throwError>
+                    <text>${msg(commandlinetools.not.selected.pgadmin.error)}</text>
+                    <ruleList>
+                        <componentTest name="commandlinetools" logic="not_selected"/>
+                    </ruleList>
+                </throwError>
+            </componentSelectionValidationActionList>
+            <postInstallationActionList>
+                <!-- WIN: Download and install pgAdmin community installer at runtime -->
+                <actionGroup>
+                    <actionList>
+                        <logMessage>
+                            <text>Downloading pgAdmin 4 installer...</text>
+                        </logMessage>
+                        <setInstallerVariable name="progressText" value="Downloading pgAdmin 4..."/>
+                        <!-- Get latest version and download -->
+                        <runProgram>
+                            <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
+                            <programArguments>-NoProfile -NonInteractive -Command
+                                "$response = Invoke-WebRequest -Uri 'https://www.postgresql.org/ftp/pgadmin/pgadmin4/' -UseBasicParsing;
+                                 $latestVersion = ($response.Links.href | Where-Object { $_ -match 'v[\d.]+' } | ForEach-Object { $_ -replace 'v', '' -replace '/', '' } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1);
+                                 $url = 'https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v' + $latestVersion + '/windows/pgadmin4-' + $latestVersion + '-x64.exe';
+                                 Invoke-WebRequest -Uri $url -OutFile '$ENV:TEMP\pgadmin4-latest-x64.exe' -UseBasicParsing"
+                            </programArguments>
+                        </runProgram>
+                        <!-- Abort if download failed -->
+                        <throwError text="Failed to download pgAdmin 4. Please check your internet connection.">
+                            <ruleList>
+                                <fileTest path="${env(TEMP)}\pgadmin4-latest-x64.exe" condition="not_exists"/>
+                            </ruleList>
+                        </throwError>
+                        <!-- Install pgAdmin silently for all users -->
+                        <setInstallerVariable name="progressText" value="Installing pgAdmin 4..."/>
+                        <runProgram>
+                            <program>${env(TEMP)}\pgadmin4-latest-x64.exe</program>
+                            <programArguments>/verysilent /suppressmsgboxes /norestart /allusers</programArguments>
+                        </runProgram>
+                        <!-- Cleanup downloaded installer -->
+                        <deleteFile
+                            path="${env(TEMP)}\pgadmin4-latest-x64.exe"
+                            abortOnError="0"
+                            showMessageOnError="0"/>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${platform_name}" logic="equals" value="windows"/>
+                        <isTrue value="${component(pgAdmin).selected}"/>
+                    </ruleList>
+                </actionGroup>
+                <setInstallerVariable name="pgAdmin_installation_done" value="1" persist="1"/>
+            </postInstallationActionList>
+        </component>
         <include file="stackbuilder-@@PLATFORM@@.xml"/>
         <include file="commandlinetools-@@PLATFORM@@.xml"/>
     </componentList>
