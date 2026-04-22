@@ -92,6 +92,6 @@ cp -r ./curl/bin/libcurl.dll packaging-config/installer/server/staging/windows-x
 cp -r $(PWD)/SB/share packaging-config/installer/server/staging/windows-x64/stackbuilder
 
 #pgAdmin4
-mkdir -p "packaging-config/installer/server/staging/windows-x64"
+mkdir -p "packaging-config/installer/server/staging/windows-x64/pgAdmin"
 cp $(PWD)/pgAdmin4-binaries/pgadmin4-*.exe \
-   "packaging-config/installer/server/staging/windows-x64/"
+   "packaging-config/installer/server/staging/windows-x64/pgAdmin/"
