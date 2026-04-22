@@ -3366,7 +3366,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                         <isTrue value="${IsUpgrade}"/>
                     </ruleList>
                 </setInstallerVariable>
-                <setInstallerVariable name="pgadminsummary" value="${msg(summary.pgadmin.installation.directory)}: ${installdir}${slash}pgAdmin 4&#10;">
+                <setInstallerVariable name="pgadminsummary" value="${msg(summary.pgadmin.installation.directory)}: C:\Program Files\pgAdmin 4&#10;">
                     <ruleList>
                         <isTrue value="${component(pgAdmin).selected}"/>
                     </ruleList>
