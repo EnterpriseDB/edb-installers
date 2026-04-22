@@ -229,10 +229,6 @@
                         <compareValues value1="${program_exit_code}" logic="does_not_equal" value2="0"/>
                     </ruleList>
                 </throwError>
-                <deleteFile
-                    path="${installdir}\installer\pgAdmin\pgAdmin\pgadmin4-PG_VERSION_PGADMIN-x64.exe"
-                    abortOnError="0"
-                    showMessageOnError="0"/>
             </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="equals" value="windows"/>
