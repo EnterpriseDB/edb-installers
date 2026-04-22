@@ -159,7 +159,7 @@
             <platforms>windows</platforms>
             <distributionFileList>
                 <distributionDirectory>
-                    <origin>staging/@@WINDIR@@/</origin>
+                    <origin>staging/@@WINDIR@@/pgAdmin</origin>
                 </distributionDirectory>
             </distributionFileList>
         </folder>
