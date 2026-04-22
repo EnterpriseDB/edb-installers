@@ -221,8 +221,8 @@
                 </logMessage>
                 <setInstallerVariable name="progressText" value="Installing pgAdmin 4..."/>
                 <runProgram>
-                    <program>${installdir}\installer\pgAdmin\pgadmin4-PG_VERSION_PGADMIN-x64.exe</program>
-                    <programArguments>/verysilent /suppressmsgboxes /norestart /allusers /type=full</programArguments>
+                    <program>${installdir}\installer\pgAdmin\pgAdmin\pgadmin4-PG_VERSION_PGADMIN-x64.exe</program>
+                    <programArguments>/VERYSILENT /SUPPRESSMSGBOXES /allusers</programArguments>
                 </runProgram>
                 <throwError text="pgAdmin 4 installation failed. Exit code: ${program_exit_code}">
                     <ruleList>
@@ -230,7 +230,7 @@
                     </ruleList>
                 </throwError>
                 <deleteFile
-                    path="${installdir}\installer\pgAdmin\pgadmin4-PG_VERSION_PGADMIN-x64.exe"
+                    path="${installdir}\installer\pgAdmin\pgAdmin\pgadmin4-PG_VERSION_PGADMIN-x64.exe"
                     abortOnError="0"
                     showMessageOnError="0"/>
             </actionList>
