@@ -1978,7 +1978,6 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                 <logMessage>
                     <text>pgAdmin answer value is: ${install_pgadmin_answer}</text>
                 </logMessage>
-                <showInfo text="You clicked: ${install_pgadmin_answer}"/>
                 <!-- Only download if user said Yes -->
                 <actionGroup>
                     <actionList>
@@ -2008,13 +2007,13 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                         </showWarning>
                     </actionList>
                     <ruleList>
-                        <compareValues value1="${install_pgadmin_answer}" logic="equals" value2="1"/>
+                        <compareText text="${install_pgadmin_answer}" logic="equals" value="yes"/>
                     </ruleList>
                 </actionGroup>
             </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="equals" value="windows"/>
-                <compareText text="${installer_ui}" logic="equals" value="gui"/>
+                <compareText text="${installer_ui}" logic="does_not_equal" value="unattended"/>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
