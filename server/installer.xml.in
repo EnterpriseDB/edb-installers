@@ -1990,8 +1990,8 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                 <showInfo text="pgAdmin answer is: ${install_pgadmin_answer}"/>
                 <setInstallerVariable name="progressText" value="Downloading pgAdmin 4, please wait..."/>
                <runProgram>
-                    <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                    <programArguments>-NoProfile -ExecutionPolicy Bypass -Command
+                    <program>${env(WINDIR)}\sysnative\WindowsPowerShell\v1.0\powershell.exe</program>
+                    <programArguments>-NoProfile -ExecutionPolicy Bypass -WindowStyle Normal -Command
                         "$response = Invoke-WebRequest -Uri 'https://www.postgresql.org/ftp/pgadmin/pgadmin4/' -UseBasicParsing;
                          $latestVersion = ($response.Links.href | Where-Object { $_ -match 'v[\d.]+' } | ForEach-Object { $_ -replace 'v', '' -replace '/', '' } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1);
                          $url = 'https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v' + $latestVersion + '/windows/pgadmin4-' + $latestVersion + '-x64.exe';
