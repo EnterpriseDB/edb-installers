@@ -1133,7 +1133,7 @@ EOF
             </ruleList>
         </runProgram>
 
-        <!-- WIN: Ask user if they want to install pgAdmin 4 -->
+       <!-- WIN: Ask user if they want to install pgAdmin 4 -->
         <actionGroup>
             <actionList>
                 <showQuestion>
@@ -1143,7 +1143,7 @@ pgAdmin 4 is a feature-rich Open Source administration and development platform 
 
 Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                     <variable>install_pgadmin_answer</variable>
-                    <choices>Yes,No</choices>
+                    <default>Yes</default>
                 </showQuestion>
             </actionList>
             <ruleList>
@@ -1159,7 +1159,6 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                 <logMessage>
                     <text>User chose to install pgAdmin 4. Downloading...</text>
                 </logMessage>
-                <!-- Show progress text in installer window -->
                 <setInstallerVariable name="progressText" value="Downloading pgAdmin 4, please wait..."/>
                 <runProgram>
                     <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
@@ -1175,13 +1174,11 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                          Remove-Item $env:TEMP\pgadmin4-latest-x64.exe -Force -ErrorAction SilentlyContinue"
                     </programArguments>
                 </runProgram>
-                <!-- Show success message if installed successfully -->
                 <showInfo text="pgAdmin 4 has been successfully installed to C:\Program Files\pgAdmin 4\">
                     <ruleList>
                         <compareValues value1="${program_exit_code}" logic="equals" value2="0"/>
                     </ruleList>
                 </showInfo>
-                <!-- Show error message if installation failed -->
                 <showWarning text="pgAdmin 4 installation failed. Please install it manually from https://www.pgadmin.org">
                     <ruleList>
                         <compareValues value1="${program_exit_code}" logic="does_not_equal" value2="0"/>
@@ -1190,7 +1187,7 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
             </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="equals" value="windows"/>
-                <compareText text="${install_pgadmin_answer}" logic="equals" value="Yes"/>
+                <compareText text="${install_pgadmin_answer}" logic="equals" value="yes"/>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
