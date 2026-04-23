@@ -106,7 +106,3 @@ popd
 pushd ../installer/server/staging/windows-x64/stackbuilder
 generate_3rd_party_license "StackBuilder"
 popd
-
-pushd ../installer/server/staging/windows-x64/pgadmin4
-generate_3rd_party_license "pgAdmin"
-popd
