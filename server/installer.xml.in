@@ -1981,12 +1981,13 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
             </ruleList>
         </actionGroup>
 
-        <!-- WIN: Download and install pgAdmin 4 if user said Yes -->
+       <!-- WIN: Download and install pgAdmin 4 if user said Yes -->
         <actionGroup>
             <actionList>
                 <logMessage>
                     <text>pgAdmin answer value is: ${install_pgadmin_answer}</text>
                 </logMessage>
+                <showInfo text="pgAdmin answer is: ${install_pgadmin_answer}"/>
                 <setInstallerVariable name="progressText" value="Downloading pgAdmin 4, please wait..."/>
                <runProgram>
                     <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
@@ -2014,7 +2015,6 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
             </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="equals" value="windows"/>
-                <compareValues value1="${install_pgadmin_answer}" logic="equals" value2="1"/>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
