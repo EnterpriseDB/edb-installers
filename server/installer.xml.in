@@ -768,6 +768,7 @@ EOF
         <setInstallerVariable name="server_installation_done" value="0" persist="1"/>
         <setInstallerVariable name="stackbuilder_installation_done" value="0" persist="1"/>
         <setInstallerVariable name="commandlinetools_installation_done" value="0" persist="1"/>
+        <setInstallerVariable name="install_pgadmin_answer" value="0"/>
 
         <setInstallerVariable name="slash" persist="1" value="\">
             <ruleList>
@@ -1961,7 +1962,8 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-        <!-- WIN: Ask user if they want to install pgAdmin 4 -->
+
+       <!-- WIN: Ask user if they want to install pgAdmin 4 -->
         <actionGroup>
             <actionList>
                 <showQuestion>
@@ -1981,15 +1983,14 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
             </ruleList>
         </actionGroup>
 
-       <!-- WIN: Download and install pgAdmin 4 if user said Yes -->
+        <!-- WIN: Download and install pgAdmin 4 if user said Yes -->
         <actionGroup>
             <actionList>
                 <logMessage>
                     <text>pgAdmin answer value is: ${install_pgadmin_answer}</text>
                 </logMessage>
-                <showInfo text="pgAdmin answer is: ${install_pgadmin_answer}"/>
                 <setInstallerVariable name="progressText" value="Downloading pgAdmin 4, please wait..."/>
-               <runProgram>
+                <runProgram>
                     <program>${env(WINDIR)}\sysnative\WindowsPowerShell\v1.0\powershell.exe</program>
                     <programArguments>-NoProfile -ExecutionPolicy Bypass -WindowStyle Normal -Command
                         "$response = Invoke-WebRequest -Uri 'https://www.postgresql.org/ftp/pgadmin/pgadmin4/' -UseBasicParsing;
@@ -2015,6 +2016,7 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
             </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="equals" value="windows"/>
+                <compareValues value1="${install_pgadmin_answer}" logic="equals" value2="1"/>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
