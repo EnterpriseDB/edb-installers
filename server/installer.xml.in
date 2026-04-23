@@ -1988,18 +1988,17 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                     <text>pgAdmin answer value is: ${install_pgadmin_answer}</text>
                 </logMessage>
                 <setInstallerVariable name="progressText" value="Downloading pgAdmin 4, please wait..."/>
-                <runProgram>
+               <runProgram>
                     <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                    <programArguments>-NoProfile -NonInteractive -Command
-                        "$progressPreference = 'silentlyContinue';
-                         $response = Invoke-WebRequest -Uri 'https://www.postgresql.org/ftp/pgadmin/pgadmin4/' -UseBasicParsing;
+                    <programArguments>-NoProfile -ExecutionPolicy Bypass -Command
+                        "$response = Invoke-WebRequest -Uri 'https://www.postgresql.org/ftp/pgadmin/pgadmin4/' -UseBasicParsing;
                          $latestVersion = ($response.Links.href | Where-Object { $_ -match 'v[\d.]+' } | ForEach-Object { $_ -replace 'v', '' -replace '/', '' } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1);
                          $url = 'https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v' + $latestVersion + '/windows/pgadmin4-' + $latestVersion + '-x64.exe';
                          Write-Host 'Downloading pgAdmin ' + $latestVersion + ' from ' + $url;
-                         Invoke-WebRequest -Uri $url -OutFile $env:TEMP\pgadmin4-latest-x64.exe -UseBasicParsing;
+                         Invoke-WebRequest -Uri $url -OutFile `"$env:TEMP\pgadmin4-latest-x64.exe`" -UseBasicParsing;
                          Write-Host 'Installing pgAdmin ' + $latestVersion;
-                         Start-Process -FilePath $env:TEMP\pgadmin4-latest-x64.exe -ArgumentList '/VERYSILENT /SUPPRESSMSGBOXES /allusers' -Wait;
-                         Remove-Item $env:TEMP\pgadmin4-latest-x64.exe -Force -ErrorAction SilentlyContinue"
+                         Start-Process -FilePath `"$env:TEMP\pgadmin4-latest-x64.exe`" -ArgumentList '/SILENT /SUPPRESSMSGBOXES /allusers' -Wait;
+                         Remove-Item `"$env:TEMP\pgadmin4-latest-x64.exe`" -Force -ErrorAction SilentlyContinue"
                     </programArguments>
                 </runProgram>
                 <showInfo text="pgAdmin 4 has been successfully installed to C:\Program Files\pgAdmin 4\">
