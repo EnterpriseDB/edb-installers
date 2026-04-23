@@ -1133,65 +1133,6 @@ EOF
             </ruleList>
         </runProgram>
 
-       <!-- WIN: Ask user if they want to install pgAdmin 4 -->
-        <actionGroup>
-            <actionList>
-                <showQuestion>
-                    <text>Would you like to download and install pgAdmin 4?
-
-pgAdmin 4 is a feature-rich Open Source administration and development platform for PostgreSQL.
-
-Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
-                    <variable>install_pgadmin_answer</variable>
-                    <default>Yes</default>
-                </showQuestion>
-            </actionList>
-            <ruleList>
-                <compareText text="${platform_name}" logic="equals" value="windows"/>
-                <compareText text="${installer_ui}" logic="equals" value="gui"/>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </actionGroup>
-
-        <!-- WIN: Download and install pgAdmin 4 if user said Yes -->
-        <actionGroup>
-            <actionList>
-                <logMessage>
-                    <text>User chose to install pgAdmin 4. Downloading...</text>
-                </logMessage>
-                <setInstallerVariable name="progressText" value="Downloading pgAdmin 4, please wait..."/>
-                <runProgram>
-                    <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                    <programArguments>-NoProfile -NonInteractive -Command
-                        "$progressPreference = 'silentlyContinue';
-                         $response = Invoke-WebRequest -Uri 'https://www.postgresql.org/ftp/pgadmin/pgadmin4/' -UseBasicParsing;
-                         $latestVersion = ($response.Links.href | Where-Object { $_ -match 'v[\d.]+' } | ForEach-Object { $_ -replace 'v', '' -replace '/', '' } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1);
-                         $url = 'https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v' + $latestVersion + '/windows/pgadmin4-' + $latestVersion + '-x64.exe';
-                         Write-Host 'Downloading pgAdmin ' + $latestVersion + ' from ' + $url;
-                         Invoke-WebRequest -Uri $url -OutFile $env:TEMP\pgadmin4-latest-x64.exe -UseBasicParsing;
-                         Write-Host 'Installing pgAdmin ' + $latestVersion;
-                         Start-Process -FilePath $env:TEMP\pgadmin4-latest-x64.exe -ArgumentList '/VERYSILENT /SUPPRESSMSGBOXES /allusers' -Wait;
-                         Remove-Item $env:TEMP\pgadmin4-latest-x64.exe -Force -ErrorAction SilentlyContinue"
-                    </programArguments>
-                </runProgram>
-                <showInfo text="pgAdmin 4 has been successfully installed to C:\Program Files\pgAdmin 4\">
-                    <ruleList>
-                        <compareValues value1="${program_exit_code}" logic="equals" value2="0"/>
-                    </ruleList>
-                </showInfo>
-                <showWarning text="pgAdmin 4 installation failed. Please install it manually from https://www.pgadmin.org">
-                    <ruleList>
-                        <compareValues value1="${program_exit_code}" logic="does_not_equal" value2="0"/>
-                    </ruleList>
-                </showWarning>
-            </actionList>
-            <ruleList>
-                <compareText text="${platform_name}" logic="equals" value="windows"/>
-                <compareText text="${install_pgadmin_answer}" logic="equals" value="yes"/>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </actionGroup>
-
         <runProgram>
             <!-- Windows: Run stackbuilder -->
             <program>${installdir}/bin/stackbuilder.exe</program>
@@ -2017,6 +1958,64 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                 </actionGroup>
             </actionList>
             <ruleList>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+        <!-- WIN: Ask user if they want to install pgAdmin 4 -->
+        <actionGroup>
+            <actionList>
+                <showQuestion>
+                    <text>Would you like to download and install pgAdmin 4?
+
+pgAdmin 4 is a feature-rich Open Source administration and development platform for PostgreSQL.
+
+Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
+                    <variable>install_pgadmin_answer</variable>
+                    <default>Yes</default>
+                </showQuestion>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                <compareText text="${installer_ui}" logic="equals" value="gui"/>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- WIN: Download and install pgAdmin 4 if user said Yes -->
+        <actionGroup>
+            <actionList>
+                <logMessage>
+                    <text>pgAdmin answer value is: ${install_pgadmin_answer}</text>
+                </logMessage>
+                <setInstallerVariable name="progressText" value="Downloading pgAdmin 4, please wait..."/>
+                <runProgram>
+                    <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
+                    <programArguments>-NoProfile -NonInteractive -Command
+                        "$progressPreference = 'silentlyContinue';
+                         $response = Invoke-WebRequest -Uri 'https://www.postgresql.org/ftp/pgadmin/pgadmin4/' -UseBasicParsing;
+                         $latestVersion = ($response.Links.href | Where-Object { $_ -match 'v[\d.]+' } | ForEach-Object { $_ -replace 'v', '' -replace '/', '' } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1);
+                         $url = 'https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v' + $latestVersion + '/windows/pgadmin4-' + $latestVersion + '-x64.exe';
+                         Write-Host 'Downloading pgAdmin ' + $latestVersion + ' from ' + $url;
+                         Invoke-WebRequest -Uri $url -OutFile $env:TEMP\pgadmin4-latest-x64.exe -UseBasicParsing;
+                         Write-Host 'Installing pgAdmin ' + $latestVersion;
+                         Start-Process -FilePath $env:TEMP\pgadmin4-latest-x64.exe -ArgumentList '/VERYSILENT /SUPPRESSMSGBOXES /allusers' -Wait;
+                         Remove-Item $env:TEMP\pgadmin4-latest-x64.exe -Force -ErrorAction SilentlyContinue"
+                    </programArguments>
+                </runProgram>
+                <showInfo text="pgAdmin 4 has been successfully installed to C:\Program Files\pgAdmin 4\">
+                    <ruleList>
+                        <compareValues value1="${program_exit_code}" logic="equals" value2="0"/>
+                    </ruleList>
+                </showInfo>
+                <showWarning text="pgAdmin 4 installation failed. Please install it manually from https://www.pgadmin.org">
+                    <ruleList>
+                        <compareValues value1="${program_exit_code}" logic="does_not_equal" value2="0"/>
+                    </ruleList>
+                </showWarning>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                <compareValues value1="${install_pgadmin_answer}" logic="equals" value2="1"/>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
