@@ -2143,7 +2143,7 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>server/scripts/install-pgadmin.bat</origin>
+                            <origin>windows-x64/pgadmin/install-pgadmin.bat</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>

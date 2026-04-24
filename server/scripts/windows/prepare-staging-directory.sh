@@ -50,7 +50,6 @@ cp -r packaging-config/server/scripts/windows/createuser/x64/Release/createuser.
 # Copy the launch scripts
 mkdir -p packaging-config/installer/server/staging/windows-x64/server/scripts/images
 cp packaging-config/server/scripts/windows/runpsql.bat packaging-config/installer/server/staging/windows-x64/server/scripts/runpsql.bat 
-cp packaging-config/server/scripts/windows/install-pgadmin.bat packaging-config/installer/server/staging/windows-x64/server/scripts/install-pgadmin.bat
 cp packaging-config/server/resources/pg-help.ico packaging-config/installer/server/staging/windows-x64/server/scripts/images
 cp packaging-config/server/resources/pg-reload.ico packaging-config/installer/server/staging/windows-x64/server/scripts/images
 
@@ -91,3 +90,7 @@ cp -r $(PWD)/stackbuilder*.exe packaging-config/installer/server/staging/windows
 cp -r packaging-config/installer/server/staging/windows-x64/server/bin/wx*.dll packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
 cp -r ./curl/bin/libcurl.dll packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
 cp -r $(PWD)/SB/share packaging-config/installer/server/staging/windows-x64/stackbuilder
+
+# pgadmin
+mkdir -p packaging-config/installer/server/staging/windows-x64/pgadmin
+cp packaging-config/server/scripts/windows/install-pgadmin.bat packaging-config/installer/server/staging/windows-x64/pgadmin/install-pgadmin.bat
