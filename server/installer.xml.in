@@ -1985,6 +1985,7 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                         <runProgram>
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
                             <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
+                            <progressText>Downloading and installing pgAdmin 4, please wait...</progressText>
                         </runProgram>
                         <showInfo text="pgAdmin 4 has been successfully installed to C:\Program Files\pgAdmin 4\">
                             <ruleList>
