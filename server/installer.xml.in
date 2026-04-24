@@ -1984,7 +1984,7 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                         <setInstallerVariable name="progressText" value="Downloading pgAdmin 4, please wait..."/>
                         <runProgram>
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
-                            <programArguments>/c for /f "usebackq tokens=1" %%v in (`powershell -Command "(Invoke-WebRequest -Uri \"https://www.postgresql.org/ftp/pgadmin/pgadmin4/\" -UseBasicParsing).Links.href | Where-Object { $_ -match \"v[\d.]+\" } | ForEach-Object { $_ -replace \"v\",\"\" -replace \"/\",\"\" } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1"`) do (curl -L "https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v%%v/windows/pgadmin4-%%v-x64.exe" -o "%TEMP%\pgadmin4-latest-x64.exe" &amp;&amp; "%TEMP%\pgadmin4-latest-x64.exe" /SILENT /SUPPRESSMSGBOXES /allusers &amp;&amp; del "%TEMP%\pgadmin4-latest-x64.exe")</programArguments>
+                            <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
                         </runProgram>
                         <showInfo text="pgAdmin 4 has been successfully installed to C:\Program Files\pgAdmin 4\">
                             <ruleList>
@@ -2133,6 +2133,18 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                         <distributionDirectory>
                             <origin>staging/@@WINDIR@@/server/installer/vcredist_x86.exe</origin>
                         </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <!-- Win: pgAdmin install script -->
+                <folder>
+                    <description>pgAdmin install script</description>
+                    <destination>${installdir}\scripts</destination>
+                    <name>pgadminbat</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>staging/@@WINDIR@@/server/scripts/install-pgadmin.bat</origin>
+                        </distributionFile>
                     </distributionFileList>
                 </folder>
                 <folder>
