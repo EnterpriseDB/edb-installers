@@ -2290,7 +2290,6 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
             <ask>0</ask>
             <cliOptionName>install-pgadmin</cliOptionName>
             <cliOptionShow>1</cliOptionShow>
-            <cliOptionType>switch</cliOptionType>
         </booleanParameter>
 
         <!-- Installation directory. Only show if ${iBaseDirectory} is empty -->
