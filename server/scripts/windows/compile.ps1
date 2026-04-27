@@ -268,8 +268,7 @@ Copy-Item $zlib_directory/include/*.h $installation_directory/include
 
 
 
-mkdir $installation_directory/doc/postgresql/html
-Copy-Item $source_directory/doc/src/sgml/html/* $installation_directory/doc/postgresql/html
+
 
 Write-Host "vcregress is beginning"
 # To run the integration tests, the Path needs to be adjusted
