@@ -2009,7 +2009,7 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
-        <!-- WIN: Download pgAdmin 4 in unattended mode if --install-pgadmin flag is set -->
+        <!-- WIN: Download pgAdmin 4 in unattended mode if install-pgadmin flag is set -->
         <actionGroup>
             <actionList>
                 <runProgram>
