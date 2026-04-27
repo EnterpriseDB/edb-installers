@@ -2009,6 +2009,22 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
+        <!-- WIN: Download pgAdmin 4 in unattended mode if --install-pgadmin flag is set -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${env(WINDIR)}\System32\cmd.exe</program>
+                    <programArguments>/c "${installdir}\scripts\install-pgadmin.bat" silent</programArguments>
+                    <progressText>Downloading and installing pgAdmin 4, please wait...</progressText>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                <compareText text="${installer_ui}" logic="equals" value="unattended"/>
+                <isTrue value="${install_pgadmin}"/>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
     </postInstallationActionList>
 
     <!-- Components. Most components will be separate packages, so expect just one entry here most of the time -->
@@ -2262,6 +2278,19 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
             <ask>yes</ask>
             <cliOptionName>create_shortcuts</cliOptionName>
             <cliOptionShow>1</cliOptionShow>
+        </booleanParameter>
+
+       <!-- Whether to install pgAdmin 4 -->
+        <booleanParameter>
+            <name>install_pgadmin</name>
+            <description>Download and install pgAdmin 4</description>
+            <explanation>Download and install pgAdmin 4 from the official PostgreSQL FTP server</explanation>
+            <value>0</value>
+            <default>0</default>
+            <ask>0</ask>
+            <cliOptionName>install-pgadmin</cliOptionName>
+            <cliOptionShow>1</cliOptionShow>
+            <cliOptionType>switch</cliOptionType>
         </booleanParameter>
 
         <!-- Installation directory. Only show if ${iBaseDirectory} is empty -->
