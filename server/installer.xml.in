@@ -2287,7 +2287,7 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
             <explanation>Download and install pgAdmin 4 from the official PostgreSQL FTP server</explanation>
             <value>0</value>
             <default>0</default>
-            <ask>0</ask>
+            <ask>yes</ask>
             <cliOptionName>install-pgadmin</cliOptionName>
             <cliOptionShow>1</cliOptionShow>
         </booleanParameter>
