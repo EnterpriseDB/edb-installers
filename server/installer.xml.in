@@ -1964,22 +1964,31 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
             </ruleList>
         </actionGroup>
 
-      <!-- WIN: Ask user and download pgAdmin 4 -->
+        <!-- WIN: Check existing pgAdmin version from registry -->
+        <setInstallerVariable name="installed_pgadmin_version" value=""/>
+        <registryGet>
+            <name>DisplayVersion</name>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\pgAdmin 4v9_is1</key>
+            <variable>installed_pgadmin_version</variable>
+            <abortOnError>0</abortOnError>
+        </registryGet>
+        <logMessage>
+            <text>Installed pgAdmin version: ${installed_pgadmin_version}</text>
+        </logMessage>
+
+      <!-- WIN: Ask user - pgAdmin NOT installed -->
         <actionGroup>
             <actionList>
                 <showQuestion>
-                    <text>Would you like to download and install pgAdmin 4?
+                    <text>This product uses PostgreSQL for database management. To extend its functionality to visualize and interact with your data, pgAdmin 4 needs to be installed.
 
-pgAdmin 4 is a feature-rich Open Source administration and development platform for PostgreSQL.
-
-Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
+Alternatively, this installer program can automatically download and install pgAdmin 4. Do you want to do that?</text>
                     <variable>install_pgadmin_answer</variable>
                     <default>Yes</default>
                 </showQuestion>
                 <logMessage>
                     <text>pgAdmin answer value is: ${install_pgadmin_answer}</text>
                 </logMessage>
-                <!-- Only download if user said Yes -->
                 <actionGroup>
                     <actionList>
                         <setInstallerVariable name="progressText" value="Downloading pgAdmin 4, please wait..."/>
@@ -2003,22 +2012,47 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                 <compareText text="${platform_name}" logic="equals" value="windows"/>
                 <compareText text="${installer_ui}" logic="does_not_equal" value="unattended"/>
                 <isFalse value="${extract_mode}"/>
+                <!-- Only when pgAdmin is NOT installed -->
+                <compareText text="${installed_pgadmin_version}" logic="equals" value=""/>
             </ruleList>
         </actionGroup>
-        <!-- WIN: Download pgAdmin 4 in unattended mode if install-pgadmin flag is set -->
+
+        <!-- WIN: Ask user - pgAdmin lower version installed -->
         <actionGroup>
             <actionList>
-                <runProgram>
-                    <program>${env(WINDIR)}\System32\cmd.exe</program>
-                    <programArguments>/c "${installdir}\scripts\install-pgadmin.bat" silent</programArguments>
-                    <progressText>Downloading and installing pgAdmin 4, please wait...</progressText>
-                </runProgram>
+                <showQuestion>
+                    <text>pgAdmin 4 version ${installed_pgadmin_version} is already installed on your machine. Would you like to download and install the latest version?</text>
+                    <variable>install_pgadmin_answer</variable>
+                    <default>Yes</default>
+                </showQuestion>
+                <logMessage>
+                    <text>pgAdmin upgrade answer value is: ${install_pgadmin_answer}</text>
+                </logMessage>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="progressText" value="Downloading latest pgAdmin 4, please wait..."/>
+                        <runProgram>
+                            <program>${env(WINDIR)}\System32\cmd.exe</program>
+                            <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
+                            <progressText>Downloading and installing latest pgAdmin 4, please wait...</progressText>
+                        </runProgram>
+                        <showWarning text="pgAdmin 4 update failed. Please install it manually from https://www.pgadmin.org">
+                            <ruleList>
+                                <compareValues value1="${program_exit_code}" logic="does_not_equal" value2="0"/>
+                            </ruleList>
+                        </showWarning>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${install_pgadmin_answer}" logic="equals" value="yes"/>
+                    </ruleList>
+                </actionGroup>
             </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="equals" value="windows"/>
-                <compareText text="${installer_ui}" logic="equals" value="unattended"/>
-                <isTrue value="${install_pgadmin}"/>
+                <compareText text="${installer_ui}" logic="does_not_equal" value="unattended"/>
                 <isFalse value="${extract_mode}"/>
+                <!-- Only when pgAdmin IS installed -->
+                <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value=""/>
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
