@@ -16,6 +16,10 @@ then
 fi
 source ./settings.sh
 
+if [ -z "$KEYCHAIN_PASSWD" ]; then
+  _die "ERROR: KEYCHAIN_PASSWD is not set or empty. Aborting."
+fi
+
 ########
 # Usage
 ########
