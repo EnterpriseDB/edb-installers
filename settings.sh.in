@@ -70,5 +70,5 @@ PG_ARCH_OSX_LDFLAGS="-mmacosx-version-min=$MACOSX_MIN_VERSION $ARCHFLAGS"
 
 # The InstallBuilder main binary.
 PG_INSTALLBUILDER_BIN="/opt/installbuilder-25.6.0/bin/builder"
-KEYCHAIN_PASSWD="XXXXXX"
+#KEYCHAIN_PASSWD="XXXXXX"
 DEVELOPER_ID="Developer ID Application: EnterpriseDB Corporation"
