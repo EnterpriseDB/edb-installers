@@ -372,7 +372,7 @@ _postprocess_PostGIS_osx() {
    scp $WD/output/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.zip $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
    scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
 
-   echo ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; ./notarize_apps.sh postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.zip postgis" || _die "Failed to notarize the app"
+   ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; ./notarize_apps.sh postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.zip postgis" || _die "Failed to notarize the app"
    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; ./notarize_apps.sh postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.zip postgis" || _die "Failed to notarize the app"
    scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgis-pg$PG_CURRENT_VERSION-$PG_VERSION_POSTGIS-$PG_BUILDNUM_POSTGIS-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy notarized installer to $WD/output."
     
