@@ -518,6 +518,7 @@ EOF
         <setInstallerVariable name="project.parameter(servicepassword).ask" value="0" />
         <setInstallerVariable name="project.parameter(servicename).ask" value="0" />
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0" />
+        <setInstallerVariable name="project.parameter(install_pgadmin).ask" value="0"/>
 
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
@@ -2282,7 +2283,7 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
             <explanation>Download and install pgAdmin 4 from the official PostgreSQL FTP server</explanation>
             <value>0</value>
             <default>0</default>
-            <ask>0</ask>
+            <ask>yes</ask>
             <cliOptionName>install-pgadmin</cliOptionName>
             <cliOptionShow>1</cliOptionShow>
         </booleanParameter>
