@@ -2281,19 +2281,16 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
         </booleanParameter>
 
        <!-- Whether to install pgAdmin 4 -->
+        <!-- Whether to install pgAdmin 4 -->
         <booleanParameter>
             <name>install_pgadmin</name>
             <description>Download and install pgAdmin 4</description>
             <explanation>Download and install pgAdmin 4 from the official PostgreSQL FTP server</explanation>
             <value>0</value>
             <default>0</default>
-            <ask>yes</ask>
+            <ask>0</ask>
             <cliOptionName>install-pgadmin</cliOptionName>
             <cliOptionShow>1</cliOptionShow>
-            <ruleList>
-                <compareText text="${platform_name}" logic="equals" value="windows"/>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
         </booleanParameter>
 
         <!-- Installation directory. Only show if ${iBaseDirectory} is empty -->
