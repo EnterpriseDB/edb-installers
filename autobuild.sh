@@ -112,9 +112,7 @@ git reset --hard >> autobuild.log 2>&1
 git checkout REL-14 >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
-if [ -f settings.sh.full.REL-14 ]; then
-   cp -f settings.sh.full.REL-14 settings.sh
-fi
+cp -f settings.sh.in settings.sh
 
 # Self update
 echo "Updating REL-14 branch build system" >> autobuild.log
