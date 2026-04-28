@@ -335,7 +335,7 @@ _postprocess_server_osx() {
     scp $WD/common.sh $WD/settings.sh $WD/versions.sh $WD/resources/entitlements-server.xml $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy commons.sh and settings.sh on notary server"
     # sign the getlocales binary
     scp $WD/server/scripts/osx/getlocales/getlocales.osx $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy getlocales binary to  signing server"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime getlocales.osx" || _die "Failed to sign the getlocales binary"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source settings.sh; source common.sh;security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime getlocales.osx" || _die "Failed to sign the getlocales binary"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/getlocales.osx $WD/server/scripts/osx/getlocales/ || _die "Failed to copy getlocales binary to controller"
 
     # sign the binaries and libraries
@@ -344,14 +344,14 @@ _postprocess_server_osx() {
     rm -rf $WD/server/staging_cache/osx/server-staging.tar.bz2 || _die "Failed to remove server-staging.tar from controller"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf staging" || _die "Failed to remove staging from signing server"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../server-staging.tar.bz2; mv pgAdmin\ 4.app pgAdmin4.app"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
     #ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging/lib entitlements-server.xml" || _die "Failed to do libraries signing with entitlements"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_bundles staging" || _die "Failed to sign bundle"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_bundles staging/lib/postgresql entitlements-server.xml" || _die "Failed to sign bundle with entitlements"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging/bin entitlements-server.xml" || _die "Failed to do binaries signing with entitlements"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/staging; source $PG_PATH_OSX_SIGN/versions.sh; source $PG_PATH_OSX_SIGN/settings.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements-pgadmin.xml pgAdmin4.app;" || _die "Failed to sign the pgAdmin4.app"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/staging; source $PG_PATH_OSX_SIGN/versions.sh; source $PG_PATH_OSX_SIGN/settings.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements-server.xml stackbuilder.app;" || _die "Failed to sign the stackbuilder.app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source settings.sh; source common.sh;sign_bundles staging" || _die "Failed to sign bundle"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source settings.sh; source common.sh;sign_bundles staging/lib/postgresql entitlements-server.xml" || _die "Failed to sign bundle with entitlements"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source settings.sh; source common.sh;sign_binaries staging/bin entitlements-server.xml" || _die "Failed to do binaries signing with entitlements"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/staging; sKEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source $PG_PATH_OSX_SIGN/versions.sh; source $PG_PATH_OSX_SIGN/settings.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements-pgadmin.xml pgAdmin4.app;" || _die "Failed to sign the pgAdmin4.app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/staging; sKEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source $PG_PATH_OSX_SIGN/versions.sh; source $PG_PATH_OSX_SIGN/settings.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements-server.xml stackbuilder.app;" || _die "Failed to sign the stackbuilder.app"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging; mv pgAdmin4.app pgAdmin\ 4.app; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create server-staging tar on signing server"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/staging/server-staging.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to copy server-staging to controller vm"
 
@@ -579,7 +579,7 @@ _postprocess_server_osx() {
 
     # sign the .app, create the DMG
     echo "Signing the installer"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh;  tar -jxvf server.img.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements-server.xml server.img/postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source $PG_PATH_OSX_SIGN/versions.sh;  tar -jxvf server.img.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements-server.xml server.img/postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "Failed to sign the code"
 
 
     #ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output/server.img; rm -rf postgresql-$PG_PACKAGE_VERSION-osx.app; mv postgresql-$PG_PACKAGE_VERSION-osx-signed.app postgresql-$PG_PACKAGE_VERSION-osx.app;" || _die "could not move the signed app"
@@ -606,8 +606,8 @@ _postprocess_server_osx() {
     scp $WD/output/postgresql-$PG_PACKAGE_VERSION-osx.dmg $WD/output/postgresql-$PG_PACKAGE_VERSION-osx.zip $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
     scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
 
-    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION-osx.dmg postgresql" || _die "Notarization failed for DMG"
-    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION-osx.zip postgresql" || _die "Notarization failed for ZIP"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD" ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION-osx.dmg postgresql" || _die "Notarization failed for DMG"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD" ./notarize_apps.sh postgresql-$PG_PACKAGE_VERSION-osx.zip postgresql" || _die "Notarization failed for ZIP"
     scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgresql-$PG_PACKAGE_VERSION-osx.dmg $WD/output || _die "Failed to copy notarized DMG to $WD/output."
     scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/postgresql-$PG_PACKAGE_VERSION-osx.zip $WD/output || _die "Failed to copy notarized ZIP to $WD/output."
 
