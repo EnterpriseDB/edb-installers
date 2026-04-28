@@ -1975,6 +1975,8 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
         <logMessage>
             <text>Installed pgAdmin version: ${installed_pgadmin_version}</text>
         </logMessage>
+        <!-- WIN: Latest pgAdmin version set at build time -->
+        <setInstallerVariable name="latest_pgadmin_version" value="PG_VERSION_PGADMIN"/>
 
       <!-- WIN: Ask user - pgAdmin NOT installed -->
         <actionGroup>
@@ -2053,6 +2055,7 @@ Alternatively, this installer program can automatically download and install pgA
                 <isFalse value="${extract_mode}"/>
                 <!-- Only when pgAdmin IS installed -->
                 <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value=""/>
+                <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value="${latest_pgadmin_version}"/>
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
