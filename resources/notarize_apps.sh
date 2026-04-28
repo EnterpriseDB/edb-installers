@@ -1,5 +1,9 @@
 #!/bin/sh
 set -e
+if [ -z "$KEYCHAIN_PASSWD" ]; then
+  echo "ERROR: KEYCHAIN_PASSWD is not set or empty. Aborting."
+  exit 1
+fi
 export DEVELOPER_TEAM_ID=26QKX55P9K
 export DEVELOPER_USER=sandeep.thakkar@enterprisedb.com
 export NOTARY_KEYCHAIN_PROFILE=notarytool-password
