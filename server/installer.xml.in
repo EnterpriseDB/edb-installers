@@ -1987,10 +1987,6 @@ Click Yes to download and install pgAdmin 4 now, or No to skip.</text>
                             <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
                             <progressText>Downloading and installing pgAdmin 4, please wait...</progressText>
                         </runProgram>
-                            <ruleList>
-                                <compareValues value1="${program_exit_code}" logic="equals" value2="0"/>
-                            </ruleList>
-                        </showInfo>
                         <showWarning text="pgAdmin 4 installation failed. Please install it manually from https://www.pgadmin.org">
                             <ruleList>
                                 <compareValues value1="${program_exit_code}" logic="does_not_equal" value2="0"/>
