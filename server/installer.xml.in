@@ -1984,7 +1984,7 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                 <showQuestion>
                     <text>This product uses PostgreSQL for database management. To extend its functionality to visualize and interact with your data, pgAdmin 4 needs to be installed.
 
-Alternatively, this installer program can automatically download and install pgAdmin 4. Do you want to do that?</text>
+This installer can automatically download and install pgAdmin 4 latest version ${latest_pgadmin_version}. Would you like to proceed?</text>
                     <variable>install_pgadmin_answer</variable>
                     <default>Yes</default>
                 </showQuestion>
@@ -1997,7 +1997,7 @@ Alternatively, this installer program can automatically download and install pgA
                         <runProgram>
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
                             <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
-                            <progressText>Downloading and installing pgAdmin 4, please wait...</progressText>
+                            <progressText>Downloading and installing latest pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
                         </runProgram>
                         <showWarning text="pgAdmin 4 installation failed. Please install it manually from https://www.pgadmin.org">
                             <ruleList>
@@ -2023,7 +2023,7 @@ Alternatively, this installer program can automatically download and install pgA
         <actionGroup>
             <actionList>
                 <showQuestion>
-                    <text>pgAdmin 4 version ${installed_pgadmin_version} is already installed on your machine. Would you like to download and install the latest version?</text>
+                    <text>pgAdmin 4 version ${installed_pgadmin_version} is already installed on your machine. Would you like to download and install the latest version ${latest_pgadmin_version}?</text>
                     <variable>install_pgadmin_answer</variable>
                     <default>Yes</default>
                 </showQuestion>
@@ -2036,7 +2036,7 @@ Alternatively, this installer program can automatically download and install pgA
                         <runProgram>
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
                             <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
-                            <progressText>Downloading and installing latest pgAdmin 4, please wait...</progressText>
+                            <progressText>Downloading and installing latest pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
                         </runProgram>
                         <showWarning text="pgAdmin 4 update failed. Please install it manually from https://www.pgadmin.org">
                             <ruleList>
@@ -2056,6 +2056,22 @@ Alternatively, this installer program can automatically download and install pgA
                 <!-- Only when pgAdmin IS installed -->
                 <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value=""/>
                 <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value="${latest_pgadmin_version}"/>
+            </ruleList>
+        </actionGroup>
+        <!-- WIN: Download pgAdmin 4 in unattended mode if install-pgadmin flag is set -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${env(WINDIR)}\System32\cmd.exe</program>
+                    <programArguments>/c "${installdir}\scripts\install-pgadmin.bat" silent</programArguments>
+                    <progressText>Downloading and installing latest pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                <compareText text="${installer_ui}" logic="equals" value="unattended"/>
+                <isTrue value="${install_pgadmin}"/>
+                <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
