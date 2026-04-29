@@ -1,3 +1,11 @@
+# PostgreSQL installer release 18.3-5 (2026-04-30)
+## Changes 🛠️
+
+- **Dependencies (macOS)**
+    - Update `curl` to version `8.20.0`
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 18.3-3 (windows) & 18.3-4 (macOS) (2026-04-15)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.14`
