@@ -2064,7 +2064,7 @@ This installer can automatically download and install pgAdmin 4 latest version $
                 <runProgram>
                     <program>${env(WINDIR)}\System32\cmd.exe</program>
                     <programArguments>/c "${installdir}\scripts\install-pgadmin.bat" silent</programArguments>
-                    <progressText>Downloading and installing latest pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
+                    <progressText>Installing pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
                 </runProgram>
             </actionList>
             <ruleList>
@@ -2072,6 +2072,8 @@ This installer can automatically download and install pgAdmin 4 latest version $
                 <compareText text="${installer_ui}" logic="equals" value="unattended"/>
                 <isTrue value="${install_pgadmin}"/>
                 <isFalse value="${extract_mode}"/>
+                <!-- Skip if latest version already installed -->
+                <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value="${latest_pgadmin_version}"/>
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
