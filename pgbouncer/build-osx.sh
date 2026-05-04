@@ -184,8 +184,8 @@ _postprocess_pgbouncer_osx() {
     rm -rf $WD/pgbouncer/staging/osx/pgbouncer-staging.tar.bz2 || _die "Failed to remove pgbouncer-staging.tar from controller"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf staging" || _die "Failed to remove staging from signing server"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../pgbouncer-staging.tar.bz2"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging;tar -jcvf pgbouncer-staging.tar.bz2 *" || _die "Failed to create pgbouncer-staging tar on signing server"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/staging/pgbouncer-staging.tar.bz2 $WD/pgbouncer/staging/osx || _die "Failed to copy pgbouncer-staging to controller vm"
 
@@ -271,7 +271,7 @@ _postprocess_pgbouncer_osx() {
     rm -fr pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.app* || _die "Failed to clean the output directory."
 
     # Sign the app
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s '$DEVELOPER_ID' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements.xml pgbouncer$PG_CURRENT_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source $PG_PATH_OSX_SIGN/versions.sh; tar -jxvf pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.app.tar.bz2; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain; codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s '$DEVELOPER_ID' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements.xml pgbouncer$PG_CURRENT_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.app;" || _die "Failed to sign the code"
 
      #ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/output; rm -rf pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.app; mv pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx-signed.app  pgbouncer-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.app;" || _die "could not move the signed app"
 
@@ -288,8 +288,8 @@ _postprocess_pgbouncer_osx() {
     scp $WD/output/pgbouncer$PG_CURRENT_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.zip $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy installers to $PG_PATH_OSX_NOTARY"
     scp $WD/resources/notarize_apps.sh $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy notarize_apps.sh to $PG_PATH_OSX_NOTARY"
 
-    echo ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh pgbouncer$PG_CURRENT_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.zip pgbouncer" || _die "Failed to notarize the app"
-    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; ./notarize_apps.sh pgbouncer$PG_CURRENT_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.zip pgbouncer" || _die "Failed to notarize the app"
+    echo ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD" ./notarize_apps.sh pgbouncer$PG_CURRENT_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.zip pgbouncer" || _die "Failed to notarize the app"
+    ssh $PG_SSH_OSX_NOTARY "cd $PG_PATH_OSX_NOTARY; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD" ./notarize_apps.sh pgbouncer$PG_CURRENT_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.zip pgbouncer" || _die "Failed to notarize the app"
     scp $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY/pgbouncer$PG_CURRENT_VERSION-$PG_VERSION_PGBOUNCER-$PG_BUILDNUM_PGBOUNCER-${BUILD_FAILED}osx.zip $WD/output || _die "Failed to copy notarized installer to $WD/output."
 
     cd $WD
