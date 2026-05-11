@@ -3134,7 +3134,7 @@
         <!-- Create Windows Service -->
                 <runProgram>
                     <program>${env(WINDIR)}\System32\cmd.exe</program>
-                    <programArguments>/D /c "${installdir}\bin\pg_ctl.exe" ${programArgs}</programArguments>
+                    <programArguments>/c "${installdir}\bin\pg_ctl.exe" ${programArgs}</programArguments>
                     <progressText>${msg(progress.text.configuring.startup)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
