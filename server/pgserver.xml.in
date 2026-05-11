@@ -2044,7 +2044,8 @@
                 <runProgram>
                     <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
                     <programArguments>-ExecutionPolicy Bypass -File "${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1"</programArguments>
-                    <wrapInScript>0</wrapInScript>
+                    <wrapInScript>1</wrapInScript>
+					<wrapperScriptArguments>/D</wrapperScriptArguments>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
