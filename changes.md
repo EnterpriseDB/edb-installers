@@ -1,3 +1,16 @@
+# PostgreSQL installer release 18.4-1 (2026-05-14)
+## Changes 🛠️
+- Update `pgAdmin4` to version `9.15
+
+- **Dependencies (macOS & Windows)**
+    - Update `libxml2` to version `2.15.3`
+    - Update `wxwidgests` to version `3.2.10`
+      
+## Bug Fixes 🐛
+- **Fix:** License files omitted from standalone archives. Fixed by moving the "Prepare staging directory structure" step before the "License" step in the Packaging PostgreSQL (Windows) workflow. This ensures staging directories exist when license.sh runs and all license files are correctly copied into the archive before compression. The binaries archive now contains all required license files, matching what is present in an installed PostgreSQL directory on Windows. (Issue #553)
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 18.3-5 (2026-04-30)
 ## Changes 🛠️
 
