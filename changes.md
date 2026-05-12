@@ -7,7 +7,7 @@
     - Update `wxwidgests` to version `3.2.10`
       
 ## Bug Fixes 🐛
-- **Fix:** License files omitted from standalone archives. Fixed by moving the "Prepare staging directory structure" step before the "License" step in the Packaging PostgreSQL (Windows) workflow. This ensures staging directories exist when license.sh runs and all license files are correctly copied into the archive before compression. The binaries archive now contains all required license files, matching what is present in an installed PostgreSQL directory on Windows. (Issue #553)
+- **Fix:** Updated the Windows packaging workflow to include all missing license files in standalone binary archives. (Issue #553)
 
 -------------------------------------------------------------------------------------------------------------------------------
 
