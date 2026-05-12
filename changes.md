@@ -13,7 +13,7 @@
     - Update `expat` to version `2.8.0`
       
 ## Bug Fixes 🐛
-- **Fix:** Updated the Windows packaging workflow to include all missing license files in standalone binary archives. (Issue #553)
+- **Fix:** Updated the Windows packages to include all missing license files in standalone binary archives. (Issue #553)
 
 -------------------------------------------------------------------------------------------------------------------------------
 
