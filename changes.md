@@ -1,6 +1,6 @@
 # PostgreSQL installer release 18.4-1 (2026-05-14)
 ## Changes 🛠️
-- Update `pgAdmin4` to version `9.15
+- Update `pgAdmin4` to version `9.15`
 
 - **Dependencies (macOS & Windows)**
     - Update `libxml2` to version `2.15.3`
