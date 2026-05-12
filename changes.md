@@ -5,8 +5,15 @@
 - **Dependencies (macOS & Windows)**
     - Update `libxml2` to version `2.15.3`
     - Update `wxwidgests` to version `3.2.10`
-    - Update `curl` to version `8.20.0`
-      
+ 
+- **Dependencies (Windows)**
+    - Update `curl` to version `8.20.0` 
+
+- **Dependencies (macOS)**
+    - Update `libiconv` to version `1.19`
+    - Update `e2fsprogs` to version `1.47.4`
+    - Update `expat` to version `2.8.0`
+       
 ## Bug Fixes 🐛
 - **Fix:** Updated the Windows packaging workflow to include all missing license files in standalone binary archives. (Issue #553)
 
