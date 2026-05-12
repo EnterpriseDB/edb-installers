@@ -8,6 +8,11 @@
     
 - **Additional dependencies (Windows)**  
      - Update `curl` to version `8.20.0`
+    
+- **Additional dependencies (macOS)**
+    - Update `libiconv` to version `1.19`
+    - Update `e2fsprogs` to version `1.47.4`
+    - Update `expat` to version `2.8.0`
       
 ## Bug Fixes 🐛
 - **Fix:** Updated the Windows packaging workflow to include all missing license files in standalone binary archives. (Issue #553)
