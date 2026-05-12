@@ -4,7 +4,7 @@
 
 - **Dependencies (macOS & Windows)**
     - Update `libxml2` to version `2.15.3`
-    - Update `wxwidgests` to version `3.2.10`
+    - Update `wxwidgets` to version `3.2.10`
     
 - **Additional dependencies (Windows)**  
      - Update `curl` to version `8.20.0`
@@ -15,7 +15,7 @@
     - Update `expat` to version `2.8.0`
       
 ## Bug Fixes 🐛
-- **Fix:** Updated the Windows packaging workflow to include all missing license files in standalone binary archives. (Issue #553)
+- **Fix:** Updated the Windows packages to include all missing license files in standalone binary archives. (Issue #553)
 
 -------------------------------------------------------------------------------------------------------------------------------
 
