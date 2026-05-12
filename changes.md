@@ -1,3 +1,19 @@
+# PostgreSQL installer release 14.23-1 (2026-05-14)
+## Changes 🛠️
+- Update `pgAdmin4` to version `9.15`
+
+- **Dependencies (macOS & Windows)**
+    - Update `libxml2` to version `2.15.3`
+    - Update `wxwidgests` to version `3.2.10`
+    
+- **Additional dependencies (Windows)**  
+     - Update `curl` to version `8.20.0`
+      
+## Bug Fixes 🐛
+- **Fix:** Updated the Windows packaging workflow to include all missing license files in standalone binary archives. (Issue #553)
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 14.22-3 (2026-04-15)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.14`
