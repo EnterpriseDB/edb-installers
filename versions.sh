@@ -3,7 +3,7 @@
 # Source tarball versions
 
 PG_TARBALL_POSTGRESQL=18.4
-PG_TARBALL_PGADMIN=9.14
+PG_TARBALL_PGADMIN=9.15
 PG_LP_VERSION=6.3
 
 # Build nums
