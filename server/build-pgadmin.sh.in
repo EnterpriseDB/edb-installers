@@ -289,6 +289,9 @@ _complete_bundle() {
                 if (( $(echo "${APP_LONG_VERSION} <= 9.5" | bc -l) )); then
                  npm pkg set "scripts.git:hash=exit 0"
                 fi
+				# Remove legacy yarn config setting not supported in newer Yarn versions
+                sed -i '' '/^approvedGitRepositories:/,/^[^ ]/{ /^approvedGitRepositories:/d; /^  - /d; }' .yarnrc.yml
+				
                 yarn set version berry
                 yarn set version 4
 		yarn install
