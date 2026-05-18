@@ -2043,7 +2043,7 @@
 
                 <runProgram>
                     <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                    <programArguments>-NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -Command "cmd /D /C powershell.exe -ExecutionPolicy Bypass -File ${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1"</programArguments>
+                    <programArguments>-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1"</programArguments>
                     <wrapInScript>0</wrapInScript>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -2993,17 +2993,9 @@
                             </ruleList>
                         </setInstallerVariableFromRegEx>
 
-                       <!-- Write wrapper bat -->
-                        <writeFile>
-                            <path>${env(TEMP)}\postgresql_installer_${random_number}\run_initcluster.bat</path>
-                            <text>@echo off
-powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${env(TEMP)}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</text>
-                        </writeFile>
-
-                        <!-- Run bat with /D -->
-                        <runProgram>
-                            <program>${env(WINDIR)}\System32\cmd.exe</program>
-                            <programArguments>/D /C "${env(TEMP)}\postgresql_installer_${random_number}\run_initcluster.bat"</programArguments>
+                      <runProgram>
+                            <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
+                            <programArguments>-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${env(TEMP)}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
                             <wrapInScript>0</wrapInScript>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
