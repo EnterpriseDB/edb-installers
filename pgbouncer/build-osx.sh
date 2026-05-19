@@ -92,7 +92,7 @@ cat<<PGBOUNCER > $WD/pgbouncer/build-pgbouncer.sh
     
     CFLAGS="$PG_ARCH_OSX_CFLAGS -O2" LDFLAGS="$ARCHFLAGS" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION LIBEVENT_LIBS="-L/opt/local/Current_v15/lib -levent" LIBEVENT_CFLAGS="-I/opt/local/Current_v15/include" ./configure --prefix=$PG_PATH_OSX/pgbouncer/staging/osx.build/pgbouncer --with-openssl=/opt/local/Current_v15 || _die "Failed to configure pgbouncer"
 
-    MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make || _die "Failed to build pgbouncer"
+    PATH="/usr/local/bin:$PATH" MACOSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION make || _die "Failed to build pgbouncer"
     ln -s $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/install-sh $PG_PATH_OSX/pgbouncer/source/pgbouncer.osx/doc/install-sh
     make install || _die "Failed to install pgbouncer"
 
