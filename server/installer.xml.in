@@ -1997,7 +1997,7 @@ This installer can automatically download and install pgAdmin 4 latest version $
                         <runProgram>
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
                             <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
-                            <progressText>Installing pgAdmin 4 v${latest_pgadmin_version}, please wait...</progressText>
+                            <progressText>Installing pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
                         </runProgram>
                         <showWarning text="pgAdmin 4 installation failed. Please install it manually from https://www.pgadmin.org">
                             <ruleList>
@@ -2036,7 +2036,7 @@ This installer can automatically download and install pgAdmin 4 latest version $
                         <runProgram>
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
                             <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
-                            <progressText>Installing pgAdmin 4 v${latest_pgadmin_version}, please wait...</progressText>
+                            <progressText>Installing pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
                         </runProgram>
                         <showWarning text="pgAdmin 4 update failed. Please install it manually from https://www.pgadmin.org">
                             <ruleList>
