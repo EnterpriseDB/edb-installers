@@ -47,32 +47,53 @@ function DoCmd {
 
     Write-Host "Executing command: $Command"
 
-    # Use a temporary variable to hold the combined output (stdout and stderr)
-    # The '2>&1' is crucial. It merges the error stream (2) with the output stream (1).
-    # The '( )' ensures the entire command is treated as a single pipeline,
-    # allowing us to capture the output and check $LASTEXITCODE reliably.
-    $output = & "$env:WINDIR\System32\cmd.exe" /c $Command 2>&1
+    # Split command into executable and arguments
+    $parts = $Command -split ' ', 2
+    $executable = $parts[0].Trim('"')
+    $arguments = if ($parts.Length -gt 1) { $parts[1] } else { "" }
 
-    # Check the exit code of the last executed native command
-    $exitCode = $LASTEXITCODE
+    $stdoutFile = "$env:TEMP\docmd_stdout_$PID.txt"
+    $stderrFile = "$env:TEMP\docmd_stderr_$PID.txt"
 
-    # Display the captured output
-    if ($output) {
-        Write-Host "--- Command Output ---"
-        $output | Write-Host
-        Write-Host "----------------------"
-    } else {
-        Write-Host "Command executed, but produced no output."
+    # Run directly WITHOUT cmd.exe
+    $process = Start-Process -FilePath $executable `
+                             -ArgumentList $arguments `
+                             -NoNewWindow `
+                             -Wait `
+                             -PassThru `
+                             -RedirectStandardOutput $stdoutFile `
+                             -RedirectStandardError $stderrFile
+
+    $exitCode = $process.ExitCode
+
+    # Display stdout
+    if (Test-Path $stdoutFile) {
+        $stdout = Get-Content $stdoutFile
+        if ($stdout) {
+            Write-Host "--- Command Output ---"
+            $stdout | Write-Host
+            Write-Host "----------------------"
+        }
+        Remove-Item $stdoutFile -Force
     }
 
-    # If the command failed, print a clear error message
+    # Display stderr
+    if (Test-Path $stderrFile) {
+        $stderr = Get-Content $stderrFile
+        if ($stderr) {
+            Write-Host "--- Command Error ---"
+            $stderr | Write-Host
+            Write-Host "---------------------"
+        }
+        Remove-Item $stderrFile -Force
+    }
+
     if ($exitCode -ne 0) {
         Write-Host "`nERROR: Command failed with exit code $exitCode."
     } else {
         Write-Host "`nSUCCESS: Command completed successfully."
     }
 
-    # Return the exit code for the calling function to use
     return $exitCode
 }
 
