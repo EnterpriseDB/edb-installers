@@ -1,4 +1,4 @@
-﻿# PowerShell Script for PostgreSQL Cluster Initialization
+# PowerShell Script for PostgreSQL Cluster Initialization
 # Copyright (c) 2025, EnterpriseDB Corporation.  All rights reserved
 
 param (
@@ -47,16 +47,11 @@ function DoCmd {
 
     Write-Host "Executing command: $Command"
 
-    # Use a temporary variable to hold the combined output (stdout and stderr)
-    # The '2>&1' is crucial. It merges the error stream (2) with the output stream (1).
-    # The '( )' ensures the entire command is treated as a single pipeline,
-    # allowing us to capture the output and check $LASTEXITCODE reliably.
+    # /D flag skips CMD AutoRun from registry
     $output = & "$env:WINDIR\System32\cmd.exe" /D /c $Command 2>&1
 
-    # Check the exit code of the last executed native command
     $exitCode = $LASTEXITCODE
 
-    # Display the captured output
     if ($output) {
         Write-Host "--- Command Output ---"
         $output | Write-Host
@@ -65,17 +60,14 @@ function DoCmd {
         Write-Host "Command executed, but produced no output."
     }
 
-    # If the command failed, print a clear error message
     if ($exitCode -ne 0) {
         Write-Host "`nERROR: Command failed with exit code $exitCode."
     } else {
         Write-Host "`nSUCCESS: Command completed successfully."
     }
 
-    # Return the exit code for the calling function to use
     return $exitCode
 }
-
 
 # Function to Clear ACL
 function ClearAcl {
@@ -83,15 +75,14 @@ function ClearAcl {
         [string]$DirectoryPath
     )
     Write-Host "`nCalled ClearAcl (`"$DirectoryPath`")..."
-    # Print current ACL
-    #Write-Host "`nCurrent ACL ("$DirectoryPath"):"
-    $currentAcl = & "$env:WINDIR\System32\icacls.exe" "`"$DirectoryPath`""
-    #$currentAcl | ForEach-Object { Write-Host $_ }
 
-    # Remove inherited ACLs
+    # FIXED: Removed extra backtick-quotes around $DirectoryPath
+    $currentAcl = & "$env:WINDIR\System32\icacls.exe" "$DirectoryPath"
+
     Write-Host "`nRemoving inherited ACLs on (`"$DirectoryPath`")..."
-    $output = & "$env:WINDIR\System32\icacls.exe" "`"$DirectoryPath`"" /inheritance:r
-    #$output | ForEach-Object { Write-Host $_ }
+
+    # FIXED: Removed extra backtick-quotes around $DirectoryPath
+    $output = & "$env:WINDIR\System32\icacls.exe" "$DirectoryPath" /inheritance:r
 
     if ($LASTEXITCODE -ne 0) {
         Write-Host "`nFailed to remove inherited ACLs on (`"$DirectoryPath`")"
@@ -118,19 +109,14 @@ function AclCheck {
         Write-Host "`nSkipping the ACL check on $DirectoryPath"
         return 0
     } else {
-        # Decide whether to use SID or fallback to username
         $userIdToGrant = if ($UserSid) { "*$UserSid" } else { "$UserName" }
         Write-Host "Executing icacls to ensure the $UserName account can read the path $DirectoryPath"
 
         if ($Index -ne 0) {
-            # For directories other than the root drive, grant permissions (NP)(RX)
             $command = "$env:WINDIR\System32\icacls.exe `"$DirectoryPath`" /grant `"$userIdToGrant`:(NP)(RX)`""
         } else {
-            # Drive letter must not be surronded by double-quotes and ends with slash (\)
-            # "icacls" fails on the drives with (NP) flag
             $command = "$env:WINDIR\System32\icacls.exe `"$DirectoryPath\\`" /grant `"$userIdToGrant`:(NP)(RX)`""
         }
-        # Execute the command
         $iRet = DoCmd "$command"
 
         if ($iRet -ne 0) {
@@ -146,8 +132,6 @@ $boolCheckACL = if ($CheckACL -eq 'true' -or $CheckACL -eq '1') { $true } else {
 $DataDir = $DataDir.TrimEnd('\')
 
 # Change the current directory to the installation directory
-# This is important, because initdb will drop Administrative
-# permissions and may lose access to the current working directory
 Set-Location -Path "$InstallDir"
 
 # Ensure DataDir exists
@@ -172,19 +156,14 @@ Write-Host "Logged in user: $LoggedInUserName"
 Write-Host "Logged in user SID: $LoggedInUser"
 
 if ($boolCheckAcl) {
-    # Split the parent directory path into an array
     $arrDirs = $ParentOfDataDir.Split('\')
     $nDirs = $arrDirs.Length - 1
-    
     $strThisDir = ""
-    
-    # Loop through each directory and apply ACL checks
     for ($d = 0; $d -le $nDirs; $d++) {
         $strThisDir = $strThisDir + $arrDirs[$d]
         AclCheck -DirectoryPath "$strThisDir" -UserName $LoggedInUserName -UserSid $LoggedInUser -Index $d
         $strThisDir = $strThisDir + "\"
     }
-    
     Write-Host "`nParent of Data Directory: $ParentOfDataDir"
     Write-Host "`nInstall Directory: $InstallDir"
 }
@@ -240,10 +219,10 @@ if ($iRet -ne 0) {
 
 # Create temporary password file
 $randomFileName = ($([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".tmp"
-$passwordFile = Join-Path "$PasswordDir"  $randomFileName
+$passwordFile = Join-Path "$PasswordDir" $randomFileName
 Set-Content -Path "$passwordFile" -Value $Password -Force
 
-# Change English locales: "English, <Country>" â†’ "English_<Country>"
+# Change English locales: "English, <Country>" -> "English_<Country>"
 if ($Locale -match '^English, (.+)$') {
     $Locale = "English_$($matches[1])"
 }
@@ -253,23 +232,20 @@ $env:PATH = "$InstallDir\bin;" + $env:PATH
 
 # Run initdb
 Write-Host "`nInitializing PostgreSQL database cluster..."
-# Set initdb arguments
 $initdbArgs = @(
-	"--pgdata=`"$DataDir`"",
-	"--username=`"$SuperUsername`"", 
-	"--encoding=UTF8", 
-	"--pwfile=`"$passwordFile`"", 
-	"--auth=scram-sha-256"
+    "--pgdata=`"$DataDir`"",
+    "--username=`"$SuperUsername`"",
+    "--encoding=UTF8",
+    "--pwfile=`"$passwordFile`"",
+    "--auth=scram-sha-256"
 )
 
 if ($Locale -ne "DEFAULT") {
     $initdbArgs += "--locale=`"$Locale`""
 }
 
-# Print the full command
 Write-Host "`nExecuting: `"$InstallDir\bin\initdb.exe`" $initdbArgs `n"
 
-# Run the initdb command
 $initdbProcess = Start-Process -FilePath "$InstallDir\bin\initdb.exe" -ArgumentList "$initdbArgs" -NoNewWindow -Wait -PassThru
 $initdbExitCode = $initdbProcess.ExitCode
 
@@ -295,24 +271,19 @@ Write-Host "`nUpdating postgresql.conf"
                  -replace "^#?port =.*", "port = $Port" `
                  -replace "^#?log_destination =.*", "log_destination = 'stderr'" `
                  -replace "^#?logging_collector =.*", "logging_collector = on" `
-                 -replace "^#?log_line_prefix =.*", "log_line_prefix = '%t '" | 
+                 -replace "^#?log_line_prefix =.*", "log_line_prefix = '%t '" |
     Set-Content -Path "$configFile"
 
 if ($boolCheckAcl) {
-    # Loop up the directory path, and ensure the service account has read permissions
-    # on the entire path leading to the data directory
     $arrDirs = $ParentOfDataDir.Split('\')
     $nDirs = $arrDirs.Length - 1
-
     $strThisDir = ""
-
-    # Loop through each directory and apply ACL checks
     for ($d = 0; $d -le $nDirs; $d++) {
         $strThisDir = $strThisDir + $arrDirs[$d]
         AclCheck -DirectoryPath "$strThisDir" -UserName $OSUsername -Index $d
         $strThisDir = $strThisDir + "\"
     }
-}  
+}
 
 AclCheck -DirectoryPath "$DataDir" -UserName $OSUsername -Index 1
 
@@ -325,8 +296,7 @@ if ($boolCheckAcl) {
     }
 }
 
-# Create the <DATA_DIR>\log directory (if not exists)
-# Create it before updating the permissions, so that it will also get affected
+# Create the <DATA_DIR>\log directory
 $logDir = Join-Path "$DataDir" "log"
 if (-not (Test-Path "$logDir")) {
     Write-Host "`nCreating log directory: $logDir"
@@ -342,4 +312,3 @@ if ($iRet -ne 0) {
 }
 
 Write-Host "`ninitcluster.ps1 ran to completion."
-
