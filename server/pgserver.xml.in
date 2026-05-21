@@ -3304,7 +3304,7 @@
 
                 <startWindowsService>
                     <serviceName>${servicename}</serviceName>
-                    <delay>5000</delay>
+                    <delay>15000</delay>
 		</startWindowsService>
 
                 <runProgram>
