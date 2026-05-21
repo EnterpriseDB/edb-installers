@@ -2996,7 +2996,7 @@
                         <runProgram>
                             <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
                             <programArguments>-ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${env(TEMP)}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
-                            <wrapInScript>1</wrapInScript>
+                            <wrapInScript>0</wrapInScript>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
