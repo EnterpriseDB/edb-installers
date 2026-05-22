@@ -2660,7 +2660,7 @@
                 </logMessage>
             </actionList>
                 <ruleList>
-                    <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    <compareText logic="contains" text="${platform_name}" value="windows"/>
                 </ruleList>
         </actionGroup>
 
@@ -2989,7 +2989,7 @@
                             <pattern>"</pattern>
                             <substitution>\"</substitution>
                             <ruleList>
-                                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                                <compareText logic="contains" text="${platform_name}" value="windows"/>
                             </ruleList>
                         </setInstallerVariableFromRegEx>
 
@@ -3002,7 +3002,7 @@
                             <showMessageOnError>0</showMessageOnError>
                             <ruleList>
                                 <compareText>
-                                    <logic>equals</logic>
+                                    <logic>contains</logic>
                                     <text>${platform_name}</text>
                                     <value>windows</value>
                                 </compareText>
