@@ -2043,7 +2043,7 @@
 
                 <runProgram>
                     <program>${env(WINDIR)}\System32\cmd.exe</program>
-                    <programArguments>/D /c powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1"</programArguments>
+                    <programArguments>/D /c powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File "${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1"</programArguments>
                     <wrapInScript>0</wrapInScript>
                     <ruleList>
                         <compareText logic="contains" text="${platform_name}" value="windows"/>
@@ -2995,7 +2995,7 @@
 
                        <runProgram>
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
-                            <programArguments>/D /c powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${superpassword.password}" "${env(TEMP)}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
+                            <programArguments>/D /c powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${superpassword.password}" "${env(TEMP)}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
                             <wrapInScript>0</wrapInScript>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
