@@ -1,6 +1,5 @@
 # PowerShell Script for PostgreSQL Cluster Initialization
 # Copyright (c) 2025, EnterpriseDB Corporation.  All rights reserved
-# Rewritten to be fully independent of CMD autorun environment
 
 param (
     [string]$OSUsername,
@@ -15,182 +14,94 @@ param (
     [string]$CheckACL
 )
 
-# -----------------------------------------------------------------------
-# STEP 1: Validate all input arguments exist and are not empty
-# -----------------------------------------------------------------------
-if (-not $OSUsername -or -not $SuperUsername -or -not $LoggedInUser -or
-    -not $Password -or -not $PasswordDir -or -not $InstallDir -or
-    -not $DataDir -or -not $Port -or -not $Locale -or -not $CheckACL) {
-    Write-Error "Usage: initcluster.ps1 <OSUsername> <SuperUsername> <LoggedInUser> <Password> <PasswordDir> <InstallDir> <DataDir> <Port> <Locale> <CheckACL>"
+# Validate input arguments
+if (-not $OSUsername -or -not $SuperUsername -or -not $LoggedInUser -or -not $Password -or -not $PasswordDir -or -not $InstallDir -or -not $DataDir -or -not $Port -or -not $Locale -or -not $CheckACL) {
+    Write-Host "Usage: initcluster.ps1 <OSUsername> <SuperUsername> <LoggedInUser> <Password> <PasswordDir> <Install dir> <Data dir> <Port> <Locale> <CheckACL>"
     exit 1
 }
 
-# -----------------------------------------------------------------------
-# STEP 2: Resolve all paths to ABSOLUTE paths immediately
-#         This makes script immune to broken working directory from CMD autorun
-# -----------------------------------------------------------------------
-try {
-    # Normalize and resolve to absolute paths - does NOT require paths to exist yet
-    $InstallDir  = [System.IO.Path]::GetFullPath($InstallDir.TrimEnd('\'))
-    $DataDir     = [System.IO.Path]::GetFullPath($DataDir.TrimEnd('\'))
-    $PasswordDir = [System.IO.Path]::GetFullPath($PasswordDir.TrimEnd('\'))
-} catch {
-    Write-Error "Failed to resolve absolute paths. Check InstallDir, DataDir, PasswordDir arguments. Error: $_"
-    exit 1
-}
+# Create a temporary script file
+$scriptFileName = ($([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".ps1"
+$outputFileName = ($([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".tmp"
 
-# -----------------------------------------------------------------------
-# STEP 3: Validate that critical paths actually exist on disk
-# -----------------------------------------------------------------------
-if (-not (Test-Path -LiteralPath $InstallDir -PathType Container)) {
-    Write-Error "InstallDir does not exist: $InstallDir"
-    exit 1
-}
-
-$initdbExe = Join-Path $InstallDir "bin\initdb.exe"
-if (-not (Test-Path -LiteralPath $initdbExe -PathType Leaf)) {
-    Write-Error "initdb.exe not found at: $initdbExe — check InstallDir"
-    exit 1
-}
-
-if (-not (Test-Path -LiteralPath $PasswordDir -PathType Container)) {
-    Write-Error "PasswordDir does not exist: $PasswordDir"
-    exit 1
-}
-
-# -----------------------------------------------------------------------
-# STEP 4: Set working directory to InstallDir using absolute path
-#         Must be done AFTER path resolution above
-# -----------------------------------------------------------------------
-try {
-    Set-Location -LiteralPath $InstallDir -ErrorAction Stop
-} catch {
-    Write-Error "Failed to set working directory to InstallDir: $InstallDir. Error: $_"
-    exit 1
-}
-
-# -----------------------------------------------------------------------
-# STEP 5: Fix PATH — purely in PowerShell, no CMD dependency
-#         Prepend InstallDir\bin so initdb finds postgres.exe and DLLs
-# -----------------------------------------------------------------------
-$installBinDir = Join-Path $InstallDir "bin"
-
-# Save original PATH so we can restore it if needed
-$originalPath = $env:PATH
-
-# Build a clean PATH: InstallDir\bin first, then existing PATH entries,
-# removing any empty or duplicate entries
-$cleanPathEntries = @($installBinDir) + ($env:PATH -split ';' |
-    Where-Object { $_ -ne '' -and $_ -ne $installBinDir })
-$env:PATH = ($cleanPathEntries -join ';')
-
-Write-Host "PATH updated. InstallDir\bin is now first: $installBinDir"
-
-# -----------------------------------------------------------------------
-# Utility Functions — pure PowerShell, NO cmd.exe calls
-# -----------------------------------------------------------------------
-
-# Password file path — track globally for cleanup in Die
-$script:passwordFile = $null
-
+# Function to log and terminate the script with an error message
 function Die {
     param ([string]$Message)
-    Write-Host "`nFATAL ERROR: $Message"
-    # Clean up password file if it exists — do this before exit for security
-    if ($script:passwordFile -and (Test-Path -LiteralPath $script:passwordFile)) {
-        try {
-            Remove-Item -LiteralPath $script:passwordFile -Force -ErrorAction Stop
-            Write-Host "Cleaned up temporary password file."
-        } catch {
-            Write-Warning "Could not remove temporary password file: $script:passwordFile"
-        }
+    Write-Host "`nCalled Die($Message)..."
+    if (Test-Path "$passwordFile") {
+        Remove-Item "$passwordFile"
     }
     Write-Error $Message
     exit 1
 }
 
+# Function to log warnings
 function Warn {
     param ([string]$Message)
     Write-Warning $Message
 }
 
-# DoCmd — rewritten to use pure PowerShell, NOT cmd.exe
-# Uses Start-Process with explicit executable so it works even if CMD is broken/misconfigured
+# Function to execute commands
 function DoCmd {
     param ([string]$Command)
 
-    Write-Host "Executing: $Command"
+    Write-Host "Executing command: $Command"
 
-    # Parse the command string into executable + arguments
-    # This avoids invoking cmd.exe entirely
-    $parts = $Command -split ' ', 2
-    $executable = $parts[0].Trim('"')
-    $arguments  = if ($parts.Length -gt 1) { $parts[1] } else { "" }
+    # Use a temporary variable to hold the combined output (stdout and stderr)
+    # The '2>&1' is crucial. It merges the error stream (2) with the output stream (1).
+    # The '( )' ensures the entire command is treated as a single pipeline,
+    # allowing us to capture the output and check $LASTEXITCODE reliably.
+    $output = & "$env:WINDIR\System32\cmd.exe" /D /C $Command 2>&1
 
-    try {
-        $proc = Start-Process `
-            -FilePath $executable `
-            -ArgumentList $arguments `
-            -NoNewWindow `
-            -Wait `
-            -PassThru `
-            -RedirectStandardOutput "$env:TEMP\pg_stdout.tmp" `
-            -RedirectStandardError  "$env:TEMP\pg_stderr.tmp" `
-            -ErrorAction Stop
+    # Check the exit code of the last executed native command
+    $exitCode = $LASTEXITCODE
 
-        # Read and display output
-        if (Test-Path "$env:TEMP\pg_stdout.tmp") {
-            $stdout = Get-Content "$env:TEMP\pg_stdout.tmp" -ErrorAction SilentlyContinue
-            if ($stdout) { Write-Host ($stdout -join "`n") }
-            Remove-Item "$env:TEMP\pg_stdout.tmp" -Force -ErrorAction SilentlyContinue
-        }
-        if (Test-Path "$env:TEMP\pg_stderr.tmp") {
-            $stderr = Get-Content "$env:TEMP\pg_stderr.tmp" -ErrorAction SilentlyContinue
-            if ($stderr) { Write-Host ($stderr -join "`n") }
-            Remove-Item "$env:TEMP\pg_stderr.tmp" -Force -ErrorAction SilentlyContinue
-        }
-
-        $exitCode = $proc.ExitCode
-        if ($exitCode -ne 0) {
-            Write-Host "ERROR: Command failed with exit code $exitCode."
-        } else {
-            Write-Host "SUCCESS: Command completed."
-        }
-        return $exitCode
-
-    } catch {
-        Write-Host "ERROR: Failed to execute command: $Command. Exception: $_"
-        return 1
+    # Display the captured output
+    if ($output) {
+        Write-Host "--- Command Output ---"
+        $output | Write-Host
+        Write-Host "----------------------"
+    } else {
+        Write-Host "Command executed, but produced no output."
     }
+
+    # If the command failed, print a clear error message
+    if ($exitCode -ne 0) {
+        Write-Host "`nERROR: Command failed with exit code $exitCode."
+    } else {
+        Write-Host "`nSUCCESS: Command completed successfully."
+    }
+
+    # Return the exit code for the calling function to use
+    return $exitCode
 }
 
-# -----------------------------------------------------------------------
-# ACL Functions — use icacls.exe via absolute path, NOT via cmd.exe
-# -----------------------------------------------------------------------
 
+# Function to Clear ACL
 function ClearAcl {
-    param ([string]$DirectoryPath)
-    Write-Host "`nClearAcl: $DirectoryPath"
+    param (
+        [string]$DirectoryPath
+    )
+    Write-Host "`nCalled ClearAcl (`"$DirectoryPath`")..."
+    # Print current ACL
+    #Write-Host "`nCurrent ACL ("$DirectoryPath"):"
+    $currentAcl = & "$env:WINDIR\System32\icacls.exe" "`"$DirectoryPath`""
+    #$currentAcl | ForEach-Object { Write-Host $_ }
 
-    # Use absolute path to icacls.exe — immune to PATH being broken
-    $icacls = "$env:WINDIR\System32\icacls.exe"
+    # Remove inherited ACLs
+    Write-Host "`nRemoving inherited ACLs on (`"$DirectoryPath`")..."
+    $output = & "$env:WINDIR\System32\icacls.exe" "`"$DirectoryPath`"" /inheritance:r
+    #$output | ForEach-Object { Write-Host $_ }
 
-    try {
-        $proc = Start-Process -FilePath $icacls `
-            -ArgumentList "`"$DirectoryPath`" /inheritance:r" `
-            -NoNewWindow -Wait -PassThru -ErrorAction Stop
-        if ($proc.ExitCode -ne 0) {
-            Write-Host "Failed to remove inherited ACLs on: $DirectoryPath"
-        } else {
-            Write-Host "Removed inherited ACLs on: $DirectoryPath"
-        }
-        return $proc.ExitCode
-    } catch {
-        Write-Host "ERROR running icacls: $_"
-        return 1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "`nFailed to remove inherited ACLs on (`"$DirectoryPath`")"
+    } else {
+        Write-Host "`nSuccessfully removed inherited ACLs on (`"$DirectoryPath`")"
     }
+    return $LASTEXITCODE
 }
 
+# Function to check and set ACLs on the given directory
 function AclCheck {
     param (
         [string]$DirectoryPath,
@@ -198,241 +109,236 @@ function AclCheck {
         [string]$UserSid,
         [int]$Index
     )
-    Write-Host "`nAclCheck: $DirectoryPath"
+    Write-Host "`nCalled AclCheck($DirectoryPath)"
 
-    # Skip system root directories
-    if ($DirectoryPath -eq $env:PROGRAMFILES -or $DirectoryPath -eq $env:SYSTEMDRIVE) {
-        Write-Host "Skipping ACL check on system path: $DirectoryPath"
+    if ($DirectoryPath -eq $env:PROGRAMFILES) {
+        Write-Host "`nSkipping the ACL check on $DirectoryPath"
         return 0
-    }
-
-    $icacls = "$env:WINDIR\System32\icacls.exe"
-    $userIdToGrant = if ($UserSid) { "*$UserSid" } else { $UserName }
-
-    if ($Index -ne 0) {
-        $arguments = "`"$DirectoryPath`" /grant `"${userIdToGrant}:(NP)(RX)`""
+    } elseif ($DirectoryPath -eq $env:SYSTEMDRIVE) {
+        Write-Host "`nSkipping the ACL check on $DirectoryPath"
+        return 0
     } else {
-        # Drive root — no NP flag, must end with backslash, no surrounding quotes on drive
-        $driveRoot = $DirectoryPath.TrimEnd('\') + '\'
-        $arguments = "`"$driveRoot`" /grant `"${userIdToGrant}:(RX)`""
-    }
+        # Decide whether to use SID or fallback to username
+        $userIdToGrant = if ($UserSid) { "*$UserSid" } else { "$UserName" }
+        Write-Host "Executing icacls to ensure the $UserName account can read the path $DirectoryPath"
 
-    try {
-        $proc = Start-Process -FilePath $icacls `
-            -ArgumentList $arguments `
-            -NoNewWindow -Wait -PassThru -ErrorAction Stop
-        if ($proc.ExitCode -ne 0) {
-            Write-Host "Failed to set ACL on: $DirectoryPath"
+        if ($Index -ne 0) {
+            # For directories other than the root drive, grant permissions (NP)(RX)
+            $command = "$env:WINDIR\System32\icacls.exe `"$DirectoryPath`" /grant `"$userIdToGrant`:(NP)(RX)`""
+        } else {
+            # Drive letter must not be surronded by double-quotes and ends with slash (\)
+            # "icacls" fails on the drives with (NP) flag
+            $command = "$env:WINDIR\System32\icacls.exe `"$DirectoryPath\\`" /grant `"$userIdToGrant`:(NP)(RX)`""
         }
-        return $proc.ExitCode
-    } catch {
-        Write-Host "ERROR running icacls on $DirectoryPath : $_"
-        return 1
+        # Execute the command
+        $iRet = DoCmd "$command"
+
+        if ($iRet -ne 0) {
+            Write-Host "`nFailed to ensure the path $DirectoryPath is readable"
+        }
     }
 }
 
-# -----------------------------------------------------------------------
-# MAIN LOGIC
-# -----------------------------------------------------------------------
+# Convert the string CheckACL to a Boolean
+$boolCheckACL = if ($CheckACL -eq 'true' -or $CheckACL -eq '1') { $true } else { $false }
 
-$boolCheckACL = ($CheckACL -eq 'true' -or $CheckACL -eq '1')
+# Normalize DataDir path
+$DataDir = $DataDir.TrimEnd('\')
+
+# Change the current directory to the installation directory
+# This is important, because initdb will drop Administrative
+# permissions and may lose access to the current working directory
+Set-Location -Path "$InstallDir"
 
 # Ensure DataDir exists
-if (-not (Test-Path -LiteralPath $DataDir)) {
-    Write-Host "Creating data directory: $DataDir"
-    try {
-        New-Item -ItemType Directory -Path $DataDir -Force -ErrorAction Stop | Out-Null
-    } catch {
-        Die "Failed to create data directory: $DataDir. Error: $_"
-    }
+if (-not (Test-Path "$DataDir")) {
+    Write-Host "`nCreating data directory: $DataDir"
+    New-Item -ItemType Directory -Path "$DataDir" -Force | Out-Null
 }
 
-# Remove inherited ACLs from DataDir
+# Remove inherited ACLs
 if ((ClearAcl -DirectoryPath $DataDir) -ne 0) {
-    Die "Failed to reset ACL on data directory: $DataDir"
+    Die "Failed to reset the ACL ($DataDir)"
 }
 
-# Get parent of DataDir
+# Get parent dir of Data dir
 $ParentOfDataDir = Split-Path $DataDir -Parent
-Write-Host "Parent of Data Directory: $ParentOfDataDir"
+Write-Host "`nParent of Data Directory: $ParentOfDataDir"
 
-# Get logged-in user info — pure PowerShell, no cmd.exe whoami call
-$LoggedInUserName = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+# Get logged-in user
+$LoggedInUser = $LoggedInUser
+$LoggedInUserName = (whoami)
 Write-Host "Logged in user: $LoggedInUserName"
 Write-Host "Logged in user SID: $LoggedInUser"
 
-# Apply ACL checks up the parent directory chain
-if ($boolCheckACL) {
+if ($boolCheckAcl) {
+    # Split the parent directory path into an array
     $arrDirs = $ParentOfDataDir.Split('\')
-    $nDirs   = $arrDirs.Length - 1
+    $nDirs = $arrDirs.Length - 1
+    
     $strThisDir = ""
-
+    
+    # Loop through each directory and apply ACL checks
     for ($d = 0; $d -le $nDirs; $d++) {
         $strThisDir = $strThisDir + $arrDirs[$d]
-        AclCheck -DirectoryPath $strThisDir -UserName $LoggedInUserName -UserSid $LoggedInUser -Index $d
+        AclCheck -DirectoryPath "$strThisDir" -UserName $LoggedInUserName -UserSid $LoggedInUser -Index $d
         $strThisDir = $strThisDir + "\"
     }
+    
+    Write-Host "`nParent of Data Directory: $ParentOfDataDir"
+    Write-Host "`nInstall Directory: $InstallDir"
 }
 
-# ACL for DataDir itself
-AclCheck -DirectoryPath $DataDir -UserName $LoggedInUserName -UserSid $LoggedInUser -Index 1
+# Apply ACL for the data directory
+AclCheck -DirectoryPath "$DataDir" -UserName $LoggedInUserName -UserSid $LoggedInUser -Index 1
 
-# Grant install dir permissions if CheckACL enabled
-if ($boolCheckACL) {
-    Write-Host "Granting $LoggedInUserName permissions on $InstallDir"
-    $icacls = "$env:WINDIR\System32\icacls.exe"
-    $proc = Start-Process -FilePath $icacls `
-        -ArgumentList "`"$InstallDir`" /T /grant:r `"*${LoggedInUser}:(OI)(CI)(RX)`"" `
-        -NoNewWindow -Wait -PassThru
-    if ($proc.ExitCode -ne 0) {
-        Write-Host "Failed to set install dir permissions: $InstallDir"
+# If ACL check is enabled, grant permissions on the install directory
+if ($boolCheckAcl) {
+    Write-Host "`nGranting the $LoggedInUserName permissions on $InstallDir"
+    $icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$InstallDir`" /T /grant:r `"*$LoggedInUser`:(OI)(CI)(RX)`""
+    $iRet = DoCmd -Command "$icaclsCommand"
+    if ($iRet -ne 0) {
+        Write-Host "`nFailed to ensure the Install directory is accessible ($InstallDir)"
     }
 }
 
-# Grant full access to logged-in user on DataDir
-Write-Host "Granting full access to $LoggedInUserName on $DataDir"
-$icacls = "$env:WINDIR\System32\icacls.exe"
-
-foreach ($grant in @(
-    "`"$DataDir`" /T /grant:r `"*${LoggedInUser}:(OI)(CI)F`"",
-    "`"$DataDir`" /grant `"${OSUsername}:(OI)(CI)F`"",
-    "`"$DataDir`" /grant `"*S-1-3-0:(OI)(CI)F`"",   # CREATOR OWNER
-    "`"$DataDir`" /grant `"*S-1-5-18:(OI)(CI)F`"",  # SYSTEM
-    "`"$DataDir`" /grant `"*S-1-5-32-544:(OI)(CI)F`""  # Administrators
-)) {
-    $proc = Start-Process -FilePath $icacls -ArgumentList $grant `
-        -NoNewWindow -Wait -PassThru
-    if ($proc.ExitCode -ne 0) {
-        Write-Host "WARNING: icacls grant failed for: $grant"
-    }
+# Grant ACLs for specific users on data directory
+Write-Host "`nEnsuring we can write to the data directory (using icacls) for ${LoggedInUserName}:"
+$icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$DataDir`" /T /grant:r `"*$LoggedInUser`:(OI)(CI)F`""
+$iRet = DoCmd -Command "$icaclsCommand"
+if ($iRet -ne 0) {
+    Write-Host "`nFailed to ensure the data directory is accessible ($DataDir)"
 }
 
-# -----------------------------------------------------------------------
-# Create temporary password file securely
-# -----------------------------------------------------------------------
-$randomFileName = ([guid]::NewGuid().ToString("N").Substring(0,8)) + ".tmp"
-$script:passwordFile = Join-Path $PasswordDir $randomFileName
-
-try {
-    Set-Content -LiteralPath $script:passwordFile -Value $Password -Force -ErrorAction Stop
-} catch {
-    Die "Failed to create temporary password file in: $PasswordDir. Error: $_"
+Write-Host "`nGranting full access to $OSUsername on $DataDir"
+$icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$DataDir`" /grant `"$OSUsername`:(OI)(CI)F`""
+$iRet = DoCmd -Command "$icaclsCommand"
+if ($iRet -ne 0) {
+    Write-Host "`nFailed to grant access to $OSUsername on $DataDir"
 }
 
-# -----------------------------------------------------------------------
-# Normalize locale: "English, Country" → "English_Country"
-# -----------------------------------------------------------------------
+Write-Host "`nGranting full access to CREATOR OWNER on $DataDir"
+$icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$DataDir`" /grant `"*S-1-3-0:(OI)(CI)F`""
+$iRet = DoCmd -Command "$icaclsCommand"
+if ($iRet -ne 0) {
+    Write-Host "`nFailed to grant access to CREATOR OWNER on $DataDir"
+}
+
+Write-Host "`nGranting full access to SYSTEM on $DataDir"
+$icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$DataDir`" /grant `"*S-1-5-18:(OI)(CI)F`""
+$iRet = DoCmd -Command "$icaclsCommand"
+if ($iRet -ne 0) {
+    Write-Host "`nFailed to grant access to SYSTEM on $DataDir"
+}
+
+Write-Host "`nGranting full access to Administrators on $DataDir"
+$icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$DataDir`" /grant `"*S-1-5-32-544:(OI)(CI)F`""
+$iRet = DoCmd -Command "$icaclsCommand"
+if ($iRet -ne 0) {
+    Write-Host "`nFailed to grant access to Administrators on $DataDir"
+}
+
+# Create temporary password file
+$randomFileName = ($([guid]::NewGuid()).ToString("N").Substring(0,8)) + ".tmp"
+$passwordFile = Join-Path "$PasswordDir"  $randomFileName
+Set-Content -Path "$passwordFile" -Value $Password -Force
+
+# Change English locales: "English, <Country>" â†’ "English_<Country>"
 if ($Locale -match '^English, (.+)$') {
     $Locale = "English_$($matches[1])"
 }
 
-# -----------------------------------------------------------------------
-# Run initdb — using absolute path, no PATH dependency
-# -----------------------------------------------------------------------
-Write-Host "`nInitializing PostgreSQL database cluster..."
+# Prepend the current bin directory to the PATH so initdb finds the correct postgres.exe
+$env:PATH = "$InstallDir\bin;" + $env:PATH
 
+# Run initdb
+Write-Host "`nInitializing PostgreSQL database cluster..."
+# Set initdb arguments
 $initdbArgs = @(
-    "--pgdata=`"$DataDir`"",
-    "--username=`"$SuperUsername`"",
-    "--encoding=UTF8",
-    "--pwfile=`"$($script:passwordFile)`"",
-    "--auth=scram-sha-256"
+	"--pgdata=`"$DataDir`"",
+	"--username=`"$SuperUsername`"", 
+	"--encoding=UTF8", 
+	"--pwfile=`"$passwordFile`"", 
+	"--auth=scram-sha-256"
 )
 
 if ($Locale -ne "DEFAULT") {
     $initdbArgs += "--locale=`"$Locale`""
 }
 
-Write-Host "Executing: $initdbExe $initdbArgs"
+# Print the full command
+Write-Host "`nExecuting: `"$InstallDir\bin\initdb.exe`" $initdbArgs `n"
 
-try {
-    $initdbProcess = Start-Process `
-        -FilePath $initdbExe `
-        -ArgumentList $initdbArgs `
-        -NoNewWindow -Wait -PassThru -ErrorAction Stop
+# Run the initdb command
+$initdbProcess = Start-Process -FilePath "$InstallDir\bin\initdb.exe" -ArgumentList "$initdbArgs" -NoNewWindow -Wait -PassThru
+$initdbExitCode = $initdbProcess.ExitCode
 
-    $initdbExitCode = $initdbProcess.ExitCode
-    Write-Host "initdb exit code = $initdbExitCode"
+Write-Host "initdb exit code =" $initdbExitCode
 
-    if ($initdbExitCode -ne 0) {
-        Die "initdb failed with exit code $initdbExitCode"
-    }
-} catch {
-    Die "Failed to launch initdb.exe: $_"
+if ($initdbExitCode -ne 0) {
+    Die "Failed to initialise the database cluster with initdb"
 }
 
-# -----------------------------------------------------------------------
-# Delete password file immediately after initdb — security cleanup
-# -----------------------------------------------------------------------
-if (Test-Path -LiteralPath $script:passwordFile) {
-    Remove-Item -LiteralPath $script:passwordFile -Force
-    $script:passwordFile = $null
-    Write-Host "Temporary password file removed."
+# Delete the password file
+if (Test-Path $passwordFile) {
+    Remove-Item "$passwordFile"
 }
 
-# -----------------------------------------------------------------------
 # Update postgresql.conf
-# -----------------------------------------------------------------------
-$configFile = Join-Path $DataDir "postgresql.conf"
-if (-not (Test-Path -LiteralPath $configFile)) {
-    Die "postgresql.conf not found at: $configFile — initdb may have failed silently"
+$configFile = Join-Path "$DataDir" "postgresql.conf"
+if (-not (Test-Path "$configFile")) {
+    Die "Configuration file not found: $configFile"
 }
 
-Write-Host "Updating postgresql.conf..."
-try {
-    (Get-Content -LiteralPath $configFile) `
-        -replace "^#?listen_addresses\s*=.*", "listen_addresses = '*'" `
-        -replace "^#?port\s*=.*",             "port = $Port" `
-        -replace "^#?log_destination\s*=.*",  "log_destination = 'stderr'" `
-        -replace "^#?logging_collector\s*=.*","logging_collector = on" `
-        -replace "^#?log_line_prefix\s*=.*",  "log_line_prefix = '%t '" |
-    Set-Content -LiteralPath $configFile -ErrorAction Stop
-    Write-Host "postgresql.conf updated."
-} catch {
-    Die "Failed to update postgresql.conf: $_"
-}
+Write-Host "`nUpdating postgresql.conf"
+(gc "$configFile") -replace "^#?listen_addresses =.*", "listen_addresses = '*'" `
+                 -replace "^#?port =.*", "port = $Port" `
+                 -replace "^#?log_destination =.*", "log_destination = 'stderr'" `
+                 -replace "^#?logging_collector =.*", "logging_collector = on" `
+                 -replace "^#?log_line_prefix =.*", "log_line_prefix = '%t '" | 
+    Set-Content -Path "$configFile"
 
-# -----------------------------------------------------------------------
-# Post-init ACL checks for service account
-# -----------------------------------------------------------------------
-if ($boolCheckACL) {
+if ($boolCheckAcl) {
+    # Loop up the directory path, and ensure the service account has read permissions
+    # on the entire path leading to the data directory
     $arrDirs = $ParentOfDataDir.Split('\')
-    $nDirs   = $arrDirs.Length - 1
+    $nDirs = $arrDirs.Length - 1
+
     $strThisDir = ""
 
+    # Loop through each directory and apply ACL checks
     for ($d = 0; $d -le $nDirs; $d++) {
         $strThisDir = $strThisDir + $arrDirs[$d]
-        AclCheck -DirectoryPath $strThisDir -UserName $OSUsername -Index $d
+        AclCheck -DirectoryPath "$strThisDir" -UserName $OSUsername -Index $d
         $strThisDir = $strThisDir + "\"
     }
-}
+}  
 
-AclCheck -DirectoryPath $DataDir -UserName $OSUsername -Index 1
+AclCheck -DirectoryPath "$DataDir" -UserName $OSUsername -Index 1
 
-if ($boolCheckACL) {
-    Write-Host "Granting $OSUsername permissions on $InstallDir"
-    $proc = Start-Process -FilePath "$env:WINDIR\System32\icacls.exe" `
-        -ArgumentList "`"$InstallDir`" /T /grant:r `"${OSUsername}:(OI)(CI)(RX)`"" `
-        -NoNewWindow -Wait -PassThru
-    if ($proc.ExitCode -ne 0) {
-        Write-Host "Failed to grant install dir permissions to $OSUsername"
+if ($boolCheckAcl) {
+    Write-Host "`nGranting $OSUsername permissions on $InstallDir"
+    $icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$InstallDir`" /T /grant:r `"$OSUsername`:(OI)(CI)(RX)`""
+    $iRet = DoCmd -Command "$icaclsCommand"
+    if ($iRet -ne 0) {
+        Write-Host "`nFailed to ensure the Install directory is accessible ($InstallDir)"
     }
 }
 
-# Create log directory
-$logDir = Join-Path $DataDir "log"
-if (-not (Test-Path -LiteralPath $logDir)) {
-    Write-Host "Creating log directory: $logDir"
-    New-Item -ItemType Directory -Path $logDir -Force | Out-Null
+# Create the <DATA_DIR>\log directory (if not exists)
+# Create it before updating the permissions, so that it will also get affected
+$logDir = Join-Path "$DataDir" "log"
+if (-not (Test-Path "$logDir")) {
+    Write-Host "`nCreating log directory: $logDir"
+    New-Item -ItemType Directory -Path "$logDir" -Force | Out-Null
 }
 
-# Final service account permissions on DataDir
-Write-Host "Granting service account ($OSUsername) full access to data directory..."
-$proc = Start-Process -FilePath "$env:WINDIR\System32\icacls.exe" `
-    -ArgumentList "`"$DataDir`" /T /C /grant `"${OSUsername}:(OI)(CI)F`"" `
-    -NoNewWindow -Wait -PassThru
-if ($proc.ExitCode -ne 0) {
-    Write-Host "WARNING: Failed to grant service account access to: $DataDir"
+# Secure the data directory
+Write-Host "`nGranting service account access to the data directory (using icacls) to $OSUsername"
+$icaclsCommand = "$env:WINDIR\System32\icacls.exe `"$DataDir`" /T /C /grant `"$OSUsername`:(OI)(CI)F`""
+$iRet = DoCmd -Command "$icaclsCommand"
+if ($iRet -ne 0) {
+    Write-Host "`nFailed to grant service account access to the data directory ($DataDir)"
 }
 
-Write-Host "`ninitcluster.ps1 completed successfully."
+Write-Host "`ninitcluster.ps1 ran to completion."
