@@ -2992,6 +2992,18 @@
                             </ruleList>
                         </setInstallerVariableFromRegEx>
 
+                        <logMessage text="[DEBUG] initcluster.ps1: Starting execution"/>
+                        <logMessage text="[DEBUG] initcluster.ps1: installdir=${installdir}"/>
+                        <logMessage text="[DEBUG] initcluster.ps1: datadir=${datadir}"/>
+                        <logMessage text="[DEBUG] initcluster.ps1: serviceaccount=${serviceaccount}"/>
+                        <logMessage text="[DEBUG] initcluster.ps1: superaccount=${superaccount}"/>
+                        <logMessage text="[DEBUG] initcluster.ps1: whoami_sid=${whoami_sid}"/>
+                        <logMessage text="[DEBUG] initcluster.ps1: serverport=${serverport}"/>
+                        <logMessage text="[DEBUG] initcluster.ps1: locale=${locale}"/>
+                        <logMessage text="[DEBUG] initcluster.ps1: enable_aclcheck=${enable_aclcheck}"/>
+                        <logMessage text="[DEBUG] initcluster.ps1: Script path=${installdir}\installer\server\initcluster.ps1"/>
+                        <logMessage text="[DEBUG] initcluster.ps1: PasswordDir=${env(TEMP)}\postgresql_installer_${random_number}"/>
+
                         <runProgram>
                             <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
                             <programArguments>-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${env(TEMP)}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
@@ -3006,6 +3018,10 @@
                                 </compareText>
                             </ruleList>
                         </runProgram>
+
+                        <logMessage text="[DEBUG] initcluster.ps1: exit_code=${program_exit_code}"/>
+                        <logMessage text="[DEBUG] initcluster.ps1: stdout=${program_stdout}"/>
+                        <logMessage text="[DEBUG] initcluster.ps1: stderr=${program_stderr}"/>
 
                         <setInstallerVariable>
                             <name>didError</name>
