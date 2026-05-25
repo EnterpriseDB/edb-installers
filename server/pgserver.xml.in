@@ -3006,7 +3006,7 @@
 
                         <runProgram>
                             <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                            <programArguments>-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${env(TEMP)}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
+                            <programArguments>-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "Start-Transcript -Path '${env(TEMP)}\postgresql_installer_${random_number}\initcluster_debug.log' -Force; try { &amp; '${installdir}\installer\server\initcluster.ps1' '${serviceaccount}' '${superaccount}' '${whoami_sid}' '${escapedPassword.password}' '${env(TEMP)}\postgresql_installer_${random_number}' '${installdir}' '${datadir}' ${serverport} '${locale}' ${enable_aclcheck}; exit $LASTEXITCODE } catch { Write-Error $_.Exception.Message; Write-Error $_.ScriptStackTrace; exit 1 } finally { Stop-Transcript }"</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
