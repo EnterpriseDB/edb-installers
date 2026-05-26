@@ -51,7 +51,7 @@ function DoCmd {
     # The '2>&1' is crucial. It merges the error stream (2) with the output stream (1).
     # The '( )' ensures the entire command is treated as a single pipeline,
     # allowing us to capture the output and check $LASTEXITCODE reliably.
-    $output = & "$env:WINDIR\System32\cmd.exe" /d /c $Command 2>&1
+    $output = & "$env:WINDIR\System32\cmd.exe" /D /C $Command 2>&1
 
     # Check the exit code of the last executed native command
     $exitCode = $LASTEXITCODE

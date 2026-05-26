@@ -2042,13 +2042,14 @@
                 </runProgram>
 
                 <runProgram>
-                    <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                    <programArguments>-NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1"</programArguments>
+                    <program>${env(WINDIR)}\System32\cmd.exe</program>
+                    <programArguments>/D /C powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1"</programArguments>
+                    <wrapInScript>0</wrapInScript>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
-
+                
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
                     <ruleList>
@@ -3005,8 +3006,9 @@
                         <logMessage text="[DEBUG] initcluster.ps1: PasswordDir=${env(TEMP)}\postgresql_installer_${random_number}"/>
 
                         <runProgram>
-                            <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                            <programArguments>-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "Start-Transcript -Path '${env(TEMP)}\postgresql_installer_${random_number}\initcluster_debug.log' -Force; try { &amp; '${installdir}\installer\server\initcluster.ps1' '${serviceaccount}' '${superaccount}' '${whoami_sid}' '${escapedPassword.password}' '${env(TEMP)}\postgresql_installer_${random_number}' '${installdir}' '${datadir}' ${serverport} '${locale}' ${enable_aclcheck}; exit $LASTEXITCODE } catch { Write-Error $_.Exception.Message; Write-Error $_.ScriptStackTrace; exit 1 } finally { Stop-Transcript }"</programArguments>
+                            <program>${env(WINDIR)}\System32\cmd.exe</program>
+                            <programArguments>/D /C powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${superpassword.password}" "${system_temp_directory}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${reallocale}" ${enable_aclcheck}</programArguments>
+                            <wrapInScript>0</wrapInScript>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
