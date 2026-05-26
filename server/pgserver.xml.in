@@ -2053,7 +2053,8 @@ powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${env(T
                 </writeFile>
 
                 <runProgram>
-                    <program>${env(TEMP)}\postgresql_installer_${random_number}\run_getlocales.bat</program>
+				    <program>${env(WINDIR)}\System32\cmd.exe</program>
+                    <programArguments>/D /C "${env(TEMP)}\postgresql_installer_${random_number}\run_getlocales.bat"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                     <ruleList>
@@ -3025,7 +3026,8 @@ powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${insta
                         </writeFile>
 
                         <runProgram>
-                            <program>${system_temp_directory}\postgresql_installer_${random_number}\run_initcluster.bat</program>
+						    <program>${env(WINDIR)}\System32\cmd.exe</program>
+                            <programArguments>/D /C "${system_temp_directory}\postgresql_installer_${random_number}\run_initcluster.bat"</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
