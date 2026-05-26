@@ -2041,14 +2041,34 @@
                     </ruleList>
                 </runProgram>
 
+                <!-- WINDOWS: Write batch file to capture getlocales output — autorun immune -->
+                <writeFile>
+                    <path>${env(TEMP)}\postgresql_installer_${random_number}\run_getlocales.bat</path>
+                    <text>@echo off
+powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1" > "${env(TEMP)}\postgresql_installer_${random_number}\locales.txt"
+</text>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </writeFile>
+
                 <runProgram>
-                    <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                    <programArguments>-ExecutionPolicy Bypass -File "${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1"</programArguments>
-                    <wrapInScript>1</wrapInScript>
+                    <program>${env(TEMP)}\postgresql_installer_${random_number}\run_getlocales.bat</program>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
+
+                <!-- Read locales file into program_stdout so addChoiceOptionsFromText works -->
+                <readFile>
+                    <path>${env(TEMP)}\postgresql_installer_${random_number}\locales.txt</path>
+                    <name>program_stdout</name>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </readFile>
 
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
@@ -2993,19 +3013,24 @@
                             </ruleList>
                         </setInstallerVariableFromRegEx>
 
+                        <!-- WINDOWS: Write batch file to run initcluster — autorun immune -->
+                        <writeFile>
+                            <path>${system_temp_directory}\postgresql_installer_${random_number}\run_initcluster.bat</path>
+                            <text>@echo off
+powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${superpassword.password}" "${system_temp_directory}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${reallocale}" ${enable_aclcheck}
+</text>
+                            <ruleList>
+                                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                            </ruleList>
+                        </writeFile>
+
                         <runProgram>
-                            <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                            <programArguments>-ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${env(TEMP)}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
-                            <wrapInScript>1</wrapInScript>
+                            <program>${system_temp_directory}\postgresql_installer_${random_number}\run_initcluster.bat</program>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
                             <ruleList>
-                                <compareText>
-                                    <logic>equals</logic>
-                                    <text>${platform_name}</text>
-                                    <value>windows</value>
-                                </compareText>
+                                <compareText logic="equals" text="${platform_name}" value="windows"/>
                             </ruleList>
                         </runProgram>
 
