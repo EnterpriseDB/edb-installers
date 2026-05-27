@@ -2054,7 +2054,11 @@
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
                     <ruleList>
-                        <compareText logic="equals" text="127" value="${program_exit_code}"/>
+                        <compareText>
+                            <logic>equals</logic>
+                            <text>127</text>
+                            <value>${program_exit_code}</value>
+                        </compareText>
                     </ruleList>
                 </throwError>
 
@@ -2111,21 +2115,6 @@
                     <value/>
                     <logic>does_not_equal</logic>
                 </compareText>
-                <ruleGroup>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                    <ruleList>
-                        <compareText>
-                            <text>${locales_content}</text>
-                            <value>${locale}</value>
-                            <logic>does_not_contain</logic>
-                        </compareText>
-                        <compareText>
-                            <text>${program_stdout}</text>
-                            <value>${locale}</value>
-                            <logic>does_not_contain</logic>
-                        </compareText>
-                    </ruleList>
-                </ruleGroup>
             </ruleList>
         </actionGroup>
 
@@ -2157,21 +2146,6 @@
                     <value/>
                     <logic>does_not_equal</logic>
                 </compareText>
-                <ruleGroup>
-                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
-                    <ruleList>
-                        <compareText>
-                            <text>${locales_content}</text>
-                            <value>${locale}</value>
-                            <logic>does_not_contain</logic>
-                        </compareText>
-                        <compareText>
-                            <text>${program_stdout}</text>
-                            <value>${locale}</value>
-                            <logic>does_not_contain</logic>
-                        </compareText>
-                    </ruleList>
-                </ruleGroup>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </throwError>
