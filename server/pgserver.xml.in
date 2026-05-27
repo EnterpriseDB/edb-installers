@@ -2006,7 +2006,7 @@
             </ruleList>
         </actionGroup>
 
-        <!-- Get the locales available -->
+<!-- Get the locales available -->
         <actionGroup>
             <actionList>
                 <addChoiceOptions>
@@ -2027,43 +2027,71 @@
                         </option>
                     </optionList>
                     <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>${platform_name}</text>
-                            <value>windows</value>
-                        </compareText>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </addChoiceOptions>
 
+                <!-- Non-Windows -->
                 <runProgram program="${system_temp_directory}/postgresql_installer_${random_number}/getlocales">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
 
+                <!-- WINDOWS: Write bat file that redirects output to locales.txt -->
+                <writeFile>
+                    <path>${env(TEMP)}\postgresql_installer_${random_number}\run_getlocales.bat</path>
+                    <text>@echo off
+powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1" > "${env(TEMP)}\postgresql_installer_${random_number}\locales.txt"
+</text>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </writeFile>
+
+                <!-- WINDOWS: Run bat file with /D to suppress AutoRun -->
                 <runProgram>
                     <program>${env(WINDIR)}\System32\cmd.exe</program>
-                    <programArguments>/D /C powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1"</programArguments>
-                    <wrapInScript>0</wrapInScript>
+                    <programArguments>/D /C "${env(TEMP)}\postgresql_installer_${random_number}\run_getlocales.bat"</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
                 </runProgram>
-                
+
                 <throwError>
                     <text>${msg(script.command.line.error)}</text>
                     <ruleList>
-                        <compareText>
-                            <logic>equals</logic>
-                            <text>127</text>
-                            <value>${program_exit_code}</value>
-                        </compareText>
+                        <compareText logic="equals" text="127" value="${program_exit_code}"/>
                     </ruleList>
                 </throwError>
+
+                <!-- WINDOWS: Read locales.txt into locales_content -->
+                <readFile>
+                    <path>${env(TEMP)}\postgresql_installer_${random_number}\locales.txt</path>
+                    <name>locales_content</name>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </readFile>
+
+                <!-- Windows uses locales_content, non-Windows uses program_stdout -->
+                <addChoiceOptionsFromText>
+                    <name>locale</name>
+                    <text>${locales_content}</text>
+                    <ruleList>
+                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </addChoiceOptionsFromText>
                 <addChoiceOptionsFromText>
                     <name>locale</name>
                     <text>${program_stdout}</text>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
                 </addChoiceOptionsFromText>
+
             </actionList>
             <ruleList>
                 <isFalse value="${IsUpgrade}"/>
@@ -2072,33 +2100,106 @@
         </actionGroup>
 
         <!-- Get the locales passed on command line-->
-         <actionGroup>
-             <actionList>
-                 <addChoiceOptions>
-                     <name>locale</name>
-                     <optionList>
-                         <option>
-                             <value>${locale}</value>
-                             <text>${locale}</text>
-                         </option>
-                     </optionList>
-                 </addChoiceOptions>
-             </actionList>
-             <ruleList>
-                 <isFalse value="${IsUpgrade}"/>
-                 <isFalse value="${extract_mode}"/>
-                 <compareText>
-                     <text>${locale}</text>
-                     <value/>
-                     <logic>does_not_equal</logic>
-                 </compareText>
-                 <compareText>
-                    <text>${program_stdout}</text>
-                    <value>${locale}</value>
-                    <logic>does_not_contain</logic>
+        <actionGroup>
+            <actionList>
+                <addChoiceOptions>
+                    <name>locale</name>
+                    <optionList>
+                        <option>
+                            <value>${locale}</value>
+                            <text>${locale}</text>
+                        </option>
+                    </optionList>
+                </addChoiceOptions>
+            </actionList>
+            <ruleList>
+                <isFalse value="${IsUpgrade}"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText>
+                    <text>${locale}</text>
+                    <value/>
+                    <logic>does_not_equal</logic>
                 </compareText>
-             </ruleList>
-         </actionGroup>
+                <ruleGroup>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText>
+                            <text>${locales_content}</text>
+                            <value>${locale}</value>
+                            <logic>does_not_contain</logic>
+                        </compareText>
+                        <compareText>
+                            <text>${program_stdout}</text>
+                            <value>${locale}</value>
+                            <logic>does_not_contain</logic>
+                        </compareText>
+                    </ruleList>
+                </ruleGroup>
+            </ruleList>
+        </actionGroup>
+
+        <throwError>
+            <text>${msg(locale.error)}</text>
+            <ruleList>
+                <compareText>
+                    <logic>does_not_equal</logic>
+                    <text>${IsUpgrade}</text>
+                    <value>1</value>
+                </compareText>
+                <compareText>
+                    <text>${locale}</text>
+                    <value>C</value>
+                    <logic>does_not_equal</logic>
+                </compareText>
+                <compareText>
+                    <text>${locale}</text>
+                    <value>POSIX</value>
+                    <logic>does_not_equal</logic>
+                </compareText>
+                <compareText>
+                    <text>${locale}</text>
+                    <value>DEFAULT</value>
+                    <logic>does_not_equal</logic>
+                </compareText>
+                <compareText>
+                    <text>${locale}</text>
+                    <value/>
+                    <logic>does_not_equal</logic>
+                </compareText>
+                <ruleGroup>
+                    <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                    <ruleList>
+                        <compareText>
+                            <text>${locales_content}</text>
+                            <value>${locale}</value>
+                            <logic>does_not_contain</logic>
+                        </compareText>
+                        <compareText>
+                            <text>${program_stdout}</text>
+                            <value>${locale}</value>
+                            <logic>does_not_contain</logic>
+                        </compareText>
+                    </ruleList>
+                </ruleGroup>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </throwError>
+
+        <!-- Set the default locale if needed. -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable>
+                    <name>locale</name>
+                    <value>DEFAULT</value>
+                </setInstallerVariable>
+            </actionList>
+            <ruleList>
+                <stringTest>
+                    <text>${locale}</text>
+                    <type>empty</type>
+                </stringTest>
+            </ruleList>
+        </actionGroup>
 
         <throwError>
             <text>${msg(locale.error)}</text>
@@ -3006,9 +3107,9 @@
                         <logMessage text="[DEBUG] initcluster.ps1: PasswordDir=${env(TEMP)}\postgresql_installer_${random_number}"/>
 
                         <runProgram>
-                            <program>${env(WINDIR)}\System32\cmd.exe</program>
-                            <programArguments>/D /C powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${env(TEMP)}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
-                            <wrapInScript>0</wrapInScript>
+                            <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
+                            <programArguments>-ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${env(TEMP)}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
+                            <wrapInScript>1</wrapInScript>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
