@@ -661,7 +661,7 @@
                 <fileExists path="${installdir}" />
                 <fileTest path="${installdir}" condition="is_not_empty" />
                 <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="11.2-2"/>
-                <compareText logic ="contains" text="${platform_name}" value="windows" />
+                <compareText logic ="contains" text="${platform_name}" value="windows-x64" />
                 <compareText text="${installdir}" logic="does_not_contain" value="${windows_folder_program_files}"/>
             </ruleList>
         </actionGroup>
@@ -716,7 +716,7 @@
                 <fileExists path="${datadir}" />
                 <fileTest path="${datadir}" condition="is_not_empty" />
                 <compareVersions logic="less_or_equal" version1="${brandingVer}" version2="11.2-2"/>
-                <compareText logic ="contains" text="${platform_name}" value="windows" />
+                <compareText logic ="contains" text="${platform_name}" value="windows-x64" />
             </ruleList>
         </actionGroup>
     </readyToInstallActionList>
@@ -797,7 +797,7 @@
                 </throwError>
             </actionList>
             <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${platform_name}" value="windows-x64"/>
             </ruleList>
         </actionGroup>
 
@@ -1123,7 +1123,7 @@
                     <type>not_empty</type>
                 </stringTest>
                 <isFalse value="${extract_mode}"/>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${platform_name}" value="windows-x64"/>
             </ruleList>
         </setInstallerVariableFromRegEx>
 
@@ -1280,7 +1280,7 @@
                         </throwError>
                     </actionList>
                     <ruleList>
-                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                        <compareText logic="equals" text="${platform_name}" value="windows-x64"/>
                     </ruleList>
                 </actionGroup>
 
@@ -2038,7 +2038,7 @@
 
                 <runProgram program="${system_temp_directory}/postgresql_installer_${random_number}/getlocales">
                     <ruleList>
-                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows-x64"/>
                     </ruleList>
                 </runProgram>
 
@@ -2049,7 +2049,7 @@
                     <showMessageOnError>0</showMessageOnError>
                     <wrapInScript>0</wrapInScript>
                     <ruleList>
-                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                        <compareText logic="equals" text="${platform_name}" value="windows-x64"/>
                     </ruleList>
                 </runProgram>
 
@@ -2058,7 +2058,7 @@
                     <path>${system_temp_directory}\postgresql_installer_${random_number}\locales.txt</path>
                     <name>locales_content</name>
                     <ruleList>
-                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                        <compareText logic="equals" text="${platform_name}" value="windows-x64"/>
                     </ruleList>
                 </readFile>
 
@@ -2067,7 +2067,7 @@
                     <name>locale</name>
                     <text>${locales_content}</text>
                     <ruleList>
-                        <compareText logic="equals" text="${platform_name}" value="windows"/>
+                        <compareText logic="equals" text="${platform_name}" value="windows-x64"/>
                     </ruleList>
                 </addChoiceOptionsFromText>
 
@@ -2227,7 +2227,7 @@
                 </setInstallerVariableFromRegEx>
             </actionList>
             <ruleList>
-                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${platform_name}" value="windows-x64"/>
             </ruleList>
         </actionGroup>
 
@@ -2614,7 +2614,7 @@
                 </registryDelete>
             </actionList>
             <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${platform_name}" value="windows-x64"/>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </actionGroup>
@@ -2681,7 +2681,7 @@
                 </logMessage>
             </actionList>
                 <ruleList>
-                    <compareText logic="equals" text="${platform_name}" value="windows"/>
+                    <compareText logic="equals" text="${platform_name}" value="windows-x64"/>
                 </ruleList>
         </actionGroup>
 
@@ -2742,7 +2742,7 @@
                 <iniFileGet file="${PostgreSqlIni}" key="InstallationDirectory" section="edb_languagepack_${product_version}" variable="languagepack_installdir">
                     <ruleList>
                         <fileTest condition="readable" path="${PostgreSqlIni}"/>
-                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows-x64"/>
                     </ruleList>
                 </iniFileGet>
 
@@ -2776,7 +2776,7 @@
                         </substitution>
                     </substitutionList>
                     <ruleList>
-                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows-x64"/>
                         <compareText logic="does_not_equal" text="${languagepack_installdir}" value=""/>
                     </ruleList>
                 </substitute>
@@ -2975,7 +2975,7 @@
                         </setInstallerVariableFromRegEx>
                     </actionList>
                     <ruleList>
-                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows-x64"/>
                     </ruleList>
                 </actionGroup>    
                 <actionGroup>
@@ -2983,7 +2983,7 @@
                         <!-- Initdb -->
                         <setEnvironmentVariable name="PGPASSWORD" value="${superpassword}">
                             <ruleList>
-                                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                                <compareText logic="does_not_equal" text="${platform_name}" value="windows-x64"/>
                             </ruleList>
                         </setEnvironmentVariable>
 
@@ -3010,7 +3010,7 @@
                             <pattern>"</pattern>
                             <substitution>\"</substitution>
                             <ruleList>
-                                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                                <compareText logic="equals" text="${platform_name}" value="windows-x64"/>
                             </ruleList>
                         </setInstallerVariableFromRegEx>
 
@@ -3140,7 +3140,7 @@
             <value>register -N "${servicename}" -U "${serviceaccount}" -D "${datadir}" -w</value>
             <ruleList>
 	         <compareText logic="equals" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="equals" text="${platform_name}" value="windows-x64"/>
             </ruleList>
         </setInstallerVariable>
         <setInstallerVariable>
@@ -3148,7 +3148,7 @@
             <value>register -N "${servicename}" -U "${serviceaccount}" -P "${servicepassword.password}" -D "${datadir}" -w</value>
             <ruleList>
 	          <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
-	          <compareText logic="equals" text="${platform_name}" value="windows"/>
+	          <compareText logic="equals" text="${platform_name}" value="windows-x64"/>
             </ruleList>
         </setInstallerVariable>
 
@@ -3664,7 +3664,7 @@ export MANPATH=$MANPATH:${installdir}/share/man
                         </changeOwnerAndGroup>
                     </actionList>
                     <ruleList>
-                        <compareText text="${platform_name}" logic="does_not_equal" value="windows" />
+                        <compareText text="${platform_name}" logic="does_not_equal" value="windows-x64" />
                     </ruleList>
                 </actionGroup>
 
@@ -3692,7 +3692,7 @@ REM The script sets environment variables helpful for PostgreSQL
                         </writeFile>
                     </actionList>
                     <ruleList>
-                        <compareText text="${platform_name}" logic="equals" value="windows" />
+                        <compareText text="${platform_name}" logic="equals" value="windows-x64" />
                     </ruleList>
                 </actionGroup>
 
