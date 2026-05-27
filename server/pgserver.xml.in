@@ -723,6 +723,7 @@
 
     <!-- Preinstallation actions -->
     <preInstallationActionList>
+	    <createTempDir dirPrefix="postgresql_installer"/>
         <!-- Set the service account value to NT AUTHORITY\NetworkService if platform is windows 
         And if the service account value is not specified on the command line -->
         <setInstallerVariable name="serviceaccount" value="NT AUTHORITY\NetworkService" >
