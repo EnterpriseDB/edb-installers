@@ -1477,17 +1477,9 @@
             </ruleList>
         </unpackFile>
 		
-		<!-- WINDOWS: Create temp dir under env(TEMP) for getlocales -->
-		<createDirectory>
-            <path>${env(TEMP)}\postgresql_installer_${random_number}</path>
-            <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </createDirectory>
         <unpackFile>
             <component>server</component>
-            <destination>${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1</destination>
+            <destination>${system_temp_directory}\postgresql_installer_${random_number}\getlocales.ps1</destination>
             <folder>programfileswindows</folder>
             <origin>installer/server/getlocales.ps1</origin>
             <ruleList>
@@ -2050,7 +2042,7 @@
                 <!-- WINDOWS: Run PowerShell directly - write output to file via Out-File -->
                 <runProgram>
                     <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                    <programArguments>-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "&amp; '${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1' | Out-File -FilePath '${env(TEMP)}\postgresql_installer_${random_number}\locales.txt' -Encoding utf8"</programArguments>
+                    <programArguments>-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "&amp; '${system_temp_directory}\postgresql_installer_${random_number}\getlocales.ps1' | Out-File -FilePath '${system_temp_directory}\postgresql_installer_${random_number}\locales.txt' -Encoding utf8"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                     <wrapInScript>0</wrapInScript>
@@ -2068,7 +2060,7 @@
 
                 <!-- WINDOWS: Read locales.txt into locales_content -->
                 <readFile>
-                    <path>${env(TEMP)}\postgresql_installer_${random_number}\locales.txt</path>
+                    <path>${system_temp_directory}\postgresql_installer_${random_number}\locales.txt</path>
                     <name>locales_content</name>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
