@@ -1478,7 +1478,7 @@
         </unpackFile>
         <unpackFile>
             <component>server</component>
-            <destination>${env(TEMP)}/postgresql_installer_${random_number}/getlocales.ps1</destination>
+            <destination>${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1</destination>
             <folder>programfileswindows</folder>
             <origin>installer/server/getlocales.ps1</origin>
             <ruleList>
