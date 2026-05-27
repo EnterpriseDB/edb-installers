@@ -1476,6 +1476,15 @@
                 <isFalse value="${extract_mode}"/>
             </ruleList>
         </unpackFile>
+		
+		<!-- WINDOWS: Create temp dir under env(TEMP) for getlocales -->
+		<createDirectory>
+            <path>${env(TEMP)}\postgresql_installer_${random_number}</path>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </createDirectory>
         <unpackFile>
             <component>server</component>
             <destination>${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1</destination>
