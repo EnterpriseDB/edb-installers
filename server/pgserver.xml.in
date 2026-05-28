@@ -3028,19 +3028,27 @@ powershell.exe -ExecutionPolicy Bypass -Command "&amp; '${system_temp_directory}
                             </ruleList>
                         </setInstallerVariableFromRegEx>
 
+						<!-- WINDOWS: Write initcluster bat file -->
+                        <writeFile>
+                            <path>${system_temp_directory}\postgresql_installer_${random_number}\run_initcluster.bat</path>
+                            <text>@ECHO OFF
+powershell.exe -ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${system_temp_directory}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}
+</text>
+                            <ruleList>
+                                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                            </ruleList>
+                        </writeFile>
+
+                        <!-- WINDOWS: Run initcluster bat file -->
                         <runProgram>
-                            <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                            <programArguments>-ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${env(TEMP)}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
-                            <wrapInScript>1</wrapInScript>
+                            <program>${env(WINDIR)}\System32\cmd.exe</program>
+                            <programArguments>/D /C "${system_temp_directory}\postgresql_installer_${random_number}\run_initcluster.bat"</programArguments>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
                             <showMessageOnError>0</showMessageOnError>
+                            <wrapInScript>0</wrapInScript>
                             <ruleList>
-                                <compareText>
-                                    <logic>equals</logic>
-                                    <text>${platform_name}</text>
-                                    <value>windows</value>
-                                </compareText>
+                                <compareText logic="equals" text="${platform_name}" value="windows"/>
                             </ruleList>
                         </runProgram>
 
