@@ -2045,7 +2045,7 @@
                 <writeFile>
                     <path>${system_temp_directory}\postgresql_installer_${random_number}\run_getlocales.bat</path>
                     <text>@ECHO OFF
-powershell.exe -ExecutionPolicy Bypass -Command "& '${system_temp_directory}\postgresql_installer_${random_number}\getlocales.ps1' | Out-File -FilePath '${system_temp_directory}\postgresql_installer_${random_number}\locales.txt' -Encoding utf8"
+powershell.exe -ExecutionPolicy Bypass -Command "&amp; '${system_temp_directory}\postgresql_installer_${random_number}\getlocales.ps1' | Out-File -FilePath '${system_temp_directory}\postgresql_installer_${random_number}\locales.txt' -Encoding utf8"
 </text>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
