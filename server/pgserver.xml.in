@@ -776,18 +776,18 @@
         <actionGroup>
             <actionList>
                 <writeFile>
-                    <path>${system_temp_directory}/postgresql_installer_${random_number}/temp_check_comspec.bat</path>
+                    <path>${system_temp_directory}\postgresql_installer_${random_number}\temp_check_comspec.bat</path>
                     <text>@echo off
                         "%COMSPEC%" /D /C echo "test ok"</text>
                 </writeFile>
                 <runProgram>
-                    <program>${system_temp_directory}/postgresql_installer_${random_number}/temp_check_comspec.bat</program>
-                    <programArguments></programArguments>
+                    <program>${env(WINDIR)}\System32\cmd.exe</program>
+                    <programArguments>/D /C "${system_temp_directory}\postgresql_installer_${random_number}\temp_check_comspec.bat"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                 </runProgram>
                 <deleteFile>
-                    <path>${system_temp_directory}/postgresql_installer_${random_number}/temp_check_comspec.bat</path>
+                    <path>${system_temp_directory}\postgresql_installer_${random_number}\temp_check_comspec.bat</path>
                 </deleteFile>
                 <throwError text="${msg(error.comspec)}">
                     <ruleList>
