@@ -562,8 +562,8 @@
                     <program>${system_temp_directory}\postgresql_installer_${random_number}\validateuser.exe</program>
                     <!-- The dot at the beginning of the arguments is the domain -->
                     <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
-                    <abortOnError>1</abortOnError>
-                    <showMessageOnError>1</showMessageOnError>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
                     <ruleList>
                         <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
                     </ruleList>
@@ -1478,7 +1478,7 @@
         </unpackFile>
         <unpackFile>
             <component>server</component>
-            <destination>${env(TEMP)}/postgresql_installer_${random_number}/getlocales.ps1</destination>
+            <destination>${system_temp_directory}\postgresql_installer_${random_number}\getlocales.ps1</destination>
             <folder>programfileswindows</folder>
             <origin>installer/server/getlocales.ps1</origin>
             <ruleList>
@@ -2043,7 +2043,9 @@
 
                 <runProgram>
                     <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                    <programArguments>-ExecutionPolicy Bypass -File "${env(TEMP)}\postgresql_installer_${random_number}\getlocales.ps1"</programArguments>
+                    <programArguments>-ExecutionPolicy Bypass -File "${system_temp_directory}\postgresql_installer_${random_number}\getlocales.ps1"</programArguments>
+					<abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
                     <wrapInScript>1</wrapInScript>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
@@ -2995,7 +2997,7 @@
 
                         <runProgram>
                             <program>${env(WINDIR)}\System32\WindowsPowerShell\v1.0\powershell.exe</program>
-                            <programArguments>-ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${env(TEMP)}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
+                            <programArguments>-ExecutionPolicy Bypass -File "${installdir}\installer\server\initcluster.ps1" "${serviceaccount}" "${superaccount}" "${whoami_sid}" "${escapedPassword.password}" "${system_temp_directory}\postgresql_installer_${random_number}" "${installdir}" "${datadir}" ${serverport} "${locale}" ${enable_aclcheck}</programArguments>
                             <wrapInScript>1</wrapInScript>
                             <progressText>${msg(progress.text.initialising.cluster)}</progressText>
                             <abortOnError>0</abortOnError>
@@ -3134,7 +3136,7 @@
         <!-- Create Windows Service -->
                 <runProgram>
                     <program>${env(WINDIR)}\System32\cmd.exe</program>
-                    <programArguments>/c "${installdir}\bin\pg_ctl.exe" ${programArgs}</programArguments>
+                    <programArguments>/D /C "${installdir}\bin\pg_ctl.exe" ${programArgs}</programArguments>
                     <progressText>${msg(progress.text.configuring.startup)}</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
