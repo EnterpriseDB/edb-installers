@@ -253,27 +253,31 @@ $env:PATH = "$InstallDir\bin;" + $env:PATH
 
 # Run initdb
 Write-Host "`nInitializing PostgreSQL database cluster..."
+
 # Set initdb arguments
 $initdbArgs = @(
-	"--pgdata=`"$DataDir`"",
-	"--username=`"$SuperUsername`"", 
-	"--encoding=UTF8", 
-	"--pwfile=`"$passwordFile`"", 
-	"--auth=scram-sha-256"
+    "--pgdata=`"$DataDir`"",
+    "--username=`"$SuperUsername`"", 
+    "--encoding=UTF8", 
+    "--pwfile=`"$passwordFile`"", 
+    "--auth=scram-sha-256"
 )
 
 if ($Locale -ne "DEFAULT") {
     $initdbArgs += "--locale=`"$Locale`""
 }
 
+# Convert array to string
+$initdbArgsStr = $initdbArgs -join " "
+
 # Print the full command
-Write-Host "`nExecuting: `"$InstallDir\bin\initdb.exe`" $initdbArgs `n"
+Write-Host "`nExecuting: `"$InstallDir\bin\initdb.exe`" $initdbArgsStr `n"
 
-# Run the initdb command
-$initdbProcess = Start-Process -FilePath "$InstallDir\bin\initdb.exe" -ArgumentList "$initdbArgs" -NoNewWindow -Wait -PassThru
-$initdbExitCode = $initdbProcess.ExitCode
-
-Write-Host "initdb exit code =" $initdbExitCode
+# Run the initdb command via cmd /D /c to suppress AutoRun
+$initdbOutput = & "$env:WINDIR\System32\cmd.exe" /D /c "`"$InstallDir\bin\initdb.exe`" $initdbArgsStr" 2>&1
+$initdbExitCode = $LASTEXITCODE
+$initdbOutput | Write-Host
+Write-Host "initdb exit code = $initdbExitCode"
 
 if ($initdbExitCode -ne 0) {
     Die "Failed to initialise the database cluster with initdb"
