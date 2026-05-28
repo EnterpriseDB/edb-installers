@@ -2047,7 +2047,7 @@
                     <programArguments>/D /C powershell.exe -WindowStyle Hidden -NonInteractive -ExecutionPolicy Bypass -Command "&amp; '${system_temp_directory}\postgresql_installer_${random_number}\getlocales.ps1' | Out-File -FilePath '${system_temp_directory}\postgresql_installer_${random_number}\locales.txt' -Encoding utf8"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
-                    <wrapInScript>1</wrapInScript>
+                    <wrapInScript>0</wrapInScript>
                     <ruleList>
                         <compareText logic="equals" text="${platform_name}" value="windows"/>
                     </ruleList>
