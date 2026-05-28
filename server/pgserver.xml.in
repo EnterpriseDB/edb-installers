@@ -2055,8 +2055,8 @@ powershell.exe -ExecutionPolicy Bypass -File "${system_temp_directory}\postgresq
 
                 <!-- WINDOWS: Run bat file -->
                 <runProgram>
-                    <program>${system_temp_directory}\postgresql_installer_${random_number}\run_getlocales.bat</program>
-                    <programArguments></programArguments>
+                    <program>${env(WINDIR)}\System32\cmd.exe</program>
+                    <programArguments>/D /C "${system_temp_directory}\postgresql_installer_${random_number}\run_getlocales.bat"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
                     <wrapInScript>0</wrapInScript>
