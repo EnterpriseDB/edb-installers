@@ -562,8 +562,8 @@
                     <program>${system_temp_directory}\postgresql_installer_${random_number}\validateuser.exe</program>
                     <!-- The dot at the beginning of the arguments is the domain -->
                     <programArguments>"${servicedomain}" "${serviceaccount_wo_domain}" "${servicepassword.password}"</programArguments>
-                    <abortOnError>1</abortOnError>
-                    <showMessageOnError>1</showMessageOnError>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
                     <ruleList>
                         <compareText logic="does_not_equal" nocase="1" text="${serviceaccount}" value="NT AUTHORITY\NetworkService"/>
                     </ruleList>
@@ -772,22 +772,23 @@
             </ruleList>
         </actionGroup>
 
-        <!-- FB22939. Check if COMSPEC value is fine. Otherwise, initdb will fail.-->
+       <!-- FB22939. Check if COMSPEC value is fine. Otherwise, initdb will fail.-->
         <actionGroup>
             <actionList>
                 <writeFile>
-                    <path>${system_temp_directory}\postgresql_installer_${random_number}\temp_check_comspec.bat</path>
+                    <path>${system_temp_directory}/postgresql_installer_${random_number}/temp_check_comspec.bat</path>
                     <text>@echo off
-                        "%COMSPEC%" /D /C echo "test ok"</text>
+                        "%COMSPEC%" /D /c echo "test ok"</text>
                 </writeFile>
                 <runProgram>
                     <program>${env(WINDIR)}\System32\cmd.exe</program>
                     <programArguments>/D /C "${system_temp_directory}\postgresql_installer_${random_number}\temp_check_comspec.bat"</programArguments>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
+                    <wrapInScript>1</wrapInScript>
                 </runProgram>
                 <deleteFile>
-                    <path>${system_temp_directory}\postgresql_installer_${random_number}\temp_check_comspec.bat</path>
+                    <path>${system_temp_directory}/postgresql_installer_${random_number}/temp_check_comspec.bat</path>
                 </deleteFile>
                 <throwError text="${msg(error.comspec)}">
                     <ruleList>
@@ -799,7 +800,6 @@
                 <compareText logic="equals" text="${platform_name}" value="windows"/>
             </ruleList>
         </actionGroup>
-
         <setInstallerVariable name="iDataDirectory" value=""/>
         <setInstallerVariable name="iBaseDirectory" value=""/>
 
