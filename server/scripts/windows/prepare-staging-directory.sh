@@ -82,7 +82,6 @@ cp packaging-config/server/installer.xml.in packaging-config/installer/server/st
 cp packaging-config/server/commandlinetools.xml.in packaging-config/installer/server/staging/windows-x64/commandlinetools-windows-x64.xml
 cp packaging-config/server/pgserver.xml.in packaging-config/installer/server/staging/windows-x64/pgserver-windows-x64.xml
 cp packaging-config/server/stackbuilder.xml.in packaging-config/installer/server/staging/windows-x64/stackbuilder-windows-x64.xml
-cp packaging-config/server/pgadmin.xml.in packaging-config/installer/server/staging/windows-x64/pgadmin-windows-x64.xml
 
 # stackbuilder
 mkdir -p packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
