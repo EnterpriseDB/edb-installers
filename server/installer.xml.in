@@ -2056,6 +2056,22 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                 <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value="${latest_pgadmin_version}"/>
             </ruleList>
         </actionGroup>
+		
+		 <!-- WIN: Log message when latest pgAdmin already installed -->
+        <actionGroup>
+            <actionList>
+                <logMessage>
+                    <text>pgAdmin 4 version ${installed_pgadmin_version} is already installed on this machine and up to date. Skipping installation of pgadmin 4.</text>
+                </logMessage>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value=""/>
+                <compareText text="${installed_pgadmin_version}" logic="equals" value="${latest_pgadmin_version}"/>
+            </ruleList>
+        </actionGroup>
+		
         <!-- WIN: Download pgAdmin 4 in unattended mode if install-pgadmin flag is set -->
         <actionGroup>
             <actionList>
