@@ -1982,7 +1982,7 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
         <actionGroup>
             <actionList>
                 <showQuestion>
-                    <text>pgAdmin is the recommended graphical management tool for PostgreSQL. Would you like to automatically download and install the latest version of pgAdmin 4 ${latest_pgadmin_version}?</text>
+                    <text>pgAdmin is the recommended graphical management tool for PostgreSQL. Would you like to automatically download and install the latest version of pgAdmin ${latest_pgadmin_version}?</text>
                     <variable>install_pgadmin_answer</variable>
                     <default>Yes</default>
                 </showQuestion>
