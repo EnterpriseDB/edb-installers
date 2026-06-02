@@ -82,7 +82,6 @@ cp packaging-config/server/installer.xml.in packaging-config/installer/server/st
 cp packaging-config/server/commandlinetools.xml.in packaging-config/installer/server/staging/windows-x64/commandlinetools-windows-x64.xml
 cp packaging-config/server/pgserver.xml.in packaging-config/installer/server/staging/windows-x64/pgserver-windows-x64.xml
 cp packaging-config/server/stackbuilder.xml.in packaging-config/installer/server/staging/windows-x64/stackbuilder-windows-x64.xml
-cp packaging-config/server/pgadmin.xml.in packaging-config/installer/server/staging/windows-x64/pgadmin-windows-x64.xml
 
 # stackbuilder
 mkdir -p packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
@@ -91,9 +90,6 @@ cp -r packaging-config/installer/server/staging/windows-x64/server/bin/wx*.dll p
 cp -r ./curl/bin/libcurl.dll packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
 cp -r $(PWD)/SB/share packaging-config/installer/server/staging/windows-x64/stackbuilder
 
-#pgAdmin4
-mkdir -p "packaging-config/installer/server/staging/windows-x64/pgadmin4/pgAdmin 4"
-mv $(PWD)/pgAdmin4-binaries/pgAdmin_license.txt packaging-config/installer/server/staging/windows-x64/pgadmin4/
-mv $(PWD)/pgAdmin4-binaries/scripts packaging-config/installer/server/staging/windows-x64/pgadmin4/
-cp packaging-config/server/resources/pg-help.ico packaging-config/installer/server/staging/windows-x64/pgadmin4/scripts/images/pgadmin-help.ico
-cp -r $(PWD)/pgAdmin4-binaries/* "packaging-config/installer/server/staging/windows-x64/pgadmin4/pgAdmin 4/"
+# pgadmin
+mkdir -p packaging-config/installer/server/staging/windows-x64/pgadmin
+cp packaging-config/server/scripts/windows/install-pgadmin.bat packaging-config/installer/server/staging/windows-x64/pgadmin/install-pgadmin.bat

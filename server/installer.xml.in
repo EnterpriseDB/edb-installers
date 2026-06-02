@@ -518,6 +518,7 @@ EOF
         <setInstallerVariable name="project.parameter(servicepassword).ask" value="0" />
         <setInstallerVariable name="project.parameter(servicename).ask" value="0" />
         <setInstallerVariable name="project.parameter(extract_mode).ask" value="0" />
+        <setInstallerVariable name="project.parameter(install_pgadmin).ask" value="0"/>
 
         <!-- Abort Installation as trying to  run a 32-bit installer on 64-bit machine -->
         <throwError>
@@ -766,9 +767,9 @@ EOF
             </ruleList>
         </actionGroup>
         <setInstallerVariable name="server_installation_done" value="0" persist="1"/>
-        <setInstallerVariable name="pgAdmin_installation_done" value="0" persist="1"/>
         <setInstallerVariable name="stackbuilder_installation_done" value="0" persist="1"/>
         <setInstallerVariable name="commandlinetools_installation_done" value="0" persist="1"/>
+        <setInstallerVariable name="install_pgadmin_answer" value="0"/>
 
         <setInstallerVariable name="slash" persist="1" value="\">
             <ruleList>
@@ -1000,12 +1001,6 @@ EOF
                   </iniFileGet>
                   <iniFileGet>
                       <file>${PostgreSqlIni}</file>
-                      <key>pgAdmin_Version</key>
-                      <section>PostgreSQL/${product_version}</section>
-                      <variable>pgadmin_version</variable>
-                  </iniFileGet>
-                  <iniFileGet>
-                      <file>${PostgreSqlIni}</file>
                       <key>CLT_Version</key>
                       <section>PostgreSQL/${product_version}</section>
                       <variable>clt_version</variable>
@@ -1028,11 +1023,6 @@ EOF
                       <name>SB_Version</name>
                       <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                       <variable>sb_version</variable>
-                  </registryGet>
-                  <registryGet>
-                      <name>pgAdmin_Version</name>
-                      <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
-                      <variable>pgadmin_version</variable>
                   </registryGet>
                   <registryGet>
                       <name>CLT_Version</name>
@@ -1085,7 +1075,6 @@ EOF
         <deleteFile path="${installdir}${slash}installation_summary.log">
             <ruleList>
                 <compareText text="${sb_version}" logic="equals" value=""/>
-                <compareText text="${pgadmin_version}" logic="equals" value=""/>
                 <compareText text="${clt_version}" logic="equals" value=""/>
                 <compareText text="${server_data_dir}" logic="equals" value=""/>
             </ruleList>
@@ -1098,7 +1087,6 @@ EOF
             </actionList>
             <ruleList>
                 <compareText text="${sb_version}" logic="equals" value=""/>
-                <compareText text="${pgadmin_version}" logic="equals" value=""/>
                 <compareText text="${clt_version}" logic="equals" value=""/>
                 <compareText text="${server_data_dir}" logic="equals" value=""/>
                 <isFalse value="${extract_mode}"/>
@@ -1648,7 +1636,6 @@ EOF
                 <throwError>
                     <text>${msg(no.component.selected.error)}</text>
                     <ruleList>
-                        <componentTest name="pgAdmin" logic="not_selected"/>
                         <componentTest name="server" logic="not_selected"/>
                         <componentTest name="commandlinetools" logic="not_selected"/>
                         <componentTest name="stackbuilder" logic="not_selected"/>
@@ -1657,24 +1644,15 @@ EOF
             </actionList>
             <ruleList>
                 <isFalse value="${server_installation_done}"/>
-                <isFalse value="${pgAdmin_installation_done}"/>
                 <isFalse value="${stackbuilder_installation_done}"/>
                 <isFalse value="${commandlinetools_installation_done}"/>
                 <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
             </ruleList>
         </actionGroup>
-        <!-- Throw error if server/pgAdmin are selected and commandlinetools is not selected in unattended mode -->
+        <!-- Throw error if server are selected and commandlinetools is not selected in unattended mode -->
         <throwError text="${msg(commandlinetools.not.selected.server.error)}">
             <ruleList>
                 <isTrue value="${component(server).selected}"/>
-                <componentTest name="commandlinetools" logic="not_selected"/>
-                <!-- following check means mode equals unattended -->
-                <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
-            </ruleList>
-        </throwError>
-        <throwError text="${msg(commandlinetools.not.selected.pgadmin.error)}">
-            <ruleList>
-                <isTrue value="${component(pgAdmin).selected}"/>
                 <componentTest name="commandlinetools" logic="not_selected"/>
                 <!-- following check means mode equals unattended -->
                 <compareText text="${installer_interactivity}" logic="does_not_equal" value="normal"/>
@@ -1734,12 +1712,6 @@ EOF
                         </iniFileGet>
                         <iniFileGet>
                             <file>${PostgreSqlIni}</file>
-                            <key>pgAdmin_Version</key>
-                            <section>PostgreSQL/${product_version}</section>
-                            <variable>pgadmin_version</variable>
-                        </iniFileGet>
-                        <iniFileGet>
-                            <file>${PostgreSqlIni}</file>
                             <key>CLT_Version</key>
                             <section>PostgreSQL/${product_version}</section>
                             <variable>clt_version</variable>
@@ -1762,11 +1734,6 @@ EOF
                             <name>SB_Version</name>
                             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                             <variable>sb_version</variable>
-                        </registryGet>
-                        <registryGet>
-                            <name>pgAdmin_Version</name>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
-                            <variable>pgadmin_version</variable>
                         </registryGet>
                         <registryGet>
                             <name>CLT_Version</name>
@@ -1799,15 +1766,6 @@ EOF
                     </actionList>
                     <ruleList>
                         <compareText text="${clt_version}" logic="does_not_equal" value=""/>
-                    </ruleList>
-                </actionGroup>
-                <actionGroup>
-                    <actionList>
-                        <componentSelection select="pgAdmin"/>
-                        <setInstallerVariable name="component(pgAdmin).canBeEdited" value="0"/>
-                    </actionList>
-                    <ruleList>
-                        <compareText text="${pgadmin_version}" logic="does_not_equal" value=""/>
                     </ruleList>
                 </actionGroup>
                 <actionGroup>
@@ -1895,56 +1853,10 @@ EOF
 		<isFalse value="${extract_mode}"/>
              </ruleList>
            </actionGroup>
-        <!-- Set server binary path in pgAdmin config_distro.py -->
-        <actionGroup>
-            <actionList>
-                <setInstallerVariable name="server_install_path" value="${installdir}${slash}bin">
-                    <ruleList>
-                        <compareText text="${platform_name}" logic="does_not_equal" value="windows"/>
-                    </ruleList>
-                </setInstallerVariable>
-                <setInstallerVariableFromRegEx name="server_install_path" text="${installdir}${slash}bin" pattern="\\" substitution="\\\\">
-                    <ruleList>
-                        <compareText text="${platform_name}" logic="equals" value="windows"/>
-                    </ruleList>
-                </setInstallerVariableFromRegEx>
-                <setInstallerVariable name="config_disto_file" value="${installdir}${slash}pgAdmin 4${slash}web${slash}config_distro.py">
-                    <ruleList>
-                        <compareText text="${platform_name}" logic="does_not_equal" value="osx"/>
-                    </ruleList>
-                </setInstallerVariable>
-                <setInstallerVariable name="config_disto_file" value="${installdir}${slash}pgAdmin 4.app${slash}Contents${slash}Resources${slash}web${slash}config_distro.py">
-                    <ruleList>
-                        <compareText text="${platform_name}" logic="equals" value="osx"/>
-                    </ruleList>
-                </setInstallerVariable>
-                <readFile path="${config_disto_file}" name="config_distro_content">
-                  <ruleList>
-                    <fileExists path="${config_disto_file}"/>
-                  </ruleList>
-                </readFile>
-                <addTextToFile file="${config_disto_file}" insertAt="end">
-                    <text>DEFAULT_BINARY_PATHS = {
-"pg":   "${server_install_path}",
-"ppas": ""
-}
-                    </text>
-                    <ruleList>
-                        <fileExists path="${config_disto_file}"/>
-                        <compareText text="${config_distro_content}" logic="does_not_contain" value="DEFAULT_BINARY_PATHS"/>
-                    </ruleList>
-                </addTextToFile>
-            </actionList>
-            <ruleList>
-                <fileExists path="${installdir}${slash}bin${slash}${test_filename}"/>
-                <isFalse value="${extract_mode}"/>
-            </ruleList>
-        </actionGroup>
         <!-- Allows individual components to be uninstalled -->
         <setInstallerVariable name="project.allowAddRemoveComponents" value="1"/>
         <setInstallerVariable name="component(server).canBeEdited" value="1"/>
         <setInstallerVariable name="component(commandlinetools).canBeEdited" value="1"/>
-        <setInstallerVariable name="component(pgAdmin).canBeEdited" value="1"/>
         <setInstallerVariable name="component(stackbuilder).canBeEdited" value="1"/>
         <actionGroup>
             <actionList>
@@ -1958,16 +1870,6 @@ EOF
                             <ruleList>
                                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
                                 <isTrue value="${component(stackbuilder).selected}"/>
-                            </ruleList>
-                        </iniFileSet>
-                        <iniFileSet>
-                            <file>${PostgreSqlIni}</file>
-                            <key>pgAdmin_Version</key>
-                            <section>PostgreSQL/${product_version}</section>
-                            <value>PG_VERSION_PGADMIN</value>
-                            <ruleList>
-                                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                                <isTrue value="${component(pgAdmin).selected}"/>
                             </ruleList>
                         </iniFileSet>
                         <iniFileSet>
@@ -2000,16 +1902,6 @@ EOF
                         </registrySet>
                         <registrySet>
                             <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
-                            <name>pgAdmin_Version</name>
-                            <type>REG_SZ</type>
-                            <value>PG_VERSION_PGADMIN</value>
-			    <ruleList>
-                                <compareText logic="equals" text="${platform_name}" value="windows"/>
-                                <isTrue value="${component(pgAdmin).selected}"/>
-                            </ruleList>
-                        </registrySet>
-                        <registrySet>
-                            <key>HKEY_LOCAL_MACHINE\SOFTWARE\PostgreSQL\Installations\postgresql${service_suffix}-${product_version}</key>
                             <name>CLT_Version</name>
                             <type>REG_SZ</type>
                             <value>PG_MAJOR_VERSION.PG_MINOR_VERSION</value>
@@ -2029,7 +1921,6 @@ EOF
                         <setInstallerVariable name="cltsummary" value=""/>
                         <setInstallerVariable name="sbsummary" value=""/>
                         <setInstallerVariable name="dbsummary" value=""/>
-                        <setInstallerVariable name="pgadminsummary" value=""/>
                         <setInstallerVariable name="dbsummary" value="${msg(summary.server.installation.directory)}: ${installdir}&#10;${msg(summary.data.directory)}: ${datadir}&#10;${msg(summary.database.port)}: ${serverport}&#10;${msg(summary.database.superuser)}: ${superaccount}&#10;${msg(summary.serviceaccount)}: ${serviceaccount}&#10;${msg(summary.databaseservice)}: ${servicename}&#10;">
                             <ruleList>
                                 <isTrue value="${component(server).selected}"/>
@@ -2040,11 +1931,6 @@ EOF
                             <ruleList>
                                 <isTrue value="${component(server).selected}"/>
                                 <isTrue value="${IsUpgrade}"/>
-                            </ruleList>
-                        </setInstallerVariable>
-                        <setInstallerVariable name="pgadminsummary" value="${msg(summary.pgadmin.installation.directory)}: ${installdir}${slash}pgAdmin 4&#10;">
-                            <ruleList>
-                                <isTrue value="${component(pgAdmin).selected}"/>
                             </ruleList>
                         </setInstallerVariable>
                         <setInstallerVariable name="cltsummary" value="${msg(summary.clt.installation.directory)}: ${installdir}&#10;">
@@ -2063,7 +1949,7 @@ EOF
                         <addTextToFile file="${installdir}${slash}installation_summary.log" insertAt="end">
                             <text>
 ${msg(summary.installation.directory)}: ${installdir}
-${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Installationlogfile}
+${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Installationlogfile}
 ===== Installation completed at: ${timestamp} =====
                             </text>
                             <ruleList>
@@ -2075,6 +1961,133 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             </actionList>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- WIN: Check existing pgAdmin version from registry -->
+        <setInstallerVariable name="installed_pgadmin_version" value=""/>
+        <registryGet>
+            <name>DisplayVersion</name>
+            <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\pgAdmin 4v9_is1</key>
+            <variable>installed_pgadmin_version</variable>
+            <abortOnError>0</abortOnError>
+        </registryGet>
+        <logMessage>
+            <text>Installed pgAdmin version: ${installed_pgadmin_version}</text>
+        </logMessage>
+        <!-- WIN: Latest pgAdmin version set at build time -->
+        <setInstallerVariable name="latest_pgadmin_version" value="PG_VERSION_PGADMIN"/>
+
+      <!-- WIN: Ask user - pgAdmin NOT installed -->
+        <actionGroup>
+            <actionList>
+                <showQuestion>
+                    <text>pgAdmin is the recommended graphical management tool for PostgreSQL. Would you like to automatically download and install the latest version ${latest_pgadmin_version} of pgAdmin 4?</text>
+                    <variable>install_pgadmin_answer</variable>
+                    <default>Yes</default>
+                </showQuestion>
+                <logMessage>
+                    <text>pgAdmin answer value is: ${install_pgadmin_answer}</text>
+                </logMessage>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="progressText" value="Downloading pgAdmin 4, please wait..."/>
+                        <runProgram>
+                            <program>${env(WINDIR)}\System32\cmd.exe</program>
+                            <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
+                            <progressText>Installing pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
+                        </runProgram>
+                        <showWarning text="pgAdmin 4 installation failed. Please install it manually from https://www.pgadmin.org">
+                            <ruleList>
+                                <compareValues value1="${program_exit_code}" logic="does_not_equal" value2="0"/>
+                            </ruleList>
+                        </showWarning>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${install_pgadmin_answer}" logic="equals" value="yes"/>
+                    </ruleList>
+                </actionGroup>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                <compareText text="${installer_ui}" logic="does_not_equal" value="unattended"/>
+                <isFalse value="${extract_mode}"/>
+                <!-- Only when pgAdmin is NOT installed -->
+                <compareText text="${installed_pgadmin_version}" logic="equals" value=""/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- WIN: Ask user - pgAdmin lower version installed -->
+        <actionGroup>
+            <actionList>
+                <showQuestion>
+                    <text>pgAdmin 4 version ${installed_pgadmin_version} is already installed on your machine. Would you like to download and install the latest version ${latest_pgadmin_version}?</text>
+                    <variable>install_pgadmin_answer</variable>
+                    <default>Yes</default>
+                </showQuestion>
+                <logMessage>
+                    <text>pgAdmin upgrade answer value is: ${install_pgadmin_answer}</text>
+                </logMessage>
+                <actionGroup>
+                    <actionList>
+                        <setInstallerVariable name="progressText" value="Downloading latest pgAdmin 4, please wait..."/>
+                        <runProgram>
+                            <program>${env(WINDIR)}\System32\cmd.exe</program>
+                            <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
+                            <progressText>Installing pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
+                        </runProgram>
+                        <showWarning text="pgAdmin 4 update failed. Please install it manually from https://www.pgadmin.org">
+                            <ruleList>
+                                <compareValues value1="${program_exit_code}" logic="does_not_equal" value2="0"/>
+                            </ruleList>
+                        </showWarning>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${install_pgadmin_answer}" logic="equals" value="yes"/>
+                    </ruleList>
+                </actionGroup>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                <compareText text="${installer_ui}" logic="does_not_equal" value="unattended"/>
+                <isFalse value="${extract_mode}"/>
+                <!-- Only when pgAdmin IS installed -->
+                <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value=""/>
+                <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value="${latest_pgadmin_version}"/>
+            </ruleList>
+        </actionGroup>
+		
+		 <!-- WIN: Log message when latest pgAdmin already installed -->
+        <actionGroup>
+            <actionList>
+                <logMessage>
+                    <text>pgAdmin 4 version ${installed_pgadmin_version} is already installed on this machine and up to date. Skipping installation of pgadmin 4.</text>
+                </logMessage>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value=""/>
+                <compareText text="${installed_pgadmin_version}" logic="equals" value="${latest_pgadmin_version}"/>
+            </ruleList>
+        </actionGroup>
+		
+        <!-- WIN: Download pgAdmin 4 in unattended mode if install-pgadmin flag is set -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>${env(WINDIR)}\System32\cmd.exe</program>
+                    <programArguments>/c "${installdir}\scripts\install-pgadmin.bat" silent</programArguments>
+                    <progressText>Installing pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
+                </runProgram>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+                <compareText text="${installer_ui}" logic="equals" value="unattended"/>
+                <isTrue value="${install_pgadmin}"/>
+                <isFalse value="${extract_mode}"/>
+                <!-- Skip if latest version already installed -->
+                <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value="${latest_pgadmin_version}"/>
             </ruleList>
         </actionGroup>
     </postInstallationActionList>
@@ -2204,6 +2217,18 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
+                <!-- Win: pgAdmin install script -->
+                <folder>
+                    <description>pgAdmin install script</description>
+                    <destination>${installdir}\scripts</destination>
+                    <name>pgadminbat</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>windows-x64/pgadmin/install-pgadmin.bat</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}/installer</destination>
@@ -2226,7 +2251,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                         <throwError>
                             <text>${msg(no.component.selected.error)}</text>
                             <ruleList>
-                                <componentTest name="pgAdmin" logic="not_selected"/>
                                 <componentTest name="server" logic="not_selected"/>
                                 <componentTest name="commandlinetools" logic="not_selected"/>
                                 <componentTest name="stackbuilder" logic="not_selected"/>
@@ -2235,7 +2259,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                     </actionList>
                     <ruleList>
                         <isFalse value="${server_installation_done}"/>
-                        <isFalse value="${pgAdmin_installation_done}"/>
                         <isFalse value="${stackbuilder_installation_done}"/>
                         <isFalse value="${commandlinetools_installation_done}"/>
                     </ruleList>
@@ -2243,7 +2266,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             </componentSelectionValidationActionList>
         </component>
         <include file="pgserver-@@PLATFORM@@.xml"/>
-        <include file="pgadmin-@@PLATFORM@@.xml"/>
         <include file="stackbuilder-@@PLATFORM@@.xml"/>
         <include file="commandlinetools-@@PLATFORM@@.xml"/>
     </componentList>
@@ -2320,6 +2342,18 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             <default>1</default>
             <ask>yes</ask>
             <cliOptionName>create_shortcuts</cliOptionName>
+            <cliOptionShow>1</cliOptionShow>
+        </booleanParameter>
+
+        <!-- Whether to install pgAdmin 4 -->
+        <booleanParameter>
+            <name>install_pgadmin</name>
+            <description>Download and install pgAdmin 4</description>
+            <explanation>Download and install pgAdmin 4 from the official PostgreSQL FTP server</explanation>
+            <value>0</value>
+            <default>0</default>
+            <ask>yes</ask>
+            <cliOptionName>install-pgadmin</cliOptionName>
             <cliOptionShow>1</cliOptionShow>
         </booleanParameter>
 
@@ -3369,7 +3403,7 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
             <title>${msg(preinstall.summary)}</title>
             <explanation>${msg(preinstall.exp)}:</explanation>
             <value>${msg(summary.installation.directory)}: ${installdir}
-${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Installationlogfile}</value>
+${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Installationlogfile}</value>
             <ruleList>
                 <isFalse value="${extract_mode}"/>
             </ruleList>
@@ -3378,7 +3412,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                 <setInstallerVariable name="cltsummary" value=""/>
                 <setInstallerVariable name="sbsummary" value=""/>
                 <setInstallerVariable name="dbsummary" value=""/>
-                <setInstallerVariable name="pgadminsummary" value=""/>
                 <setInstallerVariable name="Installationlogfile" value="${system_temp_directory}${slash}install-${product_shortname}.log"/>
                 <setInstallerVariable name="dbsummary" value="${msg(summary.server.installation.directory)}: ${installdir}&#10;${msg(summary.data.directory)}: ${datadir}&#10;${msg(summary.database.port)}: ${serverport}&#10;${msg(summary.database.superuser)}: ${superaccount}&#10;${msg(summary.serviceaccount)}: ${serviceaccount}&#10;${msg(summary.databaseservice)}: ${servicename}&#10;">
                     <ruleList>
@@ -3390,11 +3423,6 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
                     <ruleList>
                         <isTrue value="${component(server).selected}"/>
                         <isTrue value="${IsUpgrade}"/>
-                    </ruleList>
-                </setInstallerVariable>
-                <setInstallerVariable name="pgadminsummary" value="${msg(summary.pgadmin.installation.directory)}: ${installdir}${slash}pgAdmin 4&#10;">
-                    <ruleList>
-                        <isTrue value="${component(pgAdmin).selected}"/>
                     </ruleList>
                 </setInstallerVariable>
                 <setInstallerVariable name="cltsummary" value="${msg(summary.clt.installation.directory)}: ${installdir}&#10;">
