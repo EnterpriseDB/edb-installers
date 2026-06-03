@@ -87,22 +87,23 @@ do_install() {
         return 1
     fi
 
-    # Stage the copy first; only replace the existing install once it succeeds,
-    # so a failed copy never leaves the user with no pgAdmin.
+    # Stage the copy first; only touch /Applications once it succeeds,
+    # so a failed copy never leaves the user with a broken pgAdmin.
     STAGE_APP="/Applications/.pgAdmin 4.app.new"
     rm -rf "$STAGE_APP"
     cp -R "$SRC_APP" "$STAGE_APP"
     STATUS=$?
     if [ $STATUS -eq 0 ]; then
-        rm -rf "/Applications/pgAdmin 4.app"
-        mv "$STAGE_APP" "/Applications/pgAdmin 4.app" || STATUS=$?
+        # Overlay onto any existing install with cp instead of deleting it first
+        cp -R "$STAGE_APP/" "/Applications/pgAdmin 4.app"
+        STATUS=$?
     fi
+    rm -rf "$STAGE_APP"
 
     hdiutil detach "$MOUNT_DIR" -quiet
     rm -rf "$DIR"
 
     if [ $STATUS -ne 0 ]; then
-        rm -rf "$STAGE_APP"
         echo "ERROR: Failed to copy pgAdmin 4 to /Applications (check permissions)." >&2
         return 1
     fi
