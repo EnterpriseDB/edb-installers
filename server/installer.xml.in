@@ -2090,6 +2090,78 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                 <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value="${latest_pgadmin_version}"/>
             </ruleList>
         </actionGroup>
+
+        <!-- macOS: ask whether to install pgAdmin 4; the popup only records the choice -->
+        <actionGroup>
+            <actionList>
+                <showQuestion>
+                    <text>pgAdmin is the recommended graphical management tool for PostgreSQL. Would you like to download and install the latest version of pgAdmin 4?</text>
+                    <variable>install_pgadmin_answer</variable>
+                    <default>Yes</default>
+                </showQuestion>
+                <setInstallerVariable name="install_pgadmin" value="1">
+                    <ruleList>
+                        <compareText text="${install_pgadmin_answer}" logic="equals" value="yes"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="install_pgadmin" value="0">
+                    <ruleList>
+                        <compareText text="${install_pgadmin_answer}" logic="does_not_equal" value="yes"/>
+                    </ruleList>
+                </setInstallerVariable>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="osx"/>
+                <compareText text="${installer_ui}" logic="does_not_equal" value="unattended"/>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- macOS: download then install pgAdmin 4 in two visible stages when requested -->
+        <actionGroup>
+            <actionList>
+                <runProgram>
+                    <program>/bin/sh</program>
+                    <programArguments>"${installdir}/installer/server/install-pgadmin.sh" download</programArguments>
+                    <progressText>Downloading pgAdmin 4, please wait...</progressText>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+                <setInstallerVariable name="pgadmin_dl_rc" value="${program_exit_code}"/>
+                <setInstallerVariableFromRegEx name="pgadmin_tmp_dir" text="${program_stdout}" pattern="[\r\n]" substitution=""/>
+                <actionGroup>
+                    <actionList>
+                        <runProgram>
+                            <program>/bin/sh</program>
+                            <programArguments>"${installdir}/installer/server/install-pgadmin.sh" install "${pgadmin_tmp_dir}"</programArguments>
+                            <progressText>Installing pgAdmin 4, please wait...</progressText>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                        </runProgram>
+                    </actionList>
+                    <ruleList>
+                        <compareText text="${pgadmin_dl_rc}" logic="equals" value="0"/>
+                    </ruleList>
+                </actionGroup>
+                <showWarning text="pgAdmin 4 installation failed. Please install it manually from https://www.pgadmin.org">
+                    <ruleList>
+                        <compareText text="${installer_ui}" logic="does_not_equal" value="unattended"/>
+                        <ruleGroup>
+                            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+                            <ruleList>
+                                <compareText text="${pgadmin_dl_rc}" logic="does_not_equal" value="0"/>
+                                <compareValues value1="${program_exit_code}" logic="does_not_equal" value2="0"/>
+                            </ruleList>
+                        </ruleGroup>
+                    </ruleList>
+                </showWarning>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="osx"/>
+                <isFalse value="${extract_mode}"/>
+                <isTrue value="${install_pgadmin}"/>
+            </ruleList>
+        </actionGroup>
     </postInstallationActionList>
 
     <!-- Components. Most components will be separate packages, so expect just one entry here most of the time -->
