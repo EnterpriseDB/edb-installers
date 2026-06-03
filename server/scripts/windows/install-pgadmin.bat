@@ -4,7 +4,6 @@ for /f "usebackq tokens=1" %%v in (`powershell -Command "(Invoke-WebRequest -Uri
     curl -L "https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v%%v/windows/pgadmin4-%%v-x64.exe" -o "%TEMP%\pgadmin4-%%v-x64.exe"
     echo pgAdmin 4 version %%v downloaded successfully.
 
-    REM Verify digital signature
     echo Verifying digital signature of pgAdmin 4 installer...
     powershell -Command "$sig = Get-AuthenticodeSignature '%TEMP%\pgadmin4-%%v-x64.exe'; if ($sig.Status -ne 'Valid') { Write-Host 'Signature verification failed. Aborting pgAdmin 4 installation.'; exit 1 } else { Write-Host 'Signature verified successfully. Signer:' $sig.SignerCertificate.Subject }"
     if errorlevel 1 (
