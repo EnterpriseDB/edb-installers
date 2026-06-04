@@ -5,7 +5,7 @@ for /f "usebackq tokens=1" %%v in (`powershell -Command "(Invoke-WebRequest -Uri
     echo pgAdmin 4 version %%v downloaded successfully.
 
     echo Verifying digital signature of pgAdmin 4 installer...
-    powershell -Command "$sig = Get-AuthenticodeSignature '%TEMP%\pgadmin4-%%v-x64.exe'; if ($sig.Status -ne 'Valid') { Write-Host 'Signature verification failed. Aborting pgAdmin 4 installation.'; exit 1 } else { Write-Host 'Signature verified successfully. Signer:' $sig.SignerCertificate.Subject }"
+    powershell -Command "$sig = Get-AuthenticodeSignature '%TEMP%\pgadmin4-%%v-x64.exe'; if ($sig.Status -ne 'Valid') { Write-Host 'Signature Status:' $sig.Status; Write-Host 'Signature verification failed. Aborting pgAdmin 4 installation.'; exit 1 } else { Write-Host 'Signature Status:' $sig.Status; Write-Host 'Signer:' $sig.SignerCertificate.Subject; Write-Host 'Signature verified successfully.' }"
     if errorlevel 1 (
         echo Signature verification failed. Aborting pgAdmin 4 installation.
         del "%TEMP%\pgadmin4-%%v-x64.exe"
