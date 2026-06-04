@@ -2,8 +2,7 @@
 
 # Source tarball versions
 
-PG_TARBALL_POSTGRESQL=18.4
-PG_TARBALL_PGADMIN=9.15
+PG_TARBALL_POSTGRESQL=19beta1
 PG_LP_VERSION=6.3
 
 # Build nums
@@ -15,8 +14,8 @@ PG_BUILDNUM_LANGUAGEPACK=1
 # PostgreSQL version. This is split into major version (8.4) and minor version (0.1).
 #                     Minor version is revision.build.
 
-PG_MAJOR_VERSION=18
-PG_MINOR_VERSION=4.1
+PG_MAJOR_VERSION=19
+PG_MINOR_VERSION=0.beta1
 
 # Other package versions
 PG_VERSION_POSTGIS=3.6.3
