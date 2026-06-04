@@ -1,3 +1,6 @@
+# PostgreSQL installer release 19beta1 (2026-06-04)
+## Changes 🛠️
+- pgAdmin 4 is no longer bundled with the PostgreSQL Windows & Mac installer. After PostgreSQL is installed, the installer now detects the existing pgAdmin 4 installation status on the machine and offers to download and install the latest version directly from the official pgAdmin download server.
 # PostgreSQL installer release 18.4-1 (2026-05-14)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.15`
