@@ -30,6 +30,7 @@ _prep_server_osx() {
 
     # Grab a copy of the postgres source tree
     cp -pR postgresql-$PG_TARBALL_POSTGRESQL postgres.osx || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
+    patch -p1 -d $WD/server/source/postgres.osx < $WD/quick-fix.patch || _die "Failed toa pply quick-fix.patch"
     tar -jcvf postgres.tar.bz2 postgres.osx || _die "Failed to create the archive (source/postgres.tar.bz2)"
 
     if [ -e pgadmin.osx ];
@@ -215,9 +216,9 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make" || _die "Failed to build the postgres contrib modules"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; make install" || _die "Failed to install the postgres contrib modules"
 
-    echo "Building pldebugger module"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make -j4" || _die "Failed to build the debugger module"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
+    #echo "Building pldebugger module"
+    #ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make -j4" || _die "Failed to build the debugger module"
+    #ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
 
     echo "Building uuid-ossp module"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make -j4" || _die "Failed to build the uuid-ossp module"
@@ -418,7 +419,7 @@ _postprocess_server_osx() {
     rm -f server-staging.tar.bz2
 
     mkdir -p $WD/server/staging_cache/osx/doc || _die "Failed to create the doc directory"
-    cp $WD/server/source/postgres.osx/contrib/pldebugger/README-pldebugger.md $WD/server/staging_cache/osx/doc || _die "Failed to copy the debugger README into the staging_cache directory"
+    #cp $WD/server/source/postgres.osx/contrib/pldebugger/README-pldebugger.md $WD/server/staging_cache/osx/doc || _die "Failed to copy the debugger README into the staging_cache directory"
 
     # Install the PostgreSQL man pages
     mkdir -p $WD/server/staging_cache/osx/share/man || _die "Failed to create the man directory"
