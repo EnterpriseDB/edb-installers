@@ -13,7 +13,7 @@ echo pgAdmin 4 version %LATEST% downloaded successfully.
 
 :: Verify digital signature
 echo Verifying digital signature of pgAdmin 4 installer...
-powershell -Command "$sig = Get-AuthenticodeSignature '%TEMP%\pgadmin4-%LATEST%-x64.exe'; if ($sig.Status -ne 'Valid') { Write-Host 'Signature verification failed. Aborting pgAdmin 4 installation.'; exit 1 } else { Write-Host 'Signature verified successfully. Signer:' $sig.SignerCertificate.Subject }"
+powershell -Command "$sig = Get-AuthenticodeSignature '%TEMP%\pgadmin4-%LATEST%-x64.exe'; if ($sig.Status -ne 'Valid') { Write-Host 'Signature Status:' $sig.Status; Write-Host 'Signature verification failed. Aborting pgAdmin 4 installation.'; exit 1 } else { Write-Host 'Signature Status:' $sig.Status; Write-Host 'Signer:' $sig.SignerCertificate.Subject; Write-Host 'Signature verified successfully.' }"
 if errorlevel 1 (
     echo Signature verification failed. Aborting pgAdmin 4 installation.
     del "%TEMP%\pgadmin_page.html"
