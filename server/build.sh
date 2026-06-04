@@ -215,7 +215,7 @@ _prepare_server_xml() {
          PLATFORM_SUFFIX=""
     fi
 
-    for file in {installer,pgserver,pgadmin,stackbuilder,commandlinetools}
+    for file in {installer,pgserver,stackbuilder,commandlinetools}
     do
         filename=${file}${PLATFORM_SUFFIX}.xml
         if [ -f $filename ]; then

@@ -32,22 +32,6 @@ _prep_server_osx() {
     cp -pR postgresql-$PG_TARBALL_POSTGRESQL postgres.osx || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
     tar -jcvf postgres.tar.bz2 postgres.osx || _die "Failed to create the archive (source/postgres.tar.bz2)"
 
-    if [ -e pgadmin.osx ];
-    then
-      echo "Removing existing pgadmin.osx source directory"
-      rm -rf pgadmin.osx  || _die "Couldn't remove the existing pgadmin.osx source directory (source/pgadmin.osx)"
-    fi
-    
-    if [ -e pgadmin.tar.bz2 ];
-    then
-      echo "Removing existing pgadmin archive"
-      rm -f pgadmin.tar.bz2  || _die "Couldn't remove the existing pgadmin archive (source/pgadmin.tar.bz2)"
-    fi
-
-    # Grab a copy of the pgadmin source tree
-    cp -pR pgadmin4-$PG_TARBALL_PGADMIN pgadmin.osx || _die "Failed to copy the source code (source/pgadmin4-$PG_TARBALL_PGADMIN)"
-    tar -jcvf pgadmin.tar.bz2 pgadmin.osx || _die "Failed to create the archive (source/pgadmin.tar.bz2)"
-
     if [ -e stackbuilder.osx ];
     then
       echo "Removing existing stackbuilder.osx source directory"
@@ -116,7 +100,7 @@ _prep_server_osx() {
 
     echo "Copy the sources to the build VM"
     ssh $PG_SSH_OSX "mkdir -p $PG_PATH_OSX/server/source" || _die "Failed to create the source dircetory on the build VM"
-    scp postgres.tar.bz2 pgadmin.tar.bz2 stackbuilder.tar.bz2 system_stats.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server/source/ || _die "Failed to copy the source archives to build VM"
+    scp postgres.tar.bz2 stackbuilder.tar.bz2 system_stats.tar.bz2 $PG_SSH_OSX:$PG_PATH_OSX/server/source/ || _die "Failed to copy the source archives to build VM"
 
     echo "Copy the scripts required to build VM"
     cd $WD/server
@@ -127,24 +111,12 @@ _prep_server_osx() {
 
     echo "Extracting the archives"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf postgres.tar.bz2"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf pgadmin.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf stackbuilder.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source; tar -jxvf system_stats.tar.bz2"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; tar -jxvf scripts.tar.bz2"
 
     # location where Postgres binaries are installed into
     PG_STAGING=$PG_PATH_OSX/server/staging_cache/osx
-
-    # create pgAdmin script and replace place holder
-    if [ -f $WD/server/build-pgadmin.sh ]; then
-       rm -f $WD/server/build-pgadmin.sh
-    fi
-
-    cp $WD/server/build-pgadmin.sh.in $WD/server/build-pgadmin.sh || _die "Failed to copy build-pgadmin.sh"
-    _replace SOURCE_DIR= "SOURCE_DIR=${PG_PATH_OSX}/server/source/pgadmin.osx" $WD/server/build-pgadmin.sh || _die "Failed to replace PGADMIN_SRC_DIR in build-pgadmin.sh"
-    _replace PGADMIN_PYTHON_DIR= "PGADMIN_PYTHON_DIR=${PGADMIN_PYTHON_OSX}" $WD/server/build-pgadmin.sh || _die "Failed to replace PGADMIN_PYTHON_OSX in build-pgadmin.sh"
-    _replace PGBUILD= "PGBUILD=${PG_STAGING}" $WD/server/build-pgadmin.sh $WD/server/build-pgadmin.sh || _die "Failed to replace PGBUILD in build-pgadmin.sh"
-    chmod 755 $WD/server/build-pgadmin.sh
 
     echo "END PREP Server OSX"
 }
@@ -222,10 +194,6 @@ _build_server_osx() {
     echo "Building uuid-ossp module"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make -j4" || _die "Failed to build the uuid-ossp module"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; make install" || _die "Failed to install the uuid-ossp module"
-
-    # Now, build pgAdmin
-    scp $WD/server/build-pgadmin.sh $PG_SSH_OSX:$PG_PATH_OSX/server
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server; sh -x ./build-pgadmin.sh" || _die "Failed to build pgadmin on OSX"
 
     #Fix permission in the staging/osx/share
     ssh $PG_SSH_OSX "chmod -R a+r $PG_PATH_OSX/server/staging_cache/osx/share/postgresql/timezone/*"
@@ -326,9 +294,7 @@ _build_server_osx() {
 
     # Generate debug symbols
     echo "Generate debug symbols"
-    ssh $PG_SSH_OSX "cd $PG_STAGING; mv pgAdmin\ 4.app/ pgAdmin4.app"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX; chmod 755 create_debug_symbols.sh; ./create_debug_symbols.sh $PG_STAGING" || _die "Failed to execute create_debug_symbols.sh"
-    ssh $PG_SSH_OSX "cd $PG_STAGING; mv pgAdmin4.app/ pgAdmin\ 4.app"
 
     cd $WD
     echo "END BUILD Server OSX"
@@ -400,16 +366,15 @@ _postprocess_server_osx() {
     scp $WD/server/staging_cache/osx/server-staging.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy server-staging.tar.bz2 on signing server"
     rm -rf $WD/server/staging_cache/osx/server-staging.tar.bz2 || _die "Failed to remove server-staging.tar from controller"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN;rm -rf staging" || _die "Failed to remove staging from signing server"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../server-staging.tar.bz2; mv pgAdmin\ 4.app pgAdmin4.app"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; mkdir staging; cd staging; tar -zxvf ../server-staging.tar.bz2"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source settings.sh; source common.sh;sign_libraries staging" || _die "Failed to do libraries signing"
     #ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; source settings.sh; source common.sh;sign_libraries staging/lib entitlements-server.xml" || _die "Failed to do libraries signing with entitlements"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source settings.sh; source common.sh;sign_bundles staging" || _die "Failed to sign bundle"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source settings.sh; source common.sh;sign_bundles staging/lib/postgresql entitlements-server.xml" || _die "Failed to sign bundle with entitlements"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source settings.sh; source common.sh;sign_binaries staging" || _die "Failed to do binaries signing"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; KEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source settings.sh; source common.sh;sign_binaries staging/bin entitlements-server.xml" || _die "Failed to do binaries signing with entitlements"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/staging; sKEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source $PG_PATH_OSX_SIGN/versions.sh; source $PG_PATH_OSX_SIGN/settings.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements-pgadmin.xml pgAdmin4.app;" || _die "Failed to sign the pgAdmin4.app"
     ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN/staging; sKEYCHAIN_PASSWD="$KEYCHAIN_PASSWD"; source $PG_PATH_OSX_SIGN/versions.sh; source $PG_PATH_OSX_SIGN/settings.sh; security unlock-keychain -p $KEYCHAIN_PASSWD ~/Library/Keychains/login.keychain;codesign --verbose --verify --deep -f -i 'com.edb.postgresql' -s 'Developer ID Application: EnterpriseDB Corporation' --options runtime --entitlements $PG_PATH_OSX_SIGN/entitlements-server.xml stackbuilder.app;" || _die "Failed to sign the stackbuilder.app"
-    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging; mv pgAdmin4.app pgAdmin\ 4.app; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create server-staging tar on signing server"
+    ssh $PG_SSH_OSX_SIGN "cd $PG_PATH_OSX_SIGN; cd staging; tar -jcvf server-staging.tar.bz2 *" || _die "Failed to create server-staging tar on signing server"
     scp $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/staging/server-staging.tar.bz2 $WD/server/staging_cache/osx || _die "Failed to copy server-staging to controller vm"
 
     # Extract the staging archive
@@ -470,9 +435,6 @@ _postprocess_server_osx() {
     mv $PGSERVER_STAGING_OSX/share/man/man1/pgbench.1 $CLT_STAGING_OSX/share/man/man1
     mv $PGSERVER_STAGING_OSX/share/man/man1/vacuumlo.1 $CLT_STAGING_OSX/share/man/man1
 
-    echo "Preparing restructured staging for pgAdmin"
-    cp -pR $WD/server/staging_cache/osx/pgAdmin\ 4.app/  $PGADMIN_STAGING_OSX
-
     echo "Preparing restructured staging for stackbuilder"
     mkdir -p $WD/server/staging_cache/osx/stackbuilder
     rm -rf $WD/server/staging_cache/osx/stackbuilder/stackbuilder.app
@@ -484,11 +446,6 @@ _postprocess_server_osx() {
     #generate commandlinetools license file
     pushd $CLT_STAGING_OSX
         generate_3rd_party_license "commandlinetools"
-    popd
-
-    #generate pgAdmin4 license file
-    pushd $PGADMIN_STAGING_OSX
-        generate_3rd_party_license "pgAdmin"
     popd
 
     #generate StackBuilder license file
@@ -503,7 +460,7 @@ _postprocess_server_osx() {
     #Creating a archive of the binaries
     mkdir -p $WD/server/staging_cache/osx/pgsql || _die "Failed to create the directory for binaries "
     cd $WD/server/staging_cache/osx
-    cp -pR bin doc include lib pgAdmin* share stackbuilder pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
+    cp -pR bin doc include lib share stackbuilder pgsql/ || _die "Failed to copy the binaries to the pgsql directory"
     zip -yrq postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip pgsql || _die "Failed to archive the postgresql binaries"
     mv postgresql-$PG_PACKAGE_VERSION-osx-binaries.zip $WD/output/ || _die "Failed to move the archive to output folder"
 
@@ -516,7 +473,6 @@ _postprocess_server_osx() {
     # Complete the staging and prepare the installer
     #cp $WD/server/staging_cache/osx/server_3rd_party_licenses.txt $PGSERVER_STAGING_OSX/../
     cp $WD/resources/license.txt $PGSERVER_STAGING_OSX/server_license.txt
-    cp $WD/server/source/pgadmin.osx/LICENSE $PGADMIN_STAGING_OSX/pgAdmin_license.txt
 
     cd $WD/server
 
@@ -544,9 +500,8 @@ _postprocess_server_osx() {
     cp scripts/osx/createshortcuts_sb.sh $SB_STAGING_OSX/installer/server/createshortcuts_sb.sh || _die "Failed to copy the createuser script (scripts/osx/createshortcuts_sb.sh)"
     chmod ugo+x $SB_STAGING_OSX/installer/server/createshortcuts_sb.sh
 
-    mkdir -p $PGADMIN_STAGING_OSX/installer/server || _die "Failed to create a directory for the install scripts"
-    cp scripts/osx/createshortcuts_pgadmin.sh $PGADMIN_STAGING_OSX/installer/server/createshortcuts_pgadmin.sh || _die "Failed to copy the createuser script (scripts/osx/createshortcuts_pgadmin.sh)"
-    chmod ugo+x $PGADMIN_STAGING_OSX/installer/server/createshortcuts_pgadmin.sh
+    cp scripts/osx/install-pgadmin.sh $PGSERVER_STAGING_OSX/installer/server/install-pgadmin.sh || _die "Failed to copy the install-pgadmin script (scripts/osx/install-pgadmin.sh)"
+    chmod ugo+x $PGSERVER_STAGING_OSX/installer/server/install-pgadmin.sh
 
     mkdir -p $CLT_STAGING_OSX/installer/server || _die "Failed to create a directory for the install scripts"
     cp scripts/osx/createshortcuts_clt.sh $CLT_STAGING_OSX/installer/server/createshortcuts_clt.sh || _die "Failed to copy the createuser script (scripts/osx/createshortcuts_clt.sh)"
