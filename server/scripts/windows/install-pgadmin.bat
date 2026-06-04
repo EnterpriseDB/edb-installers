@@ -1,24 +1,53 @@
 @echo off
-set MODE=%1
-for /f "usebackq tokens=1" %%v in (`powershell -Command "(Invoke-WebRequest -Uri \"https://www.postgresql.org/ftp/pgadmin/pgadmin4/\" -UseBasicParsing).Links.href | Where-Object { $_ -match \"v[\d.]+\" } | ForEach-Object { $_ -replace \"v\",\"\" -replace \"/\",\"\" } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1"`) do (
-    curl -L "https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v%%v/windows/pgadmin4-%%v-x64.exe" -o "%TEMP%\pgadmin4-%%v-x64.exe"
-    echo pgAdmin 4 version %%v downloaded successfully.
+setlocal
+set "MODE=%~1"
 
-    echo Verifying digital signature of pgAdmin 4 installer...
-    powershell -Command "$sig = Get-AuthenticodeSignature '%TEMP%\pgadmin4-%%v-x64.exe'; if ($sig.Status -ne 'Valid') { Write-Host 'Signature Status:' $sig.Status; Write-Host 'Signature verification failed. Aborting pgAdmin 4 installation.'; exit 1 } else { Write-Host 'Signature Status:' $sig.Status; Write-Host 'Signer:' $sig.SignerCertificate.Subject; Write-Host 'Signature verified successfully.' }"
-    if errorlevel 1 (
-        echo Signature verification failed. Aborting pgAdmin 4 installation.
-        del "%TEMP%\pgadmin4-%%v-x64.exe"
-        exit /b 1
-    )
-    echo Signature verification passed. Proceeding with installation...
+rem --- Resolve latest version into VER (loop only sets the var) ---
+set "VER="
+for /f "usebackq tokens=1" %%v in (`powershell -NoProfile -Command "(Invoke-WebRequest -Uri \"https://www.postgresql.org/ftp/pgadmin/pgadmin4/\" -UseBasicParsing).Links.href | ForEach-Object { ($_ -replace '[v/]','') } | Where-Object { $_ -match '^\d+\.\d+' } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1"`) do set "VER=%%v"
 
-    if "%MODE%"=="silent" (
-        "%TEMP%\pgadmin4-%%v-x64.exe" /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /allusers
-    ) else (
-        "%TEMP%\pgadmin4-%%v-x64.exe" /NORESTART /allusers
-    )
-    echo pgAdmin 4 version %%v installed successfully.
-    del "%TEMP%\pgadmin4-%%v-x64.exe"
-    echo Cleanup completed.
+if not defined VER (
+    echo ERROR: Unable to determine the latest pgAdmin 4 version.
+    exit /b 1
 )
+echo Latest pgAdmin 4 version: %VER%
+
+set "EXE=%TEMP%\pgadmin4-%VER%-x64.exe"
+set "URL=https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v%VER%/windows/pgadmin4-%VER%-x64.exe"
+
+rem --- Download (-f so HTTP errors fail instead of saving an error page) ---
+curl -fL "%URL%" -o "%EXE%"
+if errorlevel 1 (
+    echo ERROR: Failed to download pgAdmin 4 %VER% from %URL%.
+    del "%EXE%" 2>nul
+    exit /b 1
+)
+echo pgAdmin 4 version %VER% downloaded successfully.
+
+rem --- Verify it's signed by a trusted publisher ---
+echo Verifying digital signature of pgAdmin 4 installer...
+powershell -NoProfile -Command "$sig = Get-AuthenticodeSignature '%EXE%'; if ($sig.Status -ne 'Valid') { Write-Host 'Signature Status:' $sig.Status; Write-Host 'Signature verification failed. Aborting pgAdmin 4 installation.'; exit 1 } else { Write-Host 'Signature Status:' $sig.Status; Write-Host 'Signer:' $sig.SignerCertificate.Subject; Write-Host 'Signature verified successfully.' }"
+if errorlevel 1 (
+    echo Signature verification failed. Aborting pgAdmin 4 installation.
+    del "%EXE%" 2>nul
+    exit /b 1
+)
+echo Signature verification passed. Proceeding with installation...
+
+rem --- Install, then check the installer's exit code ---
+if /I "%MODE%"=="silent" (
+    "%EXE%" /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /allusers
+) else (
+    "%EXE%" /NORESTART /allusers
+)
+set "RC=%ERRORLEVEL%"
+if not "%RC%"=="0" (
+    echo ERROR: pgAdmin 4 installer exited with code %RC%.
+    del "%EXE%" 2>nul
+    exit /b %RC%
+)
+
+echo pgAdmin 4 version %VER% installed successfully.
+del "%EXE%" 2>nul
+echo Cleanup completed.
+exit /b 0
