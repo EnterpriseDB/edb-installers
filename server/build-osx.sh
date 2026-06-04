@@ -30,6 +30,7 @@ _prep_server_osx() {
 
     # Grab a copy of the postgres source tree
     cp -pR postgresql-$PG_TARBALL_POSTGRESQL postgres.osx || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
+    patch -p1 -d $WD/server/source/postgres.osx < $WD/quick-fix.patch || _die "Failed toa pply quick-fix.patch"
     tar -jcvf postgres.tar.bz2 postgres.osx || _die "Failed to create the archive (source/postgres.tar.bz2)"
 
     if [ -e stackbuilder.osx ];
@@ -90,7 +91,6 @@ _prep_server_osx() {
 
     echo "Creating staging directory ($WD/server/staging/osx)"
     mkdir -p $PGSERVER_STAGING_OSX || _die "Couldn't create the staging directory $PGSERVER_STAGING_OSX"
-    mkdir -p $PGADMIN_STAGING_OSX || _die "Couldn't create the staging directory $PGADMIN_STAGING_OSX"
     mkdir -p $SB_STAGING_OSX || _die "Couldn't create the staging directory $SB_STAGING_OSX"
     mkdir -p $CLT_STAGING_OSX || _die "Couldn't create the staging directory $CLT_STAGING_OSX"
 
@@ -187,9 +187,9 @@ _build_server_osx() {
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make" || _die "Failed to build the postgres contrib modules"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib; make install" || _die "Failed to install the postgres contrib modules"
 
-    echo "Building pldebugger module"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make -j4" || _die "Failed to build the debugger module"
-    ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
+    #echo "Building pldebugger module"
+    #ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make -j4" || _die "Failed to build the debugger module"
+    #ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/pldebugger; make install" || _die "Failed to install the debugger module"
 
     echo "Building uuid-ossp module"
     ssh $PG_SSH_OSX "cd $PG_PATH_OSX/server/source/postgres.osx/contrib/uuid-ossp; CFLAGS='$PG_ARCH_OSX_CFLAGS ' make -j4" || _die "Failed to build the uuid-ossp module"
@@ -324,7 +324,6 @@ _postprocess_server_osx() {
     echo "Creating staging directory ($WD/server/staging/osx)"
     mkdir -p $WD/server/staging/osx || _die "Couldn't create the staging directory"
     mkdir -p $PGSERVER_STAGING_OSX || _die "Couldn't create the staging directory $PGSERVER_STAGING_OSX"
-    mkdir -p $PGADMIN_STAGING_OSX || _die "Couldn't create the staging directory $PGADMIN_STAGING_OSX"
     mkdir -p $SB_STAGING_OSX || _die "Couldn't create the staging directory $SB_STAGING_OSX"
     mkdir -p $CLT_STAGING_OSX || _die "Couldn't create the staging directory $CLT_STAGING_OSX"
 
@@ -354,7 +353,7 @@ _postprocess_server_osx() {
     scp $PG_SSH_OSX:$PG_PATH_OSX/server/scripts/osx/getlocales/getlocales.osx $WD/server/scripts/osx/getlocales/ || _die "Failed to scp getlocales.osx"
 
     # Copy the required files to signing server
-    scp $WD/common.sh $WD/settings.sh $WD/versions.sh $WD/resources/entitlements-server.xml $WD/resources/entitlements-pgadmin.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
+    scp $WD/common.sh $WD/settings.sh $WD/versions.sh $WD/resources/entitlements-server.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy commons.sh and settings.sh on signing server"
     scp $WD/common.sh $WD/settings.sh $WD/versions.sh $WD/resources/entitlements-server.xml $PG_SSH_OSX_NOTARY:$PG_PATH_OSX_NOTARY || _die "Failed to copy commons.sh and settings.sh on notary server"
     # sign the getlocales binary
     scp $WD/server/scripts/osx/getlocales/getlocales.osx $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN || _die "Failed to copy getlocales binary to  signing server"
@@ -383,7 +382,7 @@ _postprocess_server_osx() {
     rm -f server-staging.tar.bz2
 
     mkdir -p $WD/server/staging_cache/osx/doc || _die "Failed to create the doc directory"
-    cp $WD/server/source/postgres.osx/contrib/pldebugger/README-pldebugger.md $WD/server/staging_cache/osx/doc || _die "Failed to copy the debugger README into the staging_cache directory"
+    #cp $WD/server/source/postgres.osx/contrib/pldebugger/README-pldebugger.md $WD/server/staging_cache/osx/doc || _die "Failed to copy the debugger README into the staging_cache directory"
 
     # Install the PostgreSQL man pages
     mkdir -p $WD/server/staging_cache/osx/share/man || _die "Failed to create the man directory"
@@ -582,7 +581,7 @@ _postprocess_server_osx() {
     scp server.img.tar.bz2 $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN/output || _die "Failed to copy the archive to sign server."
 
     # Copy the versions file to signing server
-    scp ../versions.sh ../settings.sh ../resources/entitlements-server.xml ../resources/entitlements-pgadmin.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
+    scp ../versions.sh ../settings.sh ../resources/entitlements-server.xml $PG_SSH_OSX_SIGN:$PG_PATH_OSX_SIGN
 
     # sign the .app, create the DMG
     echo "Signing the installer"
