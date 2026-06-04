@@ -16,7 +16,7 @@
 
 <h3>Legal Bits</h3>
 
-<p>First the boring legal stuff. The software bundled together in this package is released under a number of different Open Source licences. By using any component of this installation package, you agree to abide by the terms and conditions of it's licence.</p>
+<p>First the boring legal stuff. The software bundled together in this package is released under a number of different Open Source licences. By using any component of this installation package, you agree to abide by the terms and conditions of it’s licence.</p>
 
 <p>The PostgreSQL Server, pgAdmin and the installer itself are released under the PostgreSQL License.</p>
 
@@ -51,11 +51,11 @@ The debugger plugin is disabled by default for performance reasons. To enable it
   <li>Run <i>CREATE EXTENSION pldbgapi;</i> in the database you wish to debug using psql or the pgAdmin query tool.
 </ol>
 
-<p>For further information, please see the pgAdmin online help, and the debugger plugin <a href="README-pldebugger.md">README file</a>.</p>
+<p>For further information, please see the pgAdmin online help, and the debugger plugin <a href="README-pldebugger.md">README file</a>. 
 
 <h3>Important Note with regards to ICU</h3>
 
-<p>PostgreSQL Server 18 is compiled with ICU 77.x. PostgreSQL version 14-17 on macOS use ICU 68.x, and Windows use 67.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes. Refer: https://wiki.postgresql.org/wiki/Locale_data_changes and https://www.postgresql.org/docs/current/sql-altercollation.html for more details</p>
+<p>PostgreSQL Server 18 is compiled with ICU 77.x. PostgreSQL version 14-17 on macOS use ICU 68.x, and Windows use 67.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes. Refer: https://wiki.postgresql.org/wiki/Locale_data_changes and https://www.postgresql.org/docs/current/sql-altercollation.html for more details</p> 
 
 <h3>Important Note with regards to locale names</h3>
 
@@ -69,6 +69,8 @@ The debugger plugin is disabled by default for performance reasons. To enable it
   <li>Standard BCP-47 locale names (e.g., en-US, fr-FR). Recommended, if the locale name contains non-ASCII characters (such as accented characters or regional scripts) </li>
   <li>Long English locale names containing only ASCII characters (e.g., English_United States, French_France). So, any non-ASCII character containing locale is not passed to the initdb. </li>
 </ul>
+
+<h3>Technical Support</h3>
 
 <h3>pgAdmin 4</h3>
 
@@ -87,9 +89,7 @@ The debugger plugin is disabled by default for performance reasons. To enable it
   <li>Install without pgAdmin 4: <code>postgresql-setup.exe --mode unattended</code></li>
 </ul>
 
-<h3>Technical Support</h3>
-
-<p>Issues using the installer can be reported to installer GitHub page at <a href="https://github.com/EnterpriseDB/edb-installers/issues">https://github.com/EnterpriseDB/edb-installers/issues</a></p>
+<p>Issues using the installer can be reported to installer GitHub page at <a href="https://github.com/EnterpriseDB/edb-installers/issues">https://github.com/EnterpriseDB/edb-installers/issues</a></p>  
 
 <p>For PostgreSQL support, please use the appropriate mailing list. A complete list may be found at <a href="https://www.postgresql.org/list/">https://www.postgresql.org/list/</a>.</p>
 
