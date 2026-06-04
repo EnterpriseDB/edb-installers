@@ -106,21 +106,21 @@ DATE=`date +'%Y-%m-%d'`
 echo "Cleaning up old output" >> autobuild.log
 rm -rf output/* >> autobuild.log 2>&1
 
-# Switch to REL-18 branch
-echo "Switching to REL-18 branch" >> autobuild.log
+# Switch to REL-19 branch
+echo "Switching to REL-19 branch" >> autobuild.log
 git reset --hard >> autobuild.log 2>&1
-git checkout REL-18 >> autobuild.log 2>&1
+git checkout REL-19 >> autobuild.log 2>&1
 
 # Make sure, we always do a full build
 cp -f settings.sh.in settings.sh
 
 # Self update
-echo "Updating REL-18 branch build system" >> autobuild.log
+echo "Updating REL-19 branch build system" >> autobuild.log
 git pull >> autobuild.log 2>&1
 
 # Run the build, and dump the output to a log file
-echo "Running the build (REL-18) " >> autobuild.log
-./build.sh $SKIPBUILD 2>&1 | tee output/build-18.log
+echo "Running the build (REL-19) " >> autobuild.log
+./build.sh $SKIPBUILD 2>&1 | tee output/build-19.log
 
 VERSION_NUMBER=`cat versions.sh | grep PG_MAJOR_VERSION= | cut -f 2 -d '='`
 STR_VERSION_NUMBER=`echo $VERSION_NUMBER | sed 's/\.//'`
