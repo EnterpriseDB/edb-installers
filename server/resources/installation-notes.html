@@ -18,7 +18,9 @@
 
 <p>First the boring legal stuff. The software bundled together in this package is released under a number of different Open Source licences. By using any component of this installation package, you agree to abide by the terms and conditions of it’s licence.</p>
 
-<p>The PostgreSQL Server, pgAdmin and the installer itself are released under the PostgreSQL License.</p>
+<p>The PostgreSQL Server and the installer itself are released under the PostgreSQL License.</p>
+
+<p>pgAdmin 4 is no longer bundled with the PostgreSQL Windows and Mac installer. After PostgreSQL is installed the installer now detects the existing pgAdmin 4 installation status on the machine and offers to download and install the latest version directly from the official pgAdmin download server.</p>
 
 <p>This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit. (http://www.openssl.org/)</p>
 
@@ -31,9 +33,9 @@
 <p>The procedural languages pl/Perl, pl/Python and pl/Tcl are included in this distribution of PostgreSQL. On Windows, the server has been built using the community upstream distributions of those language interpreters. To use any of the these languages from within PostgreSQL, download and install the appropriate interpreters and ensure they are included in the PATH variable under which the database server will be started. The versions used are shown below - newer minor (bugfix) releases may also work, but have not been tested:</p>
 
 <ul>
-  <li>Perl 5.42.0.1 : https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_54201_64bit/strawberry-perl-5.42.0.1-64bit-portable.zip </li>
-  <li>Python 3.13.12 : https://www.python.org/ftp/python/3.13.12/python-3.13.12-amd64.exe </li>
-  <li>Tcl 8.6.17 : https://sourceforge.net/projects/magicsplat/files/magicsplat-tcl/tcl-8.6.17-installer-1.17.0-x64.msi/download </li>
+  <li>Perl 5.42.0.x : https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_54201_64bit/strawberry-perl-5.42.0.1-64bit-portable.zip </li>
+  <li>Python 3.13.X : https://www.python.org/ftp/python/3.13.12/python-3.13.12-amd64.exe </li>
+  <li>Tcl 8.6.X : https://sourceforge.net/projects/magicsplat/files/magicsplat-tcl/tcl-8.6.17-installer-1.17.0-x64.msi/download </li>
 </ul>
 
 <p> On MacOS, we strongly recommend to use LanguagePack v6 installers for pl/Perl, pl/Python and pl/Tcl. </p>
@@ -68,23 +70,6 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 <ul>
   <li>Standard BCP-47 locale names (e.g., en-US, fr-FR). Recommended, if the locale name contains non-ASCII characters (such as accented characters or regional scripts) </li>
   <li>Long English locale names containing only ASCII characters (e.g., English_United States, French_France). So, any non-ASCII character containing locale is not passed to the initdb. </li>
-</ul>
-  
-<h3>pgAdmin 4</h3>
-
-<p>pgAdmin 4 is no longer bundled with the PostgreSQL Windows &amp; Mac installer. After PostgreSQL is installed, the installer now detects the existing pgAdmin 4 installation status on the machine and handles the following scenarios:</p>
-
-<ul>
-  <li><b>pgAdmin 4 not installed</b> - The installer offers to download and install the latest version of pgAdmin 4 directly from the official pgAdmin download server.</li>
-  <li><b>Older version of pgAdmin 4 installed</b> - The installer detects the installed version and offers to upgrade to the latest version.</li>
-  <li><b>Latest version of pgAdmin 4 already installed</b> - The installer skips the pgAdmin 4 installation and logs a message indicating that the latest version is already installed.</li>
-</ul>
-
-<p>For unattended installations, the <code>--install-pgadmin</code> flag can be used to enable pgAdmin 4 installation. By default, pgAdmin 4 installation is disabled in unattended mode:</p>
-
-<ul>
-  <li>Install with pgAdmin 4: <code>postgresql-setup.exe --mode unattended --install-pgadmin 1</code></li>
-  <li>Install without pgAdmin 4: <code>postgresql-setup.exe --mode unattended</code></li>
 </ul>
   
 <h3>Technical Support</h3>
