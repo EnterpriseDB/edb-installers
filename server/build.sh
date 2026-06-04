@@ -152,24 +152,8 @@ _prep_server() {
 
 _build_server() {
 
-    # Get the pgAdmin versioning
     cd $WD/server/source
-    if [ -e pgadmin4-$PG_TARBALL_PGADMIN ];
-    then
-        cd pgadmin4-$PG_TARBALL_PGADMIN
-        export APP_RELEASE=`grep "^APP_RELEASE" web/config.py | cut -d"=" -f2 | sed 's/ //g'`
-        export APP_REVISION=`grep "^APP_REVISION" web/config.py | cut -d"=" -f2 | sed 's/ //g'`
-        export APP_NAME=`grep "^APP_NAME" web/config.py | cut -d"=" -f2 | sed "s/'//g" | sed 's/^ //'`
-        export APP_BUNDLE_NAME=$APP_NAME.app
-        export APP_LONG_VERSION=$APP_RELEASE.$APP_REVISION
-        export APP_SHORT_VERSION=`echo $APP_LONG_VERSION | cut -d . -f1,2`
-        export APP_SUFFIX=`grep "^APP_SUFFIX" web/config.py | cut -d"=" -f2 | sed 's/ //g' | sed "s/'//g"`
-        if [ ! -z $APP_SUFFIX ]; then
-            export APP_LONG_VERSION=$APP_LONG_VERSION-$APP_SUFFIX
-        fi
-    fi
-
-    # Set PYTHON_VERSION variable required for pgadmin build
+    # Set PYTHON_VERSION variable
     export PYTHON_HOME=/System/Library/Frameworks/Python.framework/Versions/2.7
     export PYTHON_VERSION="27"
 
@@ -245,7 +229,6 @@ _prepare_server_xml() {
                 _replace PERL_PACKAGE_VERSION_WINDOWS64 $PG_VERSION_PERL_WINDOWS64  $filename || _die "Failed to set PERL version in $filename"
                 _replace PYTHON_PACKAGE_VERSION $PG_VERSION_PYTHON $filename || _die "Failed to set PYTHON version in $filename"
                 _replace TCL_PACKAGE_VERSION $PG_VERSION_TCL $filename || _die "Failed to set TCL version in $filename"
-                _replace PG_VERSION_PGADMIN $PG_VERSION_PGADMIN $filename || _die "Failed to set pgAdmin version in $filename"
                 _replace PG_VERSION_SB $PG_VERSION_SB $filename || _die "Failed to set stackbuilder version in $filename"
                 ;;
         esac
