@@ -30,7 +30,7 @@ _prep_server_osx() {
 
     # Grab a copy of the postgres source tree
     cp -pR postgresql-$PG_TARBALL_POSTGRESQL postgres.osx || _die "Failed to copy the source code (source/postgresql-$PG_TARBALL_POSTGRESQL)"
-    patch -p1 -d $WD/server/source/postgres.osx < $WD/quick-fix.patch || _die "Failed toa pply quick-fix.patch"
+    patch -p1 -d $WD/server/source/postgres.osx < $WD/quick-fix.patch || _die "Failed to apply quick-fix.patch"
     tar -jcvf postgres.tar.bz2 postgres.osx || _die "Failed to create the archive (source/postgres.tar.bz2)"
 
     if [ -e pgadmin.osx ];
