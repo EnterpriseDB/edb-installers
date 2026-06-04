@@ -49,7 +49,6 @@ PGADMIN_PYTHON_OSX=/Library/Frameworks/Python.framework/Versions/Current
 PG_TCL_OSX=/Library/edb/languagepack/v6/Tcl-8.6
 PG_LANGUAGEPACK_OSX=/Library/edb/languagepack/v6
 PGSERVER_STAGING_OSX=$PWD/server/staging/osx/server
-PGADMIN_STAGING_OSX=$PWD/server/staging/osx/pgadmin4
 SB_STAGING_OSX=$PWD/server/staging/osx/stackbuilder
 CLT_STAGING_OSX=$PWD/server/staging/osx/commandlinetools
 PG_INSTALLER_DEFAULT_PATH=/Library/PostgreSQL/19
