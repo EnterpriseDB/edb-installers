@@ -33,22 +33,6 @@ _prep_server_osx() {
     patch -p1 -d $WD/server/source/postgres.osx < $WD/quick-fix.patch || _die "Failed to apply quick-fix.patch"
     tar -jcvf postgres.tar.bz2 postgres.osx || _die "Failed to create the archive (source/postgres.tar.bz2)"
 
-    if [ -e pgadmin.osx ];
-    then
-      echo "Removing existing pgadmin.osx source directory"
-      rm -rf pgadmin.osx  || _die "Couldn't remove the existing pgadmin.osx source directory (source/pgadmin.osx)"
-    fi
-    
-    if [ -e pgadmin.tar.bz2 ];
-    then
-      echo "Removing existing pgadmin archive"
-      rm -f pgadmin.tar.bz2  || _die "Couldn't remove the existing pgadmin archive (source/pgadmin.tar.bz2)"
-    fi
-
-    # Grab a copy of the pgadmin source tree
-    cp -pR pgadmin4-$PG_TARBALL_PGADMIN pgadmin.osx || _die "Failed to copy the source code (source/pgadmin4-$PG_TARBALL_PGADMIN)"
-    tar -jcvf pgadmin.tar.bz2 pgadmin.osx || _die "Failed to create the archive (source/pgadmin.tar.bz2)"
-
     if [ -e stackbuilder.osx ];
     then
       echo "Removing existing stackbuilder.osx source directory"
