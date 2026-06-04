@@ -39,26 +39,6 @@ _prep_server() {
     echo "Unpacking PostgreSQL source..."
     tar -jxvf ../../tarballs/postgresql-$PG_TARBALL_POSTGRESQL.tar.bz2
 
-    # pgAdmin
-    if [ -e pgadmin4-$PG_TARBALL_PGADMIN ];
-    then
-      echo "Removing existing pgadmin4-$PG_TARBALL_PGADMIN source directory"
-      rm -rf pgadmin4-$PG_TARBALL_PGADMIN  || _die "Couldn't remove the existing pgadmin4-$PG_TARBALL_PGADMIN source directory (source/pgadmin4-$PG_TARBALL_PGADMIN)"
-    fi
-
-    echo "Unpacking pgAdmin source..."
-    tar -zxvf ../../tarballs/pgadmin4-$PG_TARBALL_PGADMIN.tar.gz
-
-    cd pgadmin4-$PG_TARBALL_PGADMIN
-    if [ "$PG_TARBALL_PGADMIN" = "6.15" ]
-    then
-        if [ -e $WD/tarballs/pgadmin-psutil.patch ]
-        then
-            echo "Patching pgAdmin source"
-            patch -p0 < ~/tarballs/pgadmin-psutil.patch || _die "failed to apply pgadmin-psutil.patch"
-        fi
-    fi
-
     cd $WD/server/source
 
     # Debugger
