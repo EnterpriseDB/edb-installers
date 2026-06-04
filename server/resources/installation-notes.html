@@ -69,7 +69,7 @@ The debugger plugin is disabled by default for performance reasons. To enable it
   <li>Standard BCP-47 locale names (e.g., en-US, fr-FR). Recommended, if the locale name contains non-ASCII characters (such as accented characters or regional scripts) </li>
   <li>Long English locale names containing only ASCII characters (e.g., English_United States, French_France). So, any non-ASCII character containing locale is not passed to the initdb. </li>
 </ul>
-
+  
 <h3>pgAdmin 4</h3>
 
 <p>pgAdmin 4 is no longer bundled with the PostgreSQL Windows &amp; Mac installer. After PostgreSQL is installed, the installer now detects the existing pgAdmin 4 installation status on the machine and handles the following scenarios:</p>
@@ -86,25 +86,8 @@ The debugger plugin is disabled by default for performance reasons. To enable it
   <li>Install with pgAdmin 4: <code>postgresql-setup.exe --mode unattended --install-pgadmin 1</code></li>
   <li>Install without pgAdmin 4: <code>postgresql-setup.exe --mode unattended</code></li>
 </ul>
-
+  
 <h3>Technical Support</h3>
-
-<h3>pgAdmin 4</h3>
-
-<p>pgAdmin 4 is no longer bundled with the PostgreSQL Windows &amp; Mac installer. After PostgreSQL is installed, the installer now detects the existing pgAdmin 4 installation status on the machine and handles the following scenarios:</p>
-
-<ul>
-  <li><b>pgAdmin 4 not installed</b> - The installer offers to download and install the latest version of pgAdmin 4 directly from the official pgAdmin download server.</li>
-  <li><b>Older version of pgAdmin 4 installed</b> - The installer detects the installed version and offers to upgrade to the latest version.</li>
-  <li><b>Latest version of pgAdmin 4 already installed</b> - The installer skips the pgAdmin 4 installation and logs a message indicating that the latest version is already installed.</li>
-</ul>
-
-<p>For unattended installations, the <code>--install-pgadmin</code> flag can be used to enable pgAdmin 4 installation. By default, pgAdmin 4 installation is disabled in unattended mode:</p>
-
-<ul>
-  <li>Install with pgAdmin 4: <code>postgresql-setup.exe --mode unattended --install-pgadmin 1</code></li>
-  <li>Install without pgAdmin 4: <code>postgresql-setup.exe --mode unattended</code></li>
-</ul>
 
 <p>Issues using the installer can be reported to installer GitHub page at <a href="https://github.com/EnterpriseDB/edb-installers/issues">https://github.com/EnterpriseDB/edb-installers/issues</a></p>  
 
