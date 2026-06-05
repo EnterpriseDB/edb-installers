@@ -23,21 +23,60 @@ latest_version() {
         | tail -1
 }
 
-# Download into a private 0700 temp dir; print only the dir path on stdout (logs to stderr)
+# Read an app bundle's version label (CFBundleShortVersionString). $1 = path to
+# the .app. Prints nothing if the bundle or its Info.plist is absent.
+read_plist_version() {
+    plist="$1/Contents/Info.plist"
+    [ -f "$plist" ] || return 0
+    /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$plist" 2>/dev/null
+}
+
+# Print the pgAdmin 4 version currently installed on this machine (empty = none).
+# A community install in /Applications wins; otherwise fall back to the newest
+# bundled app left under /Library/PostgreSQL by an older (<=18) PostgreSQL.
+do_installed_version() {
+    V=$(read_plist_version "/Applications/pgAdmin 4.app")
+    if [ -n "$V" ]; then
+        printf '%s' "$V"
+        return 0
+    fi
+
+    best=""
+    for app in /Library/PostgreSQL/*/"pgAdmin 4.app"; do
+        [ -d "$app" ] || continue
+        v=$(read_plist_version "$app")
+        [ -z "$v" ] && continue
+        if [ -z "$best" ]; then
+            best="$v"
+        else
+            best=$(printf '%s\n%s\n' "$best" "$v" | sort -t. -k1,1n -k2,2n -k3,3n | tail -1)
+        fi
+    done
+    printf '%s' "$best"
+    return 0
+}
+
+# Download into a private 0700 temp dir; print only the dir path on stdout (logs to stderr).
+# $1 = version to fetch; if empty, resolve it from the FTP listing ourselves.
 do_download() {
+    VER="$1"
     DIR=$(mktemp -d -t pgadmin4) || { echo "ERROR: failed to create temp directory." >&2; return 1; }
     chmod 700 "$DIR"
 
     ARCH=$(detect_arch)
     echo "Detected architecture: $(uname -m) (using pgAdmin ${ARCH} build)" >&2
 
-    VER=$(latest_version)
+    # Resolve the version once: prefer the one the installer already computed and
+    # passed in; only query the FTP listing here if nothing was supplied.
+    if [ -z "$VER" ]; then
+        VER=$(latest_version)
+    fi
     if [ -z "$VER" ]; then
         echo "ERROR: Unable to determine the latest pgAdmin 4 version." >&2
         rm -rf "$DIR"
         return 1
     fi
-    echo "Latest pgAdmin 4 version: ${VER}" >&2
+    echo "pgAdmin 4 version to install: ${VER}" >&2
 
     DMG_NAME="pgadmin4-${VER}-${ARCH}.dmg"
     DMG_URL="${PGADMIN_FTP_BASE}/v${VER}/macos/${DMG_NAME}"
@@ -113,12 +152,20 @@ do_install() {
 
 case "$1" in
     download)
-        do_download
+        do_download "$2"
         exit $?
         ;;
     install)
         do_install "$2"
         exit $?
+        ;;
+    installed-version)
+        do_installed_version
+        exit 0
+        ;;
+    latest-version)
+        latest_version
+        exit 0
         ;;
     *)
         DIR=$(do_download) || exit 1
