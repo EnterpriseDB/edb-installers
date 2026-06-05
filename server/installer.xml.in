@@ -1965,18 +1965,25 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
         </actionGroup>
 
         <!-- WIN: Check existing pgAdmin version from registry -->
-        <setInstallerVariable name="installed_pgadmin_version" value=""/>
-        <registryGet>
-            <name>DisplayVersion</name>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\pgAdmin 4v9_is1</key>
-            <variable>installed_pgadmin_version</variable>
-            <abortOnError>0</abortOnError>
-        </registryGet>
-        <logMessage>
-            <text>Installed pgAdmin version: ${installed_pgadmin_version}</text>
-        </logMessage>
-        <!-- WIN: Latest pgAdmin version set at build time -->
-        <setInstallerVariable name="latest_pgadmin_version" value="PG_VERSION_PGADMIN"/>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installed_pgadmin_version" value=""/>
+                <registryGet>
+                    <name>DisplayVersion</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\pgAdmin 4v9_is1</key>
+                    <variable>installed_pgadmin_version</variable>
+                    <abortOnError>0</abortOnError>
+                </registryGet>
+                <logMessage>
+                    <text>Installed pgAdmin version: ${installed_pgadmin_version}</text>
+                </logMessage>
+                <!-- WIN: Latest pgAdmin version set at build time -->
+                <setInstallerVariable name="latest_pgadmin_version" value="PG_VERSION_PGADMIN"/>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+            </ruleList>
+        </actionGroup>
 
       <!-- WIN: Ask user - pgAdmin NOT installed -->
         <actionGroup>
