@@ -16,7 +16,11 @@ detect_arch() {
 }
 
 latest_version() {
-    curl -sS "$PGADMIN_LISTING_URL" \
+    # --http1.1: the installer runs this script in an environment where curl's
+    # HTTP/2 stack fails ("curl: (16) Error in the HTTP2 framing layer"), even
+    # though it works from a normal shell. Forcing HTTP/1.1 sidesteps that.
+    # --retry: ride out transient network blips so we don't needlessly skip pgAdmin.
+    curl -sS --http1.1 --retry 3 --retry-delay 2 "$PGADMIN_LISTING_URL" \
         | grep -oE 'v[0-9]+\.[0-9]+(\.[0-9]+)?' \
         | sed 's/^v//' \
         | sort -t. -k1,1n -k2,2n -k3,3n \
@@ -81,7 +85,7 @@ do_download() {
     DMG_NAME="pgadmin4-${VER}-${ARCH}.dmg"
     DMG_URL="${PGADMIN_FTP_BASE}/v${VER}/macos/${DMG_NAME}"
     echo "Downloading ${DMG_URL}" >&2
-    if ! curl -fL "$DMG_URL" -o "${DIR}/${DMG_NAME}" >&2; then
+    if ! curl -fL --http1.1 --retry 3 --retry-delay 2 "$DMG_URL" -o "${DIR}/${DMG_NAME}" >&2; then
         echo "ERROR: Failed to download pgAdmin 4 from ${DMG_URL}" >&2
         rm -rf "$DIR"
         return 1
