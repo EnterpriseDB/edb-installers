@@ -2132,6 +2132,11 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                 <logMessage>
                     <text>WARNING: could not determine the latest pgAdmin 4 version from the FTP listing. Skipping pgAdmin 4 installation - install it manually from https://www.pgadmin.org</text>
                 </logMessage>
+                <showWarning text="Could not reach the pgAdmin 4 download server. pgAdmin 4 was not installed - please install it manually from https://www.pgadmin.org">
+                    <ruleList>
+                        <compareText text="${installer_ui}" logic="does_not_equal" value="unattended"/>
+                    </ruleList>
+                </showWarning>
             </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="equals" value="osx"/>
