@@ -167,9 +167,16 @@ case "$1" in
         latest_version
         exit 0
         ;;
-    *)
+    "")
+        # No arguments: run the full download + install flow.
         DIR=$(do_download) || exit 1
         do_install "$DIR"
         exit $?
+        ;;
+    *)
+        # Unknown argument: fail loudly rather than silently installing pgAdmin.
+        echo "ERROR: unknown command '$1'." >&2
+        echo "Usage: $0 [download <ver> | install <dir> | installed-version | latest-version]" >&2
+        exit 2
         ;;
 esac
