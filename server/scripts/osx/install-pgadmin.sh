@@ -16,10 +16,6 @@ detect_arch() {
 }
 
 latest_version() {
-    # --http1.1: the installer runs this script in an environment where curl's
-    # HTTP/2 stack fails ("curl: (16) Error in the HTTP2 framing layer"), even
-    # though it works from a normal shell. Forcing HTTP/1.1 sidesteps that.
-    # --retry: ride out transient network blips so we don't needlessly skip pgAdmin.
     curl -sS --http1.1 --retry 3 --retry-delay 2 "$PGADMIN_LISTING_URL" \
         | grep -oE 'v[0-9]+\.[0-9]+(\.[0-9]+)?' \
         | sed 's/^v//' \
@@ -27,8 +23,6 @@ latest_version() {
         | tail -1
 }
 
-# Read an app bundle's version label (CFBundleShortVersionString). $1 = path to
-# the .app. Prints nothing if the bundle or its Info.plist is absent.
 read_plist_version() {
     plist="$1/Contents/Info.plist"
     [ -f "$plist" ] || return 0
@@ -60,8 +54,6 @@ do_installed_version() {
     return 0
 }
 
-# Download into a private 0700 temp dir; print only the dir path on stdout (logs to stderr).
-# $1 = version to fetch; if empty, resolve it from the FTP listing ourselves.
 do_download() {
     VER="$1"
     DIR=$(mktemp -d -t pgadmin4) || { echo "ERROR: failed to create temp directory." >&2; return 1; }
@@ -69,9 +61,7 @@ do_download() {
 
     ARCH=$(detect_arch)
     echo "Detected architecture: $(uname -m) (using pgAdmin ${ARCH} build)" >&2
-
-    # Resolve the version once: prefer the one the installer already computed and
-    # passed in; only query the FTP listing here if nothing was supplied.
+    
     if [ -z "$VER" ]; then
         VER=$(latest_version)
     fi
