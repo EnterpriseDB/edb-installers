@@ -1,3 +1,10 @@
+# PostgreSQL installer release 18.4-2 (2026-06-11)
+## Changes 🛠️
+- **Dependencies (macOS & Windows)**
+    - Update `openssl` version to `3.5.7`
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 18.4-1 (2026-05-14)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.15`
