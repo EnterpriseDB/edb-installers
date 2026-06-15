@@ -5,6 +5,7 @@ generate_3rd_party_license()
 {
     export ComponentName="$1"
     export ListGeneratorScriptFileWin="$WD/list-libs-windows.sh"
+    export ListGeneratorScriptFileOsx="$WD/list-libs-osx.sh"
     export ListGeneratorScriptFileJar="$WD/list-jars.sh"
     export ListPipModules="$WD/list_pip_libs.sh"
     export ListJSScripts="$WD/list_js_libs.sh"
@@ -24,9 +25,15 @@ generate_3rd_party_license()
 
     mkdir -p "$WD/output/$LibListDir"
 
-    blnIsWindows=true
-    ListGeneratorScriptFile="$ListGeneratorScriptFileWin"
-    CurrentPlatform="windows"
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        blnIsWindows=false
+        ListGeneratorScriptFile="$ListGeneratorScriptFileOsx"
+        CurrentPlatform="osx"
+    else
+        blnIsWindows=true
+        ListGeneratorScriptFile="$ListGeneratorScriptFileWin"
+        CurrentPlatform="windows"
+    fi
 
     export Lib_List_File="$WD/output/$LibListDir/${ComponentName}_${CurrentPlatform}_libs.txt"
 
@@ -92,17 +99,25 @@ generate_3rd_party_license()
         then
                 unix2dos $ComponentFile || _die "Unable to convert 3rd party license file [$ComponentFile] to dos format."
         else
-                dos2unix $ComponentFile || _die "Unable to convert 3rd party license file [$ComponentFile] to unix format."
+                if command -v dos2unix >/dev/null 2>&1; then
+                        dos2unix $ComponentFile || echo "WARNING: dos2unix conversion failed for [$ComponentFile]"
+                fi
         fi
 
         chmod 444 $ComponentFile
     fi
 }
 
-pushd ../installer/server/staging/windows-x64/commandlinetools
+if [[ "$(uname -s)" == "Darwin" ]]; then
+    STAGING_PLATFORM_DIR=osx
+else
+    STAGING_PLATFORM_DIR=windows-x64
+fi
+
+pushd ../installer/server/staging/$STAGING_PLATFORM_DIR/commandlinetools
 generate_3rd_party_license "commandlinetools"
 popd
 
-pushd ../installer/server/staging/windows-x64/stackbuilder
+pushd ../installer/server/staging/$STAGING_PLATFORM_DIR/stackbuilder
 generate_3rd_party_license "StackBuilder"
 popd
