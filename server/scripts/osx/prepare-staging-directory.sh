@@ -2,16 +2,6 @@
 #
 # Assemble the macOS InstallBuilder staging tree from the universal binaries
 # already built into ./pgsql by the GitHub Actions workflow.
-#
-# This is the osx counterpart of server/scripts/windows/prepare-staging-directory.sh.
-# The resulting layout mirrors what server/build-osx.sh (_postprocess_server_osx)
-# produced, so the existing osx component templates (pgserver-osx.xml,
-# commandlinetools-osx.xml, stackbuilder-osx.xml) consume it unchanged:
-#
-#   staging/osx/server           -> bin, doc, include, share, installer, scripts, server_license.txt
-#   staging/osx/commandlinetools -> bin, lib, share/man, installer, scripts, license
-#   staging/osx/stackbuilder     -> stackbuilder.app, installer, scripts, license
-#   staging/osx/{resources,i18n,scripts} -> installer-level assets
 
 set -e
 
