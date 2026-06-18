@@ -66,13 +66,13 @@ make install
 
 #build postgres docs
 cd doc
-export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
-CFLAGS='$PG_ARCH_OSX_CFLAGS ' make
+export XML_CATALOG_FILES="/opt/homebrew/etc/xml/catalog"
+CFLAGS="$PG_ARCH_OSX_CFLAGS" make
 make install 
 
 #build contrib
 cd ../contrib
-CFLAGS='$PG_ARCH_OSX_CFLAGS ' make
+CFLAGS="$PG_ARCH_OSX_CFLAGS" make
 make install
 make -C contrib/uuid-ossp CFLAGS="$PG_ARCH_OSX_CFLAGS" install
 
