@@ -63,13 +63,13 @@ make -j"$(sysctl -n hw.ncpu)"
 make install
 
 #build postgres docs
-cd $SOURCE_DIR/doc
+cd doc
 export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
 CFLAGS='$PG_ARCH_OSX_CFLAGS ' make || _die "Failed to build the postgres docs"
 make install 
 
 #build contrib
-cd $SOURCE_DIR/contrib
+cd ../contrib
 CFLAGS='$PG_ARCH_OSX_CFLAGS ' make  || _die "Failed to build the postgres contrib"
 make install
 make -C contrib/uuid-ossp CFLAGS="$PG_ARCH_OSX_CFLAGS" install
