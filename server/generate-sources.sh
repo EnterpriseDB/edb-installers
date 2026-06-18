@@ -1,14 +1,10 @@
 #! /bin/sh
-
 set -xeu
-
 NAME=postgresql
-
 : ${SOURCE_VERSION:?The SOURCE_VERSION environment variable is required}
-
-WORKDIR=$(pwd)/src
-cd ${WORKDIR}
+WORKDIR=$(pwd)
 TARNAME="${NAME}-${SOURCE_VERSION}"
-wget -O "${TARNAME}.tar.bz2" ${URL}
+cd ${WORKDIR}
+tar -cjf "${TARNAME}.tar.bz2" src/         # ✅ pack git checkout directly
 md5sum "${TARNAME}.tar.bz2" > "${TARNAME}.tar.bz2.md5"
-mv ${TARNAME}.tar.bz2 ../
+                                            # ✅ no mv needed, already in workspace root
