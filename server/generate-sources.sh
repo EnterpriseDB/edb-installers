@@ -5,6 +5,9 @@ NAME=postgresql
 WORKDIR=$(pwd)
 TARNAME="${NAME}-${SOURCE_VERSION}"
 cd ${WORKDIR}
-tar -cjf "${TARNAME}.tar.bz2" src/         # ✅ pack git checkout directly
+
+# Rename src/ to postgresql-18.4/ so compile.ps1 finds the right directory
+cp -r src/ "${TARNAME}"                         # ✅ copy src to postgresql-18.4/
+tar -cjf "${TARNAME}.tar.bz2" "${TARNAME}/"    # ✅ pack as postgresql-18.4/
 md5sum "${TARNAME}.tar.bz2" > "${TARNAME}.tar.bz2.md5"
-                                            # ✅ no mv needed, already in workspace root
+rm -rf "${TARNAME}"                             # cleanup temp dir
