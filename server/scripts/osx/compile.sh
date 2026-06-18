@@ -61,8 +61,17 @@ LIBCURL_LIBS="-L$DEP_PREFIX/lib" \
 
 make -j"$(sysctl -n hw.ncpu)"
 make install
-make -C doc install
-make -C contrib CFLAGS="$PG_ARCH_OSX_CFLAGS" install
+
+#build postgres docs
+cd $SOURCE_DIR/doc
+export XML_CATALOG_FILES="/usr/local/etc/xml/catalog"
+CFLAGS='$PG_ARCH_OSX_CFLAGS ' make || _die "Failed to build the postgres docs"
+make install 
+
+#build contrib
+cd $SOURCE_DIR/contrib
+CFLAGS='$PG_ARCH_OSX_CFLAGS ' make  || _die "Failed to build the postgres contrib"
+make install
 make -C contrib/uuid-ossp CFLAGS="$PG_ARCH_OSX_CFLAGS" install
 
 # Bundle dependency libraries and headers into staging.
