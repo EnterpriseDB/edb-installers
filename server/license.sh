@@ -70,7 +70,7 @@ generate_3rd_party_license()
         {                                                                                                                           \
             if ( listProject != "" )                                                                                                \
             {                                                                                                                       \
-                system("printf '==================\\n%s license\\n==================\\n' \""listProject"\" >> "ENVIRON["ComponentFile"]);    \
+                system("printf \"==================\\n%s license\\n==================\\n\" \""listProject"\" >> "ENVIRON["ComponentFile"]);    \
                 system("cat "ENVIRON["LicenseTypePath"]"/"prevLicenseName" >> "ENVIRON["ComponentFile"]);                           \
                 system("echo >> "ENVIRON["ComponentFile"]);                                                                         \
             }                                                                                                                       \
