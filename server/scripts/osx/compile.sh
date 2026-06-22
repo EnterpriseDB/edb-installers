@@ -72,7 +72,11 @@ make install
 cd ../contrib
 CFLAGS="$PG_ARCH_OSX_CFLAGS" make
 make install
-make -C contrib/uuid-ossp CFLAGS="$PG_ARCH_OSX_CFLAGS" install
+
+#build uuid-ossp
+cd uuid-ossp
+CFLAGS="$PG_ARCH_OSX_CFLAGS" make
+make install
 
 # Bundle dependency libraries and headers into staging.
 cp -pR "$DEP_PREFIX"/lib/*.dylib "$PG_STAGING/lib/" 2>/dev/null || true
