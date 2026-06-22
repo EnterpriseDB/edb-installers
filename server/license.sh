@@ -47,7 +47,10 @@ generate_3rd_party_license()
     $ListGeneratorScriptFileJar >> $TempFile
     $ListJSScripts >> $TempFile
 
-    cat $TempFile | xargs -I{} grep -w {} $WD/resources/files_to_project_map.txt | sort -u | cut -f1 | grep -v $LIBPQPattern | xargs -I{} echo "awk '/\<{}\>/ {print \$1\" {}\"}' $WD/resources/license_to_project_map.txt" | sh | sort -u  > $Lib_List_File
+    # Match the project name as a whole field (not a regex substring). The
+    # previous \<...\> word boundaries are a GNU awk extension and silently
+    # match nothing under macOS's BSD awk, which produced an empty license file.
+    cat $TempFile | xargs -I{} grep -w {} $WD/resources/files_to_project_map.txt | sort -u | cut -f1 | grep -v $LIBPQPattern | xargs -I{} echo "awk -v p={} '{for(i=2;i<=NF;i++) if(\$i==p) print \$1\" \"p}' $WD/resources/license_to_project_map.txt" | sh | sort -u  > $Lib_List_File
 
     awk '\
     BEGIN                                                                                                                           \
@@ -67,7 +70,7 @@ generate_3rd_party_license()
         {                                                                                                                           \
             if ( listProject != "" )                                                                                                \
             {                                                                                                                       \
-                system("echo -e \"==================\n"listProject" license\n==================\" >> "ENVIRON["ComponentFile"]);    \
+                system("printf '==================\\n%s license\\n==================\\n' \""listProject"\" >> "ENVIRON["ComponentFile"]);    \
                 system("cat "ENVIRON["LicenseTypePath"]"/"prevLicenseName" >> "ENVIRON["ComponentFile"]);                           \
                 system("echo >> "ENVIRON["ComponentFile"]);                                                                         \
             }                                                                                                                       \
