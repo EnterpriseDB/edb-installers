@@ -2449,10 +2449,7 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
             </componentSelectionValidationActionList>
         </component>
         <include file="pgserver-@@PLATFORM@@.xml"/>
-        <!-- StackBuilder disabled for the macOS build on this branch: the
-             stackbuilder.app bundle is not built/fetched in CI yet.
         <include file="stackbuilder-@@PLATFORM@@.xml"/>
-        -->
         <include file="commandlinetools-@@PLATFORM@@.xml"/>
     </componentList>
 

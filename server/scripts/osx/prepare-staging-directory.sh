@@ -120,8 +120,23 @@ cp packaging-config/scripts/linuxServiceAction.xml       "$S/scripts/"
 cp packaging-config/server/installer.xml.in        "$S/installer.xml"
 cp packaging-config/server/pgserver.xml.in         "$S/pgserver-osx.xml"
 cp packaging-config/server/commandlinetools.xml.in "$S/commandlinetools-osx.xml"
-# StackBuilder disabled on this branch (component commented out of installer.xml.in)
-# cp packaging-config/server/stackbuilder.xml.in     "$S/stackbuilder-osx.xml"
+
+# StackBuilder is not built/fetched for macOS yet, but installer.xml includes
+# stackbuilder-<platform>.xml and the project references the 'stackbuilder'
+# component throughout. Emit a hidden, unselected, empty stub component for osx
+# only so the include resolves and nothing is installed/launched. (Windows/Linux
+# keep the real stackbuilder.xml.in via their own staging, so this stays
+# safe to merge into REL_*.) Replace with the real component once StackBuilder
+# is built for macOS.
+cat > "$S/stackbuilder-osx.xml" <<'EOF'
+<component>
+    <name>stackbuilder</name>
+    <description>Stack Builder</description>
+    <canBeEdited>0</canBeEdited>
+    <selected>0</selected>
+    <show>0</show>
+</component>
+EOF
 
 echo "--- staging/osx contents ---"
 ls -la "$S"
