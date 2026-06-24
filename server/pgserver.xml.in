@@ -2646,11 +2646,13 @@
 
     <!-- Postinstallation actions -->
     <postInstallationActionList>
-        <!-- The bundled unix install scripts (createuser.sh, initcluster.sh,
+        <!-- The PostgreSQL binaries (bin/initdb, bin/postgres, ...) and the
+             bundled unix install scripts (createuser.sh, initcluster.sh,
              loadmodules.sh, createshortcuts*.sh, install-pgadmin.sh, runpsql.sh)
              must be executable. GitHub CI artifacts strip the exec bit during
-             packaging, so force it here before any of them run. -->
-        <changePermissions permissions="0755" files="${installdir}/installer/server/*.sh;${installdir}/scripts/*.sh">
+             packaging, so force it here before any of them run (initcluster.sh
+             below execs bin/initdb). -->
+        <changePermissions permissions="0755" files="${installdir}/bin/*;${installdir}/installer/server/*.sh;${installdir}/scripts/*.sh">
             <abortOnError>0</abortOnError>
             <ruleList>
                 <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
