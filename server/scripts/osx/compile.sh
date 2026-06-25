@@ -78,3 +78,15 @@ cp -pR "$DEP_PREFIX"/lib/*.dylib "$PG_STAGING/lib/" 2>/dev/null || true
 for h in openssl libxml2 libxslt unicode; do
     [ -d "$DEP_PREFIX/include/$h" ] && cp -R "$DEP_PREFIX/include/$h" "$PG_STAGING/include/"
 done
+
+# Bundle the Perl module tree and Tcl script library so plperl/pltcl can
+# initialise at runtime. plperl needs @INC modules (strict.pm, Config.pm, ...)
+# and pltcl needs the Tcl script library (init.tcl). The installed service is
+# pointed at these via PERL5LIB / TCL_LIBRARY (set when the launchd service is
+# created). The dirs are: perl privlib+archlib at lib/<ver>, perl site at
+# lib/site_perl, tcl/tk scripts at lib/tcl*/lib/tk*.
+for d in "$DEP_PREFIX"/lib/[0-9]*.[0-9]* \
+         "$DEP_PREFIX"/lib/site_perl \
+         "$DEP_PREFIX"/lib/tcl[0-9]* "$DEP_PREFIX"/lib/tk[0-9]* "$DEP_PREFIX"/lib/tcl8; do
+    [ -d "$d" ] && cp -pR "$d" "$PG_STAGING/lib/"
+done
