@@ -1,10 +1,5 @@
 #!/bin/bash
 # Build PostgreSQL as a macOS universal binary (x86_64 + arm64).
-# macOS counterpart of server/scripts/windows/compile.ps1.
-#
-# Usage: compile.sh <source_directory> <dep_prefix>
-# Tool paths (PERL, PYTHON, TCL_CONFIG_DIR) and build flags
-# (PG_STAGING, PG_SYSROOT, PG_ARCH_OSX_CFLAGS) come from the environment.
 
 set -xe
 
