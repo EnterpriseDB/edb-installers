@@ -2,10 +2,10 @@
 set -xeu
 NAME=postgresql
 : ${SOURCE_VERSION:?The SOURCE_VERSION environment variable is required}
-WORKDIR=$(pwd)                             # ✅ workspace root
+WORKDIR=$(pwd)                             
 TARNAME="${NAME}-${SOURCE_VERSION}"
 cd ${WORKDIR}
-cp -r src/ "${TARNAME}"                   # ✅ copy src/ to postgresql-18.4/
-tar -cjf "${TARNAME}.tar.bz2" "${TARNAME}/"  # ✅ pack as postgresql-18.4/
+cp -r src/ "${TARNAME}"                   
+tar -cjf "${TARNAME}.tar.bz2" "${TARNAME}/"  
 md5sum "${TARNAME}.tar.bz2" > "${TARNAME}.tar.bz2.md5"
-rm -rf "${TARNAME}"                        # ✅ cleanup temp dir
+rm -rf "${TARNAME}"                        
