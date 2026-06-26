@@ -115,10 +115,7 @@ cp packaging-config/server/commandlinetools.xml.in "$S/commandlinetools-osx.xml"
 # StackBuilder is not built/fetched for macOS yet, but installer.xml includes
 # stackbuilder-<platform>.xml and the project references the 'stackbuilder'
 # component throughout. Emit a hidden, unselected, empty stub component for osx
-# only so the include resolves and nothing is installed/launched. (Windows/Linux
-# keep the real stackbuilder.xml.in via their own staging, so this stays
-# safe to merge into REL_*.) Replace with the real component once StackBuilder
-# is built for macOS.
+# only so the include resolves and nothing is installed/launched. 
 cat > "$S/stackbuilder-osx.xml" <<'EOF'
 <component>
     <name>stackbuilder</name>
