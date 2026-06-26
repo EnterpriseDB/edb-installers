@@ -10,8 +10,10 @@ PLIST="/Library/LaunchDaemons/${SERVICENAME}.plist"
 PB=/usr/libexec/PlistBuddy
 
 [ -f "$PLIST" ] || exit 0
-TCLLIB=$(ls -d "$INSTALLDIR"/lib/tcl[0-9]* 2>/dev/null | head -1)
-[ -n "$TCLLIB" ] || exit 0
+# The script library is the dir holding init.tcl (lib/tcl8.6), not lib/tcl8.
+INIT=$(ls "$INSTALLDIR"/lib/tcl[0-9]*/init.tcl 2>/dev/null | head -1)
+[ -n "$INIT" ] || exit 0
+TCLLIB=$(dirname "$INIT")
 
 "$PB" -c "Add :EnvironmentVariables dict" "$PLIST" 2>/dev/null
 "$PB" -c "Add :EnvironmentVariables:TCL_LIBRARY string ${TCLLIB}" "$PLIST" 2>/dev/null \
