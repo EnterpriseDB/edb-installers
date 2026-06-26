@@ -78,3 +78,8 @@ cp -pR "$DEP_PREFIX"/lib/*.dylib "$PG_STAGING/lib/" 2>/dev/null || true
 for h in openssl libxml2 libxslt unicode iconv.h zlib.h zdict.h lz4*.h zstd*.h; do
     cp -R "$DEP_PREFIX"/include/$h "$PG_STAGING/include/" 2>/dev/null || true
 done
+
+# Bundle the Tcl script library (init.tcl) so pltcl can initialise at runtime.
+for d in "$DEP_PREFIX"/lib/tcl[0-9]* "$DEP_PREFIX"/lib/tcl8; do
+    [ -d "$d" ] && cp -pR "$d" "$PG_STAGING/lib/"
+done
