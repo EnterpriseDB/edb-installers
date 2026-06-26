@@ -75,6 +75,6 @@ make install
 
 # Bundle dependency libraries and headers into staging.
 cp -pR "$DEP_PREFIX"/lib/*.dylib "$PG_STAGING/lib/" 2>/dev/null || true
-for h in openssl libxml2 libxslt unicode; do
-    [ -d "$DEP_PREFIX/include/$h" ] && cp -R "$DEP_PREFIX/include/$h" "$PG_STAGING/include/"
+for h in openssl libxml2 libxslt unicode iconv.h zlib.h zdict.h lz4*.h zstd*.h; do
+    cp -R "$DEP_PREFIX"/include/$h "$PG_STAGING/include/" 2>/dev/null || true
 done
