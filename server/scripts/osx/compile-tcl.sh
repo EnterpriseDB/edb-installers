@@ -1,8 +1,4 @@
 #!/bin/bash
-# Stage the prebuilt universal Tcl into the dependency prefix and repoint its
-# config paths so PostgreSQL's --with-tcl can configure. macOS' system Tcl ships
-# no tclConfig.sh, so a universal pltcl must build against this prebuilt copy.
-#
 # Usage: compile-tcl.sh <tcl_src_dir> <dep_prefix>
 set -e
 
@@ -12,7 +8,6 @@ DEP_PREFIX="${2:?usage: compile-tcl.sh <tcl_src_dir> <dep_prefix>}"
 mkdir -p "$DEP_PREFIX"
 cp -a "$TCL_SRC"/. "$DEP_PREFIX"/
 
-# tclConfig.sh / tkConfig.sh are tokenised at dep-build time; restore our prefix.
 for cfg in "$DEP_PREFIX"/lib/tclConfig.sh "$DEP_PREFIX"/lib/tkConfig.sh; do
     [ -f "$cfg" ] && sed -i '' "s|@@TCL_PREFIX@@|$DEP_PREFIX|g" "$cfg"
 done
