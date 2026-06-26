@@ -73,8 +73,11 @@ cd uuid-ossp
 CFLAGS="$PG_ARCH_OSX_CFLAGS" make
 make install
 
-# Bundle dependency libraries and headers into staging.
-cp -pR "$DEP_PREFIX"/lib/*.dylib "$PG_STAGING/lib/" 2>/dev/null || true
+for lib in liblz4 libxml2 libxslt libuuid libedit libz libssl libcrypto \
+           libintl libicui18n libicudata libicuuc libiconv libkrb5 libgss \
+           libk5 libcom libtcl8.6; do
+    cp -pR "$DEP_PREFIX"/lib/${lib}*.dylib "$PG_STAGING/lib/" 2>/dev/null || true
+done
 for h in openssl libxml2 libxslt unicode iconv.h zlib.h zdict.h lz4*.h zstd*.h; do
     cp -R "$DEP_PREFIX"/include/$h "$PG_STAGING/include/" 2>/dev/null || true
 done
