@@ -65,7 +65,6 @@ cp "$OSX_SCRIPTS/createshortcuts.sh"      "$PGSERVER/installer/server/createshor
 cp "$OSX_SCRIPTS/createshortcuts_server.sh" "$PGSERVER/installer/server/createshortcuts_server.sh"
 cp "$OSX_SCRIPTS/loadmodules.sh"          "$PGSERVER/installer/server/loadmodules.sh"
 cp "$OSX_SCRIPTS/install-pgadmin.sh"      "$PGSERVER/installer/server/install-pgadmin.sh"
-cp "$OSX_SCRIPTS/set-service-pl-env.sh"   "$PGSERVER/installer/server/set-service-pl-env.sh"
 chmod ugo+x "$PGSERVER/installer/prerun_checks.sh" "$PGSERVER/installer/server/"*.sh
 
 # Server menu-pick scripts (applescripts) and icons

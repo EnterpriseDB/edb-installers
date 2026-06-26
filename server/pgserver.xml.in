@@ -3113,18 +3113,6 @@
                     <username>${serviceaccount}</username>
                 </createOSXService>
 
-                <!-- Point the service's plperl/pltcl at their bundled support
-                     files (PERL5LIB / TCL_LIBRARY) before the service is loaded. -->
-                <runProgram>
-                    <program>${installdir}/installer/server/set-service-pl-env.sh</program>
-                    <programArguments>"${installdir}" "${servicename}"</programArguments>
-                    <abortOnError>0</abortOnError>
-                    <showMessageOnError>0</showMessageOnError>
-                    <ruleList>
-                        <compareText logic="equals" text="${platform_name}" value="osx"/>
-                    </ruleList>
-                </runProgram>
-
 		<runProgram>
 		    <program>launchctl</program>
                     <programArguments>load /Library/LaunchDaemons/${servicename}.plist</programArguments>
