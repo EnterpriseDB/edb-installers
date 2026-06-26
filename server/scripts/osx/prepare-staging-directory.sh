@@ -14,10 +14,6 @@ OSX_SCRIPTS=packaging-config/server/scripts/osx
 
 mkdir -p "$PGSERVER" "$CLT/bin" "$CLT/lib" "$CLT/share/man/man1" "$SB"
 
-# ---------------------------------------------------------------------------
-# Server component: the full built tree lives under ./pgsql (dependency dylibs
-# and system_stats already bundled into pgsql/lib by the workflow).
-# ---------------------------------------------------------------------------
 cp -pR pgsql/bin     "$PGSERVER/"
 cp -pR pgsql/lib     "$PGSERVER/"
 cp -pR pgsql/include "$PGSERVER/"
@@ -28,12 +24,6 @@ cp packaging-config/resources/license.txt "$PGSERVER/server_license.txt"
 cp "$RES/installation-notes.html" "$PGSERVER/doc/"
 cp "$RES/edblogo.png"             "$PGSERVER/doc/"
 
-# ---------------------------------------------------------------------------
-# Command Line Tools: the shared lib dir and the client binaries are moved out
-# of the server component into commandlinetools (matches build-osx.sh layout;
-# both components install into the same prefix so binaries still resolve their
-# dylibs via @loader_path/../lib).
-# ---------------------------------------------------------------------------
 mv "$PGSERVER/lib"/* "$CLT/lib/"
 rmdir "$PGSERVER/lib" 2>/dev/null || true
 
