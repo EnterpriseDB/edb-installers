@@ -14,8 +14,6 @@ set -e
 PREFIX="${1:?usage: rewrite-dylib-refs.sh <prefix> [extra_build_lib_dir ...]}"
 shift || true
 
-# Build lib dirs whose absolute references should become @rpath. $PREFIX/lib is
-# always included; pass the dependency prefix lib dir(s) as extra arguments.
 BUILD_LIB_DIRS="$PREFIX/lib $*"
 
 _reloc() {
