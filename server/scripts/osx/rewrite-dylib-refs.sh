@@ -20,6 +20,9 @@ _reloc() {
     f="$1"; rpath="$2"
     [ -L "$f" ] && return 0
     file "$f" | grep -qE "Mach-O" || return 0
+    # Universal static archives (.a) report as "Mach-O universal binary ...
+    # [x86_64:current ar archive]" - install_name_tool can't touch them, skip.
+    file "$f" | grep -qi "archive" && return 0
 
     if ! otool -l "$f" | grep -A2 LC_RPATH | grep -q "path $rpath "; then
         install_name_tool -add_rpath "$rpath" "$f"
@@ -53,7 +56,7 @@ done
 # binaries pg_regress/isolationtester) that the fixed-depth globs above miss.
 # The rpath is computed per file from its nesting depth so @rpath resolves
 # back to $PREFIX/lib.
-find "$PREFIX/lib" -type f ! -name '*.dylib' ! -name '*.so' 2>/dev/null | while read -r f; do
+find "$PREFIX/lib" -type f ! -name '*.dylib' ! -name '*.so' ! -name '*.a' 2>/dev/null | while read -r f; do
     file "$f" | grep -qE "Mach-O" || continue
     dir=$(dirname "${f#"$PREFIX"/lib/}")
     up="@loader_path"
