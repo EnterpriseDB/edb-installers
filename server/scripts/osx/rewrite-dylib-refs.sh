@@ -49,4 +49,19 @@ for f in "$PREFIX"/lib/postgresql/*.so "$PREFIX"/lib/postgresql/*.dylib; do
     [ -e "$f" ] && _reloc "$f" "@loader_path/.."
 done
 
+# Relocate Mach-O executables nested anywhere under lib/ (e.g. the pgxs test
+# binaries pg_regress/isolationtester) that the fixed-depth globs above miss.
+# The rpath is computed per file from its nesting depth so @rpath resolves
+# back to $PREFIX/lib.
+find "$PREFIX/lib" -type f ! -name '*.dylib' ! -name '*.so' 2>/dev/null | while read -r f; do
+    file "$f" | grep -qE "Mach-O" || continue
+    dir=$(dirname "${f#"$PREFIX"/lib/}")
+    up="@loader_path"
+    if [ "$dir" != "." ]; then
+        n=$(awk -F/ '{print NF}' <<<"$dir")
+        i=0; while [ "$i" -lt "$n" ]; do up="$up/.."; i=$((i+1)); done
+    fi
+    _reloc "$f" "$up"
+done
+
 echo "dylib reference rewrite complete for $PREFIX"
