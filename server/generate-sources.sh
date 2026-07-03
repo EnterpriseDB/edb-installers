@@ -1,7 +1,7 @@
 #! /bin/sh
 set -xeu
 NAME=postgresql
-: ${SOURCE_VERSION:?The SOURCE_VERSION environment variable is required}
+: ${VERSION:?The VERSION environment variable is required}
 WORKDIR=$(pwd)
 TARNAME="${NAME}-${SOURCE_VERSION}"
 cd ${WORKDIR}
