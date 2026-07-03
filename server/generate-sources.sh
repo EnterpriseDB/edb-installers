@@ -2,8 +2,9 @@
 set -xeu
 NAME=postgresql
 : ${VERSION:?The VERSION environment variable is required}
+: ${EXTRA_VERSION:?The EXTRA_VERSION environment variable is required}
 WORKDIR=$(pwd)
-TARNAME="${NAME}-${VERSION}"
+TARNAME="${NAME}-${VERSION}.${EXTRA_VERSION}"
 cd ${WORKDIR}
 
 if [ -n "${URL:-}" ]; then
