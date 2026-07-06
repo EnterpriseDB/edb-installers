@@ -18,3 +18,5 @@ find . -type f ! -type l | while read -r f; do
     strip -S "$f" 2>/dev/null || true
 done
 echo "debug symbols written to $OUT"
+echo "---Printing the output of pgbuild end.."
+ls -la "$STAGING/lib"
