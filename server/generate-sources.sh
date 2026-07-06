@@ -5,7 +5,6 @@ NAME=postgresql
 : ${EXTRA_VERSION:?The EXTRA_VERSION environment variable is required}
 
 CONF_ARGS="--without-icu"
-MAKE_ARGS="distdir=postgresql-${VERSION}.${EXTRA_VERSION}"
 WORKDIR=$(pwd)
 TARNAME="${NAME}-${VERSION}.${EXTRA_VERSION}"
 
@@ -17,21 +16,24 @@ if [ -n "${URL:-}" ]; then
   echo "Tarball md5sum: $(md5sum ${TARNAME}.tar.bz2)"
   md5sum "${TARNAME}.tar.bz2" > "${TARNAME}.tar.bz2.md5"
 else
-  # snapshot case: build docs and create tarball using docker
+  # snapshot case: build docs and create tarball
   echo "Source commit hash: $(git -C src rev-parse HEAD)"
   echo "Source branch/ref: $(git -C src rev-parse --abbrev-ref HEAD)"
 
-  USERMAP=$(docker run --rm -v "$WORKDIR":"$WORKDIR" ghcr.io/enterprisedb/platform/postgresql-builder stat -c %u:%g "$WORKDIR")
-  docker run --rm -i -u $USERMAP -w ${WORKDIR} -v ${WORKDIR}:${WORKDIR}:rw ghcr.io/enterprisedb/platform/postgresql-builder /bin/bash <<-EOF
-    cd src
-    set -xe
-    ./configure $CONF_ARGS
-    make -s dist $MAKE_ARGS
-    for file in *.tar.*; do md5sum \${file} > \${file}.md5; done
-    cp *.tar.bz2 ${WORKDIR}
-EOF
+  # install doc build dependencies
+  sudo apt-get install -y docbook-xsl docbook-xml xsltproc libxml2-utils
 
+  # build HTML docs and create tarball
+  cd src
+  ./configure $CONF_ARGS
+  make -C doc/src/sgml html
+  cd ${WORKDIR}
+
+  # create tarball
+  cp -r src/ "${TARNAME}"
+  tar -cjf "${TARNAME}.tar.bz2" "${TARNAME}/"
   echo "Tarball created: ${TARNAME}.tar.bz2"
   echo "Tarball md5sum: $(md5sum ${TARNAME}.tar.bz2)"
   md5sum "${TARNAME}.tar.bz2" > "${TARNAME}.tar.bz2.md5"
+  rm -rf "${TARNAME}"
 fi
