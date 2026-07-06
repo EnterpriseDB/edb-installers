@@ -89,3 +89,8 @@ done
 for d in "$DEP_PREFIX"/lib/tcl[0-9]* "$DEP_PREFIX"/lib/tcl8; do
     [ -d "$d" ] && cp -pR "$d" "$PG_STAGING/lib/"
 done
+
+echo "---Printing the output of dep_prefix again end.."
+ls -la "$DEP_PREFIX/lib"
+echo "---Printing the output of pgbuild end.."
+ls -la "$PG_STAGING/lib"
