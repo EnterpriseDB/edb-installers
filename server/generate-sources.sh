@@ -4,7 +4,7 @@ NAME=postgresql
 : ${VERSION:?The VERSION environment variable is required}
 : ${EXTRA_VERSION:?The EXTRA_VERSION environment variable is required}
 
-CONF_ARGS="--without-icu"
+CONF_ARGS="--without-icu --without-readline"
 WORKDIR=$(pwd)
 TARNAME="${NAME}-${VERSION}.${EXTRA_VERSION}"
 
@@ -23,7 +23,7 @@ else
   # install doc build dependencies
   sudo apt-get install -y docbook-xsl docbook-xml xsltproc libxml2-utils
 
-  # build HTML docs and create tarball
+  # build HTML docs
   cd src
   ./configure $CONF_ARGS
   make -C doc/src/sgml html
