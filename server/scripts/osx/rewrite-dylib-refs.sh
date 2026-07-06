@@ -1,14 +1,4 @@
 #!/bin/bash
-# For each Mach-O file this:
-#   - adds an LC_RPATH back to the install lib dir (@loader_path-relative),
-#   - sets a dylib/bundle's own id to @rpath/<name>,
-#   - rewrites absolute build-path dependencies to @rpath/<name>.
-#
-# Usage: rewrite-dylib-refs.sh <prefix> [extra_build_lib_dir ...]
-#   <prefix>            install prefix to process (e.g. ./pgsql)
-#   extra_build_lib_dir additional build-time lib dirs whose refs must be
-#                       rewritten (e.g. the dependency prefix's lib dir)
-
 set -e
 
 PREFIX="${1:?usage: rewrite-dylib-refs.sh <prefix> [extra_build_lib_dir ...]}"
@@ -68,3 +58,6 @@ find "$PREFIX/lib" -type f ! -name '*.dylib' ! -name '*.so' ! -name '*.a' 2>/dev
 done
 
 echo "dylib reference rewrite complete for $PREFIX"
+
+echo "---Printing the output of pgbuild end.."
+ls -la "$PREFIX/lib"
