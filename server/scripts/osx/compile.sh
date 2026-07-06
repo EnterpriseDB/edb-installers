@@ -12,7 +12,7 @@ if [ -z "$SOURCE_DIR" ] || [ -z "$DEP_PREFIX" ]; then
 fi
 
 echo "Print the output of dep_prefix.."
-ls -lrt "$DEP_PREFIX"/lib/
+ls -la "$DEP_PREFIX/lib"
 
 export PATH="$DEP_PREFIX/bin:$PATH"
 
