@@ -58,6 +58,3 @@ find "$PREFIX/lib" -type f ! -name '*.dylib' ! -name '*.so' ! -name '*.a' 2>/dev
 done
 
 echo "dylib reference rewrite complete for $PREFIX"
-
-echo "---Printing the output of pgbuild end.."
-ls -la "$PREFIX/lib"
