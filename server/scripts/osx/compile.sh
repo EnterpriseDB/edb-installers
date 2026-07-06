@@ -11,6 +11,9 @@ if [ -z "$SOURCE_DIR" ] || [ -z "$DEP_PREFIX" ]; then
     exit 1
 fi
 
+echo "Print the output of dep_prefix.."
+ls -lrt "$DEP_PREFIX"/lib/
+
 export PATH="$DEP_PREFIX/bin:$PATH"
 
 mkdir -p "$PG_STAGING"
