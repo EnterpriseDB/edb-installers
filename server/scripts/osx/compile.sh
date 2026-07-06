@@ -10,10 +10,6 @@ if [ -z "$SOURCE_DIR" ] || [ -z "$DEP_PREFIX" ]; then
     echo "Usage: $0 <source_directory> <dep_prefix>"
     exit 1
 fi
-
-echo "Print the output of dep_prefix.."
-ls -la "$DEP_PREFIX/lib"
-
 export PATH="$DEP_PREFIX/bin:$PATH"
 
 mkdir -p "$PG_STAGING"
@@ -89,8 +85,3 @@ done
 for d in "$DEP_PREFIX"/lib/tcl[0-9]* "$DEP_PREFIX"/lib/tcl8; do
     [ -d "$d" ] && cp -pR "$d" "$PG_STAGING/lib/"
 done
-
-echo "---Printing the output of dep_prefix again end.."
-ls -la "$DEP_PREFIX/lib"
-echo "---Printing the output of pgbuild end.."
-ls -la "$PG_STAGING/lib"
