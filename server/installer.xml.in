@@ -1977,8 +1977,15 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                 <logMessage>
                     <text>Installed pgAdmin version: ${installed_pgadmin_version}</text>
                 </logMessage>
-                <!-- WIN: Latest pgAdmin version set at build time -->
-                <setInstallerVariable name="latest_pgadmin_version" value="PG_VERSION_PGADMIN"/>
+                <!-- WIN: Get latest pgAdmin version at runtime -->
+                <setInstallerVariableFromScriptOutput>
+                    <exec>${env(WINDIR)}\System32\cmd.exe</exec>
+                    <execArgs>/c powershell -NoProfile -Command "(Invoke-WebRequest -Uri \"https://www.postgresql.org/ftp/pgadmin/pgadmin4/\" -UseBasicParsing).Links.href | Where-Object { $_ -match \"v[\d.]+\" } | ForEach-Object { $_ -replace \"v\",\"\" -replace \"/\",\"\" } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1"</execArgs>
+                    <name>latest_pgadmin_version</name>
+                </setInstallerVariableFromScriptOutput>
+                <logMessage>
+                    <text>Latest pgAdmin version: ${latest_pgadmin_version}</text>
+                </logMessage>
             </actionList>
             <ruleList>
                 <compareText text="${platform_name}" logic="equals" value="windows"/>
