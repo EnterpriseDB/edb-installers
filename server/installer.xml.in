@@ -1980,8 +1980,7 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                 <!-- WIN: Get latest pgAdmin version at runtime -->
                 <setInstallerVariableFromScriptOutput>
                     <exec>${env(WINDIR)}\System32\cmd.exe</exec>
-                    <execArgs>/c powershell -NoProfile -Command "(Invoke-WebRequest -Uri \"https://www.postgresql.org/ftp/pgadmin/pgadmin4/\" -UseBasicParsing).Links.href | Where-Object { $_ -match \"v[\d.]+\" } | ForEach-Object { $_ -replace \"v\",\"\" -replace \"/\",\"\" } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1"</execArgs>
-                    <name>latest_pgadmin_version</name>
+                    <execArgs>/c powershell -NoProfile -Command &quot;(Invoke-WebRequest -Uri &apos;https://www.postgresql.org/ftp/pgadmin/pgadmin4/&apos; -UseBasicParsing).Links.href | Where-Object { $_ -match &apos;v[\d.]+&apos; } | ForEach-Object { $_ -replace &apos;v&apos;,&apos;&apos; -replace &apos;/&apos;,&apos;&apos; } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1&quot;</execArgs>                    <name>latest_pgadmin_version</name>
                 </setInstallerVariableFromScriptOutput>
                 <logMessage>
                     <text>Latest pgAdmin version: ${latest_pgadmin_version}</text>
