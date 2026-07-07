@@ -1,8 +1,4 @@
 #!/bin/bash
-# Extract .dSYM debug symbols from every Mach-O in the staging tree into a
-# separate symbols dir, then strip the shipped binaries. Mirrors legacy
-# create_debug_symbols.sh. Run after build, before signing (strip breaks sigs).
-#
 # Usage: create-debug-symbols.sh <staging_dir> <symbols_out_dir>
 set -e
 
