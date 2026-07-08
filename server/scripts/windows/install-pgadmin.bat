@@ -16,7 +16,7 @@ set "EXE=%TEMP%\pgadmin4-%VER%-x64.exe"
 set "URL=https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v%VER%/windows/pgadmin4-%VER%-x64.exe"
 
 rem --- Download (-f so HTTP errors fail instead of saving an error page) ---
-curl -fL "%URL%" -o "%EXE%"
+curl -sfL "%URL%" -o "%EXE%"
 if errorlevel 1 (
     echo ERROR: Failed to download pgAdmin 4 %VER% from %URL%.
     del "%EXE%" 2>nul
