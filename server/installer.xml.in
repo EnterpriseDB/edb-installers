@@ -1163,6 +1163,23 @@ EOF
             </ruleList>
         </runProgram>
 
+		<!-- Windows: Open installation notes if the user checked the box -->
+        <runProgram>
+            <program>cmd</program>
+            <programArguments>/c start "" "${installdir}\doc\installation-notes.html"</programArguments>
+            <progressText>${msg(progress.text.view.notes)}</progressText>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${didError}" value="1"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText logic="equals" text="${installer_ui}" value="gui"/>
+                <isTrue value="${viewInstallationNotes}"/>
+                <isTrue value="${component(server).selected}"/>
+            </ruleList>
+        </runProgram>
+
     </finalPageActionList>
 
     <readyToInstallActionList>
@@ -2254,6 +2271,22 @@ ${dbsummary}${cltsummary}${pgadminsummary}${sbsummary}${msg(summary.installation
         <stringParameter name="originalplatform" ask="0" cliOptionShow="0"/>
         <stringParameter name="branding" cliOptionName="branding" ask="0" cliOptionShow="0"/>
         <booleanParameter name="showLaunchStackBuilderOption" cliOptionName="launch-stackbuilder" default="1" ask="0" cliOptionShow="0"/>
+		<booleanParameter>
+            <name>viewInstallationNotes</name>
+            <description>${msg(view.installation.notes.description)}</description>
+            <explanation></explanation>
+            <default>0</default>
+            <ask>1</ask>
+            <displayStyle>checkbox-left</displayStyle>
+            <cliOptionName>view-notes</cliOptionName>
+            <cliOptionShow>0</cliOptionShow>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText logic="equals" text="${installer_ui}" value="gui"/>
+                <isTrue value="${component(server).selected}"/>
+            </ruleList>
+        </booleanParameter>
 
         <stringParameter name="superaccount" ask="1" cliOptionShow="1" cliOptionName="superaccount" default="postgres"
         description="${msg(superaccount.description)}" />
