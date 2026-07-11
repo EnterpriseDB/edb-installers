@@ -1,84 +1,361 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title>Welcome</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostgreSQL 18 — Installation Notes</title>
+<style>
+  :root {
+    --ink: #1a2b34;
+    --ink-soft: #47606d;
+    --paper: #f7f9fa;
+    --card: #ffffff;
+    --line: #dde5e9;
+    --elephant: #336791;
+    --elephant-deep: #23507a;
+    --elephant-wash: #eaf1f6;
+    --accent: #c8871f;
+    --accent-wash: #fbf3e3;
+    --code-bg: #10222e;
+    --code-ink: #d6e6ef;
+    --shadow: 0 1px 2px rgba(26,43,52,.06), 0 8px 24px rgba(26,43,52,.06);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 820px; margin: 0 auto; padding: 0 24px 96px; }
+
+  .hero {
+    background: linear-gradient(135deg, var(--elephant-deep), var(--elephant));
+    color: #fff;
+    padding: 56px 24px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(600px 200px at 50% -20%, rgba(255,255,255,.18), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner { max-width: 820px; margin: 0 auto; position: relative; }
+  .eyebrow {
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: .22em;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 999px;
+    padding: 6px 14px;
+    margin: 0 0 16px;
+  }
+  .hero h1 {
+    font-size: clamp(34px, 6vw, 52px);
+    line-height: 1.05;
+    margin: 0 0 10px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    color: #fff;
+  }
+  .hero p {
+    margin: 0 auto;
+    max-width: 560px;
+    font-size: 17px;
+    color: #fff;
+    opacity: .92;
+  }
+
+  .toc {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    margin: -32px auto 44px;
+    padding: 20px 24px;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+  }
+  .toc a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 4px 2px;
+    border-bottom: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+  }
+  .toc a:hover { color: var(--elephant); border-color: var(--elephant); }
+
+  section { margin: 0 0 44px; scroll-margin-top: 24px; }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    margin: 0 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  h2 .num {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--elephant);
+    background: var(--elephant-wash);
+    border-radius: 6px;
+    padding: 3px 9px;
+    letter-spacing: .04em;
+  }
+
+  p { margin: 0 0 14px; color: var(--ink-soft); }
+  p strong { color: var(--ink); }
+  a { color: var(--elephant); }
+
+  .langs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 18px 0 6px;
+  }
+  .lang {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .lang .name { font-weight: 700; color: var(--ink); font-size: 16px; }
+  .lang .ver {
+    font-family: "Cascadia Code", "SF Mono", Consolas, monospace;
+    font-size: 13px;
+    color: var(--elephant);
+    background: var(--elephant-wash);
+    border-radius: 5px;
+    padding: 2px 7px;
+    align-self: flex-start;
+  }
+
+  .callout {
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin: 18px 0;
+    border: 1px solid;
+    font-size: 15px;
+  }
+  .callout .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-bottom: 6px;
+  }
+  .callout p { margin: 0; }
+  .callout.note { background: var(--accent-wash); border-color: #ecd9ad; }
+  .callout.note .tag { color: var(--accent); }
+  .callout.info { background: var(--elephant-wash); border-color: #c5dbea; }
+  .callout.info .tag { color: var(--elephant-deep); }
+
+  code.inline {
+    font-family: "Cascadia Code", "SF Mono", Consolas, monospace;
+    background: var(--elephant-wash);
+    color: var(--elephant-deep);
+    padding: 1px 6px;
+    border-radius: 5px;
+    font-size: .9em;
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    border-radius: 10px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: "Cascadia Code", "SF Mono", Consolas, monospace;
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin: 12px 0;
+  }
+  pre .c { color: #7fb0cc; }
+
+  ol.steps { margin: 12px 0; padding-left: 0; counter-reset: step; list-style: none; }
+  ol.steps > li {
+    position: relative;
+    padding-left: 40px;
+    margin-bottom: 14px;
+    color: var(--ink-soft);
+  }
+  ol.steps > li::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 0;
+    width: 26px; height: 26px;
+    background: var(--elephant);
+    color: #fff;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  ul.plain { margin: 12px 0; padding-left: 20px; color: var(--ink-soft); }
+  ul.plain li { margin-bottom: 6px; }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding-top: 28px;
+    margin-top: 56px;
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+  footer a { font-weight: 600; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .edb {
+    margin-top: 20px;
+    font-size: 12px;
+    letter-spacing: .04em;
+    color: #90a4ae;
+    text-transform: uppercase;
+  }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
 </head>
 <body>
 
-<center>
-<h1>PostgreSQL 18</h1></p>
-<h2>Installation Notes</h2>
-</center>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">Installation Notes</p>
+    <h1>PostgreSQL 18</h1>
+    <p>Welcome to the PostgreSQL 18 Installation Wizard.</p>
+  </div>
+</header>
 
-<p>Welcome to the PostgreSQL 18 Installation Wizard.</p>
+<div class="wrap">
 
-<h3>Legal Bits</h3>
+  <nav class="toc" aria-label="Contents">
+    <a href="#legal">Legal Bits</a>
+    <a href="#os">Supported Operating Systems</a>
+    <a href="#languages">Procedural Languages</a>
+    <a href="#debugger">pl/pgsql Debugger</a>
+    <a href="#icu">ICU Note</a>
+    <a href="#locale">Locale Names</a>
+    <a href="#support">Technical Support</a>
+  </nav>
 
-<p>First the boring legal stuff. The software bundled together in this package is released under a number of different Open Source licences. By using any component of this installation package, you agree to abide by the terms and conditions of it’s licence.</p>
+  <section id="legal">
+    <h2><span class="num">01</span>Legal Bits</h2>
+    <p>First the boring legal stuff. The software bundled together in this package is released under a number of different Open Source licences. By using any component of this installation package, you agree to abide by the terms and conditions of it's licence.</p>
+    <p>The PostgreSQL Server and the installer itself are released under the PostgreSQL License.</p>
+    <p>pgAdmin 4 is no longer bundled with the PostgreSQL installer. Post installation, the installer offers to download and install the latest version directly from the official pgAdmin download server</p>
+    <p>This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit. (http://www.openssl.org/)</p>
+  </section>
 
-<p>The PostgreSQL Server, pgAdmin and the installer itself are released under the PostgreSQL License.</p>
+  <section id="os">
+    <h2><span class="num">02</span>Supported Operating Systems</h2>
+    <p>The macOS build has been tested on 13.x and above, for x86_64 and ARM64 architectures. The Windows builds of this installer have been tested on Windows 2022. Please let us know if the installer does not operate as expected on your operating system, and where possible, we will try to add support</p>
+  </section>
 
-<p>This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit. (http://www.openssl.org/)</p>
+  <section id="languages">
+    <h2><span class="num">03</span>Procedural Languages</h2>
+    <p>The procedural languages pl/Perl, pl/Python and pl/Tcl are included in this distribution of PostgreSQL. On Windows, the server has been built using the community upstream distributions of those language interpreters. To use any of the these languages from within PostgreSQL, download and install the appropriate interpreters and ensure they are included in the PATH variable under which the database server will be started. The versions used are shown below - newer minor (bugfix) releases may also work, but have not been tested:</p>
 
-<h3>Supported Operating Systems</h3>
+    <div class="langs">
+      <div class="lang">
+        <span class="name">Perl</span>
+        <span class="ver">5.42.0.x</span>
+      </div>
+      <div class="lang">
+        <span class="name">Python</span>
+        <span class="ver">3.13.x</span>
+      </div>
+      <div class="lang">
+        <span class="name">Tcl</span>
+        <span class="ver">8.6.x</span>
+      </div>
+    </div>
 
-<p>The macOS build has been tested on 13.x and above, for x86_64 and ARM64 architectures. The Windows builds of this installer have been tested on Windows 2022. Please let us know if the installer does not operate as expected on your operating system, and where possible, we will try to add support</p>
+    <div class="callout info">
+      <span class="tag">macOS</span>
+      <p>On MacOS, we strongly recommend to use LanguagePack v6 installers for pl/Perl, pl/Python and pl/Tcl.</p>
+    </div>
+  </section>
 
-<h3>Procedural Languages</h3>
+  <section id="debugger">
+    <h2><span class="num">04</span>pl/pgsql Debugger</h2>
+    <p>The package includes EnterpriseDB's pl/pgsql debugger plugin which may be used by the debugger UI in pgAdmin to help with development of your database functions. The debugger plugin is disabled by default for performance reasons. To enable it, follow the following steps:</p>
 
-<p>The procedural languages pl/Perl, pl/Python and pl/Tcl are included in this distribution of PostgreSQL. On Windows, the server has been built using the community upstream distributions of those language interpreters. To use any of the these languages from within PostgreSQL, download and install the appropriate interpreters and ensure they are included in the PATH variable under which the database server will be started. The versions used are shown below - newer minor (bugfix) releases may also work, but have not been tested:</p>
+    <ol class="steps">
+      <li>Edit the postgresql.conf file in the data directory and modify the shared_preload_libraries config option to look like the following, if running on Linux or Mac:
+        <pre><span class="c"># Linux or Mac</span>
+shared_preload_libraries = '$libdir/plugin_debugger.so'
 
-<ul>
-  <li>Perl 5.42.0.1 : https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_54201_64bit/strawberry-perl-5.42.0.1-64bit-portable.zip </li>
-  <li>Python 3.13.12 : https://www.python.org/ftp/python/3.13.12/python-3.13.12-amd64.exe </li>
-  <li>Tcl 8.6.17 : https://sourceforge.net/projects/magicsplat/files/magicsplat-tcl/tcl-8.6.17-installer-1.17.0-x64.msi/download </li>
-</ul>
+<span class="c"># Windows</span>
+shared_preload_libraries = '$libdir/plugin_debugger.dll'</pre>
+      </li>
+      <li>Restart the PostgreSQL server.</li>
+      <li>Run <code class="inline">CREATE EXTENSION pldbgapi;</code> in the database you wish to debug using psql or the pgAdmin query tool.</li>
+    </ol>
+    <p>For further information, please see the pgAdmin online help, and the debugger plugin README file.</p>
+  </section>
 
-<p> On MacOS, we strongly recommend to use LanguagePack v6 installers for pl/Perl, pl/Python and pl/Tcl. </p>
+  <section id="icu">
+    <h2><span class="num">05</span>Important Note with regards to ICU</h2>
+    <div class="callout note">
+      <span class="tag">Upgrade note</span>
+      <p>PostgreSQL Server 18 is compiled with ICU 77.x. PostgreSQL version 14-17 on macOS use ICU 68.x, and Windows use 67.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes. Refer: <a href="https://wiki.postgresql.org/wiki/Locale_data_changes">https://wiki.postgresql.org/wiki/Locale_data_changes</a> and <a href="https://www.postgresql.org/docs/current/sql-altercollation.html">https://www.postgresql.org/docs/current/sql-altercollation.html</a> for more details</p>
+    </div>
+  </section>
 
-<h3>pl/pgsql Debugger</h3>
+  <section id="locale">
+    <h2><span class="num">06</span>Important Note with regards to locale names</h2>
+    <p>A change was made in the Windows installers for PostgreSQL versions 17.4-1, 16.8-1, 15.12-1, 14.17-1, and 13.20-1, and in the fresh installation the chosen locale name would be converted to BCP-47 name and passed to initdb.exe run as --locale. This change made the pg_upgrade from the PostgreSQL cluster having old locale names to these versions fail.</p>
+    <p>The change was again made in -2 releases for the same set of postgresql installers. See below section for details.</p>
+    <p>Starting from PostgreSQL versions 17.4-2, 16.8-2, 15.12-2, 14.17-2, and 13.20-2, the Windows installers support specifying locale names in two formats:</p>
+    <ul class="plain">
+      <li>Standard BCP-47 locale names (e.g., en-US, fr-FR). Recommended, if the locale name contains non-ASCII characters (such as accented characters or regional scripts)</li>
+      <li>Long English locale names containing only ASCII characters (e.g., English_United States, French_France). So, any non-ASCII character containing locale is not passed to the initdb.</li>
+    </ul>
+  </section>
 
-<p>The package includes EnterpriseDB's pl/pgsql debugger plugin which may be used by the debugger UI in pgAdmin to help with development of your database functions.
-The debugger plugin is disabled by default for performance reasons. To enable it, follow the following steps:</p>
+  <section id="support">
+    <h2><span class="num">07</span>Technical Support</h2>
+    <p>Issues using the installer can be reported to installer GitHub page at <a href="https://github.com/EnterpriseDB/edb-installers/issues">https://github.com/EnterpriseDB/edb-installers/issues</a></p>
+    <p>For PostgreSQL support, please use the appropriate mailing list. A complete list may be found at <a href="https://www.postgresql.org/list/">https://www.postgresql.org/list/</a>.</p>
+    <p>For pgAdmin support, please use the <a href="mailto:pgadmin-support@postgresql.org">pgadmin-support@postgresql.org</a> mailing list.</p>
+  </section>
 
-<ol>
-  <li>Edit the postgresql.conf file in the data directory and modify the shared_preload_libraries config option to look like the following, if running on Linux or Mac:<br>&nbsp;<br>
-      <code>shared_preload_libraries = '$libdir/plugin_debugger.so'</code><br>&nbsp;<br>or if you are on Windows:<br>&nbsp;<br>
-      <code>shared_preload_libraries = '$libdir/plugin_debugger.dll'</code><br>&nbsp;</li>
-  <li>Restart the PostgreSQL server.<br>&nbsp;</li>
-  <li>Run <i>CREATE EXTENSION pldbgapi;</i> in the database you wish to debug using psql or the pgAdmin query tool.
-</ol>
+  <footer>
+    <a href="http://www.enterprisedb.com">This software was packaged by EnterpriseDB</a>
+    <div class="edb">EnterpriseDB · PostgreSQL 18</div>
+  </footer>
 
-<p>For further information, please see the pgAdmin online help, and the debugger plugin <a href="README-pldebugger.md">README file</a>. 
-
-<h3>Important Note with regards to ICU</h3>
-
-<p>PostgreSQL Server 18 is compiled with ICU 77.x. PostgreSQL version 14-17 on macOS use ICU 68.x, and Windows use 67.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes. Refer: https://wiki.postgresql.org/wiki/Locale_data_changes and https://www.postgresql.org/docs/current/sql-altercollation.html for more details</p> 
-
-<h3>Important Note with regards to locale names</h3>
-
-<p>A change was made in the Windows installers for PostgreSQL versions 17.4-1, 16.8-1, 15.12-1, 14.17-1, and 13.20-1, and in the fresh installation the chosen locale name would be converted to BCP-47 name and passed to initdb.exe run as --locale. This change made the pg_upgrade from the PostgreSQL cluster having old locale names to these versions fail.</p>
-
-<p>The change was again made in -2 releases for the same set of postgresql installers. See below section for details.</p>
-
-<p>Starting from PostgreSQL versions 17.4-2, 16.8-2, 15.12-2, 14.17-2, and 13.20-2, the Windows installers support specifying locale names in two formats:</p>
-
-<ul>
-  <li>Standard BCP-47 locale names (e.g., en-US, fr-FR). Recommended, if the locale name contains non-ASCII characters (such as accented characters or regional scripts) </li>
-  <li>Long English locale names containing only ASCII characters (e.g., English_United States, French_France). So, any non-ASCII character containing locale is not passed to the initdb. </li>
-</ul>
-
-<h3>Technical Support</h3>
-
-<p>Issues using the installer can be reported to installer GitHub page at <a href="https://github.com/EnterpriseDB/edb-installers/issues">https://github.com/EnterpriseDB/edb-installers/issues</a></p>  
-
-<p>For PostgreSQL support, please use the appropriate mailing list. A complete list may be found at <a href="https://www.postgresql.org/list/">https://www.postgresql.org/list/</a>.</p>
-
-<p>For pgAdmin support, please use the <a href="mailto:pgadmin-support@postgresql.org">pgadmin-support@postgresql.org</a> mailing list.</p>
-
-<center><a href="http://www.enterprisedb.com"><img border="0" src="edblogo.png" alt="This software was packaged by EnterpriseDB"></a></center>
+</div>
 
 </body>
 </html>
