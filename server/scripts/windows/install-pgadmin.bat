@@ -41,6 +41,11 @@ if /I "%MODE%"=="silent" (
     "%EXE%" /NORESTART /allusers
 )
 set "RC=%ERRORLEVEL%"
+if "%RC%"=="2" (
+    echo pgAdmin 4 installation was cancelled by user.
+    del "%EXE%" 2>nul
+    exit /b 0
+)
 if not "%RC%"=="0" (
     echo ERROR: pgAdmin 4 installer exited with code %RC%.
     del "%EXE%" 2>nul
