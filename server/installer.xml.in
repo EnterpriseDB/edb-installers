@@ -2009,6 +2009,7 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
                             <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
                             <progressText>Installing pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
+							<abortOnError>0</abortOnError>
                         </runProgram>
                         <showWarning text="pgAdmin 4 installation failed. Please install it manually from https://www.pgadmin.org">
                             <ruleList>
@@ -2048,6 +2049,7 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
                             <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
                             <progressText>Installing pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
+							<abortOnError>0</abortOnError>
                         </runProgram>
                         <showWarning text="pgAdmin 4 update failed. Please install it manually from https://www.pgadmin.org">
                             <ruleList>
@@ -2092,6 +2094,7 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                     <program>${env(WINDIR)}\System32\cmd.exe</program>
                     <programArguments>/c "${installdir}\scripts\install-pgadmin.bat" silent</programArguments>
                     <progressText>Installing pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
+					<abortOnError>0</abortOnError>
                 </runProgram>
             </actionList>
             <ruleList>
