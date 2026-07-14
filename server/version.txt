@@ -1,9 +1,8 @@
 pg_major_version=19
 pg_minor_version=0
-package_revision=beta2
-pgadmin4=9.15
-python=3.14.6
+package_revision=beta1
+python=3.13.12
 perl=5.42.0.1
 pkg-config=0.28-1
-tcl=8.6.18
+tcl=8.6.17
 stackbuilder=4.2.2

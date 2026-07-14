@@ -1972,18 +1972,31 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
         </actionGroup>
 
         <!-- WIN: Check existing pgAdmin version from registry -->
-        <setInstallerVariable name="installed_pgadmin_version" value=""/>
-        <registryGet>
-            <name>DisplayVersion</name>
-            <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\pgAdmin 4v9_is1</key>
-            <variable>installed_pgadmin_version</variable>
-            <abortOnError>0</abortOnError>
-        </registryGet>
-        <logMessage>
-            <text>Installed pgAdmin version: ${installed_pgadmin_version}</text>
-        </logMessage>
-        <!-- WIN: Latest pgAdmin version set at build time -->
-        <setInstallerVariable name="latest_pgadmin_version" value="PG_VERSION_PGADMIN"/>
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installed_pgadmin_version" value=""/>
+                <registryGet>
+                    <name>DisplayVersion</name>
+                    <key>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\pgAdmin 4v9_is1</key>
+                    <variable>installed_pgadmin_version</variable>
+                    <abortOnError>0</abortOnError>
+                </registryGet>
+                <logMessage>
+                    <text>Installed pgAdmin version: ${installed_pgadmin_version}</text>
+                </logMessage>
+                <!-- WIN: Get latest pgAdmin version at runtime -->
+                <setInstallerVariableFromScriptOutput>
+                    <exec>${env(WINDIR)}\System32\cmd.exe</exec>
+                    <execArgs>/c powershell -NoProfile -Command &quot;(Invoke-WebRequest -Uri &apos;https://www.postgresql.org/ftp/pgadmin/pgadmin4/&apos; -UseBasicParsing).Links.href | Where-Object { $_ -match &apos;v[\d.]+&apos; } | ForEach-Object { $_ -replace &apos;v&apos;,&apos;&apos; -replace &apos;/&apos;,&apos;&apos; } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1&quot;</execArgs>                    <name>latest_pgadmin_version</name>
+                </setInstallerVariableFromScriptOutput>
+                <logMessage>
+                    <text>Latest pgAdmin version: ${latest_pgadmin_version}</text>
+                </logMessage>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="windows"/>
+            </ruleList>
+        </actionGroup>
 
       <!-- WIN: Ask user - pgAdmin NOT installed -->
         <actionGroup>
@@ -2003,6 +2016,7 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
                             <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
                             <progressText>Installing pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
+							<abortOnError>0</abortOnError>
                         </runProgram>
                         <showWarning text="pgAdmin 4 installation failed. Please install it manually from https://www.pgadmin.org">
                             <ruleList>
@@ -2042,6 +2056,7 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                             <program>${env(WINDIR)}\System32\cmd.exe</program>
                             <programArguments>/c "${installdir}\scripts\install-pgadmin.bat"</programArguments>
                             <progressText>Installing pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
+							<abortOnError>0</abortOnError>
                         </runProgram>
                         <showWarning text="pgAdmin 4 update failed. Please install it manually from https://www.pgadmin.org">
                             <ruleList>
@@ -2086,6 +2101,7 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                     <program>${env(WINDIR)}\System32\cmd.exe</program>
                     <programArguments>/c "${installdir}\scripts\install-pgadmin.bat" silent</programArguments>
                     <progressText>Installing pgAdmin 4 version ${latest_pgadmin_version}, please wait...</progressText>
+					<abortOnError>0</abortOnError>
                 </runProgram>
             </actionList>
             <ruleList>
