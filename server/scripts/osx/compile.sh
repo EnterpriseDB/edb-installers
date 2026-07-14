@@ -17,8 +17,6 @@ cd "$SOURCE_DIR"
 
 DYLD_LIBRARY_PATH="$DEP_PREFIX/lib" \
 PG_SYSROOT="$PG_SYSROOT" \
-PERL="$PERL" \
-PYTHON="$PYTHON" \
 LDFLAGS="-L$DEP_PREFIX/lib -Wl,-headerpad_max_install_names" \
 CFLAGS="$PG_ARCH_OSX_CFLAGS -O2" \
 XML2_CONFIG="$DEP_PREFIX/bin/xml2-config" \
@@ -37,10 +35,6 @@ LIBCURL_LIBS="-L$DEP_PREFIX/lib" \
    --enable-debug \
    --with-ldap \
    --with-openssl \
-   --with-perl \
-   --with-python \
-   --with-tcl \
-   --with-tclconfig="$TCL_CONFIG_DIR" \
    --with-bonjour \
    --with-pam \
    --with-libxml \
@@ -74,14 +68,9 @@ make install
 
 for lib in liblz4 libxml2 libxslt libuuid libedit libz libssl libcrypto \
            libintl libicui18n libicudata libicuuc libiconv libkrb5 libgss \
-           libk5 libcom libtcl8.6; do
+           libk5 libcom; do
     cp -pR "$DEP_PREFIX"/lib/${lib}*.dylib "$PG_STAGING/lib/" 2>/dev/null || true
 done
 for h in openssl libxml2 libxslt unicode iconv.h zlib.h zdict.h lz4*.h zstd*.h; do
     cp -R "$DEP_PREFIX"/include/$h "$PG_STAGING/include/" 2>/dev/null || true
-done
-
-# Bundle the Tcl script library (init.tcl) so pltcl can initialise at runtime.
-for d in "$DEP_PREFIX"/lib/tcl[0-9]* "$DEP_PREFIX"/lib/tcl8; do
-    [ -d "$d" ] && cp -pR "$d" "$PG_STAGING/lib/"
 done
