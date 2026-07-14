@@ -1387,6 +1387,13 @@ EOF
 
          <actionGroup>
             <actionList>
+                <!-- CI artifacts strip the exec bit; force it before running. -->
+                <changePermissions permissions="0755" files="${system_temp_directory}/postgresql_installer_${random_number}/prerun_checks.sh">
+                    <abortOnError>0</abortOnError>
+                    <ruleList>
+                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
+                    </ruleList>
+                </changePermissions>
                 <runProgram program="${system_temp_directory}/postgresql_installer_${random_number}/prerun_checks.sh">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -2107,11 +2114,65 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
             </ruleList>
         </actionGroup>
 
-        <!-- macOS: ask whether to install pgAdmin 4; the popup only records the choice -->
+        <!-- macOS: detect installed pgAdmin (from the app's Info.plist) and the
+             latest available (from the FTP listing). The latest is resolved once
+             here and reused for the download below, so FTP is queried only once. -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="installed_pgadmin_version" value=""/>
+                <runProgram>
+                    <program>/bin/sh</program>
+                    <programArguments>"${installdir}/installer/server/install-pgadmin.sh" installed-version</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+                <setInstallerVariableFromRegEx name="installed_pgadmin_version" text="${program_stdout}" pattern="[\r\n]" substitution=""/>
+
+                <setInstallerVariable name="latest_pgadmin_version" value=""/>
+                <runProgram>
+                    <program>/bin/sh</program>
+                    <programArguments>"${installdir}/installer/server/install-pgadmin.sh" latest-version</programArguments>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </runProgram>
+                <setInstallerVariableFromRegEx name="latest_pgadmin_version" text="${program_stdout}" pattern="[\r\n]" substitution=""/>
+
+                <logMessage>
+                    <text>macOS pgAdmin - installed: ${installed_pgadmin_version} / latest (FTP): ${latest_pgadmin_version}</text>
+                </logMessage>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="osx"/>
+                <isFalse value="${extract_mode}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- macOS: latest version could not be determined (e.g. no network) ->
+             skip pgAdmin rather than prompt/act on an unknown version -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="install_pgadmin" value="0"/>
+                <logMessage>
+                    <text>WARNING: could not determine the latest pgAdmin 4 version from the FTP listing. Skipping pgAdmin 4 installation - install it manually from https://www.pgadmin.org</text>
+                </logMessage>
+                <showWarning text="Could not reach the pgAdmin 4 download server. pgAdmin 4 was not installed - please install it manually from https://www.pgadmin.org">
+                    <ruleList>
+                        <compareText text="${installer_ui}" logic="does_not_equal" value="unattended"/>
+                    </ruleList>
+                </showWarning>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="osx"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText text="${latest_pgadmin_version}" logic="equals" value=""/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- macOS: pgAdmin NOT installed -> ask whether to install the latest -->
         <actionGroup>
             <actionList>
                 <showQuestion>
-                    <text>pgAdmin is the recommended graphical management tool for PostgreSQL. Would you like to download and install the latest version of pgAdmin 4?</text>
+                    <text>pgAdmin is the recommended graphical management tool for PostgreSQL. Would you like to automatically download and install the latest version ${latest_pgadmin_version} of pgAdmin 4?</text>
                     <variable>install_pgadmin_answer</variable>
                     <default>Yes</default>
                 </showQuestion>
@@ -2130,6 +2191,56 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                 <compareText text="${platform_name}" logic="equals" value="osx"/>
                 <compareText text="${installer_ui}" logic="does_not_equal" value="unattended"/>
                 <isFalse value="${extract_mode}"/>
+                <compareText text="${latest_pgadmin_version}" logic="does_not_equal" value=""/>
+                <compareText text="${installed_pgadmin_version}" logic="equals" value=""/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- macOS: an OLDER pgAdmin is installed -> ask whether to upgrade -->
+        <actionGroup>
+            <actionList>
+                <showQuestion>
+                    <text>pgAdmin 4 version ${installed_pgadmin_version} is already installed on your machine. Would you like to download and install the latest version ${latest_pgadmin_version}?</text>
+                    <variable>install_pgadmin_answer</variable>
+                    <default>Yes</default>
+                </showQuestion>
+                <setInstallerVariable name="install_pgadmin" value="1">
+                    <ruleList>
+                        <compareText text="${install_pgadmin_answer}" logic="equals" value="yes"/>
+                    </ruleList>
+                </setInstallerVariable>
+                <setInstallerVariable name="install_pgadmin" value="0">
+                    <ruleList>
+                        <compareText text="${install_pgadmin_answer}" logic="does_not_equal" value="yes"/>
+                    </ruleList>
+                </setInstallerVariable>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="osx"/>
+                <compareText text="${installer_ui}" logic="does_not_equal" value="unattended"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText text="${latest_pgadmin_version}" logic="does_not_equal" value=""/>
+                <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value=""/>
+                <!-- only offer an upgrade when the installed version is actually older -->
+                <compareVersions version1="${installed_pgadmin_version}" logic="less" version2="${latest_pgadmin_version}"/>
+            </ruleList>
+        </actionGroup>
+
+        <!-- macOS: latest pgAdmin already installed -> skip silently (no popup) -->
+        <actionGroup>
+            <actionList>
+                <setInstallerVariable name="install_pgadmin" value="0"/>
+                <logMessage>
+                    <text>pgAdmin 4 version ${installed_pgadmin_version} is already installed and up to date. Skipping installation of pgAdmin 4.</text>
+                </logMessage>
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="osx"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText text="${latest_pgadmin_version}" logic="does_not_equal" value=""/>
+                <compareText text="${installed_pgadmin_version}" logic="does_not_equal" value=""/>
+                <!-- skip when the installed version is the same as, or newer than, the latest -->
+                <compareVersions version1="${installed_pgadmin_version}" logic="greater_or_equal" version2="${latest_pgadmin_version}"/>
             </ruleList>
         </actionGroup>
 
@@ -2138,7 +2249,7 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
             <actionList>
                 <runProgram>
                     <program>/bin/sh</program>
-                    <programArguments>"${installdir}/installer/server/install-pgadmin.sh" download</programArguments>
+                    <programArguments>"${installdir}/installer/server/install-pgadmin.sh" download "${latest_pgadmin_version}"</programArguments>
                     <progressText>Downloading pgAdmin 4, please wait...</progressText>
                     <abortOnError>0</abortOnError>
                     <showMessageOnError>0</showMessageOnError>
@@ -2828,6 +2939,9 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                             </ruleList>
                         </runProgram>
 
+                        <changePermissions permissions="0755" files="${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh">
+                            <abortOnError>0</abortOnError>
+                        </changePermissions>
                         <runProgram>
                             <program>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</program>
                             <programArguments>${system_temp_directory}/postgresql_installer_${random_number} "${datadir}"</programArguments>
