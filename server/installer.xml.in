@@ -1166,7 +1166,7 @@ EOF
 		<!-- Windows: Open installation notes (checkbox auto-shown on finish page) -->
         <runProgram>
             <program>cmd</program>
-            <programArguments>/c start "" "${installdir}\doc\installation-notes.html" &</programArguments>
+            <programArguments>/c start "" "${installdir}\doc\installation-notes.html" &amp;</programArguments>
             <progressText>${msg(view.installation.notes.description)}</progressText>
             <abortOnError>0</abortOnError>
             <showMessageOnError>0</showMessageOnError>
