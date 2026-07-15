@@ -1147,22 +1147,6 @@ EOF
             </ruleList>
         </runProgram>
 
-        <runProgram>
-            <!-- Windows: Run stackbuilder -->
-            <program>${installdir}/bin/stackbuilder.exe</program>
-            <progressText>${msg(progress.text.run.stackbuilder)}</progressText>
-            <abortOnError>0</abortOnError>
-            <showMessageOnError>0</showMessageOnError>
-            <ruleList>
-                <compareText logic="equals" text="${platform_name}" value="windows"/>
-                <compareText logic="does_not_equal" text="${didError}" value="1"/>
-                <isFalse value="${extract_mode}"/>
-                <compareText logic="equals" text="${installer_ui}" value="gui" />
-                <isTrue value="${showLaunchStackBuilderOption}" />
-                <isTrue  value="${component(stackbuilder).selected}"/>
-            </ruleList>
-        </runProgram>
-
 		<!-- Windows: Open installation notes (checkbox auto-shown on finish page) -->
         <runProgram>
             <program>cmd</program>
@@ -1176,6 +1160,22 @@ EOF
                 <isFalse value="${extract_mode}"/>
                 <compareText logic="equals" text="${installer_ui}" value="gui"/>
                 <isTrue value="${component(server).selected}"/>
+            </ruleList>
+        </runProgram>
+
+        <runProgram>
+            <!-- Windows: Run stackbuilder -->
+            <program>${installdir}/bin/stackbuilder.exe</program>
+            <progressText>${msg(progress.text.run.stackbuilder)}</progressText>
+            <abortOnError>0</abortOnError>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <compareText logic="does_not_equal" text="${didError}" value="1"/>
+                <isFalse value="${extract_mode}"/>
+                <compareText logic="equals" text="${installer_ui}" value="gui" />
+                <isTrue value="${showLaunchStackBuilderOption}" />
+                <isTrue  value="${component(stackbuilder).selected}"/>
             </ruleList>
         </runProgram>
 
