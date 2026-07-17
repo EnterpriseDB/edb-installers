@@ -58,7 +58,7 @@ progress.text.loading.modules=Loading additional SQL modules...
 error.could.not.load.modules=Failed to load SQL modules into the database cluster.
 warning.during.module.loading=A non-fatal error occured whilst loading database modules. Please check the installation log in ${system_temp_directory} for details.
 
-progress.text.run.stackbuilder=Launch Stack Builder at exit?\n\nStack Builder may be used to download and install additional tools, drivers and applications to complement your PostgreSQL installation.
+progress.text.run.stackbuilder=Launch Stack Builder at exit?\nStack Builder may be used to download and install additional tools, drivers and applications to complement your PostgreSQL installation.
 
 view.installation.notes.description=View installation notes
 
