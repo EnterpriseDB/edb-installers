@@ -141,14 +141,24 @@ sc query "%SERVICE_NAME%" >nul 2>&1
 if %errorlevel% equ 0 (
     echo [SKIP] Service "%SERVICE_NAME%" is already registered.
 ) else (
-    pg_ctl.exe register -N "%SERVICE_NAME%" -D "%PGDATA%" -l "%LOGFILE%"
-    if %errorlevel% neq 0 (
-        echo [ERROR] Failed to register the Windows service.
-        echo Check "%LOGFILE%" for details.
-        pause
-        exit /b 1
+    set "REG_OUTPUT="
+    for /f "delims=" %%L in ('pg_ctl.exe register -N "%SERVICE_NAME%" -D "%PGDATA%" -l "%LOGFILE%" 2^>^&1') do (
+        echo %%L
+        set "REG_OUTPUT=!REG_OUTPUT! %%L"
     )
-    echo [OK] Service "%SERVICE_NAME%" registered.
+    echo !REG_OUTPUT! | findstr /i "already registered" >nul
+    if !errorlevel! equ 0 (
+        echo [SKIP] Service "%SERVICE_NAME%" was already registered ^(detected from pg_ctl output^).
+    ) else (
+        sc query "%SERVICE_NAME%" >nul 2>&1
+        if !errorlevel! neq 0 (
+            echo [ERROR] Failed to register the Windows service.
+            echo Check "%LOGFILE%" for details.
+            pause
+            exit /b 1
+        )
+        echo [OK] Service "%SERVICE_NAME%" registered.
+    )
 )
 echo.
 
