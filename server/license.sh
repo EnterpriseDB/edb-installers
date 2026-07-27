@@ -125,6 +125,6 @@ pushd ../installer/server/staging/$STAGING_PLATFORM_DIR/stackbuilder
 generate_3rd_party_license "StackBuilder"
 popd
 
-pushd ../installer/server/staging/$STAGING_PLATFORM_DIR/pgadmin4
-generate_3rd_party_license "pgAdmin"
-popd
+#pushd ../installer/server/staging/$STAGING_PLATFORM_DIR/pgadmin4
+#generate_3rd_party_license "pgAdmin"
+#popd
