@@ -110,20 +110,18 @@ echo.
 
 :: --------------------------------------------------
 :: Step 5: Initialize the database cluster
+:: initdb refuses to run under an elevated/admin token, but this
+:: whole script must run as Administrator for the other steps.
+:: To handle this automatically, we launch initdb in a separate
+:: process at a lower ("standard user") trust level using
+:: `runas /trustlevel`, wait for it to finish, then continue.
 :: --------------------------------------------------
 if exist "%PGDATA%\PG_VERSION" (
     echo [SKIP] Database cluster already initialized.
 ) else (
-    initdb.exe -D "%PGDATA%" -U postgres --auth=trust
-    if %errorlevel% neq 0 (
-        echo [ERROR] initdb failed. Common cause: initdb must NOT be run
-        echo as an Administrator/elevated account. Try running this step
-        echo from a non-elevated Command Prompt instead, then re-run this
-        echo script for the remaining steps.
-        pause
-        exit /b 1
-    )
-    echo [OK] Database cluster initialized.
+    call :init_database
+    if "!INIT_RESULT!"=="FAIL" goto :fail
+    echo [OK] Database cluster initialized ^(via automatic de-elevation^).
 )
 echo.
 
@@ -204,3 +202,84 @@ echo   psql -U postgres
 echo.
 pause
 endlocal
+exit /b 0
+
+:: ============================================================
+:: Subroutine: init_database
+:: initdb refuses to run under an elevated/admin token, but this
+:: whole script must run as Administrator for the other steps.
+:: This launches initdb in a separate process at a lower
+:: ("standard user") trust level using `runas /trustlevel`,
+:: waits for it to finish, then reports the result via
+:: the INIT_RESULT variable ("OK" or "FAIL").
+:: ============================================================
+:init_database
+echo [INFO] initdb cannot run while elevated. Launching it
+echo        automatically at a non-elevated trust level...
+
+set "INITDB_WORKER=%TEMP%\pg_initdb_worker_%RANDOM%.bat"
+set "INITDB_LOG=%TEMP%\pg_initdb_output_%RANDOM%.log"
+set "INITDB_FLAG=%TEMP%\pg_initdb_done_%RANDOM%.flag"
+
+if exist "%INITDB_FLAG%" del /f /q "%INITDB_FLAG%" >nul 2>&1
+if exist "%INITDB_LOG%" del /f /q "%INITDB_LOG%" >nul 2>&1
+
+> "%INITDB_WORKER%" echo @echo off
+>> "%INITDB_WORKER%" echo cd /d "%PGBIN%"
+>> "%INITDB_WORKER%" echo initdb.exe -D "%PGDATA%" -U postgres --auth=trust ^> "%INITDB_LOG%" 2^>^&1
+>> "%INITDB_WORKER%" echo echo done ^> "%INITDB_FLAG%"
+
+runas /trustlevel:0x20000 "\"%INITDB_WORKER%\"" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [ERROR] Could not launch de-elevated initdb via runas.
+    echo Run this step manually from a non-elevated Command Prompt:
+    echo   initdb.exe -D "%PGDATA%" -U postgres --auth=trust
+    echo then re-run this script.
+    set "INIT_RESULT=FAIL"
+    exit /b 1
+)
+
+echo [INFO] Waiting for initdb to complete...
+set "WAITSECS=0"
+
+:init_database_waitloop
+if exist "%INITDB_FLAG%" goto :init_database_wait_done
+timeout /t 1 /nobreak >nul
+set /a WAITSECS+=1
+if %WAITSECS% GEQ 60 (
+    echo [ERROR] Timed out waiting for de-elevated initdb to finish.
+    echo Run this step manually from a non-elevated Command Prompt:
+    echo   initdb.exe -D "%PGDATA%" -U postgres --auth=trust
+    echo then re-run this script.
+    set "INIT_RESULT=FAIL"
+    exit /b 1
+)
+goto :init_database_waitloop
+
+:init_database_wait_done
+if exist "%INITDB_LOG%" (
+    echo.
+    echo ---- initdb output ----
+    type "%INITDB_LOG%"
+    echo ------------------------
+    echo.
+)
+
+del /f /q "%INITDB_WORKER%" >nul 2>&1
+del /f /q "%INITDB_FLAG%" >nul 2>&1
+
+if not exist "%PGDATA%\PG_VERSION" (
+    echo [ERROR] initdb did not complete successfully. See output above.
+    echo Run this step manually from a non-elevated Command Prompt:
+    echo   initdb.exe -D "%PGDATA%" -U postgres --auth=trust
+    echo then re-run this script.
+    set "INIT_RESULT=FAIL"
+    exit /b 1
+)
+
+set "INIT_RESULT=OK"
+exit /b 0
+
+:fail
+pause
+exit /b 1
