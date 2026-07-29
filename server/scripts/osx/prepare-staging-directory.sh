@@ -9,6 +9,7 @@ S=packaging-config/installer/server/staging/osx
 PGSERVER=$S/server
 CLT=$S/commandlinetools
 SB=$S/stackbuilder
+PGADMIN4=$S/pgadmin4
 RES=packaging-config/server/resources
 OSX_SCRIPTS=packaging-config/server/scripts/osx
 
@@ -75,24 +76,32 @@ cp "$OSX_SCRIPTS/runpsql.sh"             "$CLT/scripts/runpsql.sh"
 cp "$RES/pg-psql.icns"                   "$CLT/scripts/images/"
 chmod ugo+x "$CLT/installer/server/createshortcuts_clt.sh" "$CLT/scripts/runpsql.sh"
 
-# ---------------------------------------------------------------------------
-# StackBuilder: DISABLED on this branch. The stackbuilder.app bundle is not
-# built/fetched in CI yet, and the stackbuilder component is commented out of
-# installer.xml.in, so we do not stage it. The empty "$SB" directory is still
-# created above so license.sh's StackBuilder pushd does not fail.
-# ---------------------------------------------------------------------------
-# mkdir -p "$SB/installer/server" "$SB/scripts/images"
-# cp "$OSX_SCRIPTS/createshortcuts_sb.sh" "$SB/installer/server/createshortcuts_sb.sh"
-# cp "$RES/pg-stackbuilder.icns"          "$SB/scripts/images/"
-# chmod ugo+x "$SB/installer/server/createshortcuts_sb.sh"
-# if [ -d stackbuilder.app ]; then
-#   cp -pR stackbuilder.app "$SB/stackbuilder.app"
-# elif [ -d SB/stackbuilder.app ]; then
-#   cp -pR SB/stackbuilder.app "$SB/stackbuilder.app"
-# else
-#   echo "WARNING: stackbuilder.app not found - stackbuilder component will be incomplete"
-# fi
+#Stackbuilder
+mkdir -p "$SB/installer/server" "$SB/scripts/images"
+cp "$OSX_SCRIPTS/createshortcuts_sb.sh" "$SB/installer/server/createshortcuts_sb.sh"
+cp "$RES/pg-stackbuilder.icns"          "$SB/scripts/images/"
+chmod ugo+x "$SB/installer/server/createshortcuts_sb.sh"
+ if [ -d stackbuilder.app ]; then
+   cp -pR stackbuilder.app "$SB/stackbuilder.app"
+ elif [ -d SB/stackbuilder.app ]; then
+   cp -pR SB/stackbuilder.app "$SB/stackbuilder.app"
+ else
+   echo "WARNING: stackbuilder.app not found - stackbuilder component will be incomplete"
+ fi
 
+ #pgAdmin4
+ mkdir -p "$PGADMIN4/installer/server" "$SB/scripts/images"
+ cp "$OSX_SCRIPTS/createshortcuts_sb.sh" "$SB/installer/server/createshortcuts_sb.sh"
+ cp "$RES/pg-stackbuilder.icns"          "$SB/scripts/images/"
+ chmod ugo+x "$SB/installer/server/createshortcuts_sb.sh"
+  if [ -d pgadmin4.app ]; then
+    cp -pR pgadmin4.app "$PGADMIN4/pgadmin4.app"
+  elif [ -d PGADMIN4/pgadmin4.app ]; then
+    cp -pR PGADMIN4/pgadmin4.app "$PGADMIN4/pgadmin4.app"
+  else
+    echo "WARNING: pgadmin4.app not found - pgadmin4 component will be incomplete"
+  fi
+ 
 # ---------------------------------------------------------------------------
 # Installer-level assets: side/splash images, i18n language files and the
 # shared include scripts referenced from installer.xml.
@@ -110,20 +119,8 @@ cp packaging-config/scripts/linuxServiceAction.xml       "$S/scripts/"
 cp packaging-config/server/installer.xml.in        "$S/installer.xml"
 cp packaging-config/server/pgserver.xml.in         "$S/pgserver-osx.xml"
 cp packaging-config/server/commandlinetools.xml.in "$S/commandlinetools-osx.xml"
-
-# StackBuilder is not built/fetched for macOS yet, but installer.xml includes
-# stackbuilder-<platform>.xml and the project references the 'stackbuilder'
-# component throughout. Emit a hidden, unselected, empty stub component for osx
-# only so the include resolves and nothing is installed/launched. 
-cat > "$S/stackbuilder-osx.xml" <<'EOF'
-<component>
-    <name>stackbuilder</name>
-    <description>Stack Builder</description>
-    <canBeEdited>0</canBeEdited>
-    <selected>0</selected>
-    <show>0</show>
-</component>
-EOF
+cp packaging-config/server/stackbuilder.xml.in "$S/stackbuilder-osx.xml"
+cp packaging-config/server/pgadmin.xml.in "$S/pgadmin4-osx.xml"
 
 echo "--- staging/osx contents ---"
 ls -la "$S"
