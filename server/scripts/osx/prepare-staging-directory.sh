@@ -19,8 +19,6 @@ cp -pR pgsql/bin     "$PGSERVER/"
 cp -pR pgsql/lib     "$PGSERVER/"
 cp -pR pgsql/include "$PGSERVER/"
 cp -pR pgsql/share   "$PGSERVER/"
-cp -pR pgsql/pgadmin4 "$S/"
-cp -pR pgsql/stackbuilder "$S/"
 
 [ -d pgsql/doc ] && cp -pR pgsql/doc "$PGSERVER/" || mkdir -p "$PGSERVER/doc"
 
@@ -85,8 +83,6 @@ cp "$RES/pg-stackbuilder.icns"          "$SB/scripts/images/"
 chmod ugo+x "$SB/installer/server/createshortcuts_sb.sh"
  if [ -d stackbuilder.app ]; then
    cp -pR stackbuilder.app "$SB/stackbuilder.app"
- elif [ -d SB/stackbuilder.app ]; then
-   cp -pR SB/stackbuilder.app "$SB/stackbuilder.app"
  else
    echo "WARNING: stackbuilder.app not found - stackbuilder component will be incomplete"
  fi
@@ -95,10 +91,10 @@ chmod ugo+x "$SB/installer/server/createshortcuts_sb.sh"
  mkdir -p "$PGADMIN4/installer/server"
  cp "$OSX_SCRIPTS/createshortcuts_pgadmin.sh" "$PGADMIN4/installer/server/createshortcuts_pgadmin.sh"
  chmod ugo+x "$PGADMIN4/installer/server/createshortcuts_pgadmin.sh"
-  if [ -d pgadmin4.app ]; then
-    cp -pR pgadmin4.app "$PGADMIN4/pgadmin4.app"
+  if [ -d pgadmin\ 4.app ]; then
+    cp -pR pgadmin\ 4.app "$PGADMIN4/pgadmin\ 4.app"
   else
-    echo "WARNING: pgadmin4.app not found - pgadmin4 component will be incomplete"
+    echo "WARNING: pgadmin\ 4.app not found - pgadmin4 component will be incomplete"
   fi
  
 # ---------------------------------------------------------------------------
@@ -119,7 +115,7 @@ cp packaging-config/server/installer.xml.in        "$S/installer.xml"
 cp packaging-config/server/pgserver.xml.in         "$S/pgserver-osx.xml"
 cp packaging-config/server/commandlinetools.xml.in "$S/commandlinetools-osx.xml"
 cp packaging-config/server/stackbuilder.xml.in "$S/stackbuilder-osx.xml"
-cp packaging-config/server/pgadmin.xml.in "$S/pgadmin4-osx.xml"
+cp packaging-config/server/pgadmin.xml.in "$S/pgadmin-osx.xml"
 
 echo "--- staging/osx contents ---"
 ls -la "$S"
