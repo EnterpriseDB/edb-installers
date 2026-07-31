@@ -76,8 +76,7 @@ cp "$RES/pg-psql.icns"                   "$CLT/scripts/images/"
 chmod ugo+x "$CLT/installer/server/createshortcuts_clt.sh" "$CLT/scripts/runpsql.sh"
 
 # ---------------------------------------------------------------------------
-# StackBuilder: stage the prebuilt universal stackbuilder.app (fetched by the
-# workflow) plus its shortcut script and icon.
+# StackBuilder
 # ---------------------------------------------------------------------------
 mkdir -p "$SB/installer/server" "$SB/scripts/images"
 cp "$OSX_SCRIPTS/createshortcuts_sb.sh" "$SB/installer/server/createshortcuts_sb.sh"
