@@ -19,6 +19,9 @@ cp -pR pgsql/bin     "$PGSERVER/"
 cp -pR pgsql/lib     "$PGSERVER/"
 cp -pR pgsql/include "$PGSERVER/"
 cp -pR pgsql/share   "$PGSERVER/"
+cp -pR pgsql/pgadmin4 "$S/"
+cp -pR pgsql/stackbuilder "$S/"
+
 [ -d pgsql/doc ] && cp -pR pgsql/doc "$PGSERVER/" || mkdir -p "$PGSERVER/doc"
 
 cp packaging-config/resources/license.txt "$PGSERVER/server_license.txt"
