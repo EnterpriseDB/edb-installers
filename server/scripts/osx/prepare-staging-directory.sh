@@ -89,14 +89,11 @@ chmod ugo+x "$SB/installer/server/createshortcuts_sb.sh"
  fi
 
  #pgAdmin4
- mkdir -p "$PGADMIN4/installer/server" "$SB/scripts/images"
- cp "$OSX_SCRIPTS/createshortcuts_sb.sh" "$SB/installer/server/createshortcuts_sb.sh"
- cp "$RES/pg-stackbuilder.icns"          "$SB/scripts/images/"
- chmod ugo+x "$SB/installer/server/createshortcuts_sb.sh"
+ mkdir -p "$PGADMIN4/installer/server"
+ cp "$OSX_SCRIPTS/createshortcuts_pgadmin.sh" "$PGADMIN4/installer/server/createshortcuts_pgadmin.sh"
+ chmod ugo+x "$PGADMIN4/installer/server/createshortcuts_pgadmin.sh"
   if [ -d pgadmin4.app ]; then
     cp -pR pgadmin4.app "$PGADMIN4/pgadmin4.app"
-  elif [ -d PGADMIN4/pgadmin4.app ]; then
-    cp -pR PGADMIN4/pgadmin4.app "$PGADMIN4/pgadmin4.app"
   else
     echo "WARNING: pgadmin4.app not found - pgadmin4 component will be incomplete"
   fi
