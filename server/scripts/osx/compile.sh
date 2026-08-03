@@ -5,9 +5,12 @@ set -xe
 
 SOURCE_DIR="$1"
 DEP_PREFIX="$2"
+PYTHON_DIR="$3"
+PERL_DIR="$4"
+TCL_DIR="$5"
 
-if [ -z "$SOURCE_DIR" ] || [ -z "$DEP_PREFIX" ]; then
-    echo "Usage: $0 <source_directory> <dep_prefix>"
+if [ -z "$SOURCE_DIR" ] || [ -z "$DEP_PREFIX" ] || [ -z "$PYTHON_DIR" ] || [ -z "$PERL_DIR" ] || [ -z "$TCL_DIR" ]; then
+    echo "Usage: $0 <source_directory> <dep_prefix> <python_dir> <perl_dir> <tcl_dir>"
     exit 1
 fi
 export PATH="$DEP_PREFIX/bin:$PATH"
@@ -17,6 +20,9 @@ cd "$SOURCE_DIR"
 
 DYLD_LIBRARY_PATH="$DEP_PREFIX/lib" \
 PG_SYSROOT="$PG_SYSROOT" \
+PYTHON=$PYTHON_DIR/bin/python3 \
+TCL_CONFIG_SH=$TCL_DIR/lib/tclConfig.sh \
+PERL=$PERL_DIR/bin/perl \
 LDFLAGS="-L$DEP_PREFIX/lib -Wl,-headerpad_max_install_names" \
 CFLAGS="$PG_ARCH_OSX_CFLAGS -O2" \
 XML2_CONFIG="$DEP_PREFIX/bin/xml2-config" \
@@ -33,6 +39,9 @@ LIBCURL_LIBS="-L$DEP_PREFIX/lib" \
    --docdir="$PG_STAGING/doc/postgresql" \
    --with-icu \
    --enable-debug \
+   --with-perl \
+   --with-python \
+   --with-tcl \
    --with-ldap \
    --with-openssl \
    --with-bonjour \
