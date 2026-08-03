@@ -91,12 +91,20 @@ chmod ugo+x "$SB/installer/server/createshortcuts_sb.sh"
  mkdir -p "$PGADMIN4/installer/server"
  cp "$OSX_SCRIPTS/createshortcuts_pgadmin.sh" "$PGADMIN4/installer/server/createshortcuts_pgadmin.sh"
  chmod ugo+x "$PGADMIN4/installer/server/createshortcuts_pgadmin.sh"
-  if [ -d pgadmin\ 4.app ]; then
-    cp -pR pgadmin\ 4.app "$PGADMIN4/pgadmin\ 4.app"
+  if [ -d "pgAdmin 4.app" ]; then
+    cp -pR "pgAdmin 4.app" "$PGADMIN4/pgAdmin 4.app"
   else
-    echo "WARNING: pgadmin\ 4.app not found - pgadmin4 component will be incomplete"
+    echo "WARNING: 'pgAdmin 4.app' not found - pgadmin4 component will be incomplete"
   fi
- 
+  # pgAdmin product license - installer requires pgadmin4/pgAdmin_license.txt.
+  # The prebuilt tarball ships it next to the .app; fall back to the shared
+  # PostgreSQL license only if it is ever missing.
+  if [ -f pgAdmin_license.txt ]; then
+    cp pgAdmin_license.txt "$PGADMIN4/pgAdmin_license.txt"
+  else
+    cp packaging-config/resources/license.txt "$PGADMIN4/pgAdmin_license.txt"
+  fi
+
 # ---------------------------------------------------------------------------
 # Installer-level assets: side/splash images, i18n language files and the
 # shared include scripts referenced from installer.xml.
