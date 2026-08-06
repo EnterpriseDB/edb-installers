@@ -32,8 +32,6 @@ LZ4_CFLAGS="-I$DEP_PREFIX/include" \
 LZ4_LIBS="-L$DEP_PREFIX/lib" \
 ZSTD_CFLAGS="-I$DEP_PREFIX/include" \
 ZSTD_LIBS="-L$DEP_PREFIX/lib" \
-LIBCURL_CFLAGS="-I$DEP_PREFIX/include" \
-LIBCURL_LIBS="-L$DEP_PREFIX/lib" \
 ./configure \
    --prefix="$PG_STAGING" \
    --docdir="$PG_STAGING/doc/postgresql" \
@@ -47,7 +45,6 @@ LIBCURL_LIBS="-L$DEP_PREFIX/lib" \
    --with-bonjour \
    --with-pam \
    --with-libxml \
-   --with-libcurl \
    --with-uuid=e2fs \
    --with-libxslt \
    --with-libedit-preferred \
