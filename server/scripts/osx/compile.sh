@@ -30,8 +30,6 @@ ICU_LIBS="-L$DEP_PREFIX/lib -licuuc -licudata -licui18n" \
 ICU_CFLAGS="-I$DEP_PREFIX/include" \
 LZ4_CFLAGS="-I$DEP_PREFIX/include" \
 LZ4_LIBS="-L$DEP_PREFIX/lib" \
-ZSTD_CFLAGS="-I$DEP_PREFIX/include" \
-ZSTD_LIBS="-L$DEP_PREFIX/lib" \
 ./configure \
    --prefix="$PG_STAGING" \
    --docdir="$PG_STAGING/doc/postgresql" \
@@ -50,7 +48,6 @@ ZSTD_LIBS="-L$DEP_PREFIX/lib" \
    --with-libedit-preferred \
    --with-gssapi \
    --with-lz4 \
-   --with-zstd \
    --with-includes="$DEP_PREFIX/include/libxml2:$DEP_PREFIX/include:$DEP_PREFIX/include/security:$DEP_PREFIX/include/openssl/"
 
 make -j"$(sysctl -n hw.ncpu)"
@@ -77,6 +74,6 @@ for lib in liblz4 libxml2 libxslt libuuid libedit libz libssl libcrypto \
            libk5 libcom; do
     cp -pR "$DEP_PREFIX"/lib/${lib}*.dylib "$PG_STAGING/lib/" 2>/dev/null || true
 done
-for h in openssl libxml2 libxslt unicode iconv.h zlib.h zdict.h lz4*.h zstd*.h; do
+for h in openssl libxml2 libxslt unicode iconv.h zlib.h zdict.h lz4*.h ; do
     cp -R "$DEP_PREFIX"/include/$h "$PG_STAGING/include/" 2>/dev/null || true
 done
