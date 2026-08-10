@@ -1873,9 +1873,6 @@
                     </ruleList>
                 </runProgram>
 
-                <changePermissions permissions="0755" files="${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh">
-                    <abortOnError>0</abortOnError>
-                </changePermissions>
                 <runProgram>
                     <program>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</program>
                     <programArguments>${system_temp_directory}/postgresql_installer_${random_number} "${datadir}"</programArguments>
@@ -2038,13 +2035,6 @@
                     </ruleList>
                 </addChoiceOptions>
 
-                <!-- CI artifacts strip the exec bit; force it before running. -->
-                <changePermissions permissions="0755" files="${system_temp_directory}/postgresql_installer_${random_number}/getlocales">
-                    <abortOnError>0</abortOnError>
-                    <ruleList>
-                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </changePermissions>
                 <runProgram program="${system_temp_directory}/postgresql_installer_${random_number}/getlocales">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -2646,18 +2636,6 @@
 
     <!-- Postinstallation actions -->
     <postInstallationActionList>
-        <!-- The PostgreSQL binaries (bin/initdb, bin/postgres, ...) and the
-             bundled unix install scripts (createuser.sh, initcluster.sh,
-             loadmodules.sh, createshortcuts*.sh, install-pgadmin.sh, runpsql.sh)
-             must be executable. GitHub CI artifacts strip the exec bit during
-             packaging, so force it here before any of them run (initcluster.sh
-             below execs bin/initdb). -->
-        <changePermissions permissions="0755" files="${installdir}/bin/*;${installdir}/installer/server/*.sh;${installdir}/scripts/*.sh">
-            <abortOnError>0</abortOnError>
-            <ruleList>
-                <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-            </ruleList>
-        </changePermissions>
         <!-- WINDOWS :: This files belongs to command line tools, so server should not remove this files -->
         <removeFilesFromUninstaller>
             <files>${installdir}/bin/ssleay32.dll;${installdir}/bin/libeay32.dll;${installdir}/bin/libiconv-2.dll;${installdir}/bin/libintl-9.dll</files>
@@ -3770,5 +3748,15 @@ REM The script sets environment variables helpful for PostgreSQL
             <showMessageOnError>0</showMessageOnError>
         </deleteFile>
         <setInstallerVariable name="server_installation_done" value="1" persist="1"/>
+
+        <!-- Deleting older zlib version library -->
+        <deleteFile>
+            <path>"${installdir}/lib/libz.1.2.11.dylib"</path>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
+            <ruleList>
+		<compareText logic="equals" text="${installer_ui}" value="gui"/>
+		<compareText logic="equals" text="${installer_ui}" value="unattended"/>
+            </ruleList>
+        </deleteFile>
     </postInstallationActionList>
 </component>
