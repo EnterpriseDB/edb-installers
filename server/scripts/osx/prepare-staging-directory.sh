@@ -82,7 +82,9 @@ cp "$OSX_SCRIPTS/createshortcuts_sb.sh" "$SB/installer/server/createshortcuts_sb
 cp "$RES/pg-stackbuilder.icns"          "$SB/scripts/images/"
 chmod ugo+x "$SB/installer/server/createshortcuts_sb.sh"
  if [ -d stackbuilder.app ]; then
-   cp -pR stackbuilder.app "$SB/stackbuilder.app"
+   # ditto (not cp -R) preserves resource forks/xattrs and the code-signing
+   # seal on the bundle's loose top-level files; cp -R can silently drop them.
+   ditto stackbuilder.app "$SB/stackbuilder.app"
  else
    echo "WARNING: stackbuilder.app not found - stackbuilder component will be incomplete"
  fi
@@ -92,7 +94,10 @@ chmod ugo+x "$SB/installer/server/createshortcuts_sb.sh"
  cp "$OSX_SCRIPTS/createshortcuts_pgadmin.sh" "$PGADMIN4/installer/server/createshortcuts_pgadmin.sh"
  chmod ugo+x "$PGADMIN4/installer/server/createshortcuts_pgadmin.sh"
   if [ -d "pgAdmin 4.app" ]; then
-    cp -pR "pgAdmin 4.app" "$PGADMIN4/pgAdmin 4.app"
+    # ditto (not cp -R) preserves resource forks/xattrs and the code-signing
+    # seal on the bundle's loose top-level files (e.g. LICENSE); cp -R has
+    # been observed to silently drop them, which breaks the signature seal.
+    ditto "pgAdmin 4.app" "$PGADMIN4/pgAdmin 4.app"
   else
     echo "WARNING: 'pgAdmin 4.app' not found - pgadmin4 component will be incomplete"
   fi
