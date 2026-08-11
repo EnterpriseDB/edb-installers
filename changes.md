@@ -4,7 +4,8 @@
 
 - **Dependencies (macOS & Windows)**
     - Update `wxwidgets` to version `3.2.11`
-    - Update `curl` to version `8.21.0` 
+    - Update `curl` to version `8.21.0`
+    - Update `libiconv` to version `1.19`
 
 -------------------------------------------------------------------------------------------------------------------------------
 
