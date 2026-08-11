@@ -18,6 +18,7 @@ export PATH="$DEP_PREFIX/bin:$PATH"
 mkdir -p "$PG_STAGING"
 cd "$SOURCE_DIR"
 
+DYLD_LIBRARY_PATH="$DEP_PREFIX/lib" \
 PG_SYSROOT="$PG_SYSROOT" \
 PYTHON=$PYTHON_DIR/bin/python3 \
 TCL_CONFIG_SH=$TCL_DIR/lib/tclConfig.sh \
