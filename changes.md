@@ -1,3 +1,13 @@
+# PostgreSQL installer release 18.5-1 (2026-08-13)
+## Changes 🛠️
+- Update `pgAdmin4` to version `9.17`
+
+- **Dependencies (macOS & Windows)**
+    - Update `wxwidgets` to version `3.2.11`
+    - Update `curl` to version `8.21.0` 
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 18.4-2 (2026-06-11)
 ## Changes 🛠️
 - **Dependencies (macOS & Windows)**
