@@ -1,4 +1,4 @@
-# PostgreSQL installer release 18.5-1 (2026-08-13)
+# PostgreSQL installer release 18.6-1 (2026-08-13)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.17`
 
