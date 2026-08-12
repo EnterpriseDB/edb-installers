@@ -1,10 +1,10 @@
 pg_major_version=17
-pg_minor_version=10
-package_revision=2
+pg_minor_version=11
+package_revision=1
 pgadmin4=9.17
 languagepack=5.7-1
 python=3.12.10
-perl=5.40.0.1
+perl=5.40.4.1
 pkg-config=0.28-1
-tcl=8.6.17
+tcl=8.6.18
 stackbuilder=4.2.2
