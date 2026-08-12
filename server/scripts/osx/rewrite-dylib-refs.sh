@@ -4,7 +4,8 @@ set -e
 PREFIX="${1:?usage: rewrite-dylib-refs.sh <prefix> [extra_build_lib_dir ...]}"
 shift || true
 
-BUILD_LIB_DIRS="$PREFIX/lib $*"
+EXTRA_BUILD_LIB_DIRS="$*"
+BUILD_LIB_DIRS="$PREFIX/lib $EXTRA_BUILD_LIB_DIRS"
 
 _reloc() {
     f="$1"; rpath="$2"
@@ -17,6 +18,19 @@ _reloc() {
     if ! otool -l "$f" | grep -A2 LC_RPATH | grep -q "path $rpath "; then
         install_name_tool -add_rpath "$rpath" "$f"
     fi
+
+    # Drop any stale absolute rpath pointing at an ephemeral build-time
+    # dependency dir (e.g. $DEP_PREFIX/lib on the CI runner, passed in as an
+    # extra_build_lib_dir arg). It's dead weight now that the relative
+    # @loader_path rpath above is in place - dyld just skips it since it
+    # never resolves on any other machine - but leaving it means shipped
+    # binaries carry a dangling reference to a path that only ever existed
+    # on the build runner.
+    for bp in $EXTRA_BUILD_LIB_DIRS; do
+        if otool -l "$f" | grep -A2 LC_RPATH | grep -q "path $bp "; then
+            install_name_tool -delete_rpath "$bp" "$f" || true
+        fi
+    done
 
     # 2. normalise a dylib/bundle's own install id
     if file "$f" | grep -qE "shared library|bundle"; then
