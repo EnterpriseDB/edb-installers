@@ -1,7 +1,16 @@
+# PostgreSQL installer release 19beta3 (2026-08-13)
+- **Dependencies (macOS & Windows)**
+    - Update `wxwidgets` to version `3.2.11`
+    - Update `libiconv` to version `1.19`
+ 
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 19beta2 (2026-07-16)
 - **Dependencies (macOS & Windows)**
     - Update `curl` to version `8.21.0`
     - Update `openssl` to version `3.5.7`
+ 
+-------------------------------------------------------------------------------------------------------------------------------
 
 # PostgreSQL installer release 19beta1 (2026-06-04)
 ## Changes 🛠️
