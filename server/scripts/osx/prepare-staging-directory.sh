@@ -61,8 +61,8 @@ chmod ugo+x "$PGSERVER/installer/prerun_checks.sh" "$PGSERVER/installer/server/"
 mkdir -p "$PGSERVER/scripts/images"
 cp "$RES/pg-help.icns"   "$PGSERVER/scripts/images/"
 cp "$RES/pg-reload.icns" "$PGSERVER/scripts/images/"
-for a in doc-installationnotes doc-postgresql doc-postgresql-releasenotes doc-pgadmin \
-         psql reload pgadmin stackbuilder; do
+for a in doc-installationnotes doc-postgresql doc-postgresql-releasenotes \
+         psql reload stackbuilder; do
   cp "$OSX_SCRIPTS/$a.applescript.in" "$PGSERVER/scripts/$a.applescript"
 done
 
@@ -83,12 +83,12 @@ cp "$OSX_SCRIPTS/createshortcuts_sb.sh" "$SB/installer/server/createshortcuts_sb
 cp "$RES/pg-stackbuilder.icns"          "$SB/scripts/images/"
 chmod ugo+x "$SB/installer/server/createshortcuts_sb.sh"
 if [ -d stackbuilder.app ]; then
-  cp -pR stackbuilder.app "$SB/stackbuilder.app"
-elif [ -d SB/stackbuilder.app ]; then
-  cp -pR SB/stackbuilder.app "$SB/stackbuilder.app"
-else
-  echo "WARNING: stackbuilder.app not found - stackbuilder component will be incomplete"
-fi
+   # ditto (not cp -R) preserves resource forks/xattrs and the code-signing
+   # seal on the bundle's loose top-level files; cp -R can silently drop them.
+   ditto stackbuilder.app "$SB/stackbuilder.app"
+ else
+   echo "WARNING: stackbuilder.app not found - stackbuilder component will be incomplete"
+ fi
 
 # ---------------------------------------------------------------------------
 # Installer-level assets: side/splash images, i18n language files and the
@@ -98,8 +98,6 @@ mkdir -p "$S/resources" "$S/scripts"
 cp packaging-config/resources/pg-side.png   "$S/resources/"
 cp packaging-config/resources/pg-splash.png "$S/resources/"
 cp -r packaging-config/server/i18n "$S/"
-cp packaging-config/scripts/determineLinuxInitSystem.xml "$S/scripts/"
-cp packaging-config/scripts/linuxServiceAction.xml       "$S/scripts/"
 
 # ---------------------------------------------------------------------------
 # InstallBuilder project files (templated by the workflow's Pre-installer step)
@@ -107,7 +105,6 @@ cp packaging-config/scripts/linuxServiceAction.xml       "$S/scripts/"
 cp packaging-config/server/installer.xml.in        "$S/installer.xml"
 cp packaging-config/server/pgserver.xml.in         "$S/pgserver-osx.xml"
 cp packaging-config/server/commandlinetools.xml.in "$S/commandlinetools-osx.xml"
-
 cp packaging-config/server/stackbuilder.xml.in "$S/stackbuilder-osx.xml"
 
 echo "--- staging/osx contents ---"
