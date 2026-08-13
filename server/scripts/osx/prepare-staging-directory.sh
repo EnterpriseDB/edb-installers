@@ -98,6 +98,8 @@ mkdir -p "$S/resources" "$S/scripts"
 cp packaging-config/resources/pg-side.png   "$S/resources/"
 cp packaging-config/resources/pg-splash.png "$S/resources/"
 cp -r packaging-config/server/i18n "$S/"
+cp packaging-config/scripts/determineLinuxInitSystem.xml "$S/scripts/"
+cp packaging-config/scripts/linuxServiceAction.xml       "$S/scripts/"
 
 # ---------------------------------------------------------------------------
 # InstallBuilder project files (templated by the workflow's Pre-installer step)
