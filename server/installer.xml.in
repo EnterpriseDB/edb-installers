@@ -1387,13 +1387,6 @@ EOF
 
          <actionGroup>
             <actionList>
-                <!-- CI artifacts strip the exec bit; force it before running. -->
-                <changePermissions permissions="0755" files="${system_temp_directory}/postgresql_installer_${random_number}/prerun_checks.sh">
-                    <abortOnError>0</abortOnError>
-                    <ruleList>
-                        <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
-                    </ruleList>
-                </changePermissions>
                 <runProgram program="${system_temp_directory}/postgresql_installer_${random_number}/prerun_checks.sh">
                     <ruleList>
                         <compareText logic="does_not_equal" text="${platform_name}" value="windows"/>
@@ -2939,9 +2932,6 @@ ${dbsummary}${cltsummary}${sbsummary}${msg(summary.installation.logfile)}: ${Ins
                             </ruleList>
                         </runProgram>
 
-                        <changePermissions permissions="0755" files="${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh">
-                            <abortOnError>0</abortOnError>
-                        </changePermissions>
                         <runProgram>
                             <program>${system_temp_directory}/postgresql_installer_${random_number}/runpgcontroldata.sh</program>
                             <programArguments>${system_temp_directory}/postgresql_installer_${random_number} "${datadir}"</programArguments>
