@@ -6,9 +6,11 @@ set -xe
 SOURCE_DIR="$1"
 DEP_PREFIX="$2"
 PYTHON_FRAMEWORK="$3"
+PERL_DIR="$4"
+TCL_DIR="$5"
 
-if [ -z "$SOURCE_DIR" ] || [ -z "$DEP_PREFIX" ] || [ -z "$PYTHON_FRAMEWORK" ]; then
-    echo "Usage: $0 <source_directory> <dep_prefix> <python_framework_dir>"
+if [ -z "$SOURCE_DIR" ] || [ -z "$DEP_PREFIX" ] || [ -z "$PYTHON_FRAMEWORK" ] || [ -z "$PERL_DIR" ] || [ -z "$TCL_DIR" ]; then
+    echo "Usage: $0 <source_directory> <dep_prefix> <python_framework_dir> <perl_dir> <tcl_dir>"
     exit 1
 fi
 export PATH="$DEP_PREFIX/bin:$PATH"
@@ -19,6 +21,8 @@ cd "$SOURCE_DIR"
 DYLD_LIBRARY_PATH="$DEP_PREFIX/lib" \
 PG_SYSROOT="$PG_SYSROOT" \
 PYTHON="$PYTHON_FRAMEWORK/Versions/Current/bin/python3" \
+PERL="$PERL_DIR/bin/perl" \
+TCL_CONFIG_SH="$TCL_DIR/lib/tclConfig.sh" \
 LDFLAGS="-L$DEP_PREFIX/lib -Wl,-headerpad_max_install_names" \
 CFLAGS="$PG_ARCH_OSX_CFLAGS -O2" \
 XML2_CONFIG="$DEP_PREFIX/bin/xml2-config" \
@@ -38,6 +42,8 @@ LIBCURL_LIBS="-L$DEP_PREFIX/lib" \
    --with-ldap \
    --with-openssl \
    --with-python \
+   --with-perl \
+   --with-tcl \
    --with-bonjour \
    --with-pam \
    --with-libxml \
