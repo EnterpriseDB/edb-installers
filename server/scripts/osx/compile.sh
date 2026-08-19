@@ -65,8 +65,14 @@ make install
 PLPY="$PG_STAGING/lib/postgresql/plpython3.dylib"
 if [ -f "$PLPY" ]; then
     OLD_DEP=$(otool -L "$PLPY" | awk 'NR>1{print $1}' | grep -m1 'Python.framework')
-    [ -n "$OLD_DEP" ] || { echo "ERROR: no Python.framework dependency in plpython3.dylib"; exit 1; }
-    NEW_DEP="$PYTHON_FRAMEWORK/Versions/Current/${OLD_DEP#*Python.framework/Versions/*/}"
+    if [ -z "$OLD_DEP" ]; then
+        echo "ERROR: no Python.framework dependency in plpython3.dylib"
+        exit 1
+    fi
+
+    # Replace whatever version folder is there (e.g. "3.14") with "Current"
+    NEW_DEP=$(echo "$OLD_DEP" | sed -E 's#/Versions/[^/]+/#/Versions/Current/#')
+
     install_name_tool -change "$OLD_DEP" "$NEW_DEP" "$PLPY"
 fi
 
