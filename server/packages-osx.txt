@@ -11,6 +11,3 @@ gettext-0.26-osx.tar.bz2
 e2fsprogs-1.47.4-osx.tar.bz2
 krb5-1.22.2-osx.tar.bz2
 libedit-20260512-3.1-osx.tar.bz2
-libpng-1.6.58-osx.tar.bz2
-pcre2-10.47-osx.tar.bz2
-expat-2.8.2-osx.tar.bz2
