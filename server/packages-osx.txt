@@ -6,8 +6,8 @@ lz4-1.10.0-osx.tar.bz2
 libxml2-2.15.3-osx.tar.bz2
 libxslt-1.1.45-osx.tar.bz2
 libiconv-1.19-osx.tar.bz2
-icu-77.1-osx.tar.bz2
-gettext-0.26-osx.tar.bz2
+icu-78.3-osx.tar.bz2
+gettext-1.0-osx.tar.bz2
 e2fsprogs-1.47.4-osx.tar.bz2
 krb5-1.22.2-osx.tar.bz2
 libedit-20260512-3.1-osx.tar.bz2
