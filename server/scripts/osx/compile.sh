@@ -5,9 +5,12 @@ set -xe
 
 SOURCE_DIR="$1"
 DEP_PREFIX="$2"
+PYTHON_FRAMEWORK="$3"
+PERL_DIR="$4"
+TCL_DIR="$5"
 
-if [ -z "$SOURCE_DIR" ] || [ -z "$DEP_PREFIX" ]; then
-    echo "Usage: $0 <source_directory> <dep_prefix>"
+if [ -z "$SOURCE_DIR" ] || [ -z "$DEP_PREFIX" ] || [ -z "$PYTHON_FRAMEWORK" ] || [ -z "$PERL_DIR" ] || [ -z "$TCL_DIR" ]; then
+    echo "Usage: $0 <source_directory> <dep_prefix> <python_framework_dir> <perl_dir> <tcl_dir>"
     exit 1
 fi
 export PATH="$DEP_PREFIX/bin:$PATH"
@@ -17,6 +20,9 @@ cd "$SOURCE_DIR"
 
 DYLD_LIBRARY_PATH="$DEP_PREFIX/lib" \
 PG_SYSROOT="$PG_SYSROOT" \
+PYTHON="$PYTHON_FRAMEWORK/Versions/Current/bin/python3" \
+PERL="$PERL_DIR/bin/perl" \
+TCL_CONFIG_SH="$TCL_DIR/lib/tclConfig.sh" \
 LDFLAGS="-L$DEP_PREFIX/lib -Wl,-headerpad_max_install_names" \
 CFLAGS="$PG_ARCH_OSX_CFLAGS -O2" \
 XML2_CONFIG="$DEP_PREFIX/bin/xml2-config" \
@@ -35,6 +41,9 @@ LIBCURL_LIBS="-L$DEP_PREFIX/lib" \
    --enable-debug \
    --with-ldap \
    --with-openssl \
+   --with-python \
+   --with-perl \
+   --with-tcl \
    --with-bonjour \
    --with-pam \
    --with-libxml \
@@ -49,6 +58,23 @@ LIBCURL_LIBS="-L$DEP_PREFIX/lib" \
 
 make -j"$(sysctl -n hw.ncpu)"
 make install
+
+# sysconfig reports the concrete version path, not Current, so plpython3
+# links against a fixed Python version by default. Repoint it at Current so
+# any python.org install >=3.9 on the end user's Mac satisfies it.
+PLPY="$PG_STAGING/lib/postgresql/plpython3.dylib"
+if [ -f "$PLPY" ]; then
+    OLD_DEP=$(otool -L "$PLPY" | awk 'NR>1{print $1}' | grep -m1 'Python.framework')
+    if [ -z "$OLD_DEP" ]; then
+        echo "ERROR: no Python.framework dependency in plpython3.dylib"
+        exit 1
+    fi
+
+    # Replace whatever version folder is there (e.g. "3.14") with "Current"
+    NEW_DEP=$(echo "$OLD_DEP" | sed -E 's#/Versions/[^/]+/#/Versions/Current/#')
+
+    install_name_tool -change "$OLD_DEP" "$NEW_DEP" "$PLPY"
+fi
 
 #build postgres docs
 cd doc
