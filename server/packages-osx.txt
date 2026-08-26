@@ -1,4 +1,4 @@
-openssl-3.5.7-osx.tar.bz2
+openssl-3.5.8-osx.tar.bz2
 curl-8.21.0-osx.tar.bz2
 zlib-1.3.2-osx.tar.bz2
 zstd-1.5.7-osx.tar.bz2
