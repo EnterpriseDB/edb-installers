@@ -1,4 +1,4 @@
-# PostgreSQL installer release 17.11-2 (2026-08-31)
+# PostgreSQL installer release 17.11-2 (2026-08-27)
 ## Changes 🛠️
 - **Dependencies (macOS & Windows)**
     - Update `openssl` version to `3.5.8`
