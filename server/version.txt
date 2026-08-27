@@ -1,6 +1,6 @@
 pg_major_version=18
 pg_minor_version=6
-package_revision=1
+package_revision=2
 pgadmin4=9.17
 languagepack=6.4-1
 python=3.13.15
