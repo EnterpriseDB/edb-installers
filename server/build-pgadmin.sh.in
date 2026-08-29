@@ -31,6 +31,9 @@ _cleanup() {
 	echo "Cleaning up the old environment and app bundle..."
 	rm -rf "${BUILD_ROOT}"
 	rm -rf "${TEMP_DIR}"
+	# Remove any stray yarn config from parent directories that may interfere with build
+    SCRIPT_DIR=$(dirname "${SOURCE_DIR}")
+    rm -rf "${SCRIPT_DIR}/.yarn" "${SCRIPT_DIR}/.yarnrc.yml" 2>/dev/null || true
 }
 
 _create_python_env() {
@@ -289,8 +292,8 @@ _complete_bundle() {
                 if (( $(echo "${APP_LONG_VERSION} <= 9.5" | bc -l) )); then
                  npm pkg set "scripts.git:hash=exit 0"
                 fi
-                yarn set version berry
-                yarn set version 4
+        yarn set version berry
+        yarn set version 4
 		yarn install
 		yarn run bundle
 
