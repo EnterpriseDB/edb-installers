@@ -1,3 +1,10 @@
+# PostgreSQL installer release 14.23-2 (2026-08-31)
+## Changes 🛠️
+- **Dependencies (macOS & Windows)**
+    - Update `openssl` version to `1.1.1zi`
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 14.24-1 (2026-08-13)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.17`
