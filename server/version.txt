@@ -1,8 +1,8 @@
 pg_major_version=18
 pg_minor_version=6
-package_revision=2
+package_revision=3
 pgadmin4=9.17
-languagepack=6.4-1
+languagepack=6.5-1
 python=3.13.15
 perl=5.42.2.1
 pkg-config=0.28-1
