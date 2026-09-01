@@ -1,3 +1,9 @@
+# PostgreSQL installer release 18.6-3 (2026-09-01)
+## Changes 🛠️
+- **Dependencies (macOS & Windows)**
+    - Update OpenSSL DLLs with version `3.5.8` in pgAdmin 4\runtime
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 18.6-2 (2026-08-31)
 ## Changes 🛠️
 - **Dependencies (macOS & Windows)**
