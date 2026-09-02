@@ -116,28 +116,60 @@ $ sudo port install bison
 $ sudo port install flex
 $ sudo port install ossp-uuid
 
-Dependency libraries must be built with a little more control to ensure they 
-use the correct SDK to allow them to be used on macOS12 (Monterey) and above. We 
-build these packages through GH actions.
+Dependency libraries must be built with a little more control to ensure they
+use the correct SDK and are built as universal (arm64 + x86_64) binaries,
+usable on macOS 12 (Monterey) and above.
 
-- Download the source for each library (eg. openssl, libxml2 & libxslt).
+The exact list of third-party libraries PostgreSQL links against on macOS,
+and the exact version of each, is pinned in server/packages-osx.txt. At the
+time of writing that's: openssl, zlib, curl, zstd, lz4, libxml2, libxslt,
+libiconv, icu, gettext, e2fsprogs, krb5, libedit.
 
-- Unpack the source
+To build one of these yourself:
 
-- Configure the source with a command such as:
+- Download the library's source tarball, matching the version pinned in
+  server/packages-osx.txt, and unpack it.
 
-CFLAGS="arch arm64 -arch x86_64 -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -mmacosx-version-min=12" LDFLAGS="arch arm64 -arch x86_64 -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -mmacosx-version-min=12" ./configure --prefix
+- Configure it to build as a universal binary against a fixed SDK. For a
+  typical autotools-based library:
 
-- Build and install:
+SDK=$(xcrun --sdk macosx --show-sdk-path)
+CFLAGS="-arch arm64 -arch x86_64 -isysroot $SDK -mmacosx-version-min=12" \
+LDFLAGS="-arch arm64 -arch x86_64 -isysroot $SDK -mmacosx-version-min=12" \
+./configure --prefix=/path/to/deps
 
-make all
-sudo make install
+  A few of these (eg. zstd) use cmake instead - pass the equivalent flags
+  as -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+  -DCMAKE_OSX_DEPLOYMENT_TARGET=12 -DCMAKE_OSX_SYSROOT="$SDK". openssl uses
+  its own Configure script and is typically built once per architecture
+  and combined into a universal binary with lipo, rather than a single
+  configure line.
+
+- Build and install it into a single common prefix (the --prefix above)
+  that all the other dependencies, and PostgreSQL itself, will be built
+  against:
+
+make -j"$(sysctl -n hw.ncpu)"
+make install
+
+Repeat this for every library listed in server/packages-osx.txt, installing
+each into that same prefix.
 
 Note that we must make sure all additional libraries link against these
-libraries, and not the older, system copies. In the case of libxslt, we can
-do this by configuring with option --with-libxml-prefix.
+freshly-built libraries, and not the older, system copies. In the case of
+libxslt, we can do this by configuring with option --with-libxml-prefix.
 
-- Set up DocBook SGML
+Once every dependency is installed into that prefix, build PostgreSQL
+itself against it - see server/scripts/osx/compile.sh for the exact
+./configure flags and environment PostgreSQL is built with, and
+server/scripts/osx/rewrite-dylib-refs.sh for making the resulting binaries
+relocatable.
+
+- Set up DocBook
+
+    brew install docbook docbook-xsl
+
+(Older MacPorts-based DocBook SGML setup retained below for reference.)
 
 Configuring DocBook SGML on Mac OS X with MacPorts.
 
@@ -147,7 +179,7 @@ Configuring DocBook SGML on Mac OS X with MacPorts.
     docbook-xsl
 
 
-3) Download DockBook 4.2 (http://www.docbook.org/sgml/4.2/docbook-4.2.zip) 
+3) Download DockBook 4.2 (http://www.docbook.org/sgml/4.2/docbook-4.2.zip)
    and the ISO 8879 character entities (http://www.oasis-open.org/cover/ISOEnts.zip)
 
 4) Unzip both archives into /opt/local/share/sgml/docbook-4.2
@@ -160,13 +192,11 @@ Configuring DocBook SGML on Mac OS X with MacPorts.
 
 7) Create the file /opt/local/share/sgml/catalog, with the following contents:
 
-CATALOG "openjade/catalog"    
+CATALOG "openjade/catalog"
 CATALOG "docbook-4.2/docbook.cat"
 CATALOG "docbook-dsssl-1.79/catalog"
 
 8) Make sure that settings.sh is updated with docbook installation path.
-
-- Fix PAM headers
 
 Build VMs
 ---------
