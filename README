@@ -87,34 +87,35 @@ lack of reference counting between packages) or desirable to remove everything.
 Build platform
 --------------
 
-The build platform is macOS Sequoia. We use macOS because it allows us to run
-all other Intel based OS's on the same machine. All other supported platforms
-are run in VMWare Fusion virtual machines, with the exception of Solaris Sparc
-which obviously must be an external machine. The supported platforms can be set
-as external machines if required by exposing nfs shares from mac.
+The build platform for macOS is a Mac running a current macOS release,
+used to produce the universal (arm64 + x86_64) macOS packages - unlike the
+other supported platforms, macOS binaries can only be built on macOS
+itself.
 
-A number of additional dependencies are required when setting up the system,
-such as libxml2 and libxslt, as well as useful utilties such as wget. Setting
-these up correct is essentially to ensuring future Universal binary builds will
-work as expected on all supported macOS versions (10.14/Mojave and above).
+Setting up a new build machine:
 
-Utilities should be installed using MacPorts:
+- Install the Xcode Command Line Tools:
 
-- Download the installer from http://www.macports.org/ and install the package.
+xcode-select --install
 
-- Add /opt/local/bin:/opt/local/sbin to the *end* of the path. Add the following
-  line to ~/.bash_profile for the buildfarm user:
+  This provides the compiler toolchain and the macOS SDK the build links
+  against.
 
-export PATH=$PATH:/opt/local/bin:/opt/local/sbin
+- Install Homebrew (https://brew.sh/), then install the utilities actually
+  needed to build the installer:
 
-- Install packages:
+$ brew install cmake bison flex
 
-$ sudo port install cmake
-$ sudo port install wget
-$ sudo port install apache-ant
-$ sudo port install bison
-$ sudo port install flex
-$ sudo port install ossp-uuid
+  bison and flex are required to build PostgreSQL's own grammar (the
+  versions Apple ships under /usr/bin are too old); cmake is needed for
+  the handful of dependencies below that use a CMake-based build instead
+  of autotools. (See "Set up DocBook" further down for the one other
+  Homebrew package needed.)
+
+  The old MacPorts-based setup, and its ossp-uuid dependency, are no
+  longer used - PostgreSQL is now built with --with-uuid=e2fs against the
+  e2fsprogs library, which is one of the third-party dependencies built
+  below.
 
 Dependency libraries must be built with a little more control to ensure they
 use the correct SDK and are built as universal (arm64 + x86_64) binaries,
