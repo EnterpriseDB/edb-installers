@@ -87,10 +87,9 @@ lack of reference counting between packages) or desirable to remove everything.
 Build platform
 --------------
 
-The build platform for macOS is a Mac running a current macOS release,
-used to produce the universal (arm64 + x86_64) macOS packages - unlike the
-other supported platforms, macOS binaries can only be built on macOS
-itself.
+The build platform for macOS is macOS 15 (Sequoia), used to produce the
+universal (arm64 + x86_64) macOS packages - unlike the other supported
+platforms, macOS binaries can only be built on macOS itself.
 
 Setting up a new build machine:
 
@@ -166,38 +165,44 @@ itself against it - see server/scripts/osx/compile.sh for the exact
 server/scripts/osx/rewrite-dylib-refs.sh for making the resulting binaries
 relocatable.
 
+- Language interpreters
+
+PostgreSQL is also configured with --with-python, --with-perl and
+--with-tcl, so three more things need to be in place first (see
+server/version.txt for the exact versions currently pinned, and
+server/scripts/osx/compile.sh for how each is passed in):
+
+  * Python - install the official universal2 installer from python.org
+    for the version pinned by the `python=` entry in server/version.txt,
+    e.g.:
+
+    https://www.python.org/ftp/python/<version>/python-<version>-macos11.pkg
+
+    This installs a proper Python.framework under
+    /Library/Frameworks - a Homebrew Python install will not work here,
+    as plpython3 needs the framework layout.
+
+    Only the build itself needs this exact pinned version: compile.sh
+    rewires the resulting plpython3.dylib to link against
+    Python.framework/Versions/Current rather than a fixed version, so any
+    python.org install >=3.9 already on the end user's Mac satisfies it
+    at runtime - they don't need to match the version built against.
+
+  * Perl and Tcl - build your own universal (arm64 + x86_64) Perl and Tcl,
+    matching the `perl=`/`tcl=` entries in server/version.txt, the same
+    way as the other dependencies above, then point compile.sh at the
+    resulting PERL_DIR (containing bin/perl) and TCL_DIR (containing
+    lib/tclConfig.sh).
+
 - Set up DocBook
 
     brew install docbook docbook-xsl
 
-(Older MacPorts-based DocBook SGML setup retained below for reference.)
-
-Configuring DocBook SGML on Mac OS X with MacPorts.
-
-1) Install the following packages using MacPorts:
-
-    docbook
-    docbook-xsl
-
-
-3) Download DockBook 4.2 (http://www.docbook.org/sgml/4.2/docbook-4.2.zip)
-   and the ISO 8879 character entities (http://www.oasis-open.org/cover/ISOEnts.zip)
-
-4) Unzip both archives into /opt/local/share/sgml/docbook-4.2
-
-5) Ensure that all the unpacked files are world readable.
-
-6) Run the following command in the docbook-4.2 directory:
-
-    perl -pi -e 's/iso-(.*).gml/ISO\1/g' docbook.cat
-
-7) Create the file /opt/local/share/sgml/catalog, with the following contents:
-
-CATALOG "openjade/catalog"
-CATALOG "docbook-4.2/docbook.cat"
-CATALOG "docbook-dsssl-1.79/catalog"
-
-8) Make sure that settings.sh is updated with docbook installation path.
+Homebrew's docbook-xsl formula sets up a working XML catalog for you (at
+/opt/homebrew/etc/xml/catalog on Apple Silicon, /usr/local/etc/xml/catalog
+on Intel - see the XML_CATALOG_FILES line in compile.sh). There's no need
+to manually download DocBook 4.2, patch its catalog, or hand-write a
+catalog file.
 
 Build VMs
 ---------
