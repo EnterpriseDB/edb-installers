@@ -229,40 +229,74 @@ Copy the resulting id_rsa.pub file to ~/.ssh/authorized_keys on each VM.
 
 * Windows
 
-The Windows VM is the most tricky to setup:
+The Windows VM setup, updated for the Meson-based build:
 
-- Install Windows 7
-- Install Microsoft Sercurity Essentials
-- Install Visual Studio 2008, and update to the latest service pack
+- Install Windows 10 or Windows 11 (Windows 7 is no longer supported —
+  the native Windows port now requires Windows 10 or later).
+- Install Microsoft Defender (built into Windows 10/11; Microsoft
+  Security Essentials was retired years ago and is no longer
+  available).
+- Install Visual Studio 2022, and update to the latest release. During
+  install, select the "Desktop development with C++" workload — this
+  provides the MSVC compiler/linker toolchain that Meson invokes.
+  (Meson is now the only supported way to build PostgreSQL on Windows
+  with MSVC; the old VS2008-era build scripts are no longer used.)
+- Install Meson (minimum version 0.54) and Ninja on the buildfarm
+  account, e.g. via `pip install meson ninja`, or the standalone Meson
+  MSI installer.
 - Create the 'buildfarm' user account, as a limited user.
-- Install the a basic installation of Cygwin from http://www.cygwin.com/. 
-  Include the OpenSSH package.
-- Configure sshd with ssh-host-config, using the buildfarm user account as
-  the service account. Make sure that openssh log file has correct ownership
-  and permissions. It is absolotely necessary NOT to use default local account
-  with sshd because compilation will fail when invoked via ssh.
-- Make sure that port 22/TCP is open in the Windows Firewall configuration.
-- Install the public ssh key in C:\Cygwin\home\buildfarm\.ssh
-- Install zip.exe and unzip.exe into the System32 directory. These utilities
-  can be found at ftp://ftp.tex.ac.uk/tex-archive/tools/zip/info-zip/WIN32/
-- Create folder 'c:\pgBuild'
-- Depending upon the modules to build, install various utilities in c:\pgBuild
-- Install bison, flex, diffutils in c:\pgBuild (Available from http://gnuwin32.sourceforge.net)
-- Prebuilt iconv, libxml2, libxslt, openssl and zlib from http://zlatkovic.com/pub/libxml,
-  install them in c:\pgBuild
-- gettext (Please consult developer for specific version for PostgreSQL)
-- Mingw (gcc and g++). 
-- MSys 1.0 
-- Compile and install ZLib in Msys using --prefix=/mingw
+- Install Strawberry Perl (not ActiveState Perl, which is no longer
+  the recommended toolchain). Make sure it's ahead of any MinGW/Cygwin
+  Perl in the PATH, as those will not work correctly with the build
+  scripts.
+- Install an SSH server for the buildfarm account. Windows 10/11 ships
+  an optional built-in OpenSSH Server feature (Settings > Apps >
+  Optional Features > OpenSSH Server), so a full Cygwin install is no
+  longer required just for SSH access. If you still want Cygwin for
+  other reasons (e.g. a Cygwin-built psql with command-line editing),
+  install it with the OpenSSH package as before.
+  - Configure the SSH service to run as the buildfarm user account.
+    Make sure the log file / authorized_keys file has correct
+    ownership and permissions. It is absolutely necessary NOT to use
+    a default local account with sshd, because compilation will fail
+    when invoked via ssh.
+- Make sure that port 22/TCP is open in the Windows Firewall
+  configuration.
+- Install the public ssh key in the appropriate authorized_keys
+  location for whichever SSH server you're using (e.g.
+  C:\Users\buildfarm\.ssh\authorized_keys for the native OpenSSH
+  Server, or C:\Cygwin\home\buildfarm\.ssh if using Cygwin).
+- Install zip.exe and unzip.exe into the System32 directory (Info-ZIP
+  builds still work for this; PowerShell's Compress-Archive/
+  Expand-Archive can substitute in some cases if preferred).
+- Create folder 'c:\pgBuild'.
+- Depending upon the modules to build, install various utilities in
+  c:\pgBuild, as before:
+- Install bison, flex, diffutils in c:\pgBuild (from
+  http://gnuwin32.sourceforge.net, or a current win_flex_bison release
+  as a more actively maintained alternative).
+- Prebuilt iconv, libxml2, libxslt, openssl and zlib — the
+  zlatkovic.com mirror is no longer active, so these need to be
+  sourced from current prebuilt Windows binaries matching the
+  OpenSSL/libxml2/libxslt versions required by the PostgreSQL branch
+  being built. Install them in c:\pgBuild.
+- gettext (consult developer for the specific version required by the
+  PostgreSQL branch being built)
+- MinGW (gcc and g++) and MSYS — only needed if building components
+  (e.g. pgAdmin3/wxWidgets or other add-ons) that require a MinGW
+  toolchain; the core PostgreSQL Meson build itself uses MSVC via
+  Visual Studio, not MinGW.
+- Compile and install ZLib in MSYS using --prefix=/mingw, if required
+  by the MinGW-toolchain components above.
 - krb5 in c:\pgBuild
-- vcredist in c:\pgBuild
-- apache ANT in c:\pgBuild
+- vcredist matching the VS2022 runtime, in c:\pgBuild
+- Apache Ant in c:\pgBuild
 - wxWidgets in c:\pgBuild
 
-Note: In case of Windows-64 setup you may get errors related to: 
-LINK : fatal error LNK1181: cannot open input file 'bufferoverflowU.lib'^M
-Main reason of this issue is bufferoverflowU.lib file missing in parallel directory structures of VC installation. To reslove this copy said file into parallel structure e.g.:
-cp /cygdrive/c/Program\ Files\ \(x86\)/Microsoft\ SDKs/Windows/v5.0/Lib/IA64/bufferoverflowu.lib  /cygdrive/c/Program\ Files/Microsoft\ SDKs/Windows/v6.0A/Lib/x64/.
+Note: The old "bufferoverflowU.lib missing" LNK1181 error was specific
+to older Windows SDK/VC toolchains (SDK v5.0/v6.0A era) and does not
+occur with current Visual Studio 2022 installs. Kept here for
+historical reference only; can be removed once fully migrated.
 
 * Mac OS X
 
