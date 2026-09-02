@@ -188,11 +188,12 @@ server/scripts/osx/compile.sh for how each is passed in):
     python.org install >=3.9 already on the end user's Mac satisfies it
     at runtime - they don't need to match the version built against.
 
-  * Perl and Tcl - build your own universal (arm64 + x86_64) Perl and Tcl,
-    matching the `perl=`/`tcl=` entries in server/version.txt, the same
-    way as the other dependencies above, then point compile.sh at the
-    resulting PERL_DIR (containing bin/perl) and TCL_DIR (containing
-    lib/tclConfig.sh).
+  * Perl and Tcl - either build your own universal (arm64 + x86_64) Perl
+    and Tcl, matching the `perl=`/`tcl=` entries in server/version.txt,
+    the same way as the other dependencies above, or install the EDB
+    Language Pack (which bundles both as universal builds already). Either
+    way, point compile.sh at the resulting PERL_DIR (containing bin/perl)
+    and TCL_DIR (containing lib/tclConfig.sh).
 
 - Set up DocBook
 
