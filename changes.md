@@ -1,3 +1,12 @@
+# PostgreSQL installer release 18.6-4 (2026-09-03)
+## Changes 🛠️
+- **Dependencies (macOS)**
+    - Update `curl` to version `8.22.0`
+      
+## Bug Fixes 🐛
+- **Fix:** Fixed pgAdmin 4 failing to launch on macOS 12 (Monterey) due to an unpinned Electron version (Issue #673)
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 18.6-3 (2026-09-01)
 ## Changes 🛠️
 - **Dependencies (Windows)**
