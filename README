@@ -35,34 +35,34 @@ is show below.
 
 ; This section is for a server, and is analagous to the PostgreSQL key under
 ; HKEY_CURRENT_USER\Software on Windows
-[PostgreSQL/18]
-InstallationDirectory=/Library/PostgreSQL/18
-Version=18.6-3
+[PostgreSQL/19]
+InstallationDirectory=/Library/PostgreSQL/19
+Version=19-Beta3
 Shortcuts=1
-DataDirectory=/Library/PostgreSQL/18/data
+DataDirectory=/Library/PostgreSQL/19/data
 Port=5433
-ServiceID=postgresql-18
+ServiceID=postgresql-19
 Locale=C
 Superuser=postgres
 Serviceaccount=postgres
-Description=PostgreSQL 18
-Branding=PostgreSQL 18
+Description=PostgreSQL 19
+Branding=PostgreSQL 19
 SB_Version=4.2.2
 pgAdmin_Version=9.17
-CLT_Version=18.6.3
+CLT_Version=19-Beta3
 DisableStackBuilder=
 [edb_languagepack_v6]
 Description=
 InstallationDirectory=
 Version=
-[PostGIS_PG18]
+[PostGIS_PG19]
 Description=PostGIS adds support for geographic objects to PostgreSQL.
-InstallationDirectory=/Library/PostgreSQL/18
+InstallationDirectory=/Library/PostgreSQL/19
 Version=3.6.3-1
-Branding=PostgreSQL 18
-[pgAgent_PG18]
+Branding=PostgreSQL 19
+[pgAgent_PG19]
 Description=pgAgent is a job scheduler for PostgreSQL which may be managed using pgAdmin.
-InstallationDirectory=/Library/PostgreSQL/18
+InstallationDirectory=/Library/PostgreSQL/19
 Version=4.2.3-1
 ServiceManager=postgres
 PGUSER=postgres
