@@ -236,69 +236,74 @@ Copy the resulting id_rsa.pub file to ~/.ssh/authorized_keys on each VM.
 
 * Windows
 
-The Windows VM setup, updated for the Meson-based build:
+Building PostgreSQL on a Windows VM using the Meson build system:
 
-- Install Windows 10 or Windows 11 (Windows 7 is no longer supported —
-  the native Windows port now requires Windows 10 or later).
-- Install Microsoft Defender (built into Windows 10/11; Microsoft
-  Security Essentials was retired years ago and is no longer
-  available).
-- Install Visual Studio 2022, and update to the latest release. During
-  install, select the "Desktop development with C++" workload — this
-  provides the MSVC compiler/linker toolchain that Meson invokes.
-  (Meson is now the only supported way to build PostgreSQL on Windows
-  with MSVC; the old VS2008-era build scripts are no longer used.)
-- Install Meson (minimum version 0.54) and Ninja on the buildfarm
-  account, e.g. via `pip install meson ninja`, or the standalone Meson
-  MSI installer.
-- Create the 'buildfarm' user account, as a limited user.
-- Install Strawberry Perl (not ActiveState Perl, which is no longer
-  the recommended toolchain). Make sure it's ahead of any MinGW/Cygwin
-  Perl in the PATH, as those will not work correctly with the build
-  scripts.
-- Install an SSH server for the buildfarm account. Windows 10/11 ships
-  an optional built-in OpenSSH Server feature (Settings > Apps >
-  Optional Features > OpenSSH Server), so a full Cygwin install is no
-  longer required just for SSH access. If you still want Cygwin for
-  other reasons (e.g. a Cygwin-built psql with command-line editing),
-  install it with the OpenSSH package as before.
-  - Configure the SSH service to run as the buildfarm user account.
-    Make sure the log file / authorized_keys file has correct
-    ownership and permissions. It is absolutely necessary NOT to use
-    a default local account with sshd, because compilation will fail
-    when invoked via ssh.
-- Make sure that port 22/TCP is open in the Windows Firewall
-  configuration.
-- Install the public ssh key in the appropriate authorized_keys
-  location for whichever SSH server you're using (e.g.
-  C:\Users\buildfarm\.ssh\authorized_keys for the native OpenSSH
-  Server, or C:\Cygwin\home\buildfarm\.ssh if using Cygwin).
-- Install zip.exe and unzip.exe into the System32 directory (Info-ZIP
-  builds still work for this; PowerShell's Compress-Archive/
-  Expand-Archive can substitute in some cases if preferred).
-- Create folder 'c:\pgBuild'.
-- Depending upon the modules to build, install various utilities in
-  c:\pgBuild, as before:
-- Install bison, flex, diffutils in c:\pgBuild (from
-  http://gnuwin32.sourceforge.net, or a current win_flex_bison release
-  as a more actively maintained alternative).
-- Prebuilt iconv, libxml2, libxslt, openssl and zlib — the
-  zlatkovic.com mirror is no longer active, so these need to be
-  sourced from current prebuilt Windows binaries matching the
-  OpenSSL/libxml2/libxslt versions required by the PostgreSQL branch
-  being built. Install them in c:\pgBuild.
-- gettext (consult developer for the specific version required by the
-  PostgreSQL branch being built)
-- MinGW (gcc and g++) and MSYS — only needed if building components
-  (e.g. pgAdmin3/wxWidgets or other add-ons) that require a MinGW
-  toolchain; the core PostgreSQL Meson build itself uses MSVC via
-  Visual Studio, not MinGW.
-- Compile and install ZLib in MSYS using --prefix=/mingw, if required
-  by the MinGW-toolchain components above.
-- krb5 in c:\pgBuild
-- vcredist matching the VS2022 runtime, in c:\pgBuild
-- Apache Ant in c:\pgBuild
-- wxWidgets in c:\pgBuild
+Prerequisites & Environment Setup:
+- Windows OS: Windows Server 2019/2022 or Windows 10/11 (64-bit).
+- Compiler: Visual Studio 2019 or newer with the "Desktop development with C++" workload installed.
+- Python: Python 3.10+ (Ensure "Add Python to PATH" is checked during installation).
+- Build System: Install Meson and Ninja via Python pip:
+    pip install meson ninja
+- Perl: Strawberry Perl (Required for script generation and builds).
+    Download from https://strawberryperl.com/
+- Flex & Bison: win_flex_bison binaries.
+    1. Download from https://github.com/lexxmark/winflexbison
+    2. Extract to a dedicated folder (e.g., C:\3rd_Party_Libraries\win_flex_bison)
+    3. Add the extraction path to your System PATH environment variable.
+- Optional Dependencies (For full feature support):
+    Install libraries like OpenSSL, Zlib, ICU, or LibXML2 using vcpkg:
+    vcpkg install zlib:x64-windows openssl:x64-windows icu:x64-windows
+
+Setting Up SSH Access (Optional / Build Farm Automation):
+- Enable OpenSSH Server natively via PowerShell:
+    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+- Start and configure the sshd service to run automatically:
+    Start-Service sshd
+    Set-Service -Name sshd -StartupType 'Automatic'
+- Ensure Port 22/TCP is allowed in the Windows Defender Firewall.
+- Place public SSH keys in `C:\Users\<build-user>\.ssh\authorized_keys`.
+
+Repository Preparation:
+Ensure Git handles CRLF line endings correctly to avoid flex/bison parser errors:
+    git config core.autocrlf true
+    git rm --cached -r .
+    git reset --hard
+
+Build Instructions:
+Always execute build commands from the "x64 Native Tools Command Prompt for VS <version>" (run as Administrator) to load compiler environment variables (`cl.exe`).
+
+1. Configure the build directory:
+   :: Minimal Build (No external compression/SSL dependencies)
+   meson setup build --prefix=C:\PG_install ^
+     -DFLEX=C:\3rd_Party_Libraries\win_flex_bison\win_flex.exe ^
+     -DBISON=C:\3rd_Party_Libraries\win_flex_bison\win_bison.exe ^
+     -Dreadline=disabled ^
+     -Dzlib=disabled
+
+   :: Full Featured Build (If vcpkg dependencies are installed)
+   meson setup build --prefix=C:\PG_install ^
+     -DFLEX=C:\3rd_Party_Libraries\win_flex_bison\win_flex.exe ^
+     -DBISON=C:\3rd_Party_Libraries\win_flex_bison\win_bison.exe ^
+     -Dcmake_prefix_path=C:\vcpkg\installed\x64-windows
+
+2. Compile and Deploy:
+   ninja -C build install
+
+3. Run Regression Tests (Optional):
+   meson test -C build
+
+4. Initialize and Start Database:
+   cd C:\PG_install\bin
+   initdb.exe -D C:\PG_install\data -U administrator --auth=trust
+   pg_ctl.exe -D C:\PG_install\data -l C:\PG_install\data\server.log start
+
+Troubleshooting Notes:
+- Flex EOF Errors ("end of file in string"):
+  Caused by Unix line endings in `.l` files. Re-run the repository preparation Git commands above.
+- Permission Errors on initdb:
+  If `initdb` fails on directory permissions, grant explicit access to the admin user:
+    takeown /f C:\PG_install\data /r /d y
+    icacls C:\PG_install\data /grant Administrator:(OI)(CI)F /t
 
 Note: The old "bufferoverflowU.lib missing" LNK1181 error was specific
 to older Windows SDK/VC toolchains (SDK v5.0/v6.0A era) and does not
