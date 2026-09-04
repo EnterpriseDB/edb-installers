@@ -1,4 +1,4 @@
-# PostgreSQL installer release 18.6-4 (2026-09-04)
+# PostgreSQL installer release 18.6-4 (2026-09-04) (macOS)
 ## Changes 🛠️
 - **Dependencies (macOS)**
     - Update `curl` to version `8.22.0`
