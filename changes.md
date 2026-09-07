@@ -1,3 +1,11 @@
+# PostgreSQL installer release 17.11-4 (2026-09-08)
+## Changes 🛠️
+- **Dependencies (macOS & Windows)**
+    - Update `libxml2` to version `2.15.4`
+    - Update `curl` to version `8.22.0`
+      
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 17.11-3 (2026-09-01)
 ## Changes 🛠️
 - **Dependencies (Windows)**
