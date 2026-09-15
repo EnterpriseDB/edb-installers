@@ -33,6 +33,7 @@ StackBuilder requires specific entries for the PostgreSQL server, as well as an
 entry indicating the installed version of each unique package. An example file
 is show below.
 
+```
 ; This section is for a server, and is analagous to the PostgreSQL key under
 ; HKEY_CURRENT_USER\Software on Windows
 [PostgreSQL/19]
@@ -70,6 +71,7 @@ PGHOST=localhost
 PGPORT=5432
 PGDATABASE=postgres
 UpgradeMode=0
+```
 
 It is up to the uninstaller for each package to leave or clean the data during 
 uninstallation. The version number for a package should *always* be
