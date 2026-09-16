@@ -170,6 +170,9 @@ if (Test-Path $temporary_data_location -PathType Container) {
     Remove-Item $temporary_data_location -Recurse
 }
 mkdir $temporary_data_location
+mkdir $installation_directory\bin
+mkdir $installation_directory\lib
+mkdir $installation_directory\include
 
 $Acl = Get-ACL $temporary_data_location
 $AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule("everyone","FullControl","ContainerInherit,Objectinherit","none","Allow")
