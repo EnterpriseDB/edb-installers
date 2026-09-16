@@ -234,6 +234,7 @@ Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw32u_html.lib $installation_di
 Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw32u_xrc.lib $installation_directory\lib
 Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw32u_adv.lib $installation_directory\lib
 
+New-Item -ItemType Directory -Path $installation_directory/include -Force | Out-Null
 Copy-Item $lz4_directory/include/*.h $installation_directory/include
 if (Test-Path $installation_directory/include/openssl) {
     Remove-Item $installation_directory/include/openssl -Recurse -Force
