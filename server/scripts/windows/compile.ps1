@@ -170,9 +170,6 @@ if (Test-Path $temporary_data_location -PathType Container) {
     Remove-Item $temporary_data_location -Recurse
 }
 mkdir $temporary_data_location
-mkdir $installation_directory\bin
-mkdir $installation_directory\lib
-mkdir $installation_directory\include
 
 $Acl = Get-ACL $temporary_data_location
 $AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule("everyone","FullControl","ContainerInherit,Objectinherit","none","Allow")
@@ -238,6 +235,9 @@ Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw32u_xrc.lib $installation_dir
 Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw32u_adv.lib $installation_directory\lib
 
 Copy-Item $lz4_directory/include/*.h $installation_directory/include
+if (Test-Path $installation_directory/include/openssl) {
+    Remove-Item $installation_directory/include/openssl -Recurse -Force
+}
 Copy-Item -Path $openssl_directory/include/* -Destination $installation_directory/include -Recurse
 Copy-Item -Path $xml_directory/include/libxml  -Destination $installation_directory/include -Recurse
 Copy-Item -Path $xslt_directory/include/libxslt -Destination $installation_directory/include -Recurse
