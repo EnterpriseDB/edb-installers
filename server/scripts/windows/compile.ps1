@@ -178,8 +178,11 @@ Set-Acl $temporary_data_location $Acl
 
 
 # So far, so good. Let's start compiling
-Write-Host "Executing meson bat file"
-Start-Process -FilePath packaging-config/server/scripts/windows/meson.bat -Wait -NoNewWindow
+Start-Process -FilePath packaging-config/server/scripts/windows/meson.bat -Wait -NoNewWindow -PassThru | Tee-Object -Variable p
+if ($p.ExitCode -ne 0) {
+    Write-Host "meson.bat failed with exit code $($p.ExitCode)"
+    exit 1
+}
 
 Write-Host " Executing Doc Script "
 C:\msys64\usr\bin\sh.exe packaging-config/server/scripts/windows/meson-doc.sh
