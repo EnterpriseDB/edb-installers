@@ -316,36 +316,6 @@ Key build scripts (server/scripts/windows/):
 - prepare-staging-directory.sh - assembles the built files into the
   layout the Windows installer packages up.
 
-Directories
------------
-
-* output/
-
-This directory will contain all the completed installers.
-
-* scripts/
-
-This directory contains miscellaneous scripts that may be useful to multiple
-modules or the overall build system.
-
-* resources/
-
-This directory contains installer resources that may be useful to multiple
-modules or the overall build system.
-
-* tarballs/
-
-This directory contains all the tarballs we use for builds
-
-* <everything else>/
-
-Each additional directory contains a single package. These may be internally built
-as required, though the interface should remain consistent - ie. a single build
-script called build.sh, exposing functions called _prep_<packagename>, 
-_build_< packagename > and _postprocess_< packagename >.
-
-For a description fo the build system for a single package, see server/README.
-
 Additional configuration in the VM's :
 --------------------------------------
 
