@@ -97,6 +97,18 @@ platforms, macOS binaries can only be built on macOS itself.
 
 Setting up a new build machine:
 
+Alternatively, a new build VM can be cloned from an existing one on the
+same machine rather than set up from scratch:
+- Shutdown the VM
+- Right click the VM and click 'show in finder' and then right click on the bundle to copy to another name
+- Double Click the bundle to power it on and choose "I copied it" when Fusion asks
+- Change the HostName, ComputerName using below commands:
+  sudo scutil --set ComputerName "newname"
+  sudo scutil --set LocalHostName "newname"
+  sudo scutil --set HostName "newname"
+  System Preferences->Users&Groups and Change full name to the new name
+- Restart the VM
+
 - Install the Xcode Command Line Tools:
 
 xcode-select --install
@@ -285,25 +297,6 @@ to older Windows SDK/VC toolchains (SDK v5.0/v6.0A era) and does not
 occur with current Visual Studio 2022 installs. Kept here for
 historical reference only; can be removed once fully migrated.
 
-* Mac OS X
-
-Creating a new VM for new codepath from an existing VM on the same machine:
-- Shutdown the VM
-- Right click the VM and click 'show in finder' and then right click on the bundle to copy to another name
-- Double Click the bundle to power it on and choose "I copied it" when Fusion asks
-- Change the HostName, ComputerName using below commands:
-  sudo scutil --set ComputerName "newname"
-  sudo scutil --set LocalHostName "newname"
-  sudo scutil --set HostName "newname"
-  System Preferences->Users&Groups and Change full name to the new name
-- Restart the VM
- 
-Build Machines as external machines
------------------------------------
-In order to set build machines as external machines, Create NFS share pointing to 
-top level 'pginstaller' directory on Mac. For this purpose free tool 'NFS Manager' 
-can be used. On linux side, update /etc/fstab to create nfs mount to this NFS share. 
-
 Build scripts
 -------------
 
@@ -424,14 +417,6 @@ Additional configuration in the VM's :
       >env CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 -arch i386 -arch ppc -arch x86_64" LDFLAGS="-arch i386 -arch ppc -arch x86_64" ./configure --prefix=/usr/local --disable-dependency-tracking
       >make
       >sudo make install
-
-* Adding gd module to php in linux
-
-   * Prequisites: (linux/linux-x64)
-
-       1) yum install freetype
-       2) yum install libpng
-         (libjpeg.so should also be present in /usr/lib and /usr/lib64 for linux and linux-x64 respectively)
 
 * Install the latest version of ActiveState Python, Perl & TCL/Tk on all
   the platforms.
