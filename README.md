@@ -86,8 +86,10 @@ installing and uninstalling the package. When uninstalling, as much of the packa
 as possible should be removed, however it is not always possible (through
 lack of reference counting between packages) or desirable to remove everything.
 
-Build platform
---------------
+Build platforms
+---------------
+
+MacOS:
 
 The build platform for macOS is macOS 15 (Sequoia), used to produce the
 universal (arm64 + x86_64) macOS packages - unlike the other supported
@@ -207,7 +209,7 @@ on Intel - see the XML_CATALOG_FILES line in compile.sh). There's no need
 to manually download DocBook 4.2, patch its catalog, or hand-write a
 catalog file.
 
-* Windows
+Windows:
 
 Building PostgreSQL on a Windows VM using the Meson build system:
 
