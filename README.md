@@ -207,35 +207,6 @@ on Intel - see the XML_CATALOG_FILES line in compile.sh). There's no need
 to manually download DocBook 4.2, patch its catalog, or hand-write a
 catalog file.
 
-Build VMs
----------
-
-All VMs (and in fact, the host machine) are setup to use user accounts called
-'buildfarm'. In order to access each, the VMs must be setup with fixed IP
-addresses which are recorded with an appropriate hostname in DNS. Each hostname 
-is specified in settings.sh. It may be necessary to manually configure VMWare 
-Fusion to bridge the network adaptor instead of using NAT.
-
-The top level 'pginstaller' directory is shared with all the VMs using the VMware
-shared folders feature. The path to this directory is specified in settings.h
-for each VM. Note that VMware doesn't map UIDs/GIDs between the host and the VMs
-so it may be necessary to mount the shared directory using the UID/GID of the
-user in the VM, eg using the following in /etc/fstab:
-
-.host:/  /mnt/hgfs  vmhgfs  defaults,ttl=5,uid=500,gid=500     0 0
-
-SSH authentication between hosts is achieved using certificates. These can be
-generated on the host machine using:
-
-ssh-keygen -t rsa
-
-Copy the resulting id_rsa.pub file to ~/.ssh/authorized_keys on each VM. 
-
-* Linux/Linux-x64
-- Install chrpath utility in order to change the rpath of the installed PostgreSQL binaries in the staging directory.
-  Use the following command to install the chrpath:
-  * yum install chrpath
-
 * Windows
 
 Building PostgreSQL on a Windows VM using the Meson build system:
