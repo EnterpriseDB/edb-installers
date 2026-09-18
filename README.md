@@ -89,7 +89,7 @@ lack of reference counting between packages) or desirable to remove everything.
 Build platforms
 ---------------
 
-MacOS:
+### MacOS
 
 The build platform for macOS is macOS 15 (Sequoia), used to produce the
 universal (arm64 + x86_64) macOS packages - unlike the other supported
@@ -221,7 +221,17 @@ on Intel - see the XML_CATALOG_FILES line in compile.sh). There's no need
 to manually download DocBook 4.2, patch its catalog, or hand-write a
 catalog file.
 
-Windows:
+Key build scripts (server/scripts/osx/):
+
+- compile.sh - configures, builds and installs PostgreSQL itself against
+  the dependency prefix; the exact ./configure flags used live here.
+- rewrite-dylib-refs.sh - rewrites the built binaries' dylib load paths
+  to be relocatable, so the installer doesn't embed the build machine's
+  paths.
+- prepare-staging-directory.sh - assembles the built files into the
+  layout the macOS installer packages up.
+
+### Windows
 
 Building PostgreSQL on a Windows VM using the Meson build system:
 
@@ -296,6 +306,15 @@ Note: The old "bufferoverflowU.lib missing" LNK1181 error was specific
 to older Windows SDK/VC toolchains (SDK v5.0/v6.0A era) and does not
 occur with current Visual Studio 2022 installs. Kept here for
 historical reference only; can be removed once fully migrated.
+
+Key build scripts (server/scripts/windows/):
+
+- meson.bat - sets up PATH/PKG_CONFIG_PATH for the dependency prefixes
+  and runs meson setup for PostgreSQL.
+- compile.ps1 - drives the actual build (ninja install) and copies the
+  resulting dependency DLLs/libs/headers into the install tree.
+- prepare-staging-directory.sh - assembles the built files into the
+  layout the Windows installer packages up.
 
 Build scripts
 -------------
