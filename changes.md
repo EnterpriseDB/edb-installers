@@ -1,6 +1,14 @@
-# PostgreSQL installer release 14.24-3 (2026-09-08)
+# PostgreSQL installer release 14.24-4 (2026-09-18)
 ## Changes 🛠️
-- **Dependencies (macOS & Windows)**
+- **Dependencies (macOS)**
+    - Update `libxml2` to version `2.15.4`
+    - Update `curl` to version `8.22.0`
+      
+-------------------------------------------------------------------------------------------------------------------------------
+
+# PostgreSQL installer release 14.24-3 (2026-09-18)
+## Changes 🛠️
+- **Dependencies (Windows)**
     - Update `libxml2` to version `2.15.4`
     - Update `curl` to version `8.22.0`
       
