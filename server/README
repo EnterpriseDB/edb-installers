@@ -1,66 +1,104 @@
 PostgreSQL Server Package
 =========================
 
-This is the build system for the PostgreSQL Server package. It is not 
+This is the build system for the PostgreSQL Server package. It is not
 designed to be run standalone, but as part of the PostgreSQL Installer
- build system. 
+build system.
+
+Builds are driven per-platform via GitHub Actions (macOS and Windows
+binaries are each built on their own native runner - macOS binaries can
+only be built on macOS, Windows binaries on Windows). There is no longer
+a central Jenkins/VM-orchestrated build reaching out over SSH/NFS to
+remote build machines - that legacy approach has been removed.
 
 Build scripts
 -------------
 
-* build.sh
+* scripts/osx/
 
-This is the primary build build script. It is responsible for prepping the clean
-source tree(s) for building (exposed through _prep_server()), building the 
-trees for each enabled platform (_build_server()) and building each installer
-along with any other miscellaneous post-build tasks (_postprocess_server()).
+Scripts used to build and package the macOS installer. The key ones:
+  - compile.sh - configures, builds and installs PostgreSQL itself
+    against the dependency prefix (see server/packages-osx.txt for the
+    exact pinned third-party library versions).
+  - rewrite-dylib-refs.sh - rewrites the built binaries' dylib load
+    paths to be relocatable, so the installer doesn't embed the build
+    machine's paths.
+  - prepare-staging-directory.sh - assembles the built files into the
+    layout the macOS installer packages up.
+  - createshortcuts*.sh, install-pgadmin.sh, initcluster.sh,
+    preinstall.sh, createuser.sh, runpsql.sh - installer-time scripts
+    that run on the end user's machine, not during the build.
 
-* build-<platform>.sh
+* scripts/windows/
 
-A separate build script is provided for each platform. On the host platform 
-(Mac OS X), the commands are run on the local machine. For other platforms they
-are generally run via ssh on virtual machines, or, remote boxes.
+Scripts used to build and package the Windows installer. The key ones:
+  - meson.bat - sets up PATH/PKG_CONFIG_PATH for the dependency prefixes
+    and runs meson setup for PostgreSQL (see server/packages-win64.txt
+    for the exact pinned third-party library versions).
+  - compile.ps1 - drives the actual build (ninja install) and copies
+    the resulting dependency DLLs/libs/headers into the install tree.
+  - prepare-staging-directory.sh - assembles the built files into the
+    layout the Windows installer packages up.
+  - createuser, validateuser, initcluster.ps1, install-pgadmin.bat,
+    runpsql.bat - installer-time scripts, not build-time.
+
+* scripts/common/
+
+Scripts shared across platforms - currently loadplLanguages.sh and
+plLanguages.config, which drive which PL language interpreters
+(Python/Perl/Tcl) get bundled.
+
+* generate-sources.sh
+
+Fetches (or repackages, for a release) the PostgreSQL source tarball
+for the version pinned by SOURCE_VERSION, ready for the platform build
+scripts above to build against.
 
 Directories
 -----------
 
 * i18n/
 
-This directory contains internationalisation files for the installer. This will
-typically be a message catalog for each language (including English), and in 
-some cases, README & licence files. 
+Installer message catalogs, one file per language (en.lng, es.lng,
+fr.lng).
 
 * resources/
 
-This directory contains the graphics used by the installer. 
+Graphics, licenses, and other static resources used by the installer
+(e.g. edblogo.png, the various pg-help icons, per-platform license
+text files).
 
 * scripts/
 
-This directory contains scripts (which may be platform specific) used at runtime
-by the installer. These may be pre-install, pre-upgrade, post-install, 
-post-upgrade or any other script that may be needed. Note that scripts called by
-the installer should return numeric status codes. These may be read by the
-installer which can interpret them and display localised messages as required.
-
-* source/
-
-This directory contains the source code for the build. Typically the clean copy
-will either be a source tarball or untouched CVS checkout. These are un-tarred
-or copied prior to the actual build. This is managed by _prep_server().
-
-* staging/
-
-The staging directory contains the built tree for each architecture. For the 
-host machine this is simply built locally. For other architectures, the build
-output is written here through and NFS mount (for example). A common directory
-may also be included for files common to all builds.
+Platform-specific and shared build/installer scripts - see "Build
+scripts" above.
 
 Files
 -----
 
 * installer.xml.in
 
-This is the BitRock InstallBuilder configuration file. The build script will
-pre-process this to insert version numbers etc. and save the resulting file as
-installer.xml which is what will actually be built.
+The BitRock InstallBuilder configuration file. The build pre-processes
+this to insert version numbers etc. and produces installer.xml, which
+is what actually gets built.
 
+* pgserver.xml.in / stackbuilder.xml.in / commandlinetools.xml.in
+
+Additional BitRock InstallBuilder component definitions for the server,
+StackBuilder, and command-line-tools components respectively.
+
+* version.txt
+
+Pins the PostgreSQL major/minor version, package revision, and the
+versions of bundled components (languagepack, python, perl, tcl,
+pkg-config, stackbuilder) for this build.
+
+* packages-osx.txt / packages-win64.txt
+
+Pin the exact version of every third-party dependency library
+PostgreSQL is built against, per platform (openssl, zlib, icu, etc.).
+
+* license.sh
+
+Generates the combined third-party license file shipped with the
+installer.
