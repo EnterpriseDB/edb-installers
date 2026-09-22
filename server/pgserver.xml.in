@@ -1692,21 +1692,15 @@
                 </unpackFile>
                 <unpackFile>
                     <component>server</component>
-                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\libintl-9.dll</destination>
+                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\libintl-8.dll</destination>
                     <folder>programfileswindows</folder>
-                    <origin>bin/libintl-9.dll</origin>
+                    <origin>bin/libintl-8.dll</origin>
                 </unpackFile>
                 <unpackFile>
                     <component>server</component>
                     <destination>${system_temp_directory}\postgresql_installer_${random_number}\libiconv-2.dll</destination>
                     <folder>programfileswindows</folder>
                     <origin>bin/libiconv-2.dll</origin>
-                </unpackFile>
-                <unpackFile>
-                    <component>commandlinetools</component>
-                    <destination>${system_temp_directory}\postgresql_installer_${random_number}\libwinpthread-1.dll</destination>
-                    <folder>programfileswindows</folder>
-                    <origin>bin/libwinpthread-1.dll</origin>
                 </unpackFile>
                 <!-- Validate user binary -->
                 <unpackFile>
