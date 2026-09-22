@@ -93,7 +93,7 @@ CFLAGS="$PG_ARCH_OSX_CFLAGS" make
 make install
 
 for lib in liblz4 libxml2 libxslt libuuid libedit libz libssl libcrypto \
-           libintl libicui18n libicudata libicuuc libiconv libkrb5 libgss \
+           libicui18n libicudata libicuuc libiconv libkrb5 libgss \
            libk5 libcom; do
     cp -pR "$DEP_PREFIX"/lib/${lib}*.dylib "$PG_STAGING/lib/" 2>/dev/null || true
 done
