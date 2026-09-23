@@ -1295,6 +1295,18 @@ EOF
             </ruleList>
         </actionGroup>
 
+	<!-- OSX: Remove libintl (gettext) files in upgrade - no longer bundled -->
+	<actionGroup>
+            <actionList>
+                <logMessage text="${msg(info.libintl.remove)}" />
+                <deleteFile path="${installdir}${slash}lib${slash}libintl*.dylib" />
+            </actionList>
+            <ruleList>
+                <compareText text="${platform_name}" logic="equals" value="osx" />
+                <isTrue value="${IsUpgrade}"/>
+            </ruleList>
+        </actionGroup>
+
     </readyToInstallActionList>
 
     <preInstallationActionList>
