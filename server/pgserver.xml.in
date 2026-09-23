@@ -2633,6 +2633,7 @@
         <!-- WINDOWS :: This files belongs to command line tools, so server should not remove this files -->
         <removeFilesFromUninstaller>
             <files>${installdir}/bin/libssl-3-x64.dll;${installdir}/bin/libcrypto-3-x64.dll;${installdir}/bin/libiconv-2.dll;${installdir}/bin/libintl-8.dll;${installdir}/bin/libpq.dll;${installdir}/bin/liblz4.dll;${installdir}/bin/libzstd.dll;${installdir}/bin/psql.exe;${installdir}/bin/pg_dump.exe;${installdir}/bin/pg_dumpall.exe;${installdir}/bin/pg_restore.exe;${installdir}/bin/createdb.exe;${installdir}/bin/dropdb.exe;${installdir}/bin/createuser.exe;${installdir}/bin/dropuser.exe;${installdir}/bin/vacuumdb.exe;${installdir}/bin/clusterdb.exe;${installdir}/bin/reindexdb.exe;${installdir}/bin/pg_isready.exe;${installdir}/bin/pg_basebackup.exe;${installdir}/bin/pg_receivewal.exe;${installdir}/bin/pg_recvlogical.exe;${installdir}/bin/pg_amcheck.exe;${installdir}/bin/pg_verifybackup.exe</files>
+		</removeFilesFromUninstaller>
 
         <createTempDir dirPrefix="postgresql_installer"/>
         <!-- Windows: System account SID so that ruleList works for non-English language -->
