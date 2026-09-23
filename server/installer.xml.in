@@ -1293,8 +1293,7 @@ EOF
                 <compareText text="${platform_name}" logic="contains" value="windows" />
                 <isTrue value="${IsUpgrade}"/>
             </ruleList>
-        </actionGroup>
-
+        </actionGroup>	
     </readyToInstallActionList>
 
     <preInstallationActionList>
