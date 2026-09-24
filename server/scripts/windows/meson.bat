@@ -20,6 +20,7 @@ cd %BASE_PATH%\%SOURCE_DIR%\meson-build
 ECHO meson build dir content
 dir
 ninja --verbose
+ninja testprep
 
 ninja install
 dir %BASE_PATH%\%SOURCE_DIR%\meson-install
