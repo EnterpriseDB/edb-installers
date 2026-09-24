@@ -65,7 +65,49 @@ cp -R ./gettext/bin/libwinpthread-1.dll $(PWD)/packaging-config/installer/server
 cp -R "$VCToolsRedistDir"vc_redist.x86.exe packaging-config/installer/server/staging/windows-x64/commandlinetools/installer/vcredist_x86.exe
 cp -R "$VCToolsRedistDir"vc_redist.x64.exe packaging-config/installer/server/staging/windows-x64/server/installer/vcredist_x64.exe
 cp pgsql/bin/createuser.exe packaging-config/installer/server/staging/windows-x64/commandlinetools/installer/server
-cp -R pgsql/bin/* packaging-config/installer/server/staging/windows-x64/commandlinetools/bin 
+
+# --- FIX: exclusive ownership instead of wholesale duplication ---
+# Root cause: "cp -R pgsql/bin/*" used to copy EVERY compiled binary and DLL
+# into both server/bin and commandlinetools/bin, so both components' install
+# manifests claimed the same files (e.g. psql.exe, libpq.dll). Uninstalling
+# Server alone then deleted them, breaking Command Line Tools even though it
+# was still installed. This matches the file-ownership pattern used in the
+# PG11-era packaging (server/build-windows-x64.sh), restored here.
+SERVER_BIN=packaging-config/installer/server/staging/windows-x64/server/bin
+CLT_BIN=packaging-config/installer/server/staging/windows-x64/commandlinetools/bin
+
+# Client-side tools + libpq: MOVED out of server/bin, owned exclusively by
+# commandlinetools. Update this list when a PG major version adds/removes
+# a client tool (see "Client Applications" in the PostgreSQL docs).
+CLT_EXECUTABLES=(
+    psql.exe pg_dump.exe pg_dumpall.exe pg_restore.exe
+    createdb.exe dropdb.exe createuser.exe dropuser.exe
+    vacuumdb.exe clusterdb.exe reindexdb.exe pg_isready.exe
+    pg_basebackup.exe pg_receivewal.exe pg_recvlogical.exe
+    pg_amcheck.exe pg_verifybackup.exe libpq.dll
+)
+
+# Runtime dependency DLLs genuinely needed by both server AND CLT binaries.
+# COPIED (not moved), so they remain in server/bin too. These, and only
+# these, need entries in removeFilesFromUninstaller in pgserver.xml.in.
+SHARED_DLLS=(
+    libssl-3-x64.dll libcrypto-3-x64.dll libiconv-2.dll
+    libintl-8.dll liblz4.dll libzstd.dll
+)
+
+for f in "${CLT_EXECUTABLES[@]}"; do
+    [ -f "$SERVER_BIN/$f" ] || { echo "ERROR: $f missing from $SERVER_BIN - update CLT_EXECUTABLES" >&2; exit 1; }
+    mv "$SERVER_BIN/$f" "$CLT_BIN/"
+done
+
+for f in "${SHARED_DLLS[@]}"; do
+    [ -f "$SERVER_BIN/$f" ] || { echo "ERROR: $f missing from $SERVER_BIN - update SHARED_DLLS" >&2; exit 1; }
+    cp "$SERVER_BIN/$f" "$CLT_BIN/"
+done
+# Anything still left in server/bin now is server-only by definition and is
+# never copied to CLT_BIN - deliberately no trailing wildcard copy here.
+# --- END FIX ---
+
 mkdir -p packaging-config/installer/server/staging/windows-x64/commandlinetools/lib
 
 cp -r pgsql/lib/* packaging-config/installer/server/staging/windows-x64/commandlinetools/lib
