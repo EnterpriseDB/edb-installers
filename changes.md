@@ -2,6 +2,7 @@
 - **Dependencies (macOS & Windows)**
     - Update `curl` to version `8.22.0`
     - Update `libxml2` to version `2.15.4`
+    - Update `icu` to version `78.3`
       
 - **Additional dependencies (Windows)**  
      - Update `gettext` to version `1.0`
