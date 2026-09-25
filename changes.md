@@ -1,3 +1,13 @@
+# PostgreSQL installer release 19beta4 (2026-09-24)
+- **Dependencies (macOS & Windows)**
+    - Update `curl` to version `8.22.0`
+    - Update `libxml2` to version `2.15.4`
+      
+- **Additional dependencies (Windows)**  
+     - Update `gettext` to version `1.0`
+ 
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 19beta3 (2026-08-13)
 - **Dependencies (macOS & Windows)**
     - Update `wxwidgets` to version `3.2.11`
