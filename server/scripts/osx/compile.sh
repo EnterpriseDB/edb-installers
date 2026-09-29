@@ -80,6 +80,6 @@ for lib in liblz4 libxml2 libxslt libuuid libedit libz libssl libcrypto \
            libk5 libcom; do
     cp -pR "$DEP_PREFIX"/lib/${lib}*.dylib "$PG_STAGING/lib/" 2>/dev/null || true
 done
-for h in openssl libxml2 libxslt unicode iconv.h zlib.h zdict.h lz4*.h zstd*.h; do
+for h in openssl libxml2 libxslt unicode curl iconv.h zlib.h zdict.h lz4*.h zstd*.h; do
     cp -R "$DEP_PREFIX"/include/$h "$PG_STAGING/include/" 2>/dev/null || true
 done
