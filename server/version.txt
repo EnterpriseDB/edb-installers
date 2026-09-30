@@ -2,5 +2,5 @@ pg_major_version=15
 pg_minor_version=19
 package_revision=5
 pgadmin4=9.18
-languagepack=3.12-1
+languagepack=3.12-2
 stackbuilder=4.2.2
