@@ -9,6 +9,9 @@ NAME=postgresql
 WORKDIR=$(pwd)/src
 cd ${WORKDIR}
 TARNAME="${NAME}-${SOURCE_VERSION}"
-wget -O "${TARNAME}.tar.bz2" ${URL}
+
+URL="${URL:-https://ftp.postgresql.org/pub/source/v${SOURCE_VERSION}/${TARNAME}.tar.bz2}"
+
+wget -O "${TARNAME}.tar.bz2" "${URL}"
 md5sum "${TARNAME}.tar.bz2" > "${TARNAME}.tar.bz2.md5"
-mv ${TARNAME}.tar.bz2 ../
+mv "${TARNAME}.tar.bz2" ../
