@@ -1,5 +1,5 @@
 pg_major_version=19
-pg_minor_version=beta4
+pg_minor_version=0
 languagepack=7.0-1
 python=3.14.7
 perl=5.42.2.1
