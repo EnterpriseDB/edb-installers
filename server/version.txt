@@ -1,9 +1,4 @@
-pg_major_version=19
 pg_minor_version=0
 package_revision=beta4
 languagepack=7.0-1
-python=3.14.7
-perl=5.42.2.1
 pkg-config=0.28-1
-tcl=9.0.4
-stackbuilder=4.2.2
