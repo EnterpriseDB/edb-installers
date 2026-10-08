@@ -17,10 +17,17 @@ database server:
 - **PostgreSQL server** - built with `--with-python`, `--with-perl` and
   `--with-tcl` support, plus the command-line client tools (psql, pg_dump,
   pg_restore, etc.).
-- **EDB Language Pack** - bundles the Python, Perl and Tcl interpreters
-  PostgreSQL's PL/Python, PL/Perl and PL/Tcl need, so those procedural
-  languages work out of the box without the user installing interpreters
-  themselves.
+- **EDB Language Pack** - bundles the Perl and Tcl interpreters
+  PostgreSQL's PL/Perl and PL/Tcl need, so those procedural languages work
+  out of the box without the user installing interpreters themselves.
+  - **macOS** - used for PostgreSQL 14 through 19. For 14-18 it also
+    supplies the Python interpreter (PL/Python); starting with PostgreSQL
+    19, Python is instead installed directly from the official
+    python.org installer.
+  - **Windows** - used for PostgreSQL 14 through 16 (supplying Python,
+    Perl and Tcl). Dropped starting with PostgreSQL 17, which fetches
+    the equivalent interpreters directly from their own upstream
+    distributors instead.
 - **StackBuilder** - a companion app, installed alongside the server, that
   provides a graphical interface for downloading and installing additional
   applications, drivers, utilities and their dependencies after the fact.
