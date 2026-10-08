@@ -1,0 +1,207 @@
+# Building the PostgreSQL Server Installer - macOS
+
+This document covers everything needed to build the macOS PostgreSQL server
+installer from this repository, from a clean build machine to a finished
+package. See the [root README](../README.md) for what the installer bundles
+and the overall repository layout.
+
+## Build platform
+
+The build platform for macOS is macOS 15 (Sequoia), used to produce the
+universal (arm64 + x86_64) macOS packages - unlike the other supported
+platform (Windows), macOS binaries can only be built on macOS itself (there
+is no cross-compilation path; the CI job runs on a real macOS runner).
+
+## Setting up a build machine
+
+Install the Xcode Command Line Tools:
+
+```
+xcode-select --install
+```
+
+This provides the compiler toolchain and the macOS SDK the build links
+against.
+
+Install [Homebrew](https://brew.sh/), then install the utilities actually
+needed to build the installer:
+
+```
+brew install cmake bison flex
+```
+
+`bison` and `flex` are required to build PostgreSQL's own grammar (the
+versions Apple ships under `/usr/bin` are too old); `cmake` is needed for
+the handful of dependencies below that use a CMake-based build instead of
+autotools. (See "Set up DocBook" further down for the one other Homebrew
+package needed.)
+
+The old MacPorts-based setup, and its `ossp-uuid` dependency, are no
+longer used - PostgreSQL is now built with `--with-uuid=e2fs` against the
+e2fsprogs library, which is one of the third-party dependencies built
+below.
+
+Alternatively, a new build VM can be cloned from an existing one on the
+same machine rather than set up from scratch:
+- Shutdown the VM.
+- Right click the VM, "Show in Finder", then right click the bundle to
+  copy it under another name.
+- Double-click the copy to power it on and choose "I copied it" when
+  Fusion asks.
+- Change the hostname/computer name:
+  ```
+  sudo scutil --set ComputerName "newname"
+  sudo scutil --set LocalHostName "newname"
+  sudo scutil --set HostName "newname"
+  ```
+- System Preferences -> Users & Groups and change the full name to match.
+- Restart the VM.
+
+## Building the third-party dependencies
+
+Dependency libraries must be built with a little more control to ensure
+they use the correct SDK and are built as universal (arm64 + x86_64)
+binaries, usable on macOS 12 (Monterey) and above.
+
+The exact list of third-party libraries PostgreSQL links against on macOS,
+and the exact version of each, is pinned in [`packages-osx.txt`](packages-osx.txt).
+At the time of writing that's: openssl, zlib, curl, zstd, lz4, libxml2,
+libxslt, libiconv, icu, gettext, e2fsprogs, krb5, libedit.
+
+To build one of these yourself:
+
+1. Download the library's source tarball, matching the version pinned in
+   `packages-osx.txt`, and unpack it.
+
+2. Configure it to build as a universal binary against a fixed SDK. For a
+   typical autotools-based library:
+
+   ```
+   SDK=$(xcrun --sdk macosx --show-sdk-path)
+   CFLAGS="-arch arm64 -arch x86_64 -isysroot $SDK -mmacosx-version-min=12" \
+   LDFLAGS="-arch arm64 -arch x86_64 -isysroot $SDK -mmacosx-version-min=12" \
+   ./configure --prefix=/path/to/deps
+   ```
+
+   A few of these (e.g. zstd) use CMake instead - pass the equivalent flags
+   as `-DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET=12
+   -DCMAKE_OSX_SYSROOT="$SDK"`. OpenSSL uses its own `Configure` script and
+   is typically built once per architecture and combined into a universal
+   binary with `lipo`, rather than a single configure line.
+
+3. Build and install it into a single common prefix (the `--prefix` above)
+   that all the other dependencies, and PostgreSQL itself, will be built
+   against:
+
+   ```
+   make -j"$(sysctl -n hw.ncpu)"
+   make install
+   ```
+
+Repeat this for every library listed in `packages-osx.txt`, installing each
+into that same prefix. Make sure any additional libraries link against
+these freshly-built libraries, and not the older, system copies - for
+libxslt, this means configuring with `--with-libxml-prefix`.
+
+## Language interpreters
+
+PostgreSQL is configured with `--with-python`, `--with-perl` and
+`--with-tcl`, so three more things need to be in place first (see
+[`version.txt`](version.txt) for the exact versions currently pinned, and
+`scripts/osx/compile.sh` for how each is passed in):
+
+- **Python** - install the official universal2 installer from python.org
+  for the version pinned by the `python=` entry in `version.txt`, e.g.
+  `https://www.python.org/ftp/python/<version>/python-<version>-macos11.pkg`.
+  This installs a proper `Python.framework` under `/Library/Frameworks` -
+  a Homebrew Python install will not work here, as plpython3 needs the
+  framework layout. Only the build itself needs this exact pinned version:
+  `compile.sh` rewires the resulting `plpython3.dylib` to link against
+  `Python.framework/Versions/Current` rather than a fixed version, so any
+  python.org install >=3.9 already on the end user's Mac satisfies it at
+  runtime.
+
+- **Perl and Tcl** - either build your own universal (arm64 + x86_64) Perl
+  and Tcl matching the `perl=`/`tcl=` entries in `version.txt` the same way
+  as the other dependencies above, or install the EDB Language Pack (which
+  bundles both as universal builds already). Either way, point
+  `compile.sh` at the resulting `PERL_DIR` (containing `bin/perl`) and
+  `TCL_DIR` (containing `lib/tclConfig.sh`).
+
+## Set up DocBook
+
+```
+brew install docbook docbook-xsl
+```
+
+Homebrew's `docbook-xsl` formula sets up a working XML catalog for you (at
+`/opt/homebrew/etc/xml/catalog` on Apple Silicon,
+`/usr/local/etc/xml/catalog` on Intel - see the `XML_CATALOG_FILES` line in
+`compile.sh`). There's no need to manually download DocBook 4.2, patch its
+catalog, or hand-write a catalog file. DocBook is used to build the
+PostgreSQL documentation bundled with the installer.
+
+## Build PostgreSQL
+
+Once every dependency is installed into the common prefix, build
+PostgreSQL itself against it:
+
+```
+server/scripts/osx/compile.sh <source-dir> <dep-prefix> <python-framework> <perl-dir> <tcl-dir>
+```
+
+`compile.sh` runs PostgreSQL's `./configure` with the flags this installer
+needs (`--with-python`, `--with-perl`, `--with-tcl`, `--with-uuid=e2fs`,
+DocBook catalog wiring, etc.), then `make` and `make install`. See the
+script itself for the exact flag list.
+
+After the build, `rewrite-dylib-refs.sh` rewrites the built binaries' dylib
+load paths to be relocatable, so the installer doesn't embed the build
+machine's paths:
+
+```
+server/scripts/osx/rewrite-dylib-refs.sh <staging-dir> <dep-lib-dir>
+```
+
+Then `prepare-staging-directory.sh` assembles everything (PostgreSQL
+binaries, bundled extensions, licenses, docs) into the layout the macOS
+installer actually packages up, and `create-debug-symbols.sh` extracts
+`.dSYM` debug symbols from the staged Mach-O binaries before they're
+stripped.
+
+Finally, `installer.xml.in` (pre-processed into `installer.xml` with
+version numbers etc. substituted in) is what BitRock InstallBuilder
+actually builds into the `.dmg`/`.pkg`.
+
+## Script reference (`scripts/osx/`)
+
+Build-time scripts:
+
+| Script | Purpose |
+| --- | --- |
+| `compile.sh` | Configures, builds and installs PostgreSQL itself against the dependency prefix. |
+| `rewrite-dylib-refs.sh` | Rewrites built binaries' dylib load paths to be relocatable. |
+| `prepare-staging-directory.sh` | Assembles the built files into the installer's staging layout. |
+| `create-debug-symbols.sh` | Runs `dsymutil`/`strip` over the staged binaries to produce `.dSYM` debug symbol bundles. |
+| `install-pgadmin.sh` | Downloads the latest community pgAdmin 4 build (matching the host architecture) and installs it to `/Applications` - the PostgreSQL 19+ path, now that pgAdmin is no longer bundled into the installer (see the root README). |
+| `getlocales.sh` / `getlocales/getlocales.c` | Enumerates the locales available on the build/target system, for the installer's locale selection dropdown. |
+
+Installer-time scripts (run on the end user's machine, not during the build):
+
+| Script | Purpose |
+| --- | --- |
+| `preinstall.sh` | Pre-install checks (e.g. sufficient shared memory for PostgreSQL). |
+| `prerun_checks.sh` | Checks the system temp directory is writable and scripts can execute from it. |
+| `createuser.sh` | Creates the OS service user PostgreSQL runs as. |
+| `initcluster.sh` | Runs `initdb` to create the data directory/cluster. |
+| `loadmodules.sh` | Loads the PL language modules (via `scripts/common/loadplLanguages.sh`) into the new cluster. |
+| `runpsql.sh` | Launches `psql` connected to the local server (used by the Terminal shortcut). |
+| `createshortcuts.sh`, `createshortcuts_server.sh`, `createshortcuts_clt.sh`, `createshortcuts_sb.sh`, `createshortcuts_pgadmin.sh` | Create the Dock/Finder shortcuts for the server, command-line tools, StackBuilder and pgAdmin components respectively. |
+| `doc-*.applescript.in` | Small AppleScript stubs (pre-processed with the install path substituted in) backing the "Documentation"/"Release Notes" Dock shortcuts - open the relevant bundled doc file in a browser. |
+| `pgadmin.applescript.in` / `stackbuilder.applescript.in` / `psql.applescript.in` / `reload.applescript.in` | AppleScript stubs launching pgAdmin, StackBuilder, psql and a server reload respectively from their Dock shortcuts. |
+
+Shared (`scripts/common/`):
+
+| Script | Purpose |
+| --- | --- |
+| `loadplLanguages.sh` / `plLanguages.config` | Cross-platform: drives which PL language interpreters (Python/Perl/Tcl) get loaded into a newly-initialized cluster. |
