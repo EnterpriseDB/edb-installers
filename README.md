@@ -111,3 +111,11 @@ It's up to each package's uninstaller to decide what to leave behind:
 version numbers should always be cleared, but data that's still useful
 after uninstall (e.g. a server's data directory, port or superuser name)
 may be retained.
+
+## Security Vulnerabilities
+
+Please report security issues affecting PostgreSQL core to
+security@postgresql.org. For security concerns specific to the
+EDB-packaged PostgreSQL installers, please email
+disclosures@enterprisedb.com in accordance with EDB's [Public Vulnerability
+Disclosure Policy](https://www.enterprisedb.com/docs/security/vulnerability-disclosure-policy/).
