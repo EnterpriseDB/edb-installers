@@ -39,57 +39,20 @@ database server:
   longer part of the server installer; the installer instead
   downloads/installs the latest community pgAdmin 4 build separately.
 
-Exact bundled versions (PostgreSQL minor version, package revision,
-Language Pack, etc.) are pinned per build in `server/version.txt`.
-
-## Repository layout
-
-- **`server/`** - the server installer itself:
-  - [`README.osx`](server/README.osx) - full macOS build walkthrough.
-  - [`README.windows`](server/README.windows) - full Windows build
-    walkthrough.
-  - `scripts/osx/`, `scripts/windows/` - the per-platform build and
-    installer-time scripts (see the platform READMEs above for the full
-    script-by-script reference).
-  - `scripts/common/` - cross-platform scripts, including
-    `loadplLanguages.sh`/`plLanguages.config`, which drive which PL
-    interpreters get loaded into a cluster.
-  - `generate-sources.sh` - fetches/repackages the PostgreSQL source
-    tarball for the pinned version.
-  - `installer.xml.in`, `pgserver.xml.in`, `stackbuilder.xml.in`,
-    `commandlinetools.xml.in` - BitRock InstallBuilder definitions for the
-    installer and its components.
-  - `version.txt` - pins the PostgreSQL major/minor version, package
-    revision, and bundled component versions for a build.
-  - `packages-osx.txt` / `packages-win64.txt` - pin the exact version of
-    every third-party library PostgreSQL is built against, per platform.
-  - `license.sh` - generates the combined third-party license file shipped
-    with the installer.
-  - `i18n/` - installer message catalogs (one file per language).
-  - `resources/` - graphics, license text, and other static assets.
-- **`resources/`, `scripts/`** (top level) - resources and scripts shared
-  across the server installer build.
+## How to build
 
 Builds are driven per-platform via GitHub Actions - macOS binaries are
 built on a macOS runner, Windows binaries on a Windows runner (macOS
-binaries can only be built on macOS itself - there's no cross-compilation
-path, see [`server/README.osx`](server/README.osx)). There is no central
-Jenkins/VM-orchestrated build reaching out over SSH/NFS to remote build
-machines anymore; that legacy approach has been retired.
-
-## Building the installers
+binaries can only be built on macOS itself; there's no cross-compilation
+path). There is no central Jenkins/VM-orchestrated build reaching out over
+SSH/NFS to remote build machines anymore; that legacy approach has been
+retired.
 
 Full, platform-specific build instructions - from setting up a clean build
-machine through to a finished installer - live here:
+machine through to a finished installer - live in:
 
-- **[`server/README.osx`](server/README.osx)** - macOS: build machine
-  setup, building the pinned third-party dependencies, Python/Perl/Tcl
-  interpreters, building PostgreSQL itself, and a full reference of every
-  script in `scripts/osx/`.
-- **[`server/README.windows`](server/README.windows)** - Windows: build
-  machine setup, the Meson-based PostgreSQL build, building the bundled
-  native helpers (`createuser`, `validateuser`, `system_stats`), and a
-  full reference of every script in `scripts/windows/`.
+- [`server/README.osx`](server/README.osx) for macOS
+- [`server/README.windows`](server/README.windows) for Windows
 
 ## Parallel installation and registration
 
