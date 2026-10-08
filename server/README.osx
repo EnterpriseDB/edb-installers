@@ -2,15 +2,15 @@
 
 This document covers everything needed to build the macOS PostgreSQL server
 installer from this repository, from a clean build machine to a finished
-package. See the [root README](../README.md) for what the installer bundles
-and the overall repository layout.
+package. See the [root README](../README.md) for what the installer
+bundles.
 
 ## Build platform
 
 The build platform for macOS is macOS 15 (Sequoia), used to produce the
 universal (arm64 + x86_64) macOS packages - unlike the other supported
-platform (Windows), macOS binaries can only be built on macOS itself (there
-is no cross-compilation path; the CI job runs on a real macOS runner).
+platform (Windows), macOS binaries can only be built on macOS itself;
+there is no cross-compilation path.
 
 ## Setting up a build machine
 

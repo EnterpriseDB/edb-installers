@@ -2,17 +2,12 @@
 
 This repository is the build system behind EDB's native PostgreSQL
 installers for macOS and Windows. It contains everything needed to turn a
-PostgreSQL source release into a signed, ready-to-run installer: the
-platform build scripts, the pinned dependency/version lists, the installer
-packaging definitions (BitRock InstallBuilder), and the CI workflows that
-drive it all.
+PostgreSQL source release into a signed, ready-to-run installer yourself:
+the platform build scripts, the pinned dependency/version lists, and the
+installer packaging definitions (BitRock InstallBuilder).
 
 The goal is a single, repeatable pipeline that builds the PostgreSQL server
-installer - and the components bundled alongside it - for both platforms,
-without manual intervention.
-
-This document currently focuses on the **server** installer (PostgreSQL
-itself and what ships with it).
+installer - and the components bundled alongside it - for both platforms.
 
 ## What the server installer bundles
 
@@ -41,12 +36,9 @@ database server:
 
 ## How to build
 
-Builds are driven per-platform via GitHub Actions - macOS binaries are
-built on a macOS runner, Windows binaries on a Windows runner (macOS
-binaries can only be built on macOS itself; there's no cross-compilation
-path). There is no central Jenkins/VM-orchestrated build reaching out over
-SSH/NFS to remote build machines anymore; that legacy approach has been
-retired.
+Each platform is built on its own native machine - macOS binaries can only
+be built on macOS itself, Windows binaries on Windows; there's no
+cross-compilation path for either.
 
 Full, platform-specific build instructions - from setting up a clean build
 machine through to a finished installer - live in:

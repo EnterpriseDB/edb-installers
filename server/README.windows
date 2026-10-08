@@ -3,12 +3,12 @@
 This document covers everything needed to build the Windows PostgreSQL
 server installer from this repository, from a clean build machine to a
 finished package. See the [root README](../README.md) for what the
-installer bundles and the overall repository layout.
+installer bundles.
 
 ## Build platform
 
-Windows binaries are built on a native Windows runner using the Meson
-build system - there is no cross-compilation path from macOS/Linux.
+Windows binaries are built on Windows using the Meson build system - there
+is no cross-compilation path from macOS/Linux.
 
 ## Prerequisites & environment setup
 
