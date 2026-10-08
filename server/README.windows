@@ -28,7 +28,7 @@ is no cross-compilation path from macOS/Linux.
   `C:\3rd_Party_Libraries\win_flex_bison`), and add that path to your
   system `PATH`.
 - Optional dependencies (for full feature support) - install libraries
-  like OpenSSL, Zlib, ICU or LibXML2 using vcpkg:
+  like OpenSSL, Zlib, ICU or LibXML2 using [vcpkg](https://vcpkg.io/):
   ```
   vcpkg install zlib:x64-windows openssl:x64-windows icu:x64-windows
   ```
@@ -116,8 +116,9 @@ binaries, bundled extensions, licenses, docs) into the layout the Windows
 installer actually packages up.
 
 Finally, `installer.xml.in` (pre-processed into `installer.xml` with
-version numbers etc. substituted in) is what BitRock InstallBuilder
-actually builds into the `.exe` installer.
+version numbers etc. substituted in) is what
+[BitRock InstallBuilder](https://installbuilder.com/) actually builds
+into the `.exe` installer.
 
 ## Building the bundled helper binaries
 
@@ -147,10 +148,11 @@ documentation bundled with the installer (`libxml2`, `libxslt`,
 
 ## pgAdmin
 
-Starting with PostgreSQL 19, pgAdmin 4 is no longer bundled directly into
-the installer package. Instead, `install-pgadmin.bat` resolves the latest
-pgAdmin 4 release from `https://www.postgresql.org/ftp/pgadmin/pgadmin4/`
-and installs it separately - see the root README for the versions where
+Starting with PostgreSQL 19, [pgAdmin 4](https://www.pgadmin.org/) is no
+longer bundled directly into the installer package. Instead,
+`install-pgadmin.bat` resolves the latest pgAdmin 4 release from
+`https://www.postgresql.org/ftp/pgadmin/pgadmin4/` and installs it
+separately - see the root README for the versions where
 pgAdmin is still bundled directly (14-18).
 
 ## Script reference (`scripts/windows/`)

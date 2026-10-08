@@ -8,7 +8,7 @@
 <body>
 
 <center>
-<h1>PostgreSQL 19 Beta2</h1></p>
+<h1>PostgreSQL 19</h1></p>
 <h2>Installation Notes</h2>
 </center>
 
@@ -35,7 +35,7 @@
 <p>From PostgreSQL 19, PL/Python on Windows and macOS is built using the Python Limited API (stable ABI), so the build-time and run-time Python versions no longer need to match. PL/Python can run against any separately installed Python 3.x (3.6.8 or later) - no rebuild or exact version match is required.</p>  
 
 <ul>
-  <li>Perl 5.42.2.x </li>
+  <li>Perl 5.44.x (macOS), Perl 5.42.x (Windows) </li>
   <li>Python 3.14.x </li>
   <li>Tcl 9.0.x </li>
 </ul>
@@ -81,6 +81,10 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 <p>For PostgreSQL support, please use the appropriate mailing list. A complete list may be found at <a href="https://www.postgresql.org/list/">https://www.postgresql.org/list/</a>.</p>
 
 <p>For pgAdmin support, please use the <a href="mailto:pgadmin-support@postgresql.org">pgadmin-support@postgresql.org</a> mailing list.</p>
+
+<h3>Security Vulnerabilities</h3>
+
+<p>Please report security issues affecting PostgreSQL core to <a href="mailto:security@postgresql.org">security@postgresql.org</a>. For security concerns specific to the EDB-packaged PostgreSQL installers, please email <a href="mailto:disclosures@enterprisedb.com">disclosures@enterprisedb.com</a> in accordance with EDB's <a href="https://www.enterprisedb.com/docs/security/vulnerability-disclosure-policy/">Public Vulnerability Disclosure Policy</a>.</p>
 
 <center><a href="http://www.enterprisedb.com"><img border="0" src="edblogo.png" alt="This software was packaged by EnterpriseDB"></a></center>
 
