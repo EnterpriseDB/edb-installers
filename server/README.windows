@@ -12,8 +12,8 @@ is no cross-compilation path from macOS/Linux.
 
 ## Prerequisites & environment setup
 
-- Windows OS: Windows Server 2019/2022 or Windows 10/11 (64-bit).
-- Compiler: Visual Studio 2019 or newer with the "Desktop development with
+- Windows OS: Windows 11 (64-bit) or Windows Server 2022/2025.
+- Compiler: Visual Studio 2022 or newer with the "Desktop development with
   C++" workload installed.
 - Python: Python 3.10+ (ensure "Add Python to PATH" is checked during
   installation).
