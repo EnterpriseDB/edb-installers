@@ -12,20 +12,17 @@ universal (arm64 + x86_64) macOS packages - unlike the other supported
 platform (Windows), macOS binaries can only be built on macOS itself;
 there is no cross-compilation path.
 
-## How the automated build works
+## Build steps overview
 
-The automated GitHub Actions build that produces the real macOS installer
-follows these steps, in order - you can reproduce the same thing on your
-own machine by following along (see the sections below for the detail
-behind each step):
+Building the installer comes down to these steps, in order - using the
+scripts already in this repo (see the sections below for the detail
+behind each one):
 
-1. Fetch the PostgreSQL source tarball matching the pinned version (see
-   `generate-sources.sh`).
-2. Fetch the pinned third-party dependency libraries - **as prebuilt
-   universal binaries**, not built from source - and merge them into one
-   common prefix. The CI build does not build any of these from source
-   itself; see "Building the third-party dependencies" below for how to
-   build them yourself if you don't have access to prebuilt copies.
+1. Fetch the PostgreSQL source tarball matching the pinned version, using
+   `generate-sources.sh`.
+2. Take the versions pinned in `packages-osx.txt` and build each one
+   yourself into a single common prefix directory, as described in
+   "Building the third-party dependencies" below.
 3. Fetch the [EDB Language Pack](https://www.enterprisedb.com/docs/language_pack/latest/)
    (for the Perl and Tcl interpreters) and the official
    [python.org](https://www.python.org/) installer (for Python) - see
@@ -40,31 +37,21 @@ behind each step):
    installer's layout.
 7. Build the final `.pkg`/`.dmg` with
    [BitRock InstallBuilder](https://installbuilder.com/) from
-   `installer.xml.in`, and (in the real CI build only) sign it with an
-   EDB Developer ID certificate - this step requires a certificate you
-   won't have, so skip it for a local/unsigned build.
+   `installer.xml.in`.
 
-The one step you can run yourself with a single command, once your
-dependencies and interpreters are in place, is `compile.sh` - see "Build
-PostgreSQL" below.
+## Prerequisites
 
-## Setting up a build machine
+At the very least, you need:
 
-Install the Xcode Command Line Tools:
+- [Xcode Command Line Tools](https://developer.apple.com/xcode/) - provides
+  the compiler toolchain and the macOS SDK the build links against:
+  ```
+  xcode-select --install
+  ```
+- [Homebrew](https://brew.sh/)
 
-```
-xcode-select --install
-```
-
-This provides the compiler toolchain and the macOS SDK the build links
-against.
-
-Install [Homebrew](https://brew.sh/). The automated CI build only
-Homebrew-installs `docbook`/`docbook-xsl` (see "Set up DocBook" further
-down) - it never installs `cmake`, `bison` or `flex`, because it fetches
-every dependency as a prebuilt binary rather than building them from
-source. You only need those if you're building the pinned dependencies
-yourself:
+If you're building the pinned third-party dependencies yourself (see
+below), you'll also need `cmake`, `bison` and `flex`:
 
 ```
 brew install cmake bison flex
@@ -77,11 +64,27 @@ release tarball (as `compile.sh` does) ships pre-generated parser output,
 so you likely won't need them either unless `configure`/`make` complains
 otherwise on your machine.
 
+To build the PostgreSQL documentation bundled with the installer, you need
+the DocBook toolchain:
+
+```
+brew install docbook docbook-xsl
+```
+
+The `docbook-xsl` formula registers a working XML catalog for you (at
+`/opt/homebrew/etc/xml/catalog` on Apple Silicon,
+`/usr/local/etc/xml/catalog` on Intel - see the `XML_CATALOG_FILES` line
+in `compile.sh`), so there's no need to manually download DocBook 4.2 or
+hand-write a catalog file yourself.
+
+Finally, you need the Python, Perl and Tcl interpreters PostgreSQL is
+built against - see "Language interpreters" below for exactly what's
+needed and where to get it.
+
 ## Building the third-party dependencies
 
-The automated build fetches these as prebuilt universal binaries rather
-than building them - this section is only for building them yourself if
-you don't have access to prebuilt copies.
+This section is for building the pinned third-party dependencies
+yourself, if you don't have access to prebuilt copies.
 
 Unlike a typical `./configure && make`, each dependency needs to be built
 deliberately as a universal (arm64 + x86_64) binary against a fixed SDK,
@@ -188,21 +191,6 @@ PostgreSQL is configured with `--with-python`, `--with-perl` and
   `TCL_DIR` (containing `lib/tclConfig.sh`). Note that on macOS, Perl is
   currently on the 5.44.x line - different from Windows, which tracks
   5.42.x.
-
-## Set up DocBook
-
-PostgreSQL's documentation, which `compile.sh` builds and bundles into the
-installer, is written in DocBook. Install the toolchain with Homebrew:
-
-```
-brew install docbook docbook-xsl
-```
-
-That's the only setup step needed - the `docbook-xsl` formula registers a
-working XML catalog for you (at `/opt/homebrew/etc/xml/catalog` on Apple
-Silicon, `/usr/local/etc/xml/catalog` on Intel, referenced by the
-`XML_CATALOG_FILES` line in `compile.sh`), so there's no need to manually
-download DocBook 4.2 or hand-write a catalog file yourself.
 
 ## Build PostgreSQL
 

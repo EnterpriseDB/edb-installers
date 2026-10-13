@@ -10,6 +10,16 @@ definitions ([BitRock InstallBuilder](https://installbuilder.com/)).
 The goal is a single, repeatable pipeline that builds the PostgreSQL server
 installer - and the components bundled alongside it - for both platforms.
 
+## Download
+
+If you just want a ready-to-run installer rather than building your own,
+you can download one directly from EDB:
+
+- [Installers](https://www.enterprisedb.com/software-downloads-postgres) -
+  the macOS/Windows installers this repository builds.
+- [Binaries](https://www.enterprisedb.com/download-postgresql-binaries) -
+  plain PostgreSQL binaries, without the installer wrapper.
+
 ## What the server installer bundles
 
 Installing "PostgreSQL" via these installers gets you more than just the
