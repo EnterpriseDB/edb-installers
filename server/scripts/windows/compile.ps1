@@ -307,22 +307,7 @@ $v = @{
   PG_VERSION_NUM = ('{0}{1:D4}' -f [int]$pg_major, [int]$pg_minor)
   PACKAGE_URL = 'https://www.postgresql.org/'
   PORTNAME = 'win32'; DLSUFFIX = '.dll'; EXEEXT = '.exe'
-  host = 'x86_64-w64-mingw32'; host_cpu = 'x86_64'; host_os = 'mingw32'; build_os = 'mingw32'
-  CC = 'gcc'; GCC = 'yes'; CXX = 'g++'; CPP = 'gcc -E'
-  CFLAGS = '-Wall -Wpointer-arith -fno-strict-aliasing -fwrapv -O2'
-  CXXFLAGS = '-Wall -Wpointer-arith -fno-strict-aliasing -fwrapv -O2'
-  LDFLAGS = '-Wl,--allow-multiple-definition -Wl,--disable-auto-import'
-  AR = 'ar'; AWK = 'gawk'; LN_S = 'cp -pR'; MKDIR_P = 'mkdir -p'; TAR = 'tar'
-  STRIP = 'strip'; STRIP_STATIC_LIB = 'strip --strip-unneeded'; STRIP_SHARED_LIB = 'strip --strip-unneeded'
-  WINDRES = 'windres'; MSGFMT = 'msgfmt'; MSGMERGE = 'msgmerge'; XGETTEXT = 'xgettext'
-  PERL = ("$perl_directory\bin\perl.exe").Replace('\','/')
-  PYTHON = ("$python_directory\python.exe").Replace('\','/')
-  default_port = '5432'; vpath_build = 'no'; autodepend = 'no'
-  with_icu = 'yes'; with_ssl = 'openssl'; with_libxml = 'yes'; with_libxslt = 'yes'; with_zlib = 'yes'
-  with_uuid = 'ossp'; with_perl = 'yes'; with_python = 'yes'; with_tcl = 'yes'
-  with_readline = 'no'; with_gssapi = 'no'; with_ldap = 'no'; with_llvm = 'no'; with_selinux = 'no'; with_systemd = 'no'
-  enable_nls = 'yes'; enable_rpath = 'no'; enable_debug = 'no'; enable_tap_tests = 'no'
-  enable_thread_safety = 'yes'; enable_coverage = 'no'; enable_dtrace = 'no'
+  MKDIR_P = 'mkdir -p'; default_port = '5432'
 }
 $text = [IO.File]::ReadAllText("$source_directory\src\Makefile.global.in")
 $text = [regex]::Replace($text, '@([A-Za-z_0-9]+)@', { param($m) $v[$m.Groups[1].Value] })
