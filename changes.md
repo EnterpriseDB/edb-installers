@@ -1,3 +1,12 @@
+# PostgreSQL installer release 19beta4 (2026-10-13)
+- **Dependencies (macOS & Windows)**
+    - Update `curl` to version `8.23.0`
+      
+- **Additional dependencies (macOS)**  
+
+ 
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 19beta4 (2026-09-24)
 - **Dependencies (macOS & Windows)**
     - Update `curl` to version `8.22.0`
