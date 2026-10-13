@@ -170,11 +170,13 @@ libxslt, this means configuring with `--with-libxml-prefix`.
 
 PostgreSQL is configured with `--with-python`, `--with-perl` and
 `--with-tcl`, so three more things need to be in place first (see
-`scripts/osx/compile.sh` for how each is passed in):
+`scripts/osx/compile.sh` for how each is passed in). For the exact
+versions currently used - which can differ between macOS and Windows, and
+change from one PostgreSQL version to the next - see
+[`resources/installation-notes.html`](resources/installation-notes.html):
 
-- **Python (3.14.x)** - install the official universal2 installer from
-  python.org, e.g.
-  `https://www.python.org/ftp/python/<version>/python-<version>-macos11.pkg`.
+- **Python** - install the official universal2 installer from python.org,
+  e.g. `https://www.python.org/ftp/python/<version>/python-<version>-macos11.pkg`.
   This installs a proper `Python.framework` under `/Library/Frameworks` -
   a Homebrew Python install will not work here, as plpython3 needs the
   framework layout. Only the build itself needs this exact version:
@@ -183,14 +185,12 @@ PostgreSQL is configured with `--with-python`, `--with-perl` and
   python.org install >=3.9 already on the end user's Mac satisfies it at
   runtime.
 
-- **Perl (5.44.x) and Tcl (9.0.x)** - either build your own universal
-  (arm64 + x86_64) Perl and Tcl matching those versions the same way as
-  the other dependencies above, or install the EDB Language Pack (which
-  bundles both as universal builds already). Either way, point
-  `compile.sh` at the resulting `PERL_DIR` (containing `bin/perl`) and
-  `TCL_DIR` (containing `lib/tclConfig.sh`). Note that on macOS, Perl is
-  currently on the 5.44.x line - different from Windows, which tracks
-  5.42.x.
+- **Perl and Tcl** - either build your own universal (arm64 + x86_64)
+  Perl and Tcl matching the pinned versions the same way as the other
+  dependencies above, or install the EDB Language Pack (which bundles
+  both as universal builds already). Either way, point `compile.sh` at
+  the resulting `PERL_DIR` (containing `bin/perl`) and `TCL_DIR`
+  (containing `lib/tclConfig.sh`).
 
 ## Build PostgreSQL
 
