@@ -3,6 +3,12 @@
 CALL "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
 IF ERRORLEVEL 1 EXIT /B 1
 
+IF NOT DEFINED TCL_DIR (
+  ECHO ERROR: TCL_DIR is not set by the workflow
+  EXIT /B 1
+)
+ECHO Using Tcl from: %TCL_DIR%
+
 ECHO Creating build and install dirs...
 
 SET BASE_PATH=D:\a\postgresql-packaging-foundation\postgresql-packaging-foundation
@@ -10,29 +16,7 @@ SET BASE_PATH=D:\a\postgresql-packaging-foundation\postgresql-packaging-foundati
 mkdir %BASE_PATH%\%SOURCE_DIR%\meson-build
 mkdir %BASE_PATH%\%SOURCE_DIR%\meson-install
 
-REM Auto-detect Tcl (override by setting TCL_DIR in the workflow)
-IF NOT DEFINED TCL_DIR (
-  FOR /D %%d IN ("%LOCALAPPDATA%\Apps\Tcl*") DO SET "TCL_DIR=%%d"
-)
-IF NOT DEFINED TCL_DIR (
-  ECHO ERROR: No Tcl install found under %LOCALAPPDATA%\Apps
-  EXIT /B 1
-)
-IF NOT EXIST "%TCL_DIR%\lib" (
-  ECHO ERROR: Tcl lib directory not found: %TCL_DIR%\lib
-  EXIT /B 1
-)
-IF NOT EXIST "%TCL_DIR%\include\tcl.h" (
-  ECHO ERROR: tcl.h not found in %TCL_DIR%\include
-  EXIT /B 1
-)
-IF NOT EXIST "%TCL_DIR%\lib\pkgconfig\tcl.pc" (
-  ECHO ERROR: tcl.pc not found in %TCL_DIR%\lib\pkgconfig
-  EXIT /B 1
-)
-ECHO Using Tcl from: %TCL_DIR%
-
-SET PATH=C:\hostedtoolcache\windows\Python\%PYTHON_VERSION%\x64;C:\hostedtoolcache\windows\Python\%PYTHON_VERSION%\x64\Scripts;%BASE_PATH%\pkg-config-lite-%PKGCONFIG_VERSION%\bin;%BASE_PATH%\strawberry-perl-%PERL_VERSION%-64bit-portable\perl\bin;%BASE_PATH%\openssl\bin;%BASE_PATH%\zlib\bin;%BASE_PATH%\libxml2\bin;%BASE_PATH%\zstd\bin;%BASE_PATH%\1z4\bin;%BASE_PATH%\libxslt\bin;%BASE_PATH%\icu\bin;%BASE_PATH%\gettext\bin;%PATH%
+SET PATH=C:\hostedtoolcache\windows\Python\%PYTHON_VERSION%\x64;C:\hostedtoolcache\windows\Python\%PYTHON_VERSION%\x64\Scripts;%BASE_PATH%\pkg-config-lite-%PKGCONFIG_VERSION%\bin;%BASE_PATH%\strawberry-perl-%PERL_VERSION%-64bit-portable\perl\bin;%BASE_PATH%\openssl\bin;%BASE_PATH%\zlib\bin;%BASE_PATH%\libxml2\bin;%BASE_PATH%\zstd\bin;%BASE_PATH%\lz4\bin;%BASE_PATH%\libxslt\bin;%BASE_PATH%\icu\bin;%BASE_PATH%\gettext\bin;%BASE_PATH%\uuid\bin;%TCL_DIR%\bin;%PATH%
 
 SET PKG_CONFIG_PATH=%BASE_PATH%\zlib\lib\pkgconfig;%BASE_PATH%\libxml2\lib\pkgconfig;%BASE_PATH%\zstd\lib\pkgconfig;%BASE_PATH%\lz4\lib\pkgconfig;%BASE_PATH%\libxslt\lib\pkgconfig;%BASE_PATH%\icu\lib64\pkgconfig;%TCL_DIR%\lib\pkgconfig;%BASE_PATH%\uuid\lib\pkgconfig
 
