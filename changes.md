@@ -1,8 +1,16 @@
+# PostgreSQL installer release 19rc1 (2026-10-15)
+- **Dependencies (macOS & Windows)**
+    - Update `curl` to version `8.23.0`
+    - Update `openssl` to version `3.5.9`
+      
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 19beta4 (2026-09-24)
 - **Dependencies (macOS & Windows)**
     - Update `curl` to version `8.22.0`
     - Update `libxml2` to version `2.15.4`
     - Update `icu` to version `78.3`
+    - Update `openssl` to version `3.5.8`
       
 - **Additional dependencies (Windows)**  
      - Update `gettext` to version `1.0`
