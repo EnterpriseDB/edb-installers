@@ -51,8 +51,8 @@ cross-compilation path for either.
 Full, platform-specific build instructions - from setting up a clean build
 machine through to a finished installer - live in:
 
-- [`server/README.osx`](server/README.osx) for macOS
-- [`server/README.windows`](server/README.windows) for Windows
+- [`server/README.osx.md`](server/README.osx.md) for macOS
+- [`server/README.windows.md`](server/README.windows.md) for Windows
 
 ## Parallel installation and registration
 
