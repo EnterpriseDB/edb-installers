@@ -59,7 +59,17 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <h3>Important Note with regards to ICU</h3>
 
-<p>PostgreSQL Server 19 is compiled with ICU 78.x. PostgreSQL version 14-17 on macOS use ICU 68.x, and Windows use 67.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes. Refer: https://wiki.postgresql.org/wiki/Locale_data_changes and https://www.postgresql.org/docs/current/sql-altercollation.html for more details</p> 
+<!-- Template: update the ICU version when the bundled ICU changes, and add or merge rows as PostgreSQL major versions change. -->
+<p>The ICU version that PostgreSQL is compiled with depends on the PostgreSQL major version:</p>
+
+<table border="1" cellpadding="4" cellspacing="0">
+  <tr><th>PostgreSQL version</th><th>ICU version</th></tr>
+  <tr><td>19</td><td>ICU 78.x</td></tr>
+  <tr><td>18</td><td>ICU 77.x</td></tr>
+  <tr><td>14 - 17</td><td>ICU 68.x (macOS), ICU 67.x (Windows)</td></tr>
+</table>
+
+<p>If you use pg_upgrade for a major version upgrade and the ICU version differs between the old and the new server, any indexes that use ICU collations need to be reindexed. Refer: https://wiki.postgresql.org/wiki/Locale_data_changes and https://www.postgresql.org/docs/current/sql-altercollation.html for more details</p>
 
 <h3>Technical Support</h3>
 
