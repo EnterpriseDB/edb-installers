@@ -28,18 +28,6 @@ database server:
 - **[PostgreSQL](https://www.postgresql.org/) server** - built with
   `--with-python`, `--with-perl` and `--with-tcl` support, plus the
   command-line client tools (psql, pg_dump, pg_restore, etc.).
-- **[EDB Language Pack](https://www.enterprisedb.com/docs/language_pack/latest/)** -
-  bundles the Perl and Tcl interpreters PostgreSQL's PL/Perl and PL/Tcl
-  need, so those procedural languages work out of the box without the
-  user installing interpreters themselves.
-  - **macOS** - used for PostgreSQL 14 through 19. For 14-18 it also
-    supplies the Python interpreter (PL/Python); starting with PostgreSQL
-    19, Python is instead installed directly from the official
-    python.org installer.
-  - **Windows** - used for PostgreSQL 14 through 16 (supplying Python,
-    Perl and Tcl). Dropped starting with PostgreSQL 17, which fetches
-    the equivalent interpreters directly from their own upstream
-    distributors instead.
 - **[StackBuilder](https://www.enterprisedb.com/docs/supported-open-source/postgresql/installing/using_stackbuilder/)** -
   a companion app, installed alongside the server, that provides a
   graphical interface for downloading and installing additional
