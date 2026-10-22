@@ -1,225 +1,97 @@
-# Building the PostgreSQL Server Installer - macOS
+# Building PostgreSQL for macOS
 
-This document covers everything needed to build the macOS PostgreSQL server
-installer from this repository, from a clean build machine to a finished
-package. See the [root README](../README.md) for what the installer
-bundles.
+This document describes how the macOS PostgreSQL build is produced. See the
+[root README](../README.md) for what the installer bundles.
 
-## Build platform
+The build has two independent parts:
 
-The build platform for macOS is macOS 15 (Sequoia), used to produce the
-universal (arm64 + x86_64) macOS packages - unlike the other supported
-platform (Windows), macOS binaries can only be built on macOS itself;
-there is no cross-compilation path.
+1. **Build the PostgreSQL binaries** (a relocatable universal `pgsql` tree,
+   which is also what the binaries archive contains). No installer tooling
+   is needed.
+2. **Generate the installer** (`.dmg`) from those binaries. Only needed if
+   you want the installer.
 
-## Build steps overview
+If you only want the binaries, stop after part 1.
 
-Building the installer comes down to these steps, in order - using the
-scripts already in this repo (see the sections below for the detail
-behind each one):
+## Build environment
 
-1. Fetch the PostgreSQL source tarball matching the pinned version, using
-   `generate-sources.sh`.
-2. Take the versions pinned in `packages-osx.txt` and build each one
-   yourself into a single common prefix directory, as described in
-   "Building the third-party dependencies" below.
-3. Fetch the [EDB Language Pack](https://www.enterprisedb.com/docs/language_pack/latest/)
-   (for the Perl and Tcl interpreters) and the official
-   [python.org](https://www.python.org/) installer (for Python) - see
-   "Language interpreters" below.
-4. Install DocBook (`brew install docbook docbook-xsl`), used to build the
-   bundled PostgreSQL documentation.
-5. Build PostgreSQL itself by running `scripts/osx/compile.sh` against
-   everything fetched above - this is the one step that's genuinely a
-   single command; see "Build PostgreSQL" below.
-6. Run `rewrite-dylib-refs.sh` to make the built binaries relocatable, then
-   `prepare-staging-directory.sh` to assemble everything into the
-   installer's layout.
-7. Build the final `.pkg`/`.dmg` with
-   [BitRock InstallBuilder](https://installbuilder.com/) from
-   `installer.xml.in`.
+| | |
+| --- | --- |
+| Build machine | macOS 15 (Sequoia). macOS binaries can only be built on macOS. |
+| Output | Universal binaries (arm64 + x86_64) |
+| Minimum macOS for end users | 14 |
+| Toolchain | Xcode Command Line Tools (`xcode-select --install`) and [Homebrew](https://brew.sh/) |
+| Docs | `brew install docbook docbook-xsl`. `compile.sh` expects the XML catalog at `/opt/homebrew/etc/xml/catalog`, the Homebrew location on Apple Silicon. |
+| Installer (part 2 only) | [BitRock InstallBuilder](https://installbuilder.com/) |
 
-## Prerequisites
+Language interpreters PostgreSQL is built against (versions are pinned in
+[`version.txt`](version.txt)):
 
-At the very least, you need:
+- **Python**: the official universal2 installer from python.org. It must be
+  the `Python.framework` layout, so a Homebrew Python will not work.
+- **Perl and Tcl**: from the EDB Language Pack.
 
-- [Xcode Command Line Tools](https://developer.apple.com/xcode/) - provides
-  the compiler toolchain and the macOS SDK the build links against:
-  ```
-  xcode-select --install
-  ```
-- [Homebrew](https://brew.sh/)
+## Third-party dependencies
 
-If you're building the pinned third-party dependencies yourself (see
-below), you'll also need `cmake`, `bison` and `flex`:
+The third-party libraries (OpenSSL, curl, ICU, libxml2, krb5, etc.) are
+compiled by EDB from source as universal binaries. The pinned list and
+versions are in [`packages-osx.txt`](packages-osx.txt).
+
+Merge them all into one common prefix. The `compile.sh` step below takes
+that prefix as its `<dep-prefix>` argument.
+
+## Part 1: Build the binaries
+
+`scripts/osx/compile.sh` configures, builds and installs PostgreSQL (with
+contrib modules, docs, and the bundled dependency libraries) into
+`$PG_STAGING`.
+
+Set these first:
 
 ```
-brew install cmake bison flex
+export PG_SYSROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
+export PG_ARCH_OSX_CFLAGS="-mmacosx-version-min=14 -arch x86_64 -arch arm64"
+export PG_STAGING=/path/to/pgbuild
 ```
 
-`cmake` is needed for `zstd`, the one dependency in `packages-osx.txt`
-that uses a CMake-based build instead of autotools. `bison`/`flex` are
-PostgreSQL's own grammar-generation tools - building from the official
-release tarball (as `compile.sh` does) ships pre-generated parser output,
-so you likely won't need them either unless `configure`/`make` complains
-otherwise on your machine.
-
-To build the PostgreSQL documentation bundled with the installer, you need
-the DocBook toolchain:
-
-```
-brew install docbook docbook-xsl
-```
-
-The `docbook-xsl` formula registers a working XML catalog for you (at
-`/opt/homebrew/etc/xml/catalog` on Apple Silicon,
-`/usr/local/etc/xml/catalog` on Intel - see the `XML_CATALOG_FILES` line
-in `compile.sh`), so there's no need to manually download DocBook 4.2 or
-hand-write a catalog file yourself.
-
-Finally, you need the Python, Perl and Tcl interpreters PostgreSQL is
-built against - see "Language interpreters" below for exactly what's
-needed and where to get it.
-
-## Building the third-party dependencies
-
-This section is for building the pinned third-party dependencies
-yourself, if you don't have access to prebuilt copies.
-
-Unlike a typical `./configure && make`, each dependency needs to be built
-deliberately as a universal (arm64 + x86_64) binary against a fixed SDK,
-targeting macOS 12 (Monterey) and above - a plain default build will only
-produce a binary for your own Mac's architecture.
-
-The exact list of third-party libraries PostgreSQL links against on macOS,
-and the exact version of each, is pinned in [`packages-osx.txt`](packages-osx.txt).
-
-To build one of these yourself:
-
-1. Download the library's source tarball, matching the version pinned in
-   `packages-osx.txt`, and unpack it.
-
-2. Pin the SDK to a literal path, rather than resolving it with
-   `xcrun --sdk macosx --show-sdk-path`: if both Xcode and the standalone
-   Command Line Tools are installed on the build machine, `xcrun` can
-   silently resolve to whichever one is currently selected, so different
-   runs can end up built against different SDK versions. Pinning the path
-   makes the SDK used explicit and reproducible:
-
-   ```
-   SDK=/Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk
-   ```
-
-3. Configure it to build as a universal (arm64 + x86_64) binary against
-   that SDK. For a typical autotools-based library:
-
-   ```
-   CFLAGS="-arch arm64 -arch x86_64 -isysroot $SDK -mmacosx-version-min=12" \
-   LDFLAGS="-arch arm64 -arch x86_64 -isysroot $SDK -mmacosx-version-min=12" \
-   ./configure --prefix=/path/to/deps
-   ```
-
-   `zstd` is the one exception that uses CMake instead:
-
-   ```
-   cmake -S . -B build \
-     -DCMAKE_BUILD_TYPE=Release \
-     -DCMAKE_INSTALL_PREFIX=/path/to/deps \
-     -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
-     -DCMAKE_OSX_DEPLOYMENT_TARGET=12 \
-     -DCMAKE_OSX_SYSROOT="$SDK"
-   cmake --build build -j"$(sysctl -n hw.ncpu)"
-   cmake --install build
-   ```
-
-   OpenSSL's `Configure` script only targets one architecture per run, so
-   build it twice (once per architecture, each into its own prefix) and
-   merge the two with `lipo`:
-
-   ```
-   ./Configure --prefix=/path/to/openssl.arm64 darwin64-arm64-cc no-asm shared \
-     CFLAGS="-isysroot $SDK -mmacosx-version-min=12" \
-     LDFLAGS="-isysroot $SDK -mmacosx-version-min=12"
-   make -j"$(sysctl -n hw.ncpu)" && make install_sw
-
-   ./Configure --prefix=/path/to/openssl.x64 darwin64-x86_64-cc shared \
-     CFLAGS="-isysroot $SDK -mmacosx-version-min=12" \
-     LDFLAGS="-isysroot $SDK -mmacosx-version-min=12"
-   make -j"$(sysctl -n hw.ncpu)" && make install_sw
-
-   lipo -create openssl.arm64/lib/libssl.dylib openssl.x64/lib/libssl.dylib \
-     -output /path/to/deps/lib/libssl.dylib
-   # repeat for libcrypto.dylib and the openssl binary itself
-   ```
-
-4. For the autotools/CMake libraries, build and install into a single
-   common prefix (the `--prefix`/`CMAKE_INSTALL_PREFIX` above) that all
-   the other dependencies, and PostgreSQL itself, will be built against:
-
-   ```
-   make -j"$(sysctl -n hw.ncpu)"
-   make install
-   ```
-
-Repeat this for every library listed in `packages-osx.txt`, installing each
-into that same prefix. Make sure any additional libraries link against
-these freshly-built libraries, and not the older, system copies - for
-libxslt, this means configuring with `--with-libxml-prefix`.
-
-## Language interpreters
-
-PostgreSQL is configured with `--with-python`, `--with-perl` and
-`--with-tcl`, so three more things need to be in place first (see
-`scripts/osx/compile.sh` for how each is passed in). For the exact
-versions currently used - which can differ between macOS and Windows, and
-change from one PostgreSQL version to the next - see
-[`resources/installation-notes.html`](resources/installation-notes.html):
-
-- **Python** - install the official universal2 installer from python.org,
-  e.g. `https://www.python.org/ftp/python/<version>/python-<version>-macos11.pkg`.
-  This installs a proper `Python.framework` under `/Library/Frameworks` -
-  a Homebrew Python install will not work here, as plpython3 needs the
-  framework layout. Only the build itself needs this exact version:
-  `compile.sh` rewires the resulting `plpython3.dylib` to link against
-  `Python.framework/Versions/Current` rather than a fixed version, so any
-  python.org install >=3.9 already on the end user's Mac satisfies it at
-  runtime.
-
-- **Perl and Tcl** - either build your own universal (arm64 + x86_64)
-  Perl and Tcl matching the pinned versions the same way as the other
-  dependencies above, or install the EDB Language Pack (which bundles
-  both as universal builds already). Either way, point `compile.sh` at
-  the resulting `PERL_DIR` (containing `bin/perl`) and `TCL_DIR`
-  (containing `lib/tclConfig.sh`).
-
-## Build PostgreSQL
-
-Once every dependency is installed into the common prefix, build
-PostgreSQL itself against it:
+Then run it:
 
 ```
 server/scripts/osx/compile.sh <source-dir> <dep-prefix> <python-framework> <perl-dir> <tcl-dir>
 ```
 
-`compile.sh` runs PostgreSQL's `./configure` with the flags this installer
-needs (`--with-python`, `--with-perl`, `--with-tcl`, `--with-uuid=e2fs`,
-DocBook catalog wiring, etc.), then `make` and `make install`. See the
-script itself for the exact flag list.
+| Argument | Meaning |
+| --- | --- |
+| `source-dir` | Unpacked PostgreSQL source (fetch it with `generate-sources.sh`) |
+| `dep-prefix` | The merged third-party dependency prefix |
+| `python-framework` | `/Library/Frameworks/Python.framework` |
+| `perl-dir` | Perl root, containing `bin/perl` |
+| `tcl-dir` | Tcl root, containing `lib/tclConfig.sh` |
 
-After the build, `rewrite-dylib-refs.sh` rewrites the built binaries' dylib
-load paths to be relocatable, so the installer doesn't embed the build
-machine's paths:
+Make the result relocatable:
 
 ```
-server/scripts/osx/rewrite-dylib-refs.sh <staging-dir> <dep-lib-dir>
+server/scripts/osx/rewrite-dylib-refs.sh "$PG_STAGING" <dep-prefix>/lib
 ```
 
-Then `prepare-staging-directory.sh` assembles everything (PostgreSQL
-binaries, bundled extensions, licenses, docs) into the layout the macOS
-installer actually packages up, and `create-debug-symbols.sh` extracts
-`.dSYM` debug symbols from the staged Mach-O binaries before they're
-stripped.
+`$PG_STAGING` is now the binaries tree and can be zipped as it is.
 
-Finally, `installer.xml.in` (pre-processed into `installer.xml` with
-version numbers etc. substituted in) is what BitRock InstallBuilder
-actually builds into the `.dmg`/`.pkg`.
+Notes:
+
+- The CI binaries archive adds a few more things to this tree: prebuilt
+  extensions, `stackbuilder.app` and license files. It is also code-signed.
+  The output of the steps above is unsigned.
+- `scripts/osx/create-debug-symbols.sh "$PG_STAGING" <output-dir>` extracts
+  `.dSYM` debug symbols, if you want them.
+
+## Part 2: Generate the installer
+
+1. Run `scripts/osx/prepare-staging-directory.sh`. It assembles the binaries
+   into the installer layout (server, command line tools, StackBuilder) and
+   copies the InstallBuilder project files. It expects the CI checkout
+   layout (the build output in `./pgsql` and this repo under
+   `./packaging-config`), so it is easiest to run through the GitHub
+   workflow.
+2. Fill in the version placeholders in the copied `installer.xml`,
+   `pgserver-osx.xml`, `commandlinetools-osx.xml` and `stackbuilder-osx.xml`.
+3. Build with InstallBuilder to produce the `.dmg`.
