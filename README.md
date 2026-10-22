@@ -15,7 +15,7 @@ installer - and the components bundled alongside it - for both platforms.
 If you just want a ready-to-run installer rather than building your own,
 you can download one directly from EDB:
 
-- [Installers](https://www.enterprisedb.com/software-downloads-postgres) -
+- [Installers](https://www.postgresql.org/download/) -
   the macOS/Windows installers this repository builds.
 - [Binaries](https://www.enterprisedb.com/download-postgresql-binaries) -
   plain PostgreSQL binaries, without the installer wrapper.
