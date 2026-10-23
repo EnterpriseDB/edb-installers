@@ -25,7 +25,7 @@ you can download one directly from EDB:
 Installing "PostgreSQL" via these installers gets you more than just the
 database server:
 
-- **[PostgreSQL](https://www.postgresql.org/) server** - built with
+- **PostgreSQL server** - built with
   `--with-python`, `--with-perl` and `--with-tcl` support, plus the
   command-line client tools (psql, pg_dump, pg_restore, etc.).
 - **[StackBuilder](https://www.enterprisedb.com/docs/supported-open-source/postgresql/installing/using_stackbuilder/)** -
