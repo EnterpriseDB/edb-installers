@@ -32,8 +32,8 @@ database server:
   a companion app, installed alongside the server, that provides a
   graphical interface for downloading and installing additional
   applications, drivers, utilities and their dependencies after the fact.
-- **[system_stats]** and
-  **[pldebugger]** - built
+- **system_stats** and
+  **pldebugger** - built
   from their upstream sources and bundled directly into the server
   package as ready-to-use extensions.
 - **[pgAdmin 4](https://www.pgadmin.org/)** - bundled directly into the
