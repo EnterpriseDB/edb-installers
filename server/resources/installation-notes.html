@@ -8,11 +8,11 @@
 <body>
 
 <center>
-<h1>PostgreSQL 19 Beta2</h1></p>
+<h1>PostgreSQL 19</h1></p>
 <h2>Installation Notes</h2>
 </center>
 
-<p>Welcome to the PostgreSQL 19 Beta2 Installation Wizard.</p>
+<p>Welcome to the PostgreSQL 19 Installation Wizard.</p>
 
 <h3>Legal Bits</h3>
 
@@ -26,21 +26,21 @@
 
 <h3>Supported Operating Systems</h3>
 
-<p>The macOS build has been tested on 13.x and above, for x86_64 and ARM64 architectures. The Windows builds of this installer have been tested on Windows 2022. Please let us know if the installer does not operate as expected on your operating system, and where possible, we will try to add support</p>
+<p>The macOS build is provided as a universal binary supporting both ARM64 and x86_64 architectures on macOS 14.x and above. While it is actively tested on ARM64, it is fully expected to work on Intel-based systems as well. The Windows builds of this installer have been tested on Windows Server 2025 (and Windows 11). Please let us know if the installer does not operate as expected on your operating system and, where possible, we will try to add support.</p>
 
 <h3>Procedural Languages</h3>
 
 <p>The procedural languages pl/Perl, pl/Python and pl/Tcl are included in this distribution of PostgreSQL. On Windows, the server has been built using the community upstream distributions of those language interpreters. To use any of the these languages from within PostgreSQL, download and install the appropriate interpreters and ensure they are included in the PATH variable under which the database server will be started. The versions used are shown below - newer minor (bugfix) releases may also work, but have not been tested:</p>
 
-<p>From PostgreSQL 19, PL/Python on Windows is built using the Python Limited API (stable ABI), so the build-time and run-time Python versions no longer need to match. PL/Python can run against any separately installed Python 3.x (3.6.8 or later) - no rebuild or exact version match is required.</p>  
+<p>From PostgreSQL 19, PL/Python on Windows and macOS is built using the Python Limited API (stable ABI), so the build-time and run-time Python versions no longer need to match. PL/Python can run against any separately installed Python 3.x (3.6.8 or later) - no rebuild or exact version match is required.</p>  
 
 <ul>
-  <li>Perl 5.42.0.x </li>
-  <li>Python 3.13.x </li>
-  <li>Tcl 8.6.x </li>
+  <li>Perl 5.44.x (macOS), Perl 5.42.x (Windows) </li>
+  <li>Python 3.14.x </li>
+  <li>Tcl 9.0.x </li>
 </ul>
 
-<p> On MacOS, we strongly recommend to use LanguagePack v6 installers for pl/Perl, pl/Python and pl/Tcl. </p>
+<p> On macOS, we strongly recommend to use LanguagePack v7 installers for pl/Perl and pl/Tcl. Python can be installed from the official universal2 installer from python.org </p>
 
 <h3>pl/pgsql Debugger</h3>
 
@@ -59,20 +59,7 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <h3>Important Note with regards to ICU</h3>
 
-<p>PostgreSQL Server 19 Beta2 is compiled with ICU 77.x. PostgreSQL version 14-17 on macOS use ICU 68.x, and Windows use 67.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes. Refer: https://wiki.postgresql.org/wiki/Locale_data_changes and https://www.postgresql.org/docs/current/sql-altercollation.html for more details</p> 
-
-<h3>Important Note with regards to locale names</h3>
-
-<p>A change was made in the Windows installers for PostgreSQL versions 17.4-1, 16.8-1, 15.12-1, 14.17-1, and 13.20-1, and in the fresh installation the chosen locale name would be converted to BCP-47 name and passed to initdb.exe run as --locale. This change made the pg_upgrade from the PostgreSQL cluster having old locale names to these versions fail.</p>
-
-<p>The change was again made in -2 releases for the same set of postgresql installers. See below section for details.</p>
-
-<p>Starting from PostgreSQL versions 17.4-2, 16.8-2, 15.12-2, 14.17-2, and 13.20-2, the Windows installers support specifying locale names in two formats:</p>
-
-<ul>
-  <li>Standard BCP-47 locale names (e.g., en-US, fr-FR). Recommended, if the locale name contains non-ASCII characters (such as accented characters or regional scripts) </li>
-  <li>Long English locale names containing only ASCII characters (e.g., English_United States, French_France). So, any non-ASCII character containing locale is not passed to the initdb. </li>
-</ul>
+<p>PostgreSQL Server 19 is compiled with ICU 78.x. PostgreSQL version 14-17 on macOS use ICU 68.x, and Windows use 67.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes. Refer: https://wiki.postgresql.org/wiki/Locale_data_changes and https://www.postgresql.org/docs/current/sql-altercollation.html for more details</p> 
 
 <h3>Technical Support</h3>
 
@@ -81,6 +68,10 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 <p>For PostgreSQL support, please use the appropriate mailing list. A complete list may be found at <a href="https://www.postgresql.org/list/">https://www.postgresql.org/list/</a>.</p>
 
 <p>For pgAdmin support, please use the <a href="mailto:pgadmin-support@postgresql.org">pgadmin-support@postgresql.org</a> mailing list.</p>
+
+<h3>Security Vulnerabilities</h3>
+
+<p>Please report security issues affecting PostgreSQL core to <a href="mailto:security@postgresql.org">security@postgresql.org</a>. For security concerns specific to the EDB-packaged PostgreSQL installers, please email <a href="mailto:disclosures@enterprisedb.com">disclosures@enterprisedb.com</a> in accordance with EDB's <a href="https://www.enterprisedb.com/docs/security/vulnerability-disclosure-policy/">Public Vulnerability Disclosure Policy</a>.</p>
 
 <center><a href="http://www.enterprisedb.com"><img border="0" src="edblogo.png" alt="This software was packaged by EnterpriseDB"></a></center>
 
