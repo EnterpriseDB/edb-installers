@@ -1,60 +1,53 @@
-# Building the PostgreSQL Server Installer - Windows
+# Building PostgreSQL for Windows
 
-This document covers everything needed to build the Windows PostgreSQL
-server installer from this repository, from a clean build machine to a
-finished package. See the [root README](../README.md) for what the
-installer bundles.
+This document describes how to build PostgreSQL for Windows from this
+repository, from a clean build machine to a finished package. See the
+[root README](../README.md) for what the installer bundles.
 
-## Build platform
+The build has two independent parts:
 
-Windows binaries are built on Windows using the Meson build system - there
-is no cross-compilation path from macOS/Linux.
+1. **Build the PostgreSQL binaries**: an installed `PG_install` tree built
+   with Meson and Ninja. No installer tooling is needed.
+2. **Generate the installer** (`.exe`) from those binaries. Only needed if
+   you want the installer.
 
-## Prerequisites & environment setup
+If you only want the binaries, stop after part 1.
 
-- Windows OS: Windows 11 (64-bit) or Windows Server 2022/2025.
-- Compiler: Visual Studio 2022 or newer with the "Desktop development with
-  C++" workload installed.
-- Python: Python 3.10+ (ensure "Add Python to PATH" is checked during
-  installation).
-- Build system: install Meson and Ninja via Python pip:
-  ```
-  pip install meson ninja
-  ```
-- Perl: [Strawberry Perl](https://strawberryperl.com/) (required for
-  script generation and builds).
-- Flex & Bison: [win_flex_bison](https://github.com/lexxmark/winflexbison)
-  binaries - download, extract to a dedicated folder (e.g.
-  `C:\3rd_Party_Libraries\win_flex_bison`), and add that path to your
-  system `PATH`.
-- Optional dependencies (for full feature support) - install libraries
-  like OpenSSL, Zlib, ICU or LibXML2 using [vcpkg](https://vcpkg.io/):
-  ```
-  vcpkg install zlib:x64-windows openssl:x64-windows icu:x64-windows
-  ```
+## Build environment
+
+| | |
+| --- | --- |
+| Build machine | Windows 11 (64-bit) or Windows Server 2022/2025. Windows binaries are built on Windows using Meson; there is no cross-compilation path from macOS/Linux. |
+| Output | x64 binaries |
+| Compiler | Visual Studio 2022 or newer with the "Desktop development with C++" workload |
+| Python | Python 3.10+ (check "Add Python to PATH" during installation) |
+| Build system | Meson and Ninja: `pip install meson ninja` |
+| Perl | [Strawberry Perl](https://strawberryperl.com/) (required for script generation and builds) |
+| Flex & Bison | [win_flex_bison](https://github.com/lexxmark/winflexbison). Download, extract to a dedicated folder (e.g. `C:\3rd_Party_Libraries\win_flex_bison`), and add that path to your system `PATH`. |
+| Docs | MSYS packages installed by `meson-doc.sh` (`libxml2`, `libxslt`, `docbook-xml`, `docbook-xsl`, via `pacman`) |
+| Installer (part 2 only) | [BitRock InstallBuilder](https://installbuilder.com/) |
+
+Run all build commands from the **"x64 Native Tools Command Prompt for VS
+\<version\>"** (as Administrator) so the compiler environment variables
+(`cl.exe`) are loaded.
+
+## Third-party dependencies
 
 The exact list and version of every third-party dependency library
 PostgreSQL is built against on Windows is pinned in
 [`packages-win64.txt`](packages-win64.txt).
 
-## Setting up SSH access (optional, for build-farm automation)
+For optional features (full-featured build), install libraries such as
+OpenSSL, Zlib, ICU or LibXML2 using [vcpkg](https://vcpkg.io/):
 
-- Enable OpenSSH Server natively via PowerShell:
-  ```
-  Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
-  ```
-- Start and configure the `sshd` service to run automatically:
-  ```
-  Start-Service sshd
-  Set-Service -Name sshd -StartupType 'Automatic'
-  ```
-- Ensure port 22/TCP is allowed in the Windows Defender Firewall.
-- Place public SSH keys in `C:\Users\<build-user>\.ssh\authorized_keys`.
+```
+vcpkg install zlib:x64-windows openssl:x64-windows icu:x64-windows
+```
 
 ## Repository preparation
 
-Ensure Git handles CRLF line endings correctly, to avoid flex/bison parser
-errors:
+Make sure Git handles CRLF line endings correctly, to avoid flex/bison
+parser errors:
 
 ```
 git config core.autocrlf true
@@ -62,98 +55,83 @@ git rm --cached -r .
 git reset --hard
 ```
 
-## Building PostgreSQL
-
-Always execute build commands from the "x64 Native Tools Command Prompt
-for VS \<version\>" (run as Administrator) to load compiler environment
-variables (`cl.exe`).
+## Part 1: Build the binaries
 
 `scripts/windows/meson.bat` sets up `PATH`/`PKG_CONFIG_PATH` for the
 dependency prefixes and runs `meson setup` for PostgreSQL. Equivalently,
-run it by hand:
+run the steps by hand:
 
-1. Configure the build directory:
+| Step | Purpose | Command |
+| --- | --- | --- |
+| 1. Configure | Set up the build directory | See the two variants below |
+| 2. Compile and deploy | Build and install into the install tree. `scripts/windows/compile.ps1` drives this and also copies the resulting dependency DLLs/libs/headers into the install tree. | `ninja -C build install` |
+| 3. Test (optional) | Run regression tests | `meson test -C build` |
+| 4. Initialize and start (optional) | Create a cluster and start the server | See below |
 
-   ```
-   :: Minimal build (no external compression/SSL dependencies)
-   meson setup build --prefix=C:\PG_install ^
-     -DFLEX=C:\3rd_Party_Libraries\win_flex_bison\win_flex.exe ^
-     -DBISON=C:\3rd_Party_Libraries\win_flex_bison\win_bison.exe ^
-     -Dreadline=disabled ^
-     -Dzlib=disabled
+### Step 1: Configure
 
-   :: Full-featured build (if vcpkg dependencies are installed)
-   meson setup build --prefix=C:\PG_install ^
-     -DFLEX=C:\3rd_Party_Libraries\win_flex_bison\win_flex.exe ^
-     -DBISON=C:\3rd_Party_Libraries\win_flex_bison\win_bison.exe ^
-     -Dcmake_prefix_path=C:\vcpkg\installed\x64-windows
-   ```
+| Variant | Use when | Command |
+| --- | --- | --- |
+| Minimal | No external compression/SSL dependencies | See below |
+| Full-featured | vcpkg dependencies are installed | See below |
 
-2. Compile and deploy (this is what `scripts/windows/compile.ps1` drives,
-   along with copying the resulting dependency DLLs/libs/headers into the
-   install tree):
+Minimal build:
 
-   ```
-   ninja -C build install
-   ```
+```
+meson setup build --prefix=C:\PG_install ^
+  -DFLEX=C:\3rd_Party_Libraries\win_flex_bison\win_flex.exe ^
+  -DBISON=C:\3rd_Party_Libraries\win_flex_bison\win_bison.exe ^
+  -Dreadline=disabled ^
+  -Dzlib=disabled
+```
 
-3. Run regression tests (optional):
+Full-featured build:
 
-   ```
-   meson test -C build
-   ```
+```
+meson setup build --prefix=C:\PG_install ^
+  -DFLEX=C:\3rd_Party_Libraries\win_flex_bison\win_flex.exe ^
+  -DBISON=C:\3rd_Party_Libraries\win_flex_bison\win_bison.exe ^
+  -Dcmake_prefix_path=C:\vcpkg\installed\x64-windows
+```
 
-4. Initialize and start the database:
+### Step 4: Initialize and start the database
 
-   ```
-   cd C:\PG_install\bin
-   initdb.exe -D C:\PG_install\data -U administrator --auth=trust
-   pg_ctl.exe -D C:\PG_install\data -l C:\PG_install\data\server.log start
-   ```
+```
+cd C:\PG_install\bin
+initdb.exe -D C:\PG_install\data -U administrator --auth=trust
+pg_ctl.exe -D C:\PG_install\data -l C:\PG_install\data\server.log start
+```
 
-Then `prepare-staging-directory.sh` assembles everything (PostgreSQL
-binaries, bundled extensions, licenses, docs) into the layout the Windows
-installer actually packages up.
+### Bundled helper binaries
 
-Finally, `installer.xml.in` (pre-processed into `installer.xml` with
-version numbers etc. substituted in) is what
-[BitRock InstallBuilder](https://installbuilder.com/) actually builds
-into the `.exe` installer.
-
-## Building the bundled helper binaries
-
-Besides PostgreSQL itself, two small native helpers are built from source
-in this repo via Visual Studio project files, using the shared
+Besides PostgreSQL itself, two small native helpers and one extension are
+built from source via Visual Studio project files, using the shared
 `vc-build-x64.bat` wrapper:
 
 ```
 vc-build-x64.bat <project.vcxproj> Release x64 <output-dir> <toolset>
 ```
 
-- `createuser/createuser.vcxproj` - creates the Windows service account
-  PostgreSQL runs as.
-- `validateuser/validateuser.vcxproj` - validates a Windows account's
-  credentials during interactive install.
+| Project | Purpose |
+| --- | --- |
+| `createuser/createuser.vcxproj` | Creates the Windows service account PostgreSQL runs as. |
+| `validateuser/validateuser.vcxproj` | Validates a Windows account's credentials during interactive install. |
+| `system_stats` (via `compile-system_stats.ps1`) | Builds the `system_stats` extension the same way, against its own `.vcxproj` (checked out separately; see the root README's ["What the server installer bundles"](../README.md#what-the-server-installer-bundles) section). |
 
-`compile-system_stats.ps1` builds the `system_stats` extension the same
-way, against its own `.vcxproj` (checked out separately - see the root
-README's ["What the server installer
-bundles"](../README.md#what-the-server-installer-bundles) section).
+## Part 2: Generate the installer
 
-## Documentation toolchain
+| Step | What happens |
+| --- | --- |
+| 1. Stage | `prepare-staging-directory.sh` assembles everything (PostgreSQL binaries, bundled extensions, licenses, docs) into the layout the Windows installer packages up. |
+| 2. Fill in placeholders | `installer.xml.in` is pre-processed into `installer.xml` with version numbers etc. substituted in. |
+| 3. Build | [BitRock InstallBuilder](https://installbuilder.com/) builds `installer.xml` into the `.exe` installer. |
 
-`meson-doc.sh` installs the MSYS packages needed to build the PostgreSQL
-documentation bundled with the installer (`libxml2`, `libxslt`,
-`docbook-xml`, `docbook-xsl`, via `pacman`).
+### pgAdmin
 
-## pgAdmin
-
-Starting with PostgreSQL 19, [pgAdmin 4](https://www.pgadmin.org/) is no
-longer bundled directly into the installer package. Instead,
-`install-pgadmin.bat` resolves the latest pgAdmin 4 release from
-`https://www.postgresql.org/ftp/pgadmin/pgadmin4/` and installs it
-separately - see the root README for the versions where
-pgAdmin is still bundled directly (14-18).
+| PostgreSQL version | pgAdmin 4 handling |
+| --- | --- |
+| 14-18 | Bundled directly into the installer package (see the root README). |
+| 19+ | Not bundled. `install-pgadmin.bat` resolves the latest pgAdmin 4 release from `https://www.postgresql.org/ftp/pgadmin/pgadmin4/` and installs it separately. |
 
 ## Script reference (`scripts/windows/`)
 
@@ -167,7 +145,7 @@ Build-time scripts:
 | `meson-doc.sh` | Installs the MSYS packages (libxml2, libxslt, docbook-xml, docbook-xsl) needed to build the bundled documentation. |
 | `vc-build-x64.bat` | Shared helper that invokes MSBuild against a given `.vcxproj`, configuration, platform and output directory. |
 | `compile-system_stats.ps1` | Builds the `system_stats` extension via `vc-build-x64.bat`. |
-| `createuser/`, `validateuser/` | Visual Studio projects for the `createuser`/`validateuser` native helpers (see above). |
+| `createuser/`, `validateuser/` | Visual Studio projects for the `createuser`/`validateuser` native helpers. |
 | `getlocales.ps1` | Enumerates the system's available locales (BCP-47 codes and long names) for the installer's locale selection dropdown. |
 
 Installer-time scripts (run on the end user's machine, not during the build):
@@ -175,7 +153,7 @@ Installer-time scripts (run on the end user's machine, not during the build):
 | Script | Purpose |
 | --- | --- |
 | `initcluster.ps1` | Runs `initdb` to create the data directory/cluster. |
-| `install-pgadmin.bat` | Downloads and installs the latest pgAdmin 4 release (PostgreSQL 19+ path - see above). |
+| `install-pgadmin.bat` | Downloads and installs the latest pgAdmin 4 release (PostgreSQL 19+ path). |
 | `runpsql.bat` | Launches `psql` connected to the local server, prompting for connection details. |
 
 Shared (`scripts/common/`):
@@ -186,12 +164,12 @@ Shared (`scripts/common/`):
 
 ## Troubleshooting
 
-- Flex EOF errors ("end of file in string") are caused by Unix line
-  endings in `.l` files - re-run the repository preparation Git commands
-  above.
-- Permission errors on `initdb` - grant explicit access to the admin
-  user:
-  ```
-  takeown /f C:\PG_install\data /r /d y
-  icacls C:\PG_install\data /grant Administrator:(OI)(CI)F /t
-  ```
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| Flex EOF errors ("end of file in string") | Unix line endings in `.l` files | Re-run the [repository preparation](#repository-preparation) Git commands. |
+| Permission errors on `initdb` | The admin user lacks access to the data directory | Grant explicit access (see below). |
+
+```
+takeown /f C:\PG_install\data /r /d y
+icacls C:\PG_install\data /grant Administrator:(OI)(CI)F /t
+```
