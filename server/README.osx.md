@@ -100,3 +100,7 @@ server/scripts/osx/create-debug-symbols.sh "$PG_STAGING" <output-dir>
    copied `installer.xml`, `pgserver-osx.xml`, `commandlinetools-osx.xml`
    and `stackbuilder-osx.xml`.
 3. Build the project with InstallBuilder to produce the `.dmg`.
+
+## Signing and notarization
+
+The build steps above do not sign or notarize anything. The released installer app and `.dmg` are code-signed with EDB's Developer ID certificate and notarized with Apple as a separate step after the build.
