@@ -1815,7 +1815,7 @@ EOF
                 </actionGroup>
                 <actionGroup>
                     <actionList>
-                        <componentSelection select="pgAdmin (arm64)"/>
+                        <componentSelection select="pgAdmin"/>
                         <setInstallerVariable name="component(pgAdmin).canBeEdited" value="0"/>
                     </actionList>
                     <ruleList>
