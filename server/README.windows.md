@@ -133,6 +133,13 @@ vc-build-x64.bat <project.vcxproj> Release x64 <output-dir> <toolset>
 | 14-18 | Bundled directly into the installer package (see the root README). |
 | 19+ | Not bundled. `install-pgadmin.bat` resolves the latest pgAdmin 4 release from `https://www.postgresql.org/ftp/pgadmin/pgadmin4/` and installs it separately. |
 
+## Part 3: Sign the output
+ 
+The final installer `.exe` and `archive.zip` are signed with our signature.
+The aim is to sign the output files themselves, so that users can verify
+that what they download comes from us and has not been changed since it was
+built.
+
 ## Script reference (`scripts/windows/`)
 
 Build-time scripts:
