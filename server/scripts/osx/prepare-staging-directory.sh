@@ -129,6 +129,8 @@ cp packaging-config/server/pgserver.xml.in         "$S/pgserver-osx.xml"
 cp packaging-config/server/commandlinetools.xml.in "$S/commandlinetools-osx.xml"
 cp packaging-config/server/stackbuilder.xml.in "$S/stackbuilder-osx.xml"
 cp packaging-config/server/pgadmin.xml.in "$S/pgadmin-osx.xml"
+# The bundled pgAdmin 4.app is arm64-only; say so on the Select Components page.
+sed -i '' 's|<description>pgAdmin 4</description>|<description>pgAdmin 4 (arm64)</description>|' "$S/pgadmin-osx.xml"
 
 echo "--- staging/osx contents ---"
 ls -la "$S"
