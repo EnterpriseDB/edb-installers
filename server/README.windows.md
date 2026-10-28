@@ -37,6 +37,9 @@ The exact list and version of every third-party dependency library
 PostgreSQL is built against on Windows is pinned in
 [`packages-win64.txt`](packages-win64.txt).
 
+The bundled gettext and iconv libraries are LGPL-licensed. These two, and
+the uuid library, are used as released upstream and are not modified.
+
 For optional features (full-featured build), install libraries such as
 OpenSSL, Zlib, ICU or LibXML2 using [vcpkg](https://vcpkg.io/):
 

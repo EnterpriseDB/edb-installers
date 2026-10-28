@@ -39,6 +39,9 @@ are in [`packages-osx.txt`](packages-osx.txt).
 Merge them all into one common prefix. The `compile.sh` step below takes
 that prefix as its `<dep-prefix>` argument.
 
+The bundled iconv library (libiconv) is LGPL-licensed and is used as
+released upstream, without modification.
+
 ## Part 1: Build the binaries
 
 `scripts/osx/compile.sh` configures, builds and installs PostgreSQL (with
