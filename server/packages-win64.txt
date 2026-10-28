@@ -1,3 +1,4 @@
+# libwinpthread-1.dll is bundled; copied from C:\msys64\mingw64\bin (MSYS2 on the GitHub runner)
 curl-8.23.0-windows-x64.tar.bz2
 zstd-1.5.7-windows-x64.tar.bz2
 lz4-1.10.0-windows-x64.tar.bz2
