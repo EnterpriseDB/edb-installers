@@ -33,8 +33,7 @@ Run all build commands from the **"x64 Native Tools Command Prompt for VS
 
 ## Third-party dependencies
 
-The exact list and version of every third-party dependency library
-PostgreSQL is built against on Windows is pinned in
+The third-party libraries are compiled by EDB from source as universal binaries. The list and versions are in
 [`packages-win64.txt`](packages-win64.txt).
 
 The bundled gettext and iconv libraries are LGPL-licensed. These two, and
