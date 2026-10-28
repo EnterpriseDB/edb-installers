@@ -33,11 +33,7 @@ Run all build commands from the **"x64 Native Tools Command Prompt for VS
 
 ## Third-party dependencies
 
-The third-party libraries are compiled by EDB from source as universal binaries. The list and versions are in
-[`packages-win64.txt`](packages-win64.txt).
-
-The bundled gettext and iconv libraries are LGPL-licensed. These two, and
-the uuid library, are used as released upstream and are not modified.
+Third-party dependencies bundled with this distribution are built from source; see [`packages-win64.txt`](packages-win64.txt) for the complete list of components and versions. The gettext, libiconv, and uuid libraries are compiled directly from pristine, unmodified upstream source releases. Licensing terms for all bundled components—including the GNU Lesser General Public License (LGPL) covering gettext and libiconv—are documented in commandlinetools_3rd_party_licenses.txt
 
 For optional features (full-featured build), install libraries such as
 OpenSSL, Zlib, ICU or LibXML2 using [vcpkg](https://vcpkg.io/):
