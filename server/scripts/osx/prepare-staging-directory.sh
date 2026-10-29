@@ -51,7 +51,6 @@ fi
 cp "$OSX_SCRIPTS/prerun_checks.sh"        "$PGSERVER/installer/prerun_checks.sh"
 cp "$OSX_SCRIPTS/createuser.sh"           "$PGSERVER/installer/server/createuser.sh"
 cp "$OSX_SCRIPTS/initcluster.sh"          "$PGSERVER/installer/server/initcluster.sh"
-cp "$OSX_SCRIPTS/createshortcuts.sh"      "$PGSERVER/installer/server/createshortcuts.sh"
 cp "$OSX_SCRIPTS/createshortcuts_server.sh" "$PGSERVER/installer/server/createshortcuts_server.sh"
 cp "$OSX_SCRIPTS/loadmodules.sh"          "$PGSERVER/installer/server/loadmodules.sh"
 cp "$OSX_SCRIPTS/install-pgadmin.sh"      "$PGSERVER/installer/server/install-pgadmin.sh"
