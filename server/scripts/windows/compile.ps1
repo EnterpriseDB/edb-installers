@@ -10,7 +10,8 @@ param([string]$source_directory,
     [string]$zstd_directory,
     [string]$icu_directory,
     [string]$gettext_directory,
-    [string]$wxwidgets_directory
+    [string]$wxwidgets_directory,
+    [string]$iconv_directory
     )
 
 if (-Not $source_directory) {
@@ -24,6 +25,11 @@ $temporary_data_location = "temp_pgdata"
 # Check for source parameters
 if (-Not $source_directory) {
     Write-Host "Missing source directory parameter"
+    exit 1
+}
+
+if (-Not $iconv_directory) {
+    Write-Host "Missing iconv directory parameter"
     exit 1
 }
 
@@ -133,6 +139,11 @@ if (-Not (Test-Path $wxwidgets_directory -PathType Container)) {
     exit 1
 }
 
+if (-Not (Test-Path $iconv_directory -PathType Container)) {
+    Write-Host "iconv distribution ($iconv_directory) doesn't exist or isn't a directory"
+    exit 1
+}
+
 # Let's put these directory in absolute form
 $source_directory = ([IO.Path]::GetFullPath($source_directory))
 $openssl_directory = ([IO.Path]::GetFullPath($openssl_directory))
@@ -146,6 +157,7 @@ $zstd_directory = ([IO.Path]::GetFullPath($zstd_directory))
 $icu_directory = ([IO.Path]::GetFullPath($icu_directory))
 $gettext_directory = ([IO.Path]::GetFullPath($gettext_directory))
 $wxwidgets_directory = ([IO.Path]::GetFullPath($wxwidgets_directory))
+$iconv_directory = ([IO.Path]::GetFullPath($iconv_directory))
 $temporary_data_location = ([IO.Path]::GetFullPath($temporary_data_location))
 $definition_directory = ([IO.Path]::GetFullPath("."))
 
@@ -187,8 +199,7 @@ Copy-Item $icu_directory/bin/*.dll $installation_directory\bin
 Copy-Item $openssl_directory/bin/*.dll $installation_directory\bin
 Copy-Item $xml_directory/bin/*.dll $installation_directory\bin
 Copy-Item $xslt_directory/bin/libxslt.dll $installation_directory\bin
-Copy-Item $gettext_directory/bin/libiconv-2.dll $installation_directory\bin
-Copy-Item $gettext_directory/bin/libwinpthread-1.dll $installation_directory\bin
+Copy-Item $iconv_directory/bin/libiconv-2.dll $installation_directory\bin
 Copy-Item $zlib_directory/bin/*.dll $installation_directory\bin
 Copy-Item $zstd_directory/bin/*.dll $installation_directory\bin
 Copy-Item $lz4_directory/bin/*.dll $installation_directory\bin
@@ -205,7 +216,7 @@ Copy-Item $wxwidgets_directory/lib/vc_x64_dll/wxmsw3211u_xrc_vc_x64_custom.dll $
 Copy-Item $lz4_directory/lib/liblz4.lib $installation_directory\lib
 Copy-Item $openssl_directory/lib/libssl.lib $installation_directory\lib
 Copy-Item $openssl_directory/lib/libcrypto.lib $installation_directory\lib
-Copy-Item $gettext_directory/lib/iconv.lib $installation_directory\lib
+Copy-Item $iconv_directory/lib/iconv.lib $installation_directory\lib
 Copy-Item $gettext_directory/lib/libintl.lib $installation_directory\lib
 Copy-Item $xml_directory/lib/libxml2.lib $installation_directory\lib
 Copy-Item $xslt_directory/lib/libxslt.lib $installation_directory\lib
@@ -226,7 +237,10 @@ Copy-Item $lz4_directory/include/*.h $installation_directory/include
 Copy-Item -Path $openssl_directory/include/* -Destination $installation_directory/include -Recurse
 Copy-Item -Path $xml_directory/include/libxml  -Destination $installation_directory/include -Recurse
 Copy-Item -Path $xslt_directory/include/libxslt -Destination $installation_directory/include -Recurse
-Copy-Item $gettext_directory/include/*.h $installation_directory/include
+# gettext headers, but skip iconv.h (it comes from the iconv package)
+Copy-Item $gettext_directory/include/*.h $installation_directory/include -Exclude iconv.h
+# iconv.h from the iconv package
+Copy-Item $iconv_directory/include/iconv.h $installation_directory/include
 Copy-Item -Path $icu_directory/include/* -Destination $installation_directory/include  -Recurse
 Copy-Item $uuid_directory/include/*.h $installation_directory/include
 Copy-Item $zlib_directory/include/*.h $installation_directory/include
