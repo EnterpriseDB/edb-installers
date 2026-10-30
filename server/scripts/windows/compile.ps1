@@ -237,9 +237,7 @@ Copy-Item $lz4_directory/include/*.h $installation_directory/include
 Copy-Item -Path $openssl_directory/include/* -Destination $installation_directory/include -Recurse
 Copy-Item -Path $xml_directory/include/libxml  -Destination $installation_directory/include -Recurse
 Copy-Item -Path $xslt_directory/include/libxslt -Destination $installation_directory/include -Recurse
-# gettext headers, but skip iconv.h (it comes from the iconv package)
-Copy-Item $gettext_directory/include/*.h $installation_directory/include -Exclude iconv.h
-# iconv.h from the iconv package
+Copy-Item $gettext_directory/include/*.h $installation_directory/include 
 Copy-Item $iconv_directory/include/iconv.h $installation_directory/include
 Copy-Item -Path $icu_directory/include/* -Destination $installation_directory/include  -Recurse
 Copy-Item $uuid_directory/include/*.h $installation_directory/include
