@@ -3690,6 +3690,24 @@ REM The script sets environment variables helpful for PostgreSQL
             </ruleList>
         </actionGroup>
 
+		<!-- WIN: upgrade only. libwinpthread-1.dll is no longer shipped, so remove the copy left by the older installer -->
+        <actionGroup>
+            <actionList>
+                <logMessage text="Upgrade: removing obsolete libwinpthread-1.dll from ${installdir}\bin"/>
+                <deleteFile>
+                    <path>${installdir}\bin\libwinpthread-1.dll</path>
+                    <abortOnError>0</abortOnError>
+                    <showMessageOnError>0</showMessageOnError>
+                </deleteFile>
+            </actionList>
+            <ruleList>
+                <compareText logic="equals" text="${platform_name}" value="windows"/>
+                <isTrue value="${IsUpgrade}"/>
+                <isFalse value="${extract_mode}"/>
+                <fileExists path="${installdir}\bin\libwinpthread-1.dll"/>
+            </ruleList>
+        </actionGroup>
+
         <!-- Add description to the service -->
         <registrySet key="HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\postgresql${service_suffix}-${product_version}" name="Description" value="${msg(pg.service.description)}" >
             <ruleList>
