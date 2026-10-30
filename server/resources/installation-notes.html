@@ -55,7 +55,16 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <h3>Important Note with regards to ICU</h3>
 
-<p>PostgreSQL Server 18 is compiled with ICU 77.x. PostgreSQL version 14-17 on macOS use ICU 68.x, and Windows use 67.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes. Refer: https://wiki.postgresql.org/wiki/Locale_data_changes and https://www.postgresql.org/docs/current/sql-altercollation.html for more details</p> 
+<p>The ICU version that PostgreSQL is compiled with depends on the PostgreSQL major version:</p>
+
+<ul>
+  <li>PostgreSQL 19: ICU 78.x</li>
+  <li>PostgreSQL 18: ICU 77.x</li>
+  <li>PostgreSQL 14-17: ICU 68.x (macOS)</li>
+  <li>PostgreSQL 14-17: ICU 67.x (Windows)</li>
+</ul>
+
+<p>If you use pg_upgrade for a major version upgrade and the ICU version differs between the old and the new server, any indexes that use ICU collations need to be reindexed. Refer: https://wiki.postgresql.org/wiki/Locale_data_changes and https://www.postgresql.org/docs/current/sql-altercollation.html for more details</p>
 
 <h3>Important Note with regards to locale names</h3>
 
