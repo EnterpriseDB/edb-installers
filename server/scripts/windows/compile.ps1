@@ -238,7 +238,7 @@ Copy-Item -Path $openssl_directory/include/* -Destination $installation_director
 Copy-Item -Path $xml_directory/include/libxml  -Destination $installation_directory/include -Recurse
 Copy-Item -Path $xslt_directory/include/libxslt -Destination $installation_directory/include -Recurse
 Copy-Item $gettext_directory/include/*.h $installation_directory/include 
-Copy-Item $iconv_directory/include/iconv.h $installation_directory/include
+Copy-Item $iconv_directory/include/*.h $installation_directory/include
 Copy-Item -Path $icu_directory/include/* -Destination $installation_directory/include  -Recurse
 Copy-Item $uuid_directory/include/*.h $installation_directory/include
 Copy-Item $zlib_directory/include/*.h $installation_directory/include
