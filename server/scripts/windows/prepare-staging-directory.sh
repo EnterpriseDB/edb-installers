@@ -61,7 +61,6 @@ mkdir -p packaging-config/installer/server/staging/windows-x64/commandlinetools/
 
 mkdir -p packaging-config/installer/server/staging/windows-x64/commandlinetools/bin
 cp -R zlib/bin/zlib1.dll packaging-config/installer/server/staging/windows-x64/commandlinetools/bin 
-cp -R ./gettext/bin/libwinpthread-1.dll $(PWD)/packaging-config/installer/server/staging/windows-x64/commandlinetools/bin 
 cp -R "$VCToolsRedistDir"vc_redist.x86.exe packaging-config/installer/server/staging/windows-x64/commandlinetools/installer/vcredist_x86.exe
 cp -R "$VCToolsRedistDir"vc_redist.x64.exe packaging-config/installer/server/staging/windows-x64/server/installer/vcredist_x64.exe
 cp pgsql/bin/createuser.exe packaging-config/installer/server/staging/windows-x64/commandlinetools/installer/server
