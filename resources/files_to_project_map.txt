@@ -27,11 +27,10 @@ project_ncurses	libncurses
 project_openldap	liblber-2 libldap-2 libldap_r-2
 project_openssl	libcrypto libssl libeay32.dll ssleay32.dll libssl-3-x64.dll libcrypto-3-x64.dll
 project_proj	libproj libproj-0.dll
-project_pthreads	pthreadVC2.dll pthreadVC2_x64.dll libwinpthread-1.dll
 project_QT	libQt5Core libQt5Gui libQt5Network libQt5Xml libEGL.dll libGLESv2.dll qwindows.dll Qt5Core.dll Qt5Gui.dll Qt5Network.dll Qt5Widgets.dll Qt5Xml.dll libQt5WebKit.dll libQt5WebKitWidgets.dll
 project_tiff	libtiff
 project_uuid	libuuid
-project_wxwidget	wxbase32u_net_vc_custom.dll wxbase32u_vc_custom.dll wxbase32u_xml_vc_custom.dll wxmsw32u_adv_vc_custom.dll wxmsw32ud_aui_vc_custom.dll wxmsw32u_core_vc_custom.dll wxmsw32u_html_vc_custom.dll wxmsw32ud_xrc_vc_custom.dll
+project_wxwidget	wxbase3211u_net_vc_x64_custom.dll wxbase3211u_vc_x64_custom.dll wxbase3211u_xml_vc_x64_custom.dll wxmsw3211u_adv_vc_x64_custom.dll wxmsw3211u_aui_vc_x64_custom.dll wxmsw3211u_core_vc_x64_custom.dll wxmsw3211u_html_vc_x64_custom.dll wxmsw3211u_xrc_vc_x64_custom.dll
 project_zlib	libz zlib1.dll
 project_apache.commons.lang3	commons-lang3-3 
 project_log4j	log4j-1
