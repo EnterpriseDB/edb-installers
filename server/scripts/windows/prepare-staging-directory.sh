@@ -13,7 +13,6 @@ cp -R packaging-config/resources/license.txt packaging-config/installer/server/s
 # server 
 cp -r pgsql/bin/* packaging-config/installer/server/staging/windows-x64/server/bin
 
-cp -r ./curl/bin/libcurl.dll packaging-config/installer/server/staging/windows-x64/server/bin
 cp -r ./curl/lib/libcurl.lib packaging-config/installer/server/staging/windows-x64/server/bin
 
 cp -r ./gettext/share/locale packaging-config/installer/server/staging/windows-x64/server/share
@@ -68,7 +67,6 @@ cp -R pgsql/bin/* packaging-config/installer/server/staging/windows-x64/commandl
 mkdir -p packaging-config/installer/server/staging/windows-x64/commandlinetools/lib
 
 cp -r pgsql/lib/* packaging-config/installer/server/staging/windows-x64/commandlinetools/lib
-cp -r packaging-config/server/system_stats.dll packaging-config/installer/server/staging/windows-x64/commandlinetools/lib/system_stats.dll
 
 mkdir -p packaging-config/installer/server/staging/windows-x64/commandlinetools/scripts/images
 cp packaging-config/server/resources/pg-psql.ico  packaging-config/installer/server/staging/windows-x64/commandlinetools/scripts/images/
@@ -86,7 +84,7 @@ cp packaging-config/server/stackbuilder.xml.in packaging-config/installer/server
 mkdir -p packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
 cp -r $(PWD)/stackbuilder*.exe packaging-config/installer/server/staging/windows-x64/stackbuilder/bin/stackbuilder.exe
 cp -r packaging-config/installer/server/staging/windows-x64/server/bin/wx*.dll packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
-cp -r ./curl/bin/libcurl.dll packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
+cp -r pgsql/bin/libcurl.dll packaging-config/installer/server/staging/windows-x64/stackbuilder/bin
 cp -r $(PWD)/SB/share packaging-config/installer/server/staging/windows-x64/stackbuilder
 
 # pgadmin
