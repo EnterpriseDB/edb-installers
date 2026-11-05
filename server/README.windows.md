@@ -4,6 +4,9 @@ This document describes how to build PostgreSQL for Windows from this
 repository, from a clean build machine to a finished package. See the
 [root README](../README.md) for what the installer bundles.
 
+To install PostgreSQL on Windows rather than build it, see the
+[installation documentation](https://www.enterprisedb.com/docs/supported-open-source/postgresql/installing/windows/).
+
 The build has two independent parts:
 
 1. **Build the PostgreSQL binaries**: an installed `PG_install` tree built
