@@ -24,19 +24,17 @@
 
 <h3>Supported Operating Systems</h3>
 
-<p>The macOS build has been tested on 10.15 and above, including 11.x (BigSur) for x86_64 and ARM64 architectures. The Windows builds of this installer have been tested on variety of different versions of 64bit Windows platforms like Windows 2016 and above. Please let us know if the installer does not operate as expected on your operating system, and where possible, we will try to add support</p>
+<p>The macOS build is supported on macOS 12.0 and above for x86_64 and ARM64 architectures, and has been tested on macOS 15. The Windows builds of this installer are supported on Windows Server 2022 and Windows 11, and have been tested on Windows Server 2022. Please let us know if the installer does not operate as expected on your operating system, and where possible, we will try to add support</p>
 
 <h3>Procedural Languages</h3>
 
-<p>The procedural languages pl/Perl, pl/Python and pl/Tcl are included in this distribution of PostgreSQL. The server has been built using the LanguagePack community distributions of those language interpreters. To use any of the these languages from within PostgreSQL, download and install the appropriate interpreters and ensure they are included in the PATH variable under which the database server will be started. The versions used are shown below - newer minor (bugfix) releases may also work, but have not been tested:</p>
+<p>The procedural languages pl/Perl, pl/Python and pl/Tcl are included in this distribution of PostgreSQL. On both Windows and macOS, the server has been built using the EDB LanguagePack v4 distributions of those language interpreters. To use any of the these languages from within PostgreSQL, download and install the appropriate interpreters and ensure they are included in the PATH variable under which the database server will be started. The versions used are shown below - newer minor (bugfix) releases may also work, but have not been tested:</p>
 
 <ul>
-  <li>Perl 5.38</li>
-  <li>Python 3.11</li>
-  <li>Tcl 8.6</li>
+  <li>Perl 5.38.x</li>
+  <li>Python 3.11.x</li>
+  <li>Tcl 8.6.x</li>
 </ul>
-
-<p>The current pl/Python is dynamically linked with Python's shared library in the LanguagePack v4.x installers. Some distributions of Python interpreters (including ActivePython) on Linux do not carry a dynamic library of Python. Such interpreters would no longer be functional with pl/Python.We strongly recommend the users to use LanguagePack installers for pl/Perl, pl/Python and pl/Tcl. The beta installers might see plperl extension failing on x86_64 architecture</p>
 
 <h3>pl/pgsql Debugger</h3>
 
@@ -55,7 +53,16 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <h3>Important Note with regards to ICU</h3>
 
-<p>PostgreSQL Server 16 is compiled with ICU 67.x. The server versions upto v12 used either ICU 53.x or  57.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes.</p>
+<p>The ICU version that PostgreSQL is compiled with depends on the PostgreSQL major version:</p>
+
+<ul>
+  <li>PostgreSQL 19: ICU 78.x</li>
+  <li>PostgreSQL 18: ICU 77.x</li>
+  <li>PostgreSQL 14-17: ICU 68.x (macOS)</li>
+  <li>PostgreSQL 14-17: ICU 67.x (Windows)</li>
+</ul>
+
+<p>If you use pg_upgrade for a major version upgrade and the ICU version differs between the old and the new server, any indexes that use ICU collations need to be reindexed. Refer: https://wiki.postgresql.org/wiki/Locale_data_changes and https://www.postgresql.org/docs/current/sql-altercollation.html for more details</p>
 
 <h3>Important Note with regards to locale names</h3>
 
