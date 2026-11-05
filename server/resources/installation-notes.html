@@ -24,19 +24,19 @@
 
 <h3>Supported Operating Systems</h3>
 
-<p>The macOS build has been tested on 13.x and above, for x86_64 and ARM64 architectures. The Windows builds of this installer have been tested on Windows 2022. Please let us know if the installer does not operate as expected on your operating system, and where possible, we will try to add support</p>
+<p>The macOS build is supported on macOS 13.0 and above for x86_64 and ARM64 architectures, and has been tested on macOS 15. The Windows builds of this installer are supported on Windows Server 2022/2025 and Windows 11, and have been tested on Windows Server 2022. Please let us know if the installer does not operate as expected on your operating system, and where possible, we will try to add support</p>
 
 <h3>Procedural Languages</h3>
 
 <p>The procedural languages pl/Perl, pl/Python and pl/Tcl are included in this distribution of PostgreSQL. On Windows, the server has been built using the community upstream distributions of those language interpreters. To use any of the these languages from within PostgreSQL, download and install the appropriate interpreters and ensure they are included in the PATH variable under which the database server will be started. The versions used are shown below - newer minor (bugfix) releases may also work, but have not been tested:</p>
 
 <ul>
-  <li>Perl 5.42.0.1 : https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_54201_64bit/strawberry-perl-5.42.0.1-64bit-portable.zip </li>
-  <li>Python 3.13.12 : https://www.python.org/ftp/python/3.13.12/python-3.13.12-amd64.exe </li>
-  <li>Tcl 8.6.17 : https://sourceforge.net/projects/magicsplat/files/magicsplat-tcl/tcl-8.6.17-installer-1.17.0-x64.msi/download </li>
+  <li>Perl 5.42.x</li>
+  <li>Python 3.13.x</li>
+  <li>Tcl 8.6.x</li>
 </ul>
 
-<p> On MacOS, we strongly recommend to use LanguagePack v6 installers for pl/Perl, pl/Python and pl/Tcl. </p>
+<p> On macOS, we strongly recommend to use LanguagePack v6 installers for pl/Perl, pl/Python and pl/Tcl. </p>
 
 <h3>pl/pgsql Debugger</h3>
 
@@ -55,20 +55,16 @@ The debugger plugin is disabled by default for performance reasons. To enable it
 
 <h3>Important Note with regards to ICU</h3>
 
-<p>PostgreSQL Server 18 is compiled with ICU 77.x. PostgreSQL version 14-17 on macOS use ICU 68.x, and Windows use 67.x. Hence, if you use pg_upgrade for a major version upgrade and have ICU collated indexes, then you need to reindex the indexes. Refer: https://wiki.postgresql.org/wiki/Locale_data_changes and https://www.postgresql.org/docs/current/sql-altercollation.html for more details</p> 
-
-<h3>Important Note with regards to locale names</h3>
-
-<p>A change was made in the Windows installers for PostgreSQL versions 17.4-1, 16.8-1, 15.12-1, 14.17-1, and 13.20-1, and in the fresh installation the chosen locale name would be converted to BCP-47 name and passed to initdb.exe run as --locale. This change made the pg_upgrade from the PostgreSQL cluster having old locale names to these versions fail.</p>
-
-<p>The change was again made in -2 releases for the same set of postgresql installers. See below section for details.</p>
-
-<p>Starting from PostgreSQL versions 17.4-2, 16.8-2, 15.12-2, 14.17-2, and 13.20-2, the Windows installers support specifying locale names in two formats:</p>
+<p>The ICU version that PostgreSQL is compiled with depends on the PostgreSQL major version:</p>
 
 <ul>
-  <li>Standard BCP-47 locale names (e.g., en-US, fr-FR). Recommended, if the locale name contains non-ASCII characters (such as accented characters or regional scripts) </li>
-  <li>Long English locale names containing only ASCII characters (e.g., English_United States, French_France). So, any non-ASCII character containing locale is not passed to the initdb. </li>
+  <li>PostgreSQL 19: ICU 78.x</li>
+  <li>PostgreSQL 18: ICU 77.x</li>
+  <li>PostgreSQL 14-17: ICU 68.x (macOS)</li>
+  <li>PostgreSQL 14-17: ICU 67.x (Windows)</li>
 </ul>
+
+<p>If you use pg_upgrade for a major version upgrade and the ICU version differs between the old and the new server, any indexes that use ICU collations need to be reindexed. Refer: https://wiki.postgresql.org/wiki/Locale_data_changes and https://www.postgresql.org/docs/current/sql-altercollation.html for more details</p>
 
 <h3>Technical Support</h3>
 
