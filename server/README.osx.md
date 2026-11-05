@@ -4,6 +4,8 @@ This document describes how to build PostgreSQL for macOS from this
 repository. See the [root README](../README.md) for what the installer
 bundles.
 
+To install PostgreSQL on macOS rather than build it, see the installation documentation.
+
 The build has two independent parts:
 
 1. **Build the PostgreSQL binaries**: a relocatable universal `pgsql` tree.
