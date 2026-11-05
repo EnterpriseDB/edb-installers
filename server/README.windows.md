@@ -24,9 +24,9 @@ If you only want the binaries, stop after part 1.
 | Build machine | Windows 11 (64-bit) or Windows Server 2022/2025. Windows binaries are built on Windows using the MSVC build; there is no cross-compilation path from macOS/Linux. |
 | Output | x64 binaries |
 | Compiler | Visual Studio 2022 (platform toolset v143) with the "Desktop development with C++" workload |
-| Python | Python 3.11.x |
+| Python | Python 3.10.x |
 | Build system | MSVC build scripts (`src/tools/msvc`, driven by Perl) and MSBuild |
-| Perl | Perl 5.38.x; required for script generation and builds |
+| Perl | Perl 5.36.x; required for script generation and builds |
 | Tcl | Tcl 8.6.x |
 | Flex & Bison | MSYS packages `bison` and `flex`; make sure they are on your `PATH`. |
 | Installer (part 2 only) | [BitRock InstallBuilder](https://installbuilder.com/) |
