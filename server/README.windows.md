@@ -24,10 +24,10 @@ If you only want the binaries, stop after part 1.
 | Build machine | Windows 11 (64-bit) or Windows Server 2022/2025. Windows binaries are built on Windows using the MSVC build; there is no cross-compilation path from macOS/Linux. |
 | Output | x64 binaries |
 | Compiler | Visual Studio 2022 (platform toolset v143) with the "Desktop development with C++" workload |
-| Python | Python 3.11 |
+| Python | Python 3.11.x |
 | Build system | MSVC build scripts (`src/tools/msvc`, driven by Perl) and MSBuild |
-| Perl | Perl 5.38; required for script generation and builds |
-| Tcl | Tcl 8.6 |
+| Perl | Perl 5.38.x; required for script generation and builds |
+| Tcl | Tcl 8.6.x |
 | Flex & Bison | MSYS packages `bison` and `flex`; make sure they are on your `PATH`. |
 | Installer (part 2 only) | [BitRock InstallBuilder](https://installbuilder.com/) |
 
@@ -39,10 +39,15 @@ Run all build commands from the **"x64 Native Tools Command Prompt for VS
 
 Third-party dependencies bundled with this distribution are built from source; see [`packages-win64.txt`](packages-win64.txt) for the complete list of components and versions. The gettext, libiconv, and uuid libraries are compiled directly from pristine, unmodified upstream source releases. Licensing terms for all bundled components—including the GNU Lesser General Public License (LGPL) covering gettext and libiconv—are documented in commandlinetools_3rd_party_licenses.txt installed by the installer.
 
-The prebuilt dependencies listed in `packages-win64.txt` (libxml2, libxslt,
-OpenSSL, zlib, uuid, lz4, zstd, ICU, gettext, libiconv, wxWidgets, curl) are downloaded
-from the Cloudsmith `windows-dependencies` repository and extracted next to
-the PostgreSQL source tree.
+For optional features (full-featured build), install libraries such as
+OpenSSL, Zlib, ICU or LibXML2 using [vcpkg](https://vcpkg.io/):
+
+```
+vcpkg install zlib:x64-windows openssl:x64-windows icu:x64-windows
+```
+
+Any dependency that is not available through vcpkg must be installed or built
+separately, and its directory passed to `compile.ps1`.
 
 ## Repository preparation
 
@@ -72,15 +77,6 @@ the install tree.
 ```
 scripts\windows\compile.ps1 <postgresql-source-dir> <libxml2> <libxslt> <openssl> <python> <zlib> <uuid> <perl> <lz4> <zstd> <icu> <gettext> <tcl> <wxwidgets> <iconv>
 ```
-
-The source directory and the libxml2, libxslt, OpenSSL, Python, zlib, uuid,
-Perl, lz4, zstd, ICU and iconv directories are checked up front: the script
-exits with an error if any of them is not passed. gettext, Tcl and wxWidgets
-are not checked for being passed, but the script still uses them later (NLS and
-Tcl in `config.pl`, the libintl and wxWidgets DLL copies). Every directory that
-is passed must exist. Parameters are positional, so to skip one, pass the
-others by name (for example `-gettext_directory`). The script also needs the
-MSVC environment (`cl.exe` on `PATH`).
 
 For example:
 
