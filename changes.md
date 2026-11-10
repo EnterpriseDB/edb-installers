@@ -5,10 +5,10 @@
 - **Dependencies (macOS & Windows)**
     - Update `lz4` to version `1.11.1`
     - Update `zlib` to version `1.4` (security fixes)
+    - Update `curl` to version `8.23.0` (security fixes)
  
 - **Additional dependencies (Windows)**
     - Update `wxwidgets` to version `3.2.12`
-    - Update `curl` to version `8.23.0` (security fixes)
  
 - **Additional dependencies (macOS)**
   - Update `expat` to version `2.10.0`
