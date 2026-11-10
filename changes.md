@@ -1,3 +1,26 @@
+# PostgreSQL installer release 17.12-1 (2026-11-12)
+## Changes 🛠️
+- Update `pgAdmin4` to version `9.19`
+  
+- **Dependencies (macOS & Windows)**
+    - Update `lz4` to version `1.11.1`
+    - Update `zlib` to version `1.4` (security fixes)
+ 
+- **Additional dependencies (Windows)**
+    - Update `wxwidgets` to version `3.2.12`
+    - Update `curl` to version `8.23.0`
+ 
+- **Additional dependencies (macOS)**
+  - Update `krb5` to version `1.22.3`
+
+## Bug Fixes 🐛
+- **Fix:** Windows: decoupled gettext and iconv dependencies (Issues [#743](https://github.com/EnterpriseDB/edb-installers/issues/743), [#754](https://github.com/EnterpriseDB/edb-installers/issues/754))
+    - `iconv` and `gettext` are now built from unmodified upstream source and packaged as standalone components. gettext now uses native Win32 threading, which removes its dependency on `libwinpthread-1.dll`
+    - Removed the obsolete `libwinpthread-1.dll`; when upgrading with the Windows installer, the old copy is deleted from the server `bin` directory
+    - Updated third-party license files: gettext and libiconv are now listed under LGPL v3, and gettext is also listed under the 3-clause BSD license to reflect its dual license
+- **Fix:** Windows: binaries are now code signed. `bin\*.exe` (including `postgres.exe`, `psql.exe`, etc.) and `bin\*.dll` files are now signed. The `.ps1` and `.exe` files in the server folder are signed as well (Issues [#713](https://github.com/EnterpriseDB/edb-installers/issues/713), [#720](https://github.com/EnterpriseDB/edb-installers/issues/720), [#731](https://github.com/EnterpriseDB/edb-installers/issues/731), [#758](https://github.com/EnterpriseDB/edb-installers/issues/758))
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 17.11-5 (2026-10-01)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.18`
