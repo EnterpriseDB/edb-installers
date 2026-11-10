@@ -75,6 +75,16 @@ version numbers should always be cleared, but data that's still useful
 after uninstall (e.g. a server's data directory, port or superuser name)
 may be retained.
 
+## Verifying downloads
+
+For every release, checksums are published on the website so you can confirm
+that a download is complete and unmodified:
+
+- **Binaries archive** (`.zip`) - listed on the
+  [binaries download page](https://www.enterprisedb.com/download-postgresql-binaries).
+- **Installers** - Windows (`.exe`) and macOS (`.dmg`) checksums are listed on
+  the [installers download page](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads).
+
 ## Security Vulnerabilities
 
 Please report security issues affecting PostgreSQL core to
