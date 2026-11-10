@@ -8,15 +8,15 @@
       
 - **Additional dependencies (Windows)**
     - Update `wxwidgets` to version `3.2.12`
-    - Update `curl` to version `8.23.0` (security fixes)
+    - Update `curl` to version `8.23.0`
  
 - **Additional dependencies (macOS)**
   - Update `krb5` to version `1.22.3`
 
 ## Bug Fixes 🐛
 - **Fix:** Windows: decoupled gettext and iconv dependencies (Issues [#743](https://github.com/EnterpriseDB/edb-installers/issues/743), [#754](https://github.com/EnterpriseDB/edb-installers/issues/754))
-    - `iconv` and `gettext` are now packaged as standalone components, each sourced directly from its own upstream package instead of gettext supplying both
-    - Removed the obsolete `libwinpthread-1.dll`; Windows upgrades now delete the old copy from the server `bin` directory
+    - `iconv` and `gettext` are now built from unmodified upstream source and packaged as standalone components. gettext now uses native Win32 threading, which removes its dependency on `libwinpthread-1.dll`
+    - Removed the obsolete `libwinpthread-1.dll`; when upgrading with the Windows installer, the old copy is deleted from the server `bin` directory
     - Updated third-party license files: gettext and libiconv are now listed under LGPL v3, and gettext is also listed under the 3-clause BSD license to reflect its dual license
 -------------------------------------------------------------------------------------------------------------------------------
 
