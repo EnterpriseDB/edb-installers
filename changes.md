@@ -11,7 +11,6 @@
     - Update `wxwidgets` to version `3.2.12`
  
 - **Additional dependencies (macOS)**
-  - Update `expat` to version `2.10.0`
   - Update `krb5` to version `1.22.3`
 
 ## Bug Fixes 🐛
