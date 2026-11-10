@@ -1,14 +1,16 @@
 # PostgreSQL installer release 18.7-1 (2026-11-12)
 ## Changes 🛠️
+- Update `pgAdmin4` to version `9.19`
+  
 - **Dependencies (macOS & Windows)**
-    - Update `pgAdmin4` to version `9.19`
     - Update `curl` to version `8.23.0`
-    - Update `lz4` to version `1.11`(security fixes)
-    - Update `zlib` to version `1.4`(security fixes)
+    - Update `lz4` to version `1.11.1`(security fixes)
+    - Update `zlib` to version `1.4` (security fixes)
     - Update `wxwidgets` to version `3.2.12`(security fixes)
  
 - **Additional dependencies (macOS)**
-    - 
+  - Update `expat` to version `2.10.0`
+  - Update `krb5` to version `1.22.3`
 
 ## Bug Fixes 🐛
 - **Fix:** Windows: decoupled gettext and iconv dependencies (Issues [#743](https://github.com/EnterpriseDB/edb-installers/issues/743), [#754](https://github.com/EnterpriseDB/edb-installers/issues/754))
