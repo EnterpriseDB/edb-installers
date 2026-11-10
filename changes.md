@@ -11,7 +11,6 @@
     - Update `curl` to version `8.23.0` (security fixes)
  
 - **Additional dependencies (macOS)**
-  - Update `expat` to version `2.10.0`
   - Update `krb5` to version `1.22.3`
 
 ## Bug Fixes 🐛
