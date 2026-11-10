@@ -6,6 +6,8 @@
     - Update `curl` to version `8.23.0` (security fixes)
     - Update `lz4` to version `1.11.1`
     - Update `zlib` to version `1.4` (security fixes)
+ 
+- **Additional dependencies (Windows)**
     - Update `wxwidgets` to version `3.2.12`
  
 - **Additional dependencies (macOS)**
