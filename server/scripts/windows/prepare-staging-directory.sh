@@ -13,7 +13,6 @@ cp -R packaging-config/resources/license.txt packaging-config/installer/server/s
 # server 
 cp -r pgsql/bin/* packaging-config/installer/server/staging/windows-x64/server/bin
 
-cp -r ./curl/bin/libcurl.dll packaging-config/installer/server/staging/windows-x64/server/bin
 cp -r ./curl/lib/libcurl.lib packaging-config/installer/server/staging/windows-x64/server/bin
 
 cp -r ./gettext/share/locale packaging-config/installer/server/staging/windows-x64/server/share
