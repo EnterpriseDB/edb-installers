@@ -1,3 +1,23 @@
+# PostgreSQL installer release 18.7-1 (2026-11-12)
+## Changes 🛠️
+- **Dependencies (macOS & Windows)**
+    - Update `pgAdmin4` to version `9.19`
+    - Update `curl` to version `8.23.0`
+    - Update `lz4` to version `1.11`(security fixes)
+    - Update `zlib` to version `1.4`(security fixes)
+    - Update `wxwidgets` to version `3.2.12`(security fixes)
+ 
+- **Additional dependencies (macOS)**
+    - 
+
+## Bug Fixes 🐛
+- **Fix:** Windows: decoupled gettext and iconv dependencies (Issue [#743](https://github.com/EnterpriseDB/edb-installers/issues/743), [#754](https://github.com/EnterpriseDB/edb-installers/issues/754))
+    - `iconv` and `gettext` are now packaged as standalone components, each sourced directly from its own upstream package instead of gettext supplying both
+    - Removed the obsolete `libwinpthread-1.dll`; Windows upgrades now delete the old copy from the server `bin` directory
+    - Updated third-party license files: gettext and libiconv are now listed under LGPL v3, and gettext is also listed under the 3-clause BSD license to reflect its dual license
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 18.6-5 (2026-10-01)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.18`
