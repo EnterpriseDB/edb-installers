@@ -75,6 +75,10 @@ version numbers should always be cleared, but data that's still useful
 after uninstall (e.g. a server's data directory, port or superuser name)
 may be retained.
 
+## Notarization
+
+On macOS, the binaries archive (`.zip`) is notarized.
+
 ## Security Vulnerabilities
 
 Please report security issues affecting PostgreSQL core to
