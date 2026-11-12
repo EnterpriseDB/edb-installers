@@ -18,7 +18,7 @@
     - `iconv` and `gettext` are now built from unmodified upstream source and packaged as standalone components. gettext now uses native Win32 threading, which removes its dependency on `libwinpthread-1.dll`
     - Removed the obsolete `libwinpthread-1.dll`; when upgrading with the Windows installer, the old copy is deleted from the server `bin` directory
     - Updated third-party license files: gettext and libiconv are now listed under LGPL v3, and gettext is also listed under the 3-clause BSD license to reflect its dual license
-- **Fix:** Windows: binaries are now code signed. `bin\*.exe` (including `postgres.exe`, `psql.exe`, etc.) and `bin\*.dll` files are now signed. The `.ps1` and `.exe` files in the server folder are signed as well (Issues [#713](https://github.com/EnterpriseDB/edb-installers/issues/713), [#720](https://github.com/EnterpriseDB/edb-installers/issues/720), [#731](https://github.com/EnterpriseDB/edb-installers/issues/731), [#758](https://github.com/EnterpriseDB/edb-installers/issues/758))
+- **Fix:** Windows: binaries are now code signed. `bin\*.exe` (including `postgres.exe`, `psql.exe`, etc.), `bin\*.dll` and `lib\*.dll` files are now signed. The `.ps1` and `.exe` files in the server folder are signed as well (Issues [#713](https://github.com/EnterpriseDB/edb-installers/issues/713), [#720](https://github.com/EnterpriseDB/edb-installers/issues/720), [#731](https://github.com/EnterpriseDB/edb-installers/issues/731), [#758](https://github.com/EnterpriseDB/edb-installers/issues/758))
 -------------------------------------------------------------------------------------------------------------------------------
 
 # PostgreSQL installer release 18.6-5 (2026-10-01)
