@@ -25,7 +25,7 @@
 - Update `pgAdmin4` to version `9.18`
 
 - **Dependencies (macOS)**
-    - Update `openssl` version to `3.5.9`
+    - Update `openssl` version to `1.1.1zj`
 -------------------------------------------------------------------------------------------------------------------------------
 
 # PostgreSQL installer(Windows) release 14.24-4 (2026-10-01)
@@ -33,7 +33,7 @@
 - Update `pgAdmin4` to version `9.18`
 
 - **Dependencies (Windows)**
-    - Update `openssl` version to `3.5.9`
+    - Update `openssl` version to `1.1.1zj`
 -------------------------------------------------------------------------------------------------------------------------------
 
 # PostgreSQL installer(macOS) release 14.24-4 (2026-09-18)
