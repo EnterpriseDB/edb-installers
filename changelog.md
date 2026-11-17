@@ -11,6 +11,8 @@
   - Updated `package` to `version`
 -->
 
+## [19.0] - 2026-11-19
+
 ## [19rc2] - 2026-11-12
 
 - **Enhancement:** Code-signed all installer and server binaries, including `bin\*.exe` (`postgres.exe`, `psql.exe`, etc.), `bin\*.dll`, `lib\*.dll`, and `.ps1`/`.exe` files in the `server` directory ([#713](https://github.com/EnterpriseDB/edb-installers/issues/713), [#720](https://github.com/EnterpriseDB/edb-installers/issues/720), [#731](https://github.com/EnterpriseDB/edb-installers/issues/731), [#758](https://github.com/EnterpriseDB/edb-installers/issues/758)).
