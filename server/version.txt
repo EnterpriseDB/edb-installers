@@ -1,6 +1,6 @@
 pg_major_version=19
 pg_minor_version=0
-languagepack=7.0rc1-1
+languagepack=7.0-1
 python=3.15.2
 perl=5.42.3.1
 pkg-config=0.28-1
