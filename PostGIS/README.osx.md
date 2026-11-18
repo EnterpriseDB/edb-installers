@@ -43,47 +43,36 @@ Merge them all into one common prefix, referred to below as `<dep-prefix>`.
 ## Part 1: Build the binaries
 
 Download and unpack the PostGIS source tarball from
-<https://download.osgeo.org/postgis/source/>, then set these variables first:
+<https://download.osgeo.org/postgis/source/>, then set these variables
+first:
 
 ```
 export PG_ARCH_OSX_CFLAGS="-mmacosx-version-min=13 -arch x86_64 -arch arm64"
 export MACOSX_DEPLOYMENT_TARGET=13
-export PATH="<dep-prefix>/bin:$PATH"
-export CFLAGS="$PG_ARCH_OSX_CFLAGS" CXXFLAGS="$PG_ARCH_OSX_CFLAGS"
-export LDFLAGS="-L<dep-prefix>/lib"
-export PROJ_CFLAGS="-I<dep-prefix>/include" PROJ_LIBS="-L<dep-prefix>/lib -lproj"
 ```
 
-Configure, build and install into a scratch directory (`DESTDIR`):
+`scripts/osx/compile.sh` configures, builds and installs PostGIS (with docs)
+into a scratch directory (`<build-stage>`):
 
 ```
-./configure --disable-extension-upgrades-install --enable-debug \
-  --with-pgconfig=<pgsql>/bin/pg_config \
-  --with-geosconfig=<dep-prefix>/bin/geos-config \
-  --with-projdir=<dep-prefix> \
-  --with-xsldir="$(brew --prefix docbook-xsl)/docbook-xsl" \
-  --with-gdalconfig=<dep-prefix>/bin/gdal-config \
-  --with-xml2config=<dep-prefix>/bin/xml2-config \
-  --with-libiconv=<dep-prefix> \
-  --with-jsondir=<dep-prefix> \
-  --without-protobuf \
-  --with-pcredir=<dep-prefix> \
-  --with-sfcgal=<dep-prefix>/bin/sfcgal-config \
-  --with-address_standardizer
-
-make
-make install PGXSOVERRIDE=0 DESTDIR=<build-stage> bindir=/bin pkglibdir=/lib/postgresql datadir=/share \
-  REGRESS=1 PGSQL_DOCDIR=<build-stage>/doc PGSQL_MANDIR=<build-stage>/man \
-  PGSQL_SHAREDIR=<build-stage>/share/postgresql
-
-make -C doc html
-make -C doc install PGXSOVERRIDE=0 DESTDIR=<build-stage> bindir=/bin pkglibdir=/lib datadir=/share \
-  REGRESS=1 PGSQL_DOCDIR=<build-stage>/doc PGSQL_MANDIR=<build-stage>/man \
-  PGSQL_SHAREDIR=<build-stage>/share/postgresql
+PostGIS/scripts/osx/compile.sh <source-dir> <dep-prefix> <pgsql-dir> <build-stage>
 ```
 
-Assemble the installed files and the bundled dependency libraries into one
-`PostGIS` tree with this layout:
+| Argument | Meaning |
+| --- | --- |
+| `source-dir` | Unpacked PostGIS source |
+| `dep-prefix` | The merged third-party dependency prefix |
+| `pgsql-dir` | The universal PostgreSQL installation (contains `bin/pg_config`) |
+| `build-stage` | Scratch `DESTDIR` for `make install` |
+
+Then assemble the installed files and the bundled dependency libraries into
+one `PostGIS` tree under `<stage>`. This is done by
+`scripts/osx/prepare-staging-directory.sh`, which also lays out the
+installer files (see part 2). Run it from a working directory that contains
+`postgis-<version>` (the source) and this repository as `./packaging-config`,
+with `STAGE`, `BUILD_STAGE`, `DEP_PREFIX` and `POSTGIS_VERSION` set.
+
+The `PostGIS` tree has this layout:
 
 | Path | Content |
 | --- | --- |
@@ -108,9 +97,8 @@ server/scripts/osx/create-debug-symbols.sh <PostGIS-tree> <output-dir>
 
 ## Part 2: Generate the installer
 
-1. Set `STAGE` to the directory that will hold the installer staging tree,
-   with the `PostGIS` tree from part 1 inside it and the debug symbols in
-   `$STAGE/debug_symbols`. Put this repository next to it as
+1. Use the `STAGE` directory from part 1, with the `PostGIS` tree inside it
+   and the debug symbols in `$STAGE/debug_symbols`, and this repository as
    `./packaging-config`.
 2. Generate the third-party license file:
 
@@ -120,14 +108,9 @@ server/scripts/osx/create-debug-symbols.sh <PostGIS-tree> <output-dir>
    ```
 
    It writes `postgis_3rd_party_licenses.txt` into `$STAGE`.
-3. Assemble the installer layout:
-
-   ```
-   packaging-config/PostGIS/scripts/osx/prepare-staging-directory.sh
-   ```
-
-   It adds the installer scripts, docs launcher, language file and side
-   image to `$STAGE`, and copies `installer.xml.in` to `$STAGE/installer.xml`.
+3. The installer layout (scripts, docs launcher, language file, side image
+   and `$STAGE/installer.xml` from `installer.xml.in`) was already added by
+   `prepare-staging-directory.sh` in part 1.
 4. Fill in the version placeholders in `$STAGE/installer.xml`:
    `PG_CURRENT_VERSION` and `PG_MAJOR_VERSION` (the PostgreSQL major),
    `PG_VERSION_POSTGIS`, `PG_BUILDNUM_POSTGIS` and `POSTGIS_MAJOR_VERSION`.
