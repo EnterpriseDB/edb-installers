@@ -95,27 +95,43 @@ To extract `.dSYM` debug symbols as well, run:
 server/scripts/osx/create-debug-symbols.sh <PostGIS-tree> <output-dir>
 ```
 
-## Part 2: Generate the installer
+## Part 2: Create the installer `osx.zip`
 
-1. Use the `STAGE` directory from part 1, with the `PostGIS` tree inside it
-   and the debug symbols in `$STAGE/debug_symbols`, and this repository as
-   `./packaging-config`.
-2. Generate the third-party license file:
+Starting from the `$STAGE` tree of part 1 (with the `PostGIS` tree and
+`debug_symbols` in it, and this repository as `./packaging-config`):
+
+1. Generate the third-party license file into `$STAGE`:
 
    ```
-   cd packaging-config/PostGIS
-   bash license.sh
+   (cd packaging-config/PostGIS && bash license.sh)
    ```
 
-   It writes `postgis_3rd_party_licenses.txt` into `$STAGE`.
-3. The installer layout (scripts, docs launcher, language file, side image
-   and `$STAGE/installer.xml` from `installer.xml.in`) was already added by
-   `prepare-staging-directory.sh` in part 1.
-4. Fill in the version placeholders in `$STAGE/installer.xml`:
-   `PG_CURRENT_VERSION` and `PG_MAJOR_VERSION` (the PostgreSQL major),
-   `PG_VERSION_POSTGIS`, `PG_BUILDNUM_POSTGIS` and `POSTGIS_MAJOR_VERSION`.
-5. Build the project with InstallBuilder for `osx` to produce the `.app`,
-   and zip it.
+2. Fill in the placeholders in `$STAGE/installer.xml` and point its paths at
+   the staging root:
+
+   ```
+   X="$STAGE/installer.xml"
+   sed -i '' "s/PG_CURRENT_VERSION/<pg-major>/g; s/PG_MAJOR_VERSION/<pg-major>/g" "$X"
+   sed -i '' "s/PG_VERSION_POSTGIS/<postgis-version>/g; s/PG_BUILDNUM_POSTGIS/<build-number>/g" "$X"
+   sed -i '' "s/POSTGIS_MAJOR_VERSION/<postgis-major>/g" "$X"
+   sed -i '' 's|staging/osx|osx|g; s|\.\./resources|osx/resources|g; s|i18n/|osx/i18n/|g' "$X"
+   ```
+
+3. Build the project with InstallBuilder for `osx`, with the staging root as
+   the working directory, to produce the installer `.app`.
+4. The `.app` needs the privilege-elevation applet that runs as root. Build
+   the project a second time from a copy of `installer.xml` with
+   `<requireInstallationByRootUser>${admin_rights}</requireInstallationByRootUser>`
+   changed to `...>1<...`, and copy that app's
+   `Contents/MacOS/PostGIS_PG<pg-major>` over the same file in the first app.
+5. Replace `Contents/MacOS/installbuilder.sh` in the app with
+   `resources/extract_installbuilder.osx`, with `@@PROJECTNAME@@` replaced by
+   `PostGIS_PG<pg-major>`, and make it executable.
+6. Name the app `postgis-<version>-osx.app` and zip it:
+
+   ```
+   ditto -c -k --keepParent postgis-<version>-osx.app postgis-<version>-osx.zip
+   ```
 
 The installer needs an existing PostgreSQL installation. It reads
 `/etc/postgres-reg.ini` to find it and installs the PostGIS modules under

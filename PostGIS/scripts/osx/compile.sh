@@ -35,9 +35,6 @@ XSLDIR="$(brew --prefix docbook-xsl)/docbook-xsl"
 
 rm -rf "$BUILD_STAGE"; mkdir -p "$BUILD_STAGE"
 
-# Legacy topology Makefile workaround
-[ -f topology/Makefile ] && sed -i '' '/prefix = /,+2 s/^/#/' topology/Makefile
-
 INSTALL_ARGS=(PGXSOVERRIDE=0 DESTDIR="$BUILD_STAGE" REGRESS=1
   PGSQL_DOCDIR="$BUILD_STAGE/doc" PGSQL_MANDIR="$BUILD_STAGE/man"
   PGSQL_SHAREDIR="$BUILD_STAGE/share/postgresql")
