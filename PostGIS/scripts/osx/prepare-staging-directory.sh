@@ -28,7 +28,9 @@ for b in shp2pgsql pgsql2shp; do
 done
 
 # Docs and utilities
-cp -pR "$SRC/doc/html/images" "$PGIS/doc/postgis/"
+# only the rendered images; static ones are symlinks and the dir also holds the generator build
+mkdir -p "$PGIS/doc/postgis/images"
+find "$SRC/doc/html/images" -maxdepth 1 \( -name '*.png' -o -name '*.gif' \) -exec cp -pL {} "$PGIS/doc/postgis/images/" \;
 # 3.6+ names it postgis-en.html
 HTML="$SRC/doc/html/postgis-en.html"; [ -f "$HTML" ] || HTML="$SRC/doc/html/postgis.html"
 cp -p "$HTML" "$PGIS/doc/postgis/postgis.html"
