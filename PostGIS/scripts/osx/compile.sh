@@ -46,6 +46,7 @@ make
 make install "${INSTALL_ARGS[@]}" bindir=/bin pkglibdir=/lib/postgresql datadir=/share
 
 make -C doc
+make -C doc images
 make -C doc html
 make -C doc install "${INSTALL_ARGS[@]}" bindir=/bin pkglibdir=/lib datadir=/share
 
