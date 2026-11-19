@@ -1,3 +1,9 @@
+# PostgreSQL installer release 16.16-2 (2026-11-19)
+## Changes 🛠️
+## Bug Fixes 🐛
+- **Fix:** - Windows: Reverted installer post-install step that deleted `libwinpthread-1.dll` from `bin\`. This DLL is also shipped and required by PostGIS. Deleting it broke the PostGIS dependency. Fixed by no longer removing the DLL from `bin\`.
+-------------------------------------------------------------------------------------------------------------------------------
+
 # PostgreSQL installer release 16.16-1 (2026-11-12)
 ## Changes 🛠️
 - Update `pgAdmin4` to version `9.19`
