@@ -57,11 +57,12 @@ copy_dep() {  # <library name> <linked from>
   [ "$name" = "$2" ] && return
   grep -qx "$name" "$SEEN" && return
   echo "$name" >> "$SEEN"
-  [ -e "$SERVER_LIB/$name" ] && return
+  [ -e "$SERVER_LIB/$name" ] && { echo "RUNTIME-DEP server-provided: $name (linked from $2)"; return; }
   for d in "$DEP_PREFIX/lib" "$DEP_PREFIX/boost/lib"; do
     [ -e "$d/$name" ] && { f="$d/$name"; break; }
   done
   [ -n "$f" ] || { echo "ERROR: $name (linked from $2) is in neither $DEP_PREFIX nor the PG server"; exit 1; }
+  echo "RUNTIME-DEP bundled: $name (linked from $2)"
   while :; do
     cp -pR "$f" "$PGIS/lib/"
     [ -L "$f" ] || break
