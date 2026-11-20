@@ -1,6 +1,6 @@
-geos-3.15.1-osx.tar.bz2
+geos-3.15.0-osx.tar.bz2
 proj-9.8.1-osx.tar.bz2
-gdal-3.13.1-geos3.15.1-osx.tar.bz2
+gdal-3.13.1-geos3.15.0-osx.tar.bz2
 sfcgal-2.3.0-osx.tar.bz2
 json-c-0.19-osx.tar.bz2
 sqlite-3540100-osx.tar.bz2
