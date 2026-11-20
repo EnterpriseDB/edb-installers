@@ -21,6 +21,7 @@ else
   echo "Source branch/ref: $(git -C src rev-parse --abbrev-ref HEAD)"
 
   # install doc build dependencies
+  sudo apt-get update
   sudo apt-get install -y docbook-xsl docbook-xml xsltproc libxml2-utils
 
   # build HTML docs
