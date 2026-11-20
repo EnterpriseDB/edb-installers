@@ -4,7 +4,7 @@
 # the PostGIS tree (modules, tools, docs and bundled dependency libraries)
 # from a `make install DESTDIR` build, plus the installer scripts and project.
 #
-# Expects STAGE, BUILD_STAGE, DEP_PREFIX and POSTGIS_VERSION in the environment,
+# Expects STAGE, BUILD_STAGE, DEP_PREFIX, PGSQL and POSTGIS_VERSION in the environment,
 # the PostGIS source in ./postgis-$POSTGIS_VERSION and this repository in
 # ./packaging-config.
 
@@ -41,23 +41,41 @@ if [ -n "$PDF" ]; then cp -p "$PDF" "$PGIS/doc/postgis/"; else echo "WARNING: Po
 cp -pR "$SRC/doc/man" "$PGIS/"
 cp "$SRC"/utils/*.pl "$PGIS/utils/"
 
-# Dependent libs and data
-copy_libs() {  # <required: 1|0> <dir> <glob>...
-  req="$1"; dir="$2"; shift 2
-  for g in "$@"; do
-    if ls "$dir"/$g >/dev/null 2>&1; then
-      cp -pR "$dir"/$g "$PGIS/lib/"
-    elif [ "$req" = 1 ]; then
-      echo "ERROR: no $g in $dir"; exit 1
-    fi
-  done
+# Runtime libraries: what the modules and tools link, except what the PG server provides
+SERVER_LIB="${PGSQL:?PGSQL not set}/lib"
+SEEN="$(mktemp)"
+
+link_deps() {  # <mach-o file>: copy every library it links, and theirs
+  while read -r dep; do
+    case "$dep" in /usr/lib/*|/System/*) continue ;; esac
+    copy_dep "$(basename "$dep")" "$(basename "$1")"
+  done < <(otool -L "$1" | awk '/^\t/{print $1}')
 }
-copy_libs 1 "$DEP_PREFIX/lib" 'libgeos*.dylib' 'libproj*.dylib' 'libgdal*.dylib' 'libcurl*.dylib' \
-  'libpcre2*.dylib' 'libjson-c.*dylib' 'libtiff.*dylib' 'libjpeg.*dylib' 'libpng*.*dylib' \
-  'libexpat*.*dylib' 'libsqlite*.*dylib' 'libgmp*.*dylib' 'libmpfr*.*dylib' 'libSFCGAL*.*dylib'
-# boost may be in its own prefix
-copy_libs 0 "$DEP_PREFIX/lib" 'libboost*.*dylib'
-copy_libs 0 "$DEP_PREFIX/boost/lib" 'libboost*.*dylib'
+
+copy_dep() {  # <library name> <linked from>
+  local name="$1" f="" t
+  [ "$name" = "$2" ] && return
+  grep -qx "$name" "$SEEN" && return
+  echo "$name" >> "$SEEN"
+  [ -e "$SERVER_LIB/$name" ] && return
+  for d in "$DEP_PREFIX/lib" "$DEP_PREFIX/boost/lib"; do
+    [ -e "$d/$name" ] && { f="$d/$name"; break; }
+  done
+  [ -n "$f" ] || { echo "ERROR: $name (linked from $2) is in neither $DEP_PREFIX nor the PG server"; exit 1; }
+  while :; do
+    cp -pR "$f" "$PGIS/lib/"
+    [ -L "$f" ] || break
+    t="$(readlink "$f")"
+    case "$t" in /*) f="$t" ;; *) f="$(dirname "$f")/$t" ;; esac
+    echo "$(basename "$f")" >> "$SEEN"
+  done
+  link_deps "$f"
+}
+
+for f in "$PGIS"/bin/* "$PGIS"/lib/postgresql/*; do
+  file "$f" | grep -q Mach-O && link_deps "$f"
+done
+rm -f "$SEEN"
 cp -pR "$DEP_PREFIX/share/proj" "$PGIS/share/"
 cp -pR "$DEP_PREFIX/share/gdal" "$PGIS/share/"
 

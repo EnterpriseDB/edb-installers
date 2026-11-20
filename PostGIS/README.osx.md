@@ -70,7 +70,7 @@ one `PostGIS` tree under `<stage>`. This is done by
 `scripts/osx/prepare-staging-directory.sh`, which also lays out the
 installer files (see part 2). Run it from a working directory that contains
 `postgis-<version>` (the source) and this repository as `./packaging-config`,
-with `STAGE`, `BUILD_STAGE`, `DEP_PREFIX` and `POSTGIS_VERSION` set.
+with `STAGE`, `BUILD_STAGE`, `DEP_PREFIX`, `PGSQL` and `POSTGIS_VERSION` set.
 
 The `PostGIS` tree has this layout:
 
@@ -78,7 +78,7 @@ The `PostGIS` tree has this layout:
 | --- | --- |
 | `bin/` | `shp2pgsql`, `pgsql2shp` |
 | `lib/postgresql/` | PostGIS modules (`postgis-<major>.dylib`, etc.) |
-| `lib/` | Bundled `<dep-prefix>` libraries (GEOS, PROJ, GDAL, SFCGAL, Boost, ...) |
+| `lib/` | Runtime libraries: those the modules and tools link, transitively, from `<dep-prefix>`, except the ones the PG server already provides (`<pgsql-dir>/lib`) |
 | `share/` | Extension files, plus `proj` and `gdal` data |
 | `doc/postgis/` | `postgis.html` (built as `postgis-en.html` from 3.6), `style.css`, `images/`, PDF |
 | `man/`, `utils/` | Man pages and the Perl utilities |
