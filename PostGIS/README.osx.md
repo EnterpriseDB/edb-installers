@@ -34,9 +34,9 @@ works.
 
 The third-party libraries (GEOS, PROJ, GDAL, SFCGAL, CGAL, Boost, json-c,
 libxml2, curl, etc.) are compiled by EDB from source as universal binaries.
-The list and versions are in [`packages-osx.txt`](packages-osx.txt). To use a
-different list for one PostGIS release, add `packages-osx-<major.minor>.txt`
-(for example `packages-osx-3.5.txt`) and it takes precedence.
+The list for each PostGIS release is `packages-osx-<major.minor>.txt`
+([3.6](packages-osx-3.6.txt), [3.7](packages-osx-3.7.txt)). They differ only in
+the GEOS version.
 
 Merge them all into one common prefix, referred to below as `<dep-prefix>`.
 
