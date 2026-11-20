@@ -40,6 +40,17 @@ the GEOS version.
 
 Merge them all into one common prefix, referred to below as `<dep-prefix>`.
 
+The list is the build-time set. The runtime set is derived from it when the
+installer is staged (Part 2), so it is not listed separately. For 3.6.4 on PG18:
+
+| Runtime | Libraries |
+|---|---|
+| Bundled in `lib/` | GEOS (`libgeos`, `libgeos_c`), `libproj`, `libgdal`, `libSFCGAL`, `libsqlite3`, `libtiff`, `libjpeg`, `libjson-c`, `libexpat`, `libpcre2-8`, `libgmp`, `libgmpxx`, `libmpfr`, Boost (`serialization`, `thread`, `atomic`, `chrono`, `date_time`, `container`) |
+| Provided by the PG server | `libpq`, `libssl`, `libcrypto`, `libxml2`, `libz`, `libzstd`, `libcurl`, `libiconv` |
+
+The staging log prints one `RUNTIME-DEP bundled:` or `RUNTIME-DEP server-provided:`
+line per library.
+
 ## Part 1: Build the binaries
 
 Download and unpack the PostGIS source tarball from
