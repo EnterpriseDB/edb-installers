@@ -2,9 +2,22 @@
 setlocal
 set "MODE=%~1"
 
+rem --- Use absolute paths for system tools (never rely on PATH / current directory) ---
+set "PS=%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe"
+set "CURL=%SystemRoot%\System32\curl.exe"
+if not exist "%PS%" (
+    echo ERROR: PowerShell not found at "%PS%".
+    exit /b 1
+)
+if not exist "%CURL%" (
+    echo ERROR: curl not found at "%CURL%".
+    exit /b 1
+)
+
 rem --- Resolve latest version into VER (loop only sets the var) ---
+rem Outer extra quotes are required: cmd /c strips the first/last quote when the command starts with a quoted path.
 set "VER="
-for /f "usebackq tokens=1" %%v in (`powershell -NoProfile -Command "(Invoke-WebRequest -Uri \"https://www.postgresql.org/ftp/pgadmin/pgadmin4/\" -UseBasicParsing).Links.href | ForEach-Object { ($_ -replace '[v/]','') } | Where-Object { $_ -match '^\d+\.\d+' } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1"`) do set "VER=%%v"
+for /f "usebackq tokens=1" %%v in (`""%PS%" -NoProfile -Command "(Invoke-WebRequest -Uri \"https://www.postgresql.org/ftp/pgadmin/pgadmin4/\" -UseBasicParsing).Links.href | ForEach-Object { ($_ -replace '[v/]','') } | Where-Object { $_ -match '^\d+\.\d+' } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1""`) do set "VER=%%v"
 
 if not defined VER (
     echo ERROR: Unable to determine the latest pgAdmin 4 version.
@@ -16,7 +29,7 @@ set "EXE=%TEMP%\pgadmin4-%VER%-x64.exe"
 set "URL=https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v%VER%/windows/pgadmin4-%VER%-x64.exe"
 
 rem --- Download (-f so HTTP errors fail instead of saving an error page) ---
-curl -sfL "%URL%" -o "%EXE%"
+"%CURL%" -sfL "%URL%" -o "%EXE%"
 if errorlevel 1 (
     echo ERROR: Failed to download pgAdmin 4 %VER% from %URL%.
     del "%EXE%" 2>nul
@@ -26,7 +39,7 @@ echo pgAdmin 4 version %VER% downloaded successfully.
 
 rem --- Verify it's signed by a trusted publisher ---
 echo Verifying digital signature of pgAdmin 4 installer...
-powershell -NoProfile -Command "$sig = Get-AuthenticodeSignature '%EXE%'; if ($sig.Status -ne 'Valid') { Write-Host 'Signature Status:' $sig.Status; Write-Host 'Signature verification failed. Aborting pgAdmin 4 installation.'; exit 1 } else { Write-Host 'Signature Status:' $sig.Status; Write-Host 'Signer:' $sig.SignerCertificate.Subject; Write-Host 'Signature verified successfully.' }"
+"%PS%" -NoProfile -Command "$sig = Get-AuthenticodeSignature '%EXE%'; if ($sig.Status -ne 'Valid') { Write-Host 'Signature Status:' $sig.Status; Write-Host 'Signature verification failed. Aborting pgAdmin 4 installation.'; exit 1 } else { Write-Host 'Signature Status:' $sig.Status; Write-Host 'Signer:' $sig.SignerCertificate.Subject; Write-Host 'Signature verified successfully.' }"
 if errorlevel 1 (
     echo Signature verification failed. Aborting pgAdmin 4 installation.
     del "%EXE%" 2>nul
