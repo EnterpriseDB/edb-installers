@@ -14,10 +14,16 @@ if not exist "%CURL%" (
     exit /b 1
 )
 
-rem --- Resolve latest version into VER (loop only sets the var) ---
-rem Outer extra quotes are required: cmd /c strips the first/last quote when the command starts with a quoted path.
+rem --- Resolve latest version into VER ---
+rem Output goes to a temp file (not "for /f (`command`)") so that the quoted
+rem absolute path to powershell.exe and the pipes/parens in the command are
+rem not subject to cmd.exe's first/last quote stripping or re-parsing.
 set "VER="
-for /f "usebackq tokens=1" %%v in (`""%PS%" -NoProfile -Command "(Invoke-WebRequest -Uri \"https://www.postgresql.org/ftp/pgadmin/pgadmin4/\" -UseBasicParsing).Links.href | ForEach-Object { ($_ -replace '[v/]','') } | Where-Object { $_ -match '^\d+\.\d+' } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1""`) do set "VER=%%v"
+set "VERFILE=%TEMP%\pgadmin4-latest-version.txt"
+del "%VERFILE%" 2>nul
+"%PS%" -NoProfile -Command "(Invoke-WebRequest -Uri 'https://www.postgresql.org/ftp/pgadmin/pgadmin4/' -UseBasicParsing).Links.href | ForEach-Object { ($_ -replace '[v/]','') } | Where-Object { $_ -match '^\d+\.\d+' } | Sort-Object { [Version]$_ } -Descending | Select-Object -First 1" > "%VERFILE%" 2>nul
+if exist "%VERFILE%" set /p VER=<"%VERFILE%"
+del "%VERFILE%" 2>nul
 
 if not defined VER (
     echo ERROR: Unable to determine the latest pgAdmin 4 version.
