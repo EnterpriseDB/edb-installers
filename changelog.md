@@ -10,6 +10,9 @@
 - **Dependencies:**
   - Updated `package` to `version`
 -->
+## [19.0-2] - 2026-11-23
+- **Fix:** - Windows: The Windows installer ran "cmd.exe /c powershell ..." to resolve the latest pgAdmin 4 version, and install-pgadmin.bat called bare "powershell" and "curl".
+Fixed by using absolute paths for PowerShell and curl in pgAdmin install flow. [#817]  
 
 ## [19.0] - 2026-11-19
 - **Fix:** - Windows: Reverted installer post-install step that deleted `libwinpthread-1.dll` from `bin\`. This DLL is also shipped and required by PostGIS. Deleting it broke the PostGIS dependency. Fixed by no longer removing the DLL from `bin\`.
