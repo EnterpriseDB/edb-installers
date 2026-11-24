@@ -32,24 +32,23 @@ works.
 
 ## Third-party dependencies
 
-The third-party libraries (GEOS, PROJ, GDAL, SFCGAL, CGAL, Boost, json-c,
-libxml2, curl, etc.) are compiled by EDB from source as universal binaries.
-The list for each PostGIS release is `packages-osx-<major.minor>.txt`
-([3.6](packages-osx-3.6.txt), [3.7](packages-osx-3.7.txt)). They differ only in
-the GEOS version.
+### Build-time dependencies
 
-Merge them all into one common prefix, referred to below as `<dep-prefix>`.
+The third-party libraries are compiled by EDB from source as universal
+binaries. They are listed in [`packages-osx-3.6.txt`](packages-osx-3.6.txt)
+and [`packages-osx-3.7.txt`](packages-osx-3.7.txt), one file per PostGIS
+release. Merge all packages of the file into one common prefix, referred to
+below as `<dep-prefix>`.
 
-The list is the build-time set. The runtime set is derived from it when the
-installer is staged (Part 2), so it is not listed separately. For 3.6.4 on PG18:
+### Run-time dependencies
 
-| Runtime | Libraries |
+Libraries linked by the installed PostGIS modules (`otool -L`), all through
+`@rpath` with `@loader_path/..` as the rpath:
+
+| Module | Linked libraries |
 |---|---|
-| Bundled in `lib/` | GEOS (`libgeos`, `libgeos_c`), `libproj`, `libgdal`, `libSFCGAL`, `libsqlite3`, `libtiff`, `libjpeg`, `libjson-c`, `libexpat`, `libpcre2-8`, `libgmp`, `libgmpxx`, `libmpfr`, Boost (`serialization`, `thread`, `atomic`, `chrono`, `date_time`, `container`) |
-| Provided by the PG server | `libpq`, `libssl`, `libcrypto`, `libxml2`, `libz`, `libzstd`, `libcurl`, `libiconv` |
-
-The staging log prints one `RUNTIME-DEP bundled:` or `RUNTIME-DEP server-provided:`
-line per library.
+| `postgis-3` | `libgeos_c`, `libproj`, `libjson-c`, `libxml2`, `libz`, `libiconv`, `libgmp`, `libSFCGAL`, plus `libSystem` and `libc++` from macOS |
+| `postgis_raster-3` | `libgdal`, `libgeos_c`, `libproj`, plus `libSystem` from macOS |
 
 ## Part 1: Build the binaries
 
