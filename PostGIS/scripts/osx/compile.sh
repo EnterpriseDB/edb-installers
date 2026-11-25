@@ -19,9 +19,6 @@ export LDFLAGS="-L$DEP_PREFIX/lib"
 export PROJ_CFLAGS="-I$DEP_PREFIX/include" PROJ_LIBS="-L$DEP_PREFIX/lib -lproj"
 XSLDIR="$(brew --prefix docbook-xsl)/docbook-xsl"
 
-# PostGIS 3.7 dropped address_standardizer
-ADDR_STD=(); [ -d extensions/address_standardizer ] && ADDR_STD=(--with-address_standardizer)
-
 ./configure --disable-extension-upgrades-install --enable-debug \
   --with-pgconfig="$PGSQL/bin/pg_config" \
   --with-geosconfig="$DEP_PREFIX/bin/geos-config" \
@@ -34,7 +31,7 @@ ADDR_STD=(); [ -d extensions/address_standardizer ] && ADDR_STD=(--with-address_
   --without-protobuf \
   --with-pcredir="$DEP_PREFIX" \
   --with-sfcgal="$DEP_PREFIX/bin/sfcgal-config" \
-  "${ADDR_STD[@]}"
+  --with-address_standardizer
 
 rm -rf "$BUILD_STAGE"; mkdir -p "$BUILD_STAGE"
 
