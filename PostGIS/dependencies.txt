@@ -9,8 +9,8 @@ mpfr-4.2.2-osx.tar.bz2
 boost-1.92.0-osx.tar.bz2
 tiff-4.7.2-osx.tar.bz2
 jpeg-10-osx.tar.bz2
-expat-2.10.0-osx.tar.bz2
+expat-2.11.0-osx.tar.bz2
 libxml2-2.15.4-osx.tar.bz2
 libiconv-1.19-osx.tar.bz2
 zlib-1.4-osx.tar.bz2
-zstd-1.5.7-osx.tar.bz2
+zstd-1.6.0-osx.tar.bz2
