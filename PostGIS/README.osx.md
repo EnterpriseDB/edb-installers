@@ -35,19 +35,14 @@ works.
 ### Build-time dependencies
 
 The third-party libraries are compiled by EDB from source as universal
-binaries. They are listed in [`packages-osx.txt`](packages-osx.txt). Merge
-all packages of the file into one common prefix, referred to below as
-`<dep-prefix>`.
+binaries. They are listed in
+[`dependencies-dev-3.6.txt`](dependencies-dev-3.6.txt). Merge all packages of
+the file into one common prefix, referred to below as `<dep-prefix>`.
 
 ### Run-time dependencies
 
-Libraries linked by the installed PostGIS modules (`otool -L`), all through
-`@rpath` with `@loader_path/..` as the rpath:
-
-| Module | Linked libraries |
-|---|---|
-| `postgis-3` | `libgeos_c`, `libproj`, `libjson-c`, `libxml2`, `libz`, `libiconv`, `libSFCGAL`, plus `libSystem` and `libc++` from macOS |
-| `postgis_raster-3` | `libgdal`, `libgeos_c`, `libproj`, plus `libSystem` from macOS |
+The libraries shipped inside the installer are listed in
+[`dependencies.txt`](dependencies.txt).
 
 ## Part 1: Build the binaries
 
